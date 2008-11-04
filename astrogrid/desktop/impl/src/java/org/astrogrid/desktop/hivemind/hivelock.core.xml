@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <module id="hivelock.core" version="1.0.0">
-
+    Core of hivemind user, session and security model.
 	<dependency module-id="hiveutils"/>
 
 	<!--

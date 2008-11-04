@@ -42,7 +42,7 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.votech.VoMonBean;
 
-/** Implementation of the VoMon service.
+/** Implementation of {@link VoMonInternal}.
  * @author Noel Winstanley
  * @since Dec 11, 20064:16:06 PM
  */
@@ -60,25 +60,25 @@ public class VoMonImpl implements VoMonInternal {
     private boolean populated;
 
 
-	public VoMonBean checkAvailability(URI arg0) {
+	public VoMonBean checkAvailability(final URI arg0) {
 		if (arg0 == null) {
 			return null;
 		}
 		if (! populated || ! cache.getStatus().equals(Status.STATUS_ALIVE)) {
 			return null;
 		}
-		Element e = cache.get(arg0);
+		final Element e = cache.get(arg0);
 		if (e == null) {
 			return null;
 		}
 		return(VoMonBean) e.getObjectValue();
 	}
 
-	public VoMonBean[] checkCeaAvailability(URI id) {
+	public VoMonBean[] checkCeaAvailability(final URI id) {
 		if (id == null) {
 			return new VoMonBean[0];
 		}
-		Element e = cache.get(id);
+		final Element e = cache.get(id);
 		if (e == null) {
 			return new VoMonBean[0];
 		}
@@ -91,19 +91,19 @@ public void reload() throws ServiceException {
 	/** reloads service list - blocking until completed  - storing it all in cache.
 	 * @param w worker for progress reporting. may be null
 	 * @throws ServiceException */
-	private void reload(WorkerProgressReporter w) throws ServiceException{ 
-		XMLInputFactory fac = XMLInputFactory.newInstance();
+	private void reload(final WorkerProgressReporter w) throws ServiceException{ 
+		final XMLInputFactory fac = XMLInputFactory.newInstance();
 		XMLStreamReader in = null;
 		try {
 		    if (w != null) {
-		        MonitoringInputStream min = MonitoringInputStream.create(w,endpoint,MonitoringInputStream.ONE_KB * 10);
+		        final MonitoringInputStream min = MonitoringInputStream.create(w,endpoint,MonitoringInputStream.ONE_KB * 10);
 		        w.reportProgress("Downloading service statuses - " + min.getFormattedSize());
 		        in = fac.createXMLStreamReader(min);
 		    } else {
 		        in = fac.createXMLStreamReader(endpoint.openStream());
 		    }
 			VoMonBean bean = null;
-			MultiMap apps = new MultiHashMap();
+			final MultiMap apps = new MultiHashMap();
 			while(in.hasNext()) {
 				in.next();
 				if (in.isStartElement()) {
@@ -112,7 +112,7 @@ public void reload() throws ServiceException {
 						try {
 							bean = new VoMonBean();
 							bean.setId(new URI(in.getAttributeValue(null,"name")));
-						} catch (URISyntaxException x) {
+						} catch (final URISyntaxException x) {
 							bean = null;
 						}
 					}
@@ -121,7 +121,7 @@ public void reload() throws ServiceException {
 							try {
 								bean.setCode(Integer.parseInt(in.getAttributeValue(null,"code")));
 								bean.setMillis(Long.parseLong(in.getAttributeValue(null,"millis")));
-							} catch (NumberFormatException e) {
+							} catch (final NumberFormatException e) {
 								// oh well.
 							}
 							bean.setStatus(in.getAttributeValue(null,"status"));
@@ -134,10 +134,10 @@ public void reload() throws ServiceException {
 						try {
 							final String str = in.getElementText().trim();
 							if (str.length() > 0) { // else it's probably using the other representation.
-								URI appId = new URI(str);
+								final URI appId = new URI(str);
 								apps.put(appId,bean);
 							}
-						} catch (URISyntaxException x) {
+						} catch (final URISyntaxException x) {
 							// oh well.
 						} 
 					} 	
@@ -146,13 +146,13 @@ public void reload() throws ServiceException {
 						try {
 							final String str = in.getElementText().trim();
 							if (str.length() > 0) {
-								StringTokenizer st = new StringTokenizer(str);
+								final StringTokenizer st = new StringTokenizer(str);
 								while (st.hasMoreTokens()) {
-									URI appId = new URI(st.nextToken());
+									final URI appId = new URI(st.nextToken());
 									apps.put(appId,bean);
 								}
 							}
-						} catch (URISyntaxException x) {
+						} catch (final URISyntaxException x) {
 							// oh well.
 						} 
 					} 						
@@ -160,7 +160,7 @@ public void reload() throws ServiceException {
 				}
 				if (in.isEndElement() && in.getLocalName().equals("host")) { // cache the info.
 					if (bean != null && cache.getStatus().equals(Status.STATUS_ALIVE)) {
-						Element e = new Element(bean.getId(),bean);
+						final Element e = new Element(bean.getId(),bean);
 						cache.put(e);
 						bean = null;
 					}
@@ -168,38 +168,38 @@ public void reload() throws ServiceException {
 			}
 			// save apps into cache too.
 			final Set s = new HashSet();
-			for (Iterator i = apps.entrySet().iterator(); i.hasNext(); ) {
-				Map.Entry e = (Map.Entry)i.next();
+			for (final Iterator i = apps.entrySet().iterator(); i.hasNext(); ) {
+				final Map.Entry e = (Map.Entry)i.next();
 				final Object appId = e.getKey();
 				final Collection serviceCollection = (Collection)e.getValue(); 
 				s.clear();
 				s.addAll(serviceCollection);// remove duplicates from the collection
-					VoMonBean[] serviceArr = (VoMonBean[])  s.toArray(new VoMonBean[s.size()]);
-					Element el = new Element(appId,serviceArr);
+					final VoMonBean[] serviceArr = (VoMonBean[])  s.toArray(new VoMonBean[s.size()]);
+					final Element el = new Element(appId,serviceArr);
 					cache.put(el);
 			}
 			populated = true; // now got some data.
-		} catch (XMLStreamException x) {
+		} catch (final XMLStreamException x) {
 			throw new ServiceException(x);
-		} catch (IOException x) {
+		} catch (final IOException x) {
 			throw new ServiceException(x);
 		} finally {
 			try {
 				if (in != null) {
 					in.close();
 				}
-			} catch (XMLStreamException x) {
+			} catch (final XMLStreamException x) {
 			    //ignored
 			}
 		}
 	}
 
-	public VoMonImpl(final String endpoint, final int refreshSeconds, Ehcache cache )  {
+	public VoMonImpl(final String endpoint, final int refreshSeconds, final Ehcache cache )  {
 		super();
 		URL u; 
 		try {
 			u= new URL(endpoint);
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 			u = null; // not going to work..
 		}
 		this.endpoint = u;
@@ -210,10 +210,10 @@ public void reload() throws ServiceException {
 	}
 
 	
-	public void execute(WorkerProgressReporter reporter) {
+	public void execute(final WorkerProgressReporter reporter) {
 		try {
 			reload(reporter);
-		} catch (Throwable t) {
+		} catch (final Throwable t) {
 		    reporter.reportProgress("Failed to download statuses");
 		    reporter.reportProgress(new ExceptionFormatter().format(t));
 		}		
@@ -228,13 +228,13 @@ public void reload() throws ServiceException {
 	}
 
 	// higher-level utilities.
-    public String getTooltipInformationFor(Resource ri) {
+    public String getTooltipInformationFor(final Resource ri) {
         if (! populated) {
             return null;
         }
-        HtmlBuilder result = new HtmlBuilder();
+        final HtmlBuilder result = new HtmlBuilder();
         if (ri instanceof Service) {
-            VoMonBean b = checkAvailability(ri.getId());
+            final VoMonBean b = checkAvailability(ri.getId());
             if (b == null) {
                 result.append("This resource is unknown to the monitoring service");
             } else {
@@ -244,13 +244,13 @@ public void reload() throws ServiceException {
                 .append(b.getTimestamp());
             }
         } else if (ri instanceof CeaApplication) {
-            VoMonBean[] arr = checkCeaAvailability(ri.getId());
+            final VoMonBean[] arr = checkCeaAvailability(ri.getId());
             if (arr == null || arr.length == 0) {
                 result.append("The monitoring service knows of no providers of this application");
             } else {
                 result.append("This application is provided by the following services:<ul>");
                 for (int i =0; i < arr.length; i++) {
-                    VoMonBean b = arr[i];
+                    final VoMonBean b = arr[i];
                     result.append("<li>")
                     .append(b.getId())
                     .append(" - judged to be ")
@@ -265,12 +265,12 @@ public void reload() throws ServiceException {
         return result.toString();
     }
 
-    public Icon suggestIconFor(Resource r) {
+    public Icon suggestIconFor(final Resource r) {
         if (! populated) {
             return null;
         }
         if (r instanceof Service) {
-            VoMonBean b = checkAvailability(r.getId());
+            final VoMonBean b = checkAvailability(r.getId());
             if (b == null) {// unknown
                 return UIConstants.UNKNOWN_ICON;
             } else if ( b.getCode() != VoMonBean.UP_CODE) { // service down
@@ -279,7 +279,7 @@ public void reload() throws ServiceException {
                 return UIConstants.SERVICE_OK_ICON;
             }
         } else if (r instanceof CeaApplication) {
-            VoMonBean[] providers = checkCeaAvailability(r.getId());
+            final VoMonBean[] providers = checkCeaAvailability(r.getId());
             if (providers == null ) { 
                 // unknown application.
                 return UIConstants.UNKNOWN_ICON;
@@ -305,7 +305,7 @@ public void reload() throws ServiceException {
                 assertNotNull("Invalid endpoint",endpoint);
                 try {
                     endpoint.openConnection().connect();
-                } catch (IOException x) {
+                } catch (final IOException x) {
                     fail("Unable to access monitor service");
                 }
                 assertEquals("Problem with cache",Status.STATUS_ALIVE,cache.getStatus());

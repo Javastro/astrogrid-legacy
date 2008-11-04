@@ -4,25 +4,17 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.List;
-
-import javax.swing.KeyStroke;
 
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.AstroScopeInternal;
-import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
-import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 
-/** invoke astroscope.
+/** Invoke astroscope on the selected resources.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20073:47:48 PM
  */
@@ -30,7 +22,7 @@ public final class QueryScopeActivity extends AbstractResourceActivity {
 /**
  * 
  */
-public QueryScopeActivity(AstroScopeInternal ai) {
+public QueryScopeActivity(final AstroScopeInternal ai) {
     setHelpID("activity.query");	
 	this.ai = ai;
 	setText("Query");
@@ -45,8 +37,8 @@ private final AstroScopeInternal ai;
 	/** Test whether it's something we can invoke.
 	 * @param r
 	 */
-	protected boolean invokable(Resource r) {
-		boolean b =  r instanceof SiapService 
+	protected boolean invokable(final Resource r) {
+		final boolean b =  r instanceof SiapService 
 				|| r instanceof ConeService
 				|| r instanceof SsapService
 				|| r instanceof StapService
@@ -54,9 +46,9 @@ private final AstroScopeInternal ai;
 					;
 		return b;
 	}
-public void actionPerformed(ActionEvent e) {
+public void actionPerformed(final ActionEvent e) {
 	final List l = computeInvokable();
-	int sz = l.size();
+	final int sz = l.size();
 	confirmWhenOverThreshold(sz,"Query all " + sz + " files?",new Runnable() {
 
         public void run() {

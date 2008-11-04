@@ -9,12 +9,11 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 
-/**representaiton of a storage folder
+/**A bookmark for FileExplorer.
  * @todo merge with resourceFolder later.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 200710:53:04 PM
@@ -26,16 +25,16 @@ public class StorageFolder extends Folder {
 	//@todo is this needed now?
 	static  {
 		try { // set up the bean behaviour. - need to do this to prevent XMLSerializer persisting the FileObject. blergh.
-			BeanInfo info = Introspector.getBeanInfo(StorageFolder.class);
-			PropertyDescriptor[] propertyDescriptors =
+			final BeanInfo info = Introspector.getBeanInfo(StorageFolder.class);
+			final PropertyDescriptor[] propertyDescriptors =
 				info.getPropertyDescriptors();
 			for (int i = 0; i < propertyDescriptors.length; ++i) {
-				PropertyDescriptor pd = propertyDescriptors[i];
+				final PropertyDescriptor pd = propertyDescriptors[i];
 				if (pd.getName().equals("file")) {
 					pd.setValue("transient", Boolean.TRUE);
 				}
 			}
-		} catch (IntrospectionException x) {
+		} catch (final IntrospectionException x) {
 			logger.error("IntrospectionException",x);
 		}
 	}			
@@ -50,7 +49,7 @@ public class StorageFolder extends Folder {
 		setIconName("folder16.png");
 	}
 	
-	public StorageFolder(String name, String iconName,URI uri)  {
+	public StorageFolder(final String name, final String iconName,final URI uri)  {
 		super(name,iconName);
 		this.uri =uri;
 	}	
@@ -61,7 +60,7 @@ public class StorageFolder extends Folder {
 	public String getUriString() {
 		return this.uri == null ? null :  this.uri.toString();
 	} 
-	public void setUriString(String uri) throws URISyntaxException {
+	public void setUriString(final String uri) throws URISyntaxException {
 	    if (StringUtils.isEmpty(uri)) {
 	        throw new URISyntaxException(uri,"Empty URI provided");
 	    }
@@ -74,7 +73,7 @@ public class StorageFolder extends Folder {
 		return this.file;
 	}
 
-	public void setFile(FileObject file) {
+	public void setFile(final FileObject file) {
 		this.file = file;
 	}
 
@@ -85,19 +84,24 @@ public class StorageFolder extends Folder {
 		return result;
 	}
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (!super.equals(obj)) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final StorageFolder other = (StorageFolder) obj;
 		if (this.uri == null) {
-			if (other.uri != null)
-				return false;
-		} else if (!this.uri.equals(other.uri))
-			return false;
+			if (other.uri != null) {
+                return false;
+            }
+		} else if (!this.uri.equals(other.uri)) {
+            return false;
+        }
 		return true;
 	}
 
@@ -105,7 +109,7 @@ public class StorageFolder extends Folder {
         return this.description;
     }
 
-    public final void setDescription(String description) {
+    public final void setDescription(final String description) {
         this.description = description;
     }
 

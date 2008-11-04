@@ -1,12 +1,11 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler.VotableHandler;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** extension to the starlink tablehandler that produces a summary of what it's parsed 
- * and access to where the resuls are stored */
+/** Extension to the starlink tablehandler that produces a summary of what it's parsed 
+ * and access to where the results are stored */
 public interface AstroscopeTableHandler extends VotableHandler {
     /** return a count of the number of rows parsed - or {@link QueryResultCollector#ERROR} if failed to parse */
     public int getResultCount();

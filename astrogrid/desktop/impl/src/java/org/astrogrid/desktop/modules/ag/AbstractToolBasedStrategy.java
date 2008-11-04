@@ -36,7 +36,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /** Base class for remote process strategies which
- * use the Tool document as their representation
+ * use the CEA Tool document as their representation.
  * (never mind whether this is actually submitted to the remote service
  * )
  * 

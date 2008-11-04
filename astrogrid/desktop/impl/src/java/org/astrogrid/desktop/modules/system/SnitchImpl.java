@@ -23,7 +23,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 
-/** Implementation of the snitcher.
+/** Implementation of usage reporting.
  * @author Noel Winstanley
  * @since May 19, 200612:08:33 AM
  */
@@ -38,7 +38,7 @@ public class SnitchImpl implements SnitchInternal {
 	private final boolean snitchDisabled;
 
 	
-	public SnitchImpl( UIContext ui,String version, String appMode, final EventList plasticList, Preference doSnitch) {
+	public SnitchImpl( final UIContext ui,final String version, final String appMode, final EventList plasticList, final Preference doSnitch) {
 		super();
     	logger.info("AstroRuntime version: " + version + ", " + appMode);
 		this.ui = ui;
@@ -49,11 +49,11 @@ public class SnitchImpl implements SnitchInternal {
 		if (! snitchDisabled) {
 			plasticList.addListEventListener(new ListEventListener() {
 
-				public void listChanged(ListEvent arg0) {
+				public void listChanged(final ListEvent arg0) {
 					while(arg0.next()) {
 						if (arg0.getType() == ListEvent.INSERT) {
-							PlasticApplicationDescription plas = (PlasticApplicationDescription)plasticList.get(arg0.getIndex());
-							Map m = new HashMap();
+							final PlasticApplicationDescription plas = (PlasticApplicationDescription)plasticList.get(arg0.getIndex());
+							final Map m = new HashMap();
 							m.put("name",plas.getName());
 							m.put("ops",Arrays.asList(plas.getUnderstoodMessages()));
 							m.put("description",plas.getDescription());
@@ -64,7 +64,7 @@ public class SnitchImpl implements SnitchInternal {
 			}
 			);
 		}
-		Map m = new HashMap();
+		final Map m = new HashMap();
 		m.put("app", version
 		        //+  " | "
 				//+ (appMode != null ? appMode : "unknown")
@@ -82,7 +82,7 @@ public class SnitchImpl implements SnitchInternal {
 
 	
 	
-	public void snitch(String message) {
+	public void snitch(final String message) {
 		snitch(message, MapUtils.EMPTY_MAP);
 	}
 
@@ -91,22 +91,22 @@ public class SnitchImpl implements SnitchInternal {
 		(new BackgroundWorker(ui,"Reporting usage",BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
 
 		protected Object construct() throws Exception {
-			StrBuilder sb = new StrBuilder(64);
+			final StrBuilder sb = new StrBuilder(64);
 			sb.append(base);
 			sb.append(message).append('?');			
-			for (Iterator i = params.entrySet().iterator(); i.hasNext(); ) {
-				Map.Entry e = (Map.Entry)i.next();
+			for (final Iterator i = params.entrySet().iterator(); i.hasNext(); ) {
+				final Map.Entry e = (Map.Entry)i.next();
 				sb.append(e.getKey())
 					.append("=")
 					.append(e.getValue() != null ? URLEncoder.encode(e.getValue().toString()) : "null")
 					.append("&");
 			}
-			URL query = new URL(sb.toString());
+			final URL query = new URL(sb.toString());
 			logger.debug(query);
 			query.openConnection().getContent();
 			return null; // job done.
 		}
-		protected void doError(Throwable ex) {
+		protected void doError(final Throwable ex) {
 			// expected.
 		}
 	 }).start();

@@ -1,4 +1,4 @@
-/*$Id: UCDImpl.java,v 1.10 2008/07/16 17:33:57 nw Exp $
+/*$Id: UCDImpl.java,v 1.11 2008/11/04 14:35:50 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,13 +17,13 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.UCD;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 
-/** Implementaton of the UCD service
+/** Implementation of a UCD client.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Aug-2005
  *
  */
 public class UCDImpl extends BaseCDSClient implements UCD{
 
-    public UCDImpl(HttpClient http,Preference endpoint)  {
+    public UCDImpl(final HttpClient http,final Preference endpoint)  {
         super(http,endpoint);
     } 
 
@@ -31,7 +31,7 @@ public class UCDImpl extends BaseCDSClient implements UCD{
      * @see org.astrogrid.acr.cds.UCD#UCDList()
      */
     public String UCDList() throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","UCDList")
         });
@@ -41,8 +41,8 @@ public class UCDImpl extends BaseCDSClient implements UCD{
     /**
      * @see org.astrogrid.acr.cds.UCD#resolveUCD(java.lang.String)
      */
-    public String resolveUCD(String arg0) throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+    public String resolveUCD(final String arg0) throws ServiceException {
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","resolveUCD")
                 ,new NameValuePair("ucd",arg0)
@@ -53,8 +53,8 @@ public class UCDImpl extends BaseCDSClient implements UCD{
     /**
      * @see org.astrogrid.acr.cds.UCD#UCDofCatalog(java.lang.String)
      */
-    public String UCDofCatalog(String arg0) throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+    public String UCDofCatalog(final String arg0) throws ServiceException {
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","UCDofCatalog")
                 ,new NameValuePair("catalog_designation",arg0)
@@ -65,8 +65,8 @@ public class UCDImpl extends BaseCDSClient implements UCD{
     /**
      * @see org.astrogrid.acr.cds.UCD#translate(java.lang.String)
      */
-    public String translate(String arg0) throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+    public String translate(final String arg0) throws ServiceException {
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","translate")
                 ,new NameValuePair("ucd",arg0)
@@ -77,8 +77,8 @@ public class UCDImpl extends BaseCDSClient implements UCD{
     /**
      * @see org.astrogrid.acr.cds.UCD#upgrade(java.lang.String)
      */
-    public String upgrade(String arg0) throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+    public String upgrade(final String arg0) throws ServiceException {
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","upgrade")
                 ,new NameValuePair("ucd",arg0)
@@ -89,8 +89,8 @@ public class UCDImpl extends BaseCDSClient implements UCD{
     /**
      * @see org.astrogrid.acr.cds.UCD#validate(java.lang.String)
      */
-    public String validate(String arg0) throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+    public String validate(final String arg0) throws ServiceException {
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","validate")
                 ,new NameValuePair("ucd",arg0)
@@ -101,8 +101,8 @@ public class UCDImpl extends BaseCDSClient implements UCD{
     /**
      * @see org.astrogrid.acr.cds.UCD#explain(java.lang.String)
      */
-    public String explain(String arg0) throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+    public String explain(final String arg0) throws ServiceException {
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","explain")
                 ,new NameValuePair("ucd",arg0)
@@ -113,8 +113,8 @@ public class UCDImpl extends BaseCDSClient implements UCD{
     /**
      * @see org.astrogrid.acr.cds.UCD#assign(java.lang.String)
      */
-    public String assign(String arg0) throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+    public String assign(final String arg0) throws ServiceException {
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","assign")
                 ,new NameValuePair("descr",arg0)
@@ -128,6 +128,9 @@ public class UCDImpl extends BaseCDSClient implements UCD{
 
 /* 
 $Log: UCDImpl.java,v $
+Revision 1.11  2008/11/04 14:35:50  nw
+javadoc polishing
+
 Revision 1.10  2008/07/16 17:33:57  nw
 Complete - task 372: re-implement CDS tasks
 

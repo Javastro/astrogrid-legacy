@@ -15,8 +15,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.matchers.Matcher;
 
-/** Strategy for filtering on list of coverage/waveband, for those Resource instances
- * that have it.
+/**Filters on coverage / wavebamd
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 15, 20073:49:49 PM
  */
@@ -24,7 +23,7 @@ public class WavebandStrategy extends PipelineStrategy {
 
 	public Matcher createMatcher(final List selected) {
 		return new Matcher() {
-			public boolean matches(Object arg0) {
+			public boolean matches(final Object arg0) {
 				if (! (arg0 instanceof HasCoverage)) {
 					return selected.contains(NONE_PROVIDED.get(0));
 				}
@@ -32,9 +31,9 @@ public class WavebandStrategy extends PipelineStrategy {
 				if (c == null || c.getWavebands() == null || c.getWavebands().length == 0) {
 					return  selected.contains(NONE_PROVIDED.get(0));
 				}				
-				String[] bands = c.getWavebands();
+				final String[] bands = c.getWavebands();
 				for (int i = 0; i < bands.length; i++) {
-					String subj = bands[i];
+					final String subj = bands[i];
 					if( selected.contains(subj)) {
 						return true;
 					}
@@ -46,10 +45,10 @@ public class WavebandStrategy extends PipelineStrategy {
 
 
 
-	public TransformedList createView(EventList base) {	
+	public TransformedList createView(final EventList base) {	
 		return new CollectionList(base,
 			new CollectionList.Model() {
-		public List getChildren(Object arg0) {
+		public List getChildren(final Object arg0) {
 			if (! ( arg0 instanceof HasCoverage) ) {
 				return NONE_PROVIDED;
 			}

@@ -10,7 +10,7 @@ import java.awt.Dimension;
 import javax.swing.JList;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
-/** cell renderer that just displays a block of colour */
+/** cell renderer that  displays a block of colour */
 public class ColorCellRenderer extends BasicComboBoxRenderer {
     private final static Dimension preferredSize = new Dimension(16, 16);
     public ColorCellRenderer() {
@@ -18,8 +18,8 @@ public class ColorCellRenderer extends BasicComboBoxRenderer {
     }
     ColorSwatchIcon ico = new ColorSwatchIcon(Color.WHITE,preferredSize);
 
-    public Component getListCellRendererComponent(JList list, Object value,
-        int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(final JList list, final Object value,
+        final int index, final boolean isSelected, final boolean cellHasFocus) {
         if (isSelected) {
             setBackground(list.getSelectionBackground());
             setForeground(list.getSelectionForeground());

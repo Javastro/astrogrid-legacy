@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.system.ui;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-/** Factory that creates and populates an activities manager.
+/** Creates and populates an activities manager.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 26, 20073:19:58 PM
  */

@@ -28,7 +28,7 @@ import org.astrogrid.desktop.hivemind.Launcher;
 import org.astrogrid.desktop.hivemind.ListProperties;
 import org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager;
 
-/** General Commandline Parser for different variants of AR
+/** Commandline Parser for AR / VODesktop
  * 
  * Usage.
  * <ol>
@@ -60,13 +60,13 @@ class CmdLineParser {
 		/**
 		 * @param usage
 		 */
-		public ShowHelp(String usage) {
+		public ShowHelp(final String usage) {
 			this.usage = usage;
 		}
 
 		public void run() {
 			spliceInDefaults();
-			HelpFormatter f = new HelpFormatter();
+			final HelpFormatter f = new HelpFormatter();
 			f.printHelp(this.usage + " <options>",options);						
 		}
 	}
@@ -94,7 +94,7 @@ class CmdLineParser {
 	 * @return parsed up options
 	 */
 	private static Options createDefaultOptions() {
-		Options o = new Options();
+		final Options o = new Options();
 		o.addOption(OptionBuilder.withDescription("Shows this help and exit").create("help"));
 		
 		// properties
@@ -158,11 +158,11 @@ class CmdLineParser {
 			} else {
 				return new Launcher();
 			}
-		} catch (ParseException x) {
+		} catch (final ParseException x) {
 			// set it to 'null'
 			try {
 			commandLine = parser.parse(options,new String[]{});
-			} catch (ParseException xx) {
+			} catch (final ParseException xx) {
 				throw new RuntimeException("Unexpected",xx);
 			}
 			logger.error("Failed to parse",x);
@@ -170,7 +170,7 @@ class CmdLineParser {
 		}
 	}
 
-	public void processCommandLine(Launcher l) {
+	public void processCommandLine(final Launcher l) {
 
 		// process -D first.
 	//	String[] props = commandLine.getOptionValues('D');
@@ -178,24 +178,24 @@ class CmdLineParser {
 	//		processPropertyKeys(props);
 	//	}
 		// now any properties files
-		String[] propsFiles = commandLine.getOptionValues("propertyFile");
+		final String[] propsFiles = commandLine.getOptionValues("propertyFile");
 		if (propsFiles != null) {
 			processPropertyFiles(propsFiles);
 		}
 		
 		// now any properties URLs
-		String[] propsURLs = commandLine.getOptionValues("propertyURL");
+		final String[] propsURLs = commandLine.getOptionValues("propertyURL");
 		if (propsURLs != null) {
 			processPropertyURLs(propsURLs);
 		}
 		// now any modules in files
-		String[] moduleFiles = commandLine.getOptionValues("addModule");
+		final String[] moduleFiles = commandLine.getOptionValues("addModule");
 		if (moduleFiles != null) {
 			processModuleFiles(l, moduleFiles);
 		}
 		
 		// now any modules at URLs
-		String[] moduleURLs = commandLine.getOptionValues("addModuleURL");
+		final String[] moduleURLs = commandLine.getOptionValues("addModuleURL");
 		if (moduleURLs != null ) {
 			processModuleURLs(l, moduleURLs);		
 		}
@@ -209,11 +209,11 @@ class CmdLineParser {
 	 * @param l
 	 * @param moduleURLs
 	 */
-	private static void processModuleURLs(Launcher l, String[] moduleURLs) {
+	private static void processModuleURLs(final Launcher l, final String[] moduleURLs) {
 		for (int i =0; i < moduleURLs.length; i++) {
 			try {
 				l.addModuleURL(new URL(moduleURLs[i]));
-			} catch (MalformedURLException x) {
+			} catch (final MalformedURLException x) {
 				logger.warn("Could not access module file " + moduleURLs[i],x);
 			}
 		}
@@ -222,9 +222,9 @@ class CmdLineParser {
 	 * @param l
 	 * @param moduleFiles
 	 */
-	private static void processModuleFiles(Launcher l, String[] moduleFiles) {
+	private static void processModuleFiles(final Launcher l, final String[] moduleFiles) {
 		for (int i =0; i < moduleFiles.length; i++) {
-			File f = new File(moduleFiles[i]); 
+			final File f = new File(moduleFiles[i]); 
 			//@todo check that this takes care of expanding, relatives, etc
 			if (!f.exists()) {
 				logger.warn("Ignoring non-existent module file " + f);
@@ -232,7 +232,7 @@ class CmdLineParser {
 			}
 			try {
 				l.addModuleURL(f.toURI().toURL());
-			} catch (MalformedURLException x) {
+			} catch (final MalformedURLException x) {
 				logger.warn("Could not access module file " + f,x);
 			}
 		}
@@ -240,7 +240,7 @@ class CmdLineParser {
 	/**
 	 * @param propsURLs
 	 */
-	private static void processPropertyURLs(String[] propsURLs) {
+	private static void processPropertyURLs(final String[] propsURLs) {
 		for (int i =0; i < propsURLs.length; i++) {
 			URL u = null;
 
@@ -249,13 +249,13 @@ class CmdLineParser {
 				u = new URL(propsURLs[i]); 
 				is = u.openStream();
 				loadPropertiesFile(is);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				logger.warn("Failed to load properties file " + u,e);
 			} finally {
 				if (is != null ) {
 					try {
 						is.close();
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						// don't care.
 					}
 				}
@@ -265,9 +265,9 @@ class CmdLineParser {
 	/**
 	 * @param propsFiles
 	 */
-	private static void processPropertyFiles(String[] propsFiles) {
+	private static void processPropertyFiles(final String[] propsFiles) {
 		for (int i =0; i < propsFiles.length; i++) {
-			File f = new File(propsFiles[i]); 
+			final File f = new File(propsFiles[i]); 
 			//@todo check that this takes care of expanding, relatives, etc
 			if (!f.exists()) {
 				logger.warn("Ignoring non-existent properties file " + f);
@@ -278,13 +278,13 @@ class CmdLineParser {
 				logger.info("Loading properties from " + f);
 				is = new FileInputStream(f);
 				loadPropertiesFile(is);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				logger.warn("Warning: Failed to load properties file " + f,e);
 			} finally {
 				if (is != null ) {
 					try {
 						is.close();
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						// don't care.
 					}
 				}
@@ -296,11 +296,11 @@ class CmdLineParser {
 	 * @param is
 	 * @throws IOException
 	 */
-	private static void loadPropertiesFile(InputStream is) throws IOException {
-		Properties p = new Properties();
+	private static void loadPropertiesFile(final InputStream is) throws IOException {
+		final Properties p = new Properties();
 		p.load(is);
-		for (Iterator it = p.entrySet().iterator(); it.hasNext(); ) {
-			Map.Entry entry = (Map.Entry)it.next();
+		for (final Iterator it = p.entrySet().iterator(); it.hasNext(); ) {
+			final Map.Entry entry = (Map.Entry)it.next();
 			logger.debug("'" + entry.getKey().toString() + "' := '" + entry.getValue().toString() + "'"); 
 			System.setProperty(entry.getKey().toString(),entry.getValue().toString());
 		}

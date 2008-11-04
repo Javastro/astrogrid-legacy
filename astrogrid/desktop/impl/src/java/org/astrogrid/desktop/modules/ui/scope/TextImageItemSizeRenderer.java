@@ -1,4 +1,4 @@
-/*$Id: TextImageItemSizeRenderer.java,v 1.8 2008/04/25 08:59:36 nw Exp $
+/*$Id: TextImageItemSizeRenderer.java,v 1.9 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,32 +18,32 @@ import java.awt.geom.RoundRectangle2D;
 import edu.berkeley.guir.prefuse.VisualItem;
 import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
 /**
- * renderer for node that produces a text and image, where the text varies in size.
+ * Prefuse renderer for a node that produces a text and image, where the text varies in size.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
 public class TextImageItemSizeRenderer extends TextImageItemRenderer {
     
-    public TextImageItemSizeRenderer(NodeSizingMap m) {
+    public TextImageItemSizeRenderer(final NodeSizingMap m) {
         super();
         this.nodeSizingMap = m;
     }
     private final NodeSizingMap nodeSizingMap;
     
-    protected Shape getRawShape(VisualItem item) {
+    protected Shape getRawShape(final VisualItem item) {
         //System.out.println("getRawShape called and nodsizing size = " + nodeSizingMap.size());
-        String offset = item.getAttribute(AbstractRetriever.OFFSET_ATTRIBUTE);
-        String font = item.getAttribute(AbstractRetriever.FONT_ATTRIBUTE);
+        final String offset = item.getAttribute(AbstractRetriever.OFFSET_ATTRIBUTE);
+        final String font = item.getAttribute(AbstractRetriever.FONT_ATTRIBUTE);
         if(font != null) {
             item.setFont(Font.decode(font));
         }
-        NodeSizing nodeSizing = nodeSizingMap.getNodeSizing(offset);
+        final NodeSizing nodeSizing = nodeSizingMap.getNodeSizing(offset);
             if(nodeSizing != null) {
                 //Font currentFont = item.getFont();
                 //Font currentColor = item.getColor();                
                 item.setFont(nodeSizing.getFont());
                 //item.setColor(nodeSizing.getColor());
-                double extraSize = nodeSizing.getSize();
+                final double extraSize = nodeSizing.getSize();
                 super.getRawShape(item);                    
                 if ( m_imageBox instanceof RoundRectangle2D ) {
                     ((RoundRectangle2D)m_imageBox)
@@ -62,7 +62,7 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
     
     private String sizeAttributeName;
 
-	public void setSizeAttributeName(String sizeAttributeName) {
+	public void setSizeAttributeName(final String sizeAttributeName) {
 		this.sizeAttributeName = sizeAttributeName;
 	}
 	
@@ -71,12 +71,12 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
 		return this.sizeAttributeName;
 	}
 	
-	protected String getText(VisualItem arg0) {
-		String orig = super.getText(arg0);
+	protected String getText(final VisualItem arg0) {
+		final String orig = super.getText(arg0);
 		if (sizeAttributeName == null) {
 			return orig;
 		}
-		String sz = arg0.getAttribute(sizeAttributeName);
+		final String sz = arg0.getAttribute(sizeAttributeName);
 		if (sz == null) {
 			return orig;
 		} else {
@@ -87,6 +87,9 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
 
 /* 
 $Log: TextImageItemSizeRenderer.java,v $
+Revision 1.9  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.8  2008/04/25 08:59:36  nw
 extracted interface from retriever, to ease unit testing.
 

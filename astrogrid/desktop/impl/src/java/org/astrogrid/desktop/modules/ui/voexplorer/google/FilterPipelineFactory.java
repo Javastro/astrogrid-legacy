@@ -51,7 +51,7 @@ import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 
 import com.l2fprod.common.swing.JCollapsiblePane;
 
-/** Factory that builds a pipeline of filters, and the UI components to support them.
+/** Factory that builds a pipeline of resource filters, and the UI components to support them.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 14, 20074:14:06 PM
@@ -161,7 +161,7 @@ public class FilterPipelineFactory   {
 	}
 
 
-	/** a declarative definition of an item that can be placed in a pipeline. */
+	/** a declarative definition of an item that can be placed in the filter pipeline. */
 	public static abstract class PipelineStrategy  {
 		/** the name of this pipeline item */
 		public abstract String getName();
@@ -254,7 +254,7 @@ public class FilterPipelineFactory   {
 		}	
 	}
 
-	/** custom matcher that uses a pipelineStrategy to construct it's matcher, 
+	/** A matcher that uses a pipelineStrategy to construct it's matcher, 
 	 * and allows that pipelineStrategy to be altered. Manages sliding
 	 * the strategy in and out of a jlist too.
 	 * Changing the selection on the JList alters the matcher produced
@@ -343,7 +343,7 @@ public class FilterPipelineFactory   {
 
 
 	
-	/** configures the JEventListPanel */
+	/** Format for the {@link JEventListPanel} */
 	private static class PipelineFormat extends JEventListPanel.AbstractFormat {
 		public PipelineFormat() {
 			super("0dlu, pref,4dlu","0dlu,fill:pref:grow,0dlu","4dlu","4dlu",new String[] {"2,2"}); 
@@ -361,7 +361,7 @@ public class FilterPipelineFactory   {
 	}
 	
 	
-	/** customized version of glazed lists's EventSelectionModel, that changes behaviour 
+	/** An {@link EventSelectionModel}, that alters the behaviour 
 	 * to allow selections to be more easily toggled.
 	 * 
 	 *@todo  it's not quite perfect - strange behaviour with 'shift', but will do for now.

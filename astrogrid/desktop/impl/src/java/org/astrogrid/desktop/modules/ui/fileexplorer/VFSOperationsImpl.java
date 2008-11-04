@@ -12,14 +12,13 @@ import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
 import org.astrogrid.desktop.modules.ui.actions.BulkMoveWorker;
 import org.astrogrid.desktop.modules.ui.actions.CopyCommand;
 
-/** Implementation of operations on files - liable to change.
- * @todo hook this into tasks infrastryctyre, when it comes along - use to 
- * display a dialogue with a progress bar.
+/** Implementation of operations on files
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 30, 20073:24:40 PM
  */
 public class VFSOperationsImpl implements VFSOperations {
 
+    /** interface to something from which the current directory can be accessed */
 	public static interface Current {
 		FileObject get();
 	}
@@ -37,7 +36,7 @@ public class VFSOperationsImpl implements VFSOperations {
 
 	public void copyToCurrent(final List fileObjects) {
 		final FileObject target = current.get(); // take a ref before going into background. 
-		CopyCommand[] commands = new CopyCommand[fileObjects.size()];
+		final CopyCommand[] commands = new CopyCommand[fileObjects.size()];
 		for (int i = 0; i < commands.length; i++) {
 		    commands[i] = new CopyCommand((FileObject)fileObjects.get(i));
 		}

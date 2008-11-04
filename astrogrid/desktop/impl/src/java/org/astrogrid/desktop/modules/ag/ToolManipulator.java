@@ -16,7 +16,7 @@ import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/** methods to create and manipulate tool documents.
+/** Utilities for manipulating CEA Tool documents.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 16, 20083:45:08 PM
  */
@@ -29,7 +29,7 @@ public class ToolManipulator {
     public ToolManipulator() {
     }
 
-    public static ParameterBean findParameter(ParameterBean[] arr,String name) {
+    public static ParameterBean findParameter(final ParameterBean[] arr,final String name) {
     	for (int i =0; i < arr.length; i++) {
     		if (arr[i].getName().equals(name)){
     			return arr[i];
@@ -38,7 +38,7 @@ public class ToolManipulator {
     	return null;
     }
 
-    public static InterfaceBean findInterface(String interfaceName, InterfaceBean[] ifaces) {
+    public static InterfaceBean findInterface(final String interfaceName, final InterfaceBean[] ifaces) {
     	InterfaceBean iface = null;
     	for (int i = 0; i < ifaces.length; i++) {
     	    if (ifaces[i].getName().equals(interfaceName)) {
@@ -48,10 +48,10 @@ public class ToolManipulator {
     	return iface;
     }
 
-    public Tool createTemplateTool(String interfaceName, CeaApplication descr) throws IllegalArgumentException {
+    public Tool createTemplateTool(final String interfaceName, final CeaApplication descr) throws IllegalArgumentException {
         if (interfaceName != null && (! interfaceName.equals("default"))) {
-            InterfaceBean[] ifaces = descr.getInterfaces();
-            InterfaceBean iface = ToolManipulator.findInterface(interfaceName, ifaces);
+            final InterfaceBean[] ifaces = descr.getInterfaces();
+            final InterfaceBean iface = ToolManipulator.findInterface(interfaceName, ifaces);
             if (iface == null) {
                 throw new IllegalArgumentException("Cannot find interface named " + interfaceName );
             }
@@ -61,24 +61,24 @@ public class ToolManipulator {
         }
     }
 
-    private Tool createTool(CeaApplication descr,InterfaceBean iface) {
+    private Tool createTool(final CeaApplication descr,InterfaceBean iface) {
         if (iface == null) {
             iface = descr.getInterfaces()[0];
         }
-        Tool t = new Tool();
+        final Tool t = new Tool();
         t.setInterface(iface.getName());
         t.setName(descr.getId().getAuthority() + descr.getId().getPath()); //@todo should I drop the 'ivo' part.? - yes. for now. until cea accept this
-        Input input = new Input();
-        Output output = new Output();
+        final Input input = new Input();
+        final Output output = new Output();
         t.setInput(input);
         t.setOutput(output);
         
         // populate inputs
         ParameterReferenceBean[] refs = iface.getInputs();
-        ParameterBean[] parameters = descr.getParameters();
+        final ParameterBean[] parameters = descr.getParameters();
         ParameterValue[] arr = new ParameterValue[refs.length];
         for (int i = 0; i < refs.length; i++) {
-            ParameterBean pb =ToolManipulator.findParameter(parameters,refs[i].getRef());
+            final ParameterBean pb =ToolManipulator.findParameter(parameters,refs[i].getRef());
             arr[i] = createParameterValue(pb);         
         }
         input.setParameter(arr);
@@ -87,7 +87,7 @@ public class ToolManipulator {
         refs = iface.getOutputs();
         arr = new ParameterValue[refs.length];
         for (int i = 0; i < refs.length; i++) {
-            ParameterBean pb =ToolManipulator.findParameter(parameters,refs[i].getRef());
+            final ParameterBean pb =ToolManipulator.findParameter(parameters,refs[i].getRef());
             arr[i] = createParameterValue(pb);
             
         }   
@@ -97,8 +97,8 @@ public class ToolManipulator {
         return t;
     }
 
-    private ParameterValue createParameterValue(ParameterBean pb) {
-          ParameterValue pv = new ParameterValue();
+    private ParameterValue createParameterValue(final ParameterBean pb) {
+          final ParameterValue pv = new ParameterValue();
           pv.setName(pb.getName());
           if (pb.getDefaultValue()!= null) {
               pv.setValue(pb.getDefaultValue());
@@ -110,13 +110,13 @@ public class ToolManipulator {
       }
 
     /** returns true if this app has an adql parameter */
-    public static String[] listADQLParameters(String interfaceName,Resource r) {
+    public static String[] listADQLParameters(final String interfaceName,final Resource r) {
     	if (! (r instanceof CeaApplication)) {
     		return new String[0];
     	}
-    	CeaApplication info = (CeaApplication)r;
+    	final CeaApplication info = (CeaApplication)r;
         InterfaceBean ib = null;
-        List results = new ArrayList();
+        final List results = new ArrayList();
         for (int i = 0; i < info.getInterfaces().length; i++) {        
             if (info.getInterfaces()[i].getName().equals(interfaceName)) {
                 ib = info.getInterfaces()[i];
@@ -125,10 +125,10 @@ public class ToolManipulator {
         if (ib == null) {
             return new String[]{};
         }
-        ParameterBean[] arr = info.getParameters();
+        final ParameterBean[] arr = info.getParameters();
         for (int i =0; i < ib.getInputs().length; i++) {
-            ParameterReferenceBean prb = ib.getInputs()[i];
-            ParameterBean pb = findParameter(arr,prb.getRef());
+            final ParameterReferenceBean prb = ib.getInputs()[i];
+            final ParameterBean pb = findParameter(arr,prb.getRef());
             if (pb ==null) {
                 return new String[]{};
             }

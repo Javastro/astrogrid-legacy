@@ -8,7 +8,7 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.TapService;
 
-/** factory for the simplified app launcher.
+/** Factory for the Query Builder.
  * @author Noel Winstanley
  * @since Jun 21, 20067:48:11 PM
  */

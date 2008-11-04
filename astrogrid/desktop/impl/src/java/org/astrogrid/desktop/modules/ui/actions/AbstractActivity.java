@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.ui.actions;
 import java.awt.Component;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -30,33 +29,33 @@ import com.l2fprod.common.swing.JLinkButton;
 import com.l2fprod.common.swing.JTaskPaneGroup;
 
 
-/** base class for tasks that can be perforemed on resources.
+/** Base class for activities.
  * Extends the standard link button, with extra machinery to determine 
  * when it's applicable.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20073:41:59 PM
  */
 public abstract class AbstractActivity extends AbstractAction implements Activity {
-	public AbstractActivity(String name, Icon icon) {
+	public AbstractActivity(final String name, final Icon icon) {
 		super(name, icon);
 		setEnabled(false);
 	}
 
-	public AbstractActivity(String name) {
+	public AbstractActivity(final String name) {
 		super(name);
 		setEnabled(false);
 	}
 
 	protected final UIComponentBodyguard uiParent = new UIComponentBodyguard();
     private String helpID;
-	public final void setUIParent(UIComponent up) {
+	public final void setUIParent(final UIComponent up) {
 		uiParent.set(up);
 	}	
 	public AbstractActivity() {
 		setEnabled(false);
 	}
 	
-	public void setText(String s) {
+	public void setText(final String s) {
 		putValue(Action.NAME,s);
 	}
 	
@@ -64,19 +63,19 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	    return (String)getValue(Action.NAME);
 	}
 	
-	public void setAccelerator(KeyStroke ke) {
+	public void setAccelerator(final KeyStroke ke) {
 	    putValue(Action.ACCELERATOR_KEY,ke);
 	}
 	
-	public void setIcon(Icon i) {
+	public void setIcon(final Icon i) {
 		putValue(Action.SMALL_ICON,i);
 	}
 	
-	public void setToolTipText(String s) {
+	public void setToolTipText(final String s) {
 		putValue(Action.SHORT_DESCRIPTION,s);
 	}
 	/** supply a help id for this activity */
-	public void setHelpID(String id) {
+	public void setHelpID(final String id) {
 	    CSH.setHelpIDString(this,id);
 	    this.helpID = id;
 	}
@@ -87,8 +86,8 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 
 	
 	public JLinkButton createLinkButton() {
-		JLinkButton l =  new JLinkButton(this) {
-			public void setEnabled(boolean b) {
+		final JLinkButton l =  new JLinkButton(this) {
+			public void setEnabled(final boolean b) {
 				super.setEnabled(b);
 				setVisible(b);
 			}			
@@ -98,13 +97,13 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	}
 	
 	public JMenuItem createMenuItem() {
-		JMenuItem m =  new JMenuItem(this);
+		final JMenuItem m =  new JMenuItem(this);
 		return m;
 		
 	}
     public JMenuItem createHidingMenuItem() {
-        JMenuItem m =  new JMenuItem(this) {
-            public void setEnabled(boolean b) {
+        final JMenuItem m =  new JMenuItem(this) {
+            public void setEnabled(final boolean b) {
                 super.setEnabled(b);
                 setVisible(b);
             }
@@ -133,7 +132,7 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	/** process the button click.
 	 * subclass this - default implementaiton just displays 'unimplmeented'
 	 */
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		Component comp = null;
 		if (e.getSource() instanceof Component) {
 			comp = (Component)e.getSource();
@@ -141,30 +140,30 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 		JOptionPane.showMessageDialog(comp,"Unimplemented");
 	}
 
-	public void addTo(JTaskPaneGroup grp) {
+	public void addTo(final JTaskPaneGroup grp) {
 		grp.add(createLinkButton());
 	}
 
-	public void addTo(JTaskPaneGroup grp, int pos) {
+	public void addTo(final JTaskPaneGroup grp, final int pos) {
 		grp.add(createLinkButton(),pos);
 	}
 	
-	public void addTo(JMenu menu) {
+	public void addTo(final JMenu menu) {
 		menu.add(createMenuItem());
 	}
 
-	public void addTo(JPopupMenu menu) {
+	public void addTo(final JPopupMenu menu) {
 		menu.add(createHidingMenuItem());
 	}	
 	
 	// helper methods for subclasses.
 	/** show a confirmation popup, to check before proceeding
 	 */
-	protected void confirm(String message,Runnable continuation) {
+	protected void confirm(final String message,final Runnable continuation) {
 	    ConfirmDialog.newConfirmDialog(uiParent.get().getComponent(),"Confirm",message,continuation).setVisible(true);
 	}
 
-	protected void confirm(String message,final BackgroundWorker continuation) {
+	protected void confirm(final String message,final BackgroundWorker continuation) {
 	    ConfirmDialog.newConfirmDialog(uiParent.get().getComponent(),"Confirm",message,new Runnable() {
 
 	        public void run() {
@@ -179,7 +178,7 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	 * @param message
 	 * @param continuation
 	 */
-	protected void confirmWhenOverThreshold(int sz,String message,Runnable continuation) {
+	protected void confirmWhenOverThreshold(final int sz,final String message,final Runnable continuation) {
 	    if (sz > UIConstants.LARGE_SELECTION_THRESHOLD) {
 	        confirm(message,continuation);
 	    } else {

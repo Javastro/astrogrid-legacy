@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.92 2008/08/06 14:09:58 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.93 2008/11/04 14:35:51 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -122,6 +122,11 @@ import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
+/**
+ * implementation of astroscope.
+ * @author Noel.Winstanley@manchester.ac.uk
+ * @since Nov 3, 20083:25:44 PM
+ */
 public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroScopeInternal, DecSexListener, FocusListener {
 
     /**
@@ -658,7 +663,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	}
 	
 	
-	/** just count the number of services */
+	/** count the number of services */
 	private static class CountServices implements ResourceConsumer {
 
 	    public int length = 0;
@@ -870,7 +875,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
         }
     }
 
-    /** worker that queries registry to produce a list of all services of a particlar type.
+    /** worker that queries registry to produce a list of all services of a particlar capability.
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Nov 28, 20075:30:43 PM
      */
@@ -953,7 +958,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
     } // end of list services registry querier.
 
-    /** implementation of an item in the history menu.
+    /** an item in the history menu.
 	 * 
 	 * each listens to decSexToggle - to change representation from one system to other.
 	 * @author Noel Winstanley
@@ -1076,7 +1081,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	
 // action classes
 
-	/** clear selection action */
+	/** clear the user's selection */
 	protected class ClearSelectionAction extends AbstractAction {
 		public ClearSelectionAction() {
 			super("Clear Selection");//,IconHelper.loadIcon("editclear32.png"));
@@ -1099,7 +1104,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}    	
 	}
 
-	/** halt seartch action */
+	/** halts the current search */
 	protected class HaltAction extends AbstractAction {
 		public HaltAction() {
 			super("Halt Search",IconHelper.loadIcon("stop32.png"));
@@ -1113,7 +1118,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}
 	}
 
-	/** search action - listens to position field and is only enabled when position field is valiud.*/
+	/** perform search action.
+	 *  listens to position field and is only enabled when position field is valiud.*/
 	protected class SearchAction extends AbstractAction implements NameResolvingPositionTextField.ResolutionListener {
 		public SearchAction(final NameResolvingPositionTextField pos) {		    
 			super("Search",IconHelper.loadIcon("search32.png"));
@@ -1159,7 +1165,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			vizualizations.reDrawGraphs();
 		}
 	}
-	
+	    /** go up one level */
 	   protected class UpAction extends AbstractAction {
 	        public UpAction() {
 	            super("Up"); //,IconHelper.loadIcon("top32.png"));
@@ -1173,7 +1179,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	            vizualizations.reDrawGraphs();
 	        }
 	    }
-
+	   /** clear the history list */
 	   protected class ClearHistoryAction extends AbstractAction {
 	       /**
 	        * 

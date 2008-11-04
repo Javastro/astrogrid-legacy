@@ -8,7 +8,7 @@ import java.net.URL;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.modules.util.Selftest;
 
-/** Adds methods necessary for providing sessions
+/** Internal interface to webserver - adds methods necessary for providing sessions
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 21, 20076:10:14 PM
  */

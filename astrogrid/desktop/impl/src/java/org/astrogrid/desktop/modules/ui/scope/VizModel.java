@@ -28,7 +28,7 @@ import edu.berkeley.guir.prefuse.graph.Node;
 import edu.berkeley.guir.prefuse.graph.Tree;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** represents the internal model of the vizualization - a tree of results, plus selections, etc.
+/** The shared model of the vizualization - a tree of results, plus selections.
  * model is shared between all vizualizations.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jan-2006
  *@TEST fileObject stuff
@@ -44,8 +44,8 @@ public  final class VizModel {
     final FileSystemManager vfs;
     private final QueryResultCollector summarizer;
     private final IconFinder iconFinder;
-    public VizModel(AstroScopeLauncherImpl parent,DalProtocolManager protocols, QueryResultCollector summarizer
-    		, FileSystemManager vfs, IconFinder iconFinder) {
+    public VizModel(final AstroScopeLauncherImpl parent,final DalProtocolManager protocols, final QueryResultCollector summarizer
+    		, final FileSystemManager vfs, final IconFinder iconFinder) {
         this.parent = parent;
         this.protocols = protocols;
         this.summarizer = summarizer;        
@@ -55,16 +55,16 @@ public  final class VizModel {
         this.selectionFocusSet = new DefaultFocusSet();       
         rootNode = new ImageTreeNode(IconHelper.loadIcon("scope16.png").getImage());
         rootNode.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE,"Search Results");
-        Font ft = new Font(null,Font.BOLD,14);
+        final Font ft = new Font(null,Font.BOLD,14);
         rootNode.setAttribute(AbstractRetriever.FONT_ATTRIBUTE,ft.toString());
         
         createResultsFilesystem();
                 
-        for (Iterator i = protocols.iterator(); i.hasNext(); ) {
-            DalProtocol p = (DalProtocol)i.next();
+        for (final Iterator i = protocols.iterator(); i.hasNext(); ) {
+            final DalProtocol p = (DalProtocol)i.next();
             p.setVizModel(this);
-            TreeNode primary = p.getPrimaryNode();
-            DefaultEdge primaryEdge = new DefaultEdge(rootNode,primary);
+            final TreeNode primary = p.getPrimaryNode();
+            final DefaultEdge primaryEdge = new DefaultEdge(rootNode,primary);
             primaryEdge.setAttribute(AbstractRetriever.WEIGHT_ATTRIBUTE,"3");
             rootNode.addChild(primaryEdge);            
         }
@@ -83,9 +83,9 @@ public  final class VizModel {
             // This is a reliable (though perhaps not optimally efficient)
             // way to ensure that the new vfs does not pick up results from 
             // old ones.
-            String scheme = "astroscope" + (++vfsSeq);
+            final String scheme = "astroscope" + (++vfsSeq);
             this.resultsFS = vfs.createVirtualFileSystem(scheme+"://").getFileSystem();
-        } catch (FileSystemException x) {
+        } catch (final FileSystemException x) {
             throw new RuntimeException("Not expected to fail",x);
         }
     }
@@ -96,14 +96,14 @@ public  final class VizModel {
         getNodeSizingMap().clear();
         getSelectionFocusSet().clear();
         summarizer.clear();
-        for (Iterator i = protocols.iterator(); i.hasNext(); ) {
-            DalProtocol p = (DalProtocol)i.next();
+        for (final Iterator i = protocols.iterator(); i.hasNext(); ) {
+            final DalProtocol p = (DalProtocol)i.next();
             p.getPrimaryNode().removeAllChildren();
         }         
         //just for sanity go make sure the remaining nodes which are really just
         //siaNode, rootNode, coneNode are set to false for the selected attribute.
-        for (Iterator i = getTree().getNodes(); i.hasNext(); ) {
-            Node n = (Node)i.next();
+        for (final Iterator i = getTree().getNodes(); i.hasNext(); ) {
+            final Node n = (Node)i.next();
             n.setAttribute("selected","false");
         }    
 
@@ -145,12 +145,12 @@ public  final class VizModel {
 	 * @future reimplement so this is a single object, repopulated on each selection change.
 	 */
 	public Transferable getSelectionTransferable() {
-	    List l = new ArrayList();
+	    final List l = new ArrayList();
         // scan through the selection, looking for nodes who  offer a FileObject.
-        for (Iterator i = getSelectionFocusSet().iterator(); i.hasNext();) {
-            TreeNode tn = (TreeNode) i.next();
+        for (final Iterator i = getSelectionFocusSet().iterator(); i.hasNext();) {
+            final TreeNode tn = (TreeNode) i.next();
             if (tn instanceof FileProducingTreeNode) {
-                FileObject fo = ((FileProducingTreeNode)tn).getFileObject();
+                final FileObject fo = ((FileProducingTreeNode)tn).getFileObject();
                 if (fo != null) {
                     l.add(fo);
                 }
@@ -173,7 +173,7 @@ public  final class VizModel {
 	 * @param result the file object that contains the contents of the result.
 	 * @param the tree node to cache the freshly created file object in.
 	 */
-	public synchronized void addResultFor(Retriever abstractRetriever,String name,AstroscopeFileObject result, FileProducingTreeNode node) throws FileSystemException {
+	public synchronized void addResultFor(final Retriever abstractRetriever,final String name,final AstroscopeFileObject result, final FileProducingTreeNode node) throws FileSystemException {
 	        final String retDir = mkFileName(abstractRetriever);
 	        int renameCount = 0;	        
 	        final String prefix = StringUtils.substringBeforeLast(name,".");
@@ -195,7 +195,7 @@ public  final class VizModel {
 	            resultsFS.addJunction(fullName,result);
 	            
 	            // now find the image, based on the filename.
-	             Image image = iconFinder.find(candidate).getImage();
+	             final Image image = iconFinder.find(candidate).getImage();
 	             //tie both together.
                 node.setFileObject(candidate,image);
                 result.setNode(node);
@@ -211,8 +211,8 @@ public  final class VizModel {
 	 * @return
 	 * @throws FileSystemException
 	 */
-	public AstroscopeFileObject createFileObject(URL url,long size,long date,String type) throws FileSystemException {
-	    FileObject core = vfs.resolveFile(url.toString());
+	public AstroscopeFileObject createFileObject(final URL url,final long size,final long date,final String type) throws FileSystemException {
+	    final FileObject core = vfs.resolveFile(url.toString());
 	    return new AstroscopeFileObject(core,size,date,type);
 	}
 	
@@ -221,18 +221,18 @@ public  final class VizModel {
 	 * @return
 	 * @throws FileSystemException 
 	 */
-	public FileObject createResultsDirectory(Retriever abstractRetriever) throws FileSystemException {
-	    String name = mkFileName(abstractRetriever);
-	    FileObject fo= resultsFS.resolveFile(name);	    
+	public FileObject createResultsDirectory(final Retriever abstractRetriever) throws FileSystemException {
+	    final String name = mkFileName(abstractRetriever);
+	    final FileObject fo= resultsFS.resolveFile(name);	    
 	    return fo;
      
 	}
 	
 	/** compute a legal and fairly pretty filename from a service id */
-	private String mkFileName(Retriever r) {
+	private String mkFileName(final Retriever r) {
         String name = r.getService().getId().getSchemeSpecificPart();
         name += "_" + r.getServiceType();
-        String subName = r.getSubName();
+        final String subName = r.getSubName();
         if (subName != null && subName.length()>0) {
             name += "_" + subName;
         }
@@ -253,8 +253,8 @@ public  final class VizModel {
     private static final String REPLACE = StringUtils.repeat("_",FORBIDDEN.length());
     
     /** cponverts all line noise to underscore */ 
-    public static String removeLineNoise(String name) {
-        String munged = StringUtils.replaceChars(name,FORBIDDEN,REPLACE); // convert  / to _, strip : and any other odd symbols
+    public static String removeLineNoise(final String name) {
+        final String munged = StringUtils.replaceChars(name,FORBIDDEN,REPLACE); // convert  / to _, strip : and any other odd symbols
         return URLEncoder.encode(munged);
     }
     

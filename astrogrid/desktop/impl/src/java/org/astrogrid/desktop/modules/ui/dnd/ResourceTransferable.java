@@ -14,7 +14,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 
-/** transferable object that rerpresents a single registry resource
+/** {@code Transferable} for a single registry resource.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20077:47:59 PM
  */
@@ -23,13 +23,13 @@ public class ResourceTransferable implements Transferable {
 	 /**
 	 * 
 	 */
-	public ResourceTransferable(Resource r) {
+	public ResourceTransferable(final Resource r) {
 		this.r = r;
 	}
 	
 	private final Resource r;
 	
-	public Object getTransferData(DataFlavor flavor)
+	public Object getTransferData(final DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException {
 		if (VoDataFlavour.LOCAL_RESOURCE.equals(flavor)
 				|| VoDataFlavour.RESOURCE.equals(flavor)) {
@@ -40,7 +40,7 @@ public class ResourceTransferable implements Transferable {
 			return new ByteArrayInputStream( (r.getId().toString() ).getBytes());
 		} else if (VoDataFlavour.HTML.equals(flavor)) {
 			//@todo add more efficient stream method here later?
-			String s = PrettierResourceFormatter.renderResourceAsHTML(r);
+			final String s = PrettierResourceFormatter.renderResourceAsHTML(r);
 			return new ByteArrayInputStream(s.getBytes());
 		} else {
 			throw new UnsupportedFlavorException(flavor);
@@ -51,7 +51,7 @@ public class ResourceTransferable implements Transferable {
 		return supportedDataFlavors;
 	}
 
-	public boolean isDataFlavorSupported(DataFlavor flavor) {
+	public boolean isDataFlavorSupported(final DataFlavor flavor) {
 		return ArrayUtils.contains(supportedDataFlavors,flavor);
 	}
 	private static final DataFlavor[] supportedDataFlavors = new DataFlavor[] {
@@ -69,7 +69,7 @@ public class ResourceTransferable implements Transferable {
 	
 		 */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("ResourceTransferable[");
 			buffer.append("r = ").append(r);
 			if (supportedDataFlavors == null) {

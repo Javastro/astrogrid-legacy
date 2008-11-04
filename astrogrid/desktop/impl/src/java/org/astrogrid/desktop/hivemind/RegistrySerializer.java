@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.hivemind;
 
 /**
+ *
 copied from hivemind source - unable to improve by extension
 so had to cut-n-paste, and then edit the problem.
 */
@@ -93,7 +94,8 @@ import org.w3c.dom.Text;
 
 
 /**
-
+ * Used within {@code GenerateHivedoc}.
+ * 
  * This class serializes a set of {@link ModuleDescriptor module descriptors} into a
 
  * {@link Document XML document}. The set of module descriptors to process is specified indirectly
@@ -140,15 +142,15 @@ class RegistrySerializer
 
 {
 
-    private Set _processedSchemas = new HashSet();
+    private final Set _processedSchemas = new HashSet();
 
 
 
-    private List _providers = new ArrayList();
+    private final List _providers = new ArrayList();
 
 
 
-    private ErrorHandler _handler;
+    private final ErrorHandler _handler;
 
 
 
@@ -170,7 +172,7 @@ class RegistrySerializer
 
 
 
-    public void addModuleDescriptorProvider(ModuleDescriptorProvider provider)
+    public void addModuleDescriptorProvider(final ModuleDescriptorProvider provider)
 
     {
 
@@ -184,7 +186,7 @@ class RegistrySerializer
 
     {
 
-        DocumentBuilder builder = getBuilder();
+        final DocumentBuilder builder = getBuilder();
 
 
 
@@ -192,7 +194,7 @@ class RegistrySerializer
 
 
 
-        Element registry = _document.createElement("registry");
+        final Element registry = _document.createElement("registry");
 
 
 
@@ -200,11 +202,11 @@ class RegistrySerializer
 
 
 
-        for (Iterator i = _providers.iterator(); i.hasNext();)
+        for (final Iterator i = _providers.iterator(); i.hasNext();)
 
         {
 
-            ModuleDescriptorProvider provider = (ModuleDescriptorProvider) i.next();
+            final ModuleDescriptorProvider provider = (ModuleDescriptorProvider) i.next();
 
 
 
@@ -220,11 +222,11 @@ class RegistrySerializer
 
 
 
-    private void processModuleDescriptorProvider(Element registry, ModuleDescriptorProvider provider)
+    private void processModuleDescriptorProvider(final Element registry, final ModuleDescriptorProvider provider)
 
     {
 
-        for (Iterator j = provider.getModuleDescriptors(_handler).iterator(); j.hasNext();)
+        for (final Iterator j = provider.getModuleDescriptors(_handler).iterator(); j.hasNext();)
 
         {
 
@@ -232,7 +234,7 @@ class RegistrySerializer
 
 
 
-            Element module = getModuleElement(_md);
+            final Element module = getModuleElement(_md);
 
 
 
@@ -244,11 +246,11 @@ class RegistrySerializer
 
 
 
-    private Element getModuleElement(ModuleDescriptor md)
+    private Element getModuleElement(final ModuleDescriptor md)
 
     {
 
-        Element module = _document.createElement("module");
+        final Element module = _document.createElement("module");
 
 
 
@@ -298,11 +300,11 @@ class RegistrySerializer
 
 
 
-    private void addDependencies(Element module)
+    private void addDependencies(final Element module)
 
     {
 
-        List dependencies = _md.getDependencies();
+        final List dependencies = _md.getDependencies();
 
 
 
@@ -310,15 +312,15 @@ class RegistrySerializer
 
         {
 
-            for (Iterator i = dependencies.iterator(); i.hasNext();)
+            for (final Iterator i = dependencies.iterator(); i.hasNext();)
 
             {
 
-                DependencyDescriptor dd = (DependencyDescriptor) i.next();
+                final DependencyDescriptor dd = (DependencyDescriptor) i.next();
 
 
 
-                Element dependency = getDependencyElement(dd);
+                final Element dependency = getDependencyElement(dd);
 
 
 
@@ -332,11 +334,11 @@ class RegistrySerializer
 
 
 
-    private void addServicePoints(Element module)
+    private void addServicePoints(final Element module)
 
     {
 
-        List servicePoints = _md.getServicePoints();
+        final List servicePoints = _md.getServicePoints();
 
 
 
@@ -344,15 +346,15 @@ class RegistrySerializer
 
         {
 
-            for (Iterator i = servicePoints.iterator(); i.hasNext();)
+            for (final Iterator i = servicePoints.iterator(); i.hasNext();)
 
             {
 
-                ServicePointDescriptor spd = (ServicePointDescriptor) i.next();
+                final ServicePointDescriptor spd = (ServicePointDescriptor) i.next();
 
 
 
-                Element servicePoint = getServicePointElement(spd);
+                final Element servicePoint = getServicePointElement(spd);
 
 
 
@@ -360,13 +362,13 @@ class RegistrySerializer
 
 
 
-                SchemaImpl s = (SchemaImpl) spd.getParametersSchema();
+                final SchemaImpl s = spd.getParametersSchema();
 
 
 
-                if (s != null && s.getId() != null)
-
+                if (s != null && s.getId() != null) {
                     addSchema(module, s, "schema");
+                }
 
             }
 
@@ -376,11 +378,11 @@ class RegistrySerializer
 
 
 
-    private void addConfigurationPoints(Element module)
+    private void addConfigurationPoints(final Element module)
 
     {
 
-        List configurationPoints = _md.getConfigurationPoints();
+        final List configurationPoints = _md.getConfigurationPoints();
 
 
 
@@ -388,15 +390,15 @@ class RegistrySerializer
 
         {
 
-            for (Iterator i = configurationPoints.iterator(); i.hasNext();)
+            for (final Iterator i = configurationPoints.iterator(); i.hasNext();)
 
             {
 
-                ConfigurationPointDescriptor cpd = (ConfigurationPointDescriptor) i.next();
+                final ConfigurationPointDescriptor cpd = (ConfigurationPointDescriptor) i.next();
 
 
 
-                Element configurationPoint = getConfigurationPointElement(cpd);
+                final Element configurationPoint = getConfigurationPointElement(cpd);
 
 
 
@@ -404,13 +406,13 @@ class RegistrySerializer
 
 
 
-                SchemaImpl s = (SchemaImpl) cpd.getContributionsSchema();
+                final SchemaImpl s = cpd.getContributionsSchema();
 
 
 
-                if (s != null && s.getId() != null)
-
+                if (s != null && s.getId() != null) {
                     addSchema(module, s, "schema");
+                }
 
             }
 
@@ -420,11 +422,11 @@ class RegistrySerializer
 
 
 
-    private void addContributions(Element module)
+    private void addContributions(final Element module)
 
     {
 
-        List contributions = _md.getContributions();
+        final List contributions = _md.getContributions();
 
 
 
@@ -432,15 +434,15 @@ class RegistrySerializer
 
         {
 
-            for (Iterator i = contributions.iterator(); i.hasNext();)
+            for (final Iterator i = contributions.iterator(); i.hasNext();)
 
             {
 
-                ContributionDescriptor cd = (ContributionDescriptor) i.next();
+                final ContributionDescriptor cd = (ContributionDescriptor) i.next();
 
 
 
-                Element contribution = getContributionElement(cd);
+                final Element contribution = getContributionElement(cd);
 
 
 
@@ -454,11 +456,11 @@ class RegistrySerializer
 
 
 
-    private void addImplementations(Element module)
+    private void addImplementations(final Element module)
 
     {
 
-        List implementations = _md.getImplementations();
+        final List implementations = _md.getImplementations();
 
 
 
@@ -466,15 +468,15 @@ class RegistrySerializer
 
         {
 
-            for (Iterator i = implementations.iterator(); i.hasNext();)
+            for (final Iterator i = implementations.iterator(); i.hasNext();)
 
             {
 
-                ImplementationDescriptor id = (ImplementationDescriptor) i.next();
+                final ImplementationDescriptor id = (ImplementationDescriptor) i.next();
 
 
 
-                Element implementation = getImplementationElement(id);
+                final Element implementation = getImplementationElement(id);
 
 
 
@@ -488,19 +490,19 @@ class RegistrySerializer
 
 
 
-    private void addSchemas(Element module)
+    private void addSchemas(final Element module)
 
     {
 
-        Collection schemas = _md.getSchemas();
+        final Collection schemas = _md.getSchemas();
 
 
 
-        for (Iterator i = schemas.iterator(); i.hasNext();)
+        for (final Iterator i = schemas.iterator(); i.hasNext();)
 
         {
 
-            SchemaImpl s = (SchemaImpl) i.next();
+            final SchemaImpl s = (SchemaImpl) i.next();
 
 
 
@@ -512,11 +514,11 @@ class RegistrySerializer
 
 
 
-    private void addSubModules(Element module)
+    private void addSubModules(final Element module)
 
     {
 
-        List subModules = _md.getSubModules();
+        final List subModules = _md.getSubModules();
 
 
 
@@ -524,15 +526,15 @@ class RegistrySerializer
 
         {
 
-            for (Iterator i = subModules.iterator(); i.hasNext();)
+            for (final Iterator i = subModules.iterator(); i.hasNext();)
 
             {
 
-                SubModuleDescriptor smd = (SubModuleDescriptor) i.next();
+                final SubModuleDescriptor smd = (SubModuleDescriptor) i.next();
 
 
 
-                Element subModule = getSubModuleElement(smd);
+                final Element subModule = getSubModuleElement(smd);
 
 
 
@@ -546,11 +548,11 @@ class RegistrySerializer
 
 
 
-    private Element getDependencyElement(DependencyDescriptor dd)
+    private Element getDependencyElement(final DependencyDescriptor dd)
 
     {
 
-        Element dependency = _document.createElement("dependency");
+        final Element dependency = _document.createElement("dependency");
 
 
 
@@ -566,11 +568,11 @@ class RegistrySerializer
 
 
 
-    private Element getServicePointElement(ServicePointDescriptor spd)
+    private Element getServicePointElement(final ServicePointDescriptor spd)
 
     {
 
-        Element servicePoint = _document.createElement("service-point");
+        final Element servicePoint = _document.createElement("service-point");
 
 
 
@@ -578,15 +580,15 @@ class RegistrySerializer
 
         servicePoint.setAttribute("interface", spd.getInterfaceClassName());
 
-        if (spd.getVisibility() == Visibility.PRIVATE)
-
+        if (spd.getVisibility() == Visibility.PRIVATE) {
             servicePoint.setAttribute("visibility", "private");
+        }
 
-        if (spd.getParametersCount() != Occurances.REQUIRED)
-
+        if (spd.getParametersCount() != Occurances.REQUIRED) {
             servicePoint.setAttribute("parameters-occurs", spd.getParametersCount().getName()
 
                     .toLowerCase());
+        }
 
 
 
@@ -594,17 +596,15 @@ class RegistrySerializer
 
 
 
-        if (spd.getParametersSchema() != null)
-
-            addSchema(servicePoint, (SchemaImpl) spd.getParametersSchema(), "parameters-schema");
-
-        else if (spd.getParametersSchemaId() != null)
-
+        if (spd.getParametersSchema() != null) {
+            addSchema(servicePoint, spd.getParametersSchema(), "parameters-schema");
+        } else if (spd.getParametersSchemaId() != null) {
             servicePoint.setAttribute("parameters-schema-id", qualify(spd.getParametersSchemaId()));
+        }
 
 
 
-        InstanceBuilder ib = spd.getInstanceBuilder();
+        final InstanceBuilder ib = spd.getInstanceBuilder();
 
 
 
@@ -612,7 +612,7 @@ class RegistrySerializer
 
         {
 
-            Element instanceBuilder = getInstanceBuilderElement(ib);
+            final Element instanceBuilder = getInstanceBuilderElement(ib);
 
 
 
@@ -622,7 +622,7 @@ class RegistrySerializer
 
 
 
-        List interceptors = spd.getInterceptors();
+        final List interceptors = spd.getInterceptors();
 
 
 
@@ -630,15 +630,15 @@ class RegistrySerializer
 
         {
 
-            for (Iterator i = interceptors.iterator(); i.hasNext();)
+            for (final Iterator i = interceptors.iterator(); i.hasNext();)
 
             {
 
-                InterceptorDescriptor icd = (InterceptorDescriptor) i.next();
+                final InterceptorDescriptor icd = (InterceptorDescriptor) i.next();
 
 
 
-                Element interceptor = getInterceptorElement(icd);
+                final Element interceptor = getInterceptorElement(icd);
 
 
 
@@ -656,19 +656,19 @@ class RegistrySerializer
 
 
 
-    private Element getConfigurationPointElement(ConfigurationPointDescriptor cpd)
+    private Element getConfigurationPointElement(final ConfigurationPointDescriptor cpd)
 
     {
 
-        Element configurationPoint = _document.createElement("configuration-point");
+        final Element configurationPoint = _document.createElement("configuration-point");
 
 
 
         configurationPoint.setAttribute("id", qualify(cpd.getId()));
 
-        if (cpd.getVisibility() == Visibility.PRIVATE)
-
+        if (cpd.getVisibility() == Visibility.PRIVATE) {
             configurationPoint.setAttribute("visibility", "private");
+        }
 
 
 
@@ -676,13 +676,11 @@ class RegistrySerializer
 
 
 
-        if (cpd.getContributionsSchema() != null)
-
-            addSchema(configurationPoint, (SchemaImpl) cpd.getContributionsSchema(), "schema");
-
-        else if (cpd.getContributionsSchemaId() != null)
-
+        if (cpd.getContributionsSchema() != null) {
+            addSchema(configurationPoint, cpd.getContributionsSchema(), "schema");
+        } else if (cpd.getContributionsSchemaId() != null) {
             configurationPoint.setAttribute("schema-id", qualify(cpd.getContributionsSchemaId()));
+        }
 
 
 
@@ -692,11 +690,11 @@ class RegistrySerializer
 
 
 
-    private Element getContributionElement(ContributionDescriptor cd)
+    private Element getContributionElement(final ContributionDescriptor cd)
 
     {
 
-        Element contribution = _document.createElement("contribution");
+        final Element contribution = _document.createElement("contribution");
 
 
 
@@ -704,13 +702,13 @@ class RegistrySerializer
 
 
 
-        if (cd.getConditionalExpression() != null)
-
+        if (cd.getConditionalExpression() != null) {
             contribution.setAttribute("if", cd.getConditionalExpression());
+        }
 
 
 
-        List parameters = cd.getElements();
+        final List parameters = cd.getElements();
 
 
 
@@ -718,15 +716,15 @@ class RegistrySerializer
 
         {
 
-            for (Iterator i = parameters.iterator(); i.hasNext();)
+            for (final Iterator i = parameters.iterator(); i.hasNext();)
 
             {
 
-                org.apache.hivemind.Element parameter = (org.apache.hivemind.Element) i.next();
+                final org.apache.hivemind.Element parameter = (org.apache.hivemind.Element) i.next();
 
 
 
-                Element element = getParamterElement(parameter);
+                final Element element = getParamterElement(parameter);
 
 
 
@@ -748,11 +746,11 @@ class RegistrySerializer
 
 
 
-    private Element getImplementationElement(ImplementationDescriptor id)
+    private Element getImplementationElement(final ImplementationDescriptor id)
 
     {
 
-        Element implementation = _document.createElement("implementation");
+        final Element implementation = _document.createElement("implementation");
 
 
 
@@ -760,9 +758,9 @@ class RegistrySerializer
 
 
 
-        if (id.getConditionalExpression() != null)
-
+        if (id.getConditionalExpression() != null) {
             implementation.setAttribute("if", id.getConditionalExpression());
+        }
 
 
 
@@ -770,7 +768,7 @@ class RegistrySerializer
 
 
 
-        InstanceBuilder ib = id.getInstanceBuilder();
+        final InstanceBuilder ib = id.getInstanceBuilder();
 
 
 
@@ -778,7 +776,7 @@ class RegistrySerializer
 
         {
 
-            Element instanceBuilder = getInstanceBuilderElement(ib);
+            final Element instanceBuilder = getInstanceBuilderElement(ib);
 
 
 
@@ -788,7 +786,7 @@ class RegistrySerializer
 
 
 
-        List interceptors = id.getInterceptors();
+        final List interceptors = id.getInterceptors();
 
 
 
@@ -796,15 +794,15 @@ class RegistrySerializer
 
         {
 
-            for (Iterator i = interceptors.iterator(); i.hasNext();)
+            for (final Iterator i = interceptors.iterator(); i.hasNext();)
 
             {
 
-                InterceptorDescriptor icd = (InterceptorDescriptor) i.next();
+                final InterceptorDescriptor icd = (InterceptorDescriptor) i.next();
 
 
 
-                Element interceptor = getInterceptorElement(icd);
+                final Element interceptor = getInterceptorElement(icd);
 
 
 
@@ -822,11 +820,11 @@ class RegistrySerializer
 
 
 
-    private Element getSubModuleElement(SubModuleDescriptor smd)
+    private Element getSubModuleElement(final SubModuleDescriptor smd)
 
     {
 
-        Element subModule = _document.createElement("sub-module");
+        final Element subModule = _document.createElement("sub-module");
 
 
 
@@ -840,7 +838,7 @@ class RegistrySerializer
 
 
 
-    private Element getInstanceBuilderElement(InstanceBuilder ib)
+    private Element getInstanceBuilderElement(final InstanceBuilder ib)
 
     {
 
@@ -852,7 +850,7 @@ class RegistrySerializer
 
         {
 
-            CreateInstanceDescriptor cid = (CreateInstanceDescriptor) ib;
+            final CreateInstanceDescriptor cid = (CreateInstanceDescriptor) ib;
 
             instanceBuilder = _document.createElement("create-instance");
 
@@ -860,9 +858,9 @@ class RegistrySerializer
 
             instanceBuilder.setAttribute("class", cid.getInstanceClassName());
 
-            if (!cid.getServiceModel().equals("singleton"))
-
+            if (!cid.getServiceModel().equals("singleton")) {
                 instanceBuilder.setAttribute("model", cid.getServiceModel());
+            }
 
         }
 
@@ -870,23 +868,23 @@ class RegistrySerializer
 
         {
 
-            InvokeFactoryDescriptor ifd = (InvokeFactoryDescriptor) ib;
+            final InvokeFactoryDescriptor ifd = (InvokeFactoryDescriptor) ib;
 
             instanceBuilder = _document.createElement("invoke-factory");
 
 
 
-            if (!ifd.getFactoryServiceId().equals("hivemind.BuilderFactory"))
-
+            if (!ifd.getFactoryServiceId().equals("hivemind.BuilderFactory")) {
                 instanceBuilder.setAttribute("service-id", qualify(ifd.getFactoryServiceId()));
+            }
 
-            if (ifd.getServiceModel() != null)
-
+            if (ifd.getServiceModel() != null) {
                 instanceBuilder.setAttribute("model", ifd.getServiceModel());
+            }
 
 
 
-            List parameters = ifd.getParameters();
+            final List parameters = ifd.getParameters();
 
 
 
@@ -894,15 +892,15 @@ class RegistrySerializer
 
             {
 
-                for (Iterator i = parameters.iterator(); i.hasNext();)
+                for (final Iterator i = parameters.iterator(); i.hasNext();)
 
                 {
 
-                    org.apache.hivemind.Element parameter = (org.apache.hivemind.Element) i.next();
+                    final org.apache.hivemind.Element parameter = (org.apache.hivemind.Element) i.next();
 
 
 
-                    Element element = getParamterElement(parameter);
+                    final Element element = getParamterElement(parameter);
 
 
 
@@ -922,23 +920,23 @@ class RegistrySerializer
 
 
 
-    private Element getInterceptorElement(InterceptorDescriptor icd)
+    private Element getInterceptorElement(final InterceptorDescriptor icd)
 
     {
 
-        Element interceptor = _document.createElement("interceptor");
+        final Element interceptor = _document.createElement("interceptor");
 
 
 
         interceptor.setAttribute("service-id", qualify(icd.getFactoryServiceId()));
 
-        if (icd.getBefore() != null)
-
+        if (icd.getBefore() != null) {
             interceptor.setAttribute("before", icd.getBefore());
+        }
 
-        if (icd.getAfter() != null)
-
+        if (icd.getAfter() != null) {
             interceptor.setAttribute("after", icd.getAfter());
+        }
 
         return interceptor;
 
@@ -946,33 +944,33 @@ class RegistrySerializer
 
 
 
-    private Element getParamterElement(org.apache.hivemind.Element parameter)
+    private Element getParamterElement(final org.apache.hivemind.Element parameter)
     {
-        Element element = _document.createElement(parameter.getElementName());
-        List attributes = parameter.getAttributes();
-        for (Iterator i = attributes.iterator(); i.hasNext();)
+        final Element element = _document.createElement(parameter.getElementName());
+        final List attributes = parameter.getAttributes();
+        for (final Iterator i = attributes.iterator(); i.hasNext();)
         {
-            Attribute attribute = (Attribute) i.next();
+            final Attribute attribute = (Attribute) i.next();
             element.setAttribute(attribute.getName(), attribute.getValue());
         }
 
         //NWW - added code to get text content of elements too
-        String content = parameter.getContent();
+        final String content = parameter.getContent();
         if (content != null && content.trim().length() > 0) {
         	//1.5 only, element.setTextContent(content);
-        	Text t = _document.createTextNode(content);
+        	final Text t = _document.createTextNode(content);
         	element.appendChild(t);
         }
         //NWW end
 
-        List elements = parameter.getElements();
+        final List elements = parameter.getElements();
         
 
-        for (Iterator i = elements.iterator(); i.hasNext();)
+        for (final Iterator i = elements.iterator(); i.hasNext();)
 
         {
 
-            org.apache.hivemind.Element nestedParameter = (org.apache.hivemind.Element) i.next();
+            final org.apache.hivemind.Element nestedParameter = (org.apache.hivemind.Element) i.next();
 
 
 
@@ -988,29 +986,29 @@ class RegistrySerializer
 
 
 
-    private void addSchema(Element container, SchemaImpl s, String elementName)
+    private void addSchema(final Element container, final SchemaImpl s, final String elementName)
 
     {
 
-        if (_processedSchemas.contains(s))
-
+        if (_processedSchemas.contains(s)) {
             return;
+        }
 
 
 
-        Element schema = _document.createElement(elementName);
+        final Element schema = _document.createElement(elementName);
 
 
 
-        if (s.getId() != null)
-
+        if (s.getId() != null) {
             schema.setAttribute("id", qualify(s.getId()));
+        }
 
 
 
-        if (s.getVisibility() == Visibility.PRIVATE)
-
+        if (s.getVisibility() == Visibility.PRIVATE) {
             schema.setAttribute("visibility", "private");
+        }
 
 
 
@@ -1018,15 +1016,15 @@ class RegistrySerializer
 
 
 
-        for (Iterator j = s.getElementModel().iterator(); j.hasNext();)
+        for (final Iterator j = s.getElementModel().iterator(); j.hasNext();)
 
         {
 
-            ElementModel em = (ElementModel) j.next();
+            final ElementModel em = (ElementModel) j.next();
 
 
 
-            Element element = getElementElement(em);
+            final Element element = getElementElement(em);
 
 
 
@@ -1046,19 +1044,19 @@ class RegistrySerializer
 
 
 
-    private Element getRulesElement(ElementModel em)
+    private Element getRulesElement(final ElementModel em)
 
     {
 
-        Element rules = _document.createElement("rules");
+        final Element rules = _document.createElement("rules");
 
 
 
-        for (Iterator i = em.getRules().iterator(); i.hasNext();)
+        for (final Iterator i = em.getRules().iterator(); i.hasNext();)
 
         {
 
-            Rule r = (Rule) i.next();
+            final Rule r = (Rule) i.next();
 
 
 
@@ -1070,7 +1068,7 @@ class RegistrySerializer
 
             {
 
-                CreateObjectRule cor = (CreateObjectRule) r;
+                final CreateObjectRule cor = (CreateObjectRule) r;
 
                 rule = _document.createElement("create-object");
 
@@ -1084,7 +1082,7 @@ class RegistrySerializer
 
             {
 
-                InvokeParentRule ipr = (InvokeParentRule) r;
+                final InvokeParentRule ipr = (InvokeParentRule) r;
 
                 rule = _document.createElement("invoke-parent");
 
@@ -1092,9 +1090,9 @@ class RegistrySerializer
 
                 rule.setAttribute("method", ipr.getMethodName());
 
-                if (ipr.getDepth() != 1)
-
+                if (ipr.getDepth() != 1) {
                     rule.setAttribute("depth", Integer.toString(ipr.getDepth()));
+                }
 
             }
 
@@ -1102,7 +1100,7 @@ class RegistrySerializer
 
             {
 
-                PushAttributeRule par = (PushAttributeRule) r;
+                final PushAttributeRule par = (PushAttributeRule) r;
 
                 rule = _document.createElement("push-attribute");
 
@@ -1124,7 +1122,7 @@ class RegistrySerializer
 
             {
 
-                ReadAttributeRule rar = (ReadAttributeRule) r;
+                final ReadAttributeRule rar = (ReadAttributeRule) r;
 
                 rule = _document.createElement("read-attribute");
 
@@ -1134,13 +1132,13 @@ class RegistrySerializer
 
                 rule.setAttribute("attribute", rar.getAttributeName());
 
-                if (!rar.getSkipIfNull())
-
+                if (!rar.getSkipIfNull()) {
                     rule.setAttribute("skip-if-null", "false");
+                }
 
-                if (rar.getTranslator() != null)
-
+                if (rar.getTranslator() != null) {
                     rule.setAttribute("translator", rar.getTranslator());
+                }
 
             }
 
@@ -1148,7 +1146,7 @@ class RegistrySerializer
 
             {
 
-                ReadContentRule rcr = (ReadContentRule) r;
+                final ReadContentRule rcr = (ReadContentRule) r;
 
                 rule = _document.createElement("read-content");
 
@@ -1162,7 +1160,7 @@ class RegistrySerializer
 
             {
 
-                SetModuleRule smr = (SetModuleRule) r;
+                final SetModuleRule smr = (SetModuleRule) r;
 
                 rule = _document.createElement("set-module");
 
@@ -1176,7 +1174,7 @@ class RegistrySerializer
 
             {
 
-                SetParentRule spr = (SetParentRule) r;
+                final SetParentRule spr = (SetParentRule) r;
 
                 rule = _document.createElement("set-parent");
 
@@ -1190,7 +1188,7 @@ class RegistrySerializer
 
             {
 
-                SetPropertyRule spr = (SetPropertyRule) r;
+                final SetPropertyRule spr = (SetPropertyRule) r;
 
                 rule = _document.createElement("set-property");
 
@@ -1206,7 +1204,7 @@ class RegistrySerializer
 
             {
 
-                ConversionDescriptor cd = (ConversionDescriptor) r;
+                final ConversionDescriptor cd = (ConversionDescriptor) r;
 
                 rule = _document.createElement("conversion");
 
@@ -1214,21 +1212,21 @@ class RegistrySerializer
 
                 rule.setAttribute("class", cd.getClassName());
 
-                if (!cd.getParentMethodName().equals("addElement"))
-
+                if (!cd.getParentMethodName().equals("addElement")) {
                     rule.setAttribute("parent-method", cd.getParentMethodName());
+                }
 
 
 
-                for (Iterator j = cd.getAttributeMappings().iterator(); j.hasNext();)
+                for (final Iterator j = cd.getAttributeMappings().iterator(); j.hasNext();)
 
                 {
 
-                    AttributeMappingDescriptor amd = (AttributeMappingDescriptor) j.next();
+                    final AttributeMappingDescriptor amd = (AttributeMappingDescriptor) j.next();
 
 
 
-                    Element map = _document.createElement("map");
+                    final Element map = _document.createElement("map");
 
 
 
@@ -1258,9 +1256,9 @@ class RegistrySerializer
 
 
 
-            if (rule != null)
-
+            if (rule != null) {
                 rules.appendChild(rule);
+            }
 
         }
 
@@ -1270,11 +1268,11 @@ class RegistrySerializer
 
 
 
-    private Element getElementElement(ElementModel em)
+    private Element getElementElement(final ElementModel em)
 
     {
 
-        Element element = _document.createElement("element");
+        final Element element = _document.createElement("element");
 
         element.setAttribute("name", em.getElementName());
 
@@ -1284,15 +1282,15 @@ class RegistrySerializer
 
 
 
-        for (Iterator i = em.getAttributeModels().iterator(); i.hasNext();)
+        for (final Iterator i = em.getAttributeModels().iterator(); i.hasNext();)
 
         {
 
-            AttributeModel am = (AttributeModel) i.next();
+            final AttributeModel am = (AttributeModel) i.next();
 
 
 
-            Element attribute = getAttributeElement(am);
+            final Element attribute = getAttributeElement(am);
 
 
 
@@ -1302,15 +1300,15 @@ class RegistrySerializer
 
 
 
-        for (Iterator i = em.getElementModel().iterator(); i.hasNext();)
+        for (final Iterator i = em.getElementModel().iterator(); i.hasNext();)
 
         {
 
-            ElementModel nestedEm = (ElementModel) i.next();
+            final ElementModel nestedEm = (ElementModel) i.next();
 
 
 
-            Element nestedElement = getElementElement(nestedEm);
+            final Element nestedElement = getElementElement(nestedEm);
 
 
 
@@ -1324,7 +1322,7 @@ class RegistrySerializer
 
         {
 
-            Element rules = getRulesElement(em);
+            final Element rules = getRulesElement(em);
 
 
 
@@ -1340,27 +1338,27 @@ class RegistrySerializer
 
 
 
-    private Element getAttributeElement(AttributeModel am)
+    private Element getAttributeElement(final AttributeModel am)
 
     {
 
-        Element attribute = _document.createElement("attribute");
+        final Element attribute = _document.createElement("attribute");
 
 
 
         attribute.setAttribute("name", am.getName());
 
-        if (am.isRequired())
-
+        if (am.isRequired()) {
             attribute.setAttribute("required", "true");
+        }
 
-        if (am.isUnique())
-
+        if (am.isUnique()) {
             attribute.setAttribute("unique", "true");
+        }
 
-        if (!am.getTranslator().equals("smart"))
-
+        if (!am.getTranslator().equals("smart")) {
             attribute.setAttribute("translator", am.getTranslator());
+        }
 
 
 
@@ -1374,7 +1372,7 @@ class RegistrySerializer
 
 
 
-    private String qualify(String id)
+    private String qualify(final String id)
 
     {
 
@@ -1388,7 +1386,7 @@ class RegistrySerializer
 
     {
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true); // needs to be namespace aware to work with xslt.
 
 
@@ -1405,7 +1403,7 @@ class RegistrySerializer
 
         }
 
-        catch (ParserConfigurationException e)
+        catch (final ParserConfigurationException e)
 
         {
 
@@ -1421,13 +1419,13 @@ class RegistrySerializer
 
     {
 
-        ClassResolver resolver = new DefaultClassResolver();
+        final ClassResolver resolver = new DefaultClassResolver();
 
-        ModuleDescriptorProvider provider = new XmlModuleDescriptorProvider(resolver);
+        final ModuleDescriptorProvider provider = new XmlModuleDescriptorProvider(resolver);
 
 
 
-        RegistrySerializer serializer = new RegistrySerializer();
+        final RegistrySerializer serializer = new RegistrySerializer();
 
 
 

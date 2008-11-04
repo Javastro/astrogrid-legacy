@@ -21,10 +21,11 @@ import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.auth.MutablePrincipal;
+import org.astrogrid.desktop.modules.auth.SessionManagerImpl;
 import org.astrogrid.desktop.modules.system.WebServerInternal;
 
-/** Session manager that doesn't allow more than a single default session.
- * used in plastic hub variant of ar.
+/** Simple session manager that doesn't allow more than a single default session.
+ * Used as a baseclass for the full {@link SessionManagerImpl}
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 21, 200710:05:40 AM
  */
@@ -33,7 +34,7 @@ public class SingleSessionManager implements SessionManagerInternal {
 	protected static final Log logger = LogFactory
 			.getLog(SessionManagerInternal.class);
 
-	public SingleSessionManager(final SecurityService ss, WebServerInternal ws) {
+	public SingleSessionManager(final SecurityService ss, final WebServerInternal ws) {
 		super();
 		this.ss = ss;
 		this.ws = ws;
@@ -58,7 +59,7 @@ public class SingleSessionManager implements SessionManagerInternal {
 					ss.setCurrentUser(defaultSession);
 				}
 			});
-		} catch(Throwable t) { // too bad.
+		} catch(final Throwable t) { // too bad.
 			logger.warn("Failed to set default session on EDT",t);
 		}
 		}		
@@ -70,7 +71,7 @@ public class SingleSessionManager implements SessionManagerInternal {
 	
 	// create a new unlimited session
 	protected String createNewSession()  {
-		String sid = generateSessionId();
+		final String sid = generateSessionId();
 		sessionMap.put(sid,new MutablePrincipal());
 		return sid;
 	}	
@@ -79,7 +80,7 @@ public class SingleSessionManager implements SessionManagerInternal {
 	protected String generateSessionId() {
 		String sid;
 		do {
-			Random r = new Random();
+			final Random r = new Random();
 			sid =  Long.toString(Math.abs(r.nextLong()),16);
 		} while (sessionMap.containsKey(sid));
 		return sid;
@@ -91,7 +92,7 @@ public class SingleSessionManager implements SessionManagerInternal {
 		// does nothing.
 	}
 
-	public void adoptSession(Principal p) {
+	public void adoptSession(final Principal p) {
 		ss.setCurrentUser(p);
 	}
 	
@@ -107,24 +108,24 @@ public class SingleSessionManager implements SessionManagerInternal {
 		return defaultSessionId;
 	}
 
-	public Principal findSessionForKey(String key) {
+	public Principal findSessionForKey(final String key) {
 		return (Principal)sessionMap.get(key);
 	}
 
-	public String createNewSession(long arg0) throws NotApplicableException,
+	public String createNewSession(final long arg0) throws NotApplicableException,
 			SecurityException {
 		throw new NotApplicableException("Multiple sessions not supported in this AR");
 	}
 
-	public void dispose(String arg0)  {
+	public void dispose(final String arg0)  {
 		// does nothing.
 	}	
 	
-	public boolean exists(String arg0) {
+	public boolean exists(final String arg0) {
 		return sessionMap.containsKey(arg0);
 	}
 
-	public URL findHttpSession(String arg0) throws InvalidArgumentException {
+	public URL findHttpSession(final String arg0) throws InvalidArgumentException {
 		if (! defaultSessionId.equals(arg0)) { // no other sessions.
 			throw new InvalidArgumentException(arg0);
 		}
@@ -132,13 +133,13 @@ public class SingleSessionManager implements SessionManagerInternal {
 	}
 
 
-	public URL findXmlRpcSession(String arg0) throws InvalidArgumentException {
+	public URL findXmlRpcSession(final String arg0) throws InvalidArgumentException {
 		if (! defaultSessionId.equals(arg0)) { // no other sessions.
 			throw new InvalidArgumentException(arg0);
 		}
 		try {
 			return new URL(ws.getRoot(),"xmlrpc");
-		} catch (MalformedURLException x) {
+		} catch (final MalformedURLException x) {
 			// unlikely.
 			throw new InvalidArgumentException(x);
 		}		

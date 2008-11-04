@@ -13,14 +13,14 @@ import org.apache.commons.collections.Predicate;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
-/** abstract class for activities that just operates on registry resources.
+/** abstract class for activities that are only applicable to  registry resources.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 200711:29:18 AM
  */
 public abstract class AbstractResourceActivity extends AbstractActivity implements Predicate {
 
 	protected Resource[] current;
-	public boolean evaluate(Object arg0) {
+	public boolean evaluate(final Object arg0) {
 		if (! (arg0 instanceof Resource)) {
 			return false;
 		}
@@ -31,7 +31,7 @@ public abstract class AbstractResourceActivity extends AbstractActivity implemen
 		current = null;
 	}
 	
-	public final void selected(Transferable r) {
+	public final void selected(final Transferable r) {
 	    if (r == null) {
 	        return; 
 	    }
@@ -47,16 +47,16 @@ public abstract class AbstractResourceActivity extends AbstractActivity implemen
 		} else {
 			noneSelected();
 		}
-		} catch (IOException x) {
+		} catch (final IOException x) {
 			logger.error("UnsupportedFlavorException",x);			
-		} catch (UnsupportedFlavorException x) {
+		} catch (final UnsupportedFlavorException x) {
 			logger.error("UnsupportedFlavorException",x);
 		}
 	}
 	/**
 	 * @param resource
 	 */
-	public void oneSelected(Resource resource) {
+	public void oneSelected(final Resource resource) {
 		if (invokable(resource)) {
 			setEnabled(true);
 			current =new Resource[]{resource};
@@ -68,7 +68,7 @@ public abstract class AbstractResourceActivity extends AbstractActivity implemen
 	/**
 	 * @param list
 	 */
-	public void someSelected(Resource[] list) {
+	public void someSelected(final Resource[] list) {
 		for (int i = 0; i < list.length; i++) {
 			if(evaluate(list[i])) {
 				setEnabled(true);
@@ -81,7 +81,7 @@ public abstract class AbstractResourceActivity extends AbstractActivity implemen
 	}
 	
 	protected List computeInvokable() {
-		List r = new ArrayList();
+		final List r = new ArrayList();
 		for (int i = 0; i < current.length; i++) {
 			if (evaluate(current[i])) {
 				r.add(current[i]);

@@ -1,4 +1,4 @@
-/*$Id: AbstractRmiServerImpl.java,v 1.11 2008/08/04 16:37:23 nw Exp $
+/*$Id: AbstractRmiServerImpl.java,v 1.12 2008/11/04 14:35:49 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.Finder;
 
-/** Abstract class for implementations of the RmiServer
+/** Abstract class for implementations of the RmiServer.
  * implements the scanning bit.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jul-2005
  *
@@ -100,6 +100,9 @@ public abstract class AbstractRmiServerImpl implements RmiServerInternal{
 
 /* 
 $Log: AbstractRmiServerImpl.java,v $
+Revision 1.12  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.11  2008/08/04 16:37:23  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

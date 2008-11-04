@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.10 2008/04/23 10:49:55 nw Exp $
+/*$Id: Main.java,v 1.11 2008/11/04 14:35:52 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,17 +12,17 @@ package org.astrogrid.desktop;
 
 import org.astrogrid.VODesktop;
 
-/** @deprecated use one of the entry points in package <tt>org.astrogrid</tt>
- * instead.
+/** @deprecated use the main entry point {@link VODesktop} instead.
  * 
  * Delegtes to {@link Workbench1}
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 15-Mar-2005
  */
+@Deprecated
 public class Main  {
   
 
    
-    public static final void main(String[] args) {
+    public static final void main(final String[] args) {
     	/*
     	try {
         UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
@@ -41,6 +41,9 @@ public class Main  {
 
 /* 
 $Log: Main.java,v $
+Revision 1.11  2008/11/04 14:35:52  nw
+javadoc polishing
+
 Revision 1.10  2008/04/23 10:49:55  nw
 removed obsolete entrypoints.
 

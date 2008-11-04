@@ -8,7 +8,7 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.io.FileUtils;
 
-/** Check we've got enough memory to operate in.
+/** Self tests for sufficient memory to operate in.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 12, 200812:16:01 PM
  */
@@ -19,7 +19,7 @@ public class MemoryTests extends TestSuite {
     public MemoryTests() {
         addTest(new TestCase("Available Memory") {
             protected void runTest() throws Throwable {
-                long maxMemory = Runtime.getRuntime().maxMemory();
+                final long maxMemory = Runtime.getRuntime().maxMemory();
                 
                 assertTrue("Available memory " + (maxMemory /  FileUtils.ONE_MB) 
                         + "MB is less than minimum recommended " + RECOMMENDED_MB + "MB"

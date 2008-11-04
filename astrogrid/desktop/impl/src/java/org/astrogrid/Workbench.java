@@ -1,4 +1,4 @@
-/*$Id: Workbench.java,v 1.8 2008/04/23 10:49:39 nw Exp $
+/*$Id: Workbench.java,v 1.9 2008/11/04 14:35:53 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,10 @@ package org.astrogrid;
 import org.astrogrid.desktop.SplashWindow;
 
 /** Entry point for launching the workbench.
- * @deprecated just kept for a little backwards compatability.
+ * @deprecated just kept for a little backwards compatability. Delegates to {@link VODesktop1}
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Jul-2005
  */
+@Deprecated
 public class Workbench {
 
     /** Construct a new Workbench
@@ -25,7 +26,7 @@ public class Workbench {
         super();
     }
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
         SplashWindow.splash(Workbench.class.getResource("vodesktop-splash.gif"));
         SplashWindow.invokeMain("org.astrogrid.VODesktop1", args);
@@ -37,6 +38,9 @@ public class Workbench {
 
 /* 
 $Log: Workbench.java,v $
+Revision 1.9  2008/11/04 14:35:53  nw
+javadoc polishing
+
 Revision 1.8  2008/04/23 10:49:39  nw
 removed obsolete entrypoints.
 

@@ -6,12 +6,12 @@ package org.astrogrid.desktop.modules.system.ui;
 import java.awt.datatransfer.Transferable;
 import java.util.Iterator;
 
-import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 
-/** Manages a set of activities - their activation state, etc.
+/** Manages a set of activities.
+ * Adjusts  their activation state, etc.
  * and also provides access to them so that they can be added to menus, etc.
  * 
  * 

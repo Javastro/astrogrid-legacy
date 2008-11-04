@@ -15,7 +15,7 @@ import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.util.DomHelper;
 
-/** static button class that displays coverage in some way.
+/** HTML-Embedded button to display coverage.
  * 
  * @todo implement placeholder for now - work out how to implement later.
  *  * @author Noel.Winstanley@manchester.ac.uk
@@ -32,7 +32,7 @@ public class ShowCoverageButton extends ResourceDisplayPaneEmbeddedButton implem
     }
 
 
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         
         final Resource r = getResourceDisplayPane(e).getCurrentResource();
         if (! (r instanceof HasCoverage)) {
@@ -44,11 +44,11 @@ public class ShowCoverageButton extends ResourceDisplayPaneEmbeddedButton implem
                 ,new Runnable() {
 
                     public void run() {
-                        StcResourceProfile stc = ((HasCoverage)r).getCoverage().getStcResourceProfile();
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        final StcResourceProfile stc = ((HasCoverage)r).getCoverage().getStcResourceProfile();
+                        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
                         DomHelper.PrettyDocumentToStream(stc.getStcDocument(),bos);
                         
-                        ResultDialog dialog = ResultDialog.newResultDialog(ShowCoverageButton.this,"");
+                        final ResultDialog dialog = ResultDialog.newResultDialog(ShowCoverageButton.this,"");
                         dialog.getResultDisplay().setContentType("text/plain");
                         dialog.getResultDisplay().setText(bos.toString());
                         dialog.getResultDisplay().setCaretPosition(0);

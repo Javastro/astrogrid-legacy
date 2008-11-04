@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer.srql;
 
-/** abstract class that captures commonality of an 'and' and an 'or' query.
+/** Abstract class that captures commonality of an 'and' and an 'or' SRQL clause.
  * @author Noel Winstanley
  * @since Aug 10, 20066:03:53 PM
  */
@@ -17,7 +17,7 @@ public abstract class BinaryOperatorSRQL extends SRQL {
 		return this.left;
 	}
 
-	public void setLeft(SRQL left) {
+	public void setLeft(final SRQL left) {
 		this.left = left;
 	}
 
@@ -25,7 +25,7 @@ public abstract class BinaryOperatorSRQL extends SRQL {
 		return this.right;
 	}
 
-	public void setRight(SRQL right) {
+	public void setRight(final SRQL right) {
 		this.right = right;
 	}
 

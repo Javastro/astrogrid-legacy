@@ -1,4 +1,4 @@
-/*$Id: MyspaceInternal.java,v 1.8 2007/08/30 23:46:47 nw Exp $
+/*$Id: MyspaceInternal.java,v 1.9 2008/11/04 14:35:47 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.registry.RegistryException;
 
-/**
+/** Internal interface to additional myspace operations.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Aug-2005
 
  */
@@ -48,6 +48,7 @@ public interface MyspaceInternal extends Myspace {
      * @throws ServiceException
      *  *@deprecated use FileSystemManager (<tt>system.vfs</tt>) instead
      */
+    @Deprecated
     public InputStream getInputStream(URI uri) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
     /** Helper method to open an abitrary uri for writing
      * NB: not a good idea for large files. - use the variant where output file size is specified.
@@ -59,6 +60,7 @@ public interface MyspaceInternal extends Myspace {
      * @throws ServiceException
      *  *@deprecated use FileSystemManager (<tt>system.vfs</tt>) instead
      */
+    @Deprecated
     public OutputStream getOutputStream(URI ui) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
 
     /** Helper method to open an abitrary uri for writing
@@ -70,6 +72,7 @@ public interface MyspaceInternal extends Myspace {
      * @throws ServiceException
      *  *@deprecated use FileSystemManager (<tt>system.vfs</tt>) instead
      */
+    @Deprecated
     public OutputStream getOutputStream(URI ui, long size) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
    
 
@@ -82,6 +85,9 @@ public interface MyspaceInternal extends Myspace {
 
 /* 
 $Log: MyspaceInternal.java,v $
+Revision 1.9  2008/11/04 14:35:47  nw
+javadoc polishing
+
 Revision 1.8  2007/08/30 23:46:47  nw
 Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
 replaced uses of myspace by uses of vfs where sensible

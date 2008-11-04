@@ -1,4 +1,4 @@
-/*$Id: VizualizationController.java,v 1.1 2007/12/12 13:54:12 nw Exp $
+/*$Id: VizualizationController.java,v 1.2 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import edu.berkeley.guir.prefuse.graph.Entity;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 import edu.berkeley.guir.prefuse.render.ImageFactory;
 /**
- * aggregates a set of vizualizations together - enables them to be worked
+ * Aggregates a set of prefuse vizualizations together. - enables them to be worked
  * with as a whole, attached to a single vizualization model.
  * 
  *<p>
@@ -31,7 +31,7 @@ import edu.berkeley.guir.prefuse.render.ImageFactory;
  *
  */
 public class VizualizationController {
-    public VizualizationController(VizModel model) {            
+    public VizualizationController(final VizModel model) {            
         this.model = model;
         imageFactory = new ImageFactory(24,24); // small thumbnails.        
     
@@ -40,7 +40,7 @@ public class VizualizationController {
     private final ArrayList l = new ArrayList();
     private final VizModel model;
     
-    public void add(Vizualization v) {
+    public void add(final Vizualization v) {
         l.add(v);
         model.getTree().addGraphEventListener(v);
     }
@@ -65,12 +65,12 @@ public class VizualizationController {
      *
      */
     public void refocusMainNodes() {
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            Vizualization vis = (Vizualization)i.next();
-            ItemRegistry itemReg = vis.getItemRegistry();
-            FocusSet defaultFocusSet = itemReg.getFocusManager().getDefaultFocusSet();
-            for (Iterator j = model.getProtocols().iterator(); j.hasNext(); ) {
-                DalProtocol p = (DalProtocol)j.next();
+        for (final Iterator i = this.iterator(); i.hasNext(); ) {
+            final Vizualization vis = (Vizualization)i.next();
+            final ItemRegistry itemReg = vis.getItemRegistry();
+            final FocusSet defaultFocusSet = itemReg.getFocusManager().getDefaultFocusSet();
+            for (final Iterator j = model.getProtocols().iterator(); j.hasNext(); ) {
+                final DalProtocol p = (DalProtocol)j.next();
                 defaultFocusSet.set(p.getPrimaryNode());
             }  
             defaultFocusSet.set(model.getTree().getRoot());
@@ -82,22 +82,22 @@ public class VizualizationController {
     force a garbage collection too - will remove any old visual nodes lurking after the real nodes have been removed.
      * @param itemReg
      */
-    private void gc(ItemRegistry itemReg) {
+    private void gc(final ItemRegistry itemReg) {
         itemReg.garbageCollectAggregates();
         itemReg.garbageCollectEdges();
         itemReg.garbageCollectNodes();
     }
     
     public void moveUp() {
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            Vizualization v = (Vizualization)i.next();
-            ItemRegistry itemReg = v.getItemRegistry();
-            FocusSet focusSet = itemReg.getFocusManager().getDefaultFocusSet();
-            Iterator j = focusSet.iterator();
+        for (final Iterator i = this.iterator(); i.hasNext(); ) {
+            final Vizualization v = (Vizualization)i.next();
+            final ItemRegistry itemReg = v.getItemRegistry();
+            final FocusSet focusSet = itemReg.getFocusManager().getDefaultFocusSet();
+            final Iterator j = focusSet.iterator();
             if (j.hasNext()) {
-                Entity e = (Entity)j.next();
+                final Entity e = (Entity)j.next();
                 if (e instanceof TreeNode) {
-                    TreeNode parent = ((TreeNode)e).getParent();
+                    final TreeNode parent = ((TreeNode)e).getParent();
                     if (parent != null) {
                         focusSet.set(parent);
                     }
@@ -116,8 +116,8 @@ public class VizualizationController {
      *
      */
     public void reDrawGraphs() {
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            Vizualization vis = (Vizualization)i.next();
+        for (final Iterator i = this.iterator(); i.hasNext(); ) {
+            final Vizualization vis = (Vizualization)i.next();
             vis.reDraw();
         }
     }        
@@ -125,6 +125,9 @@ public class VizualizationController {
 
 /* 
 $Log: VizualizationController.java,v $
+Revision 1.2  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.1  2007/12/12 13:54:12  nw
 astroscope upgrade, and minor changes for first beta release
 

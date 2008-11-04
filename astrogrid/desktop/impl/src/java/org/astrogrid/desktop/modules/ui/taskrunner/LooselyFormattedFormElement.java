@@ -20,8 +20,7 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.CSH;
 
-/** abstract class for elements which probably impose some
- * formatting requirements on their input.
+/** Abstract form element for parameters which have some formatting constrains.
  * Note that this is only a hint, not a validation - as the 
  * resource descriptions are so poor that we can't reject invalid input 
  * confidently.
@@ -33,7 +32,7 @@ public class LooselyFormattedFormElement extends AbstractTaskFormElement impleme
 	/** used to control the correct format of the input */
 	private final Format format;
 	
-	public LooselyFormattedFormElement(ParameterValue pval, ParameterBean pdesc,Format format,ResourceChooserInternal chooser) {
+	public LooselyFormattedFormElement(final ParameterValue pval, final ParameterBean pdesc,final Format format,final ResourceChooserInternal chooser) {
 		super(pval, pdesc,chooser);
 		this.format = format;
 		disableIndirect(); // never allow indirectionn for these primitive types.
@@ -63,12 +62,12 @@ public class LooselyFormattedFormElement extends AbstractTaskFormElement impleme
 	protected Border warn;
 	
 	// listen to all changes to the dociment, and map this instantly back to the tool document.
-	public void changedUpdate(DocumentEvent e) {
+	public void changedUpdate(final DocumentEvent e) {
 		update();
 	}
 
 	private void update() {
-		String s= getStringValue();
+		final String s= getStringValue();
 		pval.setValue(s);
 		if (format.parseObject(s,new ParsePosition(0)) != null) {
 			text.setBorder(original);
@@ -77,11 +76,11 @@ public class LooselyFormattedFormElement extends AbstractTaskFormElement impleme
 		}
 	}
 
-	public void insertUpdate(DocumentEvent e) {
+	public void insertUpdate(final DocumentEvent e) {
 		update();
 	}
 
-	public void removeUpdate(DocumentEvent e) {
+	public void removeUpdate(final DocumentEvent e) {
 		update();
 	}
 

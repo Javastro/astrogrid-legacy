@@ -18,8 +18,8 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.RangeList;
 import ca.odell.glazedlists.UniqueList;
 
-/** Provides a persistent model (for multiple views) of the astroscope
- * search history.
+/** Provides a persistent model of the astroscope
+ * search history. Can be shared between multiple views.
  * History only remembers position - not protocols, or the results.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 2, 20072:07:44 PM
@@ -31,7 +31,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
 	public static final int HISTORY_SIZE = 30;
 
 	
-	public ScopeHistoryProvider(final UIContext parent,Preference workDir, XmlPersist xml) {
+	public ScopeHistoryProvider(final UIContext parent,final Preference workDir, final XmlPersist xml) {
 		
 		super(parent,new File(new File(workDir.getValue()),"scopeHistory.xml"),xml);
 	}
@@ -42,7 +42,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
 		// continuouysly grows - even though it's not seen or required.
 		// probably not an issue though, given the number of searches performed in 
 		// an average session..
-	    RangeList historyList = new RangeList(new UniqueList(	new BasicEventList()));			
+	    final RangeList historyList = new RangeList(new UniqueList(	new BasicEventList()));			
 	    historyList.setHeadRange(0,HISTORY_SIZE);
 	    return historyList;
 	}
@@ -61,7 +61,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
 		private Date endTime;
 
 		public int compareTo(final Object o) {
-            PositionHistoryItem other = (PositionHistoryItem) o;
+            final PositionHistoryItem other = (PositionHistoryItem) o;
             if (position != null) {
                 if (other.position == null) {
                     return 1;
@@ -95,7 +95,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
                 if (other.startTime == null) {
                     return 1;
                 }
-                int i = startTime.compareTo(other.startTime);
+                final int i = startTime.compareTo(other.startTime);
                 if (i != 0) {
                     return i;
                 }
@@ -107,7 +107,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
                 if (other.endTime == null) {
                     return 1;
                 }
-                int i = endTime.compareTo(other.endTime);
+                final int i = endTime.compareTo(other.endTime);
                 if (i != 0) {
                     return i;
                 }
@@ -120,34 +120,45 @@ public class ScopeHistoryProvider extends AbstractListProvider{
             
            
 
-        public boolean equals(Object obj) {
-            if (this == obj)
+        public boolean equals(final Object obj) {
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             final PositionHistoryItem other = (PositionHistoryItem) obj;
             if (this.endTime == null) {
-                if (other.endTime != null)
+                if (other.endTime != null) {
                     return false;
-            } else if (!this.endTime.equals(other.endTime))
+                }
+            } else if (!this.endTime.equals(other.endTime)) {
                 return false;
+            }
             if (this.position == null) {
-                if (other.position != null)
+                if (other.position != null) {
                     return false;
-            } else if (!this.position.equals(other.position))
+                }
+            } else if (!this.position.equals(other.position)) {
                 return false;
+            }
             if (this.radius == null) {
-                if (other.radius != null)
+                if (other.radius != null) {
                     return false;
-            } else if (!this.radius.equals(other.radius))
+                }
+            } else if (!this.radius.equals(other.radius)) {
                 return false;
+            }
             if (this.startTime == null) {
-                if (other.startTime != null)
+                if (other.startTime != null) {
                     return false;
-            } else if (!this.startTime.equals(other.startTime))
+                }
+            } else if (!this.startTime.equals(other.startTime)) {
                 return false;
+            }
             return true;
         }
 
@@ -170,7 +181,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
 			return this.radius;
 		}
 
-		public void setRadius(DoubleDimension radius) {
+		public void setRadius(final DoubleDimension radius) {
 			this.radius = radius;
 		}
 
@@ -178,7 +189,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
 			return this.position;
 		}
 
-		public void setPosition(SesamePositionBean position) {
+		public void setPosition(final SesamePositionBean position) {
 			this.position = position;
 		}
 		
@@ -186,7 +197,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
             return this.startTime;
         }
 
-        public final void setStartTime(Date startTime) {
+        public final void setStartTime(final Date startTime) {
             this.startTime = startTime;
         }
 
@@ -194,7 +205,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
             return this.endTime;
         }
 
-        public final void setEndTime(Date endTime) {
+        public final void setEndTime(final Date endTime) {
             this.endTime = endTime;
         }
 		

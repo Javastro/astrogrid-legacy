@@ -2,7 +2,6 @@ package org.astrogrid.desktop.alternatives;
 
 import java.awt.Component;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
@@ -11,7 +10,7 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 /**
- * Implementation of UI suitable for use in headless environments.
+ * Dummy Implementation of UI suitable for use in headless environments.
  * @author noel
  * @since Apr 10, 20063:51:06 PM
  */
@@ -19,7 +18,7 @@ public class HeadlessUIComponent implements UIComponent {
 	/**
 	 * Logger for this class
 	 */
-	private  Log logger;
+	private final  Log logger;
 	private final UIContext context;
 	public HeadlessUIComponent(final String category, final UIContext  context) {
 		super();
@@ -30,7 +29,7 @@ public class HeadlessUIComponent implements UIComponent {
 		private int max = 0;
 		private int progress = 0;
 		
-		public void addBackgroundWorker(BackgroundWorker w) {
+		public void addBackgroundWorker(final BackgroundWorker w) {
 			// does nothing.
 		}
 
@@ -46,27 +45,27 @@ public class HeadlessUIComponent implements UIComponent {
 			return progress;
 		}
 
-		public void removeBackgroundWorker(BackgroundWorker w) {
+		public void removeBackgroundWorker(final BackgroundWorker w) {
 			//does nothing.
 		}
 
-		public void setBusy(boolean b) {
+		public void setBusy(final boolean b) {
 		    //does nothing
 		}
 
-		public void setProgressMax(int i) {
+		public void setProgressMax(final int i) {
 			max = i;
 		}
 
-		public void setProgressValue(int i) {
+		public void setProgressValue(final int i) {
 			progress = i;
 		}
 
-		public void setStatusMessage(String s) {
+		public void setStatusMessage(final String s) {
 			logger.info(s);
 		}
 
-		public void showError(String msg, Throwable e) {
+		public void showError(final String msg, final Throwable e) {
 			logger.error(msg,e);
 		
 		}
@@ -83,23 +82,23 @@ public class HeadlessUIComponent implements UIComponent {
 			return null;
 		}
 
-		public void setVisible(boolean b) {
+		public void setVisible(final boolean b) {
 		    //does nothing
 		}
 
-        public void showError(String msg) {
+        public void showError(final String msg) {
             // does nothing
         }
 
-        public void showTransientError(String title, String message) {
+        public void showTransientError(final String title, final String message) {
             // does nothing
         }
 
-        public void showTransientMessage(String title, String message) {
+        public void showTransientMessage(final String title, final String message) {
             // does nothing
         }
 
-        public void showTransientWarning(String title, String message) {
+        public void showTransientWarning(final String title, final String message) {
             // does nothing
         }
 

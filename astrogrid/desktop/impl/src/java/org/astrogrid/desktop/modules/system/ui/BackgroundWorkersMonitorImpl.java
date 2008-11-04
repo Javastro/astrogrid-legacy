@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.system.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +14,6 @@ import java.beans.PropertyChangeListener;
 import java.util.EventListener;
 import java.util.Iterator;
 
-import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -38,24 +36,22 @@ import org.astrogrid.desktop.modules.ui.comp.AbstractCloseAction;
 import org.astrogrid.desktop.modules.ui.comp.IndeterminateProgressIndicator;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
 import ca.odell.glazedlists.CompositeList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.ObservableElementList;
-import ca.odell.glazedlists.TransformedList;
-import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
 import ca.odell.glazedlists.swing.JEventListPanel;
 
-/** implementatio of the process monitor.
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+/** Implementation of {@code BackgroundWorkersMonitor}.
  * unlike everything else, this is _not_ a UIComponent.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 23, 20072:37:30 PM
@@ -64,14 +60,14 @@ import ca.odell.glazedlists.swing.JEventListPanel;
 public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWorkersMonitor{
 
     
-    private JComboBox subsetCombo;
+    private JComboBox subsetCombo = null;
 
     public void showAll() {
         subsetCombo.setSelectedIndex(0);
         show();
     }
 
-    public void showProcessesFor(UIComponent window) {
+    public void showProcessesFor(final UIComponent window) {
         subsetCombo.setSelectedItem(window);
         show();
     }
@@ -87,20 +83,20 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
     public BackgroundWorkersMonitorImpl(final UIContext context)
     throws HeadlessException {
         super();
-        JPanel panel = new JPanel(new BorderLayout());
+        final JPanel panel = new JPanel(new BorderLayout());
         // top panel of the ui.
-        FormLayout fl = new FormLayout("2dlu,fill:p:grow,5dlu,p,2dlu","2dlu,p,2dlu,p");
-        CellConstraints cc = new CellConstraints();
-        PanelBuilder pb = new PanelBuilder(fl);
+        final FormLayout fl = new FormLayout("2dlu,fill:p:grow,5dlu,p,2dlu","2dlu,p,2dlu,p");
+        final CellConstraints cc = new CellConstraints();
+        final PanelBuilder pb = new PanelBuilder(fl);
         pb.addLabel("Show processes belonging to:",cc.xy(2,2));
                 
         // contents of combo box to select which subset of processes to view        
         // create a self-updating list that detects when the title property changes.
-        ObservableElementList observableWindows = new ObservableElementList(
+        final ObservableElementList observableWindows = new ObservableElementList(
                 context.getWindowList(), new UIComponentTitleConnector());
         // now prefix this list with two other operations.
-        CompositeList comboList = new CompositeList(observableWindows.getPublisher(),observableWindows.getReadWriteLock());
-        EventList statics = comboList.createMemberList();
+        final CompositeList comboList = new CompositeList(observableWindows.getPublisher(),observableWindows.getReadWriteLock());
+        final EventList statics = comboList.createMemberList();
         statics.add("Everything");
         statics.add("System");
         comboList.addMemberList(statics);
@@ -110,9 +106,9 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
         subsetCombo = new JComboBox(new EventComboBoxModel(comboList));
         subsetCombo.setEditable(false);
         subsetCombo.setRenderer(new DefaultListCellRenderer() {
-            public Component getListCellRendererComponent(JList list,
-                    Object value, int index, boolean isSelected,
-                    boolean cellHasFocus) {
+            public Component getListCellRendererComponent(final JList list,
+                    final Object value, final int index, final boolean isSelected,
+                    final boolean cellHasFocus) {
                 String title;
                 if (value instanceof String) {
                     title = (String)value;
@@ -129,15 +125,15 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
         
 // start of the eventlist pipeline
         // convert each task into a ui component.
-        FunctionList taskPanels = new FunctionList(context.getTasksList(),new FunctionList.AdvancedFunction() {
-            public void dispose(Object src, Object trans) {
+        final FunctionList taskPanels = new FunctionList(context.getTasksList(),new FunctionList.AdvancedFunction() {
+            public void dispose(final Object src, final Object trans) {
                 ((BackgroundWorkerCell)trans).cleanup();
             }
-            public Object evaluate(Object arg0) {
-                BackgroundWorker w = (BackgroundWorker)arg0;
+            public Object evaluate(final Object arg0) {
+                final BackgroundWorker w = (BackgroundWorker)arg0;
                 return new BackgroundWorkerCell(w);
             }
-            public Object reevaluate(Object src, Object trans) {
+            public Object reevaluate(final Object src, final Object trans) {
                 // background worker has updated - so reload.
                 // hopefully this doesn't cause flicker..
                 // if it does, just need to register each individual panel as an observer
@@ -150,11 +146,11 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
 
    // filter after mapping - to save needless re-creation of ui objects.
         // filter by listening to selection in combo box- and generate a matcher for that ui component.
-        MatcherEditor matcherEditor = new AbstractMatcherEditor() {
+        final MatcherEditor matcherEditor = new AbstractMatcherEditor() {
             {// initializer                
                 subsetCombo.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        int ix = subsetCombo.getSelectedIndex();
+                    public void actionPerformed(final ActionEvent e) {
+                        final int ix = subsetCombo.getSelectedIndex();
                         switch(ix) {
                             case 0:
                                 fireMatchAll();
@@ -165,7 +161,7 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
                             default:
                                 final UIComponent comp = (UIComponent)subsetCombo.getItemAt(ix);
                                 fireChanged(new Matcher() {
-                                    public boolean matches(Object arg0) {
+                                    public boolean matches(final Object arg0) {
                                         final BackgroundWorker worker = ((BackgroundWorkerCell)arg0).getWorker();
                                         return worker.getParent() == comp && ! worker.getInfo().isSystem();
                                     }                                    
@@ -175,7 +171,7 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
                 });
             }
             Matcher systemMatcher = new Matcher() {
-                public boolean matches(Object arg0) {
+                public boolean matches(final Object arg0) {
                     return ((BackgroundWorkerCell)arg0).getWorker().getInfo().isSystem();
                 }
             };                
@@ -183,13 +179,13 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
                           
         final FilterList filteredTasks = new FilterList(taskPanels, matcherEditor);
 
-        JButton haltAll = new JButton("Halt All");
+        final JButton haltAll = new JButton("Halt All");
         haltAll.setToolTipText("Halt all currently listed processes");
         haltAll.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                for (Iterator i = filteredTasks.iterator(); i.hasNext(); ) {
-                    BackgroundWorkerCell cell = (BackgroundWorkerCell)i.next();
+            public void actionPerformed(final ActionEvent e) {
+                for (final Iterator i = filteredTasks.iterator(); i.hasNext(); ) {
+                    final BackgroundWorkerCell cell = (BackgroundWorkerCell)i.next();
                     cell.getWorker().interrupt();
                 }
             }
@@ -198,7 +194,7 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
         panel.add(pb.getPanel(),BorderLayout.NORTH);
         
         // display the list of ui components.
-        JEventListPanel taskDisplay = new JEventListPanel(filteredTasks,new MonitorFormat());
+        final JEventListPanel taskDisplay = new JEventListPanel(filteredTasks,new MonitorFormat());
         taskDisplay.setElementColumns(1);
         taskDisplay.setBorder(null);
         panel.add(new JScrollPane(taskDisplay,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
@@ -207,11 +203,11 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
         getContentPane().add(panel);
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         setSize(400,300);
-        JMenuBar mb = new JMenuBar();
-        JMenu file = new JMenu("File");
+        final JMenuBar mb = new JMenuBar();
+        final JMenu file = new JMenu("File");
         file.setMnemonic(KeyEvent.VK_F);
         file.add(new AbstractCloseAction() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 hide();
             }
         });
@@ -221,7 +217,7 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
         
         mb.add(context.createWindowMenu());
         
-        JMenu help = new JMenu("Help");
+        final JMenu help = new JMenu("Help");
         help.setMnemonic(KeyEvent.VK_H);
         help.add(UIComponentMenuBar.createApplicationHelpMenuItem(context,title,helpId));
         help.add(UIComponentMenuBar.createHelpContentsMenuItem(context));
@@ -246,8 +242,8 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
                     );        
         }
         
-        public JComponent getComponent(Object arg0, int arg1) {
-            BackgroundWorkerCell cell = (BackgroundWorkerCell)arg0;
+        public JComponent getComponent(final Object arg0, final int arg1) {
+            final BackgroundWorkerCell cell = (BackgroundWorkerCell)arg0;
             switch(arg1) {
                 case 0:
                     return cell.getWorkerTitle();
@@ -274,22 +270,22 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
 
         private ObservableElementList list;
 
-        public EventListener installListener(Object arg0) {
+        public EventListener installListener(final Object arg0) {
             ((UIComponent)arg0).getComponent().addPropertyChangeListener("title",this);
             return this;
         }
 
-        public void setObservableElementList(ObservableElementList list) {
+        public void setObservableElementList(final ObservableElementList list) {
             this.list = list;
         }
 
-        public void uninstallListener(Object arg0, EventListener arg1) {
+        public void uninstallListener(final Object arg0, final EventListener arg1) {
             if (arg1 == this) {
                 ((UIComponent)arg0).getComponent().removePropertyChangeListener("title",this);
             }
         }
 
-        public void propertyChange(PropertyChangeEvent evt) {
+        public void propertyChange(final PropertyChangeEvent evt) {
             list.elementChanged(evt.getSource()); // relies on UIComponent.getComponent() returning self.
         }
     }
@@ -305,7 +301,7 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
         
         private static final String HALT = "halt";
         private static final String SINGLE = "single";
-        public BackgroundWorkerCell(BackgroundWorker worker) {
+        public BackgroundWorkerCell(final BackgroundWorker worker) {
             this.worker = worker;
             this.status = new IndeterminateProgressIndicator();
             this.status.setDisplayedWhenStopped(true);
@@ -334,7 +330,7 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
         /** called when background worker has updated */
         public void reload() {
             final Info info = worker.getInfo();
-            int sz = info.getProgressMessages().size();
+            final int sz = info.getProgressMessages().size();
             if (sz > 0) {
                 message.setText((String)info.getProgressMessages().get(sz-1));
             }
@@ -370,7 +366,7 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
             return this.message;
         }
 
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             if (HALT.equals(e.getActionCommand())) {
                 worker.reportProgress("Halting..");                
                 worker.interrupt();

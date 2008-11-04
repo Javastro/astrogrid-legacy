@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.17 2008/10/24 12:33:07 nw Exp $
+/*$Id: CeaHelper.java,v 1.18 2008/11/04 14:35:47 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,9 +27,9 @@ import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.security.SecurityGuard;
 
-/** helper object for working with cea services.
+/** Helper object for working with cea services.
  *<p>
- *it's purpose has evaporated. could roll into ceastrategryimpl instead now.
+ *{@stickyNote it's purpose has evaporated. could roll into ceastrategryimpl instead now.}
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 20-Oct-2005
  */
 public class CeaHelper {

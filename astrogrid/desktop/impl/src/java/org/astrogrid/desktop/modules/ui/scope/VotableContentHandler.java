@@ -20,7 +20,7 @@ import uk.ac.starlink.votable.TableHandler;
  */
 public class VotableContentHandler extends TableContentHandler {
     
-    /** extended handler interface that provides access to some of the votable wrapper elements too */
+    /** extended handler interface that provides access to some of the votable wrapper elements. */
     public static interface VotableHandler extends TableHandler {
         /** called when an INFO element is encountered anywhere outside a RESOURCE
          * modified - also called when encountered inside a resource too - as there seems to 

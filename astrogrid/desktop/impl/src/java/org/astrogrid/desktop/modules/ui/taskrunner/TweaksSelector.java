@@ -8,8 +8,8 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.desktop.modules.system.ProgrammerError;
 
-/** determines what kind of service we're building a tool for,
- * and returns some protocol specific jobbies which are then 
+/** Locates UI tweaks specific to the kind of service we're currently building an invocation for.
+
  * used to customize the appearance and behaviour of the taskrunner
  * 
  * @author Noel.Winstanley@manchester.ac.uk

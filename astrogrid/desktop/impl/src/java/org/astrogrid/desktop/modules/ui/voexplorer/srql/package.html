@@ -1,14 +1,15 @@
 <html>
 <body>
-<h1>SRQL - Simple Registry Query Language</h1>
-The package defines a simple reigstry query language. Syntax is 
+<h1>Simple Registry Query Language</h1>
+The package implements SRQL - a simple registry query language. Syntax is 
 quite free-form and inspired by google query language.
 
-There's a parser (SRQLParser) that returns parsed phrases of the SRQL language - which 
-will be a subtype of the SRQL base class.
+There's a parser {@link org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser} that returns parsed phrases of the SRQL language - which 
+will be a subtype of the {@link org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL} base class.
 
 The SRQL terms implement the visitor pattern, to allow XQueries, and other things, to 
-be generated from them.
+be generated from them. See {@link org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLVisitor} and 
+{@link org.astrogrid.desktop.modules.ui.voexplorer.srql.Builder}
 
 </body>
 </html>

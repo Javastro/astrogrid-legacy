@@ -37,7 +37,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 
-/** Implementation of the sesame interface using the simple http-request interface.
+/** HTTP-Request client for Sesame.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 15, 20082:04:05 PM
  */
@@ -54,7 +54,7 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
 
     protected final XMLInputFactory inputFactory;
     private static final URI DEFAULT_ENDPOINT = URI.create("http://vizier.u-strasbg.fr/viz-bin/nph-sesame/");
-    public SesameRestImpl(HttpClient http,Ehcache cache, Preference endpoint) {
+    public SesameRestImpl(final HttpClient http,final Ehcache cache, final Preference endpoint) {
         super();
         this.cache = cache;
         inputFactory = XMLInputFactory.newInstance(); 
@@ -65,13 +65,13 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
         base = DEFAULT_ENDPOINT.toString();
     }
 
-    public SesamePositionBean resolve(String objectName) throws ServiceException,
+    public SesamePositionBean resolve(final String objectName) throws ServiceException,
             NotFoundException {
-        Element element = cache.get(objectName);
+        final Element element = cache.get(objectName);
         if (element != null && element.getValue() != null) {
             return (SesamePositionBean)element.getValue();
         } else {
-            SesamePositionBean b = primResolve(objectName);
+            final SesamePositionBean b = primResolve(objectName);
             if (b != null) { // unlikely to be null, but still.
                 cache.put(new Element(objectName,b));
             }
@@ -79,40 +79,40 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
         }
     }
 
-    public String sesame(String objectName, String resultType) throws ServiceException {
+    public String sesame(final String objectName, final String resultType) throws ServiceException {
         return sesameChooseService(objectName,resultType,false,"SNV");
     }
 
-    public String sesameChooseService(String objectName, String resultType
-            , boolean allIdentifiers, String service) throws ServiceException {
+    public String sesameChooseService(final String objectName, final String resultType
+            , final boolean allIdentifiers, final String service) throws ServiceException {
             final HttpMethod meth = buildGetMethod(objectName, resultType,
                     allIdentifiers, service);
             try {            
-            int status = http.executeMethod(meth);
+            final int status = http.executeMethod(meth);
             if (status != HttpStatus.SC_OK) {
                 throw new ServiceException("Failed to query sesame: returned HTTP Error " + status);
             }
             return meth.getResponseBodyAsString();
-        } catch (HttpException x) {
+        } catch (final HttpException x) {
             throw new ServiceException("Failed to query sesame",x);
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new ServiceException("Failed to query sesame",x);
         } finally {
             meth.releaseConnection();
         }
     }
-    private SesamePositionBean primResolve(String objectName) throws ServiceException, NotFoundException {
+    private SesamePositionBean primResolve(final String objectName) throws ServiceException, NotFoundException {
         final HttpMethod meth = buildGetMethod(objectName, "x",
                 true, "SNV");
         try {            
-        int status = http.executeMethod(meth);
+        final int status = http.executeMethod(meth);
         if (status != HttpStatus.SC_OK) {
             throw new ServiceException("Failed to query sesame: returned HTTP Error " + status);
         }
         return parseResponse(meth.getResponseBodyAsStream());
-    } catch (HttpException x) {
+    } catch (final HttpException x) {
         throw new ServiceException("Failed to query sesame",x);
-    } catch (IOException x) {
+    } catch (final IOException x) {
         throw new ServiceException("Failed to query sesame",x);
     } finally {
         meth.releaseConnection();
@@ -124,20 +124,20 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
      * @throws ServiceException 
      * @throws NotFoundException 
      */
-    private SesamePositionBean parseResponse(InputStream str) throws ServiceException, NotFoundException {
+    private SesamePositionBean parseResponse(final InputStream str) throws ServiceException, NotFoundException {
         SesamePositionBean result = new SesamePositionBean();
-        List<String> infoList = new ArrayList<String>();
-        Set<String> aliases = new HashSet<String>();
+        final List<String> infoList = new ArrayList<String>();
+        final Set<String> aliases = new HashSet<String>();
         try {
-            XMLStreamReader is = inputFactory.createXMLStreamReader(str);
+            final XMLStreamReader is = inputFactory.createXMLStreamReader(str);
             for (is.next(); ! (is.isEndElement() && is.getLocalName().equals("Sesame")); is.next()) {
                 if (is.isStartElement()) { // otherwise, we don't care.
-                    String elementName = is.getLocalName();
+                    final String elementName = is.getLocalName();
                     if (elementName.equals("target")) {
                         result.setTarget(is.getElementText());
                     } else if (elementName.equals("Resolver")) {
                         // reset the position bean, only copying across the target field.
-                        String target = result.getTarget();
+                        final String target = result.getTarget();
                         result = new SesamePositionBean();
                         result.setTarget(target);
                         result.setService(is.getAttributeValue(null,"name"));
@@ -151,25 +151,25 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
                     } else if (elementName.equals("jradeg")) {
                         try{
                             result.setRa(Double.parseDouble(is.getElementText()));
-                        } catch (NumberFormatException e) {
+                        } catch (final NumberFormatException e) {
                             infoList.add(result.getService() + ": Failed to parse jradeg");
                         }
                     } else if (elementName.equals("jdedeg")) {
                         try{
                             result.setDec(Double.parseDouble(is.getElementText()));
-                        } catch (NumberFormatException e) {
+                        } catch (final NumberFormatException e) {
                             infoList.add(result.getService() + ": Failed to parse jdedeg");
                         }                       
                     } else if (elementName.equals("errRAmas")) {
                         try{
                             result.setRaErr(Double.parseDouble(is.getElementText()));
-                        } catch (NumberFormatException e) {
+                        } catch (final NumberFormatException e) {
                             infoList.add(result.getService() + ": Failed to parse errRAmas");
                         }                       
                     } else if (elementName.equals("errDEmas")) {
                         try{
                             result.setDecErr(Double.parseDouble(is.getElementText()));
-                        } catch (NumberFormatException e) {
+                        } catch (final NumberFormatException e) {
                             infoList.add(result.getService() + ": Failed to parse errDEmas");
                         }                       
                     } else if (elementName.equals("oname")) {
@@ -179,12 +179,12 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
                     }
                 }
             }
-        } catch (XMLStreamException x) {
+        } catch (final XMLStreamException x) {
             throw new ServiceException("Failed to parse response from Sesame",x);
         } finally {
             try {
                 str.close();
-            } catch (IOException x) {
+            } catch (final IOException x) {
                 //ignored
             }
         }
@@ -203,9 +203,9 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
      * @param service
      * @return
      */
-    private HttpMethod buildGetMethod(String objectName, String resultType,
-            boolean allIdentifiers, String service) {
-        StringBuilder sb = new StringBuilder(base);
+    private HttpMethod buildGetMethod(final String objectName, final String resultType,
+            final boolean allIdentifiers, final String service) {
+        final StringBuilder sb = new StringBuilder(base);
         sb.append("-o")
             .append(resultType);
         if (allIdentifiers) {
@@ -223,11 +223,11 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
         return new TestCase("Sesame object name resolver") {
             protected void runTest(){
                 try {
-                    SesamePositionBean pos = primResolve("m32");
+                    final SesamePositionBean pos = primResolve("m32");
                     assertNotNull(pos);
-                } catch (ServiceException x) {
+                } catch (final ServiceException x) {
                     fail("Unable to access Sesame service");
-                } catch (NotFoundException x) {
+                } catch (final NotFoundException x) {
                     fail("Sesame service was unable to resolve 'm32' to a position");
                 }
             }
@@ -235,15 +235,15 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
     }
 
     /** called when preference changes */
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(final PropertyChangeEvent evt) {
        
         try {
-            URL u = new URL(endpoint.getValue());
+            final URL u = new URL(endpoint.getValue());
             base = u.toString();
             if (! base.endsWith("/")) {
                 base += "/";
             }
-        } catch (MalformedURLException x) {
+        } catch (final MalformedURLException x) {
             logger.error("Sesame endpoint is malformed",x);
         }
     }

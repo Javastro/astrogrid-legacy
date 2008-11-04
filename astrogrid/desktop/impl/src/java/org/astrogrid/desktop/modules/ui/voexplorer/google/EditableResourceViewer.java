@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 import javax.swing.event.ChangeListener;
 
-/** Extended interface to a resource viewer that 
+/** Extended interface to a {@link ResourceViewer} that 
  * allows editing of the resource in some way.
  * 
  * it's the resource viewer's responsibility to persist the edited data

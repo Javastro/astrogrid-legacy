@@ -4,7 +4,7 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.srql;
 
 
-/** custom visitor that produces a string query.
+/** Specialization of {@link SRQLVisitor}  that produces a string.
  * @author Noel Winstanley
  * @since Aug 11, 200610:11:04 AM
  */

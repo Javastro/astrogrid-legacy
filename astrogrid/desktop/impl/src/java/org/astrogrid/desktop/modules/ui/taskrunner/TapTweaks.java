@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.ui.taskrunner;
 import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/** taskrunner tweaks specific to TAP.
+/** Taskrunner tweaks specific to TAP.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 22, 20083:46:23 PM
  */

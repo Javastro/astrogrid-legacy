@@ -1,0 +1,22 @@
+<html>
+<body>
+<h1>UI Activities</h1>
+
+<b>Activities</b> are operations that can be performed on the user's current selection - one or more resources (in voexplorer),
+files (in filemanager), or query results (in astroscope and taskrunner).
+<p/>
+Activities appear within the window menus, and also in the <i>Activities Pane</i>, which shows a changing list of 
+activities suitable to the current selection.
+<p/>
+Each activity is implemented by a separate class, most of which are in this package. They all must implement the 
+{@link org.astrogrid.desktop.modules.ui.actions.Activity} interface. The baseclass is 
+{@link org.astrogrid.desktop.modules.ui.actions.AbstractActivity}.
+
+<p/> 
+
+Activities are managed by 
+the {@link org.astrogrid.desktop.modules.system.ui.ActivitiesManager}, and assembled using hivemind.
+ 
+
+</body>
+</html>

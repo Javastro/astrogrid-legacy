@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 
-/** Hyperlink listener component that displays link in an external viewer
+/** Hyperlink listener that passes link to system webbrowser, or voexplorer, according to URI scheme.
  * @author Noel Winstanley
  * @since Aug 7, 20067:30:42 PM
  */
@@ -44,10 +44,10 @@ public class ExternalViewerHyperlinkListener implements HyperlinkListener {
 	        this.registry = null;
 	    }
 
-	public void hyperlinkUpdate(HyperlinkEvent e) {
+	public void hyperlinkUpdate(final HyperlinkEvent e) {
 		try {
 		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-			URL u = e.getURL();
+			final URL u = e.getURL();
 			if (u != null) { // it's a url the system knows about - so hand it off to the browser.
 				if (u.getProtocol().equals("ivo") && registry != null) { // double check - incase somehow a URL is produced from a ivo://
 					//registry.search(StringUtils.substringBefore(u.toString(),"#"));
@@ -56,18 +56,18 @@ public class ExternalViewerHyperlinkListener implements HyperlinkListener {
 					browser.openURL(u);
 				}
 			} else { // most probably an ivo:// reference. now need to go digging for it.
-				Element el = e.getSourceElement();
-				AttributeSet attr = el.getAttributes();
-				AttributeSet a = (AttributeSet)attr.getAttribute(HTML.Tag.A);
+				final Element el = e.getSourceElement();
+				final AttributeSet attr = el.getAttributes();
+				final AttributeSet a = (AttributeSet)attr.getAttribute(HTML.Tag.A);
 				if (a != null) {
-					String ivoid= (String)a.getAttribute(HTML.Attribute.HREF);
+					final String ivoid= (String)a.getAttribute(HTML.Attribute.HREF);
 					if (ivoid != null && registry != null) {
 						registry.open(new URI(ivoid));
 					}
 				}
 			}
 		}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			logger.warn("Failed to open browser",ex);
 		}
 	}

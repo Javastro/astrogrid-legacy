@@ -43,7 +43,7 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.w3c.dom.Document;
 
-/** remote process strategy for TAP (v0.3)
+/** Remote process strategy for Table Access Protocol (TAP v0.3)
  * @todo add hooks to delete a job too - find out from guy how long they live for.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 22, 200812:30:12 PM

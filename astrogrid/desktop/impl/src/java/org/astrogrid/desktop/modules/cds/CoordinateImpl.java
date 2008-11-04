@@ -1,4 +1,4 @@
-/*$Id: CoordinateImpl.java,v 1.9 2008/07/16 17:33:57 nw Exp $
+/*$Id: CoordinateImpl.java,v 1.10 2008/11/04 14:35:50 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.Coordinate;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 
-/** Implementation of the Coordinate service
+/** Implementation of the Coordinate client.s
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Aug-2005
  *
  */
@@ -30,15 +30,15 @@ public class CoordinateImpl extends BaseCDSClient implements Coordinate {
      * @throws MalformedURLException 
      * 
      */
-    public CoordinateImpl(HttpClient http,Preference endpoint)  {
+    public CoordinateImpl(final HttpClient http,final Preference endpoint)  {
         super(http,endpoint);
     }
 
     /**
      * @see org.astrogrid.acr.cds.Coordinate#convert(double, double, double, int)
      */
-    public String convert(double arg0, double arg1, double arg2, int arg3) throws ServiceException {
-            HttpMethod meth = buildHttpMethod();
+    public String convert(final double arg0, final double arg1, final double arg2, final int arg3) throws ServiceException {
+            final HttpMethod meth = buildHttpMethod();
             meth.setQueryString(new NameValuePair[] {
                     new NameValuePair("method","convert")
                     ,new NameValuePair("x",Double.toString(arg0))
@@ -51,8 +51,8 @@ public class CoordinateImpl extends BaseCDSClient implements Coordinate {
 
     
 
-    public String convertL(double lon, double lat, int precision) throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+    public String convertL(final double lon, final double lat, final int precision) throws ServiceException {
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","convert")
                 ,new NameValuePair("lon",Double.toString(lon))
@@ -62,10 +62,10 @@ public class CoordinateImpl extends BaseCDSClient implements Coordinate {
         return executeHttpMethod(meth);
     }
 
-    public String convertE(int frame1, int frame2, double x, double y, double z
-            , int precision, double equinox1, double equinox2)
+    public String convertE(final int frame1, final int frame2, final double x, final double y, final double z
+            , final int precision, final double equinox1, final double equinox2)
             throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","convert")
                 ,new NameValuePair("frame1",Integer.toString(frame1))
@@ -80,10 +80,10 @@ public class CoordinateImpl extends BaseCDSClient implements Coordinate {
         return executeHttpMethod(meth);
     }
 
-    public String convertLE(int frame1, int frame2, double lon, double lat, 
-            int precision, double equinox1, double equinox2)
+    public String convertLE(final int frame1, final int frame2, final double lon, final double lat, 
+            final int precision, final double equinox1, final double equinox2)
             throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","convert")
                 ,new NameValuePair("frame1",Integer.toString(frame1))
@@ -104,6 +104,9 @@ public class CoordinateImpl extends BaseCDSClient implements Coordinate {
 
 /* 
 $Log: CoordinateImpl.java,v $
+Revision 1.10  2008/11/04 14:35:50  nw
+javadoc polishing
+
 Revision 1.9  2008/07/16 17:33:57  nw
 Complete - task 372: re-implement CDS tasks
 

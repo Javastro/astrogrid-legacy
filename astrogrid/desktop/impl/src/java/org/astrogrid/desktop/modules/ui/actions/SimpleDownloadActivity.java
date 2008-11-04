@@ -29,9 +29,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
 
-/** simplistic activity which just allows users to download files to a local directory.
- * may even keep around once I've debugged the save activity..
- * 
+/** Download files (or content from some resources) to local folder.
  * inspired by how downloads from a browser happen.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 10, 20071:03:46 PM

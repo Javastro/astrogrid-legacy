@@ -16,7 +16,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 /**
- * a multi-line table cell renderer, cribbed from
+ * A multi-line table cell renderer.
+ *  cribbed from
  * http://www.cretesoft.com/archive/newsletter.do?issue=106&print=yes&locale=en_US
  */
 public class TextAreaRenderer extends JTextArea

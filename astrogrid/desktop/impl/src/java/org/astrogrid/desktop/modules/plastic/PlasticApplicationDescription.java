@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-/**
+/** Description of an application that's connected via plastic.
  * 
  * @author John Taylor
  * @modified Noel Winstanley - renamed to remove ambiguity. added some extra info methods, 
@@ -39,7 +39,7 @@ public class PlasticApplicationDescription {
 	private final ImageIcon icon;
 	private final String description;
 
-	public PlasticApplicationDescription(URI id, String name,String description, List messages, String version, ImageIcon icon, URL iconURL, String ivorn) {
+	public PlasticApplicationDescription(final URI id, final String name,final String description, final List messages, final String version, final ImageIcon icon, final URL iconURL, final String ivorn) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -54,14 +54,14 @@ public class PlasticApplicationDescription {
 		URI uri = null;
 		try {
 			uri = ivorn == null ? null : new URI(ivorn);
-		} catch (URISyntaxException x) {
+		} catch (final URISyntaxException x) {
 			logger.warn("Malformed application ivorn",x);
 		}
 		this.ivorn = uri;
 	}
 	
 	
-	public PlasticApplicationDescription(URI id, String name, String description, URI[] messages, String version, ImageIcon icon, URL iconURL, URI ivorn) {
+	public PlasticApplicationDescription(final URI id, final String name, final String description, final URI[] messages, final String version, final ImageIcon icon, final URL iconURL, final URI ivorn) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -110,7 +110,7 @@ public class PlasticApplicationDescription {
 	/** helper method to quickly check for support of a message 
 	 * @return true if message in {@link #getUnderstoodMessages()} false otherwise, or if
 	 * <tt>message</tt> == null*/
-	public boolean understandsMessage(URI message) {
+	public boolean understandsMessage(final URI message) {
 		if (message == null) {
 			return false;
 		}
@@ -130,19 +130,24 @@ public class PlasticApplicationDescription {
 	}
 
 	/** equality is defined on {@link #getId} */
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final PlasticApplicationDescription other = (PlasticApplicationDescription) obj;
 		if (this.id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!this.id.equals(other.id))
-			return false;
+			if (other.id != null) {
+                return false;
+            }
+		} else if (!this.id.equals(other.id)) {
+            return false;
+        }
 		return true;
 	}
 	

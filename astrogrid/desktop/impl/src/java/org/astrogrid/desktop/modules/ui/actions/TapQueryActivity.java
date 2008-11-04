@@ -11,7 +11,7 @@ import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.QueryBuilderInternal;
 
-/** build a query from a selected resource. (using TAP service interface)
+/** Perform a TAP Query on a resource (using TaskRunner)
  * @author Noel.Winstanley@manchester.ac.uk
  */
 public final class TapQueryActivity extends AbstractResourceActivity {

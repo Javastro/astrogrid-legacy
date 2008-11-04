@@ -19,13 +19,11 @@ import net.sf.ehcache.config.DiskStoreConfiguration;
 
 import org.apache.hivemind.Location;
 import org.apache.hivemind.internal.Module;
-import org.apache.hivemind.service.ObjectProvider;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
 
-/** implementation ofo the data cache - uses the ehCache libraries,
+/** Implementation of the data cache - uses the <a href='http://ehcache.sourceforge.net/'>ehCache</a> libraries,
  * @author Noel Winstanley
  * @modified made the caching more conservative.
  * @since Aug 8, 20061:17:09 AM
@@ -41,14 +39,14 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal,
 	 * @param endpointA a preference to listen to, and flush all registry-sensitve caches when it changes
 	 * @param endpointB same as A.
 	 */
-	public CacheFactoryImpl(String workingDir, List caches, Preference endpointA,Preference endpointB) {
-		Configuration conf = new Configuration();
-		DiskStoreConfiguration diskStore = new DiskStoreConfiguration();
+	public CacheFactoryImpl(final String workingDir, final List caches, final Preference endpointA,final Preference endpointB) {
+		final Configuration conf = new Configuration();
+		final DiskStoreConfiguration diskStore = new DiskStoreConfiguration();
 		diskStore.setPath(workingDir);
 		conf.addDiskStore(diskStore);
 		
 		// necessarty to create a defaults section.
-		CacheConfiguration defaults = new CacheConfiguration();
+		final CacheConfiguration defaults = new CacheConfiguration();
 		defaults.setName("cache_defaults");
 		defaults.setMaxElementsInMemory(100);
 		defaults.setEternal(false);
@@ -60,8 +58,8 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal,
 		defaults.setMemoryStoreEvictionPolicy("LRU");
 		conf.setDefaultCacheConfiguration(defaults);
 		
-		for (Iterator i = caches.iterator(); i.hasNext();) {
-			ExtendedCacheConfiguration c = (ExtendedCacheConfiguration) i.next();
+		for (final Iterator i = caches.iterator(); i.hasNext();) {
+			final ExtendedCacheConfiguration c = (ExtendedCacheConfiguration) i.next();
 			conf.addCache(c);
 			if (c.isRegistrySensitive()) {
 			    registrySensitiveCacheNames.add(c.getName());
@@ -93,8 +91,8 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal,
 	}
 
 	/** returns a matching ehcache instance, or null if not found */
-	public Object provideObject(Module module, Class expectedType, String cacheName, Location loc) {
-		Ehcache c =  getManager().getEhcache(cacheName);
+	public Object provideObject(final Module module, final Class expectedType, final String cacheName, final Location loc) {
+		final Ehcache c =  getManager().getEhcache(cacheName);
 		if (c == null) {
 			throw new IllegalArgumentException("Unknown cache '" 
 					+ cacheName + "' at " + module.getModuleId() + ", " + loc.getLineNumber());
@@ -104,18 +102,18 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal,
 	}
 
 	// listen for changes to preferences - and if one heard, flush the cache.
-    public void propertyChange(PropertyChangeEvent evt) {
-        for (Iterator<String> i = registrySensitiveCacheNames.iterator(); i.hasNext(); ) {
-            Cache cache = manager.getCache(i.next());
+    public void propertyChange(final PropertyChangeEvent evt) {
+        for (final Iterator<String> i = registrySensitiveCacheNames.iterator(); i.hasNext(); ) {
+            final Cache cache = manager.getCache(i.next());
             cache.removeAll();
         }       
     }
 
 // scheduledTask interface. used to perform cache maintenance.
     
-    public void execute(WorkerProgressReporter reporter) {
-        String[] cacheNames = manager.getCacheNames();
-        for (String name : cacheNames) {
+    public void execute(final WorkerProgressReporter reporter) {
+        final String[] cacheNames = manager.getCacheNames();
+        for (final String name : cacheNames) {
             final Cache cache = manager.getCache(name);
             if (! cache.getCacheConfiguration().isEternal()) {
                 cache.evictExpiredElements();

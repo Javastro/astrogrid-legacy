@@ -58,7 +58,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/** generic table metadata viewer.
+/** Generic table metadata viewer.
  * @author Noel.Winstanley@manchester.ac.uk
  * 
  * @todo add datatips for columns.
@@ -195,6 +195,8 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		builder.add(jtableScrollpane,cc.xyw(1,row++,5));		
 	}
 	
+	/** filter on the text of columns.
+	 *  - their name, ucd, units, type and description*/
 	private static class ColumnTextFilterator implements TextFilterator {
 
 		public void getFilterStrings(final List baseList, final Object element) {
@@ -312,7 +314,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 			}
 		}
 	}
-	    // datastructure used to add an 'index' column to the column beans.
+	    /** datastructure used to add an 'index' column to the column beans */
 	   private static class NumberedColumnBean {
 	        public final ColumnBean cb;
 	        public final Integer ix;
@@ -323,7 +325,9 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 	        }
 	    }
 	
-/** hacked around a little bit to return row numbers */
+/** 
+ * Table Format for metadata view.
+ * hacked around a little bit to return row numbers */
 	private static class MetadataTableFormat implements AdvancedTableFormat {
 
 		public int getColumnCount() {
@@ -408,7 +412,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 
 
 	
-	/** display a list of columns */
+	/** JTable that displays a list of databse columns */
 	public static class MetadataTable extends JTable {
 		/** model containing the current _selection_ in jtable */
 		private final EventSelectionModel tableSelection;	

@@ -3,8 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
-import java.util.regex.Pattern;
-
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -13,8 +11,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.StringUtils;
 
-/** XMLStream reader which delegates to an underlying implementation,
- * and trims to null all the data accesses - and normalizes space within the elements while we're at it.
+/** XMLStream reader which delegates to an underlying implementation,trims to null all the data accesses, and normalizes space within the elements.
 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 22, 200710:27:12 AM
@@ -31,43 +28,43 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
         return this.orig.getAttributeCount();
     }
 
-    public String getAttributeLocalName(int arg0) {
+    public String getAttributeLocalName(final int arg0) {
         return this.orig.getAttributeLocalName(arg0);
     }
 
-    public QName getAttributeName(int arg0) {
+    public QName getAttributeName(final int arg0) {
         return this.orig.getAttributeName(arg0);
     }
 
-    public String getAttributeNamespace(int arg0) {
+    public String getAttributeNamespace(final int arg0) {
         return this.orig.getAttributeNamespace(arg0);
     }
 
-    public String getAttributePrefix(int arg0) {
+    public String getAttributePrefix(final int arg0) {
         return this.orig.getAttributePrefix(arg0);
     }
 
-    public String getAttributeType(int arg0) {
+    public String getAttributeType(final int arg0) {
         return this.orig.getAttributeType(arg0);
     }
 
-    public String getAttributeValue(int arg0) {
+    public String getAttributeValue(final int arg0) {
       
         return trimAndCollapse(this.orig.getAttributeValue(arg0));
     }
 
-    private final String trimAndCollapse(String s) {
+    private final String trimAndCollapse(final String s) {
         if (s == null) {
             return null;
         }
-        String s1 = StringUtils.trimToNull(s);
+        final String s1 = StringUtils.trimToNull(s);
         if (s1 == null) {
             return null;
         }
         return s1.replaceAll("\\b\\s{2,}\\b", " ") ; // collapse adjacent whitespace
     }
     
-    public String getAttributeValue(String arg0, String arg1) {        
+    public String getAttributeValue(final String arg0, final String arg1) {        
                 return trimAndCollapse(this.orig.getAttributeValue(arg0, arg1));
     }
 
@@ -107,7 +104,7 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
         return this.orig.getNamespaceCount();
     }
 
-    public String getNamespacePrefix(int arg0) {
+    public String getNamespacePrefix(final int arg0) {
         return this.orig.getNamespacePrefix(arg0);
     }
 
@@ -115,11 +112,11 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
         return this.orig.getNamespaceURI();
     }
 
-    public String getNamespaceURI(int arg0) {
+    public String getNamespaceURI(final int arg0) {
         return this.orig.getNamespaceURI(arg0);
     }
 
-    public String getNamespaceURI(String arg0) {
+    public String getNamespaceURI(final String arg0) {
         return this.orig.getNamespaceURI(arg0);
     }
 
@@ -135,7 +132,7 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
         return this.orig.getPrefix();
     }
 
-    public Object getProperty(String arg0) throws IllegalArgumentException {
+    public Object getProperty(final String arg0) throws IllegalArgumentException {
         return this.orig.getProperty(arg0);
     }
 
@@ -147,7 +144,7 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
         return this.orig.getTextCharacters();
     }
 
-    public int getTextCharacters(int arg0, char[] arg1, int arg2, int arg3)
+    public int getTextCharacters(final int arg0, final char[] arg1, final int arg2, final int arg3)
             throws XMLStreamException {
         return this.orig.getTextCharacters(arg0, arg1, arg2, arg3);
     }
@@ -177,7 +174,7 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
         return this.orig.hasText();
     }
 
-    public boolean isAttributeSpecified(int arg0) {
+    public boolean isAttributeSpecified(final int arg0) {
         return this.orig.isAttributeSpecified(arg0);
     }
 
@@ -209,7 +206,7 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
         return this.orig.nextTag();
     }
 
-    public void require(int arg0, String arg1, String arg2)
+    public void require(final int arg0, final String arg1, final String arg2)
             throws XMLStreamException {
         this.orig.require(arg0, arg1, arg2);
     }
@@ -218,7 +215,7 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
         return this.orig.standaloneSet();
     }
 
-    public TrimmingXMLStreamReader(XMLStreamReader orig) {
+    public TrimmingXMLStreamReader(final XMLStreamReader orig) {
         super();
         this.orig = orig;
     }

@@ -12,7 +12,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.matchers.Matcher;
 
-/** Strategy for filtering on list of subjects.
+/** Filters on subjects.
  * 
  * @todo handle malformed registry entries with comma-separated lists of values.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -21,15 +21,15 @@ import ca.odell.glazedlists.matchers.Matcher;
 public final class SubjectsStrategy extends PipelineStrategy {
 	public Matcher createMatcher(final List selected) {
 		return new Matcher() {
-			public boolean matches(Object arg0) {
-				Resource r = (Resource)arg0;
+			public boolean matches(final Object arg0) {
+				final Resource r = (Resource)arg0;
 				final Content content = r.getContent();
 				if (content == null || content.getSubject() == null || content.getSubject().length == 0) {
 					return selected.contains(NONE_PROVIDED.get(0));
 				}
-				String[] subjects = content.getSubject();
+				final String[] subjects = content.getSubject();
 				for (int i = 0; i < subjects.length; i++) {
-					String subj = subjects[i];
+					final String subj = subjects[i];
 					if (selected.contains(subj)) {
 						return true;
 					}
@@ -39,10 +39,10 @@ public final class SubjectsStrategy extends PipelineStrategy {
 		};
 	}
 
-	public TransformedList createView(EventList base) {
+	public TransformedList createView(final EventList base) {
 		return new CollectionList(base,
 						new CollectionList.Model() {
-							public List getChildren(Object arg0) {
+							public List getChildren(final Object arg0) {
 								final Resource r = (Resource)arg0;
 								final Content content = r.getContent();
 								if (content == null || content.getSubject() == null || content.getSubject().length == 0) {

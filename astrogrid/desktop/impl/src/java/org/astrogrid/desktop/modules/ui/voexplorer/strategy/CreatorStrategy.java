@@ -13,7 +13,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.matchers.Matcher;
 
-/** Strategy for filtering on list of subjects.
+/** Filters on creator.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 15, 20073:36:34 PM
@@ -21,13 +21,13 @@ import ca.odell.glazedlists.matchers.Matcher;
 public final class CreatorStrategy extends PipelineStrategy {
 	public Matcher createMatcher(final List selected) {
 		return new Matcher() {
-			public boolean matches(Object arg0) {
-				Resource r = (Resource)arg0;
+			public boolean matches(final Object arg0) {
+				final Resource r = (Resource)arg0;
 				final Creator[] creators = r.getCuration().getCreators();
 				for (int i = 0; i < creators.length; i++) {
-					Creator c =creators[i];
+					final Creator c =creators[i];
 					if (c !=null) {
-						ResourceName name = c.getName();
+						final ResourceName name = c.getName();
 						if (name != null) {
 							return selected.contains(name.getValue());
 						}
@@ -38,17 +38,17 @@ public final class CreatorStrategy extends PipelineStrategy {
 		};
 	}
 
-	public TransformedList createView(EventList base) {
+	public TransformedList createView(final EventList base) {
 		return new CollectionList(base,
 						new CollectionList.Model() {
-							public List getChildren(Object arg0) {
+							public List getChildren(final Object arg0) {
 								final Resource r = (Resource)arg0;
 								final Creator[] creators = r.getCuration().getCreators();
 								final List result = new ArrayList(creators.length);
 								for (int i = 0; i < creators.length; i++) {
-									Creator c =creators[i];
+									final Creator c =creators[i];
 									if (c !=null) {
-										ResourceName name = c.getName();
+										final ResourceName name = c.getName();
 										if (name != null) {
 											result.add(name.getValue());
 										}

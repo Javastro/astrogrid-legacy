@@ -16,7 +16,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.matchers.Matcher;
 
-/** Strategy for filtering based on capability.
+/** Filters on capability.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 15, 20073:49:49 PM
  */
@@ -24,13 +24,13 @@ public class CapabilityStrategy extends PipelineStrategy {
 
 	public Matcher createMatcher(final List selected) {
 		return new Matcher() {
-			public boolean matches(Object arg0) {
+			public boolean matches(final Object arg0) {
 				final Capability[] c = getCapabilities(arg0);
 				if (c == null) {
 					return selected.contains(NONE_PROVIDED.get(0)); // obvioousluy nt a service.
 				}				
 				for (int i = 0; i < c.length; i++) {
-					String subj = PrettierResourceFormatter.formatType(c[i].getType());
+					final String subj = PrettierResourceFormatter.formatType(c[i].getType());
 					if (selected.contains(subj)) {
 						return true;
 					}
@@ -40,16 +40,18 @@ public class CapabilityStrategy extends PipelineStrategy {
 		};
 	}
 
-	private final Capability[] getCapabilities(Object o) {
+	private final Capability[] getCapabilities(final Object o) {
 		if (o instanceof Service) {
 			return ((Service)o).getCapabilities();
-		} else return null;
+		} else {
+            return null;
+        }
 	}
 	
-	public TransformedList createView(EventList base) {	
+	public TransformedList createView(final EventList base) {	
 		return new CollectionList(base,
 			new CollectionList.Model() {
-		public List getChildren(Object arg0) {
+		public List getChildren(final Object arg0) {
 			final Capability[] c = getCapabilities(arg0);
 			if (c == null || c.length == 0) {
 				return NONE_PROVIDED;

@@ -6,13 +6,12 @@ package org.astrogrid.desktop.modules.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 
-/** Interface to all ui components in workbench.
+/** Common Interface to ui window.
  * @author noel
  * @since Apr 10, 20064:37:36 PM
  */

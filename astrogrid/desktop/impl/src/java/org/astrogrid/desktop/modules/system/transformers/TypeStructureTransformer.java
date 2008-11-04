@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.14 2008/08/19 12:47:10 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.15 2008/11/04 14:35:49 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.WrapDynaBean;
 import org.apache.commons.collections.Transformer;
 
-/** implem,entation of transformer that will render almost any object tree down to types suitable for xmlrpc lib.
+/** Transformer that will render almost any object tree down to types suitable for xmlrpc lib.
  * Output should just be primitives,  maps, vectors.
  * 
  * @modified added type information - to indicate which sunclass is being returned
@@ -215,6 +215,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.15  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.14  2008/08/19 12:47:10  nw
 findbugs fixes and improvements.
 

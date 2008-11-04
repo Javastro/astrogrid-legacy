@@ -1,4 +1,4 @@
-/*$Id: ResultDialog.java,v 1.8 2008/04/23 10:54:38 nw Exp $
+/*$Id: ResultDialog.java,v 1.9 2008/11/04 14:35:52 nw Exp $
  * Created on 10-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -28,7 +23,9 @@ import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import com.l2fprod.common.swing.BaseDialog;
 /**
- * Simple dialog that displays a result in a text box - which allows for cutting / copying
+ * Simple dialog that displays a result in a text box.
+ * <p/>
+ * Allows for cutting / copying
  * the result into something else. 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 10-May-2005
  *
@@ -38,11 +35,11 @@ public class ResultDialog extends BaseDialog {
     
     private JEditorPane resultDisplay;
 
-    public static ResultDialog newResultDialog(Component parent, Object message) {
+    public static ResultDialog newResultDialog(final Component parent, final Object message) {
         if (parent == null) {
             return new ResultDialog(message);
         }
-        Window window = parent instanceof Window
+        final Window window = parent instanceof Window
                       ? (Window) parent
                       : SwingUtilities.getWindowAncestor(parent);
         if (window instanceof Frame) {
@@ -54,25 +51,25 @@ public class ResultDialog extends BaseDialog {
         }
     }
     
-    public ResultDialog(Dialog owner, Object message) {
+    public ResultDialog(final Dialog owner, final Object message) {
         super(owner);
         init(message);
         setLocationRelativeTo(owner);
     }
     
-    public ResultDialog(Frame owner,Object message) {
+    public ResultDialog(final Frame owner,final Object message) {
         super(owner);
         init(message);        
         setLocationRelativeTo(owner);
     }
 
     
-    public ResultDialog(Object message) {
+    public ResultDialog(final Object message) {
         init(message);
          centerOnScreen();
     }
     
-    private final void init(Object message) {
+    private final void init(final Object message) {
         this.setTitle("Result");
         this.setModal(false);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -103,6 +100,9 @@ public class ResultDialog extends BaseDialog {
 
 /* 
 $Log: ResultDialog.java,v $
+Revision 1.9  2008/11/04 14:35:52  nw
+javadoc polishing
+
 Revision 1.8  2008/04/23 10:54:38  nw
 added code for headless mode.
 

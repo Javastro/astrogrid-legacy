@@ -13,7 +13,7 @@ import javax.swing.JFormattedTextField;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 
-/** UI field that allows input of a dimension.
+/** Input field that allows input of a dimension.
  * 
  * Input may either be 1-D, or 2-D.
  * In case of 1-D, the dimension object returned has same value for width and height.
@@ -32,10 +32,10 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	}
 	
 	/** construct a dimension field, providing a starting value */
-	public DimensionTextField(DoubleDimension dim) {
+	public DimensionTextField(final DoubleDimension dim) {
 		super();
 		setFormatterFactory(new AbstractFormatterFactory() {
-			public AbstractFormatter getFormatter(JFormattedTextField tf) {
+			public AbstractFormatter getFormatter(final JFormattedTextField tf) {
 				return isDecimal ? decimal : sexa;
 			}
 		});
@@ -48,22 +48,22 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 
 	protected class DecimalDimensionFormatter extends AbstractFormatter {
 
-		private NumberFormat nfd = NumberFormat.getNumberInstance();
+		private final NumberFormat nfd = NumberFormat.getNumberInstance();
 		{
 			nfd.setGroupingUsed(false);
 			nfd.setMinimumFractionDigits(6);
 			nfd.setMaximumFractionDigits(6);
 		}
-		public Object stringToValue(String arg0) throws ParseException {
-			String[] nums = StringUtils.split(arg0,',');
+		public Object stringToValue(final String arg0) throws ParseException {
+			final String[] nums = StringUtils.split(arg0,',');
 			return new DoubleDimension(
 					nfd.parse(nums[0]).doubleValue()
 					,nums.length > 1 ? nfd.parse(nums[1]).doubleValue() : Double.NaN 
 					);
 		}
 
-		public String valueToString(Object arg0) throws ParseException {
-			DoubleDimension dim = (DoubleDimension)arg0;
+		public String valueToString(final Object arg0) throws ParseException {
+			final DoubleDimension dim = (DoubleDimension)arg0;
 			if (dim == null) {
 				return null;
 			}
@@ -77,16 +77,16 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	
 	protected class SexagesimalDimensionFormatter extends AbstractFormatter {
 
-		public Object stringToValue(String arg0) throws ParseException {
-			String[] nums = StringUtils.split(arg0,',');
+		public Object stringToValue(final String arg0) throws ParseException {
+			final String[] nums = StringUtils.split(arg0,',');
 			return new DoubleDimension (
 					PositionUtils.sexagesimalRaToDecimal(nums[0])
 					,nums.length > 1 ? PositionUtils.sexagesimalDecToDecimal(nums[1]) : Double.NaN
 							);
 		}
 
-		public String valueToString(Object arg0) throws ParseException {
-			DoubleDimension dim = (DoubleDimension)arg0;
+		public String valueToString(final Object arg0) throws ParseException {
+			final DoubleDimension dim = (DoubleDimension)arg0;
 			if (dim == null) {
 				return null;
 			}
@@ -107,24 +107,24 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	 * height - dec size.
 	 */
 	public DoubleDimension getDimension() {
-		DoubleDimension d = (DoubleDimension)((DoubleDimension)getValue()).clone();
+		final DoubleDimension d = (DoubleDimension)((DoubleDimension)getValue()).clone();
 		if (Double.isNaN(d.getHeight())) {
 			d.setSize(d.getWidth(),d.getWidth());
 		}
 		return d;
 	}
 	/** set the internal model (decimal degrees) - same value for width and height */
-	public void setDimension(double single) {
+	public void setDimension(final double single) {
 		setDimension(single,Double.NaN);
 	}
 	
 	/** set the internal model (decimal degrees) */
-	public void setDimension(double x,double y) {
+	public void setDimension(final double x,final double y) {
 		setValue(new DoubleDimension(x,y));
 	}
 	
 	/** set the internal model (decimal degrees) */
-	public void setDimension(Dimension2D dim) {
+	public void setDimension(final Dimension2D dim) {
 		setValue(new DoubleDimension(dim.getWidth(),dim.getHeight()));
 	}
 	
@@ -133,7 +133,7 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	 * @param s string in format width,height  - where both width and height are decimal degrees.
 	 * @throws ParseException if string cannot be parsed
 	 */
-	public void setDimension(String s) throws ParseException {
+	public void setDimension(final String s) throws ParseException {
 		setValue(getFormatter().stringToValue(s));
 	}
 	/** listener interface to a DecSexToggle 
@@ -141,7 +141,7 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	 * call to set display to degrees
 	 * @param e ignored
 	 * */
-	public void degreesSelected(EventObject e) {
+	public void degreesSelected(final EventObject e) {
 		isDecimal= true;
 		setValue(getValue()); //forces display to update
 	}
@@ -151,7 +151,7 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	 * call to set display to sexagesimal
 	 * @param e ignored
 	 * */
-	public void sexaSelected(EventObject e) {
+	public void sexaSelected(final EventObject e) {
 		isDecimal= false;
 		setValue(getValue()); // forces display to update.
 	}

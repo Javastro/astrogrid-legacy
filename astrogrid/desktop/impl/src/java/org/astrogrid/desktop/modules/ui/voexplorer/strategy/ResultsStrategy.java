@@ -16,7 +16,7 @@ import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.matchers.Matcher;
 
-/** Strategy that filters on results.
+/** Specialized strategy that filters on <b>astroscope results</b> - only used within {@link ScopeServicesList} 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 6, 20083:33:42 PM
  */

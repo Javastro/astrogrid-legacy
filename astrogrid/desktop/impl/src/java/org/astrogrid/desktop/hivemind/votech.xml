@@ -3,6 +3,7 @@
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/votech-descriptors.xml">
 	]>
 <module id="votech" version="1.0.0" package="org.votech">
+    Various weird and off beat things, mostly spawned from votech discussions.
 <!--  PREAMBLE -->
 	<contribution configuration-id="framework.descriptors">
 		<acr-module name="votech" description="Services and infrastructure developed as part of the VOTech project">
@@ -22,7 +23,7 @@
 ANNOTATION SERVICE
  -->	
 	<service-point id="annotate" interface="org.astrogrid.desktop.modules.votech.AnnotationService">
-	Annotation Service  
+	Annotations Service - provides annotations for resources displayed in voexplorer  
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.votech.AnnotationServiceImpl">
 				<object>cache:annotate</object>
@@ -47,15 +48,14 @@ ANNOTATION SERVICE
     </service-point>
 	
 	<contribution configuration-id="ivoa.caches">
-		cache of annotations
+		cache of annotations.
 		'unlimited' disk storage, lasts whole session, but is discarded at end of session.
 		practically infinite storage - necessary because we're using this for real data.
-        NB: shoudl diskPersistent be 'false' here - if discarded at end of session?
 		<cache name="annotate"
 			maxElementsInMemory="1000"
 			maxElementsOnDisk="10000000"
 			overflowToDisk="true"
-            diskPersistent="true"
+            diskPersistent="false"
             timeToLiveSeconds="${ivo.registry.cacheLife}"
             timeToIdleSeconds="${ivo.registry.cacheLife}"
 		/>
@@ -87,7 +87,8 @@ ANNOTATION SERVICE
 	</service-point>	
 
 <configuration-point id="annotationSources" schema-id="hiveutils.ObjectBuilderSchema">
-	Configuration point for the list of annotation sources
+	Configuration point for the list of annotation sources. Consumed by annotationSourcesFactory.
+    Each contribution should be an instance of AnnotationSource
 </configuration-point>
 
 
@@ -137,7 +138,7 @@ ANNOTATION SERVICE
 VOMON
  -->	
 	<service-point id="vomon" interface="org.astrogrid.desktop.modules.votech.VoMonInternal">
-		Service Monitor		
+		Service Availability Monitor		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.votech.VoMonImpl" >
 			<string>${votech.vomon.endpoint}</string><!--  endpoint to fetch vomon status.xml from -->

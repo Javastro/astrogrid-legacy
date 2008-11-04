@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Image;
 
-/** common intterface to the two kinds of node that produce an image.
+/** Common interface to the two kinds of node that produce an image.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Dec 10, 200711:31:06 AM
  */

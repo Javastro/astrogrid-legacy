@@ -3,15 +3,10 @@
  */
 package org.astrogrid.desktop.modules.ui.fileexplorer;
 
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseEvent;
 
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
 import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 import javax.swing.TransferHandler;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -23,7 +18,6 @@ import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectTransferable;
-import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -37,7 +31,7 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
 
 /**
  * 
- * Class that provides a shared data/selection/dnd model for all linked file views.
+ * A shared data/selection/dnd model for all linked file views.
  * 
  * - ensures that Dnd behaviour is uniform between all views that are linked to the same model.
  * in the same principle, this class manages a single selection model which can be 
@@ -70,7 +64,7 @@ public class Filemodel implements ListSelectionListener{
      * then update selection model before displpaying the popup
      * @param event
      */
-        public final void maybeShowPopupMenu( MouseEvent event ){
+        public final void maybeShowPopupMenu( final MouseEvent event ){
            if ( event.isPopupTrigger() && activities.getPopupMenu() != null ) {
                //@todo - only update activities if what we've clicked on is not alreays part of the selection
                updateActivities();           
@@ -85,7 +79,7 @@ public class Filemodel implements ListSelectionListener{
          * to be triggered anyhow.
          */
         public void updateActivities() {
-            Transferable tran =getSelectionTransferable();
+            final Transferable tran =getSelectionTransferable();
                 if (tran == null) {
                     activities.clearSelection();
                 } else {
@@ -101,7 +95,7 @@ public class Filemodel implements ListSelectionListener{
             case 1:
                 try {
                         return new FileObjectTransferable((FileObject)selected.get(0));
-                    } catch (Exception x) {
+                    } catch (final Exception x) {
                         logger.error("FileSystemException",x);
                         return null;
                     } 
@@ -112,25 +106,25 @@ public class Filemodel implements ListSelectionListener{
         /**
          * @param mode
          */
-        public final void setSelectionMode(int mode) {
+        public final void setSelectionMode(final int mode) {
             selection.setSelectionMode(mode);
         }   
         
         /** add an additional filter to the file view */
-        public final void installFilter(Matcher m) {
+        public final void installFilter(final Matcher m) {
             programmaticFilter.setMatcher(m);
         }
 
-    /**
+    /** A matcher that filters out hidden files.
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Aug 30, 20072:20:51 PM
      */
     protected static final class NoHiddenFiles implements Matcher {
-        public boolean matches(Object arg0) {
-            FileObject fo = (FileObject)arg0;
+        public boolean matches(final Object arg0) {
+            final FileObject fo = (FileObject)arg0;
             try {
                 return !(fo.isHidden() || fo.getName().getBaseName().charAt(0) == '.') ;
-            } catch (FileSystemException x) {
+            } catch (final FileSystemException x) {
                 return true;
             }
         }
@@ -154,7 +148,7 @@ public class Filemodel implements ListSelectionListener{
     protected final MutableMatcherEditor hiddenFilter;
     private final TransferHandler handler;
     // when selection changes.
-    public void valueChanged(ListSelectionEvent e) {
+    public void valueChanged(final ListSelectionEvent e) {
         if (e.getValueIsAdjusting()) {
             return;
         }
@@ -163,14 +157,14 @@ public class Filemodel implements ListSelectionListener{
     }
     
 
-    public void enableDragAndDropFor(JComponent comp) {
+    public void enableDragAndDropFor(final JComponent comp) {
         
         comp.setTransferHandler(handler); 
        
     }
     
 
-    public Filemodel(SortedList files,MutableMatcherEditor programmaticFilter, MutableMatcherEditor hiddenFilter, ActivitiesManager activities,IconFinder icons, VFSOperations ops) {
+    public Filemodel(final SortedList files,final MutableMatcherEditor programmaticFilter, final MutableMatcherEditor hiddenFilter, final ActivitiesManager activities,final IconFinder icons, final VFSOperations ops) {
         
         super();
         this.programmaticFilter = programmaticFilter;
@@ -188,20 +182,20 @@ public class Filemodel implements ListSelectionListener{
 
     // factory method
     /** a complex object to build - need to use a factory method */
-    public static final Filemodel newInstance(MatcherEditor ed,ActivitiesManager activities,IconFinder icons, VFSOperations ops) {
-        MutableMatcherEditor programmaticFilter = new MutableMatcherEditor();
-        MutableMatcherEditor hiddenFilter = new MutableMatcherEditor();
+    public static final Filemodel newInstance(final MatcherEditor ed,final ActivitiesManager activities,final IconFinder icons, final VFSOperations ops) {
+        final MutableMatcherEditor programmaticFilter = new MutableMatcherEditor();
+        final MutableMatcherEditor hiddenFilter = new MutableMatcherEditor();
         hiddenFilter.setMatcher(new NoHiddenFiles());
         // make a composite out of all these matchers.
-        CompositeMatcherEditor composite = new CompositeMatcherEditor();
+        final CompositeMatcherEditor composite = new CompositeMatcherEditor();
         composite.setMode(CompositeMatcherEditor.AND);
         composite.getMatcherEditors().add(programmaticFilter);
         composite.getMatcherEditors().add(hiddenFilter);
         if (ed != null) {
             composite.getMatcherEditors().add(ed);
         }
-        EventList filteredFiles = new FilterList(new BasicEventList(),composite);
-        SortedList list = new SortedList(filteredFiles, FileObjectComparator.getInstance());
+        final EventList filteredFiles = new FilterList(new BasicEventList(),composite);
+        final SortedList list = new SortedList(filteredFiles, FileObjectComparator.getInstance());
 //       return new FileModelAWTImpl(list,programmaticFilter, hiddenFilter,activities,icons,ops);
         return new Filemodel(list,programmaticFilter, hiddenFilter,activities,icons,ops);
 

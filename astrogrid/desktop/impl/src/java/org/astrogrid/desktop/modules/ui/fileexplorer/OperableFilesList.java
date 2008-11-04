@@ -11,8 +11,11 @@ import javax.swing.TransferHandler;
 
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
-/** extends files list with 
- *   - ability to select files.
+/** 
+ * Extends {@code FilesList} with operations on files.
+ * 
+ Abilities
+ *   - select files.
  *   - make this a source for drag and drop (but not a sink)
  *    - the ability to select items and  show a right-click popup.
  * 
@@ -29,7 +32,7 @@ public class OperableFilesList extends FilesList implements MouseListener{
      * client of this class to listen for notifications on this model.
      * @param icons
      */
-    public OperableFilesList( IconFinder icons, Filemodel fileModel) {
+    public OperableFilesList( final IconFinder icons, final Filemodel fileModel) {
         super(fileModel.getChildrenList(),  icons);
         this.fileModel = fileModel;
         setSelectionModel(fileModel.getSelection());      
@@ -40,7 +43,7 @@ public class OperableFilesList extends FilesList implements MouseListener{
         setDragEnabled(true);    
         
         // populate the action map with named actions, so they can be triggered from menu.
-        ActionMap aMap = getActionMap();
+        final ActionMap aMap = getActionMap();
         aMap.put(UIComponentMenuBar.EditMenuBuilder.COPY,TransferHandler.getCopyAction());
         aMap.put(UIComponentMenuBar.EditMenuBuilder.PASTE,TransferHandler.getPasteAction());
         aMap.put(UIComponentMenuBar.EditMenuBuilder.SELECT_ALL,aMap.get("selectAll"));        
@@ -49,22 +52,22 @@ public class OperableFilesList extends FilesList implements MouseListener{
 
     
  // mouse listener interface.
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(final MouseEvent e) {
     
     }
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(final MouseEvent e) {
         
     }
 
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(final MouseEvent e) {
     }
 
 
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(final MouseEvent e) {
        fileModel.maybeShowPopupMenu(e);
     }
 
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(final MouseEvent e) {
        fileModel.maybeShowPopupMenu(e);     
     }
     

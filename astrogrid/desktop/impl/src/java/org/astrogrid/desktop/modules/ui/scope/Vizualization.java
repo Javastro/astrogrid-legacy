@@ -1,4 +1,4 @@
-/*$Id: Vizualization.java,v 1.9 2008/04/25 08:59:36 nw Exp $
+/*$Id: Vizualization.java,v 1.10 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,6 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 
 
-import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
-
 import edu.berkeley.guir.prefuse.Display;
 import edu.berkeley.guir.prefuse.FocusManager;
 import edu.berkeley.guir.prefuse.ItemRegistry;
@@ -22,9 +20,13 @@ import edu.berkeley.guir.prefuse.render.DefaultEdgeRenderer;
 import edu.berkeley.guir.prefuse.render.DefaultRendererFactory;
 import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
 import edu.berkeley.guir.prefuse.util.StringAbbreviator;
-
+/** abstract class for a prefuse vizualization.
+ * Acts as a view onto the shared {@code VizModel}
+ * @author Noel.Winstanley@manchester.ac.uk
+ * @since Nov 4, 200811:02:23 AM
+ */
 public abstract class Vizualization extends GraphEventAdapter {
-        public Vizualization(String name, VizualizationController vizs) {
+        public Vizualization(final String name, final VizualizationController vizs) {
             this.name = name;   
             this.vizs = vizs;
         }
@@ -38,7 +40,7 @@ public abstract class Vizualization extends GraphEventAdapter {
     private TextImageItemRenderer nodeRenderer;
     protected final TextImageItemRenderer getTextRenderer() {
         if (nodeRenderer == null) {
-            TextImageTreeNodeRenderer renderer = new TextImageTreeNodeRenderer(vizs.getVizModel().getNodeSizingMap()) ;
+            final TextImageTreeNodeRenderer renderer = new TextImageTreeNodeRenderer(vizs.getVizModel().getNodeSizingMap()) ;
             renderer.setMaxTextWidth(150);
             renderer.setRoundedCorner(8,8);
             renderer.setTextAttributeName(AbstractRetriever.LABEL_ATTRIBUTE);
@@ -58,7 +60,7 @@ public abstract class Vizualization extends GraphEventAdapter {
             itemRegistry = new ItemRegistry(vizs.getVizModel().getTree());
             itemRegistry.getFocusManager().putFocusSet(FocusManager.SELECTION_KEY,vizs.getVizModel().getSelectionFocusSet());
             
-            DefaultEdgeRenderer edgeRenderer = new DefaultEdgeRenderer();
+            final DefaultEdgeRenderer edgeRenderer = new DefaultEdgeRenderer();
             edgeRenderer.setWeightAttributeName(AbstractRetriever.WEIGHT_ATTRIBUTE);
             edgeRenderer.setWeightType(DefaultEdgeRenderer.WEIGHT_TYPE_LINEAR);
             itemRegistry.setRendererFactory(new DefaultRendererFactory(getTextRenderer(), edgeRenderer));            
@@ -75,6 +77,9 @@ public abstract class Vizualization extends GraphEventAdapter {
 
 /* 
 $Log: Vizualization.java,v $
+Revision 1.10  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.9  2008/04/25 08:59:36  nw
 extracted interface from retriever, to ease unit testing.
 

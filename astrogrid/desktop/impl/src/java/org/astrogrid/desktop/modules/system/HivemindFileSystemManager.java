@@ -19,7 +19,7 @@ import org.apache.commons.vfs.operations.FileOperationProvider;
 import org.apache.commons.vfs.provider.FileProvider;
 import org.astrogrid.acr.builtin.ShutdownListener;
 
-/** Extension of default VFS filesystemmanager that adds some hooks to be configured by hivemind.
+/** Extension of VFS filesystemmanager that adds some hooks to be configured by hivemind.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 20072:50:59 PM
  */
@@ -39,27 +39,27 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 	 * @throws FileSystemException 
 	 * 
 	 */
-	public HivemindFileSystemManager(DefaultFileReplicator tmpFileStore,Map providers, Map operations, Map extensions, Map mimetypes) throws FileSystemException {
+	public HivemindFileSystemManager(final DefaultFileReplicator tmpFileStore,final Map providers, final Map operations, final Map extensions, final Map mimetypes) throws FileSystemException {
 		setTemporaryFileStore(tmpFileStore);
-		for (Iterator i = providers.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
+		for (final Iterator i = providers.entrySet().iterator(); i.hasNext();) {
+			final Map.Entry e = (Map.Entry) i.next();
 			logger.info("Adding provider for " + e.getKey());					
 			addProvider((String)e.getKey(),(FileProvider)e.getValue());
 		}
-		for (Iterator i = operations.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
+		for (final Iterator i = operations.entrySet().iterator(); i.hasNext();) {
+			final Map.Entry e = (Map.Entry) i.next();
 			logger.info("Adding operations for " + e.getKey());				
 			addOperationProvider((String)e.getKey(),(FileOperationProvider)e.getValue());
 		}		
 
-		for (Iterator i = extensions.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
+		for (final Iterator i = extensions.entrySet().iterator(); i.hasNext();) {
+			final Map.Entry e = (Map.Entry) i.next();
 			logger.info("Adding extension mapping for " + e.getKey());				
 			addExtensionMap((String)e.getKey(),(String)e.getValue());
 		}
 
-		for (Iterator i = mimetypes.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
+		for (final Iterator i = mimetypes.entrySet().iterator(); i.hasNext();) {
+			final Map.Entry e = (Map.Entry) i.next();
 			logger.info("Adding mime mapping for " + e.getKey());				
 			addMimeTypeMap((String)e.getKey(),(String)e.getValue());
 		}		
@@ -78,7 +78,7 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 		return null;
 	}
 	
-	public void setBaseFileString(String arg0) throws FileSystemException {
+	public void setBaseFileString(final String arg0) throws FileSystemException {
 		super.setBaseFile(new File(arg0));
 	}
 
@@ -104,11 +104,11 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 		private final URLStreamHandlerFactory orig;
 		
 		public StackOverflowAvoidingStreamHandlerFactory(
-				URLStreamHandlerFactory orig) {
+				final URLStreamHandlerFactory orig) {
 				this.orig = orig;
 		}
 
-		public URLStreamHandler createURLStreamHandler(String protocol) {
+		public URLStreamHandler createURLStreamHandler(final String protocol) {
 			if (!hasProvider(protocol)) {
 				return null;
 			} else {

@@ -27,7 +27,7 @@ import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventListModel;
 
-/** A static list of files - you can just view them, but not interact or navigate.
+/** A static {@code JList} of files. - you can just view them, but not interact or navigate.
  *  
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 24, 200711:51:48 AM
@@ -44,7 +44,7 @@ public class FilesList extends JList {
      * @param files 
      * 
      */
-    public FilesList(EventList files, final IconFinder icons) {
+    public FilesList(final EventList files, final IconFinder icons) {
         super();
         setModel(new EventListModel(files));
         
@@ -56,15 +56,15 @@ public class FilesList extends JList {
         
         setCellRenderer(new DefaultListCellRenderer() {
             Dimension dim = new Dimension(100,50); //@todo calculate this more nicely.
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
+        public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+            final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
                     cellHasFocus);
             //@todo optimize this- I redo this every time.
             l.setVerticalTextPosition(JLabel.BOTTOM);
             l.setHorizontalTextPosition(JLabel.CENTER);
             l.setHorizontalAlignment(JLabel.CENTER);
             l.setPreferredSize(dim);
-            FileObject f = (FileObject)value;
+            final FileObject f = (FileObject)value;
             final String name = f.getName().getBaseName();
             l.setText(WordUtils.wrap(name,14));
             l.setIcon(icons.find(f)); 
@@ -73,14 +73,14 @@ public class FilesList extends JList {
         });        
     }
     
-    public String getToolTipText(MouseEvent e) {
-        int index = locationToIndex(e.getPoint());
+    public String getToolTipText(final MouseEvent e) {
+        final int index = locationToIndex(e.getPoint());
         if (index < 0) {
             return null;
         }
-        ListModel dlm = getModel();
+        final ListModel dlm = getModel();
         ensureIndexIsVisible(index);
-        FileObject item = (FileObject)dlm.getElementAt(index);
+        final FileObject item = (FileObject)dlm.getElementAt(index);
        return createToolTipFromFileObject(item);
    }
 
@@ -94,13 +94,13 @@ public class FilesList extends JList {
         }
         item = AstroscopeFileObject.findAstroscopeOrInnermostFileObject(item);
 
-        HtmlBuilder sb = new HtmlBuilder();
+        final HtmlBuilder sb = new HtmlBuilder();
            sb.append("URI: ").append(item.getName().getURI());
            try {
-           FileContent content = item.getContent();
+           final FileContent content = item.getContent();
            sb.br().append("Last modified: ").append(new Date(content.getLastModifiedTime()));
            if (item.getType().hasContent()) {
-               long sz = content.getSize();
+               final long sz = content.getSize();
                sb.br()
                    .append("Size: ")
                    .append(sz == AstroscopeFileObject.UNKNOWN_SIZE ? "unknown" : FileUtils.byteCountToDisplaySize(sz));
@@ -108,7 +108,7 @@ public class FilesList extends JList {
                    .append("Content type: ")
                    .append(content.getContentInfo().getContentType());
            }
-           } catch (FileSystemException ex) {
+           } catch (final FileSystemException ex) {
                // don't care
            }
            return sb.toString();

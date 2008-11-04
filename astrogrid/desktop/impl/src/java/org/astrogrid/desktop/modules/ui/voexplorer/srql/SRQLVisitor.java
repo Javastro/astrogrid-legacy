@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer.srql;
 
-/** visitor pattern over the SRQL model.
+/** Visitor that traverses a SRQL parse tree.
  * it's the visitor's responsibility to call accept() on sub terms - the accept methods
  * of the SRQL classes don't do the recursive calls for you.
  * @author Noel Winstanley

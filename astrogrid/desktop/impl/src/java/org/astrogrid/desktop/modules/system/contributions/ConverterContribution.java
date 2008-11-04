@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.system.contributions;
 
 import org.apache.commons.beanutils.Converter;
 
-/** Contribution bean for registering converters.
+/** Contribution for registering converters.
  * used to configure how to convert string inputs into objects
  * biuilds on apache beanutiles converters framework.
  * @author Noel Winstanley

@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.15 2008/03/28 13:09:01 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.16 2008/11/04 14:35:52 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,33 +26,31 @@ import org.astrogrid.desktop.modules.ui.FileManagerInternal;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
-import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.actions.DeleteFilesActivity;
 import org.astrogrid.desktop.modules.ui.actions.DuplicateActivity;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
 import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
-import org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity;
 import org.astrogrid.desktop.modules.ui.actions.RenameActivity;
-import org.astrogrid.desktop.modules.ui.actions.RevealFileActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity;
 import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationListener;
 
-/** Main window of fileexplorer - assembles together the contributions.
+/** File Explorer implementation.
+ *  - assembles together the contributions.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
  *
  */
 public class FileExplorerImpl extends UIComponentImpl implements FileManagerInternal, NavigationListener{
 
 	public FileExplorerImpl( final UIContext context,  final ActivityFactory activityBuilder
-			,TypesafeObjectBuilder uiBuilder) {
+			,final TypesafeObjectBuilder uiBuilder) {
         super(context,"File Explorer","window.fileexplorer");
  
         this.setSize(800, 600);    
         	
-	    JPanel pane = getMainPanel();
+	    final JPanel pane = getMainPanel();
 
 		    // build the actions menu / pane
 		    acts = activityBuilder.create(this,new Class[]{
@@ -69,8 +67,8 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		    view = uiBuilder.createStorageView(this,acts);
 
 	// build the menus
-		    UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
-		        protected void populateFileMenu(FileMenuBuilder fmb) {
+		    final UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
+		        protected void populateFileMenu(final FileMenuBuilder fmb) {
 		            fmb.windowOperation(view.getNewFolder())
 		                .windowOperation(view.getFoldersList().getCreate())
 		                .windowOperation(acts.getActivity(ViewInBrowserActivity.class))
@@ -88,7 +86,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		                .windowOperation(view.getFoldersList().getEdit())
 		                .windowOperation(view.getFoldersList().getDelete());
 		        }
-		        protected void populateEditMenu(EditMenuBuilder emb) { 
+		        protected void populateEditMenu(final EditMenuBuilder emb) { 
 		            emb.cut()
 		                .copy()
 		                .paste()
@@ -97,7 +95,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		               // .invertSelection();
 		        }
 		        protected void constructAdditionalMenus() {
-		            MenuBuilder vmb = new MenuBuilder("View",KeyEvent.VK_V)
+		            final MenuBuilder vmb = new MenuBuilder("View",KeyEvent.VK_V)
 		                .windowOperation(view.getRefresh())
 		                .windowOperation(view.getStop())
 		                .separator()
@@ -105,7 +103,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		                .radiobox(view.getList());
 		            add(vmb.create());
 		            
-		            MenuBuilder gmb = new MenuBuilder("Go",KeyEvent.VK_G);
+		            final MenuBuilder gmb = new MenuBuilder("Go",KeyEvent.VK_G);
 		            gmb.windowOperation(view.getNavigator().getBackAction())
 		                .windowOperation(view.getNavigator().getForwardAction())
 		                .windowOperation(view.getNavigator().getUpAction())
@@ -121,8 +119,8 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 
 	        setJMenuBar(menuBar);		
 
-            JComponent mainPanel = view.getMainPanel();
-		    JComponent mainButtons = view.getMainButtons();
+            final JComponent mainPanel = view.getMainPanel();
+		    final JComponent mainButtons = view.getMainButtons();
 		 
 		    // assemble all into main window.
 		    final JScrollPane activitiesScroller = new JScrollPane(acts.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -130,7 +128,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 			// assemble folders and tasks into LHS 
 		    final JScrollPane foldersScroller = new JScrollPane(view.getFoldersList(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		    foldersScroller.setBorder(null);
-			JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, foldersScroller
+			final JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, foldersScroller
 					,activitiesScroller);
 		    leftPane.setDividerLocation(200);
 		    leftPane.setDividerSize(6);
@@ -138,7 +136,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		    leftPane.setBorder(null);
 
 		    // combine LHS and RSH
-		    JSplitPane lrPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,leftPane,mainPanel);
+		    final JSplitPane lrPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,leftPane,mainPanel);
 		    lrPane.setDividerLocation(200);
 		    lrPane.setResizeWeight(0.1);
 		    lrPane.setDividerSize(6);
@@ -165,7 +163,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 	        view.getNavigator().move(fileToShow);
 	}
 
-    public void moved(NavigationEvent e) {
+    public void moved(final NavigationEvent e) {
         setTitle("File Explorer - " + view.getNavigator().current().getName());
     }
 

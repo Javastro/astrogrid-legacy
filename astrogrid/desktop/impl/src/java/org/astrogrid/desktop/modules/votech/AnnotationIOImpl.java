@@ -28,9 +28,7 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
-/** Handles the messy business of reading / writing anntotation files.
- * Keeps it separate from the rest of the implementation, 
- * and allows it to be switched around later.
+/** Implementation of {@link AnnotationIO}.
  * 
  * at the moment only the reading-writing of single annotation files is properly developeed, tested and used.
  * loading/saving of the list of annotation sources is undeveloped at the moment.
@@ -59,7 +57,7 @@ public class AnnotationIOImpl implements AnnotationIO {
     private final AnnotationService service;
 
 		
-	public AnnotationIOImpl(final Preference workDirPref, IterableObjectBuilder srcBuilder,XmlPersist xml, AnnotationService service,UIContext context) {
+	public AnnotationIOImpl(final Preference workDirPref, final IterableObjectBuilder srcBuilder,final XmlPersist xml, final AnnotationService service,final UIContext context) {
 		super();
         this.xml = xml;
         this.service = service;
@@ -78,8 +76,8 @@ public class AnnotationIOImpl implements AnnotationIO {
 		
 		sources = new ArrayList<AnnotationSource>();
 		sources.add(userSource);
-		for (Iterator<AnnotationSource> i = srcBuilder.creationIterator(); i.hasNext();) {
-			AnnotationSource src = i.next();
+		for (final Iterator<AnnotationSource> i = srcBuilder.creationIterator(); i.hasNext();) {
+			final AnnotationSource src = i.next();
 			sources.add(src);
 		}
 					
@@ -92,7 +90,7 @@ public class AnnotationIOImpl implements AnnotationIO {
 	}
 	
 	// does nothing - unimplemented
-	public void saveAnnotationSourceList(AnnotationSource[] list) {
+	public void saveAnnotationSourceList(final AnnotationSource[] list) {
 	    //unimplemented
 	}
 	
@@ -102,18 +100,18 @@ public class AnnotationIOImpl implements AnnotationIO {
 	}
 	
 // management of annotations
-	public Collection load(AnnotationSource source) {
+	public Collection load(final AnnotationSource source) {
 	    InputStream is = null;
 	    try {
 	        is = source.getSource().toURL().openStream();
-	        Collection anns = (Collection)xml.fromXml(is);
+	        final Collection anns = (Collection)xml.fromXml(is);
 	        if (anns != null) {
 	            if (source.equals(userSource)) {
 	                userAnnotationIds.clear();		
 	            }
 	            // clean up the loaded list.
-	            for(Iterator i = anns.iterator(); i.hasNext(); ) {
-	                Object  a = i.next();
+	            for(final Iterator i = anns.iterator(); i.hasNext(); ) {
+	                final Object  a = i.next();
 	                if (!( a instanceof Annotation)) {
 	                    i.remove(); // remove it - utter rubbish.
 	                } else if (source.equals(userSource)) {
@@ -132,17 +130,17 @@ public class AnnotationIOImpl implements AnnotationIO {
 	        } else {
 	            logger.info("Empty Source " + source);
 	        }
-	    } catch (MalformedURLException x1) {
+	    } catch (final MalformedURLException x1) {
 	        logger.warn(x1.getMessage());
-	    } catch (IOException x1) {
+	    } catch (final IOException x1) {
 	        logger.warn(x1.getMessage());					
-	    } catch (ServiceException x) {
+	    } catch (final ServiceException x) {
 	        logger.warn(x.getMessage());
 	    } finally {
 	        if (is != null) {
 	            try {
 	                is.close();
-	            } catch (IOException x1) {
+	            } catch (final IOException x1) {
 	                //meh
 	            }
 	        }				
@@ -153,7 +151,7 @@ public class AnnotationIOImpl implements AnnotationIO {
 
 	// user annotations.
 	/** mark a user annotation as updated, and persist the list */
-	public void updateUserAnnotation(UserAnnotation ann) {
+	public void updateUserAnnotation(final UserAnnotation ann) {
 	    if (userAnnotationIds.contains(UNINITIALIZED_SET)) {
 	        throw new IllegalStateException("User annotations must be loaded first");
 	    }
@@ -161,7 +159,7 @@ public class AnnotationIOImpl implements AnnotationIO {
 	        saveUserAnnotations();
 	}
 	/** mark a user annotation as removed, and persist the list */
-	public void removeUserAnnotation(Resource r) {
+	public void removeUserAnnotation(final Resource r) {
         if (userAnnotationIds.contains(UNINITIALIZED_SET)) {
             throw new IllegalStateException("User annotations must be loaded first");
         }	    
@@ -181,10 +179,10 @@ public class AnnotationIOImpl implements AnnotationIO {
 	        protected Object construct() throws Exception {
 	            OutputStream fos = null;
 	            try {
-	                List<UserAnnotation> persistList = new ArrayList<UserAnnotation>(userAnnotationIds.size());
-	                for (Iterator<URI> i = userAnnotationIds.iterator(); i.hasNext();) {
-	                    URI id = i.next();	   
-	                    UserAnnotation a = service.getUserAnnotation(id);
+	                final List<UserAnnotation> persistList = new ArrayList<UserAnnotation>(userAnnotationIds.size());
+	                for (final Iterator<URI> i = userAnnotationIds.iterator(); i.hasNext();) {
+	                    final URI id = i.next();	   
+	                    final UserAnnotation a = service.getUserAnnotation(id);
 	                    if (a != null) {
 	                        persistList.add(a);
 	                    }
@@ -196,7 +194,7 @@ public class AnnotationIOImpl implements AnnotationIO {
 	                if (fos != null) {
 	                    try {
 	                        fos.close();
-	                    } catch (IOException x) {
+	                    } catch (final IOException x) {
 	                        logger.error("Failed to save user annotations",x);
 	                    }
 	                }

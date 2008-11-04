@@ -3,15 +3,10 @@
  */
 package org.astrogrid.desktop.modules.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -27,15 +22,22 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import junit.framework.AssertionFailedError;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestListener;
+import junit.framework.TestResult;
+import junit.framework.TestSuite;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker.TimeoutEnum;
 import org.joda.time.Duration;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -45,14 +47,7 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestListener;
-import junit.framework.TestResult;
-import junit.framework.TestSuite;
-
-/** implementation of the self tester.
+/** implementation of {@link SelfTester}.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 22, 20073:23:23 PM
  * @TEST
@@ -79,15 +74,15 @@ public class SelfTesterImpl implements SelfTester, Runnable {
      * @throws InterruptedException 
      * 
      */
-    public SelfTesterImpl(final UIContext context,SchedulerInternal scheduler,List contribution
-            ,SystemTray tray,int delay,boolean runAtStartup)  {
+    public SelfTesterImpl(final UIContext context,final SchedulerInternal scheduler,final List contribution
+            ,final SystemTray tray,final int delay,final boolean runAtStartup)  {
         this.context = context;
         this.tray = tray;
         // assemble the test suite.
         logger.info("Assembling self test suite");
         this.suite = new TestSuite("Runtime self tests");
-        for (Iterator i = contribution.iterator(); i.hasNext();) {
-           Test t = (Test) i.next();
+        for (final Iterator i = contribution.iterator(); i.hasNext();) {
+           final Test t = (Test) i.next();
            if (t != null) { // possible to get a null suite if a contributing service is disabled.
             suite.addTest(t);
            }
@@ -145,7 +140,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             int max = suite.countTestCases();
             protected Object construct() throws Exception {
                 setProgress(count,max);
-                TestResult result = new TestResult();
+                final TestResult result = new TestResult();
                 result.addListener(SelfTestDisplay.this); // listener methods will be called on the BG thread, but changes appear in ui on EDT thread
                 result.addListener(this);// just for prgress monitor reporting.
                 suite.run(result);
@@ -153,8 +148,8 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                 return result;
             }
 
-            protected void doFinished(Object result) {
-                TestResult tr= (TestResult)result;
+            protected void doFinished(final Object result) {
+                final TestResult tr= (TestResult)result;
                 setStatusMessage( max + " tests run, " + (tr.failureCount() + tr.errorCount()) + " failed");
             }
 
@@ -162,13 +157,13 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                 retest.setEnabled(true);              
             }
 
-            public void addError(Test arg0, Throwable arg1) {
+            public void addError(final Test arg0, final Throwable arg1) {
             }
 
-            public void addFailure(Test arg0, AssertionFailedError arg1) {
+            public void addFailure(final Test arg0, final AssertionFailedError arg1) {
             }
 
-            public void endTest(Test arg0) {
+            public void endTest(final Test arg0) {
                 setProgress(++count,max); // this is the background worker progress monitor.
                 final int progress = count;
                 SwingUtilities.invokeLater(new Runnable() { // set the ui progress monitor.
@@ -178,7 +173,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                     }
                 });
             }
-            public void startTest(Test arg0) {
+            public void startTest(final Test arg0) {
                 if (arg0 instanceof TestCase) {
                     reportProgress("Testing " + ((TestCase)arg0).getName());
                 }
@@ -194,12 +189,12 @@ public class SelfTesterImpl implements SelfTester, Runnable {
          * @param context
          * @throws HeadlessException
          */
-        public SelfTestDisplay(UIContext context) throws HeadlessException {
+        public SelfTestDisplay(final UIContext context) throws HeadlessException {
             super(context,"Self Tests","window.selftest");
             context.unregisterWindow(this); // registered by parent, don't want it.
             
             // a table component, based on the testResults, where all updates occur on the EDT
-            JTable table = new JTable(new EventTableModel(
+            final JTable table = new JTable(new EventTableModel(
                     GlazedListsSwing.swingThreadProxyList(testResults)
                     ,new SelfTestTableFormat()
                     ));
@@ -208,20 +203,20 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             table.getColumnModel().getColumn(2).setPreferredWidth(250);
             setJMenuBar(new UIComponentMenuBar(this,true) { // minimalistic menu
 
-                protected void populateEditMenu(EditMenuBuilder emb) {
+                protected void populateEditMenu(final EditMenuBuilder emb) {
                     // ignored
                 }
 
-                protected void populateFileMenu(FileMenuBuilder fmb) {
+                protected void populateFileMenu(final FileMenuBuilder fmb) {
                     fmb.closeWindow();
                 }
             });
             setSize(600,400);
-            JPanel pane = getMainPanel();
+            final JPanel pane = getMainPanel();
             pane.add(new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),BorderLayout.CENTER);
             retest = new JButton("Re-run self tests");
-            JButton helpButton = context.getHelpServer().createHelpButton("window.selftest");
-            Box topPanel = new Box(BoxLayout.X_AXIS);
+            final JButton helpButton = context.getHelpServer().createHelpButton("window.selftest");
+            final Box topPanel = new Box(BoxLayout.X_AXIS);
             topPanel.add(retest);
             topPanel.add(Box.createHorizontalGlue());
             topPanel.add(helpButton);
@@ -241,7 +236,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
 
         }
 
-        public void setVisible(boolean b) {
+        public void setVisible(final boolean b) {
             super.setVisible(b);
             if (b) {
                 getContext().registerWindow(this);
@@ -251,7 +246,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
 
 
         // callback when retest button pressed.
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             logger.info("Running self tests");
             this.retest.setEnabled(false);
             try {
@@ -268,7 +263,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
         // test listener interface. build up the list of results.
         // assuming that all the tests in the suite are run sequentially in a single thread
         // which is the usual behaviour.
-        public void startTest(Test arg0) {
+        public void startTest(final Test arg0) {
             currentTest = new SingleTestResult();
             if (arg0 instanceof TestCase) {
                 currentTest.name = ((TestCase)arg0).getName(); 
@@ -284,12 +279,12 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             }
         }
 
-        public void endTest(Test arg0) {
+        public void endTest(final Test arg0) {
             currentTest.completed = true;
             // fire another notification that this item has changes.
             try {
                testResults.getReadWriteLock().writeLock().lock();
-               int pos = testResults.indexOf(currentTest);
+               final int pos = testResults.indexOf(currentTest);
                testResults.set(pos,currentTest);
             } finally {
                 testResults.getReadWriteLock().writeLock().unlock();
@@ -307,12 +302,12 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             
         }
 
-        public void addError(Test arg0, Throwable arg1) {
+        public void addError(final Test arg0, final Throwable arg1) {
             currentTest.error = arg1;
             warnIfNotShowing();
         }
         
-        public void addFailure(Test arg0, AssertionFailedError arg1) {
+        public void addFailure(final Test arg0, final AssertionFailedError arg1) {
             currentTest.failure = arg1;
             warnIfNotShowing();
         }
@@ -355,7 +350,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                 return 3;
             }
 
-            public String getColumnName(int column) {
+            public String getColumnName(final int column) {
                 switch(column) {
                     case 0: 
                         return "";
@@ -368,8 +363,8 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                 }
             }
 
-            public Object getColumnValue(Object baseObject, int column) {
-                SingleTestResult r = (SingleTestResult)baseObject;
+            public Object getColumnValue(final Object baseObject, final int column) {
+                final SingleTestResult r = (SingleTestResult)baseObject;
                 switch(column) {
                     case 0:
                         if (! r.completed) {
@@ -396,7 +391,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                 }
             }
 
-            public Class getColumnClass(int column) {
+            public Class getColumnClass(final int column) {
                 if (column == 0) {
                     return Icon.class;
                 } else {
@@ -404,7 +399,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                 }
             }
 
-            public Comparator getColumnComparator(int column) {
+            public Comparator getColumnComparator(final int column) {
                 if (column == 0) {
                     return null;
                 } else {

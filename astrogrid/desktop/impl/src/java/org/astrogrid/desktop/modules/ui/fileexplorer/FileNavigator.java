@@ -44,7 +44,7 @@ import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 
-/** 'controller' object that allows navigation - and manages changes to a file model and a history
+/** 'controller' object that allows navigation around a filesystem; manages changes to a file model and a history.
  * 
  * this object is observable, and notifies observers when the current location changes.
  * 
@@ -54,7 +54,7 @@ import ca.odell.glazedlists.matchers.MatcherEditor;
  */
 public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current, FileListener{
     
-    // event listener interface
+    /** event listener interface for navigation events */
     public static interface NavigationListener extends EventListener {
         /** called while the navigator is in the process of moving */
         public void moving();
@@ -66,7 +66,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     public static class NavigationEvent extends EventObject {
 
         private final boolean root;
-        public NavigationEvent(Object source, boolean root) {
+        public NavigationEvent(final Object source, final boolean root) {
             super(source);
             this.root = root;
         }
@@ -81,7 +81,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
 
         private final StorageFolder sf;
 
-        public BookmarkNavigationEvent(Object source, boolean root,StorageFolder sf) {
+        public BookmarkNavigationEvent(final Object source, final boolean root,final StorageFolder sf) {
             super(source,root);
             this.sf = sf;
         }
@@ -91,15 +91,15 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     }
     
     private final EventListenerList listeners = new EventListenerList();
-    public void addNavigationListener(NavigationListener l) {
+    public void addNavigationListener(final NavigationListener l) {
         listeners.add(NavigationListener.class,l);
     }
-    public void removeNavigationListener(NavigationListener l) {
+    public void removeNavigationListener(final NavigationListener l) {
         listeners.remove(NavigationListener.class,l);
     }
     
     private void fireMoving() {
-        EventListener[] lits = listeners.getListeners(NavigationListener.class);
+        final EventListener[] lits = listeners.getListeners(NavigationListener.class);
         if (lits != null) {
             for (int i = 0; i < lits.length; i++) {
                 ((NavigationListener)lits[i]).moving();
@@ -107,20 +107,20 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         }
     }
     
-    private void fireMoved(boolean isRoot) {
-        EventListener[] lits = listeners.getListeners(NavigationListener.class);
+    private void fireMoved(final boolean isRoot) {
+        final EventListener[] lits = listeners.getListeners(NavigationListener.class);
         if (lits != null) {
-            NavigationEvent ev = new NavigationEvent(this,isRoot);
+            final NavigationEvent ev = new NavigationEvent(this,isRoot);
             for (int i = 0; i < lits.length; i++) {
                 ((NavigationListener)lits[i]).moved(ev);
             }
         }        
     }
     
-    private void fireMovedToBookmark(boolean isRoot, StorageFolder storageFolder) {
-        EventListener[] lits = listeners.getListeners(NavigationListener.class);
+    private void fireMovedToBookmark(final boolean isRoot, final StorageFolder storageFolder) {
+        final EventListener[] lits = listeners.getListeners(NavigationListener.class);
         if (lits != null) {
-            NavigationEvent ev = new BookmarkNavigationEvent(this,isRoot,storageFolder);
+            final NavigationEvent ev = new BookmarkNavigationEvent(this,isRoot,storageFolder);
             for (int i = 0; i < lits.length; i++) {
                 ((NavigationListener)lits[i]).moved(ev);
             }
@@ -140,7 +140,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     private final FileSystemManager vfs;
 
     private final IconFinder icons;
-    public FileNavigator(UIComponent parent,FileSystemManager vfs, MatcherEditor ed, ActivitiesManager activities, IconFinder icons) {
+    public FileNavigator(final UIComponent parent,final FileSystemManager vfs, final MatcherEditor ed, final ActivitiesManager activities, final IconFinder icons) {
         super();
         this.parent = parent;
         this.vfs = vfs;
@@ -186,7 +186,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
 // current state
     /** access the current fiile - will throw an illeage state exception if not yet resolved */
     public FileObject current()  {
-        Location loc = (Location) history.current();
+        final Location loc = (Location) history.current();
         if (loc == null) {
             return null;
         }
@@ -221,11 +221,11 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     public boolean hasNext() {
         return history.hasNext();
     }
-    public void move(String s) {       
+    public void move(final String s) {       
         history.move(new Location(s));
     }
     
-    public void move(StorageFolder f) {
+    public void move(final StorageFolder f) {
         history.move(new Location(f));
     }  
         
@@ -235,7 +235,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     }
 
     // history event listener interface - whenever we hear a position change in history, we reload.
-    public void currentChanged(HistoryEvent current) {
+    public void currentChanged(final HistoryEvent current) {
         (new OpenDirectoryWorker()).start();                
     }
     
@@ -243,7 +243,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     private class UpMenuItem extends JMenuItem implements ActionListener {
         private final FileName fn;
 
-        public UpMenuItem(FileName fn) {
+        public UpMenuItem(final FileName fn) {
             this.fn = fn;
             final String baseName = fn.getBaseName();
             setText(StringUtils.isEmpty(baseName) ? fn.getURI() : baseName);
@@ -251,7 +251,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             addActionListener(this);
         }
 
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             FileNavigator.this.move(fn.getURI());
         }
     }
@@ -264,17 +264,17 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
          * create a location from a uri string
          * @param s
          */
-        public Location(String s) {
+        public Location(final String s) {
             setText(s);
             addActionListener(this); // listen to clicks on ourselves.
         }
         /** use an existing file object as a location */
-        public Location(FileObject o) {
+        public Location(final FileObject o) {
             this( o.getName().getURI());            
             this.o = o;
         }
         /** use a storage folder as a location */
-        public Location(StorageFolder f) {
+        public Location(final StorageFolder f) {
             this(f.getUriString());
             this.f = f;
             this.o = f.getFile();       
@@ -282,7 +282,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         private StorageFolder f = null;
         private volatile FileObject o = null;
 
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             history.move(this);
         }       
         public boolean hasResolved() {
@@ -317,14 +317,14 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             return f;
         }
         
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (obj == null) {
                 return false;
             }
             if (! (obj instanceof Location)) {
                 return false;
             }
-            Location other = (Location)obj;
+            final Location other = (Location)obj;
 
             return getText().equals(other.getText());
         }      
@@ -345,7 +345,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             super(FileNavigator.this.parent,"Finding Parent",Thread.MAX_PRIORITY);
         }
         protected Object construct() throws Exception {
-            FileObject p= current().getParent();
+            final FileObject p= current().getParent();
             if (p != null) {
                 logger.debug("Got parent");
                 history.move(new Location(p));
@@ -389,9 +389,9 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         protected Object construct() throws Exception {
             // stop listening to whatever was previously displayed.
             if (history.hasPrevious()) {
-                Location loc = (Location)history.peekPrevious();
+                final Location loc = (Location)history.peekPrevious();
                 if (loc.hasResolved()) {
-                    FileObject prev = loc.getFileObject();
+                    final FileObject prev = loc.getFileObject();
                     prev.getFileSystem().removeListener(prev,FileNavigator.this);
                 }
             }
@@ -411,12 +411,12 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                     return null;
                 }
                 // populate the children.
-                EventList files = model.getChildrenList();
+                final EventList files = model.getChildrenList();
                 // special case - if we're looking for a particular file, and it's not in the folder, do a refresh.
                 if (shown != requested && null == shown.getChild(requested.getName().getBaseName())) {
                     shown.refresh();
                 }
-                FileObject[] children = shown.getChildren();
+                final FileObject[] children = shown.getChildren();
                 
                 try {
                     files.getReadWriteLock().writeLock().lock();
@@ -428,7 +428,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                     files.getReadWriteLock().writeLock().unlock();
                 }
                 // populate the parents.
-                java.util.List parents = new java.util.ArrayList();                    
+                final java.util.List parents = new java.util.ArrayList();                    
                 upList.clear();
                 FileName fn = shown.getName().getParent();
                 while(fn != null) {
@@ -443,11 +443,11 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                 return parents;
         }
         // update the ui.
-        protected void doFinished(Object result) {
-            List parents = (java.util.List) result;
+        protected void doFinished(final Object result) {
+            final List parents = (java.util.List) result;
             upList.clear();
-            for (Iterator i = parents.iterator(); i.hasNext();) {
-                FileName name = (FileName) i.next();
+            for (final Iterator i = parents.iterator(); i.hasNext();) {
+                final FileName name = (FileName) i.next();
                 upList.add(new UpMenuItem(name));
             }
             upAction.setEnabled(!upList.isEmpty());
@@ -456,7 +456,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                         
             loc.setText(loc.getURI());
             if (requested != shown) { // we're meant to be showing a child of this folder.
-                int ix = model.getChildrenList().indexOf(requested);
+                final int ix = model.getChildrenList().indexOf(requested);
                 model.getSelection().setSelectionInterval(ix,ix);
             }  
             if (loc.getBookmark() != null) {
@@ -469,13 +469,13 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     }
 
  // file listener interface - call refresh on a bg thread.
-    public void fileChanged(FileChangeEvent event) throws Exception {
+    public void fileChanged(final FileChangeEvent event) throws Exception {
         refresh();
     }
-    public void fileCreated(FileChangeEvent event) throws Exception {
+    public void fileCreated(final FileChangeEvent event) throws Exception {
         refresh();
     }
-    public void fileDeleted(FileChangeEvent event) throws Exception {
+    public void fileDeleted(final FileChangeEvent event) throws Exception {
         refresh();
     }
 
@@ -501,7 +501,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_H,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
         }
         
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             home();
         }
     }
@@ -514,7 +514,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_W,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
              
         }
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             move("workspace:///");
         }                
     }
@@ -527,7 +527,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,UIComponentMenuBar.MENU_KEYMASK));
             setEnabled(false);
         }
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             up();
         }
     }
@@ -539,7 +539,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET,UIComponentMenuBar.MENU_KEYMASK));
             setEnabled(false);
         }
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             previous();
         }
     }
@@ -552,7 +552,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             setEnabled(false);
             
         }
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             next();
         }
     }

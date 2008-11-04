@@ -3,15 +3,12 @@
  */
 package org.astrogrid.desktop.modules.ag.vfs.myspace;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,15 +21,12 @@ import org.apache.commons.vfs.FileSystemOptions;
 import org.apache.commons.vfs.provider.AbstractOriginatingFileProvider;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider;
-import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.common.BundlePreferences;
-import org.astrogrid.registry.RegistryException;
 
-/** A commons VFS plugin for access to Myspace.
- * 
+/** A  VFS plugin for access to Myspace.
+ * <p/>
  * mostly cribbed from the SftpProvider
  * 
  * the underlying connection to myspace is achived by a FileManagerClient - 
@@ -77,7 +71,7 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 	};
 	public static final Collection CAPABILITIES = Collections.unmodifiableCollection(Arrays.asList(caps));
 	
-	public MyspaceProvider(BundlePreferences prefs, MyspaceInternal msi) {
+	public MyspaceProvider(final BundlePreferences prefs, final MyspaceInternal msi) {
 		super();
 		this.msi = msi;
 		setFileNameParser(new MyspaceNameParser());
@@ -93,12 +87,12 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 		return builder;
 	}
 
-	protected FileSystem doCreateFileSystem(FileName arg0,
-			FileSystemOptions arg1) throws FileSystemException {
-		MyspaceFileName fn = (MyspaceFileName)arg0;
+	protected FileSystem doCreateFileSystem(final FileName arg0,
+			final FileSystemOptions arg1) throws FileSystemException {
+		final MyspaceFileName fn = (MyspaceFileName)arg0;
 
 		logger.debug("Creating filesystem for " + arg0);
-			FileSystem sys = new MyspaceFileSystem(fn,msi,arg1);
+			final FileSystem sys = new MyspaceFileSystem(fn,msi,arg1);
 			filesystems.add(sys);
 			return sys;
 	
@@ -106,18 +100,18 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 	// hang onto the the filesystems, so can be closed on user logout.
 	private final List filesystems = new ArrayList();
 	
-	public void userLogin(UserLoginEvent arg0) {
+	public void userLogin(final UserLoginEvent arg0) {
 		// do nothing.
 	}
 
-	public void userLogout(UserLoginEvent arg0) {
+	public void userLogout(final UserLoginEvent arg0) {
 		// close all the open myspace filesystems.
-		for (Iterator i = filesystems.iterator(); i.hasNext();) {
-			MyspaceFileSystem f = (MyspaceFileSystem) i.next();
+		for (final Iterator i = filesystems.iterator(); i.hasNext();) {
+			final MyspaceFileSystem f = (MyspaceFileSystem) i.next();
 			try {
 			    getContext().getFileSystemManager().getFilesCache().clear(f);
 			   
-			} catch (Throwable t) {
+			} catch (final Throwable t) {
 			  logger.warn("Exception when closing filesystem",t);  
 			}
 		}

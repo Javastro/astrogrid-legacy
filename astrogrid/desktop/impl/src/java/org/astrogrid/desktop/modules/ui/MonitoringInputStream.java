@@ -13,9 +13,10 @@ import org.apache.commons.io.input.ProxyInputStream;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 
-/** Input stream which monitors progress and reports it in increments to a worker progress reporter.
+/** Input stream which monitors progress.
+ * Progress is and reported  in increments to a worker progress reporter.
  * implementation based on commons.io.CountingInputStream
- * @author Noel.Winstanley@manchester.ac.uk
+ * @author Noel.Winstanley@manchester.ac.uk.
  * @since Nov 27, 200712:45:39 PM
  */
 public class MonitoringInputStream  extends ProxyInputStream {
@@ -32,15 +33,15 @@ public class MonitoringInputStream  extends ProxyInputStream {
      * @return
      * @throws IOException
      */
-    public static MonitoringInputStream create(WorkerProgressReporter reporter, URL url,long factor) throws IOException {
-        URLConnection conn = url.openConnection();
-        int size = conn.getContentLength();
+    public static MonitoringInputStream create(final WorkerProgressReporter reporter, final URL url,final long factor) throws IOException {
+        final URLConnection conn = url.openConnection();
+        final int size = conn.getContentLength();
         return new MonitoringInputStream(reporter,conn.getInputStream(),size,factor);
     }
 
-    public static MonitoringInputStream create(WorkerProgressReporter reporter, FileObject fo,long factor) throws IOException {
-       FileContent content = fo.getContent();
-        long size = content.getSize();
+    public static MonitoringInputStream create(final WorkerProgressReporter reporter, final FileObject fo,final long factor) throws IOException {
+       final FileContent content = fo.getContent();
+        final long size = content.getSize();
         return new MonitoringInputStream(reporter,content.getInputStream(),size,factor);
     }
     
@@ -51,7 +52,7 @@ public class MonitoringInputStream  extends ProxyInputStream {
     private final int factoredSize;
     private long factoredCount;
    // private final long lastModified;
-    MonitoringInputStream(WorkerProgressReporter reporter,InputStream is,long size,long factor) {
+    MonitoringInputStream(final WorkerProgressReporter reporter,final InputStream is,final long size,final long factor) {
         super(is);
         this.reporter = reporter;
         this.size = size;
@@ -84,10 +85,10 @@ public class MonitoringInputStream  extends ProxyInputStream {
      * @throws IOException if an I/O error occurs
      * @see java.io.InputStream#read(byte[]) 
      */
-    public int read(byte[] b) throws IOException {
-        int found = super.read(b);
+    public int read(final byte[] b) throws IOException {
+        final int found = super.read(b);
         this.count += (found >= 0) ? found : 0;
-        long nu = count/factor;
+        final long nu = count/factor;
         if (nu != this.factoredCount) { // trigger a change
             this.factoredCount = nu;
             reporter.setProgress((int)factoredCount,factoredSize);
@@ -106,10 +107,10 @@ public class MonitoringInputStream  extends ProxyInputStream {
      * @throws IOException if an I/O error occurs
      * @see java.io.InputStream#read(byte[], int, int)
      */
-    public int read(byte[] b, int off, int len) throws IOException {
-        int found = super.read(b, off, len);
+    public int read(final byte[] b, final int off, final int len) throws IOException {
+        final int found = super.read(b, off, len);
         this.count += (found >= 0) ? found : 0;
-        long nu = count/factor;
+        final long nu = count/factor;
         if (nu != this.factoredCount) { // trigger a change
             this.factoredCount = nu;
             reporter.setProgress((int)factoredCount,factoredSize);
@@ -126,9 +127,9 @@ public class MonitoringInputStream  extends ProxyInputStream {
      * @see java.io.InputStream#read()
      */
     public int read() throws IOException {
-        int found = super.read();
+        final int found = super.read();
         this.count += (found >= 0) ? 1 : 0;
-        long nu = count/factor;
+        final long nu = count/factor;
         if (nu != this.factoredCount) { // trigger a change
             this.factoredCount = nu;
             reporter.setProgress((int)factoredCount,factoredSize);
@@ -148,7 +149,7 @@ public class MonitoringInputStream  extends ProxyInputStream {
     public long skip(final long length) throws IOException {
         final long skip = super.skip(length);
         this.count += skip;
-        long nu = count/factor;
+        final long nu = count/factor;
         if (nu != this.factoredCount) { // trigger a change
             this.factoredCount = nu;
             reporter.setProgress((int)factoredCount,factoredSize);
@@ -182,7 +183,7 @@ public class MonitoringInputStream  extends ProxyInputStream {
      * @since Commons IO 1.3
      */
     public synchronized long resetByteCount() {
-        long tmp = this.count;
+        final long tmp = this.count;
         this.count = 0;
         return tmp;
     }

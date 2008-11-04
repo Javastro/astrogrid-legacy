@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
  */
 
 
-/* Map SIA V1.0 UCDs to SIA interface attributes.  This is where
+/** Map SIA V1.0 UCDs to SIA interface attributes.  This is where
 
  * we map the SIAP-defined UCDs in the rows of the VOTable to the
 
@@ -94,7 +94,7 @@ class Sia10Map {
 
     // Enter an attribute-UCD pair into the hashmap (makes UCD the key).
 
-    static void enter(String attribute, String ucd) {
+    static void enter(final String attribute, final String ucd) {
 
         m.put(ucd, attribute);
 
@@ -104,7 +104,7 @@ class Sia10Map {
 
     // Map a SIA V1.0 UCD to the corresponding data model attribute name.
 
-    static String mapUCD(String ucd) {
+    static String mapUCD(final String ucd) {
 
         return ((String) m.get(ucd));
 

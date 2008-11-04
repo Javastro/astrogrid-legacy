@@ -8,7 +8,7 @@ import java.awt.Graphics;
 
 import javax.swing.Icon;
 
-/**
+/** An icon composed of an array of individual icons.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20071:20:05 AM
  * 
@@ -19,12 +19,12 @@ public class CombinedIcon implements Icon
     public static final int HORIZONTAL = 0;
     public static final int VERTICAL = 1;
     
-    public CombinedIcon(Icon[] is)
+    public CombinedIcon(final Icon[] is)
     {
         this(is, HORIZONTAL);
     }
     
-    public CombinedIcon(Icon[] is, int orientation)
+    public CombinedIcon(final Icon[] is, final int orientation)
     {
         assert (orientation == HORIZONTAL) || (orientation == VERTICAL) : "Invalid orientation";
         this.is = is;
@@ -71,11 +71,11 @@ public class CombinedIcon implements Icon
         }
     }
     
-    public void paintIcon(Component c, Graphics g, int x, int y)
+    public void paintIcon(final Component c, final Graphics g, final int x, final int y)
     {
         if (orientation_ == VERTICAL)
         {
-            int maxWidth = getIconWidth();
+            final int maxWidth = getIconWidth();
             int heightSoFar = 0;
             for (int i = 0; i < is.length; i++) {
 				is[i].paintIcon(c,g, x + (maxWidth - is[i].getIconWidth())/2,y + heightSoFar );
@@ -84,7 +84,7 @@ public class CombinedIcon implements Icon
        }
         else
         {
-            int maxHeight = getIconHeight();
+            final int maxHeight = getIconHeight();
             int widthSoFar = 0;
             for (int i = 0; i < is.length; i++) {
 				is[i].paintIcon(c,g, x + widthSoFar, y + (maxHeight - is[i].getIconHeight())/2);
@@ -93,6 +93,6 @@ public class CombinedIcon implements Icon
          }
     }
     
-    private Icon[] is;
-    private int orientation_;
+    private final Icon[] is;
+    private final int orientation_;
 }

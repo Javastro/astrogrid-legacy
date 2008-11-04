@@ -7,7 +7,7 @@ import java.net.URI;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 
-/** Represents a different kind of source of annotations - a service that
+/** A pointer to an external service that
  * can be queried for annotations dynamically.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20077:25:58 PM
@@ -28,7 +28,7 @@ public abstract class DynamicAnnotationSource extends AnnotationSource {
 		super();
 	}
 
-	public DynamicAnnotationSource(URI source, String name) {
+	public DynamicAnnotationSource(final URI source, final String name) {
 		super(source, name);
 	}
 	

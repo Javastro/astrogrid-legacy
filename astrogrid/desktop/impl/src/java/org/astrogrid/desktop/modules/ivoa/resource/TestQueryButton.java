@@ -17,7 +17,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 
-/** static button class that performs a test query.
+/** HTML-Button static that performs a test query.
  * 
  *  design is constrained by the requirements of being inserted into the 
  *  resource display via an 'object' html tag - hence has to get 
@@ -37,7 +37,7 @@ public class TestQueryButton extends ResourceDisplayPaneEmbeddedButton implement
         CSH.setHelpIDString(this,"reg.test.query");        
     }
     
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
             final ResourceDisplayPane displayPane = getResourceDisplayPane(e);
             final Resource r = displayPane.getCurrentResource();
             if (!(r instanceof Service)) {
@@ -54,11 +54,11 @@ public class TestQueryButton extends ResourceDisplayPaneEmbeddedButton implement
             (new BackgroundWorker(uiParent,"Testing " + r.getTitle(),BackgroundWorker.VERY_SHORT_TIMEOUT) {
 
                 protected Object construct() throws Exception {
-                    boolean b = displayPane.getCapabilityTester().testCapability(cap);
+                    final boolean b = displayPane.getCapabilityTester().testCapability(cap);
                     return Boolean.valueOf(b);
                     
                 }
-                protected void doFinished(Object result) {
+                protected void doFinished(final Object result) {
                     if (((Boolean)result).booleanValue()) {
                         setText("Tested OK");
                         setIcon(IconHelper.loadIcon("tick16.png"));
@@ -67,7 +67,7 @@ public class TestQueryButton extends ResourceDisplayPaneEmbeddedButton implement
                         setIcon(IconHelper.loadIcon("no16.png"));                        
                     }
                 }
-                protected void doError(Throwable ex) {
+                protected void doError(final Throwable ex) {
                     setText("Test Failed");
                     setIcon(IconHelper.loadIcon("no16.png"));
                     setToolTipText(ExceptionFormatter.formatException(ex));
@@ -79,7 +79,7 @@ public class TestQueryButton extends ResourceDisplayPaneEmbeddedButton implement
     private int capabilityIndex;
 
 
-    public final void setCapabilityIndex(String capabilityIndex) {
+    public final void setCapabilityIndex(final String capabilityIndex) {
         this.capabilityIndex = Integer.parseInt(capabilityIndex);
     }
     

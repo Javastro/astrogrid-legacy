@@ -12,7 +12,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.FileManagerFactory;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
-/** action to reveal a file.
+/**Reveal a file in fileexplorer.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 10, 20071:03:46 PM
  * 

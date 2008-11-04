@@ -17,7 +17,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/**
+/** Dialogue that prompts user for a new password.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 19, 20086:20:12 PM
  */

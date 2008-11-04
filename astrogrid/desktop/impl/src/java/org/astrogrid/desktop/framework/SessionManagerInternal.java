@@ -7,7 +7,7 @@ import java.security.Principal;
 
 import org.astrogrid.acr.builtin.SessionManager;
 
-/** keeps track of multiple sessions in the AR
+/** Keeps track of multiple sessions in the AR.
  * each session may start either authenticated or unauthenticated.
  * Unauthenticated sessions may upgrade by authenticating later.
  * @author Noel.Winstanley@manchester.ac.uk

@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.36 2008/10/30 11:53:50 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.37 2008/11/04 14:35:47 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,7 +55,7 @@ import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-/** Application service.
+/** Implementation of {@code ApplicationsInternal}
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  * * @todo refine exception reporting.
  * @TEST mock up the underpinnings of this class.
@@ -460,6 +460,9 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.37  2008/11/04 14:35:47  nw
+javadoc polishing
+
 Revision 1.36  2008/10/30 11:53:50  nw
 Complete - taskpaul cockup.
 

@@ -6,7 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hivemind.ApplicationRuntimeException;
 
-/** classes that encapsulates a single method invocation as a runnable
+/** Encapsulates a single method invocation as a Runnable.
 * used from within one of the interceptors.
 */
 public class Invoke implements Runnable {

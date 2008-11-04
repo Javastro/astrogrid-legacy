@@ -27,7 +27,8 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
-/** subclass of taskrunnner that takes care of query building.
+/** Implementation of QueryBuilder.
+ * A subclass of taskrunnner that specializes in  query building.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 22, 20076:50:14 PM
  */

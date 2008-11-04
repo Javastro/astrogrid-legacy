@@ -11,8 +11,8 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.w3c.dom.Document;
 
-/** Internal interface to remote process manager which 
- * provides access to a process monitor
+/** Internal interface that extends {@code RemoteProcessManager} to provide access to a {@code ProcessMonitor}. 
+
  *
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 16, 200712:58:48 PM

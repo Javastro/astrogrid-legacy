@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.18 2008/04/23 10:56:23 nw Exp $
+/*$Id: SiapImpl.java,v 1.19 2008/11/04 14:35:51 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.StarTable;
 
-/** Implementaiton of a component that does siap queries.
+/** Simple Image Access Client.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  *complies with 1.0 draft of SIAP spec. (24/5/2004)
  *@TEST
@@ -37,7 +37,7 @@ public class SiapImpl extends DALImpl implements Siap {
     /** Construct a new SiapImpl
      * 
      */
-    public SiapImpl(Registry reg, MyspaceInternal ms) {
+    public SiapImpl(final Registry reg, final MyspaceInternal ms) {
         super(reg,ms);
         
     }
@@ -45,7 +45,7 @@ public class SiapImpl extends DALImpl implements Siap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQuery(java.net.URI, double, double, double)
      */
-    public URL constructQuery(URI service, double ra, double dec, double size)
+    public URL constructQuery(final URI service, final double ra, final double dec, final double size)
             throws InvalidArgumentException, NotFoundException {
         return addOption(
         		addOption(
@@ -56,7 +56,7 @@ public class SiapImpl extends DALImpl implements Siap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQueryF(java.net.URI, double, double, double, java.lang.String)
      */
-    public URL constructQueryF(URI service, double ra, double dec, double size, String format)
+    public URL constructQueryF(final URI service, final double ra, final double dec, final double size, final String format)
             throws InvalidArgumentException, NotFoundException {
         return addOption(constructQuery(service,ra,dec,size),"FORMAT",format);
     }
@@ -64,12 +64,12 @@ public class SiapImpl extends DALImpl implements Siap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQueryS(java.net.URI, double, double, double, double)
      */
-    public URL constructQueryS(URI service, double ra, double dec, double ra_size, double dec_size)
+    public URL constructQueryS(final URI service, final double ra, final double dec, final double ra_size, final double dec_size)
             throws InvalidArgumentException, NotFoundException {        
         if (ra_size == dec_size) {
             return constructQuery(service,ra,dec,ra_size);
         } else {
-            String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
+            final String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
             return addOption(
             		addOption(
             				resolveEndpoint(service),"POS",Double.toString(ra) + "," + Double.toString(dec))
@@ -80,7 +80,7 @@ public class SiapImpl extends DALImpl implements Siap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQuerySF(java.net.URI, double, double, double, double, java.lang.String)
      */
-    public URL constructQuerySF(URI service, double ra, double dec, double ra_size, double dec_size, String format)
+    public URL constructQuerySF(final URI service, final double ra, final double dec, final double ra_size, final double dec_size, final String format)
             throws InvalidArgumentException, NotFoundException {
             return addOption(constructQueryS(service,ra,dec,ra_size,dec_size),"FORMAT",format);        
     }
@@ -112,11 +112,11 @@ public class SiapImpl extends DALImpl implements Siap {
 	}
 	
 	protected static class SiaStructureBuilder extends StructureBuilder {
-		public void startTable(StarTable t) throws SAXException {
+		public void startTable(final StarTable t) throws SAXException {
 			super.startTable(t);
 			// now iterate over the keys, mapping them from ucds if recognized.
 			for (int i = 0; i < keys.length; i++) {
-				String term = Sia10Map.mapUCD(keys[i]);
+				final String term = Sia10Map.mapUCD(keys[i]);
 				if (term != null) {
 					keys[i] = term;
 				}
@@ -124,12 +124,12 @@ public class SiapImpl extends DALImpl implements Siap {
 		}
 	}
 
-	protected URL findAccessURL(Service s) throws InvalidArgumentException {
+	protected URL findAccessURL(final Service s) throws InvalidArgumentException {
 	    if (!(s instanceof SiapService)) {
 	        throw new InvalidArgumentException(s.getId() + " does not provide a SIAP capability");
 	    }
-	    SiapCapability cap = ((SiapService)s).findSiapCapability();
-	    Interface[] interfaces = cap.getInterfaces();
+	    final SiapCapability cap = ((SiapService)s).findSiapCapability();
+	    final Interface[] interfaces = cap.getInterfaces();
 	    Interface std = null;
 	    switch (interfaces.length) {
 	        case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's siap capability");
@@ -138,7 +138,7 @@ public class SiapImpl extends DALImpl implements Siap {
 	            break;
 	        default:    
 	            for (int i = 0; i < interfaces.length; i++) {
-	                Interface cand = interfaces[i];
+	                final Interface cand = interfaces[i];
 	                if ("std".equals(cand.getRole())) {
 	                    std = cand;
 	                }
@@ -156,6 +156,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.19  2008/11/04 14:35:51  nw
+javadoc polishing
+
 Revision 1.18  2008/04/23 10:56:23  nw
 marked as needing test.
 

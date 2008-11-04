@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.text.DefaultFormatterFactory;
 
 /**
- * provides a greyed-out prompt when no input is present.
+ * Text Field that provides a greyed-out prompt when no input is present.
  * 
  * 
  * clients of this class must use getValue() ad setValue() to work with this
@@ -38,7 +38,7 @@ public class JPromptingTextField extends JFormattedTextField {
     protected abstract class MyFormatter extends
     JFormattedTextField.AbstractFormatter {
 
-        public Object stringToValue(String text) throws ParseException {
+        public Object stringToValue(final String text) throws ParseException {
             if (text == null) {
                 return null;
             }
@@ -57,7 +57,7 @@ public class JPromptingTextField extends JFormattedTextField {
      */
     protected final class DisplayFormatter extends MyFormatter {
 
-        public String valueToString(Object value) throws ParseException {
+        public String valueToString(final Object value) throws ParseException {
             if (value == null || ((String) value).trim().length() == 0) {
                 setForeground(getDisabledTextColor());
                 return placeholder;
@@ -72,7 +72,7 @@ public class JPromptingTextField extends JFormattedTextField {
     /** formatter for editing the value */
     protected final class EditFormatter extends MyFormatter {
 
-        public String valueToString(Object value) throws ParseException {
+        public String valueToString(final Object value) throws ParseException {
             setForeground(Color.BLACK);
             return (String) value;
         }
@@ -84,7 +84,7 @@ public class JPromptingTextField extends JFormattedTextField {
      */
     protected final class NullFormatter extends MyFormatter {
 
-        public String valueToString(Object value) throws ParseException {
+        public String valueToString(final Object value) throws ParseException {
             setForeground(getDisabledTextColor());
             return placeholder;
         }
@@ -99,12 +99,12 @@ public class JPromptingTextField extends JFormattedTextField {
      */
     private static final class MyFormatterFactory extends DefaultFormatterFactory {
         public JFormattedTextField.AbstractFormatter getFormatter(
-                JFormattedTextField source) {
+                final JFormattedTextField source) {
             JFormattedTextField.AbstractFormatter format = null;
             if (source == null) {
                 return null;
             }
-            Object value = source.getValue();
+            final Object value = source.getValue();
 
             if (value == null && !source.hasFocus()) {
                 format = getNullFormatter();
@@ -132,10 +132,10 @@ public class JPromptingTextField extends JFormattedTextField {
     /**
      * 
      */
-    public JPromptingTextField(String placeholder) {
+    public JPromptingTextField(final String placeholder) {
         this.placeholder = placeholder;
         setFocusLostBehavior(JFormattedTextField.COMMIT);
-        DefaultFormatterFactory formatter = new MyFormatterFactory();
+        final DefaultFormatterFactory formatter = new MyFormatterFactory();
         formatter.setNullFormatter(new NullFormatter());
         formatter.setDisplayFormatter(new DisplayFormatter());
         formatter.setEditFormatter(new EditFormatter());
@@ -144,8 +144,8 @@ public class JPromptingTextField extends JFormattedTextField {
     }
 
     
-    public static void main(String[] args) {
-        JButton b = new JButton("hogs focus");
+    public static void main(final String[] args) {
+        final JButton b = new JButton("hogs focus");
 
         final JPromptingTextField tf = new JPromptingTextField("placeholder");
         // custom formatter, with different rules.
@@ -153,17 +153,17 @@ public class JPromptingTextField extends JFormattedTextField {
         tf.setColumns(22);
         tf.addPropertyChangeListener(VALUE_PROPERTY, new PropertyChangeListener() {
 
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 if (evt.getNewValue() != evt.getOldValue()) {
                     System.err.println(tf.getValue());
                 }
             }
         });
-        JPanel p = new JPanel(new FlowLayout());
+        final JPanel p = new JPanel(new FlowLayout());
         p.add(b);
         p.add(tf);
 
-        JFrame f = new JFrame();
+        final JFrame f = new JFrame();
         f.setContentPane(p);
         f.pack();
         f.show();

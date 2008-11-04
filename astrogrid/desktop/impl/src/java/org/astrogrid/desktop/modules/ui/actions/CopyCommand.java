@@ -4,15 +4,15 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
-/**represents a single 'command' to the bulk copy worker
+/**A single copy command to the bulk copy worker.
  * this base class represents 'copy the source to the destination folder'
+ * @see BulkCopyWorker
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 17, 20082:51:21 PM
  */
@@ -26,7 +26,7 @@ public class CopyCommand {
      * @return 
      * @throws FileSystemException 
      */
-    final FileObject resolveSourceFileObject(FileSystemManager vfs) throws FileSystemException {
+    final FileObject resolveSourceFileObject(final FileSystemManager vfs) throws FileSystemException {
         if (src instanceof FileObject) {
             return (FileObject)src;
         } else {
@@ -35,22 +35,22 @@ public class CopyCommand {
         }           
     }
     /** construct a command, using a file object as the source */
-    public CopyCommand(FileObject src) {
+    public CopyCommand(final FileObject src) {
         super();
         this.src = src;
     }
     /** construct a command, using a file as the source */
-    public CopyCommand(File src) {
+    public CopyCommand(final File src) {
         super();
         this.src = src;
     }        
     /** construct a command, using a URI as the source */
-    public CopyCommand(URI src) {
+    public CopyCommand(final URI src) {
         super();
         this.src = src;
     }
     /** construct a command, using a URL as the source */
-    public CopyCommand(URL src) {
+    public CopyCommand(final URL src) {
         super();
         this.src = src;
     }
@@ -84,13 +84,13 @@ public class CopyCommand {
     /** called by the copy worker to record where the file contents were written to
      * @param name the destination the file waws written to
      */
-    final void recordSuccess(FileName name) {
+    final void recordSuccess(final FileName name) {
         destination = name;
     }
     /** called by the copy worker to record an exception when writing the file contents
      * @param x the exception encountered
      */
-    final void recordError(FileSystemException x) {
+    final void recordError(final FileSystemException x) {
         _failed = true;
         exception = x;
     }

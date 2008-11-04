@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import javax.swing.JFormattedTextField;
 
-/** UI field that allows input of a single value to be used as a search radius.
+/** Allows input of a single value to be used as a search radius.
  * Register this class as a listener on a DecSexToggle for it to automatically
  * adjust <b>input and display</b> units between decimal degrees and
  * arc seconds.  The internal model always maintains the value as 
@@ -29,7 +29,7 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
      */
     public static final String VALUE_PROPERTY = "value";
 
-    private double radius;
+    private final double radius;
     private boolean isDecimal = true;
     protected final AbstractFormatter degree = DEGREE_FORMATTER;
     protected final AbstractFormatter arcsec = ARCSEC_FORMATTER;
@@ -46,10 +46,10 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
      *
      * @param  radius initial radius value in degrees
      */
-    public RadiusTextField(double radius) {
+    public RadiusTextField(final double radius) {
         this.radius = radius;
         setFormatterFactory(new AbstractFormatterFactory() {
-            public AbstractFormatter getFormatter(JFormattedTextField tf) {
+            public AbstractFormatter getFormatter(final JFormattedTextField tf) {
                 return isDecimal ? degree : arcsec;
             }
         });
@@ -70,17 +70,17 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
          *                   multiplied before being represented
          * @return  nfd      numeric formatter for represented values
          */
-        RadiusFormatter(double factor, NumberFormat nfd) {
+        RadiusFormatter(final double factor, final NumberFormat nfd) {
             this.factor = factor;
             this.nfd = nfd;
         }
 
-        public Object stringToValue(String str) throws ParseException {
+        public Object stringToValue(final String str) throws ParseException {
             double val;
             try {
                 val = Double.parseDouble(str) / factor;
             }
-            catch (NumberFormatException e) {
+            catch (final NumberFormatException e) {
                 throw new ParseException(str + " is not a number", 0);
             }
             if (val < 0) {
@@ -89,7 +89,7 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
             return new Double(val);
         }
 
-        public String valueToString(Object val) throws ParseException {
+        public String valueToString(final Object val) throws ParseException {
             if (val instanceof Number) {
                 return nfd.format(((Number) val).doubleValue() * factor);
             }
@@ -105,7 +105,7 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
      * @return  non-negative radius value in degrees
      */
     public double getRadius() {
-        double radius = ((Number) getValue()).doubleValue();
+        final double radius = ((Number) getValue()).doubleValue();
         assert radius >= 0.0;
         return radius;
     }
@@ -115,7 +115,7 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
      *
      * @param  r  radius value
      */
-    public void setRadius(double r) {
+    public void setRadius(final double r) {
         setValue(new Double(r));
     }
 
@@ -125,7 +125,7 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
      *
      * @param  e  ignored
      */
-    public void degreesSelected(EventObject e) {
+    public void degreesSelected(final EventObject e) {
         isDecimal=true;
         setValue(getValue());  // forces display to update
     }
@@ -136,7 +136,7 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
      *
      * @param  e  ignored
      */
-    public void sexaSelected(EventObject e) {
+    public void sexaSelected(final EventObject e) {
         isDecimal=false;
         setValue(getValue());  // forces display to update
     }
@@ -148,11 +148,11 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
      * @param  radius  value in degrees
      * @return   formatted string in arcseconds (no units shown)
      */
-    public static String formatAsArcsec(double radius) {
+    public static String formatAsArcsec(final double radius) {
         try {
             return ARCSEC_FORMATTER.valueToString(new Double(radius));
         }
-        catch (ParseException e) {
+        catch (final ParseException e) {
             return "??";
         }
     }

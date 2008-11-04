@@ -36,7 +36,8 @@ import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
 import ca.odell.glazedlists.GlazedLists;
 
-/** Glazed Lists format for a table of registry entries
+/** Glazed Lists format for a table of registry entries.
+ * @see ResourceTable
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Sep-2005
  * @author Mark Taylor
  */

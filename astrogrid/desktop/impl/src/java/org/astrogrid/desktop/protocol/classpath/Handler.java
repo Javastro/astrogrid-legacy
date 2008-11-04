@@ -9,7 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-/** Handler for the 'classpath' url schem.
+/** Handler for the 'classpath' url scheme.
  *  finds a resource on the classpath, without having to 
  * specify the jar.
  * url format - classpath:/path/to/resource
@@ -18,8 +18,8 @@ import java.net.URLStreamHandler;
  */
 public class Handler extends URLStreamHandler {
 
-	protected URLConnection openConnection(URL arg0) throws IOException {
-		URL u = Handler.class.getResource(arg0.getPath());
+	protected URLConnection openConnection(final URL arg0) throws IOException {
+		final URL u = Handler.class.getResource(arg0.getPath());
 		if (u == null) {
 			throw new FileNotFoundException(arg0.toString());
 		}

@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.22 2008/05/09 11:32:48 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.23 2008/11/04 14:35:51 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,32 +10,25 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.Action;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.border.Border;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.AbstractCloseAction;
 
 
 
 
-/** baseclass for non-dialogue ui components.
+/** Implementation of {@code UIComponent} that can be used as a baseclass for <b>non-dialogue windows</b>.
  *<p>
  *adds a progress bar / status message at the bottom, and
  *provides a worker class that indicates progress using these.
@@ -64,7 +57,7 @@ public class UIComponentImpl extends JFrame implements UIComponent {
      * @param context
      * @throws HeadlessException
      */
-    public UIComponentImpl(UIContext context, String name, String helpId) throws HeadlessException {
+    public UIComponentImpl(final UIContext context, final String name, final String helpId) throws HeadlessException {
         this.context = context;
         this.applicationName = name;
         setTitle(applicationName);
@@ -75,14 +68,14 @@ public class UIComponentImpl extends JFrame implements UIComponent {
         setContentPane(assist.getMainPanel());
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent e) {
+            public void windowClosing(final WindowEvent e) {
             	getContext().unregisterWindow(UIComponentImpl.this);
             	setVisible(false);
             	// detach myself from the context.
             	assist.cleanup();
             	try {
             	    dispose();
-            	} catch (NullPointerException x) {
+            	} catch (final NullPointerException x) {
             	    // work around for bugzilla 2758
             	}
             }
@@ -100,17 +93,17 @@ public class UIComponentImpl extends JFrame implements UIComponent {
      * Prefer {@link BackgroundWorker} if there's any chance that operations may be resuable.
      * */
      protected abstract class BackgroundOperation extends BackgroundWorker {
-         public BackgroundOperation(String msg) {
+         public BackgroundOperation(final String msg) {
              super(UIComponentImpl.this,msg);
          }
          
-         public BackgroundOperation(String msg,int priority) {
+         public BackgroundOperation(final String msg,final int priority) {
              super(UIComponentImpl.this,msg,priority);
          }
-         public BackgroundOperation(String msg,TimeoutEnum timeout) {
+         public BackgroundOperation(final String msg,final TimeoutEnum timeout) {
              super(UIComponentImpl.this,msg,timeout);
          }
-         public BackgroundOperation(String msg,TimeoutEnum timeout, int priority) {
+         public BackgroundOperation(final String msg,final TimeoutEnum timeout, final int priority) {
              super(UIComponentImpl.this,msg,timeout,priority);
          }
      }
@@ -118,7 +111,7 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 	/** close window action for ui components. */
      public final class CloseAction extends AbstractCloseAction {
 
-         public void actionPerformed(ActionEvent e) {
+         public void actionPerformed(final ActionEvent e) {
              hide();
              getContext().unregisterWindow(UIComponentImpl.this);
              dispose();
@@ -171,7 +164,7 @@ public class UIComponentImpl extends JFrame implements UIComponent {
      * @param i
      * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#setProgressMax(int)
      */
-    public final  void setProgressMax(int i) {
+    public final  void setProgressMax(final int i) {
         this.assist.setProgressMax(i);
     }
 
@@ -180,7 +173,7 @@ public class UIComponentImpl extends JFrame implements UIComponent {
      * @param i
      * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#setProgressValue(int)
      */
-    public final void setProgressValue(int i) {
+    public final void setProgressValue(final int i) {
         this.assist.setProgressValue(i);
     }
 
@@ -189,7 +182,7 @@ public class UIComponentImpl extends JFrame implements UIComponent {
      * @param s
      * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#setStatusMessage(java.lang.String)
      */
-    public final void setStatusMessage(String s) {
+    public final void setStatusMessage(final String s) {
         this.assist.setStatusMessage(s);
     }
 
@@ -199,11 +192,11 @@ public class UIComponentImpl extends JFrame implements UIComponent {
      * @param e
      * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#showError(java.lang.String, java.lang.Throwable)
      */
-    public final void showError(String msg, Throwable e) {
+    public final void showError(final String msg, final Throwable e) {
         this.assist.showError(msg, e);
     }
 
-    public final void showError(String msg) {
+    public final void showError(final String msg) {
         this.assist.showError(msg);
     }
 
@@ -212,7 +205,7 @@ public class UIComponentImpl extends JFrame implements UIComponent {
      * @param message
      * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#showTransientError(java.lang.String, java.lang.String)
      */
-    public final void showTransientError(String title, String message) {
+    public final void showTransientError(final String title, final String message) {
         this.assist.showTransientError(title, message);
     }
 
@@ -222,7 +215,7 @@ public class UIComponentImpl extends JFrame implements UIComponent {
      * @param message
      * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#showTransientMessage(java.lang.String, java.lang.String)
      */
-    public final void showTransientMessage(String title, String message) {
+    public final void showTransientMessage(final String title, final String message) {
         this.assist.showTransientMessage(title, message);
     }
 
@@ -232,7 +225,7 @@ public class UIComponentImpl extends JFrame implements UIComponent {
      * @param message
      * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#showTransientWarning(java.lang.String, java.lang.String)
      */
-    public final void showTransientWarning(String title, String message) {
+    public final void showTransientWarning(final String title, final String message) {
         this.assist.showTransientWarning(title, message);
     }
 
@@ -241,6 +234,9 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.23  2008/11/04 14:35:51  nw
+javadoc polishing
+
 Revision 1.22  2008/05/09 11:32:48  nw
 NEW - bug 2758: bug from help desk system - ubuntu and java version?
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2758

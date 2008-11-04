@@ -1,14 +1,10 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.resource.Authority;
@@ -18,7 +14,6 @@ import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.DataService;
 import org.astrogrid.acr.ivoa.resource.Organisation;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
-import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapService;
@@ -29,15 +24,15 @@ import org.astrogrid.contracts.StandardIds;
 
 import ca.odell.glazedlists.matchers.Matcher;
 
-/** Filter of 'system' resources. Some ad-hoc rules to identify uninteresting resources here..
+/** Filter to exclude 'uninteresting' resources. Some ad-hoc rules in here.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 17, 200710:39:37 PM
  */
 public final class SystemFilter implements Matcher {
 
-	public boolean matches(Object arg0) {
-		Resource r = (Resource)arg0;
+	public boolean matches(final Object arg0) {
+		final Resource r = (Resource)arg0;
 		
 		//optimization -  stuff to pass thru straight away... (only specify interesting subtypes of service (as we'd be doing further processing on these later otherwise)
 		if (
@@ -72,13 +67,13 @@ public final class SystemFilter implements Matcher {
 	}
 
 	/** returns true if the only capabilities this service has are boring ones */
-    public static boolean onlyBoringCapabilities(Service s) {
-        Capability[] caps = s.getCapabilities();        
+    public static boolean onlyBoringCapabilities(final Service s) {
+        final Capability[] caps = s.getCapabilities();        
         if (caps.length == 0) {
             return true; // nothing here - it's boring.
         }
         for (int i = 0; i < caps.length; i++) {
-            Capability c = caps[i];
+            final Capability c = caps[i];
             if (! isBoringCapability(c)) {
                 return false;
             }
@@ -86,8 +81,8 @@ public final class SystemFilter implements Matcher {
         return true; // not found an unboring one.
     }
     
-    public static boolean isBoringCapability(Capability cap) {
-        URI std = cap.getStandardID();
+    public static boolean isBoringCapability(final Capability cap) {
+        final URI std = cap.getStandardID();
         if (std == null) { // an unlabeled std - is it boring or not - we judge not, for now.
             return false;
         }

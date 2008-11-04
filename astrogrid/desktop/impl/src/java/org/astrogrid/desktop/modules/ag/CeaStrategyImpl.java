@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.3 2008/10/24 12:33:07 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.4 2008/11/04 14:35:47 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,7 @@ import org.votech.VoMonBean;
 import org.w3c.dom.Document;
 
 
-/** remote process strargey for cea.
+/** Remote process strategy for CEA applications.
  * see RemoteProcessManagerImpl
  * periodically poll remote cea servers, injjct messages into the system
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-Nov-2005
@@ -484,6 +484,9 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.4  2008/11/04 14:35:47  nw
+javadoc polishing
+
 Revision 1.3  2008/10/24 12:33:07  nw
 Incomplete - taskadd support for TAP
 send to plastic now working.

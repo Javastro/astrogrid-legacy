@@ -6,7 +6,8 @@ package org.astrogrid.desktop.modules.ivoa.resource;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Capability;
 
-/** unified interface to testing a capability.
+/** Verify a resource capability.
+ * 
  * implementation is expected to test endpoint for validity, and run
  * any provided test queries.
  * @author Noel.Winstanley@manchester.ac.uk

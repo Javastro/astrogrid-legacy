@@ -11,7 +11,7 @@ import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl;
 
-/** subclass of activity that presents a 'find source paper' plastic button
+/** Send a PLASTIC 'bibcode' message for a resource.
  *  */
 public class PlasticBibcodeActivity extends AbstractResourceActivity {
 	private final PlasticApplicationDescription plas;

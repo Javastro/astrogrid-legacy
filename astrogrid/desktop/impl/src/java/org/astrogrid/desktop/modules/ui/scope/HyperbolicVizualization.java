@@ -14,7 +14,6 @@ import javax.swing.JPopupMenu;
 
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 
 import edu.berkeley.guir.prefuse.AggregateItem;
 import edu.berkeley.guir.prefuse.Display;
@@ -46,7 +45,7 @@ import edu.berkeley.guir.prefuse.util.ColorLib;
 import edu.berkeley.guir.prefusex.controls.ToolTipControl;
 import edu.berkeley.guir.prefusex.controls.ZoomControl;
 
-/** vizualization that hides some of the data some of the time 
+/** Prefuse vizualization that hides some of the data some of the time. 
  * based on edu.berkeley.guir.prefuse.action.filter.WindowedTreeFilter
  * 
  * needs to have it's nodes spaced out more.
@@ -54,19 +53,19 @@ import edu.berkeley.guir.prefusex.controls.ZoomControl;
  * */
 public class HyperbolicVizualization extends Vizualization {
         
-    public HyperbolicVizualization(VizualizationController vizs, JPopupMenu popup, UIComponent parent) {
+    public HyperbolicVizualization(final VizualizationController vizs, final JPopupMenu popup, final UIComponent parent) {
             super("Hyperbolic", vizs);    
             this.parent = parent;
             this.menu = popup;
     }
     private Display display;
     private final UIComponent parent;
-    private JPopupMenu menu;
+    private final JPopupMenu menu;
     private ActivityMap actmap; 
     private HyperbolicTranslation translation;   
     
     // refresh display when new item added to results.
-    public void nodeAdded(Graph arg0, Node arg1) {
+    public void nodeAdded(final Graph arg0, final Node arg1) {
         actmap.runNow("filter");
     }
     
@@ -78,18 +77,18 @@ public class HyperbolicVizualization extends Vizualization {
     
         if(display == null) {
             actmap = new ActivityMap();
-            ItemRegistry registry = getItemRegistry();
+            final ItemRegistry registry = getItemRegistry();
             display = new Display();
              CSH.setHelpIDString(display,"scope.viz.hyperbolic");
 
            // create a null renderer for use when no label should be shown
-           NullRenderer nodeRenderer2 = new NullRenderer();
+           final NullRenderer nodeRenderer2 = new NullRenderer();
            // create an edge renderer with custom curved edges
-           DefaultEdgeRenderer edgeRenderer = new DefaultEdgeRenderer() {
-               protected void getCurveControlPoints(EdgeItem eitem, 
-                   Point2D[] cp, double x1, double y1, double x2, double y2) 
+           final DefaultEdgeRenderer edgeRenderer = new DefaultEdgeRenderer() {
+               protected void getCurveControlPoints(final EdgeItem eitem, 
+                   final Point2D[] cp, final double x1, final double y1, final double x2, final double y2) 
                {
-                   Point2D c = eitem.getLocation();      
+                   final Point2D c = eitem.getLocation();      
                    cp[0].setLocation(c);
                    cp[1].setLocation(c);
                } //
@@ -109,7 +108,7 @@ public class HyperbolicVizualization extends Vizualization {
            display.setItemRegistry(registry);
            display.setBackground(Color.WHITE);
            display.addControlListener(new DemoControl());          
-           TranslateControl dragger = new TranslateControl();
+           final TranslateControl dragger = new TranslateControl();
            display.addMouseListener(dragger);
            display.addMouseMotionListener(dragger);
            display.addControlListener(new ZoomControl());
@@ -118,14 +117,14 @@ public class HyperbolicVizualization extends Vizualization {
     //@todo renable       display.addControlListener(new SendToMenuControl(menu,parent));
             
            // initialize repaint list
-           ActionList repaint = new ActionList(registry);
+           final ActionList repaint = new ActionList(registry);
            repaint.add(new HyperbolicTreeMapper());
            repaint.add(new HyperbolicVisibilityFilter());
            repaint.add(new RepaintAction());
            actmap.put("repaint", repaint);
            
             // initialize filter           
-           ActionList filter  = new ActionList(registry);
+           final ActionList filter  = new ActionList(registry);
            filter.add(new TreeFilter());
        //@todo replace treefilter with this to enable service filtereing    filter.add(new ServiceListTreeFilter());
            // still needs to be completed.
@@ -136,20 +135,20 @@ public class HyperbolicVizualization extends Vizualization {
            //graphLayout = filter;
 
            // intialize hyperbolic translation
-           ActionList translate = new ActionList(registry);
+           final ActionList translate = new ActionList(registry);
            translation = new HyperbolicTranslation();
            translate.add(translation);
            translate.add(repaint);
            actmap.put("translate", translate);
            
            // intialize animated hyperbolic translation
-           ActionList animate = new ActionList(registry, 1000, 20);
+           final ActionList animate = new ActionList(registry, 1000, 20);
            animate.setPacingFunction(new SlowInSlowOutPacer());
            animate.add(translate);
            actmap.put("animate", animate);
            
            // intialize the end translation list
-           ActionList endTranslate = new ActionList(registry);
+           final ActionList endTranslate = new ActionList(registry);
            endTranslate.add(new HyperbolicTranslationEnd());
            actmap.put("endTranslate", endTranslate);                              
         }               
@@ -159,43 +158,43 @@ public class HyperbolicVizualization extends Vizualization {
     
     public class TranslateControl extends MouseAdapter implements MouseMotionListener {
         boolean drag = false;
-        public void mousePressed(java.awt.event.MouseEvent e) {
+        public void mousePressed(final java.awt.event.MouseEvent e) {
             translation.setStartPoint(e.getX(), e.getY());
         } //
-        public void mouseDragged(java.awt.event.MouseEvent e) {
+        public void mouseDragged(final java.awt.event.MouseEvent e) {
             drag = true;
             translation.setEndPoint(e.getX(), e.getY());
             actmap.runNow("translate");
         } //
-        public void mouseReleased(java.awt.event.MouseEvent e) {
+        public void mouseReleased(final java.awt.event.MouseEvent e) {
             if ( drag ) {
                 actmap.runNow("endTranslate");
                 drag = false;
             }
         } //
-        public void mouseMoved(java.awt.event.MouseEvent e) {
+        public void mouseMoved(final java.awt.event.MouseEvent e) {
         } //
     } // end of inner class TranslateControl
         
     public class DemoControl extends ControlAdapter {
-        public void itemEntered(VisualItem item, java.awt.event.MouseEvent e) {
+        public void itemEntered(final VisualItem item, final java.awt.event.MouseEvent e) {
             e.getComponent().setCursor(
                     Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         } //
-        public void itemExited(VisualItem item, java.awt.event.MouseEvent e) {
+        public void itemExited(final VisualItem item, final java.awt.event.MouseEvent e) {
             e.getComponent().setCursor(Cursor.getDefaultCursor());
         } //        
-        public void itemClicked(VisualItem item, java.awt.event.MouseEvent e) {
+        public void itemClicked(final VisualItem item, final java.awt.event.MouseEvent e) {
             if ( item instanceof NodeItem ) {
             // animate a translation when a node is clicked
-            int cc = e.getClickCount();
+            final int cc = e.getClickCount();
                 if ( cc == 1 && 
                 		!(e.isPopupTrigger() // popup trigger detection don't seem to work. 
                 		|| e.isControlDown()) 
                 		|| e.getButton() == MouseEvent.BUTTON2
                 		|| e.getButton() == MouseEvent.BUTTON3) {
-                    ItemRegistry registry = getItemRegistry();
-                    TreeNode node = (TreeNode)registry.getEntity(item);
+                    final ItemRegistry registry = getItemRegistry();
+                    final TreeNode node = (TreeNode)registry.getEntity(item);
                     if ( node != null ) {                           
                         translation.setStartPoint(e.getX(), e.getY());
                         translation.setEndPoint(e.getX(), e.getY());
@@ -206,27 +205,27 @@ public class HyperbolicVizualization extends Vizualization {
             }
         } //
     } // end of inner class DemoController
-    
+    /** the renderer used for this vizualization */
     public static class DemoRendererFactory implements RendererFactory {
         Renderer nodeRenderer1;
         Renderer nodeRenderer2;
         Renderer edgeRenderer;
-        public DemoRendererFactory(Renderer nr1, Renderer nr2, Renderer er) {
+        public DemoRendererFactory(final Renderer nr1, final Renderer nr2, final Renderer er) {
             nodeRenderer1 = nr1;
             nodeRenderer2 = nr2;
             edgeRenderer = er;
         } //
-        public Renderer getRenderer(VisualItem item) {
+        public Renderer getRenderer(final VisualItem item) {
             if ( item instanceof NodeItem ) {
-                NodeItem n = (NodeItem)item;
-                NodeItem p = (NodeItem)n.getParent();
+                final NodeItem n = (NodeItem)item;
+                final NodeItem p = (NodeItem)n.getParent();
                 
                 double d = Double.MAX_VALUE;
                 
-                Point2D nl = n.getLocation();
+                final Point2D nl = n.getLocation();
                 if ( p != null) {
                     d = Math.min(d,nl.distance(p.getLocation()));
-                    int idx = p.getChildIndex(n);
+                    final int idx = p.getChildIndex(n);
                     NodeItem b;
                     if ( idx > 0 ) {
                         b = (NodeItem)p.getChild(idx-1);
@@ -238,7 +237,7 @@ public class HyperbolicVizualization extends Vizualization {
                     }
                 }
                 if ( n.getChildCount() > 0 ) {
-                    NodeItem c = (NodeItem)n.getChild(0);
+                    final NodeItem c = (NodeItem)n.getChild(0);
                     d = Math.min(d,nl.distance(c.getLocation()));
                 }
                 
@@ -254,7 +253,7 @@ public class HyperbolicVizualization extends Vizualization {
             }
         } //
     } // end of inner class DemoRendererFactory
-    
+    /** function used to compute color to draw nodes in */
     public static class HyperbolicDemoColorFunction extends ColorFunction {
         int  thresh = 5;
         Color graphEdgeColor = Color.LIGHT_GRAY;
@@ -266,15 +265,15 @@ public class HyperbolicVizualization extends Vizualization {
             nodeColors = new Color[thresh];
             edgeColors = new Color[thresh];
             for ( int i = 0; i < thresh; i++ ) {
-                double frac = i / ((double)thresh);
+                final double frac = i / ((double)thresh);
                 nodeColors[i] = ColorLib.getIntermediateColor(Color.RED, Color.BLACK, frac);
                 edgeColors[i] = ColorLib.getIntermediateColor(Color.RED, Color.BLACK, frac);
             }
         } //
        
-        public Paint getFillColor(VisualItem item) {
+        public Paint getFillColor(final VisualItem item) {
             if ( item instanceof NodeItem ) {
-                String attr=  item.getAttribute("selected");                
+                final String attr=  item.getAttribute("selected");                
                 if (attr != null && attr.equals("true")) {
                     return selectedColor;
                 } else {               
@@ -289,12 +288,12 @@ public class HyperbolicVizualization extends Vizualization {
             }
         } //
        
-        public Paint getColor(VisualItem item) {
+        public Paint getColor(final VisualItem item) {
             if (item instanceof NodeItem) {
-                 int d = ((NodeItem)item).getDepth();
+                 final int d = ((NodeItem)item).getDepth();
                 return nodeColors[Math.min(d,thresh-1)];
             } else if (item instanceof EdgeItem) {
-                EdgeItem e = (EdgeItem) item;
+                final EdgeItem e = (EdgeItem) item;
                 if ( e.isTreeEdge() ) {
                     int d, d1, d2;
                      d1 = ((NodeItem)e.getFirstNode()).getDepth();

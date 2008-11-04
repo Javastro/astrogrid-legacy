@@ -3,42 +3,29 @@
  */
 package org.astrogrid.desktop.modules.ui.taskrunner;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseListener;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 
 import javax.swing.AbstractButton;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.Spring;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.CSH;
-import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.JPromptingTextField;
 import org.astrogrid.desktop.modules.ui.comp.PinnableLabel;
@@ -47,7 +34,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/** Abstract class for all task form elements.
+/** Abstract parameter editor in the task runner form.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 4, 200711:16:30 AM
@@ -80,7 +67,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	protected AbstractButton removeButton;
 	protected AbstractButton optionalButton;
 
-	public AbstractTaskFormElement(ParameterValue pval, ParameterBean pdesc, ResourceChooserInternal fileChooser) {
+	public AbstractTaskFormElement(final ParameterValue pval, final ParameterBean pdesc, final ResourceChooserInternal fileChooser) {
 		this.pval = pval;
 		this.pdesc = pdesc;
 		this.fileChooser = fileChooser;
@@ -95,12 +82,12 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		associate(label);	
 		
 
-		FormLayout indirectForm = new FormLayout(
+		final FormLayout indirectForm = new FormLayout(
 		        "fill:d:grow,d" // cols
 		        ,"d,p:grow"
 		        );
-		PanelBuilder pb = new PanelBuilder(indirectForm);
-		CellConstraints cc = new CellConstraints();
+		final PanelBuilder pb = new PanelBuilder(indirectForm);
+		final CellConstraints cc = new CellConstraints();
 
 		indirectField = new IndirectURIField(pval);
 		pb.add(indirectField,cc.xy(1,1));
@@ -127,17 +114,17 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	}
 	
 	// register a listener of various components.
-	public void addMouseListener(MouseListener listener) {
+	public void addMouseListener(final MouseListener listener) {
 	    getLabel().addMouseListener(listener);
 	    getEditor().addMouseListener(listener);
 	}
 	
 	// callback from chooserButton.
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		if (e.getSource() != chooserButton) {
 			return;
 		}
-		URI u = fileChooser.chooseResourceWithParent("Choose a file",true,localFileEnabled,true,chooserButton);
+		final URI u = fileChooser.chooseResourceWithParent("Choose a file",true,localFileEnabled,true,chooserButton);
 		if (u == null) {
 			return;
 		} else {
@@ -163,7 +150,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	}
 	
 	// called when the indirect button is clicked.
-	public void itemStateChanged(ItemEvent e) {
+	public void itemStateChanged(final ItemEvent e) {
 		if (e.getSource() == indirectToggle) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				pval.setIndirect(true);
@@ -191,7 +178,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	/**
 	 * @param addButton the addButton to set
 	 */
-	public final void setAddButton(AbstractButton addButton) {
+	public final void setAddButton(final AbstractButton addButton) {
 		this.addButton = addButton;
 		associate(addButton);
 	}
@@ -208,7 +195,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	/**
 	 * @param removeButton the removeButton to set
 	 */
-	public final void setRemoveButton(AbstractButton removeButton) {
+	public final void setRemoveButton(final AbstractButton removeButton) {
 		this.removeButton = removeButton;
 		associate(removeButton);
 	}
@@ -255,7 +242,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	/**
 	 * @param b
 	 */
-	public void setEnabled(boolean b) {
+	public void setEnabled(final boolean b) {
 		label.setEnabled(b);
 		if (indirectToggle.isEnabled()) {
 		    indirectToggle.setVisible(b);
@@ -275,7 +262,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	/**
 	 * @param optionalButton the optionalButton to set
 	 */
-	public final void setOptionalButton(AbstractButton optionalButton) {
+	public final void setOptionalButton(final AbstractButton optionalButton) {
 		this.optionalButton = optionalButton;
 		associate(optionalButton);
 	}
@@ -288,7 +275,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	 * plces this object in thejComponent's clientPropertyMap under the key 'AbstractTaskFormElement.class' 
 	 * @param comp
 	 */
-	protected final void associate(JComponent comp) {
+	protected final void associate(final JComponent comp) {
 		comp.putClientProperty(AbstractTaskFormElement.class,this);
 	}
 

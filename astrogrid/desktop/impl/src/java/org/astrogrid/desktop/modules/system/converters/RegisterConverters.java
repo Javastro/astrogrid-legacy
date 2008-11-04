@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.6 2008/08/21 11:39:43 nw Exp $
+/*$Id: RegisterConverters.java,v 1.7 2008/11/04 14:35:54 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.astrogrid.desktop.modules.system.contributions.ConverterContribution;
 
 /**
- * startup component that  registers all the result converters.
+ * startup component that  registers all the string to object converters.
  * 
  * 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Mar-2005
@@ -52,6 +52,9 @@ public class RegisterConverters implements Runnable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.7  2008/11/04 14:35:54  nw
+ * javadoc polishing
+ *
  * Revision 1.6  2008/08/21 11:39:43  nw
  * Complete - task 4: RegistryGoogle dialogue
  *

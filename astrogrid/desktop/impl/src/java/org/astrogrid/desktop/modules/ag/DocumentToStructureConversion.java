@@ -24,8 +24,9 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
 
+/** utilities for converting CEA Tool objects between XML Document and Java Structure representations. */
 class DocumentToStructureConversion {
-public static Map convertDocumentToStruct(Document doc) throws InvalidArgumentException {
+public static Map convertDocumentToStruct(final Document doc) throws InvalidArgumentException {
 
     Tool tool;
     try {
@@ -34,11 +35,11 @@ public static Map convertDocumentToStruct(Document doc) throws InvalidArgumentEx
             // unmarshall will probalbyl catch this.
             throw new InvalidArgumentException("The document is not a valid tool");
         }
-        Map<String,Object> result = new LinkedHashMap<String,Object>();
+        final Map<String,Object> result = new LinkedHashMap<String,Object>();
         result.put("interface",tool.getInterface());
         result.put("name",tool.getName());
-        Hashtable<String,Object> inputs= new Hashtable<String,Object>();
-        Hashtable<String,Object> outputs = new Hashtable<String,Object>();
+        final Hashtable<String,Object> inputs= new Hashtable<String,Object>();
+        final Hashtable<String,Object> outputs = new Hashtable<String,Object>();
         if (tool.getInput() != null) {
             result.put("input",inputs);
             for (int i = 0; i < tool.getInput().getParameterCount(); i++) {
@@ -52,25 +53,25 @@ public static Map convertDocumentToStruct(Document doc) throws InvalidArgumentEx
             }
         }
         return result;
-    } catch (MarshalException e) {
+    } catch (final MarshalException e) {
         throw new InvalidArgumentException(e);
-    } catch (ValidationException e) {
+    } catch (final ValidationException e) {
         throw new InvalidArgumentException(e);
     }        
 }
 
-private static void convertParameterToHash(Hashtable<String,Object> parameterSet,ParameterValue v) {        
-    Hashtable<String,Object> newParam = new Hashtable<String,Object>();
+private static void convertParameterToHash(final Hashtable<String,Object> parameterSet,final ParameterValue v) {        
+    final Hashtable<String,Object> newParam = new Hashtable<String,Object>();
     newParam.put("value",v.getValue());
     newParam.put("indirect",Boolean.valueOf( v.getIndirect()));
     //bz2253
     if (parameterSet.containsKey(v.getName())) { // already has a param of the same name
-        Object existingParam = parameterSet.get(v.getName());
+        final Object existingParam = parameterSet.get(v.getName());
         if (existingParam instanceof List) { // already more than one value
             ((List)existingParam).add(newParam);
         } else if (existingParam instanceof Map) {// a single value already
             // would like to have a list of just values, but indirect may vary between parameters too - so need a list of parameter Hashes.
-            List vect = new Vector();
+            final List vect = new Vector();
             vect.add(existingParam);
             vect.add(newParam);
             parameterSet.put(v.getName(),vect);
@@ -83,22 +84,22 @@ private static void convertParameterToHash(Hashtable<String,Object> parameterSet
     }
 }
 
-private static  ParameterValue convertHashToParameter(String name,Map<String,Object> h) {
-    ParameterValue v= new ParameterValue();
+private static  ParameterValue convertHashToParameter(final String name,final Map<String,Object> h) {
+    final ParameterValue v= new ParameterValue();
     v.setName(name);
     v.setIndirect(((Boolean)h.get("indirect")).booleanValue());
     v.setValue(h.get("value").toString());
     return v;
 }
 
-private static  ParameterValue[] convertParams(Map<String,Object> inputHash) {
+private static  ParameterValue[] convertParams(final Map<String,Object> inputHash) {
    // ParameterValue[] arr = new ParameterValue[inputHash.size()];
-    List<ParameterValue> pvs= new ArrayList<ParameterValue>(inputHash.size()); // using a list, as there's at least hash.size() params, but there might be more.
-    for (Map.Entry<String,Object> e : inputHash.entrySet()) {
-        Object valObj = e.getValue();
+    final List<ParameterValue> pvs= new ArrayList<ParameterValue>(inputHash.size()); // using a list, as there's at least hash.size() params, but there might be more.
+    for (final Map.Entry<String,Object> e : inputHash.entrySet()) {
+        final Object valObj = e.getValue();
         //bz2253
         if (valObj instanceof List) {
-            for(Map<String,Object> param : (List<Map<String,Object>>)valObj) {
+            for(final Map<String,Object> param : (List<Map<String,Object>>)valObj) {
                 pvs.add(convertHashToParameter(e.getKey(),param));                           
             }
         } else if (valObj instanceof Map) {
@@ -110,11 +111,11 @@ private static  ParameterValue[] convertParams(Map<String,Object> inputHash) {
     return pvs.toArray(new ParameterValue[pvs.size()]);
 }
 
-public static Document convertStructToDocument(Map struct) throws InvalidArgumentException {
-    Tool t = new Tool();
+public static Document convertStructToDocument(final Map struct) throws InvalidArgumentException {
+    final Tool t = new Tool();
     t.setName(struct.get("name").toString());
     t.setInterface(struct.get("interface").toString());
-    org.astrogrid.workflow.beans.v1.Input input = new org.astrogrid.workflow.beans.v1.Input();
+    final org.astrogrid.workflow.beans.v1.Input input = new org.astrogrid.workflow.beans.v1.Input();
     
     Map paramHash= (Map)struct.get("input");
     if (paramHash != null) {    
@@ -122,7 +123,7 @@ public static Document convertStructToDocument(Map struct) throws InvalidArgumen
         t.setInput(input);
     }
     
-    Output output = new Output();
+    final Output output = new Output();
     paramHash = (Map)struct.get("output");
     if (paramHash != null) {
         output.setParameter(convertParams(paramHash));
@@ -130,14 +131,14 @@ public static Document convertStructToDocument(Map struct) throws InvalidArgumen
     }
 
     try {
-        Document doc = XMLUtils.newDocument();
+        final Document doc = XMLUtils.newDocument();
         Marshaller.marshal(t,doc);
         return doc;
-    } catch (ParserConfigurationException e) {
+    } catch (final ParserConfigurationException e) {
         throw new InvalidArgumentException(e);
-    } catch (MarshalException e) {
+    } catch (final MarshalException e) {
         throw new InvalidArgumentException(e);
-    } catch (ValidationException e) { 
+    } catch (final ValidationException e) { 
         throw new InvalidArgumentException(e);
     }
 }

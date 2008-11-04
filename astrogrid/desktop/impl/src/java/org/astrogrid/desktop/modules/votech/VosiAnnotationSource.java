@@ -12,7 +12,7 @@ import org.astrogrid.acr.ivoa.VosiAvailabilityBean;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 
-/**Annotation source that produces annotations from VOSI availability.
+/** Query a VOSI capability to produce annotations.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 8, 20085:54:15 PM

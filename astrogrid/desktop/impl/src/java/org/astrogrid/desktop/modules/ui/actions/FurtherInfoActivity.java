@@ -16,25 +16,25 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
-/** dispay further info webpage for the selected resource.
+/** Dispay the further info webpage for a resource.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 200712:05:11 PM
  */
 public class FurtherInfoActivity extends AbstractResourceActivity implements Activity.Info {
 
-	protected boolean invokable(Resource r) {
+	protected boolean invokable(final Resource r) {
 		return r.getContent() != null &&  r.getContent().getReferenceURI() != null;
 	}
-	public void someSelected(Resource[] arr) {
+	public void someSelected(final Resource[] arr) {
 		noneSelected();
 	}
-	public void actionPerformed(ActionEvent e) {
-		List l = computeInvokable();
-		Resource r = (Resource)l.get(0);		
-		URI referenceURI = r.getContent().getReferenceURI() ;
+	public void actionPerformed(final ActionEvent e) {
+		final List l = computeInvokable();
+		final Resource r = (Resource)l.get(0);		
+		final URI referenceURI = r.getContent().getReferenceURI() ;
 		try {
 			browser.openURL(referenceURI.toURL());
-		} catch (Exception x) { 
+		} catch (final Exception x) { 
 		    this.uiParent.get().showTransientError("Failed to open url",ExceptionFormatter.formatException(x));
 		}	
 	}
@@ -42,7 +42,7 @@ public class FurtherInfoActivity extends AbstractResourceActivity implements Act
 	/**
 	 * 
 	 */
-	public FurtherInfoActivity(BrowserControl browser) {
+	public FurtherInfoActivity(final BrowserControl browser) {
 	    setHelpID("activity.furtherinfo");
 		this.browser = browser;
 		setIcon(IconHelper.loadIcon("help16.png"));

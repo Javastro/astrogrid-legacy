@@ -7,8 +7,9 @@ import javax.swing.JMenu;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-/** extension of the ui component interface with an additional method to 
- * access a menubar menu to which context-sensitive actions can be added.
+/** 
+ * Extended {@link UIComponent} interface that provides access to a menubar menu
+ * to which context-sensitive actions can be added.
  * 
  * The client of this interface (i.e. whatever is adding things to the menu) is 
  * responsible for changing their visibiliy as the context changes. one way to do this

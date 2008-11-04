@@ -3,32 +3,24 @@
  */
 package org.astrogrid.desktop.modules.util;
 
-import org.apache.axis.utils.NetworkUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
 import java.util.List;
 
-import junit.framework.AssertionFailedError;
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestListener;
-import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.EnumerationUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Predicate;
-import org.astrogrid.acr.ServiceException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-/** Run through some tests to verify the connectivity.
+/** Self tests to verify network connectivity.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 9, 20072:40:19 PM
  */
@@ -44,16 +36,16 @@ public class ConnectivityTests extends TestSuite{
     public ConnectivityTests() {
         addTest(new TestCase("Network interfaces"){
             protected void runTest() throws Throwable {
-                List ifaces = EnumerationUtils.toList(NetworkInterface.getNetworkInterfaces());
+                final List ifaces = EnumerationUtils.toList(NetworkInterface.getNetworkInterfaces());
                 assertNotNull("No network interfaces found",ifaces);
                 assertTrue("No network interfaces found",ifaces.size() > 0);
                 // filter the list of interfaces to those which are non-local and non-loopback
                 CollectionUtils.filter(ifaces,new Predicate() {
-                    public boolean evaluate(Object arg0) {
-                        NetworkInterface ni = (NetworkInterface)arg0;
+                    public boolean evaluate(final Object arg0) {
+                        final NetworkInterface ni = (NetworkInterface)arg0;
                         return CollectionUtils.exists(EnumerationUtils.toList(ni.getInetAddresses()),new Predicate() {
-                            public boolean evaluate(Object arg0) {
-                                InetAddress i = (InetAddress)arg0;
+                            public boolean evaluate(final Object arg0) {
+                                final InetAddress i = (InetAddress)arg0;
                                 return ! (i.isLinkLocalAddress() 
                                         //|| i.isSiteLocalAddress() 
                                         || i.isLoopbackAddress());
@@ -69,10 +61,10 @@ public class ConnectivityTests extends TestSuite{
         addTest(new TestCase("DNS") {
             protected void runTest() {
                 try {
-                    InetAddress addr = InetAddress.getByName("www.google.com");
+                    final InetAddress addr = InetAddress.getByName("www.google.com");
                     assertNotNull("Failed to resolve",addr);
                     
-                } catch (UnknownHostException x) {
+                } catch (final UnknownHostException x) {
                     logger.error("unable to resolve 'www.google.com - suspect DNS is unavailable",x);
                     fail("Unable to resolve 'www.google.com' - suspect DNS is unavailable");
                 }
@@ -80,11 +72,11 @@ public class ConnectivityTests extends TestSuite{
         });
         addTest(new TestCase("Access port 80") {
             protected void runTest()  throws Throwable{
-                URL u = new URL("http://www.google.com:80");
+                final URL u = new URL("http://www.google.com:80");
                 assertNotNull(u);
                 try {
                     u.openConnection().connect();
-                } catch (IOException x) {
+                } catch (final IOException x) {
                     logger.error("unable to connect to port 80 at www.google.com - is firewall blocking port 80?",x);
                   fail("Unable to connect to port 80 at www.google.com - is firewall blocking port 80?");
                 }
@@ -92,11 +84,11 @@ public class ConnectivityTests extends TestSuite{
         });
         addTest(new TestCase("Access port 8080") {
             protected void runTest()  throws Throwable{
-                URL u = new URL("http://rofr.ivoa.net:8080/ ");
+                final URL u = new URL("http://rofr.ivoa.net:8080/ ");
                 assertNotNull(u);
                 try {
                     u.openConnection().connect();
-                } catch (IOException x) {
+                } catch (final IOException x) {
                     logger.error("unable to connect to port 8080 at rofr.ivoa.net - is firewall blocking port 8080?",x);
                   fail("Unable to connect to port 8080 at rofr.ivoa.net - is firewall blocking port 8080?");
                 }

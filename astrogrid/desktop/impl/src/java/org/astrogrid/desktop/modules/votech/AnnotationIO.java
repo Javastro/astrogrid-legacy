@@ -9,7 +9,7 @@ import java.util.List;
 import org.astrogrid.acr.ivoa.resource.Resource;
 
 /**
- * Handles the messy business of reading / writing anntotation files.
+ * Encapsulates the messy business of reading / writing anntotation files.
  * Keeps it separate from the rest of the implementation, 
  * and allows it to be switched around later.
  * 

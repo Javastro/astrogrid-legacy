@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.23 2008/08/19 18:49:22 nw Exp $
+/*$Id: ConeProtocol.java,v 1.24 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 
-/**
+/** Cone Search Protocol
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  * @author Mark Taylor
  *@TEST
@@ -105,6 +105,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.24  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.23  2008/08/19 18:49:22  nw
 ASSIGNED - bug 2812: assorted things on vodesktop 2008-2-rc1
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2812

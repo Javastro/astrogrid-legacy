@@ -3,8 +3,6 @@
  */
 package org.astrogrid.desktop.modules.votech;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,7 +13,6 @@ import java.util.Map;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.Status;
@@ -24,14 +21,11 @@ import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
-import org.astrogrid.desktop.modules.system.XmlPersist;
-import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
-/** Implementaiton of a service that provides additional metadata - annotaitons - about registry resources.
+/** Implemnentation of {@link AnnotationService}.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20077:12:26 PM
  */
@@ -47,7 +41,7 @@ public class AnnotationServiceImpl implements AnnotationService{
 	private final AnnotationIO io;
 	private final Ehcache cache;
 	protected final UIContext ui;	
-	public AnnotationServiceImpl(final Ehcache cache, final UIContext ui, AnnotationIO io) {
+	public AnnotationServiceImpl(final Ehcache cache, final UIContext ui, final AnnotationIO io) {
 		super();
 		this.io = io;
 		this.cache = cache;
@@ -60,7 +54,7 @@ public class AnnotationServiceImpl implements AnnotationService{
 	}
 
 // source management.
-	public void addSource(AnnotationSource nu) {
+	public void addSource(final AnnotationSource nu) {
 		if (annotationSources.contains(nu)) {
 			logger.warn("Ignoring attempt to add duplicate source " + nu);
 			return;
@@ -86,7 +80,7 @@ private void saveSourceList() {
 		return (AnnotationSource[])annotationSources.toArray(new AnnotationSource[annotationSources.size()]);
 	}
 	
-	public void removeSource(AnnotationSource remove) {
+	public void removeSource(final AnnotationSource remove) {
 		if (io.getUserSource().equals(remove)) {
 			logger.warn("Ignoring attempt to remove user source");
 			return; //ignored.
@@ -100,8 +94,8 @@ private void saveSourceList() {
 
 	/** load and process the annotation sources - or at least those that are static. */
 	public final void run() {
-		for (Iterator i = annotationSources.iterator(); i.hasNext();) {
-			AnnotationSource s = (AnnotationSource) i.next();
+		for (final Iterator i = annotationSources.iterator(); i.hasNext();) {
+			final AnnotationSource s = (AnnotationSource) i.next();
 			if (! (s instanceof DynamicAnnotationSource)) {
 				// so it's a static source.
 				loadStaticSource(s);
@@ -115,25 +109,25 @@ private void saveSourceList() {
 		(new BackgroundWorker(ui,"Loading annotations from " + source.getName(),BackgroundWorker.LONG_TIMEOUT,Thread.MIN_PRIORITY) {
 
 			protected Object construct() throws Exception {
-				Collection anns = io.load(source);
-				for (Iterator i = anns.iterator(); i.hasNext();) {
-					Annotation a = (Annotation) i.next();
+				final Collection anns = io.load(source);
+				for (final Iterator i = anns.iterator(); i.hasNext();) {
+					final Annotation a = (Annotation) i.next();
 					a.setSource(source); // as probably haven't persisted this.
-					URI resourceId = a.getResourceId();
+					final URI resourceId = a.getResourceId();
 					Element el = cache.get(resourceId);
 					if (el == null) { // new.
-						Map m = new HashMap(annotationSources.size());
+						final Map m = new HashMap(annotationSources.size());
 						m.put(a.getSource(),a);
 						el = new Element(resourceId,m);
 					} else { // existing. just add it.
-						Map m = (Map)el.getValue();
+						final Map m = (Map)el.getValue();
 						m.put(a.getSource(),a);
 					}
 					cache.put(el);
 				} // end for loop.
 				return null; // done.
 			}
-			protected void doError(Throwable ex) {
+			protected void doError(final Throwable ex) {
                 parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));                
 			}
 		}).start();
@@ -144,32 +138,32 @@ private void saveSourceList() {
 	public AnnotationSource getUserAnnotationSource() {
 		return io.getUserSource();
 	}
-	public UserAnnotation getUserAnnotation(Resource r) {
+	public UserAnnotation getUserAnnotation(final Resource r) {
 	    if (r == null) {
 	        return null;
 	    }
 	    return getUserAnnotation(r.getId());
 	}
-	public UserAnnotation getUserAnnotation(URI resourceId) {
+	public UserAnnotation getUserAnnotation(final URI resourceId) {
 	    if (resourceId == null) {
 	        return null;
 	    }	        	        
-		Element el = cache.get(resourceId);
+		final Element el = cache.get(resourceId);
 		if (el == null) {
 			return null;
 		}
-		Map m = (Map)el.getValue();
-		UserAnnotation ua = (UserAnnotation)m.get(io.getUserSource());
+		final Map m = (Map)el.getValue();
+		final UserAnnotation ua = (UserAnnotation)m.get(io.getUserSource());
 		return ua;
 	}
 	
 
 	
-	public void setUserAnnotation(Resource r, UserAnnotation ann) {
+	public void setUserAnnotation(final Resource r, final UserAnnotation ann) {
 		if (ann == null || r == null) {
 			return;
 		}
-		AnnotationSource userSource = io.getUserSource();
+		final AnnotationSource userSource = io.getUserSource();
 		// make sure references are correct.
 		ann.setResourceId(r.getId());
 		ann.setSource(userSource);
@@ -177,11 +171,11 @@ private void saveSourceList() {
 		// wap it into the cache.
 		Element el = cache.get(r.getId());
 		if (el == null) {
-			Map m = new HashMap();
+			final Map m = new HashMap();
 			m.put(userSource,ann);
 			el = new Element(r.getId(),m);
 		} else {
-			Map m = (Map)el.getValue();
+			final Map m = (Map)el.getValue();
 			m.put(userSource,ann);
 		}
 		cache.put(el);
@@ -190,13 +184,13 @@ private void saveSourceList() {
 	}
 	
 	
-	public void removeUserAnnotation(Resource r) {
+	public void removeUserAnnotation(final Resource r) {
 	    if (r == null) {
 	        return;
 	    }
-	    Element el = cache.get(r.getId());
+	    final Element el = cache.get(r.getId());
 	    if (el != null) { // else nothing needs doing.
-	        Map m = (Map)el.getValue();
+	        final Map m = (Map)el.getValue();
 	        if (m.remove(io.getUserSource()) != null) { // else wasn't a user annotaiton anyhow
 	            cache.put(el);
 	            io.removeUserAnnotation(r);
@@ -205,17 +199,17 @@ private void saveSourceList() {
 	}
 
 // process annotations
-	public void processLocalAnnotations(Resource r, AnnotationProcessor procesor) {
+	public void processLocalAnnotations(final Resource r, final AnnotationProcessor procesor) {
 		if (r == null || procesor == null) {
 		    return;
 		}
-	    Element el = cache.get(r.getId());
+	    final Element el = cache.get(r.getId());
 		if (el == null) {
 			return;
 		}
-		Map m = (Map)el.getValue();
-		for (Iterator i = m.values().iterator(); i.hasNext(); ) {
-			Annotation a = (Annotation)i.next();
+		final Map m = (Map)el.getValue();
+		for (final Iterator i = m.values().iterator(); i.hasNext(); ) {
+			final Annotation a = (Annotation)i.next();
 			if (a instanceof UserAnnotation) {
 				procesor.process((UserAnnotation)a);
 			} else {
@@ -224,15 +218,15 @@ private void saveSourceList() {
 		}
 	}
 	
-	public Iterator getLocalAnnotations(Resource r) {
+	public Iterator getLocalAnnotations(final Resource r) {
 	    if (r == null) {
             return IteratorUtils.emptyIterator();
         }
-		Element el = cache.get(r.getId());
+		final Element el = cache.get(r.getId());
 		if (el == null) {
 			return IteratorUtils.emptyIterator();
 		}
-		Map m = (Map)el.getValue();
+		final Map m = (Map)el.getValue();
 		return m.values().iterator();
 	}
 
@@ -246,14 +240,14 @@ private void saveSourceList() {
 			m = (Map)el.getValue();
 		}
 		final Element toCache = el; // final restriction work-around.
-		for (Iterator i = annotationSources.iterator(); i.hasNext();) {
+		for (final Iterator i = annotationSources.iterator(); i.hasNext();) {
 			final AnnotationSource source = (AnnotationSource) i.next();
 			if (source instanceof DynamicAnnotationSource &&
 					! m.containsKey(source)) {
 				(new BackgroundWorker(ui,"Loading annotations from " + source.getName(),BackgroundWorker.SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
 					protected Object construct() throws Exception {
 						final DynamicAnnotationSource dynSource = (DynamicAnnotationSource)source;
-						Annotation ann = (dynSource).getAnnotationFor(r);
+						final Annotation ann = (dynSource).getAnnotationFor(r);
 						if (ann != null && dynSource.shouldCache()) {
 							m.put(source,ann);
 							cache.put(toCache); // risk of race, and repeated cache writes here.
@@ -261,8 +255,8 @@ private void saveSourceList() {
 						}
 						return ann;
 					}
-					protected void doFinished(Object result) {
-						Annotation ann = (Annotation)result;
+					protected void doFinished(final Object result) {
+						final Annotation ann = (Annotation)result;
 						if (ann != null) {
 							if (ann instanceof UserAnnotation) {
 								processor.process((UserAnnotation)ann);
@@ -271,7 +265,7 @@ private void saveSourceList() {
 							}
 						}
 					}
-					protected void doError(Throwable ex) {
+					protected void doError(final Throwable ex) {
 					    parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));
 					}
 				}).start();
@@ -280,7 +274,7 @@ private void saveSourceList() {
 	}
 
     public Test getSelftest() {
-        TestSuite ts = new TestSuite("Annotations");
+        final TestSuite ts = new TestSuite("Annotations");
         ts.addTest(new TestCase("Annotations") {
             protected void runTest()  {
                 assertEquals("Problem with cache",Status.STATUS_ALIVE,cache.getStatus());

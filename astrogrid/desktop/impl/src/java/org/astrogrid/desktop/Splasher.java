@@ -1,4 +1,4 @@
-/*$Id: Splasher.java,v 1.3 2007/01/29 11:11:35 nw Exp $
+/*$Id: Splasher.java,v 1.4 2008/11/04 14:35:52 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,15 @@
 **/
 package org.astrogrid.desktop;
 
+import org.astrogrid.VODesktop;
 import org.astrogrid.Workbench;
 
 /** Bootstrap class - displays splashcreen before starting off main application.
- * @deprecated - call one of the classes in <tt>org.astrogrid</tt> directly. For 
- * now this class delegates to {@link Workbench}
+ * @deprecated - call {@link VODesktop} instead.
  * .
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Jul-2005
  */
+@Deprecated
 public class Splasher {
 
     /** Construct a new Workbench
@@ -27,7 +28,7 @@ public class Splasher {
         super();
     }
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
     	Workbench.main(args);
     }
 
@@ -36,6 +37,9 @@ public class Splasher {
 
 /* 
 $Log: Splasher.java,v $
+Revision 1.4  2008/11/04 14:35:52  nw
+javadoc polishing
+
 Revision 1.3  2007/01/29 11:11:35  nw
 updated contact details.
 

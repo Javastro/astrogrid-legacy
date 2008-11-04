@@ -5,7 +5,7 @@
 
 <module id="astrogrid" version="1.0.0" package="org.astrogrid.acr.astrogrid">
 	<dependency module-id="system"/>
-	AstroGrid Services
+	AstroGrid-specific Services
 	<!--  PREAMBLE -->
 
 		<contribution configuration-id="framework.acrServices">
@@ -29,7 +29,7 @@
 MYSPACE
  -->
 	<service-point id="myspace" interface="org.astrogrid.desktop.modules.ag.MyspaceInternal">
-		Myspace client
+		Client for Myspace.
         <interceptor service-id="system.edt" />
 		<interceptor service-id="system.throbber" />	
 		<interceptor service-id="hivelock.core.authorization">
@@ -70,6 +70,7 @@ MYSPACE
 	
 	<!--  myspace vfs provider 	-->
 	<service-point id="myspacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
+        VFS provider provider for myspace.
 		<invoke-factory model="primitive"><!--  has to be primitive, as vfs implementation casts it to implementation type. -->
 			<construct class="org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceProvider">
 				<service>bundlePrefs</service>
@@ -81,6 +82,7 @@ MYSPACE
 	</service-point>
 	
 	<service-point id="workspacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
+        VFS protocol provider for workspace://
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ag.vfs.WorkspaceProvider">
 				<service>community</service>
@@ -95,7 +97,7 @@ MYSPACE
 			implementation="service:workspacevfs" />
 	</contribution><!-- 
 ==========================
-COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.modules.auth.CommunityInternal">		Community and login.	
+COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.modules.auth.CommunityInternal">		Community and login service	
         <interceptor service-id="system.edt" >
             <exclude method="addUserLoginListener" />
             <exclude method="removeUserLoginListener" />
@@ -133,13 +135,14 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 	</contribution>
 
 <contribution configuration-id="hivemind.FactoryDefaults">
+        <!--  default community to use in login dialogue -->
 		<default symbol="astrogrid.community.default.ivorn" value="ivo://uk.ac.le.star/community" />
 	</contribution>	
 
+	<implementation service-id="hivelock.core.PrincipalHelper">
 	<!--
 		Link between community service and hivemind user system.
 	-->
-	<implementation service-id="hivelock.core.PrincipalHelper">
 		<invoke-factory model="primitive">
 			<construct	class="org.astrogrid.desktop.modules.auth.PrincipalHelperImpl" >
 				<service>builtin.sessionManager</service>
@@ -171,15 +174,17 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 LOGIN DIALOGUE -->
 
 	<service-point id="loginDialogue"  visibility="private" interface="org.astrogrid.desktop.modules.auth.LoginDialogue">
-	<!-- duff implementation of the login dialogue, when running in headless mode -->
+        Popup login dialogue.
         <invoke-factory>
+            <!--  dummy implementation, for headless mode -->
             <construct class="org.astrogrid.desktop.modules.auth.HeadlessLoginDialogue">
                 <string>LOGIN</string>
             </construct>
         </invoke-factory>
     </service-point>
     
-    <implementation service-id="loginDialogue" if="(not(property astrogrid.loginDialogue.disabled)) and (not (property java.awt.headless))">    
+    <implementation service-id="loginDialogue" if="(not(property astrogrid.loginDialogue.disabled)) and (not (property java.awt.headless))">
+        <!--  Actual implementation of login dialogue. -->    
         <interceptor service-id="system.edtInvoke" />	
         <invoke-factory model="session"><!--  privacy fix - else input field values are shared. -->
             <construct  class="org.astrogrid.desktop.modules.auth.SwingLoginDialogue" >
@@ -255,7 +260,7 @@ APPLICATIONS
 REMOTE PROCESS MANAGER
  -->
 	<service-point id="processManager" interface="org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal">
-		Manages and monitors execution of remote processes. Consumes the processStrategies configuration
+		Manages and monitors execution of remote processes. 
         <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory >
@@ -288,7 +293,7 @@ REMOTE PROCESS MANAGER
 CEA EXECUTION STRATEGY
  -->
     <service-point id="ceaStrategy"  visibility="private" interface="org.astrogrid.desktop.modules.ag.RemoteProcessStrategy">
-        Strategy for executing remote cea applications.
+        RemoteProcessStrategy for executing remote cea applications.
         <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.ag.CeaStrategyImpl" >
                 <service>ivoa.registry</service>
@@ -302,7 +307,7 @@ CEA EXECUTION STRATEGY
         </invoke-factory>   
     </service-point>
 
-    <implementation service-id="ceaStrategy" if="property background.ceaStrategy.disabled">
+    <implementation service-id="ceaStrategy" if="property astrogrid.ceaStrategy.disabled">
         <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> 
     </implementation>                   
 
@@ -315,7 +320,7 @@ CEA EXECUTION STRATEGY
 TAP EXECUTION STRATEGY
  -->
     <service-point id="tapStrategy"  visibility="private" interface="org.astrogrid.desktop.modules.ag.RemoteProcessStrategy">
-        Strategy for executing TAP Queries
+        RemoteProcessStrategy for executing TAP Queries
         <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.ag.TapStrategyImpl" >
                 <service>ivoa.registry</service>
@@ -327,7 +332,7 @@ TAP EXECUTION STRATEGY
         </invoke-factory>   
     </service-point>
 
-    <implementation service-id="tapStrategy" if="property background.tapStrategy.disabled">
+    <implementation service-id="tapStrategy" if="property astrogrid.tapStrategy.disabled">
         <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> 
     </implementation>                   
 

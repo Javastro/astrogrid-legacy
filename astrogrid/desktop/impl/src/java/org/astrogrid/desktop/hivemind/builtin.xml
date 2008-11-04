@@ -27,7 +27,7 @@ Builtin Components
 ACR itself
  -->
 	<service-point id="acr" interface="org.astrogrid.desktop.framework.ACRInternal">
-		Registry of all available acr components. Consumes the acrServices and descriptors configuration
+		The AR itself: A registry of all available AR components. Consumes the acrServices and descriptors configuration
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.hivemind.HivemindMutableACR">
 				<configuration>framework.acrServices</configuration>
@@ -42,7 +42,7 @@ SESSION MANAGER
 	 -->
 <service-point id="sessionManager" 
 interface="org.astrogrid.desktop.framework.SessionManagerInternal">
- Manages user sessions. Implementation provided elsewhere, depending on which flavour we're running as.
+ Manages user sessions. Implementation provided by astrogrid community component.
 </service-point>
 
 	<contribution configuration-id="system.servletContext">
@@ -55,7 +55,7 @@ interface="org.astrogrid.desktop.framework.SessionManagerInternal">
 SHUTDOWN
  -->
 	<service-point id="shutdown" interface="Shutdown">
-		Service to shutdown the ACR
+		Service to shutdown the AR
 		<invoke-factory model="primitive">
 			<construct  class="org.astrogrid.desktop.framework.ShutdownImpl" >
 				<service>hivemind.ShutdownCoordinator</service>
@@ -75,13 +75,6 @@ SHUTDOWN
 	<contribution configuration-id="hivemind.FactoryDefaults">
 		<default symbol="builtin.shutdown.exit" value="true" /> <!-- work around for jetty problem, for now -->
 	</contribution>
-	
-	<!-- if running under webstart, need to call System.exit() to terminate the applicaiton, it seems -->
-	<contribution configuration-id="hivemind.ApplicationDefaults"  if="class javax.jnlp.ServiceManager">
-		<default symbol="builtin.shutdown.exit" value="true" />
-	</contribution>
-	
-
 	
 
  </module>

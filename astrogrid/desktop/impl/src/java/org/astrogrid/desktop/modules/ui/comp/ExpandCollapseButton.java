@@ -1,6 +1,5 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
-import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -12,7 +11,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 
 import com.l2fprod.common.swing.JCollapsiblePane;
 
-/** button that controls a jCollapsiblepane, or a normal pane. */
+/** Button that controls a {@code JCollapsiblePane}, or a normal pane. */
 public class ExpandCollapseButton extends JToggleButton implements ItemListener {
 	/**
      * 
@@ -28,7 +27,7 @@ public class ExpandCollapseButton extends JToggleButton implements ItemListener 
 	 * construct a new expand-collapse button
 	 * @param pane the pane to expand or collapse on button click.
 	 */
-	public ExpandCollapseButton(JCollapsiblePane pane) {
+	public ExpandCollapseButton(final JCollapsiblePane pane) {
 	    this();
 		final Action toggleAction = pane.getActionMap().get(JCollapsiblePane.TOGGLE_ACTION);
 		toggleAction.putValue(JCollapsiblePane.EXPAND_ICON, IconHelper.loadIcon(EXPAND_ICON));
@@ -40,7 +39,7 @@ public class ExpandCollapseButton extends JToggleButton implements ItemListener 
        		
 	}
 	
-	public ExpandCollapseButton(JPanel pane) {
+	public ExpandCollapseButton(final JPanel pane) {
 	    this.pane = pane;
         setIcon(IconHelper.loadIcon(EXPAND_ICON));
 	    setSelectedIcon(IconHelper.loadIcon(CONTRACT_ICON));
@@ -57,7 +56,7 @@ public class ExpandCollapseButton extends JToggleButton implements ItemListener 
 	}
 
 	// used when working with a normal jPanel.
-    public void itemStateChanged(ItemEvent e) {
+    public void itemStateChanged(final ItemEvent e) {
             pane.setVisible(isSelected());
     }
 }

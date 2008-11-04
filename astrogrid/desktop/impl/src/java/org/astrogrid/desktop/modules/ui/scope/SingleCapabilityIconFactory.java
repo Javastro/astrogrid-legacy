@@ -15,7 +15,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 
 /**
- * CapabilityIconFactory implementation suitable for use with a
+ * {@code CapabilityIconFactory} implementation suitable for use with a
  * {@link ScopeServicesList}.  This is expecting that every resource in the
  * table is a {@link RetrieverService}, and has a single Capability.
  * Only those capabilities of interest to the AstroScope are expected.
@@ -37,15 +37,15 @@ public class SingleCapabilityIconFactory implements CapabilityIconFactory {
     public SingleCapabilityIconFactory() {
     }
 
-    public Icon buildIcon(Resource res) {
+    public Icon buildIcon(final Resource res) {
         if (res instanceof Service) {
-            Capability[] caps = ((Service) res).getCapabilities();
+            final Capability[] caps = ((Service) res).getCapabilities();
             if (caps.length != 1 && ! (res instanceof RetrieverService)) {
                 logger.warn("Unexpected service - programming error?");
                 return null;
             }
             else {
-                Capability cap = caps[0];
+                final Capability cap = caps[0];
                 for (int i = 0; i < CAPS.length; i++) {
                     if (CAPS[i].clazz.isAssignableFrom(cap.getClass())) {
                         return CAPS[i].icon;
@@ -59,7 +59,7 @@ public class SingleCapabilityIconFactory implements CapabilityIconFactory {
         }
     }
 
-    public String getTooltip(Icon icon) {
+    public String getTooltip(final Icon icon) {
         for (int i = 0; i < CAPS.length; i++) {
             if (CAPS[i].icon.equals(icon)) {
                 return CAPS[i].tip;
@@ -79,7 +79,7 @@ public class SingleCapabilityIconFactory implements CapabilityIconFactory {
          * @param  iconName  name of icon resource
          * @param  Capability subclass characterising this capability
          */
-        Cap(String tip, String iconName, Class clazz) {
+        Cap(final String tip, final String iconName, final Class clazz) {
             this.tip = tip;
             this.icon = IconHelper.loadIcon(iconName);
             this.clazz = clazz;

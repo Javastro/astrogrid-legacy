@@ -1,4 +1,4 @@
-/*$Id: QueryResultCollector.java,v 1.2 2008/02/22 17:03:35 mbt Exp $
+/*$Id: QueryResultCollector.java,v 1.3 2008/11/04 14:35:48 nw Exp $
  * Created on 30-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,8 @@
  **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
-import edu.berkeley.guir.prefuse.graph.TreeNode;
-
-
+/** interface to something that aggregates results from many retrievers. */
 public interface QueryResultCollector {
 
     /** report a query success
@@ -38,6 +34,9 @@ void addAll(Retriever[] retrievers);
 
 /* 
  $Log: QueryResultCollector.java,v $
+ Revision 1.3  2008/11/04 14:35:48  nw
+ javadoc polishing
+
  Revision 1.2  2008/02/22 17:03:35  mbt
  Merge from branch mbt-desktop-2562.
  Basically, Retrievers rather than Services are now the objects (associated

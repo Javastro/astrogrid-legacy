@@ -1,4 +1,4 @@
-/*$Id: BuildInprocessACR.java,v 1.10 2008/04/23 10:50:09 nw Exp $
+/*$Id: BuildInprocessACR.java,v 1.11 2008/11/04 14:35:52 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,13 +22,12 @@ import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.hivemind.Launcher;
 
-/** class that assembles and creates a new in-process ACR.
+/** Assembles and creates a new in-process AR.
  *
  *
  *Poorly named, but is basically a factory for an in-process ACR.
  *Name can't be changed now - as is referenced in the Finder class in the public api.
  *
- *will retun a instance of ACR - seems like the most sensible variant to provide for in-process finder.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Jul-2005
  *
  */
@@ -54,7 +53,7 @@ public class BuildInprocessACR  {
 			main = Class.forName("org.astrogrid.VODesktop1");
 			m = ReflectionHelper.getMethodByName(main, "configureLauncherAsVODesktop");
 			logger.info("Starting VODesktop");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 						logger.fatal("Failed to find AR main class on classpath");
 						return;					
 		}
@@ -65,7 +64,7 @@ public class BuildInprocessACR  {
 		
 		try {
 			m.invoke(null, launcher);
-		} catch (Exception x) {
+		} catch (final Exception x) {
 			logger.fatal("Failed to configure launcher",x);
 		} 
 	}
@@ -89,17 +88,17 @@ public class BuildInprocessACR  {
     	launcher.run();
 		// now associate the current thread with the default AR session
     	//@fixme - document how to adopt a session when calling AR from new threads.
-		SessionManagerInternal s = (SessionManagerInternal)getHivemindRegistry().getService(SessionManagerInternal.class);
-		Principal principal = s.findSessionForKey(s.getDefaultSessionId());
+		final SessionManagerInternal s = (SessionManagerInternal)getHivemindRegistry().getService(SessionManagerInternal.class);
+		final Principal principal = s.findSessionForKey(s.getDefaultSessionId());
 		s.adoptSession(principal);    	
     }
     /** stop the ACR */
     public void stop() {
         try {
            
-            Shutdown sh = (Shutdown)launcher.getRegistry().getService(Shutdown.class);
+            final Shutdown sh = (Shutdown)launcher.getRegistry().getService(Shutdown.class);
             sh.halt();       
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             logger.error("Failed to call shutdown",e);
         }       
               

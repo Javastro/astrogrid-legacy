@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.system.pref;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,7 +20,9 @@ import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.comparators.FixedOrderComparator;
 import org.apache.commons.lang.StringUtils;
 
-/**A small helper component that arranges the preferences contribution
+/**Implementation of {@code PreferencesArranger}.
+ * 
+ * A small helper component that arranges the preferences contribution
  * into structures that are more user-friendly. This view can then be used tomake the 
  * preference dialogue, preference servlet, and any other preference view more
  * consistent.
@@ -66,17 +67,17 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 
 	}
 	
-	public PreferencesArrangerImpl(List preferences) {
+	public PreferencesArrangerImpl(final List preferences) {
 		if (preferences == null) {
 			throw new IllegalArgumentException("Preferences List cannot be null!");
 		}
-		MultiMap advancedMulti = new MultiHashMap();
-		MultiMap basicMulti = new MultiHashMap();
+		final MultiMap advancedMulti = new MultiHashMap();
+		final MultiMap basicMulti = new MultiHashMap();
 		//sort preferences by module, and then according to advancedNess
-		for (Iterator i = preferences.iterator(); i.hasNext();) {
-			Preference p = (Preference) i.next();
+		for (final Iterator i = preferences.iterator(); i.hasNext();) {
+			final Preference p = (Preference) i.next();
 			// map names originating from implementation modules into something more userfriendly.   
-			String moduleName = p.getModuleName();
+			final String moduleName = p.getModuleName();
 			String key;
 			if ("framework".equalsIgnoreCase(moduleName)) {
 			    key = "system";
@@ -97,22 +98,22 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 		}
 		
 		// create the result maps.
-		Map basicResult = new HashMap(basicMulti.size());
-		Map advancedResult = new HashMap(advancedMulti.size());
+		final Map basicResult = new HashMap(basicMulti.size());
+		final Map advancedResult = new HashMap(advancedMulti.size());
 		//Comparator preferenceComparator = new PreferenceComparator();
 		
 		// popiulate
-		for (Iterator i = basicMulti.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
-			List l = new ArrayList((Collection)e.getValue());
+		for (final Iterator i = basicMulti.entrySet().iterator(); i.hasNext();) {
+			final Map.Entry e = (Map.Entry) i.next();
+			final List l = new ArrayList((Collection)e.getValue());
 			// sort the preferences for this category.
 			// nope - decided it looks better without sorting.
 			//Collections.sort(l, preferenceComparator);
 			basicResult.put(e.getKey(), ListUtils.unmodifiableList(l));
 		}
-		for (Iterator i = advancedMulti.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
-			List l = new ArrayList((Collection)e.getValue());
+		for (final Iterator i = advancedMulti.entrySet().iterator(); i.hasNext();) {
+			final Map.Entry e = (Map.Entry) i.next();
+			final List l = new ArrayList((Collection)e.getValue());
 			// sort the preferences for this category.
 			// nope. Collections.sort(l, preferenceComparator);
 			advancedResult.put(e.getKey(), ListUtils.unmodifiableList(l));
@@ -124,9 +125,9 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 		/////////
 		
 		// compute a set of module names.
-		Set names = new HashSet(basicMulti.keySet());
+		final Set names = new HashSet(basicMulti.keySet());
 		names.addAll(advancedMulti.keySet());
-		List cats = new ArrayList(names);
+		final List cats = new ArrayList(names);
 		// alphabetic sort, but with 'system' being first.
 		Collections.sort(cats,new CategoryNamesComparator());
 		categoryNames = ListUtils.unmodifiableList(cats);
@@ -138,8 +139,8 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 	 * @return never null. if an unknown category, or one with no preferences 
 	 * at this level, returns an empty list.
 	 */
-	public List listBasicPreferencesForCategory(String categoryName) {
-		List o = (List)basic.get(categoryName);
+	public List listBasicPreferencesForCategory(final String categoryName) {
+		final List o = (List)basic.get(categoryName);
 		return o == null ? ListUtils.EMPTY_LIST : o;
 	}
 	
@@ -150,8 +151,8 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 	 * @return never null. if an unknown category, or one with no preferences 
 	 * at this level, returns an empty list.
 	 */	
-	public List listAdvancedPreferencesForCategory(String categoryName) {
-		List o = (List)advanced.get(categoryName);
+	public List listAdvancedPreferencesForCategory(final String categoryName) {
+		final List o = (List)advanced.get(categoryName);
 		return o == null ? ListUtils.EMPTY_LIST : o;		
 	}
 	

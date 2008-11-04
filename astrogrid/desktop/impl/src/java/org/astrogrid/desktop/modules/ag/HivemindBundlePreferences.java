@@ -5,7 +5,10 @@ package org.astrogrid.desktop.modules.ag;
 
 import org.astrogrid.filemanager.common.BundlePreferences;
 
-/** Subclass of bundlePreferences that accepts int-valued preferences.
+/** Subclass of Myspace bundlePreferences for compatability with Hivemind.
+ * <p/>
+ *  Necessary, as hivemind can't pass in an Integer - so this extension adds functions
+ *  that accept int-valued preferences.
  * @author Noel Winstanley
  * @since Jan 10, 20072:44:09 PM
  */

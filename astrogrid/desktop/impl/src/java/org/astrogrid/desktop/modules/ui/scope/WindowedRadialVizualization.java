@@ -8,7 +8,6 @@ import javax.swing.JPopupMenu;
 
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 
 import edu.berkeley.guir.prefuse.Display;
 import edu.berkeley.guir.prefuse.FocusManager;
@@ -41,7 +40,7 @@ import edu.berkeley.guir.prefusex.layout.ForceDirectedLayout;
 import edu.berkeley.guir.prefusex.layout.RadialTreeLayout;
 
 /**
- * Uses the Prefuse Radial Layout for display along with a little bit of Animation to it. Uses
+ * Prefuse visualisation using radial Layout and a little bit of animation. Uses
  *windowing filter - displays nearer neighbours, not entire graph.
  *based on node type, adjusts the 'window' size - so we don't get an explosion of nodes on the display
  * based on edu.berkeley.guir.prefuse.demos.RadialGraphDemo
@@ -51,7 +50,7 @@ public class WindowedRadialVizualization extends Vizualization {
 /** Construct a new Radial
  * @param iconFinder 
      */
-    public WindowedRadialVizualization(VizualizationController vizs, JPopupMenu menu, UIComponent parent) {
+    public WindowedRadialVizualization(final VizualizationController vizs, final JPopupMenu menu, final UIComponent parent) {
         super("Radial", vizs);
         this.parent = parent;
         this.popup = menu;        
@@ -59,15 +58,15 @@ public class WindowedRadialVizualization extends Vizualization {
     protected Display display;
     protected ActionList graphLayout;
     private final UIComponent parent;
-    private JPopupMenu popup;    
+    private final JPopupMenu popup;    
     
     
     
     /** returns true if this node is == to the root of one of the result branches
      */
-    public boolean isPrimaryNode(TreeNode t) {
-        for (Iterator i = vizs.getVizModel().getProtocols().iterator(); i.hasNext(); ) {
-            DalProtocol p = (DalProtocol)i.next();
+    public boolean isPrimaryNode(final TreeNode t) {
+        for (final Iterator i = vizs.getVizModel().getProtocols().iterator(); i.hasNext(); ) {
+            final DalProtocol p = (DalProtocol)i.next();
             if (t == p.getPrimaryNode()) {
                 return true;
             }
@@ -77,13 +76,13 @@ public class WindowedRadialVizualization extends Vizualization {
     
     public Display getDisplay() {
             if (display == null) {
-        ItemRegistry registry = getItemRegistry();
+        final ItemRegistry registry = getItemRegistry();
          display = new Display(registry);
         CSH.setHelpIDString(display,"scope.viz.radial");
             graphLayout = new ActionList(registry);
             
             // two different types of filter - only vary in window size.
-            Filter[] filters = new Filter[] {
+            final Filter[] filters = new Filter[] {
                     new WindowedTreeFilter(-2,true)
                     ,new WindowedTreeFilter(-1,true)
                     ,new WindowedTreeFilter(-4,true)
@@ -94,11 +93,11 @@ public class WindowedRadialVizualization extends Vizualization {
             
             // add a listener, that selects the correct filter based on the current node.
             registry.getDefaultFocusSet().addFocusListener(new FocusListener() {
-                public void focusChanged(FocusEvent event) {
+                public void focusChanged(final FocusEvent event) {
                     if (event.getEventType() == FocusEvent.FOCUS_SET || event.getEventType() == FocusEvent.FOCUS_ADDED) {
-                        Entity e = event.getFirstAdded();
+                        final Entity e = event.getFirstAdded();
                         if (e instanceof TreeNode) {
-                            TreeNode t = (TreeNode)e;
+                            final TreeNode t = (TreeNode)e;
                             if (isPrimaryNode(t)) {
                                 filterSwitch.setSwitchValue(1);
                                 return;
@@ -117,12 +116,12 @@ public class WindowedRadialVizualization extends Vizualization {
             graphLayout.add(new RadialTreeLayout());
             graphLayout.add(new WindowedRadialColorFunction(3));
         
-           ActionList update = new ActionList(registry);
+           final ActionList update = new ActionList(registry);
            update.add(new WindowedRadialColorFunction(3));
            update.add(new RepaintAction());
 
            
-           ActionList animate = new ActionList(registry, 1500, 20);
+           final ActionList animate = new ActionList(registry, 1500, 20);
            animate.setPacingFunction(new SlowInSlowOutPacer());
            animate.add(new PolarLocationAnimator());
            animate.add(new ColorAnimator());
@@ -132,11 +131,11 @@ public class WindowedRadialVizualization extends Vizualization {
            // add jitter to layout nodes better. could maybe make the jitter larger - makes the nodes less
            // likely to overlap.
            
-           ForceSimulator fsim = new ForceSimulator();
+           final ForceSimulator fsim = new ForceSimulator();
            fsim.addForce(new NBodyForce(-0.1f,15f,0.5f));
            fsim.addForce(new DragForce());
            
-           ActionList forces = new ActionList(registry,1000);
+           final ActionList forces = new ActionList(registry,1000);
            forces.add(new ForceDirectedLayout(fsim,true));
            forces.add(new RepaintAction());
            forces.alwaysRunAfter(animate);
@@ -164,7 +163,7 @@ public class WindowedRadialVizualization extends Vizualization {
     }
 
     // refresh display when new item added
-    public void nodeAdded(Graph arg0, Node arg1) {
+    public void nodeAdded(final Graph arg0, final Node arg1) {
         graphLayout.runNow();
     }
     

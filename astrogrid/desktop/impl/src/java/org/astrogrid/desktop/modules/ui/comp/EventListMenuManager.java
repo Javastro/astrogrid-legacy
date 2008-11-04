@@ -3,14 +3,11 @@
  */
 package org.astrogrid.desktop.modules.ui.comp;
 
-import javax.swing.JComponent;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
 
 import ca.odell.glazedlists.EventList;
 
-/** Utility class that displays contents of an event list in a popup menu.
+/** Displays contents of an event list in a <b>drop-down</b> menu.
  * Each item in the eventlist must be a java.awt.Component (and 
  * preferably a JMenuItem)
  * @author Noel.Winstanley@manchester.ac.uk
@@ -25,7 +22,7 @@ public class EventListMenuManager extends EventListPopupMenuManager {
 	 * @param menu the popup menu to display items in
 	 * @param reverse if true, display the items in reverse order.
 	 */
-	public EventListMenuManager(final EventList el, final JMenu menu, boolean reverse) {
+	public EventListMenuManager(final EventList el, final JMenu menu, final boolean reverse) {
 		super(el,menu,menu.getPopupMenu(),reverse);
 	}
 

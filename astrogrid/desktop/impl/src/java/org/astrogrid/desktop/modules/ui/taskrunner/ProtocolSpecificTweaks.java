@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.ui.taskrunner;
 
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/** an interface to customization code specific to a particular protocokl
+/** An interface to customization code specific to a particular service protocol.
  *  - e.g. CEA, UWS-PA, TAP
  *  an instance of this class is used to customize the task runner.
  *  @see TweaksSelector

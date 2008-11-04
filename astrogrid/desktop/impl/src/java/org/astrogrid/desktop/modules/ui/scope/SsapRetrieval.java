@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.24 2008/08/20 09:34:36 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.25 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,9 +39,7 @@ import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.StarTable;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
-/**
- * 
- * complies with SSAP spec v1.04
+/** Retreiver for SSAP service, v1.04
  * @TEST
  */
 public class SsapRetrieval extends AbstractRetriever {
@@ -449,6 +447,9 @@ public class SsapRetrieval extends AbstractRetriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.25  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.24  2008/08/20 09:34:36  nw
 RESOLVED - bug 2813: SSAP services FITS files not really FITS files
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2813

@@ -28,6 +28,7 @@
 	ADQL
 	 -->
 	<service-point id="adql" interface="org.astrogrid.desktop.modules.ivoa.AdqlInternal">
+        Adql parser component.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ivoa.AdqlImpl" />
 		</invoke-factory>
@@ -227,7 +228,7 @@ SIAP
 	CONE
 	 -->
 	<service-point id="cone" interface="Cone">
-		Client to Cone Services
+	   Cone Catalog Search Protocol
         <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
@@ -247,9 +248,8 @@ SIAP
 RESULT CACHE 
 -->
 	<service-point id="cache" interface="org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal">
-	Result Cache. Would fit more logically in the system module, but then causes build
-	problems for the hub. so it's better suited here - as it's used mostly in the ivoa.registry
-	clients anyhow.
+	Caching system. Would fit more logically in the system module, but historically it ended up here .
+    Different caches can be defined via contribution.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ivoa.CacheFactoryImpl">
 				<string>${astrogrid.workdir}</string>
@@ -282,7 +282,7 @@ RESULT CACHE
 				For caches that overflow to disk, whether the disk cache persists between CacheManager instances.				
 				</attribute>
                 <attribute name="eternal" translator="boolean">
-                    If eternal, timeouts are ignored and the element is never expired.                
+                    If eternal, timeouts are ignored and items are never expired.                
                 </attribute>
 				<attribute name="maxElementsInMemory">
 				the maximum objects to be held in the MemoryStore.
@@ -294,10 +294,10 @@ RESULT CACHE
 				whether elements can overflow to disk when the in-memory cache has reached the set limit.				
 				</attribute>
 				<attribute name="timeToIdleSeconds" >
-				he time to idle for an element before it expires.
+				the time to idle for an element before it expires.
 				</attribute>
 				<attribute name="timeToLiveSeconds">
-				 Sets the time to idle for an element before it expires.
+				the time to live for an element before it expires.
 				</attribute>
                 <attribute name="registrySensitive" translator="boolean">
                  Whether this cache is sensitive to changes to the registry
@@ -312,7 +312,8 @@ RESULT CACHE
     =================================
      -->
         <service-point id="capabilityTester" interface="org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester">
-            Testing component - if a resource capability has a test query, this component knows how to verify that it's working.
+            Capabilities tester. If a capability in a resource has a test query, this component knows how to execute that
+            test to verify that it's working.
         <interceptor service-id="system.edt" />        
         <interceptor service-id="system.throbber" />           
         <invoke-factory>
@@ -329,7 +330,7 @@ RESULT CACHE
     ==================
      -->
      <service-point id="vosi" interface="org.astrogrid.acr.ivoa.Vosi">
-        Testing for vosi availability endpoints.
+        VOSI availability tester. Knows how to check VOSI information.
         <interceptor service-id="system.edt" />        
         <interceptor service-id="system.throbber" />            
         <invoke-factory>
@@ -343,6 +344,7 @@ RESULT CACHE
      ===========================
       -->
     <service-point id="vospacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
+        VFS provider for VOSpace - work in progress.
         <invoke-factory model="primitive"><!--  has to be primitive, as vfs implementation casts it to implementation type. -->
             <construct class="org.astrogrid.desktop.modules.ivoa.vfs.vospace.VospaceProvider">
                 <service>astrogrid.community</service>

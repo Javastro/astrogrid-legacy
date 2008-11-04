@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.12 2008/05/28 12:27:49 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.13 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,8 +23,7 @@ import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.ObservableElementList;
 
-/**
- * aggregates a set of retreivers together - so they can be operated as a whole.
+/** Aggregates a set of {@link DalProtocol} so they can be operated as a whole.
  * also manages a tablemodel that summarizes the resultls of querying each service - this is also accessible through
  * the separate {@link QueryResultCollector} interface - as later, we may want to refactor this elewhere.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
@@ -38,7 +37,7 @@ public class DalProtocolManager implements Iterable<DalProtocol>{
     private final EventList<DalProtocol> l;
 
     /** add a protocol to the manager */
-    public void add(DalProtocol r) {
+    public void add(final DalProtocol r) {
         l.add(r);
     }
     /** access a list where events are triggered when checkboxes are clicked */
@@ -63,35 +62,38 @@ public class DalProtocolManager implements Iterable<DalProtocol>{
     	if (size() % 2 != 0) {
     		num++;
     	}
-    	StringBuffer sb = new StringBuffer("d");
+    	final StringBuffer sb = new StringBuffer("d");
     	for (int i = 1; i < num; i++) {
     		sb.append(",d");
     	}
     	return sb.toString();
     }
-    
+    /**
+     * An observable list connector for {@code DalProtocol} - listens to each's checkbox. 
+     * @author Noel.Winstanley@manchester.ac.uk
+     */
     private static class ProtocolListener 
     	implements ObservableElementList.Connector<DalProtocol>, ItemListener {
 
-		public EventListener installListener(DalProtocol p) {
+		public EventListener installListener(final DalProtocol p) {
 			p.getCheckBox().addItemListener(this);
 			return this;
 		}
 
-		public void setObservableElementList(ObservableElementList<DalProtocol> arg0) {
+		public void setObservableElementList(final ObservableElementList<DalProtocol> arg0) {
 			this.l = arg0;
 		}
 		private ObservableElementList<DalProtocol> l;
-		public void uninstallListener(DalProtocol p, EventListener arg1) {
+		public void uninstallListener(final DalProtocol p, final EventListener arg1) {
 			if ( arg1 != this) {
 				return;
 			}
 			p.getCheckBox().removeItemListener(this);
 		}
 
-		public void itemStateChanged(ItemEvent e) {
-			JCheckBox cb = (JCheckBox)e.getSource();
-			DalProtocol o = (DalProtocol)cb.getClientProperty(DalProtocol.OWNER);
+		public void itemStateChanged(final ItemEvent e) {
+			final JCheckBox cb = (JCheckBox)e.getSource();
+			final DalProtocol o = (DalProtocol)cb.getClientProperty(DalProtocol.OWNER);
 			l.elementChanged(o);
 		}
     }
@@ -101,6 +103,9 @@ public class DalProtocolManager implements Iterable<DalProtocol>{
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.13  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.12  2008/05/28 12:27:49  nw
 Complete - task 408: Adjust count reporting in astroscope and voexplorer.
 

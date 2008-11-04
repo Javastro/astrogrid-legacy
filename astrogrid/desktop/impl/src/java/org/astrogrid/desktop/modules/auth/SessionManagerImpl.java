@@ -3,15 +3,14 @@
  */
 package org.astrogrid.desktop.modules.auth;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
 
 import net.sourceforge.hivelock.SecurityService;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
@@ -20,8 +19,8 @@ import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.WebServerInternal;
 import org.joda.time.Duration;
 
-/** manages sessions and plugs ag community into the hivelock system.
- * 
+/** Manages sessions and interfaces between {@code Community} and hivelock library.
+ * <p/>
  * reason that the sessionManager and community are 2 classes is that there's only 
  * ever one of these created, while the community instance is created per session.
  * 
@@ -40,7 +39,7 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
     private static final Log logger = LogFactory
             .getLog(SessionManagerImpl.class);
 
-	public SessionManagerImpl(SecurityService s, WebServerInternal ws,CommunityInternal comm, SchedulerInternal scheduler) {
+	public SessionManagerImpl(final SecurityService s, final WebServerInternal ws,final CommunityInternal comm, final SchedulerInternal scheduler) {
 		super(s,ws);
 		this.scheduler = scheduler;
 		this.comm = comm;
@@ -58,32 +57,32 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 
 	// listener interface 
 	// callback from community - either triggered by attemptUpgrade(), or oone of the methods in community.
-	public void userLogin(UserLoginEvent arg0) {
+	public void userLogin(final UserLoginEvent arg0) {
                 // This principal is non-null if the community object has signed on
                 // at a community service. It is of the form ivo://user@authority/resource-key.
-                Principal p = comm.getSecurityGuard().getAccountIvorn();
+                final Principal p = comm.getSecurityGuard().getAccountIvorn();
 		if (p != null) {
-			MutablePrincipal mp = (MutablePrincipal) ss.getCurrentUser();
+			final MutablePrincipal mp = (MutablePrincipal) ss.getCurrentUser();
 			mp.setActualPrincipal(p);
 		}
 	}
 
-	public void userLogout(UserLoginEvent arg0) {
+	public void userLogout(final UserLoginEvent arg0) {
 		// on user log out, totally discard the current session and replace with another
 		// uninitialized one, and change the _identity_ of this session.
 		// this will flush all the session-based services too - so we start afresh.
-		MutablePrincipal mp = (MutablePrincipal)ss.getCurrentUser();
+		final MutablePrincipal mp = (MutablePrincipal)ss.getCurrentUser();
 		mp.setActualPrincipal(new UnauthenticatedPrincipal());
 	}
 
 // sessionManager interface
 
-	public String createNewSession(long minutes)  {
+	public String createNewSession(final long minutes)  {
 		final String sid = generateSessionId();
-		Principal newSession = new MutablePrincipal();
+		final Principal newSession = new MutablePrincipal();
 		sessionMap.put(sid,newSession);
 		// now attach ourselves to this session's instance of community too - so we receive notifications there.
-		Principal previousSession = currentSession();
+		final Principal previousSession = currentSession();
 		try {
 			adoptSession(newSession);
 			comm.addUserLoginListener(this); // we now have access to the other sessions's community service.
@@ -91,7 +90,7 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 			adoptSession(previousSession);
 		}
 		
-		Duration millis = new Duration(minutes * 60 * 1000);
+		final Duration millis = new Duration(minutes * 60 * 1000);
 		scheduler.executeAfterDelay(millis,new Runnable() {
 			public void run() {
 				dispose(sid);
@@ -100,16 +99,16 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 		return sid;
 	}
 	
-	public void dispose(String arg0)  {
+	public void dispose(final String arg0)  {
 		if (defaultSessionId.equals(arg0)) {
 			return; // ignore requests to dispose default session.
 		}
 		// remove ourselves as a listener to this session (necessary?)
-		Principal p = (Principal)sessionMap.remove(arg0); 
+		final Principal p = (Principal)sessionMap.remove(arg0); 
 		if (p == null) {
 			return;
 		}
-		Principal previousSession = currentSession();
+		final Principal previousSession = currentSession();
 		try {
 			adoptSession(p);
 			comm.removeUserLoginListener(this);
@@ -125,7 +124,7 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 
 	
 	//overridden to create new contexts on webserver if not already present.
-	public URL findHttpSession(String arg0) throws InvalidArgumentException {
+	public URL findHttpSession(final String arg0) throws InvalidArgumentException {
 		if (! exists(arg0)) {
 			throw new InvalidArgumentException(arg0);
 		}
@@ -137,7 +136,7 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 	}
 
 
-	public URL findXmlRpcSession(String arg0) throws InvalidArgumentException {
+	public URL findXmlRpcSession(final String arg0) throws InvalidArgumentException {
 		if (! exists(arg0)) {
 			throw new InvalidArgumentException(arg0);
 		}
@@ -147,7 +146,7 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 		}
 		try {
 			return new URL(base,"xmlrpc");
-		} catch (MalformedURLException x) {
+		} catch (final MalformedURLException x) {
 			// unlikely.
 			throw new InvalidArgumentException(x);
 		}					

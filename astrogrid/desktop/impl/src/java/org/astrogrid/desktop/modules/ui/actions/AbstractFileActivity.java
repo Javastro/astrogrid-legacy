@@ -13,7 +13,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
-/** abstract class for activitirs that just operate of file objects
+/** base class for activities only applicable to file objects.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 17, 200710:31:27 AM
  */
@@ -23,7 +23,7 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 		setEnabled(false);
 		current = null;
 	}
-	public final void selected(Transferable r) {
+	public final void selected(final Transferable r) {
 	    if (r == null) {
 	        return;
 	    }
@@ -35,14 +35,14 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 		} else {
 			noneSelected();
 		}
-		} catch (IOException x) {
+		} catch (final IOException x) {
 			logger.error("UnsupportedFlavorException",x);			
-		} catch (UnsupportedFlavorException x) {
+		} catch (final UnsupportedFlavorException x) {
 			logger.error("UnsupportedFlavorException",x);
 		}
 	}
 	protected FileObject[] current;
-	public boolean evaluate(Object arg0) {
+	public boolean evaluate(final Object arg0) {
 		if (! (arg0 instanceof FileObject)) {
 			return false;
 		}
@@ -56,7 +56,7 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 	protected abstract boolean invokable(FileObject f);
 	
 	protected List computeInvokable() {
-		List r = new ArrayList();
+		final List r = new ArrayList();
 		for (int i = 0; i < current.length; i++) {
 			if (evaluate(current[i])) {
 				r.add(current[i]);
@@ -65,7 +65,7 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 		return r;
 	}
 
-	public void oneSelected(FileObject fo) {
+	public void oneSelected(final FileObject fo) {
 		if (invokable(fo)) {
 			setEnabled(true);
 			current =new FileObject[]{fo};
@@ -75,7 +75,7 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 		}
 	}
 
-	public void manySelected(FileObject[] list) {
+	public void manySelected(final FileObject[] list) {
 		for (int i = 0; i < list.length; i++) {
 			if(evaluate(list[i])) { // lazy - only goes as far as the first 'yes'
 				setEnabled(true);

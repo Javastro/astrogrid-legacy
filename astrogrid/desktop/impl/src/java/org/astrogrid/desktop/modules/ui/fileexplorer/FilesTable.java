@@ -23,7 +23,7 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 
-/** table that will display a static table of files - no selection, no navigation.
+/** A static {@code JTable} of files. - no selection, no navigation.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 24, 20071:39:21 PM
  */
@@ -31,7 +31,7 @@ public class FilesTable extends JTable {
     private static final Log logger = LogFactory.getLog(FilesTable.class);
 
     
-    public FilesTable(SortedList files, final IconFinder icons) {
+    public FilesTable(final SortedList files, final IconFinder icons) {
 
         // setup the model.
         setModel(new EventTableModel(files,new StorageTableFormat(icons)));     
@@ -70,7 +70,7 @@ public class FilesTable extends JTable {
         setDefaultRenderer(Date.class,new DefaultTableCellRenderer.UIResource() {
             // doesn't give column alignment.DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
             DateFormat formatter = new SimpleDateFormat(" dd MMM yyyy, HH:mm");
-            protected void setValue(Object value) {
+            protected void setValue(final Object value) {
                 setText((value == null) ? "" : formatter.format(value));
             }
         });
@@ -79,7 +79,7 @@ public class FilesTable extends JTable {
             {
                 setHorizontalAlignment(JLabel.RIGHT);
             }
-            protected void setValue(Object value) {
+            protected void setValue(final Object value) {
                 final long l =  value == null ? -1: ((Long)value).longValue();
                 switch((int)l) {
                     case -1:

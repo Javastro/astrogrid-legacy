@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
@@ -29,7 +28,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
-/** delete one or more files.
+/** Delete one or more files.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 10, 20071:03:46 PM
  * @TEST unit test where possibl.
@@ -40,10 +39,10 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 	
 	
     // applies to all non-local files and folders.
-	protected boolean invokable(FileObject f) { 
+	protected boolean invokable(final FileObject f) { 
 	    try {
             return f.isWriteable();
-        } catch (FileSystemException x) {
+        } catch (final FileSystemException x) {
             logger.error("FileSystemException",x);
             return false;
         }
@@ -61,40 +60,40 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 	}
 
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		final List l = computeInvokable(); 
 		logger.debug(l);
 
 
-		BackgroundWorker act = new BackgroundWorker(uiParent.get(),"Deleting files",BackgroundWorker.LONG_TIMEOUT) {
+		final BackgroundWorker act = new BackgroundWorker(uiParent.get(),"Deleting files",BackgroundWorker.LONG_TIMEOUT) {
 		    {
 		        setWouldLikeIndividualMonitor(true);
 		    }
             protected Object construct() throws Exception {
                 int count = 0;
-                int max = l.size();
+                final int max = l.size();
                 setProgress(count,max);
-                Set parents = new HashSet();
-                Map errors = new HashMap();
-                for (Iterator i = l.iterator(); i.hasNext();) {
-                    FileObject f = (FileObject) i.next();
+                final Set parents = new HashSet();
+                final Map errors = new HashMap();
+                for (final Iterator i = l.iterator(); i.hasNext();) {
+                    final FileObject f = (FileObject) i.next();
                     reportProgress("Deleting " + f.getName().getBaseName());
                     try {
-                        FileObject parent = f.getParent();
+                        final FileObject parent = f.getParent();
                         if (parent != null) {
                             parents.add(parent);
                         }
                         f.delete(Selectors.SELECT_ALL);
-                    } catch(FileSystemException x) {
+                    } catch(final FileSystemException x) {
                         errors.put(f,x);
                         reportProgress("Failed to delete");
                     } finally {
                         setProgress(++count,max);
                     }
                 }
-                for (Iterator i = parents.iterator(); i.hasNext();) {
-                    FileObject p = (FileObject) i.next();
-                    FileSystem fs = p.getFileSystem();
+                for (final Iterator i = parents.iterator(); i.hasNext();) {
+                    final FileObject p = (FileObject) i.next();
+                    final FileSystem fs = p.getFileSystem();
                     if (fs instanceof AbstractFileSystem) {
                         ((AbstractFileSystem)fs).fireFileChanged(p);
                     }
@@ -102,22 +101,22 @@ public class DeleteFilesActivity extends AbstractFileActivity {
                 return errors;
             }
             
-            protected void doFinished(Object result) {
-                Map errors = (Map)result;
+            protected void doFinished(final Object result) {
+                final Map errors = (Map)result;
                 if (errors.size() ==0) {
                     parent.showTransientMessage("Deleted files","");
                     return;
                 }
-                HtmlBuilder msgBuilder = new HtmlBuilder();             
-                for (Iterator i = errors.entrySet().iterator(); i.hasNext();) {
-                    Map.Entry err = (Map.Entry) i.next();
-                    FileObject f = (FileObject)err.getKey();
-                    Throwable e = (Throwable)err.getValue();
+                final HtmlBuilder msgBuilder = new HtmlBuilder();             
+                for (final Iterator i = errors.entrySet().iterator(); i.hasNext();) {
+                    final Map.Entry err = (Map.Entry) i.next();
+                    final FileObject f = (FileObject)err.getKey();
+                    final Throwable e = (Throwable)err.getValue();
                     msgBuilder.append(f.getName().getPath()).append("<br>");
                     msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
                     msgBuilder.append("<p>");                    
                 }
-                ResultDialog rd =ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
+                final ResultDialog rd =ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
                 rd.getBanner().setVisible(true);
                 rd.getBanner().setTitle("Errors encountered while deleting files");
                 rd.getBanner().setSubtitleVisible(false);

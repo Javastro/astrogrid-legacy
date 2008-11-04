@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.15 2008/05/28 12:27:49 nw Exp $
+/*$Id: SsapProtocol.java,v 1.16 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,14 +21,14 @@ import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-/**
+/** Protocol for SSAP.
  * @TEST
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 17, 20089:20:37 PM
  */
 public class SsapProtocol extends SpatialDalProtocol {
 
-    public SsapProtocol(RegistryInternal reg, Ssap ssap) {
+    public SsapProtocol(final RegistryInternal reg, final Ssap ssap) {
         super("Spectra",IconHelper.loadIcon("ssap16.png").getImage(),reg);
         this.ssap = ssap;
     }
@@ -38,16 +38,16 @@ public String getXQuery() {
     return ssap.getRegistryXQuery();
 }
 
-	public AbstractRetriever[] createRetrievers(Service service, double ra, double dec, double raSize, double decSize) {
-        Capability[] capabilities = service.getCapabilities();
-        List cList = new ArrayList();
+	public AbstractRetriever[] createRetrievers(final Service service, final double ra, final double dec, final double raSize, final double decSize) {
+        final Capability[] capabilities = service.getCapabilities();
+        final List cList = new ArrayList();
         for (int i = 0; i < capabilities.length; i++) {
             if (capabilities[i] instanceof SsapCapability && findParamUrl(capabilities[i]) != null) {
                 cList.add(capabilities[i]);
             }
         }
-        SsapCapability[] ssaps = (SsapCapability[]) cList.toArray(new SsapCapability[0]);
-        int nssap = ssaps.length;
+        final SsapCapability[] ssaps = (SsapCapability[]) cList.toArray(new SsapCapability[0]);
+        final int nssap = ssaps.length;
         final AbstractRetriever[] retrievers;
         if (nssap == 0) {
             retrievers = new AbstractRetriever[0];
@@ -58,7 +58,7 @@ public String getXQuery() {
             };
         }
         else {
-            NodeSocket socket = createIndirectNodeSocket(service);
+            final NodeSocket socket = createIndirectNodeSocket(service);
             retrievers = new AbstractRetriever[nssap];
             for (int i = 0; i < nssap; i++) {
                 retrievers[i] = new SsapRetrieval(service, ssaps[i], findParamUrl(ssaps[i]), socket, getVizModel(), ssap, ra, dec, raSize, decSize);
@@ -69,7 +69,7 @@ public String getXQuery() {
     }
     
     
-    protected boolean isSuitable(Resource r)  {
+    protected boolean isSuitable(final Resource r)  {
         return r instanceof SsapService;
     }	
 
@@ -78,6 +78,9 @@ public String getXQuery() {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.16  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.15  2008/05/28 12:27:49  nw
 Complete - task 408: Adjust count reporting in astroscope and voexplorer.
 

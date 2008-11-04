@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.ivoa;
 import net.sf.ehcache.config.CacheConfiguration;
 
 /**
- * Extension of cache configuration that has additional attributes specific to AR.
+ * Cache configuration that has additional attributes specific to AR.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 7, 20082:26:09 PM
  */
@@ -22,7 +22,7 @@ public class ExtendedCacheConfiguration extends CacheConfiguration {
         return this.registrySensitive;
     }
 
-    public final void setRegistrySensitive(boolean registrySensitive) {
+    public final void setRegistrySensitive(final boolean registrySensitive) {
         this.registrySensitive = registrySensitive;
     }
 

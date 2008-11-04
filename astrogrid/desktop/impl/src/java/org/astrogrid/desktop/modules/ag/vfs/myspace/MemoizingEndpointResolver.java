@@ -15,7 +15,10 @@ import org.astrogrid.filemanager.resolver.FileManagerEndpointResolverImpl;
 import org.astrogrid.filemanager.resolver.FileManagerResolverException;
 import org.astrogrid.store.Ivorn;
 
-/** Wraps the expensive original resolver with memoization functionality - 
+/** 
+ * Memoizes expensive calls to a FileManagerEndpointResolver.
+ * <p/>
+ * Wraps the expensive original resolver with memoization functionality - 
  * so it remembers previous answers, and only consults the services once.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
@@ -29,9 +32,9 @@ public class MemoizingEndpointResolver extends FileManagerEndpointResolverImpl
 	private static final Log logger = LogFactory
 			.getLog(MemoizingEndpointResolver.class);
 
-	public URL resolve(Ivorn arg0) throws FileManagerResolverException {
-		String key = arg0.toString(); // equals isn't implemented on Ivorn - another black mark.
-		Object o = results.get(key);
+	public URL resolve(final Ivorn arg0) throws FileManagerResolverException {
+		final String key = arg0.toString(); // equals isn't implemented on Ivorn - another black mark.
+		final Object o = results.get(key);
 		if (o != null) {
 		    if (logger.isDebugEnabled()) {
 		        logger.debug("cache hit! " + arg0 + " -> " + o);
@@ -52,18 +55,18 @@ public class MemoizingEndpointResolver extends FileManagerEndpointResolverImpl
         }
 		// not got a memoized result - need to compute it.
 		try {
-			URL result = super.resolve(arg0);
+			final URL result = super.resolve(arg0);
 			if (result != null) { // cachemap doesn't permit null values
 				results.put(key,result);
 			}			
 			return result;
-		} catch (FileManagerResolverException e) {
+		} catch (final FileManagerResolverException e) {
 			results.put(key,e);
 			throw e;
-		}  catch (RuntimeException e) {
+		}  catch (final RuntimeException e) {
 			results.put(key,e);
 			throw e;
-		} catch (Error e) {
+		} catch (final Error e) {
 			results.put(key,e);
 			throw e;
 		}

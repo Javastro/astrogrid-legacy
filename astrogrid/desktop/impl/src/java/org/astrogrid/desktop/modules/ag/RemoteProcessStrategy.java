@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessStrategy.java,v 1.8 2008/07/18 17:15:52 nw Exp $
+/*$Id: RemoteProcessStrategy.java,v 1.9 2008/11/04 14:35:47 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
 import org.w3c.dom.Document;
 
-/** interface to something that knows how to handle a certain flavour of remote process.
+/** Something that knows how to manage a particular kind of remote process.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
  *
  */
@@ -39,6 +39,9 @@ public interface RemoteProcessStrategy{
 
 /* 
 $Log: RemoteProcessStrategy.java,v $
+Revision 1.9  2008/11/04 14:35:47  nw
+javadoc polishing
+
 Revision 1.8  2008/07/18 17:15:52  nw
 Complete - task 433: Strip out unused internal CEA
 

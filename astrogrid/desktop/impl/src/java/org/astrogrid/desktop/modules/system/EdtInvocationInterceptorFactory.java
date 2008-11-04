@@ -1,4 +1,4 @@
-/*$Id: EdtInvocationInterceptorFactory.java,v 1.3 2007/10/22 10:27:41 nw Exp $
+/*$Id: EdtInvocationInterceptorFactory.java,v 1.4 2008/11/04 14:35:49 nw Exp $
  * Created on 31-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,8 @@ import org.apache.hivemind.service.MethodFab;
 import org.apache.hivemind.service.MethodIterator;
 import org.apache.hivemind.service.MethodSignature;
 import org.astrogrid.desktop.framework.ReflectionHelper;
-/** an interceptor that ensures a method is being invoked on the EDT.
+/** Interceptor that ensures a method is being invoked on the EDT.
+ * <p />
  * if not on the EDT, it will call 'invokeLater' for void typed methods, and 
  * 'invokeAndWait' for methods which return a value with a Runnable encapsulating
  * the required method.
@@ -51,7 +52,7 @@ import org.astrogrid.desktop.framework.ReflectionHelper;
  * */
 public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactory {
 
-    public EdtInvocationInterceptorFactory(ClassFactory factory) {
+    public EdtInvocationInterceptorFactory(final ClassFactory factory) {
         this._factory = factory;
         runSignature = (new MethodIterator(Runnable.class)).next();        
     }
@@ -63,9 +64,9 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
      * Creates a method that delegates to the _delegate object; this is used for
      * methods that are not throbbed
      */
-    private void addPassThruMethodImplementation(ClassFab classFab, MethodSignature sig)
+    private void addPassThruMethodImplementation(final ClassFab classFab, final MethodSignature sig)
     {
-        BodyBuilder builder = new BodyBuilder();
+        final BodyBuilder builder = new BodyBuilder();
         builder.begin();
 
         builder.add("return ($r) _delegate.");
@@ -77,18 +78,18 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
         classFab.addMethod(Modifier.PUBLIC, sig, builder.toString());
     }
 
-    protected void addServiceMethodImplementation(Class iface,ClassFab classFab, MethodSignature sig)
+    protected void addServiceMethodImplementation(final Class iface,final ClassFab classFab, final MethodSignature sig)
     {
-        Class returnType = sig.getReturnType();
-        String methodName = sig.getName();
+        final Class returnType = sig.getReturnType();
+        final String methodName = sig.getName();
 
-        boolean isVoid = (returnType == void.class);
+        final boolean isVoid = (returnType == void.class);
         
         // now create the interceptor method.
-        BodyBuilder builder = new BodyBuilder();
-        String su = ClassFabUtils.getJavaClassName(SwingUtilities.class);
-        String invoke = ClassFabUtils.getJavaClassName(Invoke.class);
-        String ret = ClassFabUtils.getJavaClassName(returnType);
+        final BodyBuilder builder = new BodyBuilder();
+        final String su = ClassFabUtils.getJavaClassName(SwingUtilities.class);
+        final String invoke = ClassFabUtils.getJavaClassName(Invoke.class);
+        final String ret = ClassFabUtils.getJavaClassName(returnType);
         
         builder.begin();
         builder.add("if (");
@@ -134,21 +135,21 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
         builder.addln("}");
         builder.end();
 
-        MethodFab methodFab = classFab.addMethod(Modifier.PUBLIC, sig, builder.toString());
+        final MethodFab methodFab = classFab.addMethod(Modifier.PUBLIC, sig, builder.toString());
 
 
     }
 
 
 
-    protected void addServiceMethods(InterceptorStack stack, ClassFab fab, MethodMatcher matcher)
+    protected void addServiceMethods(final InterceptorStack stack, final ClassFab fab, final MethodMatcher matcher)
     {
 
-        MethodIterator mi = new MethodIterator(stack.getServiceInterface());
+        final MethodIterator mi = new MethodIterator(stack.getServiceInterface());
 
         while (mi.hasNext())
         {
-            MethodSignature sig = mi.next();
+            final MethodSignature sig = mi.next();
 
             if (includeMethod(matcher, sig)) {
                 addServiceMethodImplementation(stack.getServiceInterface(),fab, sig);
@@ -167,7 +168,7 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
      * Creates a toString() method that identify the interceptor service id,
      * the intercepted service id, and the service interface class name).
      */
-    protected void addToStringMethod(InterceptorStack stack, ClassFab fab)
+    protected void addToStringMethod(final InterceptorStack stack, final ClassFab fab)
     {
         ClassFabUtils.addToStringMethod(
             fab,
@@ -179,17 +180,18 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
 
     }
 
-    private MethodMatcher buildMethodMatcher(List parameters)
+    private MethodMatcher buildMethodMatcher(final List parameters)
     {
         MethodMatcher result = null;
 
-        Iterator i = parameters.iterator();
+        final Iterator i = parameters.iterator();
         while (i.hasNext())
         {
-            MethodContribution mc = (MethodContribution) i.next();
+            final MethodContribution mc = (MethodContribution) i.next();
 
-            if (result == null)
+            if (result == null) {
                 result = new MethodMatcher();
+            }
 
             result.put(mc.getMethodPattern(), mc);
         }
@@ -197,18 +199,18 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
         return result;
     }
 
-    private Class constructInterceptorClass(InterceptorStack stack, List parameters)
+    private Class constructInterceptorClass(final InterceptorStack stack, final List parameters)
     {
-        Class serviceInterfaceClass = stack.getServiceInterface();
+        final Class serviceInterfaceClass = stack.getServiceInterface();
         
-        String name = ClassFabUtils.generateClassName(serviceInterfaceClass);
+        final String name = ClassFabUtils.generateClassName(serviceInterfaceClass);
 
-        ClassFab classFab = _factory.newClass(name, Object.class);
+        final ClassFab classFab = _factory.newClass(name, Object.class);
 
         
         classFab.addInterface(serviceInterfaceClass);
 
-        MethodMatcher matcher = buildMethodMatcher(parameters);
+        final MethodMatcher matcher = buildMethodMatcher(parameters);
 
         createInfrastructure(stack, classFab,matcher);
 
@@ -218,23 +220,23 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
         return classFab.createClass();
     }
 
-    private void createInfrastructure(InterceptorStack stack, ClassFab classFab, MethodMatcher matcher)
+    private void createInfrastructure(final InterceptorStack stack, final ClassFab classFab, final MethodMatcher matcher)
     {
         final Class serviceInterface = stack.getServiceInterface();
                 
-        BodyBuilder builder = new BodyBuilder();
+        final BodyBuilder builder = new BodyBuilder();
         builder.begin();
         
         // now create and initialize a member variable for each wrapped method
-        String iface = ClassFabUtils.getJavaClassName(serviceInterface);        
-        String reflectionHelper = ClassFabUtils.getJavaClassName(ReflectionHelper.class);
-        MethodIterator mi = new MethodIterator(serviceInterface);
+        final String iface = ClassFabUtils.getJavaClassName(serviceInterface);        
+        final String reflectionHelper = ClassFabUtils.getJavaClassName(ReflectionHelper.class);
+        final MethodIterator mi = new MethodIterator(serviceInterface);
 
         while (mi.hasNext())
         {
-            MethodSignature sig = mi.next();            
+            final MethodSignature sig = mi.next();            
             if (includeMethod(matcher, sig)) {
-                String varName =(String)fieldMap.get(sig);
+                final String varName =(String)fieldMap.get(sig);
                 classFab.addField(varName,Method.class);
                 builder.add(varName);
                 builder.add(" = ");
@@ -259,9 +261,9 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
     
     private final Map fieldMap = MapUtils.lazyMap(new HashMap(),new Transformer() {
         private int varName = 0;
-        public Object transform(Object arg0) {
-            MethodSignature sig = (MethodSignature)arg0;
-            String str =  sig.getName() + varName++;
+        public Object transform(final Object arg0) {
+            final MethodSignature sig = (MethodSignature)arg0;
+            final String str =  sig.getName() + varName++;
             return str;
         }
     });
@@ -274,19 +276,19 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
      * when a thread-local service implementation is created for different threads).
      */
     public void createInterceptor(
-        InterceptorStack stack,
-        Module contributingModule,
-        List parameters)
+        final InterceptorStack stack,
+        final Module contributingModule,
+        final List parameters)
     {
-        Class interceptorClass = constructInterceptorClass(stack, parameters);
+        final Class interceptorClass = constructInterceptorClass(stack, parameters);
 
         try
         {
-            Object interceptor = instantiateInterceptor(stack, interceptorClass);
+            final Object interceptor = instantiateInterceptor(stack, interceptorClass);
 
             stack.push(interceptor);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             throw new ApplicationRuntimeException(
                     "Couldn't produce EDTInvocation interceptor",ex);
@@ -295,22 +297,23 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
 
 
 
-    private boolean includeMethod(MethodMatcher matcher, MethodSignature sig)
+    private boolean includeMethod(final MethodMatcher matcher, final MethodSignature sig)
     {
-        if (matcher == null)
+        if (matcher == null) {
             return true;
+        }
 
-        MethodContribution mc = (MethodContribution) matcher.get(sig);
+        final MethodContribution mc = (MethodContribution) matcher.get(sig);
 
         return mc == null || mc.getInclude();
     }
 
-    private Object instantiateInterceptor(InterceptorStack stack, Class interceptorClass)
+    private Object instantiateInterceptor(final InterceptorStack stack, final Class interceptorClass)
         throws Exception
     {
-        Object stackTop = stack.peek();
+        final Object stackTop = stack.peek();
 
-        Constructor c = interceptorClass.getConstructors()[0];
+        final Constructor c = interceptorClass.getConstructors()[0];
 
         return c.newInstance(new Object[] {  stackTop });
     }
@@ -321,6 +324,9 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
 
 /* 
 $Log: EdtInvocationInterceptorFactory.java,v $
+Revision 1.4  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.3  2007/10/22 10:27:41  nw
 altered behaviour - so always invoke and wait.
 

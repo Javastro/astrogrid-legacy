@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.contributions;
 
-/** contribution bean that describes a webapp to deploy.
+/** Contributes a webapp to deploy into the servlet container.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 27, 20089:56:35 PM
  */
@@ -13,13 +13,13 @@ public class WebappContribution {
     public final String getContext() {
         return this.context;
     }
-    public final void setContext(String context) {
+    public final void setContext(final String context) {
         this.context = context;
     }
     public final String getLocation() {
         return this.location;
     }
-    public final void setLocation(String location) {
+    public final void setLocation(final String location) {
         this.location = location;
     }
 }

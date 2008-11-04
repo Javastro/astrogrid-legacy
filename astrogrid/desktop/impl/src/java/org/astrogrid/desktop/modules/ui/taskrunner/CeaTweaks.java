@@ -8,7 +8,7 @@ import org.astrogrid.desktop.modules.ui.QueryBuilderImpl;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/** taskrunner tweaks specific to CEA.
+/** Taskrunner tweaks specific to CEA.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 22, 20083:45:11 PM
  */

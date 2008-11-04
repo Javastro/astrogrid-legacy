@@ -31,7 +31,8 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
-/** Implementation against availability
+/** VOSI Availability client.
+ * <p/>
  * very loose parsing - first of identifying the correct capability, and thn
  * of parsing the response - hopefully this will give us forward-compatability when the standard changes.
  * @author Noel.Winstanley@manchester.ac.uk

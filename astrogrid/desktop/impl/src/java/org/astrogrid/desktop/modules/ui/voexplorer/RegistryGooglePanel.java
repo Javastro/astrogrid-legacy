@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.37 2008/08/21 11:39:43 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.38 2008/11/04 14:35:48 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -115,9 +115,9 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/**
- * Implementation of the registry-google chooser.
+/** Right pane of VOExplorer - comprises table of resources and single resource details below.
  * @todo implement using standard xquery
+ * @see org.astrogrid.desktop.modules.ui.voexplorer.google
  */
 public class RegistryGooglePanel extends JPanel
 implements ListEventListener, ListSelectionListener, ChangeListener, TableModelListener {
@@ -128,7 +128,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
     /** key in preferences database for this class giving list of table columns displayed.  The value is a tab-separated list of column names. */
     public static final String COLUMNS_KEY = "columns";
 
-    /** class that takes care of concatenating together various bits of information and updating a title 
+    /** concatenates together various bits of information and updates the title. 
      * 
      * not  thread safe - expects to be called on EDT
      * 
@@ -898,12 +898,13 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	          }
 	      }			
 	}
-	
+	/** Event listener for notification when load starts and ends */
 	public static interface LoadListener extends EventListener {
 		public void loadStarted(LoadEvent e) ;
 		public void loadCompleted(LoadEvent e);
 	}
 	
+	/** Event Object passed by {@link LoadListener}*/
 	public static class LoadEvent extends EventObject {
 		
 		public LoadEvent(final Object source) {
@@ -928,6 +929,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.38  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.37  2008/08/21 11:39:43  nw
 Complete - task 4: RegistryGoogle dialogue
 

@@ -12,10 +12,6 @@ import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import jedit.KeywordMap;
-import jedit.SQLTokenMarker;
-import jedit.Token;
-
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -27,7 +23,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/**
+/** {@link EditingPanel} for an XQuery list.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 30, 20072:35:07 PM
  */
@@ -122,27 +118,8 @@ public class XQueryListEditingPanel extends EditingPanel implements ActionListen
 		return super.shouldOkBeEnabled() 
 		&& sizing.isValidQuery();
 	}
-	//@todo implement this by hand.
-public static class XQueryTokenMarker extends SQLTokenMarker {
 
 
-		public XQueryTokenMarker() {
-			super(getKeywordMap(),true);
-		}
-		private static KeywordMap kw;
-		public static synchronized KeywordMap getKeywordMap()
-		{
-			if (kw == null) {
-				kw = new KeywordMap(true);
-				kw.add("for",Token.KEYWORD1);
-				kw.add("let",Token.KEYWORD1);
-				kw.add("where",Token.KEYWORD1);
-				kw.add("return",Token.KEYWORD1);
-				kw.add("declare",Token.KEYWORD2);
-			}
-			return kw;
-		}	
-}
 
 // called when we see an invalid query
 public void invalidQuery() {

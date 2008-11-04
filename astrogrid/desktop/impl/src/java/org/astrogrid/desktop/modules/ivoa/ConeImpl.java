@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.15 2008/10/01 09:53:43 nw Exp $
+/*$Id: ConeImpl.java,v 1.16 2008/11/04 14:35:51 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,8 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
-/** Complies with Cone spec v1.03 
+/** IVOA Cone search client.
+ * Complies with Cone spec v1.03 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  *@TEST and tidy up.
  */
@@ -131,6 +132,9 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.16  2008/11/04 14:35:51  nw
+javadoc polishing
+
 Revision 1.15  2008/10/01 09:53:43  nw
 overridden non-sensical parent messages.
 

@@ -13,8 +13,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import com.l2fprod.common.swing.JTaskPaneGroup;
 
-/** An activity / set of activities that is possible upon the current selection
- * in voexplorer. 
+/** An activity is an operation that the user can invoke on the current selection.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 16, 20076:30:28 PM
  */

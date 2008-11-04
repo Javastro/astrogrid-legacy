@@ -3,7 +3,7 @@
 	<!ENTITY version SYSTEM "fallback:classpath:/org/astrogrid/desktop/hivemind/version.xml,classpath:/org/astrogrid/desktop/hivemind/fallback-version.xml">
 ]>
 <module id="framework" version="1.0.0" package="org.astrogrid.desktop.framework">
-	Base module - defines ACR configuration points, fundamental config keys, configures hivemind.
+	Base module - defines fundamental configuration points and properties, and configures hivemind.
 
 
 	<contribution configuration-id="preferences">
@@ -27,7 +27,7 @@
 	
 	<!--  
 	========================
-	flavour-specific configuration - only applies to workbench now.-->
+	flavour-specific configuration -  might be obsolete now - but leaves it open to extenders-->
 
 	<!--  as Workbench -->
 	<contribution configuration-id="hivemind.ApplicationDefaults" if="property workbench.mode">
@@ -56,10 +56,10 @@
 
 	
 	<configuration-point id="preferenceClass" occurs="1">
-		Defines the class key to store preferences under.
+		Defines the key to store preferences under.
 		<schema>
 			<element name="class" content-translator="class">
-			The name of the preference class
+			The name of the class to use as the key for the preference store.
 			<rules>
 				<push-content />
 				<invoke-parent method="addElement" />
@@ -69,11 +69,12 @@
 	</configuration-point>
 	
 	<configuration-point id="preferences">
-		Defines the available preferences.
+		Defines individual preference objects - name, value, description, etc
+        See system.configuration, which is the service that consumes this configuration point.
 		<schema>
 			<element name="preference" key-attribute="name">
 				<attribute name="name" required="true" unique="true">
-					The name of the preference
+					The name of the preference - used as it's key
 				</attribute>
 				<attribute name="default-value" required="true">
 					The default value
@@ -86,12 +87,12 @@
 				</attribute>
 				<attribute name="propagate-to-config" translator="boolean">
 					true if the default value, and all modifications of this prefernece
-					should be copied into the ag.commons.Config used by other 
+					should be copied into the legacy ag.commons.Config used by other 
 					AG components (such as delegates).
 					If false, this preference is not visible to such code.
 				</attribute>
 				<attribute name="help-id">
-					An optional link to further help.
+					An optional help-id that links to further help.
 				</attribute>
 				<element name="ui-name">
 				Name to display in UI
@@ -109,7 +110,8 @@
 				</element>
 				<element name="units">
 					Units / type of this value. Recognized values are 'boolean', 'file', 'url'
-					'number','seconds'. Other values may also be used. 
+					'number','seconds'. Other values may also be used.  Recognized values might cause the UI to alter
+                    to support input of these types.
 					<rules>
 						<push-content/>
 					<invoke-parent method="setUnits" />
@@ -143,12 +145,10 @@
 			</element>
 		</schema>
 	</configuration-point>
-	
-	<!--  see system module for the 'configuration' service that consumes this -->
 
-	<!--  symbol sources - as a service, as is referred to by preferences -->
 	
 	<service-point id="sysproperties" interface="org.apache.hivemind.SymbolSource">
+        Symbol source - makes system properties appear as hivemind symbols.
 		<create-instance model="primitive" class="org.apache.hivemind.impl.SystemPropertiesSymbolSource" />
 	</service-point>
 	
@@ -165,16 +165,17 @@
 FUNDAMENTAL CONFIGURATION POINTS
  -->
 	<configuration-point id="acrServices">
-		Map of known ACR components / services.
+		Description of all AR services. Consumed by builtin.ACR
 		<schema>
 			<element name="acrService" key-attribute="id">
-				Describes a single acr service.
+				Describes a single AR service.
 				<attribute name="id" required="true" translator="qualified-id">
 					The service id of the component
 				</attribute>
 				<attribute name="interface" required="true" translator="class">
 					The public interface class of the component (may be a superclass of the
-					interface class used in definition of the service)
+					interface class used in definition of the service, as there's often an
+                    'internal' interface which extends the public interface)
 				</attribute>
 				<rules>
 					<create-object class="org.astrogrid.desktop.hivemind.ServiceBean" />
@@ -188,33 +189,68 @@ FUNDAMENTAL CONFIGURATION POINTS
 	</configuration-point>
 				
 	<configuration-point id="descriptors">
-		Module Descriptors - contain documentation about all the components and
+		Module Descriptors - contain documentation and type information for all the components and
 		methods of the ACR. Content for this configuration is generated
-		in the api project from original Javadoc, using JEL and XSLT
+		in the api project from original Javadoc, using JEL and XSLT.
+        Used to generate documentation in the HTTP and XMLRPC bindings, 
+        and to expose functions through the HTTP / XMLRPC / RMI bindings.
 		<schema>			
 			<element name="acr-module" key-attribute="name">
-					<attribute name="name" required="true" unique="true" />
-					<attribute name="description"/>
+                    Describes a module of the AR
+					<attribute name="name" required="true" unique="true" >
+                    The unique id of the module.
+                    </attribute>
+					<attribute name="description">
+                    Description of this module.
+                    </attribute>
 				<element name="component" >
-					<attribute name="name" required="true"/>
-					<attribute name="interface-class" required="true" translator="class" />
-					<attribute name="description"/>										
+                    Describes a component of the AR
+					<attribute name="name" required="true">
+                    The name of the component
+                    </attribute>
+					<attribute name="interface-class" required="true" translator="class" >
+                    The public interface that this component implements.
+                    </attribute>
+					<attribute name="description">
+                    A description of the component.
+                    </attribute>										
 					<element name="method" >
-						<attribute name="name" required="true"/>
-						<attribute name="description"/>
+                        Describes a method of the component
+						<attribute name="name" required="true">
+                        The name of the method
+                        </attribute>
+						<attribute name="description">
+                        A description of the method
+                        </attribute>
 						<element name="return">
-							<attribute name="type" translator="class"/>
-							<attribute name="description"/>							
-							<attribute name="uitype"/>					
+                            The return of the method
+							<attribute name="type" translator="class">
+                            Type of the return value
+                            </attribute>
+							<attribute name="description">
+                            Description of the return value
+                            </attribute>							
+							<attribute name="uitype">
+                            Human-readable description of the return type. 
+                            </attribute>					
 							<conversion 
 								class="org.astrogrid.acr.builtin.ValueDescriptor"
 								parent-method="setReturnValue"/>	
 						</element><!--end return -->
 						<element name="param" >
-							<attribute name="name" />
-							<attribute name="type" translator="class"/>
-							<attribute name="description"/>
-							<attribute name="uitype"/>
+                            A parameter to the method
+							<attribute name="name" >
+                            The method name
+                            </attribute>
+							<attribute name="type" translator="class">
+                            The type of the parameter
+                            </attribute>
+							<attribute name="description">
+                            Description of the parameter
+                            </attribute>
+							<attribute name="uitype">
+                            Human-readable description of the parameter type.
+                            </attribute>
 							<conversion 
 								class="org.astrogrid.acr.builtin.ValueDescriptor"
 								parent-method="addParameter"/>								
@@ -238,13 +274,14 @@ DATA CONVERTORS - string -> object
  -->
 
 	<service-point id="converter" interface="org.apache.commons.beanutils.Converter">
-		Converts string inputs to the correct types
+		Converts string inputs to the correct types. Used to process parameters of method-calls
+        over XMLRPC and HTTP bindings.
 		<create-instance model="primitive" class="org.astrogrid.desktop.modules.system.converters.DefaultConverter" />
 	</service-point>			
 	
-
-<!-- register converters with beanutils system -->
 	<service-point id="registerConverters" visibility="private" interface="java.lang.Runnable">
+      Register a series of conversion classes with the commons.beanUtils Convertor framework.
+      Consumes the 'converters' contribution. The beanUtils.Convertor framework is used within the 'convertor' service.
 	  <invoke-factory model="primitive">
 	    <construct class="org.astrogrid.desktop.modules.system.converters.RegisterConverters">
 	      <configuration>converters</configuration>
@@ -258,7 +295,8 @@ DATA CONVERTORS - string -> object
 	</contribution>	
  
 	<configuration-point id="converters">
-	  Register list of string-to-object convertors
+	  Register various string-to-object convertor classes. Consumed by 'registerConverters' which
+      assists with the implementation of 'converter'
 	  <schema>
 	  	<element name="register">
 	  	  <attribute name="output" required="true" translator="class">
@@ -285,20 +323,24 @@ DATA CONVERTORS - string -> object
  
  <!-- 
  ======================
- RESULT TRANSFORMER - object -> string -->
+ RESULT TRANSFORMER - object -> string 
+ inverse of convertors - which goes string -> object
+ -->
  
  <!-- use the builtin strategy factory to assemble a strategy implementation from a configuratiobn
  for each of the three public result transformers.
  
   -->
  <service-point id="plainResultTransformer" interface="org.apache.commons.collections.Transformer">
+    Transformer service which converts from object to plain result string. Used when serializing results in the 
+    HTTP binding.
  	<invoke-factory service-id="hivemind.lib.StrategyFactory">
  		<construct configuration-id="plainResultTransformers" />
  	</invoke-factory>
  </service-point>
 
  	<configuration-point id="plainResultTransformers" schema-id="hivemind.lib.StrategyRegistry">
-	  Convertors for taking results to plain text.
+	  Individual transformers which convert result objects into plain text.
 	</configuration-point>
 
 	<contribution configuration-id="plainResultTransformers">
@@ -308,13 +350,15 @@ DATA CONVERTORS - string -> object
 	
 	
   <service-point id="htmlResultTransformer" interface="org.apache.commons.collections.Transformer">
+    Transformer service which converts from object to html result string. Used when serializing results in the 
+    HTTP binding.
  	<invoke-factory service-id="hivemind.lib.StrategyFactory">
  		<construct configuration-id="htmlResultTransformers" />
  	</invoke-factory>
  </service-point>
 
 		<configuration-point id="htmlResultTransformers" schema-id="hivemind.lib.StrategyRegistry">
-	  Convertors for taking results to html text.
+	  Individual transformers for taking result results to html text.
 	</configuration-point>
 
 		<contribution configuration-id="htmlResultTransformers">
@@ -323,13 +367,15 @@ DATA CONVERTORS - string -> object
 	</contribution>
 	 
   <service-point id="rpcResultTransformer" interface="org.apache.commons.collections.Transformer">
+  Transformer service which converts a result object into a datastructure (maps and vectors) suitable for returning
+  via the XMLRPC binding.
  	<invoke-factory service-id="hivemind.lib.StrategyFactory">
  		<construct configuration-id="rpcResultTransformers" />
  	</invoke-factory>
  </service-point>
 
 	<configuration-point id="rpcResultTransformers" schema-id="hivemind.lib.StrategyRegistry">
-	  Convertors for taking results to xmlrpc results
+	  Individual transformers for taking result objects to xmlrpc structures.
 	</configuration-point>	
 
 <contribution configuration-id="rpcResultTransformers">
@@ -342,6 +388,7 @@ DATA CONVERTORS - string -> object
 BASIC TRANSFORMERS
  to start things off - private to this module.-->
 <service-point id="typeStructureTransformer" visibility="private" interface="org.apache.commons.collections.Transformer">
+    Default implementation to convert objects to XMLRPC-friendly structures. Recursively calls other transformers to convert primitive types.
 	<invoke-factory>
 		<construct class="org.astrogrid.desktop.modules.system.transformers.TypeStructureTransformer">
 			<service>rpcResultTransformer</service><!-- 'recursive' call -->
@@ -350,6 +397,7 @@ BASIC TRANSFORMERS
 </service-point>
 
 <service-point id="defaultHtmlTransformer" visibility="private" interface="org.apache.commons.collections.Transformer">
+    Default implementation to convert objects to a html document. Recursively calls other transformers to convert primitive types.
 	<invoke-factory>
 		<construct class="org.astrogrid.desktop.modules.system.transformers.DefaultHtmlTransformer">
 			<service>typeStructureTransformer</service>
@@ -358,6 +406,7 @@ BASIC TRANSFORMERS
 </service-point>
 
 <service-point id="defaultPlainTransformer" visibility="private" interface="org.apache.commons.collections.Transformer">
+    Default implementation to convert objects to plain text. Recursively calls other transformers to convert primitive types.
 	<invoke-factory>
 		<construct class="org.astrogrid.desktop.modules.system.transformers.DefaultPlainTransformer">
 			<service>typeStructureTransformer</service>
@@ -366,6 +415,7 @@ BASIC TRANSFORMERS
 </service-point>
 
 <service-point id="documentTransformer" visibility="private" interface="org.apache.commons.collections.Transformer">
+    Transformer that serializes a DOM XML document to a string.
 	<create-instance model="primitive" class="org.astrogrid.desktop.modules.system.transformers.DocumentTransformer"/>
 </service-point>
 
@@ -374,6 +424,7 @@ BASIC TRANSFORMERS
 STYLESHEET TRANSFORMER
  -->
 <service-point id="stylesheetTransformer"  interface="org.apache.commons.collections.Transformer">
+    Transformer that converts a DOM XML document to HTML by applying an XSLT
 	<invoke-factory model="primitive">
 		<construct class="org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer">
 			<configuration>stylesheets</configuration>
@@ -397,7 +448,6 @@ STYLESHEET TRANSFORMER
 	</configuration-point>
 	
 	<contribution configuration-id="stylesheets">
-		<stylesheet regexp=".*&lt;workflow" sheet="workflow.xsl" />
 	<!-- stopped using this one - as doesn't work for all votables. fallback to xml verbatim instead.
 		<stylesheet regexp=".*&lt;VOTABLE" sheet="VOTable2XHTML.xsl" /> -->
 		<stylesheet regexp="." sheet="xmlverbatim.xsl" />

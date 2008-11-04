@@ -17,7 +17,6 @@ import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Organisation;
-import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapService;
@@ -29,7 +28,8 @@ import org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity;
 import org.astrogrid.desktop.modules.ui.comp.CombinedIcon;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 
-/** Nifty little class that looks at a resource, works out what it's capabilties
+/**Implementation of {@link CapabilityIconFactory}.
+ * It examines a resource, works out what it's capabilties
  * are, and then build a single icon to represent all these.
  * 
  * previously built icons are cached, so they can be reused next time.
@@ -56,9 +56,9 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		tips = new HashMap();
 		// populate icons map. Careful - icons here must match with order of tests below.
 		for (int i = 0; i < ICON_NAMES.length; i++) {
-			BitSet key = new BitSet(ICON_NAMES.length);
+			final BitSet key = new BitSet(ICON_NAMES.length);
 			key.set(i);
-			Icon ic = IconHelper.loadIcon(ICON_NAMES[i]);
+			final Icon ic = IconHelper.loadIcon(ICON_NAMES[i]);
 			icons.put(key,ic);
 			tips.put(ic,TOOL_TIP_FRAGMENTS[i]);
 		}
@@ -103,9 +103,9 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 	private final Map icons;
 	private final Map tips;
 	
-	public Icon buildIcon(Resource r) {
+	public Icon buildIcon(final Resource r) {
 		
-		BitSet caps = new BitSet(ICON_NAMES.length);
+		final BitSet caps = new BitSet(ICON_NAMES.length);
 		int ix = 0;
 		// test for each capability type in turn.
 		// store each result in a bit set.
@@ -123,7 +123,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		}
 		// cea app 
 		if (r instanceof CeaApplication) {
-		    int code = BuildQueryActivity.whatKindOfInterfaces((CeaApplication)r);
+		    final int code = BuildQueryActivity.whatKindOfInterfaces((CeaApplication)r);
 			//non-adql interface
 		    caps.set(ix++, code < 1);
 		    // cea apps with an adql interface.
@@ -150,15 +150,15 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 			if (i == null) { // not there yet.
 				// find the individual icons - do this by testing for the same bit set in each of the keys.
 				// ignore already existing composite icons.
-				Icon[] is = new Icon[caps.cardinality()];
-				StringBuffer tip = new StringBuffer();
+				final Icon[] is = new Icon[caps.cardinality()];
+				final StringBuffer tip = new StringBuffer();
                 tip.append("<html>This resource has multiple capabilities:<br>");
 				int j = 0;
-				for (Iterator entries = icons.entrySet().iterator(); entries.hasNext(); ) {
-					Map.Entry e = (Map.Entry) entries.next();
-					BitSet key = (BitSet)e.getKey();
+				for (final Iterator entries = icons.entrySet().iterator(); entries.hasNext(); ) {
+					final Map.Entry e = (Map.Entry) entries.next();
+					final BitSet key = (BitSet)e.getKey();
 					if (key.cardinality() == 1 && caps.intersects(key)) {
-						Icon component = (Icon)e.getValue();
+						final Icon component = (Icon)e.getValue();
 						is[j++] = component;
 						tip.append(tips.get(component)).append("<br>");
 					}
@@ -177,12 +177,12 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
      * @param r
      * @return
      */
-    public static boolean hasTabularMetadata(Resource r) {
+    public static boolean hasTabularMetadata(final Resource r) {
         return (r instanceof DataCollection  && ((DataCollection)r).getCatalogues().length > 0) 
 		        || (r instanceof CatalogService && ((CatalogService)r).getTables().length > 0);
     }
 
-	public String getTooltip(Icon i) {
+	public String getTooltip(final Icon i) {
 		return (String)tips.get(i);
 	}
 }

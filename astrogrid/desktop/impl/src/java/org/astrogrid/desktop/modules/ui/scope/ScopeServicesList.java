@@ -33,8 +33,8 @@ import org.astrogrid.desktop.modules.ui.voexplorer.strategy.ResultsStrategy;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
-/** specialized subtype of registrygooglepanel that displays summary
- * of queries retrievers.
+/** Extended registrygooglepanel that displays summary
+ * of queries.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 2, 20075:58:51 PM
  */

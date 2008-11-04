@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.26 2008/10/23 16:34:02 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.27 2008/11/04 14:35:48 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -80,7 +80,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel.LoadEvent
 
 import com.l2fprod.common.swing.BaseDialog;
 
-/** Main window of voexplorer
+/** Main window of voexplorer.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
  *
  */

@@ -3,12 +3,11 @@
  */
 package org.astrogrid.desktop.modules.ag.vfs.myspace;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.net.URISyntaxException;
 import java.util.Collection;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.CacheStrategy;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
@@ -22,7 +21,7 @@ import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.registry.RegistryException;
 
-/** vfs filesystem for myspace.
+/** VFS filesystem for myspace.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 3, 20076:01:45 PM
  */
@@ -34,7 +33,7 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
             .getLog(MyspaceFileSystem.class);
 
 
-	protected MyspaceFileSystem(MyspaceFileName rootName, MyspaceInternal msi, FileSystemOptions fileSystemOptions) {
+	protected MyspaceFileSystem(final MyspaceFileName rootName, final MyspaceInternal msi, final FileSystemOptions fileSystemOptions) {
 		super(rootName, null, fileSystemOptions);
 		this.msi = msi;
 	}
@@ -43,11 +42,11 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
 	public FileManagerClient client() throws FileSystemException {		
 		try {
             return msi.getClient();
-	    } catch (CommunityException e) {
+	    } catch (final CommunityException e) {
             throw new FileSystemException(e);
-        } catch (RegistryException x) {
+        } catch (final RegistryException x) {
             throw new FileSystemException(x);
-        } catch (URISyntaxException x) {
+        } catch (final URISyntaxException x) {
             throw new FileSystemException(x);
         }   
 	}
@@ -60,11 +59,11 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
 	}
 	
 	// add the capabiltiies of this file system.
-	protected void addCapabilities(Collection caps) {
+	protected void addCapabilities(final Collection caps) {
 		caps.addAll(MyspaceProvider.CAPABILITIES);
 	}
 
-	protected FileObject createFile(FileName name) throws Exception {
+	protected FileObject createFile(final FileName name) throws Exception {
 	    if (logger.isDebugEnabled()) {
 	        logger.debug("Creating file " + name);
 	    }
@@ -73,7 +72,7 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
 	
 	// method to build a fully initialized file object.
 	// used from MyspaceFileObject
-	public FileObject resolveFile(MyspaceFileName name, FileManagerNode node) throws FileSystemException {
+	public FileObject resolveFile(final MyspaceFileName name, final FileManagerNode node) throws FileSystemException {
 	    // cribbed from AbstractFileSystem.resolveFile	    
 	    FileObject file = getFileFromCache(name);	     
 	    if (file == null)  {
@@ -81,7 +80,7 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
 	            synchronized (this){
 	                file = new MyspaceFileObject(node,name,this);
 	            }
-	        } catch (Exception e){
+	        } catch (final Exception e){
 	            throw new FileSystemException("vfs.provider/resolve-file.error", name, e);
 	        }
 	        file = decorateFileObject(file);

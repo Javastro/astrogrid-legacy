@@ -4,6 +4,7 @@
 	
 	]>
 <module id="ui" version="1.0.0" package="org.astrogrid.acr.ui">
+    User interface
 <!--  PREAMBLE -->
 	<dependency module-id="system"/>
 	<dependency module-id="framework" />
@@ -34,6 +35,7 @@
 ASTROSCOPE
  -->
 	<service-point id="astroscope" interface="org.astrogrid.desktop.modules.ui.AstroScopeInternal">
+        Astroscope window
 			<interceptor service-id="system.snitchInterceptor" />
             <interceptor service-id="system.edtInvoke" />
 		<invoke-factory> 
@@ -67,7 +69,7 @@ ASTROSCOPE
 		</object>
 		<object name="scopeServiceList" 
 		class="org.astrogrid.desktop.modules.ui.scope.ScopeServicesList">
-		Describes how to builld a subclass of registry google, specialized for
+		Describes how to build a subclass of registry google, specialized for
 		displaying summaries in astroscope.
             <inject-arg />
 			<inject object="service:ivoa.registry" />
@@ -81,7 +83,7 @@ ASTROSCOPE
 	</contribution>
 	
 	<service-point id="scopeHistory" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.ListProvider">
-		Loads / saves the astroscope search history.
+		Loads and saves the astroscope search history.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider">
 				<service>system.ui</service>
@@ -111,7 +113,7 @@ ASTROSCOPE
 	</service-point>	
 		
 	<configuration-point id="protocols" schema-id="hiveutils.ObjectBuilderSchema">
-		Configuration point for the list of 'protocols' - kinds of service that astroscope knows how to invoke.
+		Configuration point for the list of 'protocols' - the kinds of service that astroscope knows how to invoke.
 		All should be an instance of DalProtocol
 	</configuration-point>
 		
@@ -146,6 +148,7 @@ HELIOSCOPE
 
  -->
     <service-point id="helioscope" interface="org.astrogrid.desktop.modules.ui.HelioScopeInternal">
+        Helioscope - a factory that launches a specialized instance of astroscope
             <interceptor service-id="system.snitchInterceptor" />
             <interceptor service-id="system.edtInvoke" />
         <invoke-factory> 
@@ -171,6 +174,7 @@ HELIOSCOPE
 	TASK RUNNER
 	 -->
 	<service-point id="applicationLauncher" interface="org.astrogrid.desktop.modules.ui.TaskRunnerInternal">
+        Task Runner UI
 		<interceptor service-id="system.snitchInterceptor" >
             <exclude method="hide" />
         </interceptor>  
@@ -213,6 +217,7 @@ HELIOSCOPE
 		</object>
         
 		<object name="executionTracker" class="org.astrogrid.desktop.modules.ui.execution.ExecutionTracker">
+            Build an execution tracker - runs and displays progress of cea apps.
             <inject-arg />
 			<inject object="service:astrogrid.processManager" />
             <inject object="service:ui.UiBuilder" />
@@ -222,6 +227,7 @@ HELIOSCOPE
 		</object>
         
         <object name="fileNavigator" class="org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator">
+            file navigation object - a controller object that allows movement, records history, etc.
             <inject-arg />
             <inject object="service:system.vfs" />
             <inject-arg />
@@ -231,6 +237,7 @@ HELIOSCOPE
         
         
         <object name="taskParametersForm" class="org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm">
+            Main TaskRunner pane - displays a form to capture parameters. 
             <inject-arg />
             <inject object="service:astrogrid.applications" />
             <inject object="service:ui.UiBuilder" />
@@ -238,6 +245,7 @@ HELIOSCOPE
         </object>
         
         <object name="parametersInfoPane" class="org.astrogrid.desktop.modules.ui.taskrunner.ParametersInfoPane">
+            Displays information about a parameter of a remote application
             <inject-arg />
             <inject-arg />
             <inject object="service:system.browser" />
@@ -248,6 +256,7 @@ HELIOSCOPE
         
         <!--  full adql editor panel -->
         <object name="adqlPanel" class="org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel">
+            ADQL query builder.
             <inject-arg />
             <inject-arg />
             <inject-arg />
@@ -259,42 +268,50 @@ HELIOSCOPE
         
         <!--  task parameter editors -->
         <object name="textFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.TextFormElement">
+            Taskrunner UI widget for a text CEA parameter
             <inject-arg />
             <inject-arg />
             <inject object="service:dialogs.resourceChooser" />
         </object>
         <object name="looseFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.LooselyFormattedFormElement">
+            Taskrunner UI widget for some loosely constrained CEA parameter (kinds of number,etc)
             <inject-arg />
             <inject-arg />
             <inject-arg />            
             <inject object="service:dialogs.resourceChooser" />
         </object>
         <object name="largeFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.LargeTextFormElement">
+            Taskrunner UI widget for a text CEA parameter that is expected to be large
             <inject-arg />
             <inject-arg />
             <inject object="service:dialogs.resourceChooser" />
         </object>
         <object name="binaryFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.BinaryFormElement">
+            Taskrunner UI widget for a binary CEA parameter.
             <inject-arg />
             <inject-arg />
             <inject object="service:dialogs.resourceChooser" />
         </object>
         <object name="enumerationFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.EnumerationFormElement">
+            Taskrunner UI widget for an enumeration parameter
             <inject-arg />
             <inject-arg />
             <inject object="service:dialogs.resourceChooser" />
         </object>
         <object name="booleanFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.BooleanFormElement">
+        Taskrunner UI widget for a boolean CEA parameter
             <inject-arg />
             <inject-arg />
             <inject object="service:dialogs.resourceChooser" />
         </object>
         <object name="outputFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.OutputFormElement">
+        Taskrunner UI widget for an output parameter
             <inject-arg />
             <inject-arg />
             <inject object="service:dialogs.resourceChooser" />
         </object>
         <object name="positionFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.PositionFormElement">
+        Taskrunner UI widget for a RA,Dec position
             <inject-arg />
             <inject-arg />
             <inject-arg />
@@ -304,17 +321,20 @@ HELIOSCOPE
             <inject object="service:cds.sesame" />
         </object>
         <object name="radiusFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.RadiusFormElement">
+        Taskrunner UI widget for a search radius
             <inject-arg />
             <inject-arg />
             <inject object="service:dialogs.resourceChooser" />
         </object>
         <object name="radiusFormElementExternal" class="org.astrogrid.desktop.modules.ui.taskrunner.RadiusFormElement">
+        Alternative construction for a radius form element.
             <inject-arg />
             <inject-arg />
             <inject object="service:dialogs.resourceChooser" />
             <inject-arg />
         </object>
         <object name="adqlFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement">
+        Taskrunner UI widget for an ADQL parameter
             <inject-arg />
             <inject-arg />
             <inject-arg />
@@ -331,6 +351,7 @@ Query Builder
  -->
  	<service-point id="queryBuilder" 
 	interface="org.astrogrid.desktop.modules.ui.QueryBuilderInternal">
+    Query Builder - specialization of TaskRunner
         <interceptor service-id="system.snitchInterceptor" />
             <interceptor service-id="system.edtInvoke" />        
         <invoke-factory>   
@@ -347,7 +368,7 @@ Query Builder
 
         <contribution configuration-id="UiBuilderObjects">
         <object name="querybuilder" class="org.astrogrid.desktop.modules.ui.QueryBuilderImpl" >
-          Describes how to builld a new queryrunner window.
+          Describes how to builld a new querybuilder window.
             <inject object="service:system.ui"/>        
             <inject object="service:astrogrid.applications"/>   
             <inject object="service:astrogrid.processManager" />    
@@ -371,6 +392,7 @@ Query Builder
 	VOEXPLORER
 	 -->
 	<service-point id="registryBrowser" interface="org.astrogrid.desktop.modules.ui.VOExplorerFactoryInternal">
+        VOExplorer factory
 			<interceptor service-id="system.snitchInterceptor" >
                 <!--  including things seems to mean we get 'all'. excluding what we dont' want seems to work. -->
                 <exclude method="appendHandler" />
@@ -447,6 +469,7 @@ Query Builder
 FILE EXPLORER
  -->
  	<service-point id="fileManager" interface="org.astrogrid.desktop.modules.ui.FileManagerFactory">
+        Factory for FileManager UI windows
  		<interceptor service-id="system.snitchInterceptor" >
                 <!--  including things seems to mean we get 'all'. excluding what we dont' want seems to work. -->
                 <exclude method="appendHandler" />
@@ -503,7 +526,7 @@ FILE EXPLORER
    
 
 	<service-point id="storageFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.ListProvider">
-		Loads / saves the list of resource folders.
+		Loads / saves the list of bookmarked folders displayed in the lefthand pane of fileexplorer
 		<invoke-factory><!-- to think about - does this need to be sessioned too? -->
 			<construct class="org.astrogrid.desktop.modules.ui.folders.StorageFoldersProvider">
 				<service>system.ui</service>
@@ -529,7 +552,7 @@ ACTIONS
 -->
 	
 	<service-point id="actionsBuilder" interface="org.astrogrid.desktop.modules.system.ui.ActivityFactory">
-		Assembles actions menus from the contributed actions.
+		Assembles activities menus from the contributed activities.
 		<invoke-factory model="singleton">
 			<construct class="org.astrogrid.desktop.modules.system.ui.ActivityFactoryImpl">
 				<service>actionsFactory</service>
@@ -539,7 +562,7 @@ ACTIONS
 	
 	<service-point id="actionsFactory" interface="org.astrogrid.desktop.hivemind.ClassKeyObjectBuilder"
 		visibility="private">
-		Object builder for actions
+		Object builder for activities
 		<invoke-factory model="singleton">
 			<construct class="org.astrogrid.desktop.hivemind.ClassKeyObjectBuilderImpl">
 				<log />
@@ -551,12 +574,14 @@ ACTIONS
 	</service-point>	
 		
 	<configuration-point id="actions" schema-id="hiveutils.ObjectBuilderSchema">
-		Configuration point for the list of 'invoke' tasks.
-	</configuration-point>
-		
-	<!--  lists of Actions  - name is ignored.
+		List of available activities. Each must extend AbstractActivity.
+        
     NB: adding an action to the list is not enough - for it to appear in the UI, it 
     must be called from actionsBuilder by classname.
+	</configuration-point>
+		
+	<!--  lists of Activities  - name is ignored.
+
     -->
 	<contribution configuration-id="actions">
 		<object name="scope" class="org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity">
@@ -579,13 +604,6 @@ ACTIONS
             <inject object="service:system.vfs" />
             <inject object="service:ui.fileManager" />
         </object>
-        <!--  not implemented	
-		<object name="1saveFile" class="org.astrogrid.desktop.modules.ui.actions.SaveActivity">
-			<inject object="service:dialogs.resourceChooser" />
-			<inject object="service:system.vfs" />
-			<inject name="section" object="literal:string:use" />
-		</object>
-        		-->
                 
         <object name="download" class="org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity">
             <inject object="service:system.vfs" />
@@ -609,15 +627,7 @@ ACTIONS
 			<inject object="service:system.tupperware" />
             <inject object="service:system.systray" />
 		</object>
-		<!--  removed - too inefficient at the moment - causes oout of memory exceptions
-		re-enable when I've got time to look at optimizing the GenerateScriptActivity.invokable()
-        possibly replace groovy with a less ambitious scripting language. 
-		<object name="3script" class="org.astrogrid.desktop.modules.ui.actions.GenerateScriptScavenger">
-			<inject object="service:dialogs.resourceChooser" />
-			<inject object="service:system.vfs" />
-			<inject name="section" object="literal:string:script" />		
-		</object>
-		-->
+
 		<object name="selection" class="org.astrogrid.desktop.modules.ui.actions.InfoActivity">
 		</object>
 		<object name="info" class="org.astrogrid.desktop.modules.ui.actions.FurtherInfoActivity">
@@ -644,7 +654,7 @@ ACTIONS
 	Query size estimation
 	 -->
 	 <service-point id="querySize" visibility="private" interface="org.astrogrid.desktop.modules.ui.voexplorer.QuerySizer">
-	 	Computes sizes of queries.
+	 	Computes sizes of registry queries.
 	 	<interceptor service-id="system.throbber" />
 	 	<invoke-factory>
 	 		<construct class="org.astrogrid.desktop.modules.ui.voexplorer.QuerySizerImpl">
@@ -684,6 +694,8 @@ Building components on the EDT
 					interface="org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder">
 	Based on hiveUtils.ObjectBuilder, but guarantees object construction 
 	will always occur on the EDT - no matter what the calling thread.
+    Used as a factory for hard-to-assemble UI components, where, unlike hivemind services, 
+    there will typically be more than one instantiation.
 		<invoke-factory model="singleton">
 			<construct class="org.astrogrid.desktop.modules.ui.TypesafeObjectBuilderImpl">
 				<log/>

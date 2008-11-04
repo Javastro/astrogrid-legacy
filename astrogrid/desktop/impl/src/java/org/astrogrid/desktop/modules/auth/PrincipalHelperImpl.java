@@ -10,7 +10,7 @@ import net.sourceforge.hivelock.PrincipalHelperService;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 
 /** Plugin to hivemind user management system.
- * Bridges the gap between hivemind and ar.
+ * Bridges the gap between hivemind and AR.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 20, 20076:35:42 PM
  */
@@ -18,7 +18,7 @@ public class PrincipalHelperImpl implements PrincipalHelperService {
 /**
  * 
  */
-public PrincipalHelperImpl(SessionManagerInternal sess) {
+public PrincipalHelperImpl(final SessionManagerInternal sess) {
 	this.sess = sess;
 }
 private final SessionManagerInternal sess;
@@ -26,8 +26,8 @@ private final SessionManagerInternal sess;
 	// naieve treatment of authenticated principles for now.
 	// later, might be necessary to have different roles (and so different abilities, and access rights) for different classes of principal.
 	
-	public String getLogin(Principal arg0) {
-		Principal p = getTruePrincipal(arg0);
+	public String getLogin(final Principal arg0) {
+		final Principal p = getTruePrincipal(arg0);
 		if (p instanceof UnauthenticatedPrincipal) {
 			return ((UnauthenticatedPrincipal)p).getLogin();
 		} else {
@@ -35,8 +35,8 @@ private final SessionManagerInternal sess;
 		}
 	}
 
-	public String getName(Principal arg0) {
-		Principal p = getTruePrincipal(arg0);
+	public String getName(final Principal arg0) {
+		final Principal p = getTruePrincipal(arg0);
 		if (p instanceof UnauthenticatedPrincipal) {
 			return ((UnauthenticatedPrincipal)p).getName();
 		} else {
@@ -44,8 +44,8 @@ private final SessionManagerInternal sess;
 		}
 	}
 
-	public String[] getRoles(Principal arg0) {
-		Principal p = getTruePrincipal(arg0);
+	public String[] getRoles(final Principal arg0) {
+		final Principal p = getTruePrincipal(arg0);
 		if (p instanceof UnauthenticatedPrincipal) {
 			return ((UnauthenticatedPrincipal)p).getRoles();
 		} else {
@@ -61,7 +61,7 @@ private final SessionManagerInternal sess;
 	 * @param p a mutablePrincipal
 	 * @return mutablePrincipal.getActualPrincipal()
 	 */
-	private Principal getTruePrincipal(Principal p) {
+	private Principal getTruePrincipal(final Principal p) {
 		if (p instanceof MutablePrincipal) {
 			final MutablePrincipal mutablePrincipal = ((MutablePrincipal)p);
 			if (mutablePrincipal.getActualPrincipal() instanceof UnauthenticatedPrincipal) {

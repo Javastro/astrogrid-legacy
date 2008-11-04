@@ -3,9 +3,6 @@
  */
 package org.astrogrid.desktop.modules.auth;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,12 +17,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.StringUtils;
-import org.astrogrid.acr.ServiceException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.io.Piper;
 
-/** Download and install certificates..
+/** Download and install certificates.
  * never overwrites a certificate which is already there. 
  * @author Noel Winstanley
  * @since Sep 7, 200611:27:55 AM
@@ -57,15 +55,15 @@ public class InstallCertificates implements Runnable {
 					    throw new Exception("Failed to create certificate directory - unable to install certificates");
 					}
 				}
-				XMLInputFactory fac = XMLInputFactory.newInstance();
+				final XMLInputFactory fac = XMLInputFactory.newInstance();
 				int count = 0;
-				int max = certLists.size();
+				final int max = certLists.size();
 				setProgress(count,max);
-				for (Iterator i = certLists.iterator(); i.hasNext(); ) {
+				for (final Iterator i = certLists.iterator(); i.hasNext(); ) {
 					// fetch and parse each of these certificate lists.
 				    
 					XMLStreamReader in = null;
-					String certList = (String)i.next();
+					final String certList = (String)i.next();
 					reportProgress("Reading certificate list from " + certList);
 					try {
 						in = fac.createXMLStreamReader((new URL(certList)).openStream());
@@ -75,9 +73,9 @@ public class InstallCertificates implements Runnable {
 								handleSingleCertificate(in.getElementText().trim());
 							}
 						}
-					} catch (XMLStreamException x) {
+					} catch (final XMLStreamException x) {
 						reportProgress("Failed to parse " + certList );
-					} catch (IOException x) {
+					} catch (final IOException x) {
 						reportProgress("Failed to parse " + certList );						
 					} finally {
 					    setProgress(++count,max);
@@ -85,7 +83,7 @@ public class InstallCertificates implements Runnable {
 							if (in != null) {
 								in.close();
 							}
-						} catch (XMLStreamException x) {
+						} catch (final XMLStreamException x) {
 						    //meh
 						}
 					}					
@@ -101,28 +99,28 @@ public class InstallCertificates implements Runnable {
 				URL url = null;
 				try {
 					url = new URL(certificateURL);
-					String certName = StringUtils.substringAfterLast(url.toString(),"/");
-					File cert = new File(certDir,certName);
+					final String certName = StringUtils.substringAfterLast(url.toString(),"/");
+					final File cert = new File(certDir,certName);
 					if (!cert.exists()) { // missing - download it.
 						logger.info("Downloading new certificate " + url);
 						os = new FileOutputStream(cert);
 						is = url.openStream();
 						Piper.pipe(is,os);
 					}
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					logger.warn("Failed to downlooad certificate " + url);
 				} finally {
 					if (is != null) {
 						try {
 							is.close();
-						} catch (IOException x) {
+						} catch (final IOException x) {
 							// oh-well.
 						}
 					}
 					if (os != null) {
 						try {
 							os.close();
-						} catch (IOException x) {
+						} catch (final IOException x) {
 							// never mind
 						}
 					}

@@ -1,4 +1,4 @@
-/*$Id: Xml2XhtmlTransformer.java,v 1.7 2007/01/29 11:11:36 nw Exp $
+/*$Id: Xml2XhtmlTransformer.java,v 1.8 2008/11/04 14:35:49 nw Exp $
  * Created on 11-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import org.astrogrid.desktop.modules.system.contributions.StylesheetsContributio
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
-/** Transforms a result by looking through a set of stylesheets.
+/** Transforms a result by finding an applying a suitable stylesheet.
  * input is expected to be xml, output is expected to be xhtml
  * 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-May-2005
@@ -44,7 +44,7 @@ public class Xml2XhtmlTransformer implements Transformer{
      * @throws TransformerConfigurationException
      * 
      */
-    public Xml2XhtmlTransformer(List sheets) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+    public Xml2XhtmlTransformer(final List sheets) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
         super();
         this.sheets = (StylesheetsContribution[])sheets.toArray(new StylesheetsContribution[sheets.size()]);
     }
@@ -55,23 +55,23 @@ public class Xml2XhtmlTransformer implements Transformer{
      * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
      * 
      */
-    public Object transform(Object arg0) {
+    public Object transform(final Object arg0) {
     	if (arg0 == null) {
     		return "<html><body>null</body></html>";
     	}
     	if (! (arg0 instanceof Document)) {
     		throw new IllegalArgumentException("Can only transform XML Documents: " + arg0.getClass().getName());
     	}
-    	Document d = (Document)arg0;
+    	final Document d = (Document)arg0;
     	for (int i = 0; i < sheets.length ; i++) {
     		if (sheets[i].isApplicable(d)) {    	
-    			Source source = new DOMSource(d);
-    			StringWriter sw = new StringWriter();
-    			Result sink = new StreamResult(sw);
+    			final Source source = new DOMSource(d);
+    			final StringWriter sw = new StringWriter();
+    			final Result sink = new StreamResult(sw);
     			try {
     				sheets[i].createTransformer().transform(source,sink);
     				return sw.toString();
-    			} catch (TransformerException e) {
+    			} catch (final TransformerException e) {
     				logger.error("TransformerException - falling back",e);
     				// will continue iterating - may find a fallback.
     			}
@@ -88,6 +88,9 @@ public class Xml2XhtmlTransformer implements Transformer{
 
 /* 
 $Log: Xml2XhtmlTransformer.java,v $
+Revision 1.8  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.7  2007/01/29 11:11:36  nw
 updated contact details.
 

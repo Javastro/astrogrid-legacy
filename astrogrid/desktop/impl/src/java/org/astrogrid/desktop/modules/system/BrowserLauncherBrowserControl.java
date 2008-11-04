@@ -20,7 +20,7 @@ import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 
-/** Control system browser using BrowserLauncher library.
+/** Control system webbrowser using <a href='http://browserlaunch2.sourceforge.net/'>BrowserLauncher</a> library.
  * Fallback for when not using webstart.
  * @author Noel Winstanley
  * @since Apr 25, 200610:54:20 AM
@@ -28,15 +28,15 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 public class BrowserLauncherBrowserControl extends FallbackBrowserControl {
     private static final Log logger = LogFactory
     	.getLog(BrowserLauncherBrowserControl.class);
-	public BrowserLauncherBrowserControl(WebServer root,UIContext ui) {
+	public BrowserLauncherBrowserControl(final WebServer root,final UIContext ui) {
 		super(root);
 		this.ui = ui;
 		browserLogger = new WorkbenchLogger();
 		try {
 			launcher = new BrowserLauncher(browserLogger);
-		} catch (BrowserLaunchingInitializingException x) {
+		} catch (final BrowserLaunchingInitializingException x) {
 			logger.error("BrowserLaunchingInitializingException",x);
-		} catch (UnsupportedOperatingSystemException x) {
+		} catch (final UnsupportedOperatingSystemException x) {
 			logger.error("UnsupportedOperatingSystemException",x);
 		}
 	}
@@ -45,13 +45,13 @@ public class BrowserLauncherBrowserControl extends FallbackBrowserControl {
 	private final AbstractLogger browserLogger;
 
 
-	public void openURL(URL url) throws ACRException {
+	public void openURL(final URL url) throws ACRException {
 		if (launcher == null) {
 			super.openURL(url);
 		}
 		try {
 			launcher.openURLinBrowser(url.toString());
-		} catch (Exception x) {
+		} catch (final Exception x) {
 			logger.error("Failed to control browser - falling back",x);
 			super.openURL(url);
 		}
@@ -62,7 +62,7 @@ public class BrowserLauncherBrowserControl extends FallbackBrowserControl {
 		{
 			setLevel(Level.ERROR);
 		}
-		protected void reallyLog(int arg0, String arg1, Throwable arg2) throws Exception {
+		protected void reallyLog(final int arg0, final String arg1, final Throwable arg2) throws Exception {
 			ui.findMainWindow().showError(arg1,arg2);
 		}
 	}

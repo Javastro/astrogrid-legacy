@@ -23,13 +23,13 @@ import org.votech.plastic.CommonMessageConstants;
 
 import com.l2fprod.common.swing.JLinkButton;
 
-/**
+/** Send a PLASTIC loadFits message for a file.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:47 PM
  */
 public class PlasticFitsActivity extends AbstractFileActivity {
-    /** variant which is invokable  on any kind of file not accepted by default implementation, only appears on the main menu */
-    
+    /** variant which is invokable on any kind of file <b>not</b> acceptable to {@code PlasticFitsActivity}.
+     * only appears on the main menu */
     public static class Fallback extends PlasticFitsActivity {
 
     public Fallback(final PlasticApplicationDescription plas, final PlasticScavenger scav) {

@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.20 2008/04/25 08:58:47 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.21 2008/11/04 14:35:51 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,6 @@ import javax.swing.Timer;
 
 import junit.framework.AssertionFailedError;
 
-
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.ui.ProgressDialogue;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
@@ -34,7 +33,8 @@ import EDU.oswego.cs.dl.util.concurrent.FutureResult;
 import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 
-/** abstract class for all long-running operations - all requests to VO services should be done in instances of this class.
+/** base class for all long-running tasks. 
+ * All requests to VO services should be done in instances of this class.
       * <p/>
       *Based on standard implementation of SwingWorker (EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker) 
       *but integrates with the ui component - takes care of starting and  stopping busy indicator, progress message.
@@ -46,7 +46,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         
 
 
-        /** enumeration class for timeout values. defined in terms of a
+        /** Enumeration of timeout values. defined in terms of a
          * 'timeout factor' which is defined in application preferences.
          * Consider this factor to have a default value of 5
          * @author Noel.Winstanley@manchester.ac.uk
@@ -55,10 +55,10 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         public static class TimeoutEnum {
             private final long factor;
 
-            private TimeoutEnum(long factor){
+            private TimeoutEnum(final long factor){
                 this.factor = factor;
             }
-            private TimeoutEnum(TimeoutEnum basis, long factor) {
+            private TimeoutEnum(final TimeoutEnum basis, final long factor) {
                 this.factor = basis.factor * factor;
             }
             public String toString() {
@@ -142,7 +142,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
             }
             
             /** part of the implementation - do not call */
-            public final void setTimedOut(boolean b) {
+            public final void setTimedOut(final boolean b) {
                 timedout = b;
             }            
             /** part of the implementation */
@@ -150,7 +150,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
                 return principal;
             }
             /** part of the implementation */
-            public final void setPrincipal(Principal p) {
+            public final void setPrincipal(final Principal p) {
                 principal = p;
             }            
         }
@@ -176,30 +176,30 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         private final long unqId;
         private static long idGen = 0L;
         /** priority for this tasks */
-        private int priority;
-        public BackgroundWorker(UIContext context, String msg) {
+        private final int priority;
+        public BackgroundWorker(final UIContext context, final String msg) {
         	this(context.findMainWindow(),msg);
         	system = true;
         }
-        public BackgroundWorker(UIContext context, String msg, TimeoutEnum timeout) {
+        public BackgroundWorker(final UIContext context, final String msg, final TimeoutEnum timeout) {
         	this(context.findMainWindow(),msg,timeout);
         	system = true;
         }        
-        public BackgroundWorker(UIContext context, String msg, int priority) {
+        public BackgroundWorker(final UIContext context, final String msg, final int priority) {
             this(context.findMainWindow(),msg,priority);
             system = true;
         }  
-        public BackgroundWorker(UIContext context, String msg, TimeoutEnum timeout,int priority) {
+        public BackgroundWorker(final UIContext context, final String msg, final TimeoutEnum timeout,final int priority) {
             this(context.findMainWindow(),msg,timeout,priority);
             system = true;
         }          
-        public BackgroundWorker(UIComponent parent,String msg) {
+        public BackgroundWorker(final UIComponent parent,final String msg) {
             this(parent,msg,DEFAULT_TIMEOUT,Thread.NORM_PRIORITY);
         }
-        public BackgroundWorker(UIComponent parent,String msg, TimeoutEnum timeout) {
+        public BackgroundWorker(final UIComponent parent,final String msg, final TimeoutEnum timeout) {
             this(parent,msg,timeout,Thread.NORM_PRIORITY);
         }
-        public BackgroundWorker(UIComponent parent,String msg, int priority) {
+        public BackgroundWorker(final UIComponent parent,final String msg, final int priority) {
             this(parent,msg,DEFAULT_TIMEOUT,priority);
         }
        
@@ -213,18 +213,18 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * @param parent - UICOmponent to report progress in.
          * @param msg message to display in status bar in parent UIComponentImpl.
          */
-        public BackgroundWorker(UIComponent parent,String msg, TimeoutEnum timeout, int priority) {
+        public BackgroundWorker(final UIComponent parent,final String msg, final TimeoutEnum timeout, final int priority) {
             super();
             this.parent = parent;
             this.executor = parent.getContext().getExecutor();
             this.workerTitle = msg;
             long tout = 5 * timeout.factor;
             if (parent.getContext() != null && parent.getContext().getConfiguration() != null) {
-                String val = parent.getContext().getConfiguration().getKey("performance.timeoutFactor");
+                final String val = parent.getContext().getConfiguration().getKey("performance.timeoutFactor");
                 if (val != null) {
                     try {
                         tout = Long.parseLong(val) * timeout.factor;
-                    } catch (NumberFormatException e) { 
+                    } catch (final NumberFormatException e) { 
                     }
                 }
             }
@@ -240,7 +240,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         private volatile int status = PENDING;
 
         
-        private final void setStatus(int i) {
+        private final void setStatus(final int i) {
             this.status = i;
             setChanged();
             notifyObservers();
@@ -266,25 +266,27 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * dispatch thread.
          */
         public  final void run() {
-            if (!run) return; // halt here if has been cancelled while on queue            
+            if (!run) {
+                return; // halt here if has been cancelled while on queue            
+            }
             executor.executeLaterEDT(new Runnable() {
             // notify ui that we're starting to execute
                 public void run() {
                     setStatus(RUNNING);
                     // display a progress monitor, if requested.
                     if (wouldLikeIndividualMonitor) {
-                        String val = parent.getContext().getConfiguration().getKey("performance.showProgressDialogueAfter");
+                        final String val = parent.getContext().getConfiguration().getKey("performance.showProgressDialogueAfter");
                         int t = 5;
                         try {
                             t = Integer.parseInt(val);
-                        } catch (NumberFormatException e) {
+                        } catch (final NumberFormatException e) {
                             // fallback to default
                         }
                         if (t == 0) {
                             getControl().showSingleDialogue();
                         } else if (t > 0) {
-                            Timer timer = new Timer(t * 1000,new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
+                            final Timer timer = new Timer(t * 1000,new ActionListener() {
+                                public void actionPerformed(final ActionEvent e) {
                                     if (status != COMPLETED) {
                                         getControl().showSingleDialogue();
                                     }
@@ -305,13 +307,13 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
                 // finish off by updating ui.
                 public void run() {
                     try {
-                        Object o = get();
+                        final Object o = get();
                         doFinished(o);
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                         parent.setStatusMessage(workerTitle + " - Interrupted");
                        
-                    } catch (InvocationTargetException e) {                    
-                        Throwable ex= e.getCause() != null ? e.getCause() : e;
+                    } catch (final InvocationTargetException e) {                    
+                        final Throwable ex= e.getCause() != null ? e.getCause() : e;
                         if (InterruptedException.class.isAssignableFrom(ex.getClass())) {
                             // it's a wrapped interruption, caused by the user pressing cancel, or a timeout
                             if (timedout) {
@@ -392,7 +394,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * @exception InvocationTargetException if the constructing thread
          * encountered an exception or was interrupted.
          */
-        public final Object timedGet(long msecs) 
+        public final Object timedGet(final long msecs) 
         throws TimeoutException, InterruptedException, InvocationTargetException {
             return result.timedGet(msecs);
         }
@@ -428,7 +430,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * null implementation - override this method to update the UI with the results of the background operation
          * @param result the result of the background computation in {@link #construct()}
          */
-        protected void doFinished(Object result) {
+        protected void doFinished(final Object result) {
         }
         /** this method is always exectued, last of all, in the event dispatch thread. - it's similar to a <tt>finally</tt> block.
          * <p>
@@ -447,7 +449,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * set to <tt>false</tt> by default
          * @param b
          */
-        protected final void setTransient(boolean b) {
+        protected final void setTransient(final boolean b) {
             transientMessages = b;
         }
 
@@ -456,7 +458,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * report the progress of the task
          * @param s
          */
-        public final void reportProgress(String s) {
+        public final void reportProgress(final String s) {
             // only most recent message is persisted.
             progressMessages.add(s);
             // add logging here too?
@@ -491,7 +493,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * progress dialogue - i.e. it's a high-value or important user-triggered action
          */
         private boolean wouldLikeIndividualMonitor = false;
-        protected final void setWouldLikeIndividualMonitor(boolean b) {
+        protected final void setWouldLikeIndividualMonitor(final boolean b) {
             wouldLikeIndividualMonitor = true;
         }
         /**
@@ -499,7 +501,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * override to handle errors differently.
          * behaviour is controlled by {@link #setTransient(boolean)} and {@link #setRetriable(boolean)}
          */
-        protected void doError(Throwable ex) {
+        protected void doError(final Throwable ex) {
             final String t = "An error occurred while " + workerTitle.toLowerCase();
             if (transientMessages) {
                     parent.showTransientError(t,ExceptionFormatter.formatException(ex));
@@ -508,8 +510,8 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
             }
         }
         /** implmeentaiton of comparable */
-        public final int compareTo(Object o) {
-                BackgroundWorker other = (BackgroundWorker)o;
+        public final int compareTo(final Object o) {
+                final BackgroundWorker other = (BackgroundWorker)o;
                 int val = other.priority - this.priority; // higher priority => higher value. the queue takes the _least_ value - so reversed here.
                 if (val == 0) {
                     val =(int)( this.unqId - other.unqId); // smallest id (i.e. oldest task) takes priority 
@@ -528,6 +530,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.21  2008/11/04 14:35:51  nw
+javadoc polishing
+
 Revision 1.20  2008/04/25 08:58:47  nw
 refactored to ease testing.
 

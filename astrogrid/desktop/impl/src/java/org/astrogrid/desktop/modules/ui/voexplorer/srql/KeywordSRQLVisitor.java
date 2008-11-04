@@ -3,7 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer.srql;
 
-/** visitor that traverse a SRQL and generates a normalized search string from it - indicates what the parser
+/** 
+ * Genrate a normalized SRQL search string from SRQL tree.
+ * Used to indicate what the parser
  * thinks the user has inputted. The query is not executable - but indicates what's being searched for.
  * This visitor generates output that is compatible with the SRQL parser.
  * @author Noel Winstanley
@@ -11,37 +13,37 @@ package org.astrogrid.desktop.modules.ui.voexplorer.srql;
  */
 public class KeywordSRQLVisitor implements SRQLVisitor {
 
-	public Object visit(AndSRQL q) {
+	public Object visit(final AndSRQL q) {
 		return "(" + q.getLeft().accept(this) + ") AND (" + q.getRight().accept(this) + ")";
 	}
 
-	public Object visit(OrSRQL q) {
+	public Object visit(final OrSRQL q) {
 
 		return "(" + q.getLeft().accept(this) + ") OR (" + q.getRight().accept(this) + ")";		
 	}
 
-	public Object visit(NotSRQL q) {
+	public Object visit(final NotSRQL q) {
 		return "NOT " + parenthesizeNonLeaf(q.getChild());
 	}
 
 
-	public Object visit(TermSRQL q) {
+	public Object visit(final TermSRQL q) {
 		return q.getTerm();
 	}
 
-	public Object visit(PhraseSRQL q) {
+	public Object visit(final PhraseSRQL q) {
 		return "'" + q.getPhrase() + "'";
 	}
 
-	public Object visit(TargettedSRQL q) {
+	public Object visit(final TargettedSRQL q) {
 		return q.getTarget() + " = " + (q.getChild() == null ? "null" :  parenthesizeNonLeaf(q.getChild())); // a little more tolerant of commonest error cases.
 	}
 
-	public Object visit(XPathSRQL q) {
+	public Object visit(final XPathSRQL q) {
 		return "`" + q.getXpath() + "`";
 	}
 	
-	private boolean isLeaf(SRQL s) {
+	private boolean isLeaf(final SRQL s) {
 		return s instanceof XPathSRQL 
 				|| s instanceof PhraseSRQL
 				|| s instanceof TermSRQL
@@ -49,7 +51,7 @@ public class KeywordSRQLVisitor implements SRQLVisitor {
 				;
 	}
 	
-	private String parenthesizeNonLeaf(SRQL s) {
+	private String parenthesizeNonLeaf(final SRQL s) {
 		if (!isLeaf(s)) {
 			return "(" + s.accept(this) + ")";
 		} else {

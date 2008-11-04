@@ -1,4 +1,4 @@
-/*$Id: FallbackBrowserControl.java,v 1.5 2007/11/21 07:55:39 nw Exp $
+/*$Id: FallbackBrowserControl.java,v 1.6 2008/11/04 14:35:54 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 
-/** fallback implementation of the browser control 
+/** Fallback implementation of the browser control. 
  * 
  * used when not running under webstart (i.e. during development)- tells user which http url to go to.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Feb-2005
@@ -31,7 +31,7 @@ public class FallbackBrowserControl implements BrowserControl {
     /** Construct a new FallbackBrowserControl
      * 
      */
-    public FallbackBrowserControl(WebServer root) {
+    public FallbackBrowserControl(final WebServer root) {
         super();
         this.root = root;
     }
@@ -41,16 +41,16 @@ public class FallbackBrowserControl implements BrowserControl {
      * @throws MalformedURLException
      * @throws ACRException
      */
-    public void openURL(String stringUrl) throws MalformedURLException, ACRException {
-        URL url = new URL(stringUrl);
+    public void openURL(final String stringUrl) throws MalformedURLException, ACRException {
+        final URL url = new URL(stringUrl);
         openURL(url);
     }
 
     /**
      * @see org.astrogrid.acr.system.BrowserControl#openURL(java.net.URL)
      */
-    public void openURL(URL url) throws ACRException {
-       ResultDialog rd = new ResultDialog("Cannot control browser\n Please go to \n" + url.toString());
+    public void openURL(final URL url) throws ACRException {
+       final ResultDialog rd = new ResultDialog("Cannot control browser\n Please go to \n" + url.toString());
        rd.show();
     }
     
@@ -59,11 +59,11 @@ public class FallbackBrowserControl implements BrowserControl {
      * @throws ACRException
      * @see org.astrogrid.acr.system.BrowserControl#openRelative(java.lang.String)
      */
-    public void openRelative(String relativeURL) throws ACRException {
+    public void openRelative(final String relativeURL) throws ACRException {
         try {
-        URL url = new URL(root.getUrlRoot()+ relativeURL);
+        final URL url = new URL(root.getUrlRoot()+ relativeURL);
         openURL(url);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             throw new InvalidArgumentException(e);
         }
     }
@@ -74,6 +74,9 @@ public class FallbackBrowserControl implements BrowserControl {
 
 /* 
 $Log: FallbackBrowserControl.java,v $
+Revision 1.6  2008/11/04 14:35:54  nw
+javadoc polishing
+
 Revision 1.5  2007/11/21 07:55:39  nw
 Complete - task 65: Replace modal dialogues
 

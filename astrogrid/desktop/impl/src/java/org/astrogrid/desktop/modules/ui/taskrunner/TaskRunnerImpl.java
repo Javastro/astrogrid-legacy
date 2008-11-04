@@ -497,6 +497,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             }
         }).start();
     }
+    /** toolbar pane - appears at the top of the window */
     public static class TaskRunnerToolbar extends JPanel {
 	    /**
          * 

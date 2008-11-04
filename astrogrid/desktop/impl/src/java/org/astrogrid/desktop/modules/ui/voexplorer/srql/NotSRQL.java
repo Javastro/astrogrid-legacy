@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer.srql;
 
-/**negation of another SRQL
+/** Negation of another SRQL term.
  * @author Noel Winstanley
  * @since Aug 9, 20062:46:11 PM
  */
@@ -13,13 +13,13 @@ public class NotSRQL extends SRQL {
 	 */
 	private static final long serialVersionUID = -7785830546764343584L;
 	protected SRQL child;
-	public Object accept(SRQLVisitor visitor) {
+	public Object accept(final SRQLVisitor visitor) {
 		return visitor.visit(this);
 }
 	public SRQL getChild() {
 		return this.child;
 	}
-	public void setChild(SRQL child) {
+	public void setChild(final SRQL child) {
 		this.child = child;
 	}
 	public int hashCode() {
@@ -28,20 +28,24 @@ public class NotSRQL extends SRQL {
 		result = PRIME * result + ((this.child == null) ? 0 : this.child.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
 		if (! (obj instanceof NotSRQL)) {
 			return false;
 		}
 		final NotSRQL other = (NotSRQL) obj;
 		if (this.child == null) {
-			if (other.child != null)
-				return false;
-		} else if (!this.child.equals(other.child))
-			return false;
+			if (other.child != null) {
+                return false;
+            }
+		} else if (!this.child.equals(other.child)) {
+            return false;
+        }
 		return true;
 	}
 	/**
@@ -50,7 +54,7 @@ public class NotSRQL extends SRQL {
 	
 		 */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("NotQuery[");
 			buffer.append("child = ").append(child);
 			buffer.append("]");

@@ -32,7 +32,7 @@ import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 
-/** abstract baseclass for a menubar for a UI componnet.
+/** baseclass for a menubarin a UI component.
  * 
  * defines all the common menus
  * 
@@ -391,7 +391,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
         }
     }
     
-    
+    /** prompt the user to change their password */
     private static final class ChangePasswordMenuItem extends JMenuItem {
         private final UIContext context;
 
@@ -411,7 +411,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
         }
     }
     
-    /**
+    /** perform logout
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Nov 5, 20075:03:29 PM
      */
@@ -435,7 +435,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
         }
     }
     
-    /**
+    /** perform a login
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Nov 5, 20075:06:05 PM
      */

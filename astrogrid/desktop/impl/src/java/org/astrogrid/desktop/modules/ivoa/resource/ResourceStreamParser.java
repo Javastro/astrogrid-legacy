@@ -89,7 +89,7 @@ import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-/** Streaming parser of vo resource objects.
+/** Streaming parser for registry resource objects.
  * <p/>
  * implements the iterator interface to return parsed objects - which will be instances of {@link Resource}
  * <p/>

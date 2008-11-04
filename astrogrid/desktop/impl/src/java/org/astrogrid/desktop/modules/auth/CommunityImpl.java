@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.17 2008/08/21 11:37:11 nw Exp $
+/*$Id: CommunityImpl.java,v 1.18 2008/11/04 14:35:53 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ import org.astrogrid.registry.RegistryException;
 import org.astrogrid.security.AccountIvorn;
 import org.astrogrid.security.SecurityGuard;
 
-/** Community Service implementation
+/** Community Service implementation.
  *
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
  * @TEST needs a unit test writing- but authentication mechanism needs to be isolated first, so it can be mocked out
@@ -266,6 +266,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.18  2008/11/04 14:35:53  nw
+javadoc polishing
+
 Revision 1.17  2008/08/21 11:37:11  nw
 RESOLVED - bug 2815: File manager client depends on obsolete community service
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2815

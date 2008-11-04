@@ -11,7 +11,7 @@ import org.astrogrid.desktop.modules.util.Selftest;
 
 
 
-/** Service that provides additional metadata about resources.
+/** A component that provides additional metadata (annotations) for resources from various sources.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20077:21:46 PM
  */

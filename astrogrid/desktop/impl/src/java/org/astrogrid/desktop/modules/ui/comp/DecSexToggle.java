@@ -16,8 +16,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 
 /**
- * a Decimal Degreee / Sexagesimal
- * Toggle.
+ * A toggle button for selecting between Decimal Degrees  Sexagesimal.
  * 
  * provides configured ui components (adio buttons) - clients of this class need to access them
  * and add them into their own ui.

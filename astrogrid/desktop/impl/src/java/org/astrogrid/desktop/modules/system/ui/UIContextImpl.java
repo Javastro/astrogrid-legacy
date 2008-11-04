@@ -59,7 +59,9 @@ import ca.odell.glazedlists.ObservableElementList;
 
 import com.l2fprod.common.swing.icons.EmptyIcon;
 
-/** A context object - provides generally useful services to various UI windows, 
+/** 
+ * Implementation of {@code UIContext}.
+ *  {Provides generally useful services to various UI windows, 
  * and mantains a list of current UI windows, common UI models, etc.
  * 
  * means that a lot of other services get passed into this component - so that 

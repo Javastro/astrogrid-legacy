@@ -14,15 +14,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JComponent;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
 
-/** transferable object that represents a selection of more than one file object.
+/** {@code Transferable} for more than one file object.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 30, 200710:49:08 AM
  */
@@ -39,28 +37,28 @@ public class FileObjectListTransferable implements Transferable{
 		super();
 		this.l = l;
 	}
-	public Object getTransferData(DataFlavor flavor)
+	public Object getTransferData(final DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException {
 		if (VoDataFlavour.LOCAL_FILEOBJECT_ARRAY.equals(flavor)){
 			return l.toArray(new FileObject[l.size()]);
 		} else if (VoDataFlavour.LOCAL_URI_ARRAY.equals(flavor)) {
 			try {
-			List u = new ArrayList();
-			for (Iterator i = l.iterator(); i.hasNext();) {
-				FileObject r = (FileObject) i.next();
+			final List u = new ArrayList();
+			for (final Iterator i = l.iterator(); i.hasNext();) {
+				final FileObject r = (FileObject) i.next();
 				u.add(new URI(StringUtils.replace(r.getName().getURI()," ","%20")));
 			}
 			return u.toArray(new URI[u.size()]);
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 				logger.warn("Unable to create a URI for fileobject",e);
-				UnsupportedFlavorException exception = new UnsupportedFlavorException(flavor);
+				final UnsupportedFlavorException exception = new UnsupportedFlavorException(flavor);
 				exception.initCause(e);
 				throw exception;
 			}
 		}
-			StringBuffer s = new StringBuffer();
-			for (Iterator i = l.iterator(); i.hasNext();) {
-				FileObject r = (FileObject) i.next();
+			final StringBuffer s = new StringBuffer();
+			for (final Iterator i = l.iterator(); i.hasNext();) {
+				final FileObject r = (FileObject) i.next();
 				s.append(StringUtils.replace(r.getName().getURI()," ","%20"));
 				s.append("\n");
 			}
@@ -78,7 +76,7 @@ public class FileObjectListTransferable implements Transferable{
 		return supportedDataFlavors;
 	}
 
-	public boolean isDataFlavorSupported(DataFlavor flavor) {
+	public boolean isDataFlavorSupported(final DataFlavor flavor) {
 		return ArrayUtils.contains(supportedDataFlavors,flavor);
 	}
 	private static final DataFlavor[] supportedDataFlavors = new DataFlavor[] {

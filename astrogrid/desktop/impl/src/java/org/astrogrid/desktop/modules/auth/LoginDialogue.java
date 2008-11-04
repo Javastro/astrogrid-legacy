@@ -5,7 +5,8 @@ package org.astrogrid.desktop.modules.auth;
 
 
 
-/** Micro-service - wraps the invocation of the login dialogue.
+/** Login dialogue service.
+ * <p/>
  * Exposing this as a service means that the EDT interceptors can be used to ensure it is only
  * ever called on the EDT.
  * @author Noel Winstanley

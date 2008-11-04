@@ -4,17 +4,12 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Image;
-import java.util.Calendar;
 import java.util.Date;
 
-import javax.swing.ImageIcon;
-
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 
-/** Base class for dal protocols that query on time.
+/** Base class for Dal protocols that query on time.
  * @author Noel Winstanley
  * @since May 14, 20068:26:52 AM
  * @todo - Kevin needs to think whether all these parameters are needed to the retriever - 
@@ -25,7 +20,7 @@ public abstract class TemporalDalProtocol extends DalProtocol {
 	/**
 	 * @param name
 	 */
-	public TemporalDalProtocol(String name, Image img,RegistryInternal reg) {
+	public TemporalDalProtocol(final String name, final Image img,final RegistryInternal reg) {
 		super(name,img,reg);
 	}
 

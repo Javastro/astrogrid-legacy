@@ -7,9 +7,9 @@ import javax.swing.ListModel;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 
-/** Main-pane component for StorageView that displays a list of files.
+/** Extends {@code OperableFilesList} with navigation between folders.
  * 
- * Extends OperableFilesList with the ability to navigate around the file hierarchy by double-cicking
+ * New abilities: navigate around the file hierarchy by double-cicking
  * on a folder.
  * 
  *  
@@ -24,7 +24,7 @@ public class NavigableFilesList extends OperableFilesList {
 	/**
 	 * @param files
 	 */
-	public NavigableFilesList(FileNavigator navigator) {
+	public NavigableFilesList(final FileNavigator navigator) {
 		super(navigator.getIcons(),navigator.getModel());
         this.navigator = navigator;
 
@@ -32,12 +32,12 @@ public class NavigableFilesList extends OperableFilesList {
 
 	
 // override part of the mouse listener interface.
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(final MouseEvent e) {
 		 if(e.getClickCount() == 2){
-		     int index = locationToIndex(e.getPoint());
-		     ListModel dlm = getModel();
+		     final int index = locationToIndex(e.getPoint());
+		     final ListModel dlm = getModel();
 		     ensureIndexIsVisible(index);
-		     FileObject item = (FileObject)dlm.getElementAt(index);
+		     final FileObject item = (FileObject)dlm.getElementAt(index);
 		     if (item == null) {
 		    	 return;
 		     }
@@ -45,7 +45,7 @@ public class NavigableFilesList extends OperableFilesList {
 		     if (item.getType().hasChildren()) {
 		    	 navigator.move(item);
 		     }
-		     } catch (FileSystemException ex) {
+		     } catch (final FileSystemException ex) {
 		    	 //@todo report or recover
 		     }
 		 }

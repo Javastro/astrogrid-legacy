@@ -1,4 +1,4 @@
-/*$Id: NodeSizing.java,v 1.2 2006/02/23 09:30:33 KevinBenson Exp $
+/*$Id: NodeSizing.java,v 1.3 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 import java.awt.Color;
 import java.awt.Font;
 /**
- * Class that adjusts size of nodes in display
+ * Class that adjusts size of nodes in display.
  * @author Kevin Benson
  *
  *@modified nww - refactoered as an enumeration type - each kind of node sizing
@@ -27,7 +27,7 @@ public class NodeSizing {
     Color color;
     private double extraSize;
     Font font;
-    private NodeSizing(int constraint) {
+    private NodeSizing(final int constraint) {
         switch(constraint) {
            case 1:
                this.color = Color.BLACK;
@@ -67,6 +67,9 @@ public class NodeSizing {
 
 /* 
 $Log: NodeSizing.java,v $
+Revision 1.3  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.2  2006/02/23 09:30:33  KevinBenson
 Added a small tablesortder for the JTable of servies and got rid of Color
 for the nodesizing distant nodes.

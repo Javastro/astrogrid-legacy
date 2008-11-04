@@ -17,8 +17,8 @@ import org.astrogrid.desktop.modules.system.ScheduledTask;
 import org.astrogrid.desktop.modules.util.Selftest;
 import org.w3c.dom.Document;
 
-/** Internal extension interface - provides more efficient access to the data.
- * 
+/** Internal interface to Registry - provides more efficient query methods.
+ * <p/>
  *  * Provides streaming variants of the standard query methods - allows 
  * in-vm users to stream results direct to consumers.
  * 

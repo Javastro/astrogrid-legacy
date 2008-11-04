@@ -17,11 +17,9 @@
 	</contribution>
 	
 
-
-<!--  this is just the hub implementation - it sholdn't be accessed from other components that wish to send plastic messages.
- -->
     <service-point id="hub"  interface="org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal">
-        Plastic hub
+        Plastic hub. It's just the service - it shouldn't be accessed from other components that wish to send 
+        plastic messages - use system.Tupperware for this instead.
         <interceptor service-id="system.throbber" />        
         <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.plastic.PlaskitPlasticHub"  >               

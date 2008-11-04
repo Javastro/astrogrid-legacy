@@ -17,8 +17,11 @@ import org.apache.commons.vfs.provider.AbstractFileProvider;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserInformation;
 
-/** A 'dispatcher' filesystem - implements the 'workspace:' url scheme by 
- * asking the user to authenticate, and then rewriting to the homespace for that user (at the
+/** A 'dispatcher' filesystem - implements the 'workspace:' url scheme.
+ * 
+ *  <p/>
+ *  When the user accesses the workspace: url, the user 
+ * is asked to authenticate, and then rewriting to the homespace for that user (at the
  * moment myspace). The 'workspace:' scheme is more convenient to write than, eg,
  * ivo://uk.ac.le.star/mublefred and also allows user-independent scripts to be written
  * more easily (as workspace: gets resolved to the homespace of the user running
@@ -47,9 +50,9 @@ public class WorkspaceProvider extends AbstractFileProvider implements VfsFilePr
 		return caps;
 	}
 	// at the moment, requests a login, and then rewrites to the users myspace home.
-	public FileObject findFile(FileObject baseFile, String uri,
-			FileSystemOptions fileSystemOptions) throws FileSystemException  {
-          String homespace = getMySpaceHome(comm.getUserInformation());
+	public FileObject findFile(final FileObject baseFile, String uri,
+			final FileSystemOptions fileSystemOptions) throws FileSystemException  {
+          final String homespace = getMySpaceHome(comm.getUserInformation());
 	  try {
 	    if (uri.equals("workspace:") || 
                 uri.equals("workspace://") ||
@@ -57,12 +60,12 @@ public class WorkspaceProvider extends AbstractFileProvider implements VfsFilePr
 	      // uri parser chokes on these forms.
 	      uri = "workspace:/";
 	    }
-	    URI u = new URI(uri);
+	    final URI u = new URI(uri);
             System.out.println("findFile(): " + uri);
-	    String target = homespace + u.getSchemeSpecificPart();
+	    final String target = homespace + u.getSchemeSpecificPart();
 	    //@todo add in alternate machinery for resolving to vospace where available.
 	    return getContext().getFileSystemManager().resolveFile(target);
-	  } catch (URISyntaxException e) {
+	  } catch (final URISyntaxException e) {
 	    throw new FileSystemException(e);
 	  }
 	}
@@ -77,17 +80,17 @@ public class WorkspaceProvider extends AbstractFileProvider implements VfsFilePr
          * @return The IVORN for the homespace in string form.
          * @throws FileSystemException If the community information is insufficient.
          */
-        private String getMySpaceHome(UserInformation user) throws FileSystemException {
+        private String getMySpaceHome(final UserInformation user) throws FileSystemException {
           
           // Extract the IVOA authority of the community in which 
           // the user is registered.
-          String c1 = user.getCommunity();
+          final String c1 = user.getCommunity();
           if (c1 == null || !c1.startsWith("ivo://")) {
             throw new FileSystemException("Community name " + c1 + " is invalid");
           }
-          String c2 = c1.substring(6); // Strip ivo://
-          int slash = c2.indexOf('/');
-          String authority = (slash == -1)? c2 : c2.substring(0,slash);
+          final String c2 = c1.substring(6); // Strip ivo://
+          final int slash = c2.indexOf('/');
+          final String authority = (slash == -1)? c2 : c2.substring(0,slash);
           
           // Form the old-style IVORN for the home space.
           return "ivo://" + authority + '/' + user.getName() + '#';

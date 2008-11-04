@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.18 2008/08/04 16:37:23 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.19 2008/11/04 14:35:49 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,8 +48,8 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
     int queueSize = QUEUE_SIZE_DEFAULT;
     int startThreads = START_THREADS_DEFAULT; // number of threads to start with
     
-    /** subclass of the priority queue which tells you if there's consumers blocked waiting for inpu
-and has an 'express' slot which bypasses all others. */
+    /** A priority queue which tells you if there's consumers blocked waiting for input, 
+and has an 'express' slot which bypasses the queue. */
     public static class ExpressBoundedPriorityQueue extends BoundedPriorityQueue {
 
         public ExpressBoundedPriorityQueue(final int arg0) throws Throwable{            
@@ -90,7 +90,7 @@ and has an 'express' slot which bypasses all others. */
         }
     }
     
-/** copied from edu.concurrentWaiterPreferneceSemaphore.
+/** copied from edu.concurrentWaiterPreferenceSemaphore.
  * wanted to extend to allow peek at number of waiting, but it's a final class.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Dec 12, 20073:20:41 PM
@@ -207,7 +207,7 @@ and has an 'express' slot which bypasses all others. */
       }
     }
       
-    
+    /** A pooled executor that will timout a task if it executes for too long.*/
     static class TimeoutPooledExecutor extends PooledExecutor {
 
         private final ExpressBoundedPriorityQueue queue;
@@ -467,6 +467,9 @@ and has an 'express' slot which bypasses all others. */
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.19  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.18  2008/08/04 16:37:23  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

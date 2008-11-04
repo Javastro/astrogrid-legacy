@@ -26,7 +26,7 @@ import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.Entity;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** custom flip panel for managing the different vizualizations.
+/** Custom {@code FilePanel} for managing the different vizualizations.
  * 
  * also acts as a bridge, to keep the selection set synchrobnized between the 
  * prefuse and glazed lists worlds. 

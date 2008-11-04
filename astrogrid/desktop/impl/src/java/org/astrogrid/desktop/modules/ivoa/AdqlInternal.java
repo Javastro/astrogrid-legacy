@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.ivoa;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ivoa.Adql;
 
-/** extension of public adql interface.
+/** Extension of public adql interface.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 17, 20071:05:27 AM
  */

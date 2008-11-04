@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.ui.folders;
 
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
-/** representation of a resource folder
+/** A folder containing a list of registry resources.
  * @TEST mock out voexp.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 2, 20075:26:08 PM
@@ -22,7 +22,7 @@ public abstract class ResourceFolder extends Folder{
      */
     private String subscription;
 
-	public ResourceFolder(String name, String iconName) {
+	public ResourceFolder(final String name, final String iconName) {
 		super(name,iconName);
 	}
 
@@ -36,12 +36,12 @@ public abstract class ResourceFolder extends Folder{
 	public abstract void editAsNew(VOExplorerImpl voe);
 
     /** edit the subscription attribute for this folder */
-    public void editSubscription(VOExplorerImpl voe) {
+    public void editSubscription(final VOExplorerImpl voe) {
         voe.editExistingSubscription(this);
     }
 
     /** edit the subscriptino attribute for this folder from new */
-    public void editSubscriptionAsNew(VOExplorerImpl voe) {
+    public void editSubscriptionAsNew(final VOExplorerImpl voe) {
         voe.editNewSubscription(this);
     }
 
@@ -49,7 +49,7 @@ public abstract class ResourceFolder extends Folder{
 		return name;
 	}
 
-	public void setFixed(boolean fixed) {
+	public void setFixed(final boolean fixed) {
 		this.fixed = fixed;
 	}
 
@@ -63,7 +63,7 @@ public abstract class ResourceFolder extends Folder{
      *
      * @param  subscription  XML file URL as string
      */
-    public void setSubscription(String subscription) {
+    public void setSubscription(final String subscription) {
         this.subscription = subscription;
     }
 
@@ -85,18 +85,23 @@ public abstract class ResourceFolder extends Folder{
         return result;
     }
 
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final ResourceFolder other = (ResourceFolder) obj;
-        if (this.fixed != other.fixed)
+        if (this.fixed != other.fixed) {
             return false;
-        if (!(""+this.subscription).equals(""+other.subscription))
+        }
+        if (!(""+this.subscription).equals(""+other.subscription)) {
             return false;
+        }
         return true;
     }
 

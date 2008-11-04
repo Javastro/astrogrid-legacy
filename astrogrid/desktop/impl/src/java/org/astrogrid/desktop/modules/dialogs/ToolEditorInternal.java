@@ -1,4 +1,4 @@
-/*$Id: ToolEditorInternal.java,v 1.9 2007/10/12 10:58:24 nw Exp $
+/*$Id: ToolEditorInternal.java,v 1.10 2008/11/04 14:35:52 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,11 +15,12 @@ import java.net.URI;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.dialogs.ToolEditor;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/** extension of the tool editor interface with some more handy methods.
+/** Internal interface to the tool editor dialogue.
+ * <p/>
+ * Provides more convenient api, with object inputs and outputs, and provision of a parent component for the dialogue. 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 24-Aug-2005
  *
  */
@@ -64,6 +65,9 @@ public interface ToolEditorInternal extends ToolEditor {
 
 /* 
 $Log: ToolEditorInternal.java,v $
+Revision 1.10  2008/11/04 14:35:52  nw
+javadoc polishing
+
 Revision 1.9  2007/10/12 10:58:24  nw
 re-worked dialogues to use new ui baseclass and new ui components.
 

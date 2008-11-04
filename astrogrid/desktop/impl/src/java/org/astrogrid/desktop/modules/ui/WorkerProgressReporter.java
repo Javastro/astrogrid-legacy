@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-/** interface a background worker process can use to report progress
+/** Interface used by a background worker to report progress to the UI.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 27, 200712:05:36 PM
  */

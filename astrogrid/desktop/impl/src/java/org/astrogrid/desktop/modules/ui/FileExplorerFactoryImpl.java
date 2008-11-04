@@ -18,7 +18,8 @@ import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
 
-/** Factory for fileexplorers- also handles some messages.
+/** Factory for fileexplorers.
+ * - also handles some messages.
  * 
  * @todo implement the plastic message handling part of this, then uncomment section in ui.xml
  * @author Noel.Winstanley@manchester.ac.uk

@@ -12,7 +12,7 @@ import org.astrogrid.desktop.modules.system.ScheduledTask;
 import org.astrogrid.desktop.modules.util.Selftest;
 import org.votech.VoMon;
 
-/** join interface for two separate interfaces.
+/** Internal interface for {@link VoMon}.
  * @author Noel Winstanley
  * @since Dec 11, 20066:27:58 PM
  */

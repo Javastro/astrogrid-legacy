@@ -32,7 +32,7 @@ import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** base class for something that fetches a resource
+/** base class for a component that queries a service.
  *   extensible for siap, cone, ssap, etc by implementing the abstract {@link #construct} method. This method should
  *   return an instance of {@link AstroscopeTableHandler} that containis the parsed results of 
  *   querying this service.

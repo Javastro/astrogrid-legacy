@@ -1,4 +1,4 @@
-/*$Id: CastorBeanUtilsConvertor.java,v 1.3 2007/01/29 11:11:37 nw Exp $
+/*$Id: CastorBeanUtilsConvertor.java,v 1.4 2008/11/04 14:35:53 nw Exp $
  * Created on 03-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,19 +18,19 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 
 /**
- * New converter in the BeanUtils framework to unmarshall documents
+ * Convertor for the  BeanUtils framework to unmarshall DOM Documents
  * into castor objects.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Feb-2005
  *
  */
 public final class CastorBeanUtilsConvertor implements Converter {
-    public Object convert(Class arg0, Object arg1) {
+    public Object convert(final Class arg0, final Object arg1) {
         
         try {
             return Unmarshaller.unmarshal(arg0,new StringReader(arg1.toString()));
-        } catch (MarshalException e) {
+        } catch (final MarshalException e) {
             throw new RuntimeException("Failed to unmarshall from " + arg1.toString(),e);
-        } catch (ValidationException e) {
+        } catch (final ValidationException e) {
             throw new RuntimeException("Document to unmarshall was not valid " + arg1.toString(),e);
         }
         
@@ -40,6 +40,9 @@ public final class CastorBeanUtilsConvertor implements Converter {
 
 /* 
 $Log: CastorBeanUtilsConvertor.java,v $
+Revision 1.4  2008/11/04 14:35:53  nw
+javadoc polishing
+
 Revision 1.3  2007/01/29 11:11:37  nw
 updated contact details.
 

@@ -70,7 +70,7 @@ import javax.swing.tree.TreePath;
 
 import org.astrogrid.desktop.icons.IconHelper;
 
-/** NWW : lifted, adapted and cutdown from the same named class in java help.
+/** lifted, adapted and cutdown from the same named class in java help.
  * A convenience class that provides simple
  * access to context-senstive help functionality. It creates a default JavaHelp
  * viewer as well as ActionListeners for "Help" keys, on-item help, and
@@ -94,9 +94,9 @@ public class CSH {
      * @param source The Window for focusOwner purposes
      * @param event The event that caused this action.
      */
-    static void displayHelp(HelpServerImpl hb, Object obj, 
-				     AWTEvent event) {
-	String helpID = CSH.getHelpIDString(obj, event);
+    static void displayHelp(final HelpServerImpl hb, final Object obj, 
+				     final AWTEvent event) {
+	final String helpID = CSH.getHelpIDString(obj, event);
 	hb.showHelpForTarget(helpID);
 
     }
@@ -114,7 +114,7 @@ public class CSH {
      * <code>MenuItem</code>.
      * @since 2.0
      */
-    static String getHelpIDString(Object comp, AWTEvent evt) {
+    static String getHelpIDString(final Object comp, final AWTEvent evt) {
         
         if (comp == null) {
             return null;
@@ -134,14 +134,14 @@ public class CSH {
      * @exception IllegalArgumentException comp is neither <code>Component</code> nor
      * <code>MenuItem</code>.
      */
-    private static String _getHelpIDString(Object comp) {
+    private static String _getHelpIDString(final Object comp) {
         String helpID = null;
         if (comp != null) {
             if (comp instanceof JComponent) {
                 helpID = (String) ((JComponent)comp).getClientProperty("HelpID");
             } else if ((comp instanceof Component) || (comp instanceof MenuItem)) {
                 if (comps != null) {
-                    Hashtable clientProps = (Hashtable)comps.get(comp);
+                    final Hashtable clientProps = (Hashtable)comps.get(comp);
                     if (clientProps !=null) {
                         helpID = (String) clientProps.get("HelpID");
                     }
@@ -158,7 +158,7 @@ public class CSH {
      * @exception IllegalArgumentException comp is neither <code>Component</code> nor
      * <code>MenuItem</code>.
      */
-    private static Object getParent(Object comp) {
+    private static Object getParent(final Object comp) {
         
         if (comp == null) {
             return null;
@@ -191,7 +191,7 @@ public class CSH {
      * @exception IllegalArgumentException comp is neither <code>Component</code> nor
      * <code>MenuItem</code>.
      */
-    private static void _setHelpIDString(Object comp, String helpID) {
+    private static void _setHelpIDString(final Object comp, final String helpID) {
         
         if (comp instanceof JComponent) {
             
@@ -243,12 +243,12 @@ public class CSH {
      * If helpID is null this method removes the helpID from the component.
      * @exception IllegalArgumentException comp is neither <code>Component</code> nor
      */
-    public static void setHelpIDString(Component comp, String helpID) {
+    public static void setHelpIDString(final Component comp, final String helpID) {
         _setHelpIDString(comp, helpID);
     }
     
     
-    public static void setHelpIDString(Action act, String helpID) {
+    public static void setHelpIDString(final Action act, final String helpID) {
         _setHelpIDString(act, helpID);
     }
     /**
@@ -256,7 +256,7 @@ public class CSH {
      * If helpID is null, this method removes the helpID from the component.
      * @exception IllegalArgumentException comp is neither <code>Component</code> nor
      */
-    public static void setHelpIDString(MenuItem comp, String helpID) {
+    public static void setHelpIDString(final MenuItem comp, final String helpID) {
         _setHelpIDString(comp, helpID);
     }
     
@@ -296,7 +296,7 @@ public class CSH {
                 
                 try {
                     eq = Toolkit.getDefaultToolkit().getSystemEventQueue();
-                } catch (Exception ee) {
+                } catch (final Exception ee) {
                     debug(ee);
                 }
                 
@@ -314,8 +314,8 @@ public class CSH {
                     // modified to trap context-senstive events and act
                     // appropriately
                     eventNumber++;
-                    AWTEvent event = eq.getNextEvent();
-                    Object src = event.getSource();
+                    final AWTEvent event = eq.getNextEvent();
+                    final Object src = event.getSource();
                     // can't call eq.dispatchEvent
                     // so I pasted it's body here
                     
@@ -333,7 +333,7 @@ public class CSH {
                     if (src instanceof Component) {
                         // Trap the context-sensitive events here
                         if (event instanceof KeyEvent) {
-                            KeyEvent e = (KeyEvent) event;
+                            final KeyEvent e = (KeyEvent) event;
                             // if this is the cancel key then exit
                             // otherwise pass all other keys up
                             if (e.getKeyCode() == KeyEvent.VK_CANCEL ||
@@ -345,8 +345,8 @@ public class CSH {
                                 // dispatchEvent(event);
                             }
                         } else if (event instanceof MouseEvent) {
-                            MouseEvent e = (MouseEvent) event;
-                            int eID = e.getID();
+                            final MouseEvent e = (MouseEvent) event;
+                            final int eID = e.getID();
                             if ((eID == MouseEvent.MOUSE_CLICKED ||
                             eID == MouseEvent.MOUSE_PRESSED ||
                             eID == MouseEvent.MOUSE_RELEASED) &&
@@ -374,15 +374,15 @@ public class CSH {
                     }
                 }
             }
-        } catch(InterruptedException e) {
+        } catch(final InterruptedException e) {
             debug(e);
         }
         debug("Fall Through code");
         return null;
     }
     
-    private static void dispatchEvent(AWTEvent event) {
-        Object src = event.getSource();
+    private static void dispatchEvent(final AWTEvent event) {
+        final Object src = event.getSource();
         if (event instanceof ActiveEvent) {
             // This could become the sole method of dispatching in time.
             ((ActiveEvent)event).dispatch();
@@ -399,15 +399,15 @@ public class CSH {
      * Gets the higest visible component in a ancestor hierarchy at
      * specific x,y coordinates
      */
-    static Object getDeepestObjectAt(Object parent, int x, int y) {
+    static Object getDeepestObjectAt(final Object parent, final int x, final int y) {
         if (parent instanceof Container) {
-            Container cont = (Container)parent;
+            final Container cont = (Container)parent;
             // use a copy of 1.3 Container.findComponentAt
             Component child = findComponentAt(cont, cont.getWidth(), cont.getHeight(), x, y);
             if (child != null && child != cont) {
                 if (child instanceof JRootPane) {
-                    JLayeredPane lp = ((JRootPane)child).getLayeredPane();
-                    Rectangle b = lp.getBounds();
+                    final JLayeredPane lp = ((JRootPane)child).getLayeredPane();
+                    final Rectangle b = lp.getBounds();
                     child = (Component)getDeepestObjectAt(lp, x - b.x, y - b.y);
                 }
                 if (child != null) {
@@ -421,15 +421,15 @@ public class CSH {
         return parent;
     }
     
-    private static Component findComponentAt(Container cont, int width, int height, int x, int y) {
+    private static Component findComponentAt(final Container cont, final int width, final int height, final int x, final int y) {
         synchronized (cont.getTreeLock()) {
             
             if (!((x >= 0) && (x < width) && (y >= 0) && (y < height) && cont.isVisible() && cont.isEnabled())) {
                 return null;
             }
             
-            Component[] component = cont.getComponents();
-            int ncomponents = cont.getComponentCount();
+            final Component[] component = cont.getComponents();
+            final int ncomponents = cont.getComponentCount();
             
             // Two passes: see comment in sun.awt.SunGraphicsCallback
             for (int i = 0 ; i < ncomponents ; i++) {
@@ -437,7 +437,7 @@ public class CSH {
                 Rectangle rect = null;
                 
                 if (comp instanceof CellRendererPane) {
-                    Component c = getComponentAt((CellRendererPane)comp, x, y);
+                    final Component c = getComponentAt((CellRendererPane)comp, x, y);
                     if (c != null) {
                         rect = getRectangleAt((CellRendererPane)comp, x, y);
                         comp = c;
@@ -464,7 +464,7 @@ public class CSH {
                 Rectangle rect = null;
                 
                 if (comp instanceof CellRendererPane) {
-                    Component c = getComponentAt((CellRendererPane)comp, x, y);
+                    final Component c = getComponentAt((CellRendererPane)comp, x, y);
                     if (c != null) {
                         rect = getRectangleAt((CellRendererPane)comp, x, y);
                         comp = c;
@@ -493,9 +493,9 @@ public class CSH {
      * Returns the Rectangle enclosing component part that the component
      * provided by renderer will be draw into.
      */
-    private static Rectangle getRectangleAt(CellRendererPane cont, int x, int y) {
+    private static Rectangle getRectangleAt(final CellRendererPane cont, final int x, final int y) {
         Rectangle rect = null;
-        Container c = cont.getParent();
+        final Container c = cont.getParent();
         // I can process only this four components at present time
         if (c instanceof JTable) {
             rect = getRectangleAt((JTable)c, x, y);
@@ -512,9 +512,9 @@ public class CSH {
     /**
      * Returns the Component provided by Renderer at x, y coordinates.
      */
-    private static Component getComponentAt(CellRendererPane cont, int x, int y) {
+    private static Component getComponentAt(final CellRendererPane cont, final int x, final int y) {
         Component comp = null;
-        Container c = cont.getParent();
+        final Container c = cont.getParent();
         // I can process only this four components at present time
         if (c instanceof JTable) {
             comp = getComponentAt((JTable)c, x, y);
@@ -533,11 +533,11 @@ public class CSH {
             if (parents == null) {
                 // WeakHashMap of WeakReferences
                 parents = new WeakHashMap(4) {
-                    public Object put(Object key, Object value) {
+                    public Object put(final Object key, final Object value) {
                         return super.put(key, new WeakReference(value));
                     }
-                    public Object get(Object key) {
-                        WeakReference wr = (WeakReference)super.get(key);
+                    public Object get(final Object key) {
+                        final WeakReference wr = (WeakReference)super.get(key);
                         if (wr != null) {
                             return wr.get();
                         } else {
@@ -551,26 +551,26 @@ public class CSH {
         return comp;
     }
     
-    private static Rectangle getRectangleAt(JTableHeader header, int x, int y) {
+    private static Rectangle getRectangleAt(final JTableHeader header, final int x, final int y) {
         Rectangle rect = null;
         try {
-            int column = header.columnAtPoint(new Point(x, y));
+            final int column = header.columnAtPoint(new Point(x, y));
             rect = header.getHeaderRect(column);
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
         return rect;
     }
     
-    private static Component getComponentAt(JTableHeader header, int x, int y) {
+    private static Component getComponentAt(final JTableHeader header, final int x, final int y) {
         try {
             
             if (!(header.contains(x, y) && header.isVisible() && header.isEnabled())) {
                 return null;
             }
             
-            TableColumnModel columnModel = header.getColumnModel();
-            int columnIndex = columnModel.getColumnIndexAtX(x);
-            TableColumn column = columnModel.getColumn(columnIndex);
+            final TableColumnModel columnModel = header.getColumnModel();
+            final int columnIndex = columnModel.getColumnIndexAtX(x);
+            final TableColumn column = columnModel.getColumn(columnIndex);
             
             TableCellRenderer renderer = column.getHeaderRenderer();
             if (renderer == null) {
@@ -580,35 +580,35 @@ public class CSH {
             return renderer.getTableCellRendererComponent(
             header.getTable(), column.getHeaderValue(), false, false, -1, columnIndex);
             
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // NullPointerException in case of (header == null) or (columnModel == null)
             // ArrayIndexOutOfBoundsException from getColumn(columnIndex)
         }
         return null;
     }
     
-    private static Rectangle getRectangleAt(JTable table, int x, int y) {
+    private static Rectangle getRectangleAt(final JTable table, final int x, final int y) {
         Rectangle rect = null;
         try {
-            Point point = new Point(x, y);
-            int row = table.rowAtPoint(point);
-            int column = table.columnAtPoint(point);
+            final Point point = new Point(x, y);
+            final int row = table.rowAtPoint(point);
+            final int column = table.columnAtPoint(point);
             rect = table.getCellRect(row, column, true);
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
         return rect;
     }
     
-    private static Component getComponentAt(JTable table, int x, int y) {
+    private static Component getComponentAt(final JTable table, final int x, final int y) {
         try {
             
             if (!(table.contains(x, y) && table.isVisible() && table.isEnabled())) {
                 return null;
             }
             
-            Point point = new Point(x, y);
-            int row = table.rowAtPoint(point);
-            int column = table.columnAtPoint(point);
+            final Point point = new Point(x, y);
+            final int row = table.rowAtPoint(point);
+            final int column = table.columnAtPoint(point);
             
             if (table.isEditing() && table.getEditingRow() == row && table.getEditingColumn() == column) {
                 // Pointed component is provided by TableCellEditor. Editor
@@ -618,69 +618,69 @@ public class CSH {
                 return null;
             }
             
-            TableCellRenderer renderer = table.getCellRenderer(row, column);
+            final TableCellRenderer renderer = table.getCellRenderer(row, column);
             return table.prepareRenderer(renderer, row, column);
             
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
         return null;
     }
     
-    private static Rectangle getRectangleAt(JTree tree, int x, int y) {
+    private static Rectangle getRectangleAt(final JTree tree, final int x, final int y) {
         Rectangle rect = null;
         try {
-            TreePath path = tree.getPathForLocation(x, y);
+            final TreePath path = tree.getPathForLocation(x, y);
             rect = tree.getPathBounds(path);
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
         return rect;
     }
     
-    private static Component getComponentAt(JTree tree, int x, int y) {
+    private static Component getComponentAt(final JTree tree, final int x, final int y) {
         try {
             
-            TreePath path = tree.getPathForLocation(x, y);
+            final TreePath path = tree.getPathForLocation(x, y);
             
             if (tree.isEditing() && tree.getSelectionPath() == path) {
                 return null;
             }
             
-            int row = tree.getRowForPath(path);
-            Object value = path.getLastPathComponent();
-            boolean isSelected = tree.isRowSelected(row);
-            boolean isExpanded = tree.isExpanded(path);
-            boolean isLeaf = tree.getModel().isLeaf(value);
-            boolean hasFocus= tree.hasFocus() && tree.getLeadSelectionRow() == row;
+            final int row = tree.getRowForPath(path);
+            final Object value = path.getLastPathComponent();
+            final boolean isSelected = tree.isRowSelected(row);
+            final boolean isExpanded = tree.isExpanded(path);
+            final boolean isLeaf = tree.getModel().isLeaf(value);
+            final boolean hasFocus= tree.hasFocus() && tree.getLeadSelectionRow() == row;
             
             return tree.getCellRenderer().getTreeCellRendererComponent(
             tree, value, isSelected, isExpanded, isLeaf, row, hasFocus);
             
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
     
-    private static Rectangle getRectangleAt(JList list, int x, int y) {
+    private static Rectangle getRectangleAt(final JList list, final int x, final int y) {
         Rectangle rect = null;
         try {
-            int index = list.locationToIndex(new Point(x, y));
+            final int index = list.locationToIndex(new Point(x, y));
             rect = list.getCellBounds(index, index);
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
         return rect;
     }
     
-    private static Component getComponentAt(JList list, int x, int y) {
+    private static Component getComponentAt(final JList list, final int x, final int y) {
         try {
             
-            int index = list.locationToIndex(new Point(x, y));
-            Object value = list.getModel().getElementAt(index);
-            boolean isSelected = list.isSelectedIndex(index);
-            boolean hasFocus = list.hasFocus() && list.getLeadSelectionIndex() == index;
+            final int index = list.locationToIndex(new Point(x, y));
+            final Object value = list.getModel().getElementAt(index);
+            final boolean isSelected = list.isSelectedIndex(index);
+            final boolean hasFocus = list.hasFocus() && list.getLeadSelectionIndex() == index;
             
             return list.getCellRenderer().getListCellRendererComponent(
             list, value, index, isSelected, hasFocus);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
@@ -700,16 +700,16 @@ public class CSH {
         
         private HelpServerImpl hb = null;
          
-        public DisplayHelpFromFocus(HelpServerImpl hb) {
+        public DisplayHelpFromFocus(final HelpServerImpl hb) {
             if (hb == null) {
                 throw new NullPointerException("hb");
             }
             this.hb = hb;
         }
 
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             
-            Component src = (Component) e.getSource();            
+            final Component src = (Component) e.getSource();            
             Component comp = CSH.findFocusOwner(src);
             
             debug("focusOwner:"+comp);
@@ -743,7 +743,7 @@ public class CSH {
      * Returns the deepest focused Component or the deepest JPopupMenu
      * or the deepest armed MenuItem from JPopupMenu hierarchy.
      */
-    private static Component findFocusOwner(JPopupMenu popup) {
+    private static Component findFocusOwner(final JPopupMenu popup) {
         if (popup == null) {
             return null;
         }
@@ -753,7 +753,7 @@ public class CSH {
             }
             Component comp = null;
             for (int i = 0, n = popup.getComponentCount(); i < n; i++) {
-                Component c = popup.getComponent(i);
+                final Component c = popup.getComponent(i);
                 if (c.hasFocus()) {
                     comp = c;
                     break;
@@ -779,7 +779,7 @@ public class CSH {
      * Returns the child component which has focus with respects
      * of PopupMenu visibility.
      */
-    static Component findFocusOwner(Component c) {
+    static Component findFocusOwner(final Component c) {
         synchronized (c.getTreeLock()) {
             
             if (c instanceof JPopupMenu) {
@@ -792,7 +792,7 @@ public class CSH {
             
             if (c instanceof Container) {
                 for (int i = 0, n = ((Container)c).getComponentCount(); i < n; i++) {
-                    Component focusOwner = findFocusOwner(((Container)c).getComponent(i));
+                    final Component focusOwner = findFocusOwner(((Container)c).getComponent(i));
                     if (focusOwner != null) {
                         return focusOwner;
                     }
@@ -814,7 +814,7 @@ public class CSH {
         
         private HelpServerImpl hb = null;
         
-        public DisplayHelpAfterTracking(HelpServerImpl hb) {
+        public DisplayHelpAfterTracking(final HelpServerImpl hb) {
             if (hb == null) {
                 throw new NullPointerException("hb");
             }
@@ -822,8 +822,9 @@ public class CSH {
         }
         
 	
-        public void actionPerformed(ActionEvent e) {
-            Cursor onItemCursor, oldCursor;
+        public void actionPerformed(final ActionEvent e) {
+            Cursor onItemCursor;
+            final Cursor oldCursor;
             
 //            // Get the onItemCursor
 //            onItemCursor = (Cursor) UIManager.get("HelpOnItemCursor");
@@ -831,11 +832,11 @@ public class CSH {
 //            	System.out.println("no help on item cursor");
 //                return;
 //            }
-            Toolkit tk = Toolkit.getDefaultToolkit();
-            Dimension sz = tk.getBestCursorSize(24,24);
+            final Toolkit tk = Toolkit.getDefaultToolkit();
+            final Dimension sz = tk.getBestCursorSize(24,24);
             if (sz.width != 0) {
-            	Point point = new Point(5,2);
-            	Image img = IconHelper.loadIcon("OnItemCursor.gif").getImage();            	
+            	final Point point = new Point(5,2);
+            	final Image img = IconHelper.loadIcon("OnItemCursor.gif").getImage();            	
             	onItemCursor = tk.createCustomCursor(img, point, "help");
             } else { // fallback
             	onItemCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
@@ -846,17 +847,17 @@ public class CSH {
             cursors = null;
             
                 cursors = new Hashtable();
-                Enumeration enm = topComponents.elements();
+                final Enumeration enm = topComponents.elements();
                 while (enm.hasMoreElements()) {
                     setAndStoreCursors((Container)enm.nextElement(), onItemCursor);
                 }
             
-            MouseEvent event = CSH.getMouseEvent();
+            final MouseEvent event = CSH.getMouseEvent();
             debug("CSH.getMouseEvent() >>> "+event);
             
             if (event != null) {
                 
-                Object obj = CSH.getDeepestObjectAt(event.getSource(), event.getX(), event.getY());
+                final Object obj = CSH.getDeepestObjectAt(event.getSource(), event.getX(), event.getY());
                 debug("CSH.getDeepestObjectAt() >>> "+obj);
                 
                 if (obj != null) {
@@ -866,7 +867,7 @@ public class CSH {
             }
             
             // restore the old cursors
-                Enumeration containers = topComponents.elements();
+                final Enumeration containers = topComponents.elements();
                 while (containers.hasMoreElements()) {
                     resetAndRestoreCursors((Container)containers.nextElement());
                 }
@@ -879,7 +880,7 @@ public class CSH {
         /*
          * Get all top level containers to change it's cursors
          */
-        private static Vector getTopContainers(Object source) {
+        private static Vector getTopContainers(final Object source) {
             // This method is used to obtain all top level components of application
             // for which the changing of cursor to question mark is wanted.
             // Method Frame.getFrames() is used to get list of Frames and
@@ -891,22 +892,22 @@ public class CSH {
             // in a Applet, cursor for applets is not changed to question mark. Only for
             // Frames, Windows and Dialogs is cursor changed properly.
             
-            Vector containers = new Vector();
+            final Vector containers = new Vector();
             Component topComponent = null;
             topComponent = getRoot(source);
             if (topComponent instanceof Applet) {
                 try {
-                    Enumeration applets = ((Applet)topComponent).getAppletContext().getApplets();
+                    final Enumeration applets = ((Applet)topComponent).getAppletContext().getApplets();
                     while (applets.hasMoreElements()) {
                         containers.add(applets.nextElement());
                     }
-                } catch (NullPointerException npe) {
+                } catch (final NullPointerException npe) {
                     containers.add(topComponent);
                 }
             }
-            Frame frames[] = Frame.getFrames();
+            final Frame frames[] = Frame.getFrames();
             for (int i = 0; i < frames.length; i++) {
-                Window[] windows = frames[i].getOwnedWindows();
+                final Window[] windows = frames[i].getOwnedWindows();
                 for (int j = 0; j < windows.length; j++) {
                     containers.add(windows[j]);
                 }
@@ -947,18 +948,18 @@ public class CSH {
          * Set the cursor for a component and its children.
          * Store the old cursors for future resetting
          */
-        private void setAndStoreCursors(Component comp, Cursor cursor) {
+        private void setAndStoreCursors(final Component comp, final Cursor cursor) {
             if (comp == null) {
                 return;
             }
-            Cursor compCursor = comp.getCursor();
+            final Cursor compCursor = comp.getCursor();
             if (compCursor != cursor) {
                 cursors.put(comp, compCursor);
                 debug("set cursor on " + comp);
                 comp.setCursor(cursor);
             }
             if (comp instanceof Container) {
-                Component component[] = ((Container)comp).getComponents();
+                final Component component[] = ((Container)comp).getComponents();
                 for (int i = 0 ; i < component.length; i++) {
                     setAndStoreCursors(component[i], cursor);
                 }
@@ -968,17 +969,17 @@ public class CSH {
         /*
          * Actually restore the cursor for a component and its children
          */
-        private void resetAndRestoreCursors(Component comp) {
+        private void resetAndRestoreCursors(final Component comp) {
             if (comp == null) {
                 return;
             }
-            Cursor oldCursor = (Cursor) cursors.get(comp);
+            final Cursor oldCursor = (Cursor) cursors.get(comp);
             if (oldCursor != null) {
                 debug("restored cursor " + oldCursor + " on " + comp);
                 comp.setCursor(oldCursor);
             }
             if (comp instanceof Container) {
-                Component component[] = ((Container)comp).getComponents();
+                final Component component[] = ((Container)comp).getComponents();
                 for (int i = 0 ; i < component.length; i++) {
                     resetAndRestoreCursors(component[i]);
                 }
@@ -994,9 +995,9 @@ public class CSH {
      */
     static class DisplayHelpFromSource implements ActionListener {
         
-        private HelpServerImpl hb;
+        private final HelpServerImpl hb;
         
-        public DisplayHelpFromSource(HelpServerImpl hb) {
+        public DisplayHelpFromSource(final HelpServerImpl hb) {
             if (hb == null) {
                 throw new NullPointerException("hb");
             }
@@ -1004,8 +1005,8 @@ public class CSH {
         }
      
         
-        public void actionPerformed(ActionEvent e) {
-	    Object source = e.getSource();
+        public void actionPerformed(final ActionEvent e) {
+	    final Object source = e.getSource();
 	    displayHelp(hb,
 			source,  e);
             
@@ -1017,7 +1018,7 @@ public class CSH {
      */
     
     private static final boolean debug = false;
-    static void debug(Object msg) {
+    static void debug(final Object msg) {
         if (debug) {
             System.err.println("CSH: "+msg);
         }

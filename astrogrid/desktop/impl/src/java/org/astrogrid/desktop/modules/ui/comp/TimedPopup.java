@@ -31,13 +31,13 @@ import javax.swing.UIManager;
 import org.apache.commons.lang.WordUtils;
 
 /**
- * Convenience class that displays a popup window for a fixed period of time, after which it
+ * Displays a popup window for a fixed period of time, after which the popup
  * is hidden.
  * popups over the same component stack vertically.
  * 
  * @todo detect when popups are going off the screen.
  *  - or add ability to control stacking position.
- *  
+ * @todo delay hiding if mouse is over popup.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Sep 21, 200710:42:20 AM
  */

@@ -1,4 +1,4 @@
-/*$Id: ConfigurationInternal.java,v 1.7 2007/09/21 16:35:13 nw Exp $
+/*$Id: ConfigurationInternal.java,v 1.8 2008/11/04 14:35:49 nw Exp $
  * Created on 23-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.pref.PreferenceManagerImpl;
 
-/** An OO self-describing interface to the configuration system.
+/** Internal interface to configuration, that exposes properties as Preference objects.
  * The methods in this class are Preferred, for internal use, to the Configuration interface.
  * The other interfaces extended are hivemind internal things - their methods should
  * not be called directly.
@@ -37,6 +37,9 @@ public interface ConfigurationInternal extends Configuration, ObjectProvider, Sy
 
 /* 
 $Log: ConfigurationInternal.java,v $
+Revision 1.8  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.7  2007/09/21 16:35:13  nw
 improved error reporting,
 various code-review tweaks.

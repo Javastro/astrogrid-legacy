@@ -5,13 +5,10 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.text.Format;
 
-import net.sourceforge.hiveutils.service.ObjectBuilder;
-
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
-import org.astrogrid.desktop.modules.auth.SwingLoginDialogue;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
@@ -41,7 +38,9 @@ import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 
-/** wraps the untyped hivemind ObjectBuilder with 
+/** 
+ * Wrapper that adds typesafetly to the hivemind ObjectBuilder. (At the price of code brittleness).
+ * Wraps the untyped hivemind ObjectBuilder with 
  * methods that make explicit the parameters required and the return type
  * for each kind of object.
  * 

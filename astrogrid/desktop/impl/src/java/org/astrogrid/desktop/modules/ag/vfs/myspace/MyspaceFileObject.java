@@ -24,7 +24,7 @@ import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeIterator;
 import org.astrogrid.store.Ivorn;
 
-/** fileobject for myspace.
+/** VFS FileObject for Myspace.
  * implemented roughly using the  FileManagerClient. Would be more efficient
  * using a lower-level api, but will do for now.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -39,7 +39,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
     private final MyspaceFileSystem msFilesystem;
 
     /** special-case optimization where the file object to copy from is http - can pass an call to myspace to do the copy directly, rather than the client reading the data. */
-    public void copyFrom(FileObject file, FileSelector selector)
+    public void copyFrom(FileObject file, final FileSelector selector)
             throws FileSystemException {
         file = AstroscopeFileObject.findInnermostFileObject(file);
         if (file.getURL().getProtocol().equals("http")
@@ -52,7 +52,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
                     node = msFilesystem.client().createFile(getMsName().getIvorn());
                 }
                 node.copyURLToContent(file.getURL());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 logger.warn("Failed to use optimized copy to myspace, falling back to direct copy", e);
                super.copyFrom(file,selector);
             }
@@ -60,7 +60,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
             super.copyFrom(file, selector);
         }
     }
-    public FileObject resolveFile(String path) throws FileSystemException {
+    public FileObject resolveFile(final String path) throws FileSystemException {
         return super.resolveFile(path);
     }
     
@@ -69,12 +69,12 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	 * @param name
 	 * @param fs
 	 */
-	protected MyspaceFileObject(MyspaceFileName name, MyspaceFileSystem fs) {
+	protected MyspaceFileObject(final MyspaceFileName name, final MyspaceFileSystem fs) {
 		super(name, fs);
         this.msFilesystem = fs;
 	}
 
-	protected MyspaceFileObject(FileManagerNode node,MyspaceFileName name,MyspaceFileSystem fs) {
+	protected MyspaceFileObject(final FileManagerNode node,final MyspaceFileName name,final MyspaceFileSystem fs) {
 		this(name,fs);
 		this.node = node;
 	}
@@ -86,7 +86,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 		logger.debug("doAttach");
 		if (node == null) { //else  already attached. ignore
 			logger.debug("Attaching to " + getName());
-			Ivorn ivorn = getMsName().getIvorn();
+			final Ivorn ivorn = getMsName().getIvorn();
 			final FileManagerClient client = msFilesystem.client();
             if (client.exists(ivorn) != null) {
 				node = client.node(ivorn);
@@ -115,12 +115,12 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	}
 
 	protected FileType doGetType() throws Exception {
-		FileType t =  mkType(node);
+		final FileType t =  mkType(node);
 		logger.debug("getType " + getName() + " : " + t);
 		return t;
 	}
 
-	private FileType mkType(FileManagerNode n) {
+	private FileType mkType(final FileManagerNode n) {
 		if (n == null) {// attach() will have created a node, if this file exists already.
 			return FileType.IMAGINARY;
 		} else if (n.isFile()) {
@@ -132,10 +132,10 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 
 	protected String[] doListChildren() throws Exception {
 		logger.debug("listChildren " + getName());
-		String[] result = new String[node.getChildCount()];
-		NodeIterator i = node.iterator();
+		final String[] result = new String[node.getChildCount()];
+		final NodeIterator i = node.iterator();
 		for (int ix = 0; ix < result.length &&  i.hasNext(); ix++) {
-			FileManagerNode child = i.nextNode();
+			final FileManagerNode child = i.nextNode();
 			result[ix] = child.getName();
 		}
 		if (logger.isDebugEnabled()) {
@@ -149,14 +149,14 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	protected FileObject[] doListChildrenResolved() throws Exception {
 		logger.debug("listChildrenResolved " + getName());
 		doAttach();
-		FileObject[] result = new FileObject[node.getChildCount()];
-		NodeIterator i = node.iterator();
+		final FileObject[] result = new FileObject[node.getChildCount()];
+		final NodeIterator i = node.iterator();
 		final MyspaceFileName msName = getMsName();
         final String parentPath = msName.getPath();
 		final String prefix = parentPath  +( parentPath.endsWith("/") ? "" : "/");
 		for (int ix = 0; ix < result.length &&  i.hasNext(); ix++) {
-			FileManagerNode child = i.nextNode();
-			MyspaceFileName fn = (MyspaceFileName)msName.createName(prefix + child.getName(),mkType(child));
+			final FileManagerNode child = i.nextNode();
+			final MyspaceFileName fn = (MyspaceFileName)msName.createName(prefix + child.getName(),mkType(child));
 			result[ix] = msFilesystem.resolveFile(fn,child);
 		}
 		return result;		
@@ -184,7 +184,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 		return node.getMetadata().getModifyDate().getTimeInMillis();
 	}
 
-	protected OutputStream doGetOutputStream(boolean bAppend) throws Exception {
+	protected OutputStream doGetOutputStream(final boolean bAppend) throws Exception {
 	    logger.debug("getOutputStream " + getName());
 	    if (node == null) { // file doesn't yet exist - else we'd be attached by now.
 	        //@todo should I be doing this file creation elsewhere - doAttach for examp[le?
@@ -197,9 +197,9 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 		}
 	}
 
-	protected void doRename(FileObject newfile) throws Exception {
+	protected void doRename(final FileObject newfile) throws Exception {
 		logger.debug("rename " + getName() + " to " + newfile);
-		MyspaceFileObject p = (MyspaceFileObject)newfile.getParent();
+		final MyspaceFileObject p = (MyspaceFileObject)newfile.getParent();
 		node.move(newfile.getName().getBaseName(),p.node,null);
 	}
 
@@ -211,7 +211,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	}
 	
 
-	protected void onChildrenChanged(FileName child, FileType newType) throws Exception {
+	protected void onChildrenChanged(final FileName child, final FileType newType) throws Exception {
 		logger.debug("childChanged " + getName());
 		node.refresh(); // ? fair guess.
 	}
@@ -222,12 +222,12 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	    if (!isAttached()) {
 	        doAttach();
 	    }
-            URL content =  node.contentURL();
+            final URL content =  node.contentURL();
             if (content == null) {
                 throw new FileSystemException("node has no content");
             }
             return content;
-        } catch (Exception x) {
+        } catch (final Exception x) {
             throw new FileSystemException(x);
         } 
 	}

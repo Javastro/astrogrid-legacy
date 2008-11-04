@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.19 2008/08/21 11:37:21 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.20 2008/11/04 14:35:52 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 
-/** wraps a dialogue around a registry chooser pane.
+/** Dialogue around a registry chooser pane.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
  *
  */
@@ -159,6 +159,9 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.20  2008/11/04 14:35:52  nw
+javadoc polishing
+
 Revision 1.19  2008/08/21 11:37:21  nw
 Complete - task 4: RegistryGoogle dialogue
 

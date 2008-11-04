@@ -23,7 +23,7 @@ import uk.ac.starlink.table.StarTable;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** task that retrives, parses and adds to the display results of one siap service
+/** Retriever for a single SIAP service.
  * @TEST
  *  Implements query and parsing of result in line with v1.00 of the draft spec. (24/5/2004)
  * */

@@ -138,7 +138,7 @@ public class ArXmlRpcServer extends XmlRpcServletServer implements XmlRpcHandler
              return handler;
          }
     }
-    /** provides the system information */
+    /** provides the XML-RPC introspection functions - {@code system.listMethod()}, {@code system.methodHelp()}, etc */
     public static class SystemXmlRpcHandler implements XmlRpcHandler {
         public SystemXmlRpcHandler(final ApiHelp apiHelp) {
             super();
@@ -167,7 +167,7 @@ public class ArXmlRpcServer extends XmlRpcServletServer implements XmlRpcHandler
         }
     }
     
-    /** introspection calls from python 
+    /**  Handles introspection calls from python. 
       basic bit of help. - sadly can't supply __doc__ , which would be the most sensible way of 
       sending documntation back to python, as the python xmlrpc client blocks this call.
      * */

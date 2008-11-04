@@ -16,7 +16,7 @@ import org.apache.commons.vfs.FileType;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
-/** Maps FileObjects to suitable icons, using a variety of rules.
+/**Implementation of a {@code IconFinder}
  * @future configure the filemap using hivemind later??
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 29, 200712:46:02 PM
@@ -53,25 +53,25 @@ public final class IconFinderImpl implements IconFinder {
 		typeMap.put("video/mpeg","filevideo16.png");
 		
 	}
-	public ImageIcon find(FileObject fo) {
+	public ImageIcon find(final FileObject fo) {
 		try {
 		final FileType type = fo.getType();
 		if ( type.hasChildren()) {
 			return IconHelper.loadIcon(FOLDER);
 		}
 		if ( type.hasContent()) {
-			FileContent content = fo.getContent();
+			final FileContent content = fo.getContent();
 			if (content.getSize() ==0) {
 				return IconHelper.loadIcon(EMPTY_FILE);
 			}
-			FileContentInfo nfo = content.getContentInfo();
-			String cType = nfo.getContentType();
-			String suggested = (String)typeMap.get(cType);
+			final FileContentInfo nfo = content.getContentInfo();
+			final String cType = nfo.getContentType();
+			final String suggested = (String)typeMap.get(cType);
 			return IconHelper.loadIcon(suggested != null ? suggested : FILE);
 		}
 		// neither a file, or a folder.
 		return IconHelper.loadIcon(UNKNOWN);
-		} catch (FileSystemException e) {
+		} catch (final FileSystemException e) {
 			return IconHelper.loadIcon(UNKNOWN);
 		}
 	}

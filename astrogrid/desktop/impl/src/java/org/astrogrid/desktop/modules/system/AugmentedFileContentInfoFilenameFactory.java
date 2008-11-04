@@ -16,7 +16,7 @@ import org.apache.commons.vfs.impl.DefaultFileContentInfo;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
-/** an additional fileInfo factory that uses standard technique (config file in jre)
+/** a VFS fileInfo factory that uses standard technique (config file in jre)
  * and an additional map of vo-specific types.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 29, 20073:36:21 PM
@@ -38,25 +38,25 @@ public class AugmentedFileContentInfoFilenameFactory extends HashMap implements 
 			put("pl","text/x-perl");
 			
 		}
-	public FileContentInfo create(FileContent fileContent) {
+	public FileContentInfo create(final FileContent fileContent) {
 	    // see if a wrapped instance of astroscopeFileObject already has this information..
 	    // as AstroscopeFileObject has richer information provided compared to what can be deduced by filename alone, we should defer to this if present.
-	    FileObject fo = fileContent.getFile();
-	    AstroscopeFileObject afo = AstroscopeFileObject.findAstroscopeFileObject(fo);
+	    final FileObject fo = fileContent.getFile();
+	    final AstroscopeFileObject afo = AstroscopeFileObject.findAstroscopeFileObject(fo);
 	    //see if we've ended up with an afo
 	    if (afo != null) {  // ok. so we're wrapping something..
 	        try {
-	            FileContentInfo contentInfo = afo.getContent().getContentInfo();
+	            final FileContentInfo contentInfo = afo.getContent().getContentInfo();
 	            if (contentInfo != null){
 	                return contentInfo;
 	            }                        
-	        } catch (FileSystemException x) {
+	        } catch (final FileSystemException x) {
 	            // oh well, proceed as normal.
 	        }	       	       
 	    }
 	    // deduce the type ourselves then..
 	           String contentType = null;
-	           String name = fileContent.getFile().getName().getBaseName();
+	           final String name = fileContent.getFile().getName().getBaseName();
 	           if (name != null){
 	        	   final String extension = fileContent.getFile().getName().getExtension();
 	        	   if (extension != null) {

@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.17 2008/05/28 12:27:49 nw Exp $
+/*$Id: StapProtocol.java,v 1.18 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 
-/** @TEST
+/** Protocol for STAP.
  * @author Kevin Benson
  * @author Mark Taylor
  *
@@ -32,7 +32,7 @@ public class StapProtocol extends TemporalDalProtocol {
 
     /** Construct a new StapProtocols
      */
-    public StapProtocol(     RegistryInternal reg,Stap stap) {
+    public StapProtocol(     final RegistryInternal reg,final Stap stap) {
         super("Timed Data",IconHelper.loadIcon("latest16.png").getImage(),reg);
         this.stap = stap;
     }
@@ -44,16 +44,16 @@ public class StapProtocol extends TemporalDalProtocol {
     }
 
 
-	public AbstractRetriever[] createRetrievers(Service service, Date start, Date end, double ra, double dec, double raSize, double decSize) {
-        Capability[] capabilities = service.getCapabilities();
-        List cList = new ArrayList();
+	public AbstractRetriever[] createRetrievers(final Service service, final Date start, final Date end, final double ra, final double dec, final double raSize, final double decSize) {
+        final Capability[] capabilities = service.getCapabilities();
+        final List cList = new ArrayList();
         for (int i = 0; i < capabilities.length; i++) {
             if (capabilities[i] instanceof StapCapability && findParamUrl(capabilities[i]) != null) {
                 cList.add(capabilities[i]);
             }
         }
-        StapCapability[] staps = (StapCapability[]) cList.toArray(new StapCapability[0]);
-        int nstap = staps.length;
+        final StapCapability[] staps = (StapCapability[]) cList.toArray(new StapCapability[0]);
+        final int nstap = staps.length;
         final AbstractRetriever[] retrievers;
         if (nstap == 0) {
             retrievers = new AbstractRetriever[0];
@@ -64,7 +64,7 @@ public class StapProtocol extends TemporalDalProtocol {
             };
         }
         else {
-            NodeSocket socket = createIndirectNodeSocket(service);
+            final NodeSocket socket = createIndirectNodeSocket(service);
             retrievers = new AbstractRetriever[nstap];
             for (int i = 0; i < nstap; i++) {
                 retrievers[i] = new StapRetrieval(service, staps[i], findParamUrl(staps[i]), socket, getVizModel(), stap, start, end, ra, dec, raSize, decSize, null);
@@ -76,7 +76,7 @@ public class StapProtocol extends TemporalDalProtocol {
 
 	
 	   
-    protected boolean isSuitable(Resource r)  {
+    protected boolean isSuitable(final Resource r)  {
         return r instanceof StapService;
     }
 
@@ -85,6 +85,9 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.18  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.17  2008/05/28 12:27:49  nw
 Complete - task 408: Adjust count reporting in astroscope and voexplorer.
 

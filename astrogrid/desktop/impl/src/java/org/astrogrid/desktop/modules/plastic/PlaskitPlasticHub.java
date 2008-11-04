@@ -40,8 +40,7 @@ import uk.ac.starlink.plastic.Agent;
 import uk.ac.starlink.plastic.MinimalHub;
 import uk.ac.starlink.plastic.XmlRpcAgent;
 
-/** Alternate implementaiton of the plastic hub in AR, implemented 
- * by extending the plaskit hub
+/** AR implementation of Plastic Hub, based on PlasKit.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 30, 20084:34:53 PM

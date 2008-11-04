@@ -34,13 +34,14 @@ import org.votech.plastic.CommonMessageConstants;
 
 import com.l2fprod.common.swing.JLinkButton;
 
-/**
+/** Send PLASTIC loadVOTable message for a file, or a suitable registry resource
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:35 PM
  */
 public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
     
-    /** variant which is invokable  on any kind of file not accepted by default implementation, only appears on the main menu */
+    /** variant which is invokable on any kind of file <b>not</b> acceptable to the {@PlasticVotableActivity}.
+     * only appears on the main menu */
     public static class Fallback extends PlasticVotableActivity  {
 
         public Fallback(final PlasticApplicationDescription plas, final PlasticScavenger scav) {

@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.20 2008/05/28 12:27:49 nw Exp $
+/*$Id: DalProtocol.java,v 1.21 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,14 +33,13 @@ import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /**
- * encapsulation of an entire data access protocol - name, listing services in registry,
- * querying them, and adding results to a subtree of the display.
+ * Abstract description of an entire data access protocol - naming, listing suitable services, querying them, and adding results.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  * @TEST
  */
 public abstract class DalProtocol {
 
-    public DalProtocol(String name, Image img, RegistryInternal reg) {
+    public DalProtocol(final String name, final Image img, final RegistryInternal reg) {
         super();
         this.name = name;
         this.reg = reg;
@@ -88,7 +87,7 @@ public abstract class DalProtocol {
     
     private VizModel vizModel;
     /** to be only called by VizModel */
-    public void setVizModel(VizModel vm) {
+    public void setVizModel(final VizModel vm) {
         this.vizModel = vm;
     }
     
@@ -102,7 +101,7 @@ public abstract class DalProtocol {
     public abstract String getXQuery();
     
     
-    public final void processAllServices(ResourceConsumer p) throws ServiceException {
+    public final void processAllServices(final ResourceConsumer p) throws ServiceException {
         reg.consumeXQuery(getXQuery(),p);
     }
     
@@ -111,10 +110,10 @@ public abstract class DalProtocol {
 	 * @param p a processor that is passed each suitable service
 	 *  this method obeys the calling contract for resourceConsumer
 	 */
-	public final void processSuitableServicesInList(List<? extends Resource> resourceList,ResourceConsumer p) {
+	public final void processSuitableServicesInList(final List<? extends Resource> resourceList,final ResourceConsumer p) {
         p.estimatedSize(resourceList.size());
-        for (Iterator<? extends Resource> i = resourceList.iterator(); i.hasNext();) {
-            Resource r =i.next();
+        for (final Iterator<? extends Resource> i = resourceList.iterator(); i.hasNext();) {
+            final Resource r =i.next();
             if (isSuitable(r)) { 
                 p.process(r);
             }
@@ -131,8 +130,8 @@ public abstract class DalProtocol {
     public NodeSocket getDirectNodeSocket() {
         if (directNodeSocket == null) {
             directNodeSocket = new NodeSocket() {
-                public void addNode(TreeNode child) {
-                    DefaultEdge edge = new DefaultEdge(primaryNode, child);
+                public void addNode(final TreeNode child) {
+                    final DefaultEdge edge = new DefaultEdge(primaryNode, child);
                     edge.setAttribute(AbstractRetriever.WEIGHT_ATTRIBUTE, "2");
                     vizModel.getTree().addChild(edge);
                 }
@@ -165,7 +164,7 @@ public abstract class DalProtocol {
                     }
                     serviceNode.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE, baseLabel);
                     serviceNode.setAttribute(AbstractRetriever.SERVICE_ID_ATTRIBUTE, service.getId().toString());
-                    StringBuffer tbuf = new StringBuffer()
+                    final StringBuffer tbuf = new StringBuffer()
                         .append("<html>")
                         .append(service.getTitle())
                         .append("<br>ID: ")
@@ -175,11 +174,11 @@ public abstract class DalProtocol {
                 }
                 return serviceNode;
             }
-            public void addNode(TreeNode child) {
+            public void addNode(final TreeNode child) {
                 nChild++;
-                TreeNode servNode = getServiceNode();
+                final TreeNode servNode = getServiceNode();
                 servNode.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE, baseLabel + " - " + nChild + ((nChild == 1) ? " search" : " searches"));
-                DefaultEdge edge = new DefaultEdge(servNode, child);
+                final DefaultEdge edge = new DefaultEdge(servNode, child);
                 edge.setAttribute(AbstractRetriever.WEIGHT_ATTRIBUTE, "2");
                 vizModel.getTree().addChild(edge);
             }
@@ -193,13 +192,13 @@ public abstract class DalProtocol {
      * @param  cap  capability
      * @return   first likely-looking base url, or null if there is none
      */
-    public static URI findParamUrl(Capability cap) {
-        Interface[] ifs = cap.getInterfaces();
+    public static URI findParamUrl(final Capability cap) {
+        final Interface[] ifs = cap.getInterfaces();
         for (int i = 0; i < ifs.length; i++) {
             if (ifs[i] instanceof ParamHttpInterface) {
-                AccessURL[] urls = ((ParamHttpInterface) ifs[i]).getAccessUrls();
+                final AccessURL[] urls = ((ParamHttpInterface) ifs[i]).getAccessUrls();
                 for (int j = 0; j < urls.length; j++) {
-                    URI uri = urls[i].getValueURI();
+                    final URI uri = urls[i].getValueURI();
                     if (uri != null) {
                         return uri;
                     }
@@ -215,7 +214,7 @@ public abstract class DalProtocol {
      * @param capabilities  all capabilities provided by a service
      * @param retrievers  retrievers associated with a subset of capabilities
      */
-    public static void setSubNames(Capability[] capabilities, Retriever[] retrievers) {
+    public static void setSubNames(final Capability[] capabilities, final Retriever[] retrievers) {
         if (capabilities.length > 1) {
             if (retrievers.length == 1) {
                 retrievers[0].setSubName(retrievers[0].getServiceType());
@@ -236,6 +235,9 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.21  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.20  2008/05/28 12:27:49  nw
 Complete - task 408: Adjust count reporting in astroscope and voexplorer.
 

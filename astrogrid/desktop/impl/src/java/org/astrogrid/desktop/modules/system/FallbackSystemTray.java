@@ -6,34 +6,26 @@ package org.astrogrid.desktop.modules.system;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.util.Iterator;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
 import javax.swing.PopupFactory;
 
-import org.apache.commons.collections.Factory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.DraggableWindow;
-import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.TimedPopup;
 
-/** Fallback system tray when not running on Java 6, on on OS where systray is not supported.
+/** Fallback UI system tray, used when not running on Java 6, or on OS where systray is not supported.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 21, 20076:24:07 PM
  */
@@ -48,9 +40,9 @@ public class FallbackSystemTray  implements SystemTrayInternal{
     private final JButton ico;
     private final DraggableWindow window;
 
-    private JPopupMenu popup;
+    private final JPopupMenu popup;
     
-    public FallbackSystemTray( UIContext context) {
+    public FallbackSystemTray( final UIContext context) {
         super();
         this.context = context;
         this.popups = PopupFactory.getSharedInstance();
@@ -65,9 +57,9 @@ public class FallbackSystemTray  implements SystemTrayInternal{
 
     public void run() {
                 ico.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
+                    public void actionPerformed(final ActionEvent e) {
                         if(!popup.isShowing()) {                 
-                            Component c = (Component) e.getSource();
+                            final Component c = (Component) e.getSource();
                             popup.show( c, 0, c.getHeight() );
                         } else { 
                             popup.setVisible(false);
@@ -76,7 +68,7 @@ public class FallbackSystemTray  implements SystemTrayInternal{
                 });
                 // NB: can't set tooltip - as this seems to destroy the mouse draggable behaviour - how odd.
                 //ico.setToolTipText("Astro Runtime");
-                javax.swing.JPanel p = new JPanel();
+                final javax.swing.JPanel p = new JPanel();
              //   p.setBorder(MyTitledBorder.createEmpty("VO Desktop"));
                 p.add(ico);
                 window.getContentPane().add(p);
@@ -87,28 +79,28 @@ public class FallbackSystemTray  implements SystemTrayInternal{
     }
     
     private  JPopupMenu createPopupMenu() {
-        JPopupMenu m = new JPopupMenu();
+        final JPopupMenu m = new JPopupMenu();
 
         //window factories.
-        for (Iterator facs = context.getWindowFactories().keySet().iterator(); facs.hasNext(); ) {
+        for (final Iterator facs = context.getWindowFactories().keySet().iterator(); facs.hasNext(); ) {
             final String key = (String) facs.next();
-            JMenuItem f = new JMenuItem("New " + key);            
+            final JMenuItem f = new JMenuItem("New " + key);            
             f.setActionCommand(key);
             f.addActionListener(context);
             m.add(f);
         }
         m.addSeparator();
-        JMenuItem pref = new JMenuItem("VO Desktop and Astro Runtime Preferences" + UIComponentMenuBar.ELLIPSIS);
+        final JMenuItem pref = new JMenuItem("VO Desktop and Astro Runtime Preferences" + UIComponentMenuBar.ELLIPSIS);
         pref.setActionCommand(UIContext.PREF);
         pref.addActionListener(context);                
         m.add(pref);
         
-        JMenuItem test = new JMenuItem("Run Self Tests");
+        final JMenuItem test = new JMenuItem("Run Self Tests");
         test.setActionCommand(UIContext.SELFTEST);
         test.addActionListener(context);
         m.add(test);
         
-        JMenuItem processes = new JMenuItem("Show Background Processes");
+        final JMenuItem processes = new JMenuItem("Show Background Processes");
         processes.setActionCommand(UIContext.PROCESSES);
         processes.addActionListener(context);
         m.add(processes);
@@ -119,19 +111,19 @@ public class FallbackSystemTray  implements SystemTrayInternal{
 
         m.addSeparator();     
         
-        JMenuItem h = new JMenuItem("VO Desktop Help");
+        final JMenuItem h = new JMenuItem("VO Desktop Help");
         h.setActionCommand(UIContext.HELP);
         h.addActionListener(context);
                 
         m.add(h);
  
-        JMenuItem a = new JMenuItem("About VO Desktop");
+        final JMenuItem a = new JMenuItem("About VO Desktop");
         a.setActionCommand(UIContext.ABOUT);
         a.addActionListener(context);
         m.add(a);
         m.addSeparator();              
         
-        JMenuItem sd = new JMenuItem("Exit VO Desktop");
+        final JMenuItem sd = new JMenuItem("Exit VO Desktop");
         sd.setIcon(IconHelper.loadIcon("exit16.png"));
         sd.setActionCommand(UIContext.EXIT);
          sd.addActionListener(context);
@@ -139,15 +131,15 @@ public class FallbackSystemTray  implements SystemTrayInternal{
         return m;
     }
     
-    public void displayErrorMessage(String arg0, String arg1) {
+    public void displayErrorMessage(final String arg0, final String arg1) {
         TimedPopup.showErrorMessage(window,arg0,arg1);
     }
 
-    public void displayInfoMessage(String arg0, String arg1) {
+    public void displayInfoMessage(final String arg0, final String arg1) {
         TimedPopup.showInfoMessage(window,arg0,arg1);
     }
 
-    public void displayWarningMessage(String arg0, String arg1) {
+    public void displayWarningMessage(final String arg0, final String arg1) {
         TimedPopup.showWarningMessage(window,arg0,arg1);     
     }
     

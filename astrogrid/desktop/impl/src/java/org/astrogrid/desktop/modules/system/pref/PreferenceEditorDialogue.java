@@ -73,7 +73,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 			.getLog(PreferenceEditorDialogue.class);
 
 
-		public PreferenceEditorDialogue(PreferencesArranger arranger, Preference advancedPreference, UIContext cxt) {
+		public PreferenceEditorDialogue(final PreferencesArranger arranger, final Preference advancedPreference, final UIContext cxt) {
 		    CSH.setHelpIDString(this,"dialog.preference");
 			this.showAdvancedPreference = advancedPreference;
 			this.cxt = cxt;
@@ -99,9 +99,9 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	protected final Preference showAdvancedPreference;
 
 	/** makes all limited visibility components visible or invisible */
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(final PropertyChangeEvent evt) {
 		if (evt.getSource() == showAdvancedPreference) {
-			boolean vis = showAdvancedPreference.asBoolean();
+			final boolean vis = showAdvancedPreference.asBoolean();
 			showOptionalComponents(vis);		
 			
 		}
@@ -111,9 +111,9 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	/** flip visibility of all optional components.
 	 * @param vis if true, show all optional components,
 	 */
-	void showOptionalComponents(boolean vis) {
-		for (Iterator i = componentsOnlyVisibleWhenAdvanced.iterator(); i.hasNext();) {
-			JComponent c = (JComponent) i.next();
+	void showOptionalComponents(final boolean vis) {
+		for (final Iterator i = componentsOnlyVisibleWhenAdvanced.iterator(); i.hasNext();) {
+			final JComponent c = (JComponent) i.next();
 			c.setVisible(vis);
 		}
 	}
@@ -121,20 +121,20 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	/** displays the dialogue and takes action on 'ok' or 'cancel' */
 	public void run() {
 		// reset / update all fields
-		for (Iterator i1 = inputComponents.iterator(); i1.hasNext();) {
-			JComponent c1 = (JComponent) i1.next();
-			Preference p1 = (Preference)c1.getClientProperty(Preference.class);
+		for (final Iterator i1 = inputComponents.iterator(); i1.hasNext();) {
+			final JComponent c1 = (JComponent) i1.next();
+			final Preference p1 = (Preference)c1.getClientProperty(Preference.class);
 			if (! (c1 instanceof ValueAccess)) {
 				throw new ProgrammerError(" Encountered a component that was not a value access: " + c1);
 			}
 			((ValueAccess)c1).setValue(p1.getValue()); // set field to latest value from preference
 			
-			Border b = (Border) c1.getClientProperty(Border.class);
+			final Border b = (Border) c1.getClientProperty(Border.class);
 			if (b != null) {
 				c1.setBorder(b); // reset borders - removing any previous warnings.
 			}
 		} 
-		BaseDialog dialog = new BaseDialog() {
+		final BaseDialog dialog = new BaseDialog() {
 		    {
 		        setDialogMode(BaseDialog.OK_CANCEL_DIALOG);
 		        setModal(false);
@@ -147,20 +147,20 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		        super.ok();
 	            // go through each of the input components, saving back to preferences those that
 	            // have been modified.
-	            for (Iterator i = inputComponents.iterator(); i.hasNext();) {
-	                JComponent c = (JComponent) i.next();
-	                Preference p = (Preference) c.getClientProperty(Preference.class);
+	            for (final Iterator i = inputComponents.iterator(); i.hasNext();) {
+	                final JComponent c = (JComponent) i.next();
+	                final Preference p = (Preference) c.getClientProperty(Preference.class);
 	                if (! (c instanceof ValueAccess)) {
 	                    throw new ProgrammerError(" Encountered a component that was not a value access: " + c);
 	                }
-	                String editedValue = ((ValueAccess)c).getValue();
+	                final String editedValue = ((ValueAccess)c).getValue();
 	                p.setValue(editedValue); // only firest events if a value change has happened.
 	            }		        
 		    }
 		};		
 
 		// temporarily enable advanced view, so that we pack to the correct size.
-		boolean showOptional =  showAdvancedPreference.asBoolean();
+		final boolean showOptional =  showAdvancedPreference.asBoolean();
 		if (! showOptional) {
 		showOptionalComponents(true);
 		}
@@ -180,8 +180,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	 * not private - so can be overridden when testing.
 	 * 
 	 */
-	void initUI(PreferencesArranger arranger) {
-		JButtonBar toolbar = new JButtonBar(JButtonBar.VERTICAL );
+	void initUI(final PreferencesArranger arranger) {
+		final JButtonBar toolbar = new JButtonBar(JButtonBar.VERTICAL );
 		toolbar.setPreferredSize(new Dimension(90,300)); // only x-coord is relevant here.
 		toolbar.setUI(new BlueishButtonBarUI());
 
@@ -192,15 +192,15 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 				,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
 		add(BorderLayout.CENTER,cardContainer);
 
-		ButtonGroup group = new ButtonGroup();
+		final ButtonGroup group = new ButtonGroup();
 
-		for (Iterator cats = arranger.listPreferenceCategories().iterator(); cats.hasNext();) {
-			String catName = (String) cats.next();
-			List basicPrefs = arranger.listBasicPreferencesForCategory(catName);
-			List advancedPrefs = arranger.listAdvancedPreferencesForCategory(catName);
-			JPanel p =  makePanel(catName,basicPrefs,advancedPrefs);
+		for (final Iterator cats = arranger.listPreferenceCategories().iterator(); cats.hasNext();) {
+			final String catName = (String) cats.next();
+			final List basicPrefs = arranger.listBasicPreferencesForCategory(catName);
+			final List advancedPrefs = arranger.listAdvancedPreferencesForCategory(catName);
+			final JPanel p =  makePanel(catName,basicPrefs,advancedPrefs);
 			cardContainer.add(p,catName);
-			JComponent butt = addButton(catName, null /*@todo  no icon available here at present */
+			final JComponent butt = addButton(catName, null /*@todo  no icon available here at present */
 					, toolbar
 					, group);
 			if (basicPrefs.size() == 0) {
@@ -218,14 +218,14 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	 * @param bar buton bar to add to
 	 * @param group enforces the fact that only one button can be clicked at a time.
 	 */
-	private JComponent addButton(final String title, String iconName,
-			JButtonBar bar, ButtonGroup group) {
+	private JComponent addButton(final String title, final String iconName,
+			final JButtonBar bar, final ButtonGroup group) {
 
-		JToggleButton button = new JToggleButton(title,IconHelper.loadIcon(iconName)) {{
+		final JToggleButton button = new JToggleButton(title,IconHelper.loadIcon(iconName)) {{
 			setHorizontalTextPosition(JButton.CENTER);
 			setVerticalTextPosition(JButton.CENTER);
 			addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed(final ActionEvent e) {
 					cardLayout.show(cardContainer, title);
 				}
 			});
@@ -248,39 +248,39 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	 * @return a panel.
 	 * @see  #makeForm(Collection, Collection)
 	 */
-	private JPanel makePanel(String title, List basicPrefs, List advancedPrefs) {
-		FormLayout layout = new FormLayout(
+	private JPanel makePanel(final String title, final List basicPrefs, final List advancedPrefs) {
+		final FormLayout layout = new FormLayout(
 				"12dlu,right:max(90dlu;min), 3dlu, left:max(200dlu;min),3dlu,max(7dlu;min),1dlu,max(3dlu;min)"
 				,"");
 	//	DefaultFormBuilder builder = new DefaultFormBuilder(layout,new FormDebugPanel());
-		DefaultFormBuilder builder = new DefaultFormBuilder(layout);
+		final DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 
 		builder.setDefaultDialogBorder();
-		JComponent top = builder.appendSeparator(title);
+		final JComponent top = builder.appendSeparator(title);
 		top.setFont(top.getFont().deriveFont(Font.BOLD));
 		top.setOpaque(true);
 		top.setBackground(builder.getPanel().getBackground().brighter());		
 		builder.setLeadingColumnOffset(1);
 		builder.nextLine();
 		
-		List thisPanelInputComponents = new ArrayList();
+		final List thisPanelInputComponents = new ArrayList();
 		
 		if (basicPrefs != null && basicPrefs.size() > 0) {
 			// order the preferences  first.
-			RowFactory fac = new RowFactory();
-			for (Iterator i = basicPrefs.iterator(); i.hasNext();) {
-				Preference p = (Preference) i.next();
+			final RowFactory fac = new RowFactory();
+			for (final Iterator i = basicPrefs.iterator(); i.hasNext();) {
+				final Preference p = (Preference) i.next();
 				fac.buildFormRow(builder, p);
 			}
 			thisPanelInputComponents.addAll(fac.inputComponentList);
 		}
 		if (advancedPrefs != null && advancedPrefs.size() > 0) {
-			RowFactory fac = new RowFactory();		
-			JComponent label = builder.appendSeparator("Advanced");
+			final RowFactory fac = new RowFactory();		
+			final JComponent label = builder.appendSeparator("Advanced");
 			componentsOnlyVisibleWhenAdvanced.add(label); // want this to vanish.
 			builder.nextLine();
-			for (Iterator i = advancedPrefs.iterator(); i.hasNext();) {
-				Preference p = (Preference) i.next();
+			for (final Iterator i = advancedPrefs.iterator(); i.hasNext();) {
+				final Preference p = (Preference) i.next();
 				fac.buildFormRow(builder, p);
 			}
 			thisPanelInputComponents.addAll(fac.inputComponentList);
@@ -288,9 +288,9 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		}
 		this.inputComponents.addAll(thisPanelInputComponents);
 		// create a 'restore defaults' and 'apply' button bar.
-		JPanel buttonPanel = makePanelButtons(thisPanelInputComponents) ;
-		JPanel formPanel = builder.getPanel();
-		JPanel all = new JPanel(new BorderLayout());
+		final JPanel buttonPanel = makePanelButtons(thisPanelInputComponents) ;
+		final JPanel formPanel = builder.getPanel();
+		final JPanel all = new JPanel(new BorderLayout());
 		all.add(formPanel,BorderLayout.CENTER);
 		all.add(buttonPanel,BorderLayout.SOUTH);
 		all.setBorder(BorderFactory.createEtchedBorder());
@@ -300,17 +300,17 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 
 	/** build a panel containing 'restore defaults and 'apply' buttons. */
 	private JPanel makePanelButtons(final List panelComponents) {
-		JButton restore = new JButton("Restore Defaults") {{
+		final JButton restore = new JButton("Restore Defaults") {{
 			setToolTipText("Restore settings for this pane back to defaults");
 			addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					for (Iterator i = panelComponents.iterator(); i
+				public void actionPerformed(final ActionEvent e) {
+					for (final Iterator i = panelComponents.iterator(); i
 							.hasNext();) {
-						JComponent c = (JComponent) i.next();
-						Preference p = (Preference)c.getClientProperty(Preference.class);
+						final JComponent c = (JComponent) i.next();
+						final Preference p = (Preference)c.getClientProperty(Preference.class);
 						((ValueAccess)c).setValue(p.getDefaultValue()); // nb - just setting text - not altering the preference value itself.
 						// clear any warnings on components.
-						Border b = (Border) c.getClientProperty(Border.class);
+						final Border b = (Border) c.getClientProperty(Border.class);
 						if (b != null) {
 							c.setBorder(b);
 						}
@@ -318,14 +318,14 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 				}
 			});
 		}};
-		JButton apply = new JButton("Apply") {{
+		final JButton apply = new JButton("Apply") {{
 			setToolTipText("Apply any changes made to this pane");
 			addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					for (Iterator i = panelComponents.iterator(); i
+				public void actionPerformed(final ActionEvent e) {
+					for (final Iterator i = panelComponents.iterator(); i
 							.hasNext();) {
-						JComponent c = (JComponent) i.next();
-						Preference p = (Preference)c.getClientProperty(Preference.class);
+						final JComponent c = (JComponent) i.next();
+						final Preference p = (Preference)c.getClientProperty(Preference.class);
 						p.setValue(((ValueAccess)c).getValue()); // only fires those that differn.
 					}
 				}
@@ -353,8 +353,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	final List inputComponentList = new ArrayList();
 	
 	/** builds a label for a preference , based on UiName and description*/
-	private JLabel mkLabel(Preference p) {
-		JLabel l = new JLabel(p.getUiName());
+	private JLabel mkLabel(final Preference p) {
+		final JLabel l = new JLabel(p.getUiName());
 		l.setToolTipText(p.getDescription());
 		allComponentList.add(l);
 		return l;
@@ -372,9 +372,9 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	 * @param p the preference to build for.
 	 * @param isLimitedVisibility if true, add to the list of limitedVisiblity components.
 	 */
-	void buildFormRow(DefaultFormBuilder builder,final  Preference p) {
-		String[] options = p.getOptions();
-		String[] suggestions = p.getAlternatives();
+	void buildFormRow(final DefaultFormBuilder builder,final  Preference p) {
+		final String[] options = p.getOptions();
+		final String[] suggestions = p.getAlternatives();
 		JComponent comp;
 		if (Preference.BOOLEAN.equals(p.getUnits())) {
 			// checkbox
@@ -386,7 +386,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 				builder.append(mkLabel(p),addAnnotations(p,comp));
 		} else  if (suggestions != null && suggestions.length > 0) {
 				// recommended / suggested values - editable combobox
-				String[] arr = p.getAllAlternatives();
+				final String[] arr = p.getAllAlternatives();
 				comp = new SuggestionInput(arr) ;
 				// find maximum size..
 				int maxSize = 0;
@@ -394,7 +394,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 					maxSize = Math.max(maxSize, arr[i].length());
 				}
 				if (maxSize > OVERSIZE) { 
-					int fontSize = comp.getFont().getSize();
+					final int fontSize = comp.getFont().getSize();
 					comp.setFont(comp.getFont().deriveFont(fontSize * 0.8f));
 				} 
 				builder.append(mkLabel(p),addAnnotations(p,comp));
@@ -402,10 +402,10 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		} else {
 			// plain text input
 			// single line - either a short or long input box.
-			int sz = p.getDefaultValue().length() < 7 ? 7 : 50;
+			final int sz = p.getDefaultValue().length() < 7 ? 7 : 50;
 			comp = new TextInput(p.getValue(),sz);
 			if (p.getDefaultValue().length() > OVERSIZE) {
-				int fontSize = comp.getFont().getSize();
+				final int fontSize = comp.getFont().getSize();
 				comp.setFont(comp.getFont().deriveFont(fontSize * 0.8f));				
 
 			} 
@@ -425,10 +425,10 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	 * to the preference value.
 	 * @param p
 	 */
-	private void addEndMatter(DefaultFormBuilder builder,final Preference p) {
+	private void addEndMatter(final DefaultFormBuilder builder,final Preference p) {
 
 		if (p.getHelpId() != null) {
-			JButton butt = cxt.getHelpServer().createHelpButton(p.getHelpId());
+			final JButton butt = cxt.getHelpServer().createHelpButton(p.getHelpId());
 			butt.setBorder(BorderFactory.createEmptyBorder());
 			allComponentList.add(butt);
 			builder.append(butt);
@@ -438,7 +438,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 				
 		if (p.isRequiresRestart()) {
 			//JLabel l = new JLabel("<html><FONT color='red'>*");
-			JLabel l = new JLabel("Requires restart");
+			final JLabel l = new JLabel("Requires restart");
 			l.setFont(UIConstants.SMALL_DIALOG_FONT);
 			l.setToolTipText("Requires restart to take effect");
 			allComponentList.add(l);
@@ -449,9 +449,9 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	}
 	
 	/** builds any buttons / annotations which inspect / use the value of the preference */
-	private JComponent addAnnotations(Preference p,final JComponent c) {
-		JPanel panel = new JPanel();
-		LayoutManager layout = new BoxLayout(panel,BoxLayout.X_AXIS);
+	private JComponent addAnnotations(final Preference p,final JComponent c) {
+		final JPanel panel = new JPanel();
+		final LayoutManager layout = new BoxLayout(panel,BoxLayout.X_AXIS);
 		panel.setLayout(layout);
 		panel.add(c);
 		allComponentList.add(panel);
@@ -459,10 +459,10 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 			if (Preference.FILE.equals(p.getUnits())) {
 				c.setInputVerifier(fileVerifier);
 				// append a file chooser dialogue
-				JButton b = new JButton("Change...") {{
+				final JButton b = new JButton("Change...") {{
 					addActionListener(new ActionListener() {
 
-						public void actionPerformed(ActionEvent e) {
+						public void actionPerformed(final ActionEvent e) {
 							final ValueAccess valueAccess = ((ValueAccess)c);
 							File f = new File(valueAccess.getValue());
 							fileChooser.setCurrentDirectory(f); // will be set to parent dir of this file.
@@ -481,11 +481,11 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 			} else if (Preference.DIRECTORY.equals(p.getUnits())) {
 				c.setInputVerifier(directoryVerifier);
 				// append a directory choser dialogue.
-				JButton b = new JButton("Change...") {{
+				final JButton b = new JButton("Change...") {{
 					setToolTipText("Browse and select from the filesystem");
 					addActionListener(new ActionListener() {
 
-						public void actionPerformed(ActionEvent e) {
+						public void actionPerformed(final ActionEvent e) {
 							final ValueAccess valueAccess = ((ValueAccess)c);							
 							File f = new File(valueAccess.getValue());
 							//@todo these 2 methods don't do as much as you'd hope. seems to be a bug in the implementation.
@@ -559,15 +559,15 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	 */
 	abstract class HighlightingInputVerifier extends InputVerifier {
 
-		public boolean shouldYieldFocus(JComponent input) {
-			boolean ok = verify(input);
+		public boolean shouldYieldFocus(final JComponent input) {
+			final boolean ok = verify(input);
 			if (! ok) {
 				Toolkit.getDefaultToolkit().beep();
-				Border b = input.getBorder();
+				final Border b = input.getBorder();
 				input.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
 				input.putClientProperty(Border.class, b); // cache original border.
 			} else { // reset.
-				Border b = (Border) input.getClientProperty(Border.class);
+				final Border b = (Border) input.getClientProperty(Border.class);
 				if (b != null) {
 					input.setBorder(b);
 				}
@@ -579,12 +579,12 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	
 	protected final InputVerifier urlVerifier = new HighlightingInputVerifier() {
 
-		public boolean verify(JComponent input) {
-			String v = ((ValueAccess)input).getValue();
+		public boolean verify(final JComponent input) {
+			final String v = ((ValueAccess)input).getValue();
 			try {
 				new URL(v);
 				return true;
-			} catch (MalformedURLException e) {
+			} catch (final MalformedURLException e) {
 				return false;
 			}
 		}
@@ -592,15 +592,15 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	
 	protected final InputVerifier directoryVerifier = new HighlightingInputVerifier() {
 		
-		public boolean verify(JComponent input) {
-			String v = ((ValueAccess)input).getValue();
+		public boolean verify(final JComponent input) {
+			final String v = ((ValueAccess)input).getValue();
 			try {
-				File f = new File(v);
+				final File f = new File(v);
 				if (! f.exists()) {
 					f.mkdirs();
 				} 
 				return f.exists() &&  f.isDirectory() && f.canRead() && f.canWrite();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				return false;
 			}
 				
@@ -609,13 +609,13 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	
 	protected final InputVerifier fileVerifier = new HighlightingInputVerifier() {
 		
-		public boolean verify(JComponent input) {
-			String v = ((ValueAccess)input).getValue();
+		public boolean verify(final JComponent input) {
+			final String v = ((ValueAccess)input).getValue();
 			try {
-				File f = new File(v);
+				final File f = new File(v);
 				f.createNewFile(); // only creates if doesn't already exist.
 				return f.exists() && f.isFile() && f.canRead() && f.canWrite();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				return false;
 			}
 				
@@ -624,12 +624,12 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	
 	protected final InputVerifier numberVerifier = new HighlightingInputVerifier() {
 
-		public boolean verify(JComponent input) {
-			String v = ((ValueAccess)input).getValue();
+		public boolean verify(final JComponent input) {
+			final String v = ((ValueAccess)input).getValue();
 			try {
 				Integer.parseInt(v);
 				return true;
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 				return false;
 			}
 		}
@@ -638,21 +638,21 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 
 	protected final InputVerifier secondsVerifier = new HighlightingInputVerifier() {
 
-		public boolean verify(JComponent input) {
-			String v = ((ValueAccess)input).getValue();
+		public boolean verify(final JComponent input) {
+			final String v = ((ValueAccess)input).getValue();
 			try {
-				int i = Integer.parseInt(v);
+				final int i = Integer.parseInt(v);
 				return i >= 0; // can't be negative.
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 				return false;
 			}
 		}
 	};	
 	
-	/** checkbox */
+	/** An extended checkbox */
 	private static final class BooleanInput extends JCheckBox implements ValueAccess {
 
-		public BooleanInput(Preference p) {
+		public BooleanInput(final Preference p) {
 			super(p.getUiName(), p.asBoolean());
 			setToolTipText(p.getDescription());
 		}
@@ -661,12 +661,12 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 			return Boolean.toString(isSelected());
 		}
 
-		public void setValue(String s) {
+		public void setValue(final String s) {
 			setSelected(Boolean.valueOf(s).booleanValue());
 		}
 	}
 	
-	/** 				// fixed set of options - uneditable combobox
+	/** fixed set of options - uneditable combobox
 	 * 
 	 * @author Noel Winstanley
 	 * @since Jan 14, 20072:09:24 AM
@@ -674,7 +674,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		private static final class OptionInput extends JComboBox implements ValueAccess {
 	
 	
-			OptionInput(String[] items, String val) {
+			OptionInput(final String[] items, final String val) {
 				super(items);
 				setEditable(false);
 				setSelectedItem(val);
@@ -684,14 +684,14 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 				return (String)getSelectedItem();
 			}
 	
-			public void setValue(String s) {
+			public void setValue(final String s) {
 				setSelectedItem(s);
 			}
 		}
 	
 	/** variable list of suggesionts - editable combobox */
 	private static final class SuggestionInput extends JComboBox implements ValueAccess {
-		public SuggestionInput(String[] arg0) {
+		public SuggestionInput(final String[] arg0) {
 			super(arg0);
 			setEditable(true);
 			setSelectedItem(arg0[0]);
@@ -703,7 +703,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 			return (String)getSelectedItem();
 		}
 
-		public void setValue(String s) {
+		public void setValue(final String s) {
 			if (suggestions.contains(s)) {
 				setSelectedItem(s);
 			} else {
@@ -717,7 +717,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	/** text field */
 	private static final class TextInput extends JTextField implements ValueAccess {
 
-		public TextInput(String text, int columns) {
+		public TextInput(final String text, final int columns) {
 			super(text, columns);
 		}
 
@@ -725,7 +725,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 			return getText();
 		}
 
-		public void setValue(String s) {
+		public void setValue(final String s) {
 			setText(s);
 		}
 	}

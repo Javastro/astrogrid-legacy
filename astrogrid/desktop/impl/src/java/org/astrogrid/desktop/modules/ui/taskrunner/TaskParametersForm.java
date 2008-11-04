@@ -63,7 +63,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/**Form which allows parameters of a tool document to be edited.
+/** {@link JPanel} which allows parameters of a tool document to be edited.
  * Displays as two columns - left hand column is input parameters.
  * Right hand column is a split pane, with outputs above, and a parameter documentation area below.
  * 
@@ -782,7 +782,7 @@ private Dimension preservedPreferredSize = null ;
         return builder.createOutputFormElement(value,desc);
     }
 	
-	/** additional logic that manages an optional / repeated / multiple parameter 
+	/** Additional logic that manages a fiddly parameter - one that is optional or repeatable. 
 	 * it's this class's responsibility to provide the correct add/remove buttons.
 	 * Each instancee of this class manages one optional/repeated parameter
 	 * @TEST
@@ -1014,6 +1014,7 @@ private Dimension preservedPreferredSize = null ;
     }
     
     // formatting of the ui forms.
+    /** Formatter used to lay out a list of UI elements in a {@link JEventListPanel} */
 	private static class ElementFormat extends JEventListPanel.AbstractFormat {
 		public ElementFormat() {
 			super("top:d,d" ,"22px,fill:60dlu:grow,0dlu,22px,22px,22px","1dlu","0dlu"

@@ -12,8 +12,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 
 /**
- * class that submits queries against the registry to compute their size,
- * then displays this info using a barchart.
+ * Displays number of results a query is likely to return.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 27, 200712:21:31 PM
  */

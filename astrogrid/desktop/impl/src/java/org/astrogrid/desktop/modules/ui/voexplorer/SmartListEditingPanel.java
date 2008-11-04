@@ -31,7 +31,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/** panel that handles the 'new query' function. - allows editing of smart lists.
+/** {@link EditingPanel} for smart lists.
  * @author Noel.Winstanley@manchester.ac.uk
 
  * @since Apr 26, 20077:21:19 PM

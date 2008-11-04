@@ -28,7 +28,8 @@ System module.
 		<schema id="objects">
 		A list of objects - used in various configuration points.
 			<element name="object" content-translator="object">
-				A single object may refer to another service - using service:.., etc
+				An object - which may be instantiated in-line, or it might be a reference to another service, or preference, 
+                or cache, or whatever.
 				<rules>
 					<push-content />
 					<invoke-parent method="addElement" />
@@ -66,7 +67,8 @@ System module.
 	============================
 	HELP
 	 -->
-	<service-point id="help" interface="org.astrogrid.desktop.modules.system.HelpServerInternal">			
+	<service-point id="help" interface="org.astrogrid.desktop.modules.system.HelpServerInternal">		
+        Help Service	
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.HelpServerImpl">
 				<service>browser</service>
@@ -115,7 +117,7 @@ System module.
 
 	
 	<service-point id="configuration" interface="org.astrogrid.desktop.modules.system.ConfigurationInternal">
-		Provides and persists preferences objects
+		Provides and persists preference objects
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.pref.PreferenceManagerImpl">
 				<configuration>framework.preferences</configuration>
@@ -152,7 +154,7 @@ System module.
 	 -->
 	 
 	 <service-point id="ui" interface="org.astrogrid.desktop.modules.system.ui.UIContext">
-	 	The User Interface central model.
+	 	The User Interface central model - manages windows, display of warning messages, etc.
         <!-- 
          -->
         <interceptor service-id="system.edtInvoke" >
@@ -188,11 +190,10 @@ System module.
 	 
 	 <configuration-point id="windowFactories">
 	 	Defines factories that can create different kinds of top level UI windows.
-	 	ui module contributes to these 
 	 	<schema>
 			<element name="window" key-attribute="name" content-translator="object">
 	 				Reference to a service, or somesuch that acts as a factory.
-	 				must implemeent org.apache.commons.collections.Factory
+	 				must implement org.apache.commons.collections.Factory
 	 			<attribute name="name" required="true" unique="true">
 	 				Name of the window factory - used in UI.
 	 			</attribute>
@@ -225,7 +226,7 @@ System module.
 		
 <!--
 ============================
- Background workers §tor
+ Background workers
  
  -->
     <service-point id="workersMonitor" interface="org.astrogrid.desktop.modules.system.ui.BackgroundWorkersMonitor">
@@ -247,7 +248,7 @@ System module.
 	WEBSERVER
 	 -->
 	<service-point id="webserver" interface="org.astrogrid.desktop.modules.system.WebServerInternal">
-		Web server - consumes servlets and servletContext configurations.
+		Internal Web server - consumes servlets and servletContext configurations.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.JettyWebServer"
 				initialize-method="init" >
@@ -454,7 +455,7 @@ SYSTEM TRAY
 	APIHELP
 	 -->
 	<service-point id="apihelp" interface="ApiHelp">
-		Access api help on acr methods
+		Access documentation for AR API methods
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.ApiHelpImpl">
 				<service>builtin.acr</service>
@@ -474,7 +475,7 @@ SYSTEM TRAY
 	RMI
 	 -->
 	<service-point id="rmi" interface="org.astrogrid.desktop.modules.system.RmiServerInternal">
-		RMI Service. Consumes the rmiListenerInterfaces configuration
+		RMI API Binding. Consumes the rmiListenerInterfaces configuration
 		<invoke-factory>
 			<construct 
 				class="org.astrogrid.desktop.modules.system.RmiLiteRmiServerImpl"
@@ -528,9 +529,9 @@ SYSTEM TRAY
 	</contribution>
 		
 		<configuration-point id="rmiListenerInterfaces">
-		Used in RMI service. - list of services that accept listener interfaces - and the 
+		List of services that accept listener interfaces - and the 
 		interfaces used. Each of these listener interfaces needs to be registered differently
-		with the RMI service.
+		with the RMI server.
 		<schema>
 			<element name="service" key-attribute="id">
 				Description of an acr service with listener interfaces
@@ -562,10 +563,10 @@ SYSTEM TRAY
 	
 	<!--  ===========================
 	VFS
-    NB: is the following vfs config is changed, ensure that org.astrogrid.Fixture.createVFS() is altered to match.
+    NB: if the following vfs config is changed, ensure that org.astrogrid.Fixture.createVFS() is altered to match.
 	 -->
 	<service-point id="vfs" interface="org.apache.commons.vfs.FileSystemManager">
-		Uniform access to all filesystems.
+		Uniform access to all kinds of filesystems.
         <interceptor service-id="system.edt" ><!-- doesn't give much protection, but might identify some problems. -->
             <exclude method="createVirtualFileSystem" />
             <exclude method="closeFileSystem" /> <!--  only strictly correect for virtual file systems. -->
@@ -585,7 +586,7 @@ SYSTEM TRAY
                 <set-object property="defaultProvider"
 				     value="instance:org.apache.commons.vfs.provider.url.UrlFileProvider" />
                  -->
-                 <!-- try a subclass to work around a bug ignoring query in url. -->
+                 <!-- using a subclass to work around a bug ignoring query in url. -->
                 <set-object property="defaultProvider"
                  value="instance:org.astrogrid.desktop.modules.system.QueryRespectingUrlFileProvider" />
 
@@ -602,6 +603,7 @@ SYSTEM TRAY
 		<!-- ikkle services that vfs depends upon.	-->
 		
     <service-point id="vfsCache"  interface="org.apache.commons.vfs.FilesCache" >
+        Cache for vfs file objects.
         <invoke-factory model="primitive">
             <construct class="org.astrogrid.desktop.modules.ag.vfs.DesktopFilesCache">
             </construct>
@@ -611,6 +613,7 @@ SYSTEM TRAY
         
 	<service-point id="replicator" visibility="private"
 		interface="org.apache.commons.vfs.provider.FileReplicator">
+        Replicator for VFS
 		<invoke-factory model="primitive">
 			<construct class="org.apache.commons.vfs.impl.PrivilegedFileReplicator">
 				<service>tmpFileStore</service>
@@ -619,6 +622,7 @@ SYSTEM TRAY
 	</service-point>		
 	<service-point id="tmpFileStore" visibility="private"
 		interface="org.apache.commons.vfs.impl.DefaultFileReplicator">
+        Part of VFS
 		<create-instance model="primitive" 
 			class="org.apache.commons.vfs.impl.DefaultFileReplicator" />
 	</service-point>
@@ -627,8 +631,12 @@ SYSTEM TRAY
 		List of file system types that vfs knows how to access.
 	  <schema>
     	<element name="provider" key-attribute="scheme">
-      		<attribute name="scheme"/>
-      		<attribute name="implementation" required="true" translator="object"/>
+      		<attribute name="scheme">
+            uri scheme
+            </attribute>
+      		<attribute name="implementation" required="true" translator="object">
+            VfsFileSystem for this uri scheme.
+            </attribute>
 	      <rules>
     	    <push-attribute attribute="implementation"/>
         	<invoke-parent method="addElement"/>
@@ -641,8 +649,12 @@ SYSTEM TRAY
 		List of objects that provide additional vfs operations
 	  <schema>
     	<element name="operation" key-attribute="scheme">
-      		<attribute name="scheme"/>
-      		<attribute name="implementation" required="true" translator="object"/>
+      		<attribute name="scheme">
+                uri scheme
+            </attribute>
+      		<attribute name="implementation" required="true" translator="object">
+                additional file operations for this scheme.
+            </attribute>
 	      <rules>
     	    <push-attribute attribute="implementation"/>
         	<invoke-parent method="addElement"/>
@@ -652,11 +664,15 @@ SYSTEM TRAY
 	</configuration-point>
 		
 	<configuration-point id="vfsExtensions">
-	List of mappings between file extension and scheme
+	List of mappings between file extension and scheme. Used to expose .zip, .gz as nested filesystem.s
 	  <schema>
     	<element name="extension" key-attribute="name">
-      		<attribute name="name"/>
-      		<attribute name="scheme" required="true"/>
+      		<attribute name="name">
+            the file type
+            </attribute>
+      		<attribute name="scheme" required="true">
+            the uri scheme this file type corresponds to.
+            </attribute>
 	      <rules>
     	    <push-attribute attribute="scheme"/>
         	<invoke-parent method="addElement"/>
@@ -666,11 +682,15 @@ SYSTEM TRAY
 	</configuration-point>	
 	
 	<configuration-point id="vfsMimes">
-	List of mappings between mimetype and scheme.
+	List of mappings between mimetype and scheme. Used to expose .zip, etc as nested filesystems.
 	  <schema>
     	<element name="mime" key-attribute="name">
-      		<attribute name="name"/>
-      		<attribute name="scheme" required="true"/>
+      		<attribute name="name">
+            the mimetype
+            </attribute>
+      		<attribute name="scheme" required="true">
+            this uri scheme this mimetype corresponds to.
+            </attribute>
 	      <rules>
     	    <push-attribute attribute="scheme"/>
         	<invoke-parent method="addElement"/>
@@ -746,7 +766,7 @@ SYSTEM TRAY
 	SCHEDULER
 	 -->
 	<service-point id="scheduler" interface="org.astrogrid.desktop.modules.system.SchedulerInternal">
-		Runs scheduled tasks. consumes the scheduledTasks configuration
+		Runs scheduled tasks. Consumes the scheduledTasks configuration
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.ClockDaemonScheduler">
 				<configuration>scheduledTasks</configuration>
@@ -770,7 +790,8 @@ SYSTEM TRAY
 	EXECUTOR
 	 -->
 	<service-point id="executor" interface="org.astrogrid.desktop.modules.system.BackgroundExecutor">
-		Runs background tasks on a pool of threads.
+		Runs background tasks on a pool of threads. Used to process long-running and IO-accessing operations
+        while keeping the UI responsive (by not locking up the Swing Event Dispatch Thread)
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.BackgroundExecutorImpl"
 				initialize-method="init">
@@ -796,7 +817,7 @@ SYSTEM TRAY
 MAC SETUP
  -->
 	<service-point id="macSetup" visibility="private" interface="java.lang.reflect.InvocationHandler">
-	Hook into OSX UI.
+	UI Customisations for Mac OSX
         <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />
 	</service-point>
 	
@@ -814,7 +835,7 @@ MAC SETUP
 	</contribution>
 	
 		
-	<!-- RELATED - when running in workbench mode, tweak the ui up -->
+	<!-- RELATED - when running in UI mode, tweak the ui up -->
 	<contribution configuration-id="hivemind.Startup" if="not(property java.awt.headless)">
 		<startup object="instance:org.astrogrid.desktop.modules.system.SwingSetup" />
 	</contribution>
@@ -844,7 +865,7 @@ MAC SETUP
     <service-point id="edtInvoke"
      interface="org.apache.hivemind.ServiceInterceptorFactory"
         parameters-schema-id="hivemind.MethodFilter"      >
-        Causes all service methods to be invoked on the EDT thread.
+        Interceptor - Causes all service methods to be invoked on the EDT thread, which simplifies the threading model.
        <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.system.EdtInvocationInterceptorFactory">
                 <service>hivemind.ClassFactory</service>
@@ -858,7 +879,7 @@ MAC SETUP
 	SNITCH
 	 -->
 	<service-point id="snitch" interface="org.astrogrid.desktop.modules.system.SnitchInternal">
-		Reporting Service
+		Usage tracking service
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.SnitchImpl">
 				<service>ui</service>
@@ -886,7 +907,7 @@ MAC SETUP
 	<service-point id="snitchInterceptor" 
 		interface="org.apache.hivemind.ServiceInterceptorFactory"
 		parameters-schema-id="hivemind.MethodFilter">
-	  Snitch on usage of AR
+	  Interceptor that reports on usage of AR
 	  <invoke-factory model="primitive">
 	  	<construct class="org.astrogrid.desktop.modules.system.SnitchInterceptorFactory">
 	  		<service>snitch</service>	  	
@@ -901,7 +922,7 @@ MAC SETUP
 	<service-point id="deprecation"
 		interface="org.apache.hivemind.ServiceInterceptorFactory"
 		parameters-schema-id="hivemind.MethodFilter">
-		Warn on using deprecated methods
+		Interceptor that logs a warning when clients call  deprecated methods
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.system.DeprecationInterceptorFactory">
 				<service>hivemind.ClassFactory</service>
@@ -915,7 +936,7 @@ MAC SETUP
     <service-point id="edt"
         interface="org.apache.hivemind.ServiceInterceptorFactory"
         parameters-schema-id="hivemind.MethodFilter">
-        Warn on calling long-running methods on the EDT thread.
+        Interceptor that logs a warning when long-running methods are called on the EDT thread.
         <invoke-factory model="primitive">
             <construct class="org.astrogrid.desktop.modules.system.ExpensiveMethodInterceptorFactory">
                 <service>hivemind.ClassFactory</service>
@@ -929,7 +950,7 @@ MAC SETUP
 	 -->
 	<service-point id="tupperware"
 		interface="org.astrogrid.desktop.modules.system.TupperwareInternal">
-		Plastic container for rest of workbench.
+		Plastic wrapper that allows other components to send and handle plastic messages.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.TupperwareImpl">
                 <event-listener service-id="builtin.shutdown" /> 
@@ -967,6 +988,7 @@ MAC SETUP
 <!-- ========================================
 XML Persistence --> 
     <service-point id="xmlPersist" interface="org.astrogrid.desktop.modules.system.XmlPersist">
+        Utility component that handles serializing objects structures to XML for storage.
         <create-instance class="org.astrogrid.desktop.modules.system.XStreamXmlPersist" />
     </service-point>
 
@@ -1054,6 +1076,7 @@ PLASTIC LIST MODEL -->
 
 	<service-point id="plasticList"
 		interface="ca.odell.glazedlists.EventList">
+        List model that contains description of applications currently connected to plastic hub.
 		<create-instance class="ca.odell.glazedlists.BasicEventList" />
 	</service-point>
 
@@ -1063,7 +1086,7 @@ UPDATE CHECKER
  
  -->
 <service-point id="update" visibility="private" interface="java.lang.Runnable">
- version checker
+    Software update checker
 
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.system.UpdateChecker">
@@ -1102,7 +1125,7 @@ UPDATE CHECKER
 
 <!--  upgrade -->
 	<service-point id="upgrade" visibility="private" interface="java.lang.Runnable">
-		upgrade code - runs once for each new version, to fix bugs introduced in previous versions
+		upgrade code - runs once for each new version, to fix bugs / manage migration between previous versions
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.system.Upgrade">
 				<string>${astrogrid.desktop.version}</string>
@@ -1115,9 +1138,8 @@ UPDATE CHECKER
 		<startup object="service:upgrade" />
 	</contribution>
  
- <!--  shared httpclient component -->
- 
     <service-point id="httpclient" visibility="public" interface="org.apache.commons.httpclient.HttpClient">
+        Shared HttpClient component
         <invoke-factory>
             <construct class="org.apache.commons.httpclient.HttpClient">
                    <set-object property="httpConnectionManager"

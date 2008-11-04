@@ -7,22 +7,18 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
-import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.AbstractListModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.system.ui.BackgroundWorkersMonitorImpl.BackgroundWorkerCell;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker.Info;
@@ -32,7 +28,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.l2fprod.common.swing.BaseDialog;
 
-/** Individual progress dialogue for a background worker.
+/** Progress indicator dialogue for a single background worker.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 26, 20074:39:55 PM
  */
@@ -45,11 +41,12 @@ public class ProgressDialogue extends BaseDialog implements Observer {
     private JList list;
 
     
-    /** list model tuned to this application - attached to a standard
+    /** list model tuned to this dialogue. 
+     * attached to a standard
      * List, and it knows the list will only ever have items appended */
     private static class MyListModel extends AbstractListModel {
 
-        public MyListModel(List delegate) {
+        public MyListModel(final List delegate) {
             super();
             this.delegate = delegate;
             sz = delegate.size();
@@ -57,7 +54,7 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         int sz;
         private final List delegate;
 
-        public Object getElementAt(int index) {
+        public Object getElementAt(final int index) {
             return delegate.get(index);
         }
 
@@ -69,7 +66,7 @@ public class ProgressDialogue extends BaseDialog implements Observer {
          */
         public void notifyListGrown() {
             // see what the new size is
-            int nuSz = delegate.size();
+            final int nuSz = delegate.size();
             if (nuSz > sz) {
                 fireIntervalAdded(this,sz,nuSz-1);
                 sz = nuSz;
@@ -80,7 +77,7 @@ public class ProgressDialogue extends BaseDialog implements Observer {
     /**
      * @param backgroundWorker
      */
-    private ProgressDialogue(Frame f,BackgroundWorker backgroundWorker) {
+    private ProgressDialogue(final Frame f,final BackgroundWorker backgroundWorker) {
         super(f);
         this.worker = backgroundWorker;
         init();
@@ -88,7 +85,7 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         
         
     }
-    private ProgressDialogue(Dialog f,BackgroundWorker backgroundWorker) {
+    private ProgressDialogue(final Dialog f,final BackgroundWorker backgroundWorker) {
         super(f);
         this.worker = backgroundWorker;
         init();
@@ -99,7 +96,7 @@ public class ProgressDialogue extends BaseDialog implements Observer {
      * 
      */
     private void init() {
-        Info info = worker.getInfo();
+        final Info info = worker.getInfo();
         setTitle("Progress: " + info.getWorkerTitle());
         getBanner().setVisible(false);
         setModal(false);
@@ -108,11 +105,11 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         display = new BackgroundWorkersMonitorImpl.BackgroundWorkerCell(worker);
         worker.addObserver(this);
         
-        JPanel p = (JPanel)getContentPane();
-        FormLayout fl = new FormLayout("20dlu,1dlu,fill:200dlu:grow,1dlu,p"
+        final JPanel p = (JPanel)getContentPane();
+        final FormLayout fl = new FormLayout("20dlu,1dlu,fill:200dlu:grow,1dlu,p"
                     ,"p,2dlu,fill:70dlu:grow,2dlu,p");
-        CellConstraints cc = new CellConstraints();
-        PanelBuilder pb = new PanelBuilder(fl,p);
+        final CellConstraints cc = new CellConstraints();
+        final PanelBuilder pb = new PanelBuilder(fl,p);
         
         pb.add(display.getStatus(),cc.xy(1,1));
         pb.add(display.getWorkerTitle(),cc.xy(3,1));
@@ -128,16 +125,16 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         pack();
       
     }
- private ProgressDialogue(BackgroundWorker backgroundWorker) {
+ private ProgressDialogue(final BackgroundWorker backgroundWorker) {
         this.worker = backgroundWorker;
         init();
         centerOnScreen();
         
     }    
     
-    public static ProgressDialogue newProgressDialogue(BackgroundWorker worker) {
-        Component pc = worker.getParent().getComponent();
-        Window window = pc instanceof Window
+    public static ProgressDialogue newProgressDialogue(final BackgroundWorker worker) {
+        final Component pc = worker.getParent().getComponent();
+        final Window window = pc instanceof Window
                       ? (Window) pc
                       : SwingUtilities.getWindowAncestor(pc);
         if (window instanceof Frame) {
@@ -148,7 +145,7 @@ public class ProgressDialogue extends BaseDialog implements Observer {
           return new ProgressDialogue(worker);
         }
     }
-    public void update(Observable o, Object arg) {
+    public void update(final Observable o, final Object arg) {
         display.reload();
         // check for new messages.
         final Info info = worker.getInfo();

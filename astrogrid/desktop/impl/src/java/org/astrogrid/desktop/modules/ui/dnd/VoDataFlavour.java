@@ -7,14 +7,13 @@ import java.awt.datatransfer.DataFlavor;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
 
-/** Helper class of data flavour constant objects.
+/** Constants for  data flavours and mime types.
  * @author Noel Winstanley
  * @since Jun 19, 20068:08:20 AM
  */
@@ -119,7 +118,7 @@ public class VoDataFlavour {
 	/** create a flavour only available in local vm
 	 *  suitable for internal objects, non serializable types, etc
 	 */
-	private static DataFlavor localDataFlavor(Class clazz, String descr) {
+	private static DataFlavor localDataFlavor(final Class clazz, final String descr) {
 		return new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType
 				+ ";class=\"" + clazz.getName() + "\"", descr);
 	}
@@ -130,7 +129,7 @@ public class VoDataFlavour {
 	 * @return
 	 * @throws MalformedURLException 
 	 */
-	public static URL mkJavanese(URL u) throws MalformedURLException {
+	public static URL mkJavanese(final URL u) throws MalformedURLException {
 	    if ("file".equals(u.getProtocol()) && u.getHost() != null) {
 	        return new URL(u.getProtocol(),null,u.getFile());
 	    } else {

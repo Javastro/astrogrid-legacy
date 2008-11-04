@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.9 2008/04/23 10:50:48 nw Exp $
+/*$Id: ShutdownImpl.java,v 1.10 2008/11/04 14:35:52 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ import org.astrogrid.acr.builtin.ShutdownListener;
 
 import EDU.oswego.cs.dl.util.concurrent.SynchronizedBoolean;
 
-/** implementation class for {@link Shutdown}
+/** Implementation of  {@code Shutdown} AR service.
  * 
  * hides details of hivemind - and means that rest of code doesn't need to 
  * be tied to that particular container system.
@@ -39,7 +39,7 @@ public class ShutdownImpl  extends Thread implements Shutdown{
      */
     private static final Log logger = LogFactory.getLog(ShutdownImpl.class);
 
-    public ShutdownImpl(ShutdownCoordinator coord, boolean callSystemExit) {
+    public ShutdownImpl(final ShutdownCoordinator coord, final boolean callSystemExit) {
         this.coord = coord;
         this.callSystemExit = callSystemExit;
         Runtime.getRuntime().addShutdownHook(this);
@@ -55,7 +55,7 @@ public class ShutdownImpl  extends Thread implements Shutdown{
      * to shutdown 
      * @param v
      */
-    public void setConfirmIfObjections(boolean v) {
+    public void setConfirmIfObjections(final boolean v) {
     	this.confirmIfObjections = v;
     }
 
@@ -64,17 +64,17 @@ public class ShutdownImpl  extends Thread implements Shutdown{
         logger.debug("halt() - start");
 
         // tell everyone 
-        List objections = new ArrayList();
-        for (Iterator i = listeners.iterator(); i.hasNext(); ) {
+        final List objections = new ArrayList();
+        for (final Iterator i = listeners.iterator(); i.hasNext(); ) {
             try {
-                ShutdownListener sl = (ShutdownListener)i.next();
+                final ShutdownListener sl = (ShutdownListener)i.next();
                 if (sl != null) {
-                  String msg =   sl.lastChance();
+                  final String msg =   sl.lastChance();
                   if (msg != null) {
                       objections.add(msg);
                   }
                 }
-            } catch (Throwable t) {
+            } catch (final Throwable t) {
                 logger.error("halt()", t);
 
                 // really don't care - nothing can stop us
@@ -89,17 +89,17 @@ public class ShutdownImpl  extends Thread implements Shutdown{
         logger.debug("halt() - end");
     }
     
-    String fmt(List l) {
+    String fmt(final List l) {
         logger.debug("fmt(List) - start");
 
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         sb.append("<html><b>There appears to be clients that still require the ACR</b><ul>");
         for (int i = 0; i < l.size(); i++) {
             sb.append("<li>");
             sb.append(l.get(i).toString());            
         }
         sb.append("</ul><b>Select 'OK' if you still want to halt the ACR, otherwise 'Cancel'</b></html>");
-        String returnString = sb.toString();
+        final String returnString = sb.toString();
         logger.debug("fmt(List) - end");
         return returnString;
     }
@@ -129,14 +129,14 @@ public class ShutdownImpl  extends Thread implements Shutdown{
     	}
 
         // tell everyone 
-        List copy = new ArrayList(listeners);
-        for (Iterator i = copy.iterator(); i.hasNext(); ) {
+        final List copy = new ArrayList(listeners);
+        for (final Iterator i = copy.iterator(); i.hasNext(); ) {
             try {
-                ShutdownListener sl = (ShutdownListener)i.next();
+                final ShutdownListener sl = (ShutdownListener)i.next();
                 if (sl != null) {
                     sl.halting();
                 }
-            } catch (Throwable t) {
+            } catch (final Throwable t) {
                 logger.error("reallyHalt()", t);
 
                 // really don't care - nothing can stop us
@@ -151,7 +151,7 @@ public class ShutdownImpl  extends Thread implements Shutdown{
     /**
      * @see org.astrogrid.acr.builtin.Shutdown#addShutdownListener(org.astrogrid.acr.builtin.ShutdownListener)
      */
-    public void addShutdownListener(ShutdownListener arg0) {
+    public void addShutdownListener(final ShutdownListener arg0) {
     	if (arg0 == null) {
     		logger.warn("Attempt to add null listener");
     		return;
@@ -163,7 +163,7 @@ public class ShutdownImpl  extends Thread implements Shutdown{
         //FIXME fix this in a more elegant way.
 		try {
         listeners.add(arg0);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error("Error registering shutdown listener.  In the absence of any better ideas, ignoring.",e);
         }
 
@@ -173,7 +173,7 @@ public class ShutdownImpl  extends Thread implements Shutdown{
     /**
      * @see org.astrogrid.acr.builtin.Shutdown#removeShutdownListener(org.astrogrid.acr.builtin.ShutdownListener)
      */
-    public void removeShutdownListener(ShutdownListener arg0) {
+    public void removeShutdownListener(final ShutdownListener arg0) {
     	if (arg0 == null) {
     		logger.warn("Attempt to remove null listener");
     		return;
@@ -190,6 +190,9 @@ public class ShutdownImpl  extends Thread implements Shutdown{
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.10  2008/11/04 14:35:52  nw
+javadoc polishing
+
 Revision 1.9  2008/04/23 10:50:48  nw
 added code for headless mode.
 

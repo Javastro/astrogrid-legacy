@@ -1,4 +1,4 @@
-/*$Id: SwingSetup.java,v 1.9 2007/01/29 16:45:07 nw Exp $
+/*$Id: SwingSetup.java,v 1.10 2008/11/04 14:35:49 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * simple class that does some global configuration of swing.
+ * Global configuration of swing UI.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Mar-2006
  *
  */
@@ -48,6 +48,9 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
 
 /* 
 $Log: SwingSetup.java,v $
+Revision 1.10  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.9  2007/01/29 16:45:07  nw
 cleaned up imports.
 

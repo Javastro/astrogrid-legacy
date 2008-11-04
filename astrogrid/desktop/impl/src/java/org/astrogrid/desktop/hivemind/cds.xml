@@ -3,7 +3,7 @@
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/cds-descriptors.xml">
 	]>
 <module id="cds" version="1.0.0" package="org.astrogrid.acr.cds">
-	
+	CDS Strasbourg Components.
 	<!--  PREAMBLE -->
 	
 	<contribution configuration-id="framework.descriptors">
@@ -25,7 +25,7 @@ SESAME
  -->
  
     <service-point id="sesame" interface="org.astrogrid.desktop.modules.cds.SesameInternal">
-        Name resolver
+        Client for Sesame Name resolver
         <interceptor service-id="system.edt" />        
         <interceptor service-id="system.throbber" />        
         <invoke-factory>
@@ -59,7 +59,7 @@ SESAME
     
     <contribution configuration-id="ivoa.caches">
         cache for previously resolved object names.
-        uses same configration as registry caches - although I guess this info is even more unchanging really.
+        uses same configration as registry caches - although I guess this info is even more unchanging.
         <cache name="positions"
             maxElementsInMemory="2"
             maxElementsOnDisk="100"
@@ -74,7 +74,7 @@ SESAME
 VIZIER
  -->			
 		<service-point id="vizier" interface="VizieR">
-			VizieR
+			Client for VizieR
         <interceptor service-id="system.edt" />            
 		<interceptor service-id="system.throbber" />			
 		<invoke-factory>
@@ -109,7 +109,7 @@ VIZIER
 COORDINATES
  -->
 	<service-point id="coordinate" interface="Coordinate">
-		Coordinate conversion
+		Client for Coordinate conversion service
         <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
@@ -136,7 +136,7 @@ COORDINATES
 UCD Dictionary
  -->
 	<service-point id="ucd" interface="UCD">
-		UCD dictionary
+		Client for UCD dictionary service
         <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>

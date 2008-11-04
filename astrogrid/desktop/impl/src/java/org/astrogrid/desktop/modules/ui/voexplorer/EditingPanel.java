@@ -11,7 +11,7 @@ import javax.swing.event.DocumentListener;
 
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 
-/** Abstract class for all components that allow editing of a resource list.
+/** Abstract class for a component that edits a resource list.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 30, 20072:13:27 PM
  */
@@ -25,13 +25,13 @@ public abstract class EditingPanel extends JPanel {
 		folderName = new JTextField();
 		folderName.getDocument().addDocumentListener(new DocumentListener() {
 
-			public void changedUpdate(DocumentEvent e) {
+			public void changedUpdate(final DocumentEvent e) {
 				ok.setEnabled(shouldOkBeEnabled());
 			}
-			public void insertUpdate(DocumentEvent e) {
+			public void insertUpdate(final DocumentEvent e) {
 				ok.setEnabled(shouldOkBeEnabled());		
 			}
-			public void removeUpdate(DocumentEvent e) {
+			public void removeUpdate(final DocumentEvent e) {
 				ok.setEnabled(shouldOkBeEnabled());		
 			}
 		});
@@ -50,12 +50,12 @@ public abstract class EditingPanel extends JPanel {
 	}
 	
 	private boolean isNameNonEmpty() {
-		String s = folderName.getText();
+		final String s = folderName.getText();
 		return ! ( s == null || s.trim().length() == 0);
 	}
 	
 	/** configure the panel to edit the provided folder */
-	public void setCurrentlyEditing(ResourceFolder currentlyEditing) {
+	public void setCurrentlyEditing(final ResourceFolder currentlyEditing) {
 		this.currentlyEditing = currentlyEditing;
 		folderName.setText(currentlyEditing.getName());
 	}

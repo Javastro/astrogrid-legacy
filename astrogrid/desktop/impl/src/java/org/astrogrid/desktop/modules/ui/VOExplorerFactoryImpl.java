@@ -20,7 +20,8 @@ import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
 
-/** Factory for voexplorers - also handles some messages. 
+/** Factory for voexplorers.
+ *  - also handles some plastic messages. 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 20076:44:32 PM
  */
@@ -32,12 +33,12 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 
     private final List plasticApps; // dynamic list model of currently registered applications.
 	
-	public VOExplorerFactoryImpl(List plasticApps,TypesafeObjectBuilder builder) {
+	public VOExplorerFactoryImpl(final List plasticApps,final TypesafeObjectBuilder builder) {
 		this.plasticApps = plasticApps;
         this.builder = builder;
 	}	
 	private VOExplorerImpl newWindow() {
-		VOExplorerImpl vo = builder.createVoExplorer();
+		final VOExplorerImpl vo = builder.createVoExplorer();
 		vo.setVisible(true);
 		return vo;
 	}
@@ -58,12 +59,12 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 	public void hide() {
 		// not implemented.
 	}
-	public void open(URI arg0) {
-		VOExplorerImpl impl = newWindow();
+	public void open(final URI arg0) {
+		final VOExplorerImpl impl = newWindow();
 		impl.doOpen(arg0);
 	}
-	public void search(String arg0) {
-		VOExplorerImpl impl = newWindow();
+	public void search(final String arg0) {
+		final VOExplorerImpl impl = newWindow();
 		impl.doQuery("Search",arg0);
 	}
 
@@ -88,49 +89,49 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 	}
 	// handles both kinds of message - quite tolerant of different object types.
 	// however, at the moment will choke and fail on the first malformed uri.
-	public Object perform(URI sender, URI message, List args) {
+	public Object perform(final URI sender, final URI message, final List args) {
 		if (REGISTRY_MESSAGES.contains(message) && args.size() > 0) {
 			try { //handle a string, collection, or array...
 				final List resList = new ArrayList();
-				Object o = args.get(0);
+				final Object o = args.get(0);
 				if (o == null) {
 					logger.warn("Null argument");
 					return Boolean.FALSE;
 				}
 				if (o instanceof Collection) {
-					Collection c= (Collection)o;
-					for (Iterator i = c.iterator(); i.hasNext();) {
-						Object e =  i.next();
+					final Collection c= (Collection)o;
+					for (final Iterator i = c.iterator(); i.hasNext();) {
+						final Object e =  i.next();
 						if (e != null) {
 							resList.add(new URI(e.toString()));
 						}
 					}
 				} else if (o.getClass().isArray()) {
-					Object[] arr = (Object[])o;
+					final Object[] arr = (Object[])o;
 					for (int i = 0; i < arr.length; i++) {
 						if (arr[i] != null) {
 							resList.add(new URI(arr[i].toString()));
 						}
 					}
 				} else { // treat it as a single string
-					URI resourceId = new URI(o.toString());
+					final URI resourceId = new URI(o.toString());
 					resList.add(resourceId);
 				}
 				final String finalAppName = findSenderName(sender);
 				// got all the info we need. display the ui on the EDT.
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						VOExplorerImpl ve = newWindow();
+						final VOExplorerImpl ve = newWindow();
 						ve.displayResources("Resources from " + finalAppName,resList);
 					}
 				});				
 				return Boolean.TRUE;
-			} catch (URISyntaxException x) {
+			} catch (final URISyntaxException x) {
 				logger.error("URISyntaxException",x);
 				return Boolean.FALSE;
 			}
 		} else if (BIBCODE_MESSAGE.equals(message) && args.size() == 1) {
-		    Object o = args.get(0);
+		    final Object o = args.get(0);
 		    if (o == null) {
                 logger.warn("Null argument");
                 return Boolean.FALSE;
@@ -144,7 +145,7 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
                 // got all the info we need. display the ui on the EDT.
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        VOExplorerImpl ve = newWindow();
+                        final VOExplorerImpl ve = newWindow();
                         ve.doQuery("Resources for " + bibcode,
                                 "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')] \n "+
                                 " where $r/vr:content/vr:source =  '" + StringEscapeUtils.escapeSql(bibcode) + "' \n" +
@@ -166,10 +167,10 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
      * @param sender
      * @return
      */
-    private String findSenderName(URI sender) {
+    private String findSenderName(final URI sender) {
         String appName = "unknown application";
-        for (Iterator i = plasticApps.iterator(); i.hasNext();) {
-            PlasticApplicationDescription desc = (PlasticApplicationDescription) i.next();
+        for (final Iterator i = plasticApps.iterator(); i.hasNext();) {
+            final PlasticApplicationDescription desc = (PlasticApplicationDescription) i.next();
             if (desc.getId().equals(sender)) {
                 appName = desc.getName();
                 break;

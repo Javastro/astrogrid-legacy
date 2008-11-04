@@ -3,16 +3,12 @@
  */
 package org.astrogrid.desktop.hivemind;
 
-import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.hivemind.ErrorHandler;
 import org.apache.hivemind.Registry;
-import org.apache.hivemind.impl.DefaultErrorHandler;
 import org.apache.hivemind.impl.RegistryBuilder;
 import org.apache.hivemind.service.impl.FactoryDefault;
 import org.astrogrid.acr.builtin.Shutdown;
@@ -20,7 +16,10 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.pref.PreferencesArranger;
 import org.astrogrid.desktop.modules.system.pref.PreferencesArrangerImpl;
 
-/** Just lists all configuration properties, and exits.
+/** Generate Configuration documentation.
+ * 
+ * <p/>
+ * subclass of launcher which just lists all configuration keys and then exits.
  * @author Noel Winstanley
  * @since Jan 2, 20077:07:31 PM
  */
@@ -28,28 +27,28 @@ public class ListProperties extends Launcher {
 	public void run() {
 		spliceInDefaults();
 		//ErrorHandler err = new DefaultErrorHandler();
-		RegistryBuilder rb = new RegistryBuilder();
+		final RegistryBuilder rb = new RegistryBuilder();
 		rb.addModuleDescriptorProvider(createModuleDescriptorProvider());
-		Registry registry = rb.constructRegistry(Locale.getDefault());
-		PreferencesArranger arranger = new PreferencesArrangerImpl(registry.getConfiguration("framework.preferences"));
+		final Registry registry = rb.constructRegistry(Locale.getDefault());
+		final PreferencesArranger arranger = new PreferencesArrangerImpl(registry.getConfiguration("framework.preferences"));
 
 		printHeader();
 		
-		for (Iterator cats = arranger.listPreferenceCategories().iterator(); cats.hasNext(); ) {
-			String categoryName = (String)cats.next();
+		for (final Iterator cats = arranger.listPreferenceCategories().iterator(); cats.hasNext(); ) {
+			final String categoryName = (String)cats.next();
 			System.out.println();
 			System.out.println();
 			printCategoryHeader(categoryName);
 
-			for (Iterator i = arranger.listBasicPreferencesForCategory(categoryName).iterator(); i.hasNext();) {
+			for (final Iterator i = arranger.listBasicPreferencesForCategory(categoryName).iterator(); i.hasNext();) {
 				System.out.println();
-				Preference p = (Preference) i.next();
+				final Preference p = (Preference) i.next();
 				printPreference(p);
 			}
 
-			for (Iterator i = arranger.listAdvancedPreferencesForCategory(categoryName).iterator(); i.hasNext();) {
+			for (final Iterator i = arranger.listAdvancedPreferencesForCategory(categoryName).iterator(); i.hasNext();) {
 				System.out.println();
-				Preference p = (Preference) i.next();
+				final Preference p = (Preference) i.next();
 				printPreference(p);
 			}			
 		}
@@ -57,16 +56,16 @@ public class ListProperties extends Launcher {
 		System.out.println();
 		System.out.println();
 		printCategoryHeader("System defaults");
-		for (Iterator i = Launcher.defaults.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
+		for (final Iterator i = Launcher.defaults.entrySet().iterator(); i.hasNext();) {
+			final Map.Entry e = (Map.Entry) i.next();
 			System.out.println("#" + e.getKey() +  "=" + e.getValue());
 		}
 
 		System.out.println();
 		System.out.println();
 		printCategoryHeader("Other configuration settings");			
-		for (Iterator i = registry.getConfiguration("hivemind.FactoryDefaults").iterator(); i.hasNext();) {
-			FactoryDefault element = (FactoryDefault) i.next();
+		for (final Iterator i = registry.getConfiguration("hivemind.FactoryDefaults").iterator(); i.hasNext();) {
+			final FactoryDefault element = (FactoryDefault) i.next();
 			if (element.getSymbol().startsWith("java") || element.getSymbol().startsWith("hivemind")) {
 				continue;
 			}
@@ -74,25 +73,25 @@ public class ListProperties extends Launcher {
 		}
 		System.out.println();
 		
-		Shutdown sd = (Shutdown)registry.getService(Shutdown.class);
+		final Shutdown sd = (Shutdown)registry.getService(Shutdown.class);
 		sd.reallyHalt();
 	}
 
 	/**
 	 * @param categoryName
 	 */
-	private void printCategoryHeader(String categoryName) {
+	private void printCategoryHeader(final String categoryName) {
 		System.out.println("###########################");
 		System.out.println("## " + categoryName);
 		System.out.println("###########################");
 		
 	}
 
-	private void printPreference(Preference p) {
+	private void printPreference(final Preference p) {
 		System.out.println("## " + p.getUiName() + " ##");
 		System.out.println("## " +  p.getDescription());
 		System.out.println("## Default value: " + p.getDefaultValue());
-		String[] opts = p.getAlternatives();
+		final String[] opts = p.getAlternatives();
 		if (opts != null && opts.length > 0) {
 			System.out.println("## Suggested alternatives: " + ArrayUtils.toString(opts));
 		}

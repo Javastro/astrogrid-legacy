@@ -18,7 +18,10 @@ import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
 
-/**Wraps the expensive original resolver with memoization functionality - 
+/**
+ * Memoizes expensive calls to the community resolver.
+ * <p/>
+ * Wraps the expensive original resolver with memoization functionality - 
  * so it remembers previous answers, and only consults the services once.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
@@ -36,13 +39,13 @@ public class MemoizingCommunityAccountSpaceResolver extends
 		super();
 	}
 
-	public MemoizingCommunityAccountSpaceResolver(URL arg0) {
+	public MemoizingCommunityAccountSpaceResolver(final URL arg0) {
 		super(arg0);
 	}
 
-	public Ivorn resolve(Ivorn arg0) throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException, CommunityResolverException, RegistryException {
-		String key = arg0.toString(); // equals isn't implemented on Ivorn - another black mark.
-		Object o = results.get(key);
+	public Ivorn resolve(final Ivorn arg0) throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException, CommunityResolverException, RegistryException {
+		final String key = arg0.toString(); // equals isn't implemented on Ivorn - another black mark.
+		final Object o = results.get(key);
 		if (o != null) {
 		    if (logger.isDebugEnabled()) {
 		        logger.debug("cache hit! " + arg0 + " -> " + o);
@@ -72,30 +75,30 @@ public class MemoizingCommunityAccountSpaceResolver extends
 		}
 		// not got a memoized result - need to compute it.
 		try {
-			Ivorn result = super.resolve(arg0);
+			final Ivorn result = super.resolve(arg0);
 			if (result != null) { // cachemap doesn't permit null values
 				results.put(key,result);
 			}
 			return result;
-		}  catch (CommunityServiceException e) {
+		}  catch (final CommunityServiceException e) {
 			results.put(key,e);
 			throw e;
-		} catch (CommunityIdentifierException e) {
+		} catch (final CommunityIdentifierException e) {
 			results.put(key,e);
 			throw e;
-		}  catch (CommunityPolicyException e) {
+		}  catch (final CommunityPolicyException e) {
 			results.put(key,e);
 			throw e;
-		}  catch (CommunityResolverException e) {
+		}  catch (final CommunityResolverException e) {
 			results.put(key,e);
 			throw e;
-		} catch (RegistryException e) {
+		} catch (final RegistryException e) {
 			results.put(key,e);
 			throw e;
-		} catch (RuntimeException e) {
+		} catch (final RuntimeException e) {
 			results.put(key,e);
 			throw e;				
-		} catch (Error e) {
+		} catch (final Error e) {
 			results.put(key,e);
 			throw e;
 		}

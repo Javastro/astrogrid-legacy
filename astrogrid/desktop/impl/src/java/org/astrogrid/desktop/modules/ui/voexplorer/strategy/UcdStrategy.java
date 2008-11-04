@@ -15,7 +15,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.matchers.Matcher;
 
-/** Strategy for filtering on list of subjects.
+/** Filters on UCD of table columns.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 15, 20073:36:34 PM
@@ -23,16 +23,16 @@ import ca.odell.glazedlists.matchers.Matcher;
 public final class UcdStrategy extends PipelineStrategy {
 	public Matcher createMatcher(final List selected) {
 		return new Matcher() {
-			public boolean matches(Object r) {
+			public boolean matches(final Object r) {
 				if (r instanceof DataCollection) {
-					DataCollection dc = (DataCollection)r;
-					Catalog[] catalogues = dc.getCatalogues();
+					final DataCollection dc = (DataCollection)r;
+					final Catalog[] catalogues = dc.getCatalogues();
 					for (int i = 0; i < catalogues.length; i++) {
-						TableBean[] t = catalogues[i].getTables();
+						final TableBean[] t = catalogues[i].getTables();
 						for (int j = 0; j < t.length; j++) {
-							ColumnBean[] cs = t[j].getColumns();
+							final ColumnBean[] cs = t[j].getColumns();
 							for (int k = 0; k < cs.length; k++) {
-								String u = cs[k].getUCD();
+								final String u = cs[k].getUCD();
 								if (u != null && selected.contains(u)) {
 									return true;
 								}
@@ -40,11 +40,11 @@ public final class UcdStrategy extends PipelineStrategy {
 						}
 					} 
 				} else if (r instanceof CatalogService) {
-					TableBean[] t = ((CatalogService)r).getTables();
+					final TableBean[] t = ((CatalogService)r).getTables();
 					for (int j = 0; j < t.length; j++) {
-						ColumnBean[] cs = t[j].getColumns();
+						final ColumnBean[] cs = t[j].getColumns();
 						for (int k = 0; k < cs.length; k++) {
-							String u = cs[k].getUCD();
+							final String u = cs[k].getUCD();
 							if (u != null && selected.contains(u)) {
 								return true;
 							}
@@ -57,20 +57,20 @@ public final class UcdStrategy extends PipelineStrategy {
 	}
 	
 
-	public TransformedList createView(EventList base) {
+	public TransformedList createView(final EventList base) {
 		return new CollectionList(base,
 				new CollectionList.Model() {
-			public List getChildren(Object r) {
-				List l = new ArrayList();
+			public List getChildren(final Object r) {
+				final List l = new ArrayList();
 				if (r instanceof DataCollection) {
-					DataCollection dc = (DataCollection)r;
-					Catalog[] catalogues = dc.getCatalogues();
+					final DataCollection dc = (DataCollection)r;
+					final Catalog[] catalogues = dc.getCatalogues();
 					for (int i = 0; i < catalogues.length; i++) {
-						TableBean[] t = catalogues[i].getTables();
+						final TableBean[] t = catalogues[i].getTables();
 						for (int j = 0; j < t.length; j++) {
-							ColumnBean[] cs = t[j].getColumns();
+							final ColumnBean[] cs = t[j].getColumns();
 							for (int k = 0; k < cs.length; k++) {
-								String u = cs[k].getUCD();
+								final String u = cs[k].getUCD();
 								if (u != null) {
 									l.add(u);
 								}
@@ -78,11 +78,11 @@ public final class UcdStrategy extends PipelineStrategy {
 						}
 					}
 				} else if (r instanceof CatalogService) {
-					TableBean[] t = ((CatalogService)r).getTables();
+					final TableBean[] t = ((CatalogService)r).getTables();
 					for (int j = 0; j < t.length; j++) {
-						ColumnBean[] cs = t[j].getColumns();
+						final ColumnBean[] cs = t[j].getColumns();
 						for (int k = 0; k < cs.length; k++) {
-							String u = cs[k].getUCD();
+							final String u = cs[k].getUCD();
 							if (u != null) {
 								l.add(u);
 							}

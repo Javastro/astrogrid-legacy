@@ -9,7 +9,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
 
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
 
@@ -17,18 +16,16 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.ivoa.Vosi;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
-import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.comp.PinnableLabel;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm.Model;
 
-import ca.odell.glazedlists.CompositeList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
 
-/** JEditor pane with methods for displaying help on task parameters.
+/** {@link ResourceDisplayPane} with methods for displaying help on task parameters.
  * 
  * contains logic to detect when mouse is over a parameter, and will display help 
  * for that parameter.
@@ -54,7 +51,7 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
  * @param browser 
  * @param regBrowser 
  */
-    public ParametersInfoPane(Model model, EventList allElements, BrowserControl browser, RegistryBrowser regBrowser, CapabilityTester tester,Vosi vosi) {
+    public ParametersInfoPane(final Model model, final EventList allElements, final BrowserControl browser, final RegistryBrowser regBrowser, final CapabilityTester tester,final Vosi vosi) {
         super(browser,regBrowser,tester, vosi);
         this.model = model;
         // using a function list means that we can register & deregister simply as the underlying parameter list changes.
@@ -62,12 +59,12 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
         this.additionalPins = new java.util.ArrayList(1);
     }
     
-    private void register(JToggleButton l) {
+    private void register(final JToggleButton l) {
         l.addMouseListener(this);
         l.addItemListener(this);
     }
     
-    private void unregister(JToggleButton l) {
+    private void unregister(final JToggleButton l) {
         l.removeMouseListener(this);
         l.removeItemListener(this);
         if (pinnedTo == l) {
@@ -77,18 +74,18 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
     
     /** manually register a pinnable label with the info pane.
      *  */
-    public void registerAdditional(JToggleButton l) {
+    public void registerAdditional(final JToggleButton l) {
         register(l);
         additionalPins.add(l);
     }
     
     // funciton list interface - used to register / deregister parameters as the form changes.
-    public void dispose(Object sourceValue, Object transformedValue) {
+    public void dispose(final Object sourceValue, final Object transformedValue) {
         // item removed
         unregister((JToggleButton)transformedValue);
     }
     
-    public Object reevaluate(Object sourceValue, Object transformedValue) {
+    public Object reevaluate(final Object sourceValue, final Object transformedValue) {
         // item changed
         unregister((JToggleButton)transformedValue);
         final PinnableLabel label = ((AbstractTaskFormElement)sourceValue).getLabel();
@@ -96,7 +93,7 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
         return label;
     }
     
-    public Object evaluate(Object sourceValue) {
+    public Object evaluate(final Object sourceValue) {
         // item added
         final PinnableLabel label = ((AbstractTaskFormElement)sourceValue).getLabel();
         register(label);
@@ -108,8 +105,8 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
     /**
      * @param comp
      */
-    private void displayHelpForComponent(JComponent comp) {
-        AbstractTaskFormElement t = (AbstractTaskFormElement)comp.getClientProperty(AbstractTaskFormElement.class);         
+    private void displayHelpForComponent(final JComponent comp) {
+        final AbstractTaskFormElement t = (AbstractTaskFormElement)comp.getClientProperty(AbstractTaskFormElement.class);         
         if (t != null) {
             sb.clear();
             sb.append("<html>");
@@ -142,7 +139,7 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
 // listener interface.
 
     // callback to display help in infoPane.
-     public void mouseEntered(MouseEvent e) {
+     public void mouseEntered(final MouseEvent e) {
          if (pinnedTo != null) {
              return;
          }
@@ -150,30 +147,30 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
      }
 
     // these mouse events ignored.
-     public void mouseClicked(MouseEvent e) {
+     public void mouseClicked(final MouseEvent e) {
      }
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(final MouseEvent e) {
     }
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(final MouseEvent e) {
     }
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(final MouseEvent e) {
     }
 
 
 // item listener interface - responds to 'pin' events.    
-    public void itemStateChanged(ItemEvent e) {
+    public void itemStateChanged(final ItemEvent e) {
 
         if (e.getStateChange() == ItemEvent.SELECTED) {
             pinnedTo = (JToggleButton)e.getSource();
             // make sure everything else is unselected.
             for(int i = 0; i < additionalPins.size(); i++) {
-                JToggleButton tb = (JToggleButton)additionalPins.get(i);
+                final JToggleButton tb = (JToggleButton)additionalPins.get(i);
                 if (tb != pinnedTo && tb.isSelected()) {
                     tb.setSelected(false);                    
                 }
             }
             for(int i = 0; i < paramPins.size(); i++) {
-                JToggleButton tb = (JToggleButton)paramPins.get(i);
+                final JToggleButton tb = (JToggleButton)paramPins.get(i);
                 if (tb != pinnedTo && tb.isSelected()) {
                     tb.setSelected(false);                    
                 }            

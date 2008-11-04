@@ -9,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Comparator;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -29,11 +27,8 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
-import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.system.CSH;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
-import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 import org.astrogrid.desktop.modules.votech.Annotation;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.astrogrid.desktop.modules.votech.AnnotationSource;
@@ -51,7 +46,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/** displays resource as formatted html.
+/** A {@link EditableResourceViewer} that displays formatted HTML of a resource, and also it's annotations.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 13, 20072:32:38 PM
  */
@@ -62,7 +57,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	private static final Log logger = LogFactory
 			.getLog(AnnotatedResourceViewer.class);
 
-    public AnnotatedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser, AnnotationService annService, CapabilityTester tester,Vosi vosi) {
+    public AnnotatedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser, final AnnotationService annService, final CapabilityTester tester,final Vosi vosi) {
 		super(browser, regBrowser, tester,vosi);
 		this.annService = annService;
 		userSource = annService.getUserAnnotationSource();
@@ -78,9 +73,9 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 
 		
 		// sort the list, then map into JPanels.
-		FunctionList annotationsPanels = new FunctionList(new SortedList(annotations,new Comparator() {
+		final FunctionList annotationsPanels = new FunctionList(new SortedList(annotations,new Comparator() {
 			// sort annotations.
-			public int compare(Object arg0, Object arg1) {
+			public int compare(final Object arg0, final Object arg1) {
 				if (arg0 instanceof UserAnnotation && ! (arg1 instanceof UserAnnotation)) {
 					return -1;
 				} else if (! (arg0 instanceof UserAnnotation) && arg1 instanceof UserAnnotation) {
@@ -92,22 +87,22 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 			}
 		}),new Function() {
 			// map to ui components.
-			public Object evaluate(Object arg0) {
+			public Object evaluate(final Object arg0) {
 				// map all to annotation - as we're handling userAnnotation separately.
 				return new AnnotationPanel((Annotation)arg0,hyperLinkHandler);
 			}
 		});
-		JEventListPanel annPanel = new JEventListPanel(annotationsPanels,new AnnotationsFormat());
+		final JEventListPanel annPanel = new JEventListPanel(annotationsPanels,new AnnotationsFormat());
 		annPanel.setElementColumns(1);
 		annPanel.setBackground(Color.white);
 		annPanel.setBorder(BorderFactory.createEmptyBorder());
 		
-		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout(
+		final CellConstraints cc = new CellConstraints();
+		final FormLayout layout = new FormLayout(
 				"fill:100dlu:grow,fill:65dlu"
 				,"fill:pref,fill:pref:grow"
 				);
-		PanelBuilder builder = new PanelBuilder(layout);
+		final PanelBuilder builder = new PanelBuilder(layout);
 		builder.add(this,cc.xywh(1,1,1,2));
 		
 		// set up the annotation editor.
@@ -134,7 +129,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 		builder.add(userAnnotationPanel,cc.xy(2,1));
 		builder.add(annPanel,cc.xy(2,2));	
 		
-		JPanel both = builder.getPanel();
+		final JPanel both = builder.getPanel();
 		both.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane = new JScrollPane(both,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -152,13 +147,13 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	
 	
 	// callback called by linger timer..
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		if (currentResource != null) {
 		        annService.processRemainingAnnotations(currentResource,this);
 		}
 	}
 
-	public void addTo(JTabbedPane t) {
+	public void addTo(final JTabbedPane t) {
 		t.addTab("Information", IconHelper.loadIcon("info16.png")
 				, scrollPane, "Information provided by the resource");			
 	}
@@ -170,7 +165,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 		super.clear();
 	}
 
-	public void display(Resource res) {
+	public void display(final Resource res) {
 	    userAnnotationPanel.clear(); // clear this first, which causes any writes to be saved.
 		annotations.clear();
 		lingerTimer.restart();
@@ -179,14 +174,14 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 		annService.processLocalAnnotations(res,this);
 	}
 	
-	public void process(Annotation a) {
+	public void process(final Annotation a) {
 		if (currentResource != null && currentResource.getId().equals(a.getResourceId())) {		
 			annotations.add(a); // eventlist itself takes care of producing the new panel.
 		}
 	}
 	
 	// callbacks to process annotations as they appear.
-	public void process(UserAnnotation a) {
+	public void process(final UserAnnotation a) {
 		if (a.getSource().equals(userSource)) {
 			userAnnotationPanel.setAnnotation(a);
 		} else { // some other user's data
@@ -195,7 +190,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	}
 	
 	private void saveAnnotation() {
-		UserAnnotation ann = userAnnotationPanel.createAnnotation();
+		final UserAnnotation ann = userAnnotationPanel.createAnnotation();
 		if (ann == null) {
 		    annService.removeUserAnnotation(currentResource);
 		} else {		
@@ -203,22 +198,23 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 		    annService.setUserAnnotation(currentResource,ann);
 		}
 	}
-	public void stateChanged(ChangeEvent e) {
+	public void stateChanged(final ChangeEvent e) {
 	    // called on notification from userannotationpanel.
 	    saveAnnotation();
 	}
 
 	// delegate listener management to the user annotation panel.
-    public void addChangeListener(ChangeListener e) {
+    public void addChangeListener(final ChangeListener e) {
         this.userAnnotationPanel.addChangeListener(e);
     }
 
-    public void removeChangeListener(ChangeListener e) {
+    public void removeChangeListener(final ChangeListener e) {
         this.userAnnotationPanel.removeChangeListener(e);
     }
 
 	  
-	  /** formatter class - doesn't do much, as contents of list are already JComponents 
+	  /** {@link JEventListPanel} formatter class.
+	   *  - doesn't do much, as contents of list are already JComponents 
 	 * - gives more control as to what to display, and how to attach controllers 
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Jun 19, 200712:08:44 PM
@@ -232,7 +228,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 					,new String[]{"1,1"}
 					);
 		}
-		public JComponent getComponent(Object arg0, int arg1) {
+		public JComponent getComponent(final Object arg0, final int arg1) {
 			return (JComponent)arg0;
 		}
 		public int getComponentsPerElement() {

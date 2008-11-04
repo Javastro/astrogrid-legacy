@@ -7,7 +7,7 @@ import org.apache.commons.vfs.FileObject;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** class that keeps a summary of the query result of each retriever
+/** keeps a summary of the query result of each retriever.
 
  *  */
 public final class QueryResults {

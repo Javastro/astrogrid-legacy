@@ -12,7 +12,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import edu.berkeley.guir.prefuse.VisualItem;
 import edu.berkeley.guir.prefuse.event.ControlAdapter;
 
-/** prefuse control that will display the send-to context menu over suitable items.
+/** Prefuse control to show a popup context menu over suitable items.
  * 
  * @fixme - need to alter how this works. right-clicking should select the current
  * node? or just display menu for current selection? either way, this code should just

@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -19,21 +18,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.JTextComponent;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.lang.text.StrMatcher;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ui.comp.CancelBorder;
 import org.astrogrid.desktop.modules.ui.comp.ColorCellRenderer;
 import org.astrogrid.desktop.modules.ui.comp.JPromptingTextField;
 import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
@@ -44,7 +40,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/** class that displays the user's annotations, and allows them to be edited. */
+/**{@link JPanel} that displays and allows edits of a user's annotations. */
 public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements ItemListener, DocumentListener, ActionListener, PropertyChangeListener {
 	private final Timer notifyTimer;
 
@@ -57,12 +53,12 @@ public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements 
         notifyTimer.setCoalesce(true);
         notifyTimer.setRepeats(false);	    
 	    
-		FormLayout layout = new FormLayout(
+		final FormLayout layout = new FormLayout(
 				"0dlu,30dlu,1dlu,29dlu,0dlu"
 				,"min,1dlu,min,1dlu,min,0dlu,min,1dlu,min,0dlu,fill:40dlu,1dlu,min,0dlu,min"
 		);
-		CellConstraints cc = new CellConstraints();
-		PanelBuilder builder = new PanelBuilder(layout,this);
+		final CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(layout,this);
 		int row = 1;
 
 		check = new JCheckBox("Flag");
@@ -81,7 +77,7 @@ public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements 
 		colours.setToolTipText("Change the appearance of this resource in the list");
 		colours.setRenderer(new ColorCellRenderer());
 		colours.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				 dirty();
 			}
 		});
@@ -111,7 +107,7 @@ public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements 
 		note.setEditable(true);
 		//note.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
         note.setFont(UIConstants.SMALL_DIALOG_FONT);	
-        JScrollPane sp = new JScrollPane(note,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        final JScrollPane sp = new JScrollPane(note,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		builder.addLabel("Notes",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
 
 		row++;			
@@ -143,11 +139,11 @@ private final JPromptingTextField title;
 // change notification interface.
 private final List listeners = new ArrayList();
 
-public void addChangeListener(ChangeListener e) {
+public void addChangeListener(final ChangeListener e) {
     listeners.add(e);
 }   
 
-public void removeChangeListener(ChangeListener e) {
+public void removeChangeListener(final ChangeListener e) {
     listeners.remove(e);
 }
 
@@ -159,8 +155,8 @@ private void dirty() {
 }
 
 // callback from the notification timer.
-public void actionPerformed(ActionEvent ignored) {
-    ChangeEvent ce = new ChangeEvent(this);
+public void actionPerformed(final ActionEvent ignored) {
+    final ChangeEvent ce = new ChangeEvent(this);
     for (int i = 0; i < listeners.size(); i++) {
         ((ChangeListener)listeners.get(i)).stateChanged(ce);
     }    
@@ -184,22 +180,22 @@ public void clear() {
 
 // editor listeners..
 // listen for changes - and just note that this item is now dirty.
-public void changedUpdate(DocumentEvent e) {
+public void changedUpdate(final DocumentEvent e) {
     dirty();
 }
 
-public void insertUpdate(DocumentEvent e) {
+public void insertUpdate(final DocumentEvent e) {
     dirty();
 }
 
-public void itemStateChanged(ItemEvent e) {
+public void itemStateChanged(final ItemEvent e) {
     dirty();
 }
-public void removeUpdate(DocumentEvent e) {
+public void removeUpdate(final DocumentEvent e) {
     dirty();
 }
 // propertychange listener - again, just note that the item is now dirty.
-public void propertyChange(PropertyChangeEvent evt) {
+public void propertyChange(final PropertyChangeEvent evt) {
     if (evt.getNewValue() != evt.getOldValue()) {
         dirty();
     }
@@ -208,7 +204,7 @@ public void propertyChange(PropertyChangeEvent evt) {
  * if there's no values, return null.
  */
 public UserAnnotation createAnnotation() {
-    LazyAnnotationBuilder b = new LazyAnnotationBuilder();
+    final LazyAnnotationBuilder b = new LazyAnnotationBuilder();
 	if (check.isSelected()) {
 	    b.getAnnotation().setFlagged(true);
     }
@@ -221,10 +217,10 @@ public UserAnnotation createAnnotation() {
 	if (colours.getSelectedIndex() != 0) {
 		b.getAnnotation().setHighlight((Color)colours.getSelectedItem());
 	}
-	String ta =  (String)tags.getValue();
+	final String ta =  (String)tags.getValue();
 	if (StringUtils.isNotBlank(ta)) {
 		// try to parse it.
-		StrTokenizer tok = new StrTokenizer(ta,StrMatcher.charSetMatcher(", ")); // matches spaces and commas as delimiters
+		final StrTokenizer tok = new StrTokenizer(ta,StrMatcher.charSetMatcher(", ")); // matches spaces and commas as delimiters
 		b.getAnnotation().setTags(new LinkedHashSet(tok.getTokenList()));
 	}
 	return b.annotation; // which may be null at this point.
@@ -241,7 +237,7 @@ private static class LazyAnnotationBuilder {
     }
 }
 
-public void setAnnotation(UserAnnotation ann) {
+public void setAnnotation(final UserAnnotation ann) {
     notifyTimer.stop();
 	check.setSelected(ann.isFlagged());
 			
@@ -254,9 +250,9 @@ public void setAnnotation(UserAnnotation ann) {
 	title.setValue(ann.getAlternativeTitle());
 	note.setText(ann.getNote());	
 
-	Set tr = ann.getTags();
+	final Set tr = ann.getTags();
 	if (tr != null && ! tr.isEmpty()) {
-		StrBuilder sb = new StrBuilder();
+		final StrBuilder sb = new StrBuilder();
 		sb.appendWithSeparators(tr," ");
 		tags.setValue(sb.toString());
 	}

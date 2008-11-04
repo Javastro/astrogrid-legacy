@@ -1,4 +1,4 @@
-/*$Id: VizieRImpl.java,v 1.9 2008/07/16 17:33:57 nw Exp $
+/*$Id: VizieRImpl.java,v 1.10 2008/11/04 14:35:50 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,14 +22,14 @@ import org.astrogrid.acr.cds.VizieR;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.w3c.dom.Document;
 
-/** Implementation of the vizier service
+/** Implementation of the vizier client.
  * 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Aug-2005
  *
  */
 public class VizieRImpl extends BaseCDSClient implements VizieR {
 
-    public VizieRImpl(HttpClient http,Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException {        
+    public VizieRImpl(final HttpClient http,final Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException {        
         super(http,endpoint);
 
     }
@@ -37,9 +37,9 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
     /**
      * @see org.astrogrid.acr.cds.VizieR#cataloguesMetaData(java.lang.String, double, java.lang.String, java.lang.String)
      */
-    public Document cataloguesMetaData(String target, double radius, String unit, String text)
+    public Document cataloguesMetaData(final String target, final double radius, final String unit, final String text)
             throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","cataloguesMetaData")
                 ,new NameValuePair("target",target)
@@ -48,18 +48,18 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
                 ,new NameValuePair("text",text)
         });
         
-        String r=  executeHttpMethod(meth);
+        final String r=  executeHttpMethod(meth);
         try {
-            ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
+            final ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
             return XMLUtils.newDocument(is);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ServiceException(e);
         }      
     }
 
-    public Document cataloguesMetaDataWavelength(String target, double radius, String unit, String text, String wavelength)
+    public Document cataloguesMetaDataWavelength(final String target, final double radius, final String unit, final String text, final String wavelength)
             throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","cataloguesMetaData")
                 ,new NameValuePair("target",target)
@@ -69,11 +69,11 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
                 ,new NameValuePair("wavelength",wavelength)                
         });
         
-        String r=  executeHttpMethod(meth);
+        final String r=  executeHttpMethod(meth);
         try {
-            ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
+            final ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
             return XMLUtils.newDocument(is);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ServiceException(e);
         }      
     }
@@ -81,9 +81,9 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
     /**
      * @see org.astrogrid.acr.cds.VizieR#cataloguesData(java.lang.String, double, java.lang.String, java.lang.String)
      */
-    public Document cataloguesData(String target, double radius, String unit, String text)
+    public Document cataloguesData(final String target, final double radius, final String unit, final String text)
             throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","cataloguesData")
                 ,new NameValuePair("target",target)
@@ -92,19 +92,19 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
                 ,new NameValuePair("text",text)
         });
         
-        String r=  executeHttpMethod(meth);
+        final String r=  executeHttpMethod(meth);
         try {
-            ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
+            final ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
             return XMLUtils.newDocument(is);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ServiceException(e);
         }      
     }
 
     
-    public Document cataloguesDataWavelength(String target, double radius, String unit, String text, String wavelength)
+    public Document cataloguesDataWavelength(final String target, final double radius, final String unit, final String text, final String wavelength)
             throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","cataloguesData")
                 ,new NameValuePair("target",target)
@@ -114,11 +114,11 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
                 ,new NameValuePair("wavelength",wavelength)                 
         });
         
-        String r=  executeHttpMethod(meth);
+        final String r=  executeHttpMethod(meth);
         try {
-            ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
+            final ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
             return XMLUtils.newDocument(is);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ServiceException(e);
         }      
     }
@@ -127,16 +127,16 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
      * @see org.astrogrid.acr.cds.VizieR#metaAll()
      */
     public Document metaAll() throws ServiceException {
-        HttpMethod meth = buildHttpMethod();
+        final HttpMethod meth = buildHttpMethod();
         meth.setQueryString(new NameValuePair[] {
                 new NameValuePair("method","metaAll")
         });
         
-        String r=  executeHttpMethod(meth);
+        final String r=  executeHttpMethod(meth);
         try {
-            ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
+            final ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
             return XMLUtils.newDocument(is);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ServiceException(e);
         }            
     }
@@ -147,6 +147,9 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
 
 /* 
 $Log: VizieRImpl.java,v $
+Revision 1.10  2008/11/04 14:35:50  nw
+javadoc polishing
+
 Revision 1.9  2008/07/16 17:33:57  nw
 Complete - task 372: re-implement CDS tasks
 

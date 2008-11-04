@@ -11,7 +11,9 @@ import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** A bit hacky - on 'connect()' cycles through the available alternatives, 
+/** 
+ * URL connection for <tt>fallback:</tt>.
+ * A bit hacky - on 'connect()' cycles through the available alternatives, 
  * until it can connect to one. then data-fetching methods delegate to the 
  * actual connection object.
  * 
@@ -24,20 +26,20 @@ public final class FallbackURLConnection extends URLConnection {
 	/**
 	 * @param url
 	 */
-	public FallbackURLConnection(URL url) {
+	public FallbackURLConnection(final URL url) {
 		super(url);
 	}
 
 	public void connect() throws IOException {
-		StringTokenizer tok = new StringTokenizer(getURL().toString().substring(FALLBACK_PROTOCOL.length()),",");
+		final StringTokenizer tok = new StringTokenizer(getURL().toString().substring(FALLBACK_PROTOCOL.length()),",");
 		while (tok.hasMoreElements()) { 	// try each url in turn until something works..
-			URL candidate = new URL(tok.nextToken());
+			final URL candidate = new URL(tok.nextToken());
 			logger.debug("Trying " + candidate);
 			try {
 				actual = candidate.openConnection();
 				actual.connect();
 				return; // if we've gotten this far, all is good.
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				logger.warn(candidate + " failed with '" + e.toString() + "' - falling back");
 			}
 		}
@@ -52,7 +54,7 @@ public final class FallbackURLConnection extends URLConnection {
 		return this.getActual().getContent();
 	}
 
-	public Object getContent(Class[] classes) throws IOException {
+	public Object getContent(final Class[] classes) throws IOException {
 		return this.getActual().getContent(classes);
 	}
 

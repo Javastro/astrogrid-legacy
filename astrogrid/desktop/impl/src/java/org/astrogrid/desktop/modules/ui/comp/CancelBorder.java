@@ -10,7 +10,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.text.JTextComponent;
 
 /**
- * Draws the cancel button as a gray circle with a white cross inside.
+ * Wrap a text field to draw a cancel button as a gray circle with a white cross inside.
  * 
  * install on a text field by subclassing to implement the buttonActivated 
  * method, and then call .attachTo(textField);
@@ -22,7 +22,7 @@ public abstract class CancelBorder extends InteractiveBorder {
         setActivateOnPress(false);
     }
     
-    public void paintBorder(Component c, Graphics oldGraphics, int x, int y, int width, int height) {
+    public void paintBorder(final Component c, final Graphics oldGraphics, final int x, final int y, final int width, final int height) {
         if (c instanceof SearchField) {
             if (((SearchField) c).showingPlaceholderText ) {
                 return;
@@ -32,7 +32,7 @@ public abstract class CancelBorder extends InteractiveBorder {
             return;
         }
         
-        Graphics2D g = (Graphics2D) oldGraphics;
+        final Graphics2D g = (Graphics2D) oldGraphics;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
         final int circleL = 14;

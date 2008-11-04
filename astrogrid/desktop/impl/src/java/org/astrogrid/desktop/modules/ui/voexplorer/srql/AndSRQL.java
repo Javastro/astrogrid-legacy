@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer.srql;
 
-/** logical and of two SRQL terms
+/** logical and of two SRQL terms.
  * @author Noel Winstanley
  * @since Aug 9, 20062:44:16 PM
  */
@@ -12,7 +12,7 @@ public class AndSRQL extends BinaryOperatorSRQL {
 	 * 
 	 */
 	private static final long serialVersionUID = 7812605180017847050L;
-	public Object accept(SRQLVisitor visitor) {
+	public Object accept(final SRQLVisitor visitor) {
 		return visitor.visit(this);
 }
 	public int hashCode() {
@@ -22,25 +22,31 @@ public class AndSRQL extends BinaryOperatorSRQL {
 		result = PRIME * result + ((this.right == null) ? 0 : this.right.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
 		if (! (obj instanceof AndSRQL)) {
 			return false;
 		}
 		final AndSRQL other = (AndSRQL) obj;
 		if (this.left == null) {
-			if (other.left != null)
-				return false;
-		} else if (!this.left.equals(other.left))
-			return false;
+			if (other.left != null) {
+                return false;
+            }
+		} else if (!this.left.equals(other.left)) {
+            return false;
+        }
 		if (this.right == null) {
-			if (other.right != null)
-				return false;
-		} else if (!this.right.equals(other.right))
-			return false;
+			if (other.right != null) {
+                return false;
+            }
+		} else if (!this.right.equals(other.right)) {
+            return false;
+        }
 		return true;
 	}
 	/**
@@ -49,7 +55,7 @@ public class AndSRQL extends BinaryOperatorSRQL {
 	
 		 */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("AndQuery[");
 			buffer.append("left = ").append(left);
 			buffer.append(", right = ").append(right);

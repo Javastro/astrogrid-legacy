@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.ui;
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ui.FileManager;
 
-/** interface to a file manager component.
+/** internal interface to a file manager component.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 10, 20073:49:24 PM
  */

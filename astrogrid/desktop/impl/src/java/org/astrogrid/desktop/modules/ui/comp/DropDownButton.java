@@ -44,36 +44,36 @@ public class DropDownButton extends JToolBar implements ActionListener {
 	protected JPopupMenu popup = new JPopupMenu();
 	protected JButton mainButton;
 	protected JButton arrowButton;
-	private ActionListener mainButtonListener = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
+	private final ActionListener mainButtonListener = new ActionListener() {
+		public void actionPerformed(final ActionEvent e) {
 			//NWW
 			if (popup.getComponentCount() ==0) {
 				return;
 			}
-			Component component = popup.getComponent(0);
+			final Component component = popup.getComponent(0);
 			if (component instanceof JMenuItem) {
-				JMenuItem item = (JMenuItem)component;
+				final JMenuItem item = (JMenuItem)component;
 				item.doClick(0);
 			}
 		}
 	};
 	
-	public void setEnabled(boolean b) {
+	public void setEnabled(final boolean b) {
 		super.setEnabled(b);
 		mainButton.setEnabled(b);
 		arrowButton.setEnabled(b);
 	} 
 	
-	public DropDownButton(String title,Icon icon) {
+	public DropDownButton(final String title,final Icon icon) {
 	    this(new JButton(title,icon));
 	}
 
 	
-	public DropDownButton(JButton mainButton) {
+	public DropDownButton(final JButton mainButton) {
 		this(mainButton, new JButton(new DownArrow()));
 	}
 	
-	public DropDownButton(JButton mainButton, JButton arrowButton) {
+	public DropDownButton(final JButton mainButton, final JButton arrowButton) {
 		this();
 		this.mainButton = mainButton;
 		this.arrowButton = arrowButton;
@@ -106,7 +106,7 @@ public class DropDownButton extends JToolBar implements ActionListener {
 	
 	private void init() {
 		
-      Icon disDownArrow = new DisabledDownArrow();
+      final Icon disDownArrow = new DisabledDownArrow();
       arrowButton.setDisabledIcon(disDownArrow);
       arrowButton.setMaximumSize(new Dimension(11,100));
       mainButton.addActionListener(this); 
@@ -130,10 +130,10 @@ public class DropDownButton extends JToolBar implements ActionListener {
 	 * button and the arrow button. The height is the max of the main button or
 	 * the arrow button.
 	 */
-	private void setFixedSize(JButton mainButton, JButton arrowButton) {
-      int width = (int)(mainButton.getPreferredSize().getWidth() +
+	private void setFixedSize(final JButton mainButton, final JButton arrowButton) {
+      final int width = (int)(mainButton.getPreferredSize().getWidth() +
       					arrowButton.getPreferredSize().getWidth());
-      int height = (int)Math.max(mainButton.getPreferredSize().getHeight(),
+      final int height = (int)Math.max(mainButton.getPreferredSize().getHeight(),
       					arrowButton.getPreferredSize().getHeight());
 
       setMaximumSize(new Dimension(width, height));
@@ -145,7 +145,7 @@ public class DropDownButton extends JToolBar implements ActionListener {
 	 * Removes a component from the popup
 	 * @param component
 	 */
-	public void removeComponent(Component component) {
+	public void removeComponent(final Component component) {
 		popup.remove(component);
 	}
 
@@ -153,7 +153,7 @@ public class DropDownButton extends JToolBar implements ActionListener {
 	 * Adds a component to the popup
 	 * @param component
 	 */
-	public Component addComponent(Component component) {
+	public Component addComponent(final Component component) {
 		return popup.add(component);
 	}
 	
@@ -162,29 +162,30 @@ public class DropDownButton extends JToolBar implements ActionListener {
 	 * when the main button is clicked
 	 * @param isRunFirstItem True for on, false for off
 	 */
-	public void setRunFirstItem(boolean isRunFirstItem) {
+	public void setRunFirstItem(final boolean isRunFirstItem) {
 		mainButton.removeActionListener(this);
 		if (!isRunFirstItem) {
 			mainButton.addActionListener(this);
-		}
-		else
-			mainButton.addActionListener(mainButtonListener);
+		} else {
+            mainButton.addActionListener(mainButtonListener);
+        }
 	}
 	
    /*------------------------------[ ActionListener ]---------------------------------------------------*/ 
 	 
-   public void actionPerformed(ActionEvent ae){ 
-        JPopupMenu popup = getPopupMenu(); 
+   public void actionPerformed(final ActionEvent ae){ 
+        final JPopupMenu popup = getPopupMenu(); 
         popup.show(this, 0, this.getHeight()); 
     } 
    
    protected JPopupMenu getPopupMenu() { return popup; }
 	
+   /** an icon that draws a down arrow */
    private static class DownArrow implements Icon {
    	 
       Color arrowColor = Color.black;
 
-      public void paintIcon(Component c, Graphics g, int x, int y) {
+      public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
           g.setColor(arrowColor);
           g.drawLine(x, y, x+4, y);
           g.drawLine(x+1, y+1, x+3, y+1);
@@ -200,14 +201,14 @@ public class DropDownButton extends JToolBar implements ActionListener {
       }
 
   }
-   
+   /** an icon that draws a disabled down arrow */
    private static class DisabledDownArrow extends DownArrow {
    	 
       public DisabledDownArrow() {
           arrowColor = new Color(140, 140, 140);
       }
 
-      public void paintIcon(Component c, Graphics g, int x, int y) {
+      public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
           super.paintIcon(c, g, x, y);
           g.setColor(Color.white);
           g.drawLine(x+3, y+2, x+4, y+1);

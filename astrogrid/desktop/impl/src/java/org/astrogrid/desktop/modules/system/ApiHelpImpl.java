@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.11 2008/03/10 17:01:28 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.12 2008/11/04 14:35:49 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.MethodUtils;
@@ -35,7 +34,7 @@ import org.astrogrid.desktop.framework.Module;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
-/** Implementation of the APIHelp component
+/** Implementation of the APIHelp component.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Jun-2005
  * @todo strip html tags from responses - this should be text-only.
  * @todo transform results of invocations.
@@ -49,7 +48,7 @@ public class ApiHelpImpl implements ApiHelp {
     /** Construct a new ApiHelpImpl
      * 
      */
-    public ApiHelpImpl(ACRInternal reg, Converter conv, Transformer rpc, Transformer string) {
+    public ApiHelpImpl(final ACRInternal reg, final Converter conv, final Transformer rpc, final Transformer string) {
         super();
         this.reg = reg;
         this.conv = conv;
@@ -63,18 +62,18 @@ public class ApiHelpImpl implements ApiHelp {
     
     
     public ModuleDescriptor[] listModuleDescriptors() {
-    	return (ModuleDescriptor[])reg.getDescriptors().values().toArray(new ModuleDescriptor[]{});
+    	return reg.getDescriptors().values().toArray(new ModuleDescriptor[]{});
     }
     
     public String[] listMethods() {
-        List result = new ArrayList();
+        final List result = new ArrayList();
 
-        for (Iterator i = reg.getDescriptors().values().iterator(); i.hasNext(); ) {
-            ModuleDescriptor m = (ModuleDescriptor) i.next();
-            for(Iterator j = m.componentIterator(); j.hasNext(); ) {
-                ComponentDescriptor cd = (ComponentDescriptor)j.next();
-                for (Iterator k = cd.methodIterator(); k.hasNext(); ) {
-                    MethodDescriptor md = (MethodDescriptor)k.next();
+        for (final Iterator i = reg.getDescriptors().values().iterator(); i.hasNext(); ) {
+            final ModuleDescriptor m = (ModuleDescriptor) i.next();
+            for(final Iterator j = m.componentIterator(); j.hasNext(); ) {
+                final ComponentDescriptor cd = (ComponentDescriptor)j.next();
+                for (final Iterator k = cd.methodIterator(); k.hasNext(); ) {
+                    final MethodDescriptor md = (MethodDescriptor)k.next();
                     result.add(m.getName() + "." + cd.getName() + "." + md.getName());
                 }
             }
@@ -83,70 +82,70 @@ public class ApiHelpImpl implements ApiHelp {
     }
 
     public String[] listModules() {
-        List modules = new ArrayList();
-        for (Iterator i =reg.getDescriptors().values().iterator(); i.hasNext(); ) {
-            ModuleDescriptor md = (ModuleDescriptor)i.next();
+        final List modules = new ArrayList();
+        for (final Iterator i =reg.getDescriptors().values().iterator(); i.hasNext(); ) {
+            final ModuleDescriptor md = (ModuleDescriptor)i.next();
             modules.add(md.getName());
         }
         return (String[])modules.toArray(new String[modules.size()]);
     }
     
-    public String[] listComponentsOfModule(String moduleName) throws NotFoundException {
-        List components = new ArrayList();
-        ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(moduleName);
+    public String[] listComponentsOfModule(final String moduleName) throws NotFoundException {
+        final List components = new ArrayList();
+        final ModuleDescriptor m = reg.getDescriptors().get(moduleName);
         if (m == null) {
             throw new NotFoundException("Unknown module " + moduleName);
          }            
-        for (Iterator i = m.componentIterator(); i.hasNext(); ) {
-            ComponentDescriptor cd = (ComponentDescriptor)i.next();
+        for (final Iterator i = m.componentIterator(); i.hasNext(); ) {
+            final ComponentDescriptor cd = (ComponentDescriptor)i.next();
             components.add(m.getName() + "." + cd.getName());
         }
         return (String[])components.toArray(new String[components.size()]);
     }
     
-    public String interfaceClassName(String arg0) throws NotFoundException {
+    public String interfaceClassName(final String arg0) throws NotFoundException {
     	if (arg0 == null) {
     		// should throw some other kind of exception really - but not permitted by the signature
     		throw new NotFoundException("null parameter");
     	}
-        String[] names = arg0.split("\\.");        
-        ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
+        final String[] names = arg0.split("\\.");        
+        final ModuleDescriptor m = reg.getDescriptors().get(names[0]);
         if (m == null) {
             throw new NotFoundException("Unknown module " + names[0]);
         }
-        ComponentDescriptor cd = m.getComponent(names[1]);
+        final ComponentDescriptor cd = m.getComponent(names[1]);
         if (cd == null) {
             throw new NotFoundException("Unknown component " + names[1]);
         }
         return cd.getInterfaceClass().getName();
     }
     
-    public String[] listMethodsOfComponent(String componentName) throws NotFoundException {
-        List methods = new ArrayList();
-        String[] names = componentName.split("\\.");
-        ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
+    public String[] listMethodsOfComponent(final String componentName) throws NotFoundException {
+        final List methods = new ArrayList();
+        final String[] names = componentName.split("\\.");
+        final ModuleDescriptor m = reg.getDescriptors().get(names[0]);
 
         if (m == null) {
             throw new NotFoundException("Unknown module " + names[0]);
         }
-        ComponentDescriptor cd = m.getComponent(names[1]);
+        final ComponentDescriptor cd = m.getComponent(names[1]);
         if (cd == null) {
             throw new NotFoundException("Unknown component " + names[1]);
         }                     
-        for (Iterator i = cd.methodIterator(); i.hasNext(); ) {
-            MethodDescriptor md = (MethodDescriptor)i.next();
+        for (final Iterator i = cd.methodIterator(); i.hasNext(); ) {
+            final MethodDescriptor md = (MethodDescriptor)i.next();
             methods.add(m.getName() + "." + cd.getName() + "." + md.getName());
         }
         return (String[])methods.toArray(new String[methods.size()]);            
     }
     
-    public String[][] methodSignature(String methodName) throws NotFoundException {
-        List sigs = new ArrayList();
+    public String[][] methodSignature(final String methodName) throws NotFoundException {
+        final List sigs = new ArrayList();
         if (methodName == null) {
         	throw new NotFoundException("null");
         }
 
-        String[] names = methodName.split("\\.");
+        final String[] names = methodName.split("\\.");
         if (names[0].equalsIgnoreCase("system")) {
             if (names[1].equalsIgnoreCase("listMethods")) {
                 sigs.add(new String[]{"array","string"});
@@ -181,21 +180,21 @@ public class ApiHelpImpl implements ApiHelp {
                 return (String[][])sigs.toArray(new String[sigs.size()][2]);
             }                
         }
-            ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
+            final ModuleDescriptor m = reg.getDescriptors().get(names[0]);
             if (m == null) {
                 throw new NotFoundException( "Unknown module " + names[0]);
             }
-            ComponentDescriptor cd = m.getComponent(names[1]);
+            final ComponentDescriptor cd = m.getComponent(names[1]);
             if (cd == null) {
                 throw new NotFoundException("Unknown component " + names[1]);
             }                
-            MethodDescriptor md = cd.getMethod(names[2]);
+            final MethodDescriptor md = cd.getMethod(names[2]);
             if (md == null) {
                 throw new NotFoundException("Unknown method "+ names[2]);
             }     
-            List sig= new ArrayList();
+            final List sig= new ArrayList();
             sig.add(getXMLRPCType(md.getReturnValue()));
-            for (Iterator i = md.parameterIterator(); i.hasNext();) {
+            for (final Iterator i = md.parameterIterator(); i.hasNext();) {
                 sig.add(getXMLRPCType( ((ValueDescriptor)i.next())));
             }    
             sigs.add(sig.toArray(new String[sig.size()]));
@@ -204,18 +203,18 @@ public class ApiHelpImpl implements ApiHelp {
         return (String[][])sigs.toArray(new String[sigs.size()][]);
     }
     
-    protected String getXMLRPCType(ValueDescriptor vd) {
+    protected String getXMLRPCType(final ValueDescriptor vd) {
         // strictly speaking, this doesn't return valid xmlrpc types - but these are only a suggestion, not a spec, anyhow.
-        String type = vd.getUitype();
+        final String type = vd.getUitype();
         return type == null ? "string" : type.trim();
     }
 
-    public String moduleHelp(String moduleName) throws NotFoundException {
-            ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(moduleName);
+    public String moduleHelp(final String moduleName) throws NotFoundException {
+            final ModuleDescriptor m = reg.getDescriptors().get(moduleName);
             if (m == null) {
                 throw new NotFoundException("Unknown module " + moduleName);
             }
-            StringBuffer result = new StringBuffer();
+            final StringBuffer result = new StringBuffer();
             result.append("Module ")
             .append(m.getName())
             .append("\n\t")
@@ -224,21 +223,21 @@ public class ApiHelpImpl implements ApiHelp {
                                   
     }
     
-    public String componentHelp(String componentName) throws NotFoundException {
+    public String componentHelp(final String componentName) throws NotFoundException {
     	if (componentName == null) {
     		throw new NotFoundException("null");
     	}
-        String[] names = componentName.split("\\.");
-        String moduleName=names[0];
-            ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(moduleName);
+        final String[] names = componentName.split("\\.");
+        final String moduleName=names[0];
+            final ModuleDescriptor m = reg.getDescriptors().get(moduleName);
             if (m == null) {
                 throw new NotFoundException("Unknown module " + moduleName);
             }
-            ComponentDescriptor cd = m.getComponent(names[1]);
+            final ComponentDescriptor cd = m.getComponent(names[1]);
             if (cd == null) {
                 throw new NotFoundException("Unknown component " + names[1]);
             }                        
-            StringBuffer result = new StringBuffer()
+            final StringBuffer result = new StringBuffer()
             .append("Component ")
             .append(cd.getName())
             .append(" in module ")
@@ -250,12 +249,12 @@ public class ApiHelpImpl implements ApiHelp {
     
 
     //@todo improve format - remove cruft - from method & component help.
-    public String methodHelp(String methodName) throws NotFoundException {
+    public String methodHelp(final String methodName) throws NotFoundException {
     	if (methodName == null) {
     		throw new NotFoundException("null");
     	}
-        String[] names = methodName.split("\\.");
-        ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
+        final String[] names = methodName.split("\\.");
+        final ModuleDescriptor m = reg.getDescriptors().get(names[0]);
         if (m == null) {
             throw new NotFoundException( "Unknown module " + names[0]);
         }
@@ -264,16 +263,16 @@ public class ApiHelpImpl implements ApiHelp {
             return methodHelp("system.apihelp." + names[1]);
         }
         
-        ComponentDescriptor cd = m.getComponent(names[1]);
+        final ComponentDescriptor cd = m.getComponent(names[1]);
         if (cd == null) {
             throw new NotFoundException("Unknown component " + names[1]);
         }                
-        MethodDescriptor md = cd.getMethod(names[2]);
+        final MethodDescriptor md = cd.getMethod(names[2]);
         if (md == null) {
             throw new NotFoundException("Unknown method "+ names[2]);
         }
      
-        StringBuffer result = new StringBuffer()
+        final StringBuffer result = new StringBuffer()
                 .append("Method ")
                 .append(md.getName())
                 .append(" belonging to component ")
@@ -282,8 +281,8 @@ public class ApiHelpImpl implements ApiHelp {
                 .append(m.getName())
                 .append("\n\t")
                 .append(md.getDescription());
-        for (Iterator i = md.parameterIterator(); i.hasNext(); ) {
-            ValueDescriptor vd = (ValueDescriptor)i.next();
+        for (final Iterator i = md.parameterIterator(); i.hasNext(); ) {
+            final ValueDescriptor vd = (ValueDescriptor)i.next();
             result.append("\n")
                     .append(vd.getName())
                     .append(" : ")
@@ -301,36 +300,36 @@ public class ApiHelpImpl implements ApiHelp {
         }
 
     //@todo merge ApiHelp.callFunction,  XMLRPCServlet.execute() and HtmlServlet.callMethod
-	public Object callFunction(String methodName, int returnKind, Object[] args) throws ACRException, InvalidArgumentException, NotFoundException {
+	public Object callFunction(final String methodName, final int returnKind, final Object[] args) throws ACRException, InvalidArgumentException, NotFoundException {
 		if (methodName == null) {
 			throw new InvalidArgumentException("null");
 		}
-		String[] names = methodName.split("\\.");
+		final String[] names = methodName.split("\\.");
 		if (names.length != 3) {
 			throw new InvalidArgumentException("Expected a fully-qualified function name - of format module.component.function");
 		}
 		// this traversal isn't necessary, but is good for error-trapping.
-	      ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
+	      final ModuleDescriptor m = reg.getDescriptors().get(names[0]);
 	        if (m == null) {
 	            throw new NotFoundException( "Unknown module " + names[0]);
 	        }
 	        
-	        ComponentDescriptor cd = m.getComponent(names[1]);
+	        final ComponentDescriptor cd = m.getComponent(names[1]);
 	        if (cd == null) {
 	            throw new NotFoundException("Unknown component " + names[1]);
 	        }                
-	        MethodDescriptor md = cd.getMethod(names[2]);
+	        final MethodDescriptor md = cd.getMethod(names[2]);
 	        if (md == null) {
 	            throw new NotFoundException("Unknown method "+ names[2]);
 	        }		
 
 	        // ok. all should be there. go on and call the method.
-	        Module module = reg.getModule(m.getName());
-	        Object service = module.getComponent(cd.getName());
+	        final Module module = reg.getModule(m.getName());
+	        final Object service = module.getComponent(cd.getName());
 	        try {
-				Method method = ReflectionHelper.getMethodByName(service.getClass(),md.getName());
-				Class[] parameterTypes = method.getParameterTypes();
-		        int argumentCount =  args == null ? 0 : args.length;
+				final Method method = ReflectionHelper.getMethodByName(service.getClass(),md.getName());
+				final Class[] parameterTypes = method.getParameterTypes();
+		        final int argumentCount =  args == null ? 0 : args.length;
 				if (parameterTypes.length != argumentCount) {
 		        	throw new InvalidArgumentException("Function " + methodName + " expects "
 		        			+ parameterTypes.length + " parameters, but " 
@@ -339,8 +338,8 @@ public class ApiHelpImpl implements ApiHelp {
 		        }				
                 // convert parameters to correct types.
                 logger.debug("Converting args...");
-                Object[] realArgs = new Object[parameterTypes.length];
-                Iterator it = md.parameterIterator();
+                final Object[] realArgs = new Object[parameterTypes.length];
+                final Iterator it = md.parameterIterator();
                 for (int i =0; i < parameterTypes.length && it.hasNext(); i++) {
                     //unused.ValueDescriptor vd = (ValueDescriptor)it.next();
                     realArgs[i] = conv.convert(parameterTypes[i],args[i]);
@@ -348,7 +347,7 @@ public class ApiHelpImpl implements ApiHelp {
                 // call method
 
                 logger.debug("Calling method...");
-                Object result = MethodUtils.invokeMethod(service,md.getName(),realArgs);
+                final Object result = MethodUtils.invokeMethod(service,md.getName(),realArgs);
                 switch (returnKind) {
                 case DATASTRUCTURE:
                 	return rpc.transform(result);
@@ -358,12 +357,12 @@ public class ApiHelpImpl implements ApiHelp {
                 default:
                 	return result;
                 }
-            } catch (InvocationTargetException e) {
+            } catch (final InvocationTargetException e) {
             	throw new ACRException(e.getCause());
            
-			} catch (NoSuchMethodException x) {
+			} catch (final NoSuchMethodException x) {
 				throw new NotFoundException(new ExceptionFormatter().format(x));
-			} catch (IllegalAccessException x) {
+			} catch (final IllegalAccessException x) {
 				throw new ACRException(x);
 			}
 	        
@@ -376,6 +375,9 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.12  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.11  2008/03/10 17:01:28  nw
 removed unneeded synchronization
 

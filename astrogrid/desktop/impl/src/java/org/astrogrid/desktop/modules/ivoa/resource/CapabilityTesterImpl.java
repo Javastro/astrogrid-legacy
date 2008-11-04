@@ -26,7 +26,9 @@ import org.astrogrid.acr.ivoa.resource.StapCapability;
 import org.astrogrid.acr.ivoa.resource.ConeCapability.Query;
 import org.astrogrid.desktop.modules.system.ProgrammerError;
 
-/** @future - maybe refactor these out into separate classes - associate the 
+/**
+ * Implementation of a {@code CapabilityTester}
+ *  @future - maybe refactor these out into separate classes - associate the 
  * tests with the protocol more closely?
  * and make accessible from ar.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -45,7 +47,7 @@ public class CapabilityTesterImpl implements CapabilityTester {
     private final Siap siap;
     
     
-    public boolean testCapability(Capability cap) throws ServiceException {
+    public boolean testCapability(final Capability cap) throws ServiceException {
         if (cap instanceof ConeCapability) {
             return testConeCapability((ConeCapability) cap);
         } else if (cap instanceof SsapCapability) {
@@ -64,12 +66,12 @@ public class CapabilityTesterImpl implements CapabilityTester {
     /**
      * @param cap
      */
-    private boolean testConeCapability(ConeCapability cap) throws ServiceException {
-        Query testQuery = cap.getTestQuery();
+    private boolean testConeCapability(final ConeCapability cap) throws ServiceException {
+        final Query testQuery = cap.getTestQuery();
         if (testQuery == null) {
             throw new ProgrammerError("No test query provided");
         }
-        URI endpoint = findEndpoint(cap);
+        final URI endpoint = findEndpoint(cap);
         try {
         URL query = cone.constructQuery(endpoint,testQuery.getRa(),testQuery.getDec(),testQuery.getSr());
         if (testQuery.getVerb() != 0) {
@@ -79,16 +81,16 @@ public class CapabilityTesterImpl implements CapabilityTester {
         if (testQuery.getExtras() != null) {
             query = new URL(query.toString() + "&" + testQuery.getExtras());
         }
-        Map[] map = cone.execute(query);
+        final Map[] map = cone.execute(query);
         if (map == null || map.length == 0) {
             throw new ServiceException(NO_ROWS_MESSAGE);
         }
         return true;
-        } catch (InvalidArgumentException e) {
+        } catch (final InvalidArgumentException e) {
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);
-        } catch (NotFoundException e) { // unlikely, as only comes from resolving ivo to endpoint, and we're not doing this.
+        } catch (final NotFoundException e) { // unlikely, as only comes from resolving ivo to endpoint, and we're not doing this.
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);            
         }
     }
@@ -96,12 +98,12 @@ public class CapabilityTesterImpl implements CapabilityTester {
     /**
      * @param cap
      */
-    private boolean testSiapCapability(SiapCapability cap) throws ServiceException{
-        org.astrogrid.acr.ivoa.resource.SiapCapability.Query testQuery = cap.getTestQuery();
+    private boolean testSiapCapability(final SiapCapability cap) throws ServiceException{
+        final org.astrogrid.acr.ivoa.resource.SiapCapability.Query testQuery = cap.getTestQuery();
         if (testQuery == null) {
             throw new ProgrammerError("No test query provided");
         }
-        URI endpoint = findEndpoint(cap);
+        final URI endpoint = findEndpoint(cap);
         try {
         URL query = siap.constructQuery(endpoint
                 ,testQuery.getPos().getLong()
@@ -114,16 +116,16 @@ public class CapabilityTesterImpl implements CapabilityTester {
         if (testQuery.getExtras() != null) {
             query = new URL(query.toString() + "&" + testQuery.getExtras());
         }        
-        Map[] map = siap.execute(query);
+        final Map[] map = siap.execute(query);
         if (map == null || map.length == 0) {
             throw new ServiceException(NO_ROWS_MESSAGE);
         }
         return true;
-        } catch (InvalidArgumentException e) {
+        } catch (final InvalidArgumentException e) {
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);
-        } catch (NotFoundException e) { // unlikely, as only comes from resolving ivo to endpoint, and we're not doing this.
+        } catch (final NotFoundException e) { // unlikely, as only comes from resolving ivo to endpoint, and we're not doing this.
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);            
         }        
     }
@@ -133,14 +135,14 @@ public class CapabilityTesterImpl implements CapabilityTester {
     /**
      * @param cap
      */
-    private boolean testStapCapability(StapCapability cap) throws ServiceException {
-        org.astrogrid.acr.ivoa.resource.StapCapability.Query testQuery = cap.getTestQuery();
+    private boolean testStapCapability(final StapCapability cap) throws ServiceException {
+        final org.astrogrid.acr.ivoa.resource.StapCapability.Query testQuery = cap.getTestQuery();
         if (testQuery == null) {
             throw new ProgrammerError("No test query provided");
         }
-        URI endpoint = findEndpoint(cap);
-        Date start = new Date(testQuery.getStart()); //@fixme - won't work - need to parse this correctly using date format, but format hasn't been documented.
-        Date end = new Date(testQuery.getEnd());//@fixme too
+        final URI endpoint = findEndpoint(cap);
+        final Date start = new Date(testQuery.getStart()); //@fixme - won't work - need to parse this correctly using date format, but format hasn't been documented.
+        final Date end = new Date(testQuery.getEnd());//@fixme too
         URL query;
         try {
         if (testQuery.getPos() != null && testQuery.getSize() != null) { // positional
@@ -158,14 +160,14 @@ public class CapabilityTesterImpl implements CapabilityTester {
                     ,end
                     );
         }
-        Map[] map = ssap.execute(query);
+        final Map[] map = ssap.execute(query);
         if (map == null || map.length == 0) {
             throw new ServiceException(NO_ROWS_MESSAGE);
         }
         return true;
-        } catch (InvalidArgumentException e) {
+        } catch (final InvalidArgumentException e) {
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);
-        } catch (NotFoundException e) { // unlikely, as only comes from resolving ivo to endpoint, and we're not doing this.
+        } catch (final NotFoundException e) { // unlikely, as only comes from resolving ivo to endpoint, and we're not doing this.
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);            
         }
     }
@@ -174,12 +176,12 @@ public class CapabilityTesterImpl implements CapabilityTester {
     /**
      * @param cap
      */
-    private boolean testSsapCapability(SsapCapability cap) throws ServiceException {
-        org.astrogrid.acr.ivoa.resource.SsapCapability.Query testQuery = cap.getTestQuery();
+    private boolean testSsapCapability(final SsapCapability cap) throws ServiceException {
+        final org.astrogrid.acr.ivoa.resource.SsapCapability.Query testQuery = cap.getTestQuery();
         if (testQuery == null) {
             throw new ProgrammerError("No test query provided");
         }
-        URI endpoint = findEndpoint(cap);
+        final URI endpoint = findEndpoint(cap);
         try {
         URL query = ssap.constructQuery(endpoint
                 ,testQuery.getPos().getLong()
@@ -190,16 +192,16 @@ public class CapabilityTesterImpl implements CapabilityTester {
         if (testQuery.getQueryDataCmd() != null) {
             query = new URL(query + "&" + testQuery.getQueryDataCmd());
         }
-        Map[] map = ssap.execute(query);
+        final Map[] map = ssap.execute(query);
         if (map == null || map.length == 0) {
             throw new ServiceException(NO_ROWS_MESSAGE);
         }
         return true;
-        } catch (InvalidArgumentException e) {
+        } catch (final InvalidArgumentException e) {
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);
-        } catch (NotFoundException e) { // unlikely, as only comes from resolving ivo to endpoint, and we're not doing this.
+        } catch (final NotFoundException e) { // unlikely, as only comes from resolving ivo to endpoint, and we're not doing this.
             throw new ServiceException(INVALID_QUERY_MESSAGE,e);            
         }        
     }
@@ -209,17 +211,17 @@ public class CapabilityTesterImpl implements CapabilityTester {
      * @return
      * @throws Exception
      */
-    private URI findEndpoint(Capability cap) throws ServiceException {
-        Interface[] interfaces = cap.getInterfaces();
+    private URI findEndpoint(final Capability cap) throws ServiceException {
+        final Interface[] interfaces = cap.getInterfaces();
         if (interfaces == null || interfaces.length == 0) {
             throw new ServiceException("This resource  does not contain any service interfaces");
         }
-        AccessURL[] urls = interfaces[0].getAccessUrls();
+        final AccessURL[] urls = interfaces[0].getAccessUrls();
         if (urls == null || urls.length == 0) {
             throw new ServiceException("This resource does not provide an access URL");
             // should we look elsewhere?
         }
-        URI endpoint = urls[0].getValueURI();
+        final URI endpoint = urls[0].getValueURI();
         return endpoint;
     } 
 
@@ -228,7 +230,7 @@ public class CapabilityTesterImpl implements CapabilityTester {
 
 
 
-    public CapabilityTesterImpl(Cone cone, Ssap ssap, Stap stap, Siap siap) {
+    public CapabilityTesterImpl(final Cone cone, final Ssap ssap, final Stap stap, final Siap siap) {
         super();
         this.cone = cone;
         this.ssap = ssap;

@@ -8,7 +8,7 @@ import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 
-/** Internal interface to the task runner.
+/** Internal interface to the task runner factory.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 27, 20072:32:30 PM
  */

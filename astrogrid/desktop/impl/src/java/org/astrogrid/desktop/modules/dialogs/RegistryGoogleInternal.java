@@ -9,7 +9,9 @@ import java.net.URI;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.resource.Resource;
 
-/** Extyension of the registryGoogle interface - allow to provide a parent compoonent.
+/** Internal interface to the RegistryGoogle component. 
+ * <p/>
+ * Extensions allow a parent component to be provided to the registry google dialogue.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 21, 200812:05:38 PM
  */

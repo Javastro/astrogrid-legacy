@@ -7,14 +7,13 @@ import java.awt.Component;
 import java.util.Iterator;
 
 import javax.swing.AbstractButton;
-import javax.swing.JButton;
 import javax.swing.JPopupMenu;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 
-/** Utility class that displays contents of an event list in a popup menu.
+/**Displays contents of an event list in a <b>popup</b> menu.
  * Each item in the eventlist must be a java.awt.Component (and 
  * preferably a JMenuItem)
  * @author Noel.Winstanley@manchester.ac.uk
@@ -39,7 +38,7 @@ public class EventListPopupMenuManager implements ListEventListener {
 	 * additional components may be added to the menu before and after the 
 	 * creation of the menu manager. If true, no other components should be added.
 	 */
-	public EventListPopupMenuManager(final EventList el, final AbstractButton triggerButton, final JPopupMenu popup, boolean reverse) {
+	public EventListPopupMenuManager(final EventList el, final AbstractButton triggerButton, final JPopupMenu popup, final boolean reverse) {
 		super();
 		this.el = el;
 		this.popup = popup;
@@ -50,18 +49,18 @@ public class EventListPopupMenuManager implements ListEventListener {
 			triggerButton.setEnabled(startingSize + el.size() > 0);
 		}
 		int ix = startingSize;
-		for (Iterator i = el.iterator(); i.hasNext(); ) {
-			Component o = (Component)i.next();
+		for (final Iterator i = el.iterator(); i.hasNext(); ) {
+			final Component o = (Component)i.next();
 			popup.insert(o,mbReverseInsert(ix++));
 		}		
 		el.addListEventListener(this);
 	}
 	
 
-	public void listChanged(ListEvent e) {
+	public void listChanged(final ListEvent e) {
 		while (e.hasNext()) {
 			e.next();
-			int i = e.getIndex();
+			final int i = e.getIndex();
 			Component o;
 			switch(e.getType()) {
 				case ListEvent.INSERT:
@@ -90,21 +89,21 @@ public class EventListPopupMenuManager implements ListEventListener {
 	 * @param i
 	 * @return
 	 */
-	private int mbReverse(int i) {
+	private int mbReverse(final int i) {
 		if (! reverse) {
 			return i + startingSize;
 		} else {
-			int sz = popup.getComponentCount();
+			final int sz = popup.getComponentCount();
 			return (sz-1)-i;
 		}
 	}
 	
 	/** as insert adds before an item, the calculation is slightly different */
-	private int mbReverseInsert(int i) {
+	private int mbReverseInsert(final int i) {
 		if (! reverse) {
 			return i + startingSize;
 		} else {
-			int sz = popup.getComponentCount();
+			final int sz = popup.getComponentCount();
 			return sz -i;
 		}
 	}

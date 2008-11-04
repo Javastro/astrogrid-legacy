@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
-/** abstract definition of a close action */
+/** abstract definition of a close window action */
  public abstract  class AbstractCloseAction extends AbstractAction {
      public AbstractCloseAction() {
          super("Close Window");

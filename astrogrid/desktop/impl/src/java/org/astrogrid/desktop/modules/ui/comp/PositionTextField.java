@@ -11,7 +11,7 @@ import java.util.Locale;
 import javax.swing.JFormattedTextField;
 
 /**
- * UI field that allows input of a point position
+ * UI field that allows input of a point position.
  * 
  * 
  * Register this class as a listener on a DecSexToggle for it to automatically adjust <b>input & display</b> 
@@ -34,18 +34,18 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
         private final NumberFormat rNfd;
         private final NumberFormat dNfd;
         {
-            DecimalFormatSymbols syms = new DecimalFormatSymbols(Locale.UK);
+            final DecimalFormatSymbols syms = new DecimalFormatSymbols(Locale.UK);
             rNfd = new DecimalFormat("0.000000", syms);
             dNfd = new DecimalFormat("+0.000000;-0.000000", syms);
         }
 
-		public Object stringToValue(String arg0) throws ParseException {
-			String[] nums = arg0.split(",");
+		public Object stringToValue(final String arg0) throws ParseException {
+			final String[] nums = arg0.split(",");
 			if (nums.length != 2) {
 				throw new ParseException("Expected 2 numbers",0);
 			}
-            String sx = nums[0].trim();
-            String sy = nums[1].trim();
+            final String sx = nums[0].trim();
+            final String sy = nums[1].trim();
 
             // Double.parseDouble is more lenient than using the NumberFormat
             // parser; for instance it allows optional leading plus signs.
@@ -53,21 +53,21 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
             try {
                 x = Double.parseDouble(sx);
             }
-            catch (NumberFormatException e) {
+            catch (final NumberFormatException e) {
                 throw new ParseException(sx + " is not numeric", 0);
             }
             double y;
             try {
                 y = Double.parseDouble(sy);
             }
-            catch (NumberFormatException e) {
+            catch (final NumberFormatException e) {
                 throw new ParseException(sy + " is not numeric", 0);
             }
             return new Point2D.Double(x,y);
 		}
 
-		public String valueToString(Object arg0) throws ParseException {
-			Point2D dim = (Point2D)arg0;
+		public String valueToString(final Object arg0) throws ParseException {
+			final Point2D dim = (Point2D)arg0;
 			if (dim == null) {
 				return null;
 			}
@@ -77,8 +77,8 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
     
     protected class SexagesimalPositionFormatter extends AbstractFormatter {
 
-    	public Object stringToValue(String arg0) throws ParseException {
-			String[] nums = arg0.split(",");
+    	public Object stringToValue(final String arg0) throws ParseException {
+			final String[] nums = arg0.split(",");
 			if (nums.length != 2) {
 				throw new ParseException("Expected 2 numbers",0);
 			}
@@ -88,13 +88,13 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
                 return new Point2D.Double(PositionUtils.sexagesimalRaToDecimal(nums[0].trim()),
                                           PositionUtils.sexagesimalDecToDecimal(nums[1].trim()));
             }
-            catch (NumberFormatException e) {
+            catch (final NumberFormatException e) {
                 throw new ParseException(e.getMessage(), 0);
             }
 		}
 
-		public String valueToString(Object arg0) throws ParseException {
-			Point2D dim = (Point2D)arg0;
+		public String valueToString(final Object arg0) throws ParseException {
+			final Point2D dim = (Point2D)arg0;
 			if (dim == null) {
 				return null;
 			}
@@ -113,11 +113,11 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
      * 
      * @param p value to initialize to (decimal degrees)
      */
-    public PositionTextField(Point2D p) {
+    public PositionTextField(final Point2D p) {
         super();
         degreesSelected(null);
         setFormatterFactory(new AbstractFormatterFactory() {
-			public AbstractFormatter getFormatter(JFormattedTextField tf) {
+			public AbstractFormatter getFormatter(final JFormattedTextField tf) {
 				return isDecimal ? decimal : sexa;
 			}
         });
@@ -148,12 +148,12 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
      * @param ra right ascension
      * @param dec declination
      */
-    public void setPosition(double ra,double dec) {
+    public void setPosition(final double ra,final double dec) {
     	setValue(new Point2D.Double(ra,dec));
     }
     
     /** set the internal model (decimal degrees) */
-    public void setPosition(Point2D pos) {
+    public void setPosition(final Point2D pos) {
     	setValue(pos);
     }
     /** set the internal model (decimal degrees)
@@ -161,7 +161,7 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
      * @param s string in format width,height - where both width and heigt are in decimal degrees
      * @throws ParseException if string cannot be parsed
      */
-    public void setPosition(String s) throws ParseException {
+    public void setPosition(final String s) throws ParseException {
     	setValue(getFormatter().stringToValue(s));
     }
    
@@ -170,7 +170,7 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
 	 * call to set display to degrees
 	 * @param e ignored
 	 * */
-	public void degreesSelected(EventObject e) {
+	public void degreesSelected(final EventObject e) {
 		isDecimal = true;
 		setValue(getValue()); // forces display to update.
 	}
@@ -179,7 +179,7 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
 	 * call to set display to sexagesimal
 	 * @param e ignored
 	 * */
-	public void sexaSelected(EventObject e) {
+	public void sexaSelected(final EventObject e) {
 		isDecimal = false;
 		setValue(getValue()); // forces display to update
 	}    

@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.28 2008/08/19 12:47:10 nw Exp $
+/*$Id: VospaceImpl.java,v 1.29 2008/11/04 14:35:47 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,7 +68,7 @@ import org.astrogrid.io.Piper;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
 
-/** implementation of the vospace componet.
+/** Myspace client implementation.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Feb-2005
  * @todo aren't always throwing the right kind of exception in all cases - needs testing / inspection of myspace client
  */
@@ -917,6 +917,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.29  2008/11/04 14:35:47  nw
+javadoc polishing
+
 Revision 1.28  2008/08/19 12:47:10  nw
 findbugs fixes and improvements.
 

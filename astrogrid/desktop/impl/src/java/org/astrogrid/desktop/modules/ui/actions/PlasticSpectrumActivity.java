@@ -22,15 +22,13 @@ import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 import com.l2fprod.common.swing.JLinkButton;
 
-/**
+/** Send PLASTIC loadSpectrum message for a file.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:56 PM
  */
 public class PlasticSpectrumActivity extends AbstractFileActivity {
-	/**
-     * @author Noel.Winstanley@manchester.ac.uk
-     * @since Nov 12, 20074:38:31 PM
-     */
+    /** variant which is invokable on any kind of file <b>not</b> acceptable to the {@code PlasticSpectrumActivity}.
+     * only appears on the main menu */
     public static class Fallback extends PlasticSpectrumActivity {
 
         public Fallback(final PlasticApplicationDescription plas,

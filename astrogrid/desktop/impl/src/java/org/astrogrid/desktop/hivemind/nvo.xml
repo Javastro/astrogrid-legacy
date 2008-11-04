@@ -3,7 +3,7 @@
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/nvo-descriptors.xml">
 	]>
 <module id="nvo" version="1.0.0" package="org.astrogrid.acr.nvo">
-	Services from American NVO - not much here anymore.
+	Services specific to NVO. 
 	<!-- new configurations -->
 	
 	
@@ -23,7 +23,7 @@
 	
 	<!-- services and implementations -->
 	<service-point id="cone" interface="Cone">
-		Client to Cone Services
+		Deprecated Client to Cone Services - use ivoa.Cone instead.
         <interceptor service-id="system.deprecation" />
         <interceptor service-id="system.edt" />         
 		<interceptor service-id="system.throbber" />		

@@ -46,7 +46,7 @@ import org.xml.sax.SAXParseException;
 import com.l2fprod.common.swing.BaseDialog;
 import com.l2fprod.common.swing.JLinkButton;
 
-/** Utility class that converts exceptions into astronomer-friendly messages.
+/** Converts exceptions into astronomer-friendly messages.
  * 
  * Implementation is not thread safe, for efficiency.
  * Call static methods from EDT - for other threads, create your own instance and use that.
@@ -69,19 +69,19 @@ public class ExceptionFormatter {
     
     private static final ExceptionFormatter instance = new ExceptionFormatter();
     /** safe to call from EDT. for use from other threads, create your own instance of this class */
-    public static String formatException(Throwable ex) {
+    public static String formatException(final Throwable ex) {
         return instance.format(ex);
     }
 
     /** safe to call from EDT. From other threads, create your own instance and use the member method */
-    public static String formatException(Throwable ex,int strategy) {
+    public static String formatException(final Throwable ex,final int strategy) {
         return instance.format(ex,strategy);
     }
     
     private final StrBuilder sb = new StrBuilder(128);
     
     /** format an exception, according to the provided strategy */
-    public String format(Throwable ex,int strategy) {
+    public String format(Throwable ex,final int strategy) {
         // handy to see what's getting thrown around
         logger.debug("Intercepted",ex); // just for debugging.
         switch(strategy) {
@@ -93,7 +93,7 @@ public class ExceptionFormatter {
                 }
                 return formatSingle(ex);
             default:
-                StrBuilder hb = new StrBuilder(128);
+                final StrBuilder hb = new StrBuilder(128);
             do {
                 hb.append(formatSingle(ex));
                 hb.append("<br>");
@@ -104,11 +104,11 @@ public class ExceptionFormatter {
     }
     
     /** format an exception, using the default strategy (Outermost)*/
-    public String format(Throwable ex) {
+    public String format(final Throwable ex) {
         return format(ex,OUTERMOST);
     }
     
-    private String formatSingle(Throwable ex) {
+    private String formatSingle(final Throwable ex) {
         if (ex instanceof InvalidArgumentException) {
             sb.clear();
             sb.append("Insufficient data - ");
@@ -167,7 +167,8 @@ public class ExceptionFormatter {
      * @deprecated classes that extend this class should call {@link #showError(String, Throwable)} instead
      * @todo hide visibility altogether, or add suitable replacement code elsehwere.
      */
-    public static final void showError(final Component parent,String msg, final Throwable e) {
+    @Deprecated
+    public static final void showError(final Component parent,final String msg, final Throwable e) {
         if (GraphicsEnvironment.isHeadless()) {
             logger.error(msg,e);
         }
@@ -181,10 +182,10 @@ public class ExceptionFormatter {
         bd.getBanner().setIcon(UIManager.getIcon("OptionPane.errorIcon"));
         bd.setDialogMode(BaseDialog.CLOSE_DIALOG);
         bd.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        JLinkButton lb = new JLinkButton("Show technical error report" + UIComponentMenuBar.ELLIPSIS);
+        final JLinkButton lb = new JLinkButton("Show technical error report" + UIComponentMenuBar.ELLIPSIS);
         lb.setFont(UIConstants.SMALL_DIALOG_FONT);
         
-        JPanel content = (JPanel)bd.getContentPane();
+        final JPanel content = (JPanel)bd.getContentPane();
         content.setLayout(new BorderLayout());
         content.add(lb,BorderLayout.NORTH);
         final JEditorPane resultDisplay = new JEditorPane();
@@ -199,9 +200,9 @@ public class ExceptionFormatter {
         sp.setPreferredSize(new Dimension(500,400));
         content.add(sp,BorderLayout.CENTER);
         lb.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ev) {
-                StringWriter sw = new StringWriter();        
-                PrintWriter pw = new PrintWriter(sw);
+            public void actionPerformed(final ActionEvent ev) {
+                final StringWriter sw = new StringWriter();        
+                final PrintWriter pw = new PrintWriter(sw);
                 pw.println("<html><body><pre>");
                 pw.println("Date of Error: " + (new Date()).toString());
                 if (parent != null) {
@@ -214,24 +215,24 @@ public class ExceptionFormatter {
                 
                 if (parent != null && parent instanceof UIComponentImpl) {            
                     pw.println();
-                    UIComponent u = (UIComponent)parent;
+                    final UIComponent u = (UIComponent)parent;
                     try {
-                        Map m = u.getContext().getConfiguration().list();
-                        Properties props = new Properties();
+                        final Map m = u.getContext().getConfiguration().list();
+                        final Properties props = new Properties();
                         props.putAll(m);
                         // nggg. clunky.
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
                         props.save(bos,"Application Configuration");
                         pw.println(bos.toString());
-                    } catch (ACRException ex) {
+                    } catch (final ACRException ex) {
                         pw.println("Failed to list configuration");
                         ex.printStackTrace(pw);
                     }
                 }
                 
                 pw.println();   
-                Properties sysProps = System.getProperties();
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                final Properties sysProps = System.getProperties();
+                final ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 sysProps.save(bos,"System Properties");
                 pw.println(bos.toString());
                 

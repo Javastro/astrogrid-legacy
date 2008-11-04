@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Service;
 
-/** Interface extracted from Abstractretriever to improve modularity.
+/** Interface to a retriever.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 25, 20088:13:17 AM
  */

@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.21 2008/08/19 12:47:09 nw Exp $
+/*$Id: JettyWebServer.java,v 1.22 2008/11/04 14:35:49 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,8 +55,7 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHttpContext;
 import org.mortbay.jetty.servlet.WebApplicationContext;
 import org.mortbay.util.InetAddrPort;
-/**
-ing to a random port, with a hashed key path.
+/** Internal WebServer, implemented using <a href="http://www.mortbay.org/jetty/">Jetty</a>.
   * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  *
  */
@@ -494,6 +493,9 @@ public URL getContextBase(final String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.22  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.21  2008/08/19 12:47:09  nw
 findbugs fixes and improvements.
 

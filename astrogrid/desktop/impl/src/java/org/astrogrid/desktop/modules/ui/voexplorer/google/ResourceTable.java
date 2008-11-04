@@ -5,15 +5,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -21,7 +12,6 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
@@ -41,7 +31,7 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.EventTableModel;
 
 
-/** A table for displaying resource titles
+/** A table for displaying resources.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 12, 20077:33:02 PM
  */
@@ -54,7 +44,7 @@ public class ResourceTable extends JTable {
          super("Select All");
      }
      
-     public void actionPerformed(ActionEvent e) {
+     public void actionPerformed(final ActionEvent e) {
          selectAll();
      }
     }
@@ -66,7 +56,7 @@ public class ResourceTable extends JTable {
      public InvertSelectionAction() {
          super("Invert Selection");
      }
-     public void actionPerformed(ActionEvent e) {
+     public void actionPerformed(final ActionEvent e) {
          ((EventSelectionModel)getSelectionModel()).invertSelection();
      }
     }
@@ -78,7 +68,7 @@ public class ResourceTable extends JTable {
             super("Clear Selection");
         }
 
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             clearSelection();
         }
         
@@ -93,7 +83,7 @@ public class ResourceTable extends JTable {
 	 * @param items list (probablby a glazed list) of items that the table model is based upon.
 	 * @param vomon monitoring information.
 	 */
-	public ResourceTable(TableModel dm, List items, VoMonInternal vomon) {
+	public ResourceTable(final TableModel dm, final List items, final VoMonInternal vomon) {
 		super(dm);
 		this.items = items;
 		this.vomon = vomon;
@@ -111,7 +101,7 @@ public class ResourceTable extends JTable {
 		//1.5 only :( setComponentPopupMenu(popup);
 		
 		// setup the actionmap.
-		ActionMap map = getActionMap();
+		final ActionMap map = getActionMap();
 	      map.put(UIComponentMenuBar.EditMenuBuilder.COPY,TransferHandler.getCopyAction());
 	      map.put(UIComponentMenuBar.EditMenuBuilder.SELECT_ALL,new SelectAllAction());
 	      map.put(UIComponentMenuBar.EditMenuBuilder.INVERT_SELECTION,new InvertSelectionAction());
@@ -119,14 +109,14 @@ public class ResourceTable extends JTable {
 	}
 
 	/** construct a tool tip, based on vomon information */
-	public String getToolTipText(MouseEvent e) {
+	public String getToolTipText(final MouseEvent e) {
 		final java.awt.Point p = e.getPoint();
 		final int rowIndex = rowAtPoint(p);
 		if (rowIndex > -1) { 
 		    final int colIndex = columnAtPoint(p);
 		    final int realColumnIndex = convertColumnIndexToModel(colIndex);
 		
-			Resource ri =(Resource) items.get(rowIndex);  // weakness - possiblility of getting the wrong tooltip if the list is rapidly updating. not the end of the world.
+			final Resource ri =(Resource) items.get(rowIndex);  // weakness - possiblility of getting the wrong tooltip if the list is rapidly updating. not the end of the world.
             return getFormat().getToolTipText(ri, realColumnIndex);
         } else { 
 			return super.getToolTipText(e);
@@ -144,7 +134,7 @@ public class ResourceTable extends JTable {
 	
 	private JPopupMenu popup;
 	
-	public void setPopup(JPopupMenu p) {
+	public void setPopup(final JPopupMenu p) {
 		this.popup = p;
 	}
 	public static final Point OFFSET = new Point(8,8);
@@ -155,13 +145,13 @@ public class ResourceTable extends JTable {
 
 	
 	private class ResourceTableTransferHandler extends TransferHandler {
-		public int getSourceActions(JComponent c) {
+		public int getSourceActions(final JComponent c) {
 			return COPY;
 		}
-		public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
+		public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
 			return false;
 		}
-		protected Transferable createTransferable(JComponent c) {
+		protected Transferable createTransferable(final JComponent c) {
 			return getSelectionTransferable();
 		}
 	}
@@ -186,8 +176,8 @@ public class ResourceTable extends JTable {
      * nasty issue in OSX java 1.4 and 1.5 (popup gesture ctrl-click can
      * also deselect a selected item) - bugzilla 2610.
      */
-    protected void processMouseEvent(MouseEvent e) {
-        int mods = e.getModifiers();
+    protected void processMouseEvent(final MouseEvent e) {
+        final int mods = e.getModifiers();
 
         // If we're coming out of a click which posted the popup menu, 
         // don't give anyone else a chance to process this event - processing

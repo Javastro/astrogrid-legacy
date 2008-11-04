@@ -10,18 +10,14 @@ import java.util.List;
 import edu.berkeley.guir.prefuse.EdgeItem;
 import edu.berkeley.guir.prefuse.ItemRegistry;
 import edu.berkeley.guir.prefuse.NodeItem;
-import edu.berkeley.guir.prefuse.action.Action;
 import edu.berkeley.guir.prefuse.action.filter.Filter;
-import edu.berkeley.guir.prefuse.action.filter.TreeFilter;
 import edu.berkeley.guir.prefuse.graph.DefaultTree;
 import edu.berkeley.guir.prefuse.graph.Edge;
 import edu.berkeley.guir.prefuse.graph.Graph;
-import edu.berkeley.guir.prefuse.graph.GraphLib;
 import edu.berkeley.guir.prefuse.graph.Node;
 import edu.berkeley.guir.prefuse.graph.Tree;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** exension of the standard 'build a visualization tree' which 
+/** Unused Extension of the standard 'build a visualization tree' which 
  * filteres out some branches.
  * 
  * close, but not there yet.
@@ -49,34 +45,34 @@ public class ServiceListTreeFilter extends Filter {
     private Node m_root;
 
     // based on windowedTreefilter, but using an asstribute to halt recursion rather than doi.
-    public void run(ItemRegistry registry, double frac) {
-        Graph graph = registry.getGraph();
-        Tree ftree = new DefaultTree();
+    public void run(final ItemRegistry registry, final double frac) {
+        final Graph graph = registry.getGraph();
+        final Tree ftree = new DefaultTree();
         
-        NodeItem root = registry.getNodeItem(((Tree)graph).getRoot(),true,true);
+        final NodeItem root = registry.getNodeItem(((Tree)graph).getRoot(),true,true);
         ftree.setRoot(root);
         
         // process each node's edges
-        List queue = new ArrayList();
+        final List queue = new ArrayList();
         queue.add(root);
         while (! queue.isEmpty()) {
-            NodeItem ni = (NodeItem)queue.remove(0);
-            Node n = (Node)ni.getEntity();           
-            boolean filtered = Boolean.valueOf(n.getAttribute(VizualizationsPanel.SERVICE_FILTERED_ATTR)).booleanValue();
+            final NodeItem ni = (NodeItem)queue.remove(0);
+            final Node n = (Node)ni.getEntity();           
+            final boolean filtered = Boolean.valueOf(n.getAttribute(VizualizationsPanel.SERVICE_FILTERED_ATTR)).booleanValue();
             if (filtered) {
                 ni.setVisible(false);
             } else {
-                Iterator iter = n.getEdges();
-                int i = 0;
+                final Iterator iter = n.getEdges();
+                final int i = 0;
                 while (iter.hasNext()) {
-                    Edge ne = (Edge)iter.next();
-                    Node nn = (Node)ne.getAdjacentNode(n);
+                    final Edge ne = (Edge)iter.next();
+                    final Node nn = ne.getAdjacentNode(n);
                     NodeItem nni = registry.getNodeItem(nn);
-                    boolean recurse = nni == null || nni.getDirty() > 0;
+                    final boolean recurse = nni == null || nni.getDirty() > 0;
                     if (recurse) {
                         nni = registry.getNodeItem(nn,true,true);
                     }
-                    EdgeItem nne = registry.getEdgeItem(ne,true);
+                    final EdgeItem nne = registry.getEdgeItem(ne,true);
                     if (recurse) {
                         ni.addChild(nne);
                         queue.add(nni);

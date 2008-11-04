@@ -38,7 +38,8 @@ import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.io.Piper;
 
-/** abstract class that's an interface to a componoent that monitors the progress of a remote process.
+/** Abstract implementation of {@link ProcessMonitor}.
+ * 
  * and also possibly accumulates results and messages, and holds references to resources
  * used by running this task.
  * 

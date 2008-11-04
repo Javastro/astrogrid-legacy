@@ -22,7 +22,7 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
-/** saves formatted details of the selection as a list to disk.
+/** Save formatted details of resources.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 200711:54:38 AM
  * @TEST
@@ -30,7 +30,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 public class SaveXoXoListActivity extends AbstractResourceActivity 
     implements Activity.NoContext, Activity.NoTask{
 
-	protected boolean invokable(Resource r) {
+	protected boolean invokable(final Resource r) {
 		return true;
 	}
 
@@ -38,7 +38,7 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 	/**
 	 * 
 	 */
-	public SaveXoXoListActivity(ResourceChooserInternal chooser,FileSystemManager vfs) {
+	public SaveXoXoListActivity(final ResourceChooserInternal chooser,final FileSystemManager vfs) {
 	    setHelpID("activity.xoxo");
 		this.chooser = chooser;
 		this.vfs = vfs;
@@ -49,7 +49,7 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 
 	private final ResourceChooserInternal chooser;
 	private final FileSystemManager vfs;
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		final List rs = computeInvokable();
 		Component comp = null;
 		if (e.getSource() instanceof Component) {
@@ -63,7 +63,7 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 			protected Object construct() throws Exception {
 				PrintWriter out = null;
                 FileObject fo = null;
-				int max = rs.size() + 2;
+				final int max = rs.size() + 2;
 				int count = 0;
 				setProgress(count,max);
 				try {
@@ -72,8 +72,8 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 				    setProgress(++count,max);
 					out.print("<ul class='xoxo'>");
 					out.println("<!-- See http://microformats.org/wiki/xoxo for details of XoXo format -->");
-					for (Iterator i = rs.iterator(); i.hasNext();) {
-						Resource r = (Resource) i.next();
+					for (final Iterator i = rs.iterator(); i.hasNext();) {
+						final Resource r = (Resource) i.next();
 						String name = r.getShortName();
 						if (name == null || name.trim().length() == 0) {
 							name = r.getTitle();
@@ -93,17 +93,17 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 						out.println("         <dt>type</dt>");
 						out.println("         <dd>" + r.getType() + "</dd>");	
 						if (r instanceof Service) { // for roy.
-							Capability[] capabilities = ((Service)r).getCapabilities();
+							final Capability[] capabilities = ((Service)r).getCapabilities();
 							out.println("         <ul>");
 							for (int j = 0; j < capabilities.length; j++) {
-								Capability cap = capabilities[j];
-								Interface[] interfaces = cap.getInterfaces();
+								final Capability cap = capabilities[j];
+								final Interface[] interfaces = cap.getInterfaces();
 								for (int k = 0; k < interfaces.length; k++) {
-									Interface it = interfaces[k];
+									final Interface it = interfaces[k];
 									out.println("          <li>" + it.getType() + "<ul>");
-									AccessURL[] accessUrls = it.getAccessUrls();
+									final AccessURL[] accessUrls = it.getAccessUrls();
 									for (int index = 0; index < accessUrls.length; index++) {
-										AccessURL accessURL = accessUrls[index];
+										final AccessURL accessURL = accessUrls[index];
 										out.println("                  <li><a href='" + accessURL.getValueURI() + "'>" +accessURL.getUse()+ "</a></li>");
 									}
 									out.println("          </ul></li>");
@@ -129,7 +129,7 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 				}
 				return null;
 			}
-            protected void doFinished(Object result) {
+            protected void doFinished(final Object result) {
                 parent.showTransientMessage("Export complete","");
             }			
 		}).start();

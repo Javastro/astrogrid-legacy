@@ -11,7 +11,7 @@ import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.matchers.Matcher;
 
-/** Strategy for filtering on the type of resource.
+/**Filters on the type of resource.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 15, 20073:35:33 PM
  */
@@ -19,21 +19,21 @@ public final class TypeStrategy extends PipelineStrategy {
 	public Matcher createMatcher(final List selected) {
 		return new Matcher() {
 	
-			public boolean matches(Object arg0) {
-				Resource r = (Resource)arg0;
-				String type = r.getType();
+			public boolean matches(final Object arg0) {
+				final Resource r = (Resource)arg0;
+				final String type = r.getType();
 				return selected.contains(PrettierResourceFormatter.formatType(type));
 			}
 		};
 	}
 
-	public TransformedList createView(EventList base) {
+	public TransformedList createView(final EventList base) {
 		return new FunctionList(base,
 				new FunctionList.Function() {
 
-					public Object evaluate(Object arg0) {
-						Resource r = (Resource)arg0;
-						String rawType = r.getType();
+					public Object evaluate(final Object arg0) {
+						final Resource r = (Resource)arg0;
+						final String rawType = r.getType();
 						return PrettierResourceFormatter.formatType(rawType);
 					}
 		});

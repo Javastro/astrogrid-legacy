@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.10 2007/08/02 10:56:00 nw Exp $
+/*$Id: IconHelper.java,v 1.11 2008/11/04 14:35:54 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.io.Piper;
 
-/** class of helper methods for locating and loading icons.
+/** Locates and loads icons.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 06-Apr-2005
  *@todo integrate with new cache system - means making this a service, rather than an object. but then could cache remote icons to disk.
  */
@@ -46,7 +46,7 @@ public class IconHelper {
      * @param iconUrl url of the object to load
      * @return the icon object, or null if not found.
      */
-    public static ImageIcon loadIcon(URL iconUrl) {
+    public static ImageIcon loadIcon(final URL iconUrl) {
     	if (iconUrl!= null) {
     		InputStream is = null;
     		ByteArrayOutputStream bos = null;
@@ -57,20 +57,20 @@ public class IconHelper {
 	                is = iconUrl.openStream();
 	                Piper.pipe(is,bos); 
 	                return  new ImageIcon(bos.toByteArray());	               
-	            } catch (IOException e ) {
+	            } catch (final IOException e ) {
 	                logger.warn("Failed to download icon " + iconUrl);	                
 	            }  finally {
 	            	if (is != null) {
 	            		try {
 	            			is.close();
-	            		} catch (IOException e) {
+	            		} catch (final IOException e) {
 	            			logger.warn("Failed to close stream",e);
 	            		}
 	            	}
 	            	if (bos != null) {
 	            		try {
 	            			bos.close();
-	            		} catch (IOException e) {
+	            		} catch (final IOException e) {
 	            			logger.warn("Failed to close stream",e);
 	            		}
 	            	}
@@ -84,7 +84,7 @@ public class IconHelper {
      * @param imgName filename of the icon, which must be located in this package (<tt>org.astrogrid.desktop.icons</tt>)
      * @return the icon object, or null if not found
      */
-    public static ImageIcon loadIcon(String imgName) {
+    public static ImageIcon loadIcon(final String imgName) {
     	if (imgName == null) {
     		return null;
     	}
@@ -93,7 +93,7 @@ public class IconHelper {
         }
         URL u = IconHelper.class.getResource(imgName);
         if (u != null) {
-            ImageIcon i = new ImageIcon(u);
+            final ImageIcon i = new ImageIcon(u);
             cache.put(imgName,i);
             return i;            
         } else {
@@ -101,7 +101,7 @@ public class IconHelper {
             try {
                 u = new URL(imgName);
                 return loadIcon(u);
-            } catch (MalformedURLException x) {
+            } catch (final MalformedURLException x) {
                 // fall through
             }
             logger.warn("Failed to find " + imgName );
@@ -119,6 +119,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.11  2008/11/04 14:35:54  nw
+javadoc polishing
+
 Revision 1.10  2007/08/02 10:56:00  nw
 Complete - task 47: Use XStream for persistence.
 

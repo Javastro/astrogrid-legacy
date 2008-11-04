@@ -9,17 +9,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
-/** Configuraiton and UI enhancements only available on mac platform.
+/** Configuraiton and UI enhancements only available on OSX platform.
  * 
  * as we dunno whether these classes are goiong to be available, have to go through
  * same rigmarole as with javaws - i.e. call methods using reflection.
@@ -37,18 +34,18 @@ public class MacSetup implements InvocationHandler {
 	 */
 	private static final Log logger = LogFactory.getLog(MacSetup.class);
 	
-	public MacSetup(UIContext ui) throws ClassNotFoundException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public MacSetup(final UIContext ui) throws ClassNotFoundException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		this.ui = ui;
-		Class applicationClass = Class.forName("com.apple.eawt.Application");
-		Class listenerClass = Class.forName("com.apple.eawt.ApplicationListener");
-		Class eventClass= Class.forName("com.apple.eawt.ApplicationEvent");
+		final Class applicationClass = Class.forName("com.apple.eawt.Application");
+		final Class listenerClass = Class.forName("com.apple.eawt.ApplicationListener");
+		final Class eventClass= Class.forName("com.apple.eawt.ApplicationEvent");
 		handledMethod = ReflectionHelper.getMethodByName(eventClass,"setHandled");
 		
 		application = ReflectionHelper.callStatic(applicationClass,"getApplication");
 		ReflectionHelper.call(application,"setEnabledAboutMenu",true);
 		ReflectionHelper.call(application,"setEnabledPreferencesMenu",true);	
         
-		Object listener = Proxy.newProxyInstance(this.getClass().getClassLoader(),new Class[]{listenerClass}, this);
+		final Object listener = Proxy.newProxyInstance(this.getClass().getClassLoader(),new Class[]{listenerClass}, this);
         ReflectionHelper.call(application,"addApplicationListener",listener);		
 		
 		// finally, set up the methods we're to be listening for..
@@ -68,7 +65,7 @@ public class MacSetup implements InvocationHandler {
 	protected final Method handledMethod;
 
 	/** handles calls to the menu */
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 		if (method.equals(aboutMethod)) {
 		    ui.actionPerformed(new ActionEvent(this,0,UIContext.ABOUT));
 			handledMethod.invoke(args[0],true);			

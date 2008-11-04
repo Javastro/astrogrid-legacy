@@ -11,7 +11,7 @@ import java.util.Set;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
-/** represents a classical / static folder of resources
+/** A static, enumerated list of resources.
  * 
  *  @TEST mock out calls to voexp, etc.*/
 public class StaticList extends ResourceFolder  {
@@ -19,37 +19,39 @@ public class StaticList extends ResourceFolder  {
 	public StaticList() {
 		super("New list",defaultIcon);
 	}
-	public StaticList(String name, String icon) {
+	public StaticList(final String name, final String icon) {
 		super(name, icon);
 	}
-	public StaticList(String name) {
+	public StaticList(final String name) {
 		super(name, defaultIcon);
 	}
 	
-	public StaticList(String name, Collection coll) {
+	public StaticList(final String name, final Collection coll) {
 	    this(name);
 	    setResourceSet(coll);
 	}
 	
-	   public StaticList(String name,  String[] arr) {
+	   public StaticList(final String name,  final String[] arr) {
 	        this(name);
-	        Collection c = Arrays.asList(arr);
+	        final Collection c = Arrays.asList(arr);
 	        setResourceSet(c);
 	    }
 	// just for persistence.
 	/** @deprecated - only used for obsolete persistence method */
-	public String[] getResourceArray() {
-		String[] result = new String[resouceUris.size()];
-		Iterator i = resouceUris.iterator();
+	@Deprecated
+    public String[] getResourceArray() {
+		final String[] result = new String[resouceUris.size()];
+		final Iterator i = resouceUris.iterator();
 		for (int ix = 0; i.hasNext();ix++) {
-			URI u = (URI) i.next();
+			final URI u = (URI) i.next();
 			 result[ix] = u.toString();
 		}
 		return result;
 	}
 	/** @deprecated - only used for obsolete persistence method */
-	public void setResourceArray(String[] arr) {
-		Collection c = Arrays.asList(arr);
+	@Deprecated
+    public void setResourceArray(final String[] arr) {
+		final Collection c = Arrays.asList(arr);
 		setResourceSet(c);
 	}
 	
@@ -61,16 +63,16 @@ public class StaticList extends ResourceFolder  {
 	 * 
 	 * @param s a collection of URI objects.
 	 */
-	public void setResourceSet(Collection s) {
+	public void setResourceSet(final Collection s) {
 		this.resouceUris.clear();
-		for (Iterator i = s.iterator(); i.hasNext();) {
-			Object element =  i.next();
+		for (final Iterator i = s.iterator(); i.hasNext();) {
+			final Object element =  i.next();
 			if (element instanceof URI) {
 				this.resouceUris.add(element);
 			} else {
 				try {
 					this.resouceUris.add(new URI(element.toString()));
-				} catch (URISyntaxException x) {
+				} catch (final URISyntaxException x) {
 					//logger.error("URISyntaxException",x);
 					//@todo report this.
 				}
@@ -79,19 +81,19 @@ public class StaticList extends ResourceFolder  {
 	}
     private static final String defaultIcon ="doc16.png";
 	//private static final String defaultIcon ="folder16.png";
-	private Set resouceUris = new LinkedHashSet(); // maintains order of insertion.
+	private final Set resouceUris = new LinkedHashSet(); // maintains order of insertion.
 	
 	public int getSize() {
 		return resouceUris.size();
 	}
-	public void display(RegistryGooglePanel p) {
+	public void display(final RegistryGooglePanel p) {
 		logger.info("Displaying " + getName());
 		p.displayIdSet("Contents of " + getName(),resouceUris);
 	}
-	public void edit(VOExplorerImpl voe) {
+	public void edit(final VOExplorerImpl voe) {
 		voe.editExistingStaticList(this);
 	}
-	public void editAsNew(VOExplorerImpl voe) {
+	public void editAsNew(final VOExplorerImpl voe) {
 		voe.editNewStaticList(this);
 	}
 

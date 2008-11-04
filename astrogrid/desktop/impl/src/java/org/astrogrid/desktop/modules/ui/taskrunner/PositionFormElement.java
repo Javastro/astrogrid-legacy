@@ -23,7 +23,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
 
-/** Composite form element that edits an RA and DEC parameter.
+/** Composite form element that edits RA and Dec parameters.
  * 
  * needs a bit of trickery to shoehorn 2 parameters into 1 space.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -107,7 +107,7 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
         updateParameters();
     }
 
-    /** fudged parameter bean which describes both of the parameters
+    /** A udged parameter bean which describes both the RA and Dec  parameters.
      * just used for UI display. */
     private static class CompositeParameterBean extends ParameterBean {
 

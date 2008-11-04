@@ -41,7 +41,7 @@ import com.thoughtworks.xstream.core.BaseException;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
-/**  Implementation of persistence using xstream.
+/**  Implementation of persistence using <a href="http://xstream.codehaus.org/">xstream</a>.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 31, 20073:54:35 PM
  * @TEST unit test
@@ -99,68 +99,69 @@ public class XStreamXmlPersist implements XmlPersist {
         
     }
     
-    public Object fromXml(InputStream is) throws ServiceException {
+    public Object fromXml(final InputStream is) throws ServiceException {
         try {
             return xstream.fromXML(is);
-        } catch (BaseException e) {
+        } catch (final BaseException e) {
             throw new ServiceException(e);
         }
     }
 
-    public Object fromXml(Reader r) throws ServiceException {
+    public Object fromXml(final Reader r) throws ServiceException {
         try {
             return xstream.fromXML(r);
-        } catch (BaseException e) {
+        } catch (final BaseException e) {
             throw new ServiceException(e);
         }
     }
 
-    public Object fromXml(String s) throws ServiceException {
+    public Object fromXml(final String s) throws ServiceException {
         try {
             return xstream.fromXML(s);
-        } catch (BaseException e) {
+        } catch (final BaseException e) {
             throw new ServiceException(e);
         }
     }
 
-    public void toXml(Object o, OutputStream os) throws ServiceException {
+    public void toXml(final Object o, final OutputStream os) throws ServiceException {
         try {
             xstream.toXML(o,os);
-        } catch (BaseException e) {
+        } catch (final BaseException e) {
             throw new ServiceException(e);
         }        
     }
 
-    public void toXml(Object o, Writer w) throws ServiceException {
+    public void toXml(final Object o, final Writer w) throws ServiceException {
         try {
             xstream.toXML(o,w);
-        } catch (BaseException e) {
+        } catch (final BaseException e) {
             throw new ServiceException(e);
         }           
     }
 
-    public String toXml(Object o) throws ServiceException {
+    public String toXml(final Object o) throws ServiceException {
         try {
             return xstream.toXML(o);
-        } catch (BaseException e) {
+        } catch (final BaseException e) {
             throw new ServiceException(e);
         }   
     }
     
-    /** convertor for smart lists - necessary to remove
+    /** convertor for smart lists.
+     *  - necessary to remove
      * class="" attribute on query field.
      * a bit brittle - as needs to 'match' the configuration (e.g. attribute names) used for other kinds of resource folder 
      */
     public static class SmartListConverter implements Converter {
 
-        public void marshal(Object arg0, HierarchicalStreamWriter writer,
-                MarshallingContext context) {
-            SmartList sl = (SmartList)arg0;
+        public void marshal(final Object arg0, final HierarchicalStreamWriter writer,
+                final MarshallingContext context) {
+            final SmartList sl = (SmartList)arg0;
             
             writer.addAttribute("name",sl.getName());
             writer.addAttribute("iconName",sl.getIconName());
             writer.addAttribute("fixed",Boolean.toString(sl.isFixed()));
-            String subscription = sl.getSubscription();
+            final String subscription = sl.getSubscription();
             if (subscription != null) {
                 writer.addAttribute("subscription",subscription);
             }
@@ -169,9 +170,9 @@ public class XStreamXmlPersist implements XmlPersist {
             writer.endNode();
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader,
-                UnmarshallingContext context) {
-            SmartList sl = new SmartList();
+        public Object unmarshal(final HierarchicalStreamReader reader,
+                final UnmarshallingContext context) {
+            final SmartList sl = new SmartList();
             final String fixedVal = reader.getAttribute("fixed");
             if (fixedVal != null) {
                 sl.setFixed(Boolean.valueOf(fixedVal).booleanValue());
@@ -189,7 +190,7 @@ public class XStreamXmlPersist implements XmlPersist {
             while (reader.hasMoreChildren()) {
                 reader.moveDown();
                 if ("query".equals(reader.getNodeName())) {
-                    SRQL q = (SRQL)context.convertAnother(sl,SRQL.class);
+                    final SRQL q = (SRQL)context.convertAnother(sl,SRQL.class);
                     sl.setQuery(q);
                 }
                 reader.moveUp();
@@ -197,7 +198,7 @@ public class XStreamXmlPersist implements XmlPersist {
             return sl;
         }
 
-        public boolean canConvert(Class arg0) {
+        public boolean canConvert(final Class arg0) {
             return arg0 == SmartList.class;
         }
     }
@@ -205,29 +206,29 @@ public class XStreamXmlPersist implements XmlPersist {
     /** converter for SRQL */
     public static class SRQLConverter implements Converter {
 
-        public boolean canConvert(Class arg0) {
+        public boolean canConvert(final Class arg0) {
             return SRQL.class.isAssignableFrom(arg0);
         }
 
 
         private final SRQLVisitor visitor = new KeywordSRQLVisitor();
-        public void marshal(Object arg0, HierarchicalStreamWriter writer,
-                MarshallingContext context) {
-            SRQL srql = (SRQL)arg0;
+        public void marshal(final Object arg0, final HierarchicalStreamWriter writer,
+                final MarshallingContext context) {
+            final SRQL srql = (SRQL)arg0;
             try {
                 writer.setValue((String)srql.accept(visitor));
-            } catch (Throwable t) {
+            } catch (final Throwable t) {
                 throw new ConversionException(t);
             }
             
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader,
-                UnmarshallingContext context) {
-            String s = reader.getValue();
+        public Object unmarshal(final HierarchicalStreamReader reader,
+                final UnmarshallingContext context) {
+            final String s = reader.getValue();
             try {
                 return (new SRQLParser(s)).parse();
-            } catch (Throwable t) {
+            } catch (final Throwable t) {
                 throw new ConversionException(t);
             }
         }
@@ -236,38 +237,39 @@ public class XStreamXmlPersist implements XmlPersist {
     /** converter for java.net.URI */
     public static class URIConverter extends AbstractSingleValueConverter{
 
-        public boolean canConvert(Class arg0) {
+        public boolean canConvert(final Class arg0) {
             return arg0.equals(URI.class);
         }
 
-        public Object fromString(String arg0) {
+        public Object fromString(final String arg0) {
             try {
                 return new URI(arg0);
-            } catch (URISyntaxException x) {
+            } catch (final URISyntaxException x) {
                 throw new ConversionException(x);
             }
         } 
     }
     
-    /** convertor for java.awt.Color - convert to a hex string. XStream lib contains a color converter already - but this has
+    /** convertor for java.awt.Color.
+     *  - convert to a hex string. XStream lib contains a color converter already - but this has
      * separate elements for R, G B - which is  a bit of a mouthful, and means it can't be used in an attribute, only an element. */
     public static class ColorConverter implements Converter {
 
-        public void marshal(Object arg0, HierarchicalStreamWriter arg1, MarshallingContext arg2) {
-            Color c = (Color)arg0;
-            int i = c.getRGB();
+        public void marshal(final Object arg0, final HierarchicalStreamWriter arg1, final MarshallingContext arg2) {
+            final Color c = (Color)arg0;
+            final int i = c.getRGB();
             arg1.setValue("#" + Integer.toHexString(i).substring(2,8)); // omit the alpha chanel, otherwise can't parse back in. odd.
         }
 
-        public Object unmarshal(HierarchicalStreamReader arg0, UnmarshallingContext arg1) {
+        public Object unmarshal(final HierarchicalStreamReader arg0, final UnmarshallingContext arg1) {
             try {
                 return Color.decode(arg0.getValue());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 throw new ConversionException(e);
             }
         }
 
-        public boolean canConvert(Class arg0) {
+        public boolean canConvert(final Class arg0) {
             return arg0.equals(Color.class);
         }
     }

@@ -29,7 +29,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 
-/** abstract baseclass for a persistent list.
+/** Abstract class for a persistent list of folders
  * provides a persistent model to which multiple views can connect.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 200711:25:20 PM
@@ -46,7 +46,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
      *  create a new persisten list.
      *  
      */
-    public AbstractListProvider(final UIContext parent, final File storage, XmlPersist xml) {
+    public AbstractListProvider(final UIContext parent, final File storage, final XmlPersist xml) {
         this.parent = parent;
         this.storage = storage;
         this.xml = xml;
@@ -66,7 +66,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
 
     // called when a recoverable exception is thrown by the decoder.
     //@todo remove once we're done with backward compatability
-    public void exceptionThrown(Exception e) {
+    public void exceptionThrown(final Exception e) {
         logger.warn("Exception whilst reading file: '" + e.getMessage() + "' - continuing");
         logger.debug(e);
     }
@@ -78,12 +78,12 @@ implements ListEventListener,  ListProvider, ExceptionListener{
     }
 
     /** folder list has changed - write it back to disk */
-    public void listChanged(ListEvent arg0) {
+    public void listChanged(final ListEvent arg0) {
         save(storage,theList);
     }
 
 
-    public final void load(File f, List l) {
+    public final void load(final File f, final List l) {
         if (! f.exists()) {
             return;
         }
@@ -91,16 +91,16 @@ implements ListEventListener,  ListProvider, ExceptionListener{
         InputStream fis = null;
         try { 
             fis = new FileInputStream(f);
-            List rs = (List)xml.fromXml(fis);
+            final List rs = (List)xml.fromXml(fis);
             if (rs != null) {
                 l.addAll(rs);
                 logger.info("Loaded " + rs.size() + " items");
             } else {
                 logger.info("File is empty");
             }
-        } catch (FileNotFoundException ex) {
+        } catch (final FileNotFoundException ex) {
             logger.error(f.toString(),ex);        
-        } catch (ServiceException x) {
+        } catch (final ServiceException x) {
             logger.info("Failed to read file");
             logger.debug("Failed to read file",x);
             // trying to fall back to old technique..
@@ -110,7 +110,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
             if (fis != null) {
                 try {
                     fis.close();
-                } catch (IOException x1) {
+                } catch (final IOException x1) {
                     logger.error("IOException",x1);
                 }
             }
@@ -127,13 +127,13 @@ implements ListEventListener,  ListProvider, ExceptionListener{
                 OutputStream fos = null;
                 try {
                     fos = new FileOutputStream(file);
-                    List output = new ArrayList(content); // necessary to copy, as glazedList doesn't serialize
+                    final List output = new ArrayList(content); // necessary to copy, as glazedList doesn't serialize
                     xml.toXml(output,fos);
                 } finally {
                     if (fos != null) {
                         try {
                             fos.close();
-                        } catch (IOException x) {
+                        } catch (final IOException x) {
                             logger.error("Failed to save list.",x);
                         }
                     }
@@ -157,7 +157,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
 
     // legacy methods - keep these around for a little while for backwards compatability..
     //@fixme - delete.
-    private void loadOldXmlDecoder(File f, java.util.List target) {
+    private void loadOldXmlDecoder(final File f, final java.util.List target) {
         if (! f.exists()) {
             return;
         }
@@ -167,20 +167,20 @@ implements ListEventListener,  ListProvider, ExceptionListener{
         try { 
             fis = new FileInputStream(f);
             x = new XMLDecoder(fis,this,this);
-            Folder[] rs = (Folder[])x.readObject();
+            final Folder[] rs = (Folder[])x.readObject();
             if (rs != null) {
                 target.addAll(Arrays.asList(rs));
                 logger.info("Loaded " + rs.length + " items");
             } else {
                 logger.info("File is empty");
             }
-        } catch (FileNotFoundException ex) {
+        } catch (final FileNotFoundException ex) {
             logger.error(storage.toString(),ex);
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        } catch (final ArrayIndexOutOfBoundsException ex) {
             // thrown when the file contains no data - a bit crap - no way to check this.
             // fail gracefully.
             logger.info("File is empty");
-        } catch (NoSuchElementException ex) {
+        } catch (final NoSuchElementException ex) {
             // thrown when the file contains no data - a bit crap - no way to check this.
             // fail gracefully.
             logger.info("File is empty");			
@@ -191,7 +191,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
             if (fis != null) {
                 try {
                     fis.close();
-                } catch (IOException x1) {
+                } catch (final IOException x1) {
                     logger.error("IOException",x1);
                 }
             }

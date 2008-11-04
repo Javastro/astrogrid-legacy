@@ -50,9 +50,9 @@ import org.astrogrid.util.DomHelper;
 import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
 
-/** Improved implementation of registry which uses a different caching strategy for xquerying.
+/** Optimized registry client which uses an index caching strategy for xquerying.
  * 
- * 
+ * <p/>
  * results aren't stored in bulk cache (as with previous version). instead, a preliminary query is done to get all indexes of 
  * results - this is stored in index cache.
  * then resources that are alreeady in cache are located.

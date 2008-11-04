@@ -8,7 +8,7 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
 
-/** titled border with some styling tweaks. use this class,
+/** Titled border with some styling tweaks. use this class,
  * rather than construcitng your own, to ensure a consistent appearance.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Sep 10, 20077:49:44 PM
@@ -20,7 +20,7 @@ public class MyTitledBorder  {
     private MyTitledBorder() {
     }
     /** create a titled border, based on a lined border */
-    public static TitledBorder createLined(String title) {
+    public static TitledBorder createLined(final String title) {
         return BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY)
                 ,title
@@ -31,7 +31,7 @@ public class MyTitledBorder  {
                 )     ;  
     }
     /** create a titled border, based on an empty border */
-    public static TitledBorder createEmpty(String title) {
+    public static TitledBorder createEmpty(final String title) {
         return BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(1,1,1,1)
                 ,title

@@ -4,15 +4,12 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
-import org.astrogrid.acr.ivoa.resource.Content;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
 import org.astrogrid.desktop.modules.votech.Annotation;
@@ -24,7 +21,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.matchers.Matcher;
 
-/** strategy that that filters on tag annotations.
+/** Filters on various kinds of annotation.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 20, 20071:47:40 AM
  */
@@ -52,11 +49,11 @@ public class TagStrategy extends PipelineStrategy {
 	public Matcher createMatcher(final List selected) {
 		return new Matcher() {
 
-			public boolean matches(Object arg0) {
-				Resource r = (Resource)arg0;
+			public boolean matches(final Object arg0) {
+				final Resource r = (Resource)arg0;
 				boolean seenNone = true;
-				for (Iterator i = annServer.getLocalAnnotations(r); i.hasNext(); ) {
-					Annotation a = (Annotation)i.next();
+				for (final Iterator i = annServer.getLocalAnnotations(r); i.hasNext(); ) {
+					final Annotation a = (Annotation)i.next();
 					if (a instanceof UserAnnotation 
 							&& ((UserAnnotation)a).isFlagged()
 							&& selected.contains(FLAGGED)) {
@@ -70,7 +67,7 @@ public class TagStrategy extends PipelineStrategy {
 //					    System.err.println(a.getNote());
 //					    return true;
 //					}
-					Set tags = a.getTags();
+					final Set tags = a.getTags();
 					if (tags != null && ! tags.isEmpty()) {
 						seenNone = false;
 						if (CollectionUtils.containsAny(selected,tags)) {
@@ -83,14 +80,14 @@ public class TagStrategy extends PipelineStrategy {
 		};
 	}
 
-	public TransformedList createView(EventList base) {
+	public TransformedList createView(final EventList base) {
 		return new CollectionList(base,
 				new CollectionList.Model() {
-			public List getChildren(Object arg0) {
+			public List getChildren(final Object arg0) {
 				final Resource r = (Resource)arg0;
 				List result = NONE_PROVIDED;
-				for(Iterator i = annServer.getLocalAnnotations(r); i.hasNext(); ) {
-					Annotation a = (Annotation)i.next();
+				for(final Iterator i = annServer.getLocalAnnotations(r); i.hasNext(); ) {
+					final Annotation a = (Annotation)i.next();
 					if (a instanceof UserAnnotation && ((UserAnnotation)a).isFlagged()) {
 						if (result == NONE_PROVIDED) {
 							result = new ArrayList();
@@ -110,7 +107,7 @@ public class TagStrategy extends PipelineStrategy {
 //				        }
 //				        result.add(ANNOTATED);
 //				    }
-					Set tags = a.getTags();
+					final Set tags = a.getTags();
 					if (tags != null && ! tags.isEmpty()) {
 						if (result == NONE_PROVIDED) {
 							result = new ArrayList(tags.size());

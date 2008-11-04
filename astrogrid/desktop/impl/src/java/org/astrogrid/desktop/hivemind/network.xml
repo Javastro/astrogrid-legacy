@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <module id="network" version="1.0.0" package="org.astrogrid.acr.system">
-
+    Configuration of the underlying network.
   <contribution configuration-id="framework.preferences">
 
 <!--
@@ -72,6 +72,7 @@ Other Network Settings
 NETWORK CONFIGURATION
 -->
   <service-point id="netConfig" visibility="private" interface="java.lang.Runnable"/>
+    component run at startup to configure the network - reads the preferences defined in this module.
   <implementation service-id="netConfig">
     <invoke-factory model="primitive">
       <construct class="org.astrogrid.desktop.modules.system.NetworkConfigurator">

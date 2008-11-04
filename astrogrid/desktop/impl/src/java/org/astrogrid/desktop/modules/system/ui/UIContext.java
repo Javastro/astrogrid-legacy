@@ -18,7 +18,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import ca.odell.glazedlists.EventList;
 
-/** central context object - used to store data common to all ui.
+/** Central UI context - used to store data common to all windows.
  * 
  * Any models returned from methods in this class aren't EDT-protecterd - 
  * it's the responsibility of the caller of these methods to access the model in 

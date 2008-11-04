@@ -54,7 +54,7 @@ import ca.odell.glazedlists.matchers.Matcher;
 
 import com.l2fprod.common.swing.JTaskPane;
 
-/** Implementation of a resource chooser that uses the filemanaer (storage view) code.
+/** Implementation of a file resource chooser that uses the filemanaer (storage view) code.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 30, 20079:49:42 AM
  */

@@ -7,16 +7,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.JOptionPane;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -28,7 +23,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
 
 /**
- * Helper class that manages the file upload when a file:// reference is provided.
+ * Helper class that manages the file upload necessary when a {@code file://} reference is provided.
  * factored out of task parameters form to keep the code a little more modular.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 6, 200712:38:39 PM
@@ -36,7 +31,7 @@ import ca.odell.glazedlists.FunctionList;
 public class LocalFileUploadAssistant implements PropertyChangeListener, FunctionList.AdvancedFunction{
     
 
-    public LocalFileUploadAssistant(UIComponent parent, FileSystemManager vfs, EventList components) {
+    public LocalFileUploadAssistant(final UIComponent parent, final FileSystemManager vfs, final EventList components) {
         super();
         this.parent = parent;
         this.vfs = vfs;
@@ -51,32 +46,32 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
     private static final String FIRST_RUN_KEY = "isFirstRun";
 
 // interface to monitor changes to the parameter list, and listen to each component accordingly.
-    public void dispose(Object sourceValue, Object transformedValue) {
+    public void dispose(final Object sourceValue, final Object transformedValue) {
         ((JPromptingTextField)transformedValue).removePropertyChangeListener(JPromptingTextField.VALUE_PROPERTY,this);
     }
 
-    public Object evaluate(Object sourceValue) {
-        JPromptingTextField indirectField = ((AbstractTaskFormElement)sourceValue).getIndirectField();
+    public Object evaluate(final Object sourceValue) {
+        final JPromptingTextField indirectField = ((AbstractTaskFormElement)sourceValue).getIndirectField();
         indirectField.addPropertyChangeListener(JPromptingTextField.VALUE_PROPERTY,this); 
         return indirectField;
     }
-    public Object reevaluate(Object sourceValue, Object transformedValue) {
+    public Object reevaluate(final Object sourceValue, final Object transformedValue) {
         ((JPromptingTextField)transformedValue).removePropertyChangeListener(JPromptingTextField.VALUE_PROPERTY,this);
-        JPromptingTextField indirectField = ((AbstractTaskFormElement)sourceValue).getIndirectField();
+        final JPromptingTextField indirectField = ((AbstractTaskFormElement)sourceValue).getIndirectField();
         indirectField.addPropertyChangeListener(JPromptingTextField.VALUE_PROPERTY,this);
         return indirectField;
     }
     
     // triggered when the value of a uri field changes.
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(final PropertyChangeEvent evt) {
         if (evt.getNewValue() != null 
                 && ! evt.getNewValue().equals(evt.getOldValue()))  {
             try {
-                URI u = new URI(evt.getNewValue().toString());
+                final URI u = new URI(evt.getNewValue().toString());
                 if (u.getScheme().equals("file")) {
                     offerToRelocateFile(u,(JFormattedTextField) evt.getSource());
                 }
-            } catch (URISyntaxException x) {
+            } catch (final URISyntaxException x) {
                 // don't care.
             }
         }
@@ -115,7 +110,7 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
         final CopyCommand cmd = new CopyCommand(u);        
         parent.showTransientMessage("Uploading","Copying " + u);
         new BulkCopyWorker(vfs,parent,workingDir,new CopyCommand[]{cmd}){            
-            protected void doFinished(Object result) {
+            protected void doFinished(final Object result) {
                 super.doFinished(result);
                 if (! cmd.failed()) {
                     resultField.setValue(StringUtils.replace(cmd.getDestination().getURI().trim()," ","%20"));

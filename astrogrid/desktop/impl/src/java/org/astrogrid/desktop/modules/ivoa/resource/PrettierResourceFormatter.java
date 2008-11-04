@@ -54,7 +54,8 @@ import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactoryImpl;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.SystemFilter;
 
-/** class containing static methods to render resources to html.
+/** Renders registry resource information as HTML.
+ * 
  * Improvments and tweaks based on resourceFormatter - in a separate class so it's easy to switch back
  * it users demand.
  * 

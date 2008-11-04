@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-/** query building template for a UCD clause.
+/** Query building template for a UCD clause.
  *  loads data from ucdlist.txt
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 25, 20071:41:00 AM

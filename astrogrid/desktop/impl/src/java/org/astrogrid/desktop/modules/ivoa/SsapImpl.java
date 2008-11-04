@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.14 2008/03/30 18:02:19 nw Exp $
+/*$Id: SsapImpl.java,v 1.15 2008/11/04 14:35:51 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,14 +19,12 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.ivoa.resource.SiapCapability;
-import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
-/** implementation of a component that does ssap queries.
+/** Simple Spectral Access client.
  * complies with v1.04 of the SSAP spec.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  */
@@ -36,7 +34,7 @@ public class SsapImpl extends DALImpl implements Ssap {
      * @param reg
      * @param ms
      */
-    public SsapImpl(Registry reg, MyspaceInternal ms) {
+    public SsapImpl(final Registry reg, final MyspaceInternal ms) {
         super(reg, ms);
     }
 
@@ -61,12 +59,12 @@ public class SsapImpl extends DALImpl implements Ssap {
 		+ " ) and ( not ( @status = 'inactive' or @status='deleted'))]";
     }
 
-    protected URL findAccessURL(Service s) throws InvalidArgumentException {
+    protected URL findAccessURL(final Service s) throws InvalidArgumentException {
         if (!(s instanceof SsapService)) {
             throw new InvalidArgumentException(s.getId() + " does not provide a SSAP capability");
         }
-        SsapCapability cap = ((SsapService)s).findSsapCapability();
-        Interface[] interfaces = cap.getInterfaces();
+        final SsapCapability cap = ((SsapService)s).findSsapCapability();
+        final Interface[] interfaces = cap.getInterfaces();
         Interface std = null;
         switch (interfaces.length) {
             case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's ssap capability");
@@ -75,7 +73,7 @@ public class SsapImpl extends DALImpl implements Ssap {
                 break;
             default:    
                 for (int i = 0; i < interfaces.length; i++) {
-                    Interface cand = interfaces[i];
+                    final Interface cand = interfaces[i];
                     if ("std".equals(cand.getRole())) {
                         std = cand;
                     }
@@ -91,7 +89,7 @@ public class SsapImpl extends DALImpl implements Ssap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQuery(java.net.URI, double, double, double)
      */
-    public URL constructQuery(URI service, double ra, double dec, double size)
+    public URL constructQuery(final URI service, final double ra, final double dec, final double size)
             throws InvalidArgumentException, NotFoundException {
         return addOption(addOption(
                 addOption(
@@ -105,12 +103,12 @@ public class SsapImpl extends DALImpl implements Ssap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQueryS(java.net.URI, double, double, double, double)
      */
-    public URL constructQueryS(URI service, double ra, double dec, double ra_size, double dec_size)
+    public URL constructQueryS(final URI service, final double ra, final double dec, final double ra_size, final double dec_size)
             throws InvalidArgumentException, NotFoundException {        
         if (ra_size == dec_size) {
             return constructQuery(service,ra,dec,ra_size);
         } else {
-            String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
+            final String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
             return addOption(
             addOption(
                     addOption(
@@ -127,6 +125,9 @@ public class SsapImpl extends DALImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.15  2008/11/04 14:35:51  nw
+javadoc polishing
+
 Revision 1.14  2008/03/30 18:02:19  nw
 FIXED - bug 2689: upgrade to handle latest ssa standard.
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2689

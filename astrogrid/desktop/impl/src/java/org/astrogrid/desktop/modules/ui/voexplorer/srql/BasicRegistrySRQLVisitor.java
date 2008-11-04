@@ -9,7 +9,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** generate an xquery from SRQL that queries on the 'summary' elements of a resource
+/** Generate an XQuery from SRQL, using the {@code for - where} form.
  * @author Noel Winstanley
  * @since Aug 9, 20066:36:57 PM
  */
@@ -59,9 +59,9 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		//
 	}	
    
-	public String build(SRQL q, String filter) {
-		Object o = q.accept(this);
-		StringBuffer sb = new StringBuffer();
+	public String build(final SRQL q, final String filter) {
+		final Object o = q.accept(this);
+		final StringBuffer sb = new StringBuffer();
 		sb.append("for $r in //vor:Resource[not (@status = 'inactive' or @status = 'deleted')]\nwhere (");
     	if (filter != null) { // apply the filter first - as should restrict faster.
     		sb.append(filter).append(") and (");
@@ -79,51 +79,51 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		currentTarget= defaultTarget;
 	}
 	
-	protected void setTarget(String target) {
-		String[] candidate = targets.get(target.trim().toLowerCase());
+	protected void setTarget(final String target) {
+		final String[] candidate = targets.get(target.trim().toLowerCase());
 		if (candidate != null) {
 			currentTarget = candidate;
 		}
 	}
 	
     
-	public Object visit(AndSRQL q) {
+	public Object visit(final AndSRQL q) {
 		return "(" + q.getLeft().accept(this) + ") and (" + q.getRight().accept(this) + ")";
 	}
 
-	public Object visit(OrSRQL q) {
+	public Object visit(final OrSRQL q) {
 		return "(" + q.getLeft().accept(this) + ") or (" + q.getRight().accept(this) + ")";
 	}
 
-	public Object visit(NotSRQL q) {
+	public Object visit(final NotSRQL q) {
 		return "not (" + q.getChild().accept(this) + ")";
 	}
 
-	public Object visit(TermSRQL q) {
+	public Object visit(final TermSRQL q) {
 		return buildClause(q.getTerm());
 	}
 
-	public Object visit(PhraseSRQL q) {
+	public Object visit(final PhraseSRQL q) {
 		return buildClause(q.getPhrase());
 	}
-	public Object visit(TargettedSRQL q) {
+	public Object visit(final TargettedSRQL q) {
 		setTarget(q.getTarget());
-		Object result = q.getChild().accept(this);
+		final Object result = q.getChild().accept(this);
 		resetTarget();
 		return result;
 	}
 	
 
 	
-	public Object visit(XPathSRQL q) {
+	public Object visit(final XPathSRQL q) {
 		return q.getXpath(); // just gets inlined.
 	}
 	  //strange - more advanced xqeuery (union, some, etc) is very very slow.
     // seems to go faster if we write it out in longhand
     // still using non-standard &=, which is a pity.
 
-	protected String buildClause(String kw) {
-		StringBuffer sb = new StringBuffer();
+	protected String buildClause(final String kw) {
+		final StringBuffer sb = new StringBuffer();
 		for (int el = 0; el < currentTarget.length; el++) {
 			sb.append(currentTarget[el]).append(" &= '*").append(kw).append( "*'" );
 			if (el != currentTarget.length -1) {

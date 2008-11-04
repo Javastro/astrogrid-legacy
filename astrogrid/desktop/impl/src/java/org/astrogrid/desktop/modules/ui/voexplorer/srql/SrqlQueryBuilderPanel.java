@@ -146,7 +146,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		query.accept(v);
 		return v.canDisplay();
 	}
-	/** visit a candidate query and verify it can be displayed in this panel */
+	/** Examines a query and verifies it can be displayed in this panel */
 	private static class PanelVerifyingVisitor implements SRQLVisitor {
 		public boolean canDisplay() {
 			return 
@@ -235,7 +235,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		final PanelPopulatingVisitor vis = new PanelPopulatingVisitor();
 		query.accept(vis);
 	}
-	/** traverse a query and populate the panel accordingly 
+	/** Traverse a query and populate the builder panel from it. 
 	 * doesn't work for general queries - assumes specfic structure.
 	 * */
 	private class PanelPopulatingVisitor implements SRQLVisitor {
@@ -376,7 +376,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		,new TextMatchTemplate("Any field","any")
 	};
 	
-	/** represents one line in the query
+	/** Edits one line of the search expression.
 	 * is a combo box itself, selecting on a the list of clause templates.
 	 * also propagates events fired by sub-components - so the clauses eventlist
 	 * is always notified of changes.
@@ -495,7 +495,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		}
 	}
 	
-	/** definition of a 'template' - a possible search expression
+	/** A 'template' for one line of the search expression.
 	 * 
 	 * names the template, and has factory methods that will create the correct
 	 * form components for it. 
@@ -537,7 +537,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		
 	}
 	
-	/** a clause that matches a value from an enumeration */
+	/** a clause template that matches a value from an enumeration */
 	static class EnumerationTemplate extends ClauseTemplate {
 		/** construct an enumeration template
 		 * @param name name of this clause - also used as the srql target.
@@ -620,7 +620,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 
 	}
 	
-	/** a clause that matches on a string value */
+	/** a clause template that matches on a string value */
 	static class TextMatchTemplate extends ClauseTemplate {
 		public TextMatchTemplate(final String name) {
 			super(name);
@@ -694,7 +694,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		}
 	}
 	
-	/** defines how to format a Clause in the swing panel */
+	/** Formats a Clause */
 	private static class ClauseFormat extends JEventListPanel.AbstractFormat {
 		public ClauseFormat() {
 			super("d","60dlu:grow,2dlu,60dlu:grow,2dlu,60dlu:grow,6dlu,d,d","0dlu","2dlu"
@@ -723,7 +723,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		}
 	}
 
-    // adds tooltips
+	/** adds tooltips to a combobox */
     private static class ToolTipComboBoxRenderer extends BasicComboBoxRenderer {
         @Override
         public Component getListCellRendererComponent( final JList list, 

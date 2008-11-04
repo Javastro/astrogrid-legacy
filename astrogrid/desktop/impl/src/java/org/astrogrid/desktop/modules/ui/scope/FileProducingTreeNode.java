@@ -5,12 +5,10 @@ import java.awt.Image;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.provider.DelegateFileObject;
-import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 
-/** subclass of a treenode that knows how to produce a file node for it's selection. 
+/** A treenode that knows how to produce a file node containing it's 'data'. 
  * 
  * this is the class of node used when a node in the tree contains some data (which is represented by the fileNode).
  * Because of this, we can also test on this class to determine whether to show a popup or not.
@@ -31,7 +29,7 @@ public final class FileProducingTreeNode extends DefaultTreeNode implements Imag
 	/**
      * @param afo2
      */
-    public FileProducingTreeNode(FileObject afo2,Image img) {      
+    public FileProducingTreeNode(final FileObject afo2,final Image img) {      
         this.afo = afo2;
         this.image = img;
     }
@@ -41,7 +39,7 @@ public final class FileProducingTreeNode extends DefaultTreeNode implements Imag
 	    return afo;
 	}
 	/** set the file object for this node */
-	public void setFileObject(FileObject afo,Image img) {
+	public void setFileObject(final FileObject afo,final Image img) {
 	    this.afo = afo;
 	    this.image = img;
 	}
@@ -50,7 +48,7 @@ public final class FileProducingTreeNode extends DefaultTreeNode implements Imag
         return this.image;
     }
 
-    public void setImage(Image img) {
+    public void setImage(final Image img) {
         this.image = img;
     }
 	

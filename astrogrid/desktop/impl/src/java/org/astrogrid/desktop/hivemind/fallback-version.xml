@@ -1,4 +1,5 @@
-	<default value="unreleased" symbol="astrogrid.desktop.version"></default>
+	<!--  default version informaiton, used in development only -->
+    <default value="unreleased" symbol="astrogrid.desktop.version"></default>
 	<default value="unknown" symbol="astrogrid.build.date"></default>
 	<default value="unknown" symbol="astrogrid.build.location"></default>
 	<default value="unknown" symbol="astrogrid.build.by"></default>

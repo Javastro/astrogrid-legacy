@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserInternal.java,v 1.8 2007/10/07 10:40:14 nw Exp $
+/*$Id: ResourceChooserInternal.java,v 1.9 2008/11/04 14:35:52 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import java.net.URI;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.dialogs.ResourceChooser;
 
-/** Internal interface to resource chooser - allows you to specifiy a parent component
+/** Internal interface to resource chooser - allows you to specifiy a parent component.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 24-Aug-2005
  *
  */
@@ -35,6 +35,9 @@ public interface ResourceChooserInternal extends ResourceChooser {
 
 /* 
 $Log: ResourceChooserInternal.java,v $
+Revision 1.9  2008/11/04 14:35:52  nw
+javadoc polishing
+
 Revision 1.8  2007/10/07 10:40:14  nw
 added method to access VFS, as it's present.
 

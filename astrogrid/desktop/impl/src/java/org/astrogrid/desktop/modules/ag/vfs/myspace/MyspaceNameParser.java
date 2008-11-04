@@ -16,7 +16,7 @@ import org.apache.commons.vfs.provider.AbstractFileNameParser;
 import org.apache.commons.vfs.provider.UriParser;
 import org.apache.commons.vfs.provider.VfsComponentContext;
 
-/** parser for myspace names 
+/** Parser for myspace names. 
  * */
 
 public class MyspaceNameParser extends AbstractFileNameParser {
@@ -26,7 +26,7 @@ public class MyspaceNameParser extends AbstractFileNameParser {
 	private static final Log logger = LogFactory
 			.getLog(MyspaceNameParser.class);
 
-	public FileName parseUri(VfsComponentContext context, FileName base, String filename) throws FileSystemException {
+	public FileName parseUri(final VfsComponentContext context, final FileName base, String filename) throws FileSystemException {
 	// in all other implementations, first 2 parameters seem totally ignored
 	// dunno whether I should be doing the same..
 	// can I be sure that 'base' will be always non-null, for example?
@@ -40,12 +40,12 @@ public class MyspaceNameParser extends AbstractFileNameParser {
 		URI u;
 		try {
 			u = new URI(filename);
-		} catch (URISyntaxException x) {
+		} catch (final URISyntaxException x) {
 			throw new FileSystemException(x);
 		}
-		StringBuffer sb = new StringBuffer(u.getFragment() != null ? u.getFragment() : "");
-		String comm = u.getAuthority();
-		String user = u.getPath().substring(1); // drop leading '/'
+		final StringBuffer sb = new StringBuffer(u.getFragment() != null ? u.getFragment() : "");
+		final String comm = u.getAuthority();
+		final String user = u.getPath().substring(1); // drop leading '/'
 		
 		if (user.indexOf('/') != -1) {
 	        // work-around for registry ivorns which are faultily passed in here by the hyperlink handler (as is same scheme).
@@ -55,7 +55,7 @@ public class MyspaceNameParser extends AbstractFileNameParser {
 	        throw new FileSystemException("Registry ivorn: " + filename);		    
 		}
 		
-		FileType type = UriParser.normalisePath(sb);
+		final FileType type = UriParser.normalisePath(sb);
 		return new MyspaceFileName(comm,user,sb.toString(),type);
 	}
 }

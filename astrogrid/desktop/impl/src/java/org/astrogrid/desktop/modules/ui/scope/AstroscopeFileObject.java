@@ -21,7 +21,8 @@ import org.apache.commons.vfs.util.RandomAccessMode;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** Delegate file object that allows information to be provided
+/** Delegate file object  used to model a result in astroscope.
+ * allows metadata information to be provided
  * rather than detected.
  * lots of special case shortcuts to make it more performant.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -37,7 +38,7 @@ public class AstroscopeFileObject extends DelegateFileObject {
  * @param mime mimetype of the data.
  * @throws FileSystemException
  */
-    public AstroscopeFileObject(    FileObject file, long sz, long date, String mime) throws FileSystemException {
+    public AstroscopeFileObject(    final FileObject file, final long sz, final long date, final String mime) throws FileSystemException {
         super(file.getName(),(AbstractFileSystem)file.getFileSystem(), file);
         //NB:  type is also storedin thye filename - may need to override this too.
         content = new LazyFileContent();
@@ -84,7 +85,7 @@ public class AstroscopeFileObject extends DelegateFileObject {
             delegate.close();
         }
 
-        public Object getAttribute(String attrName) throws FileSystemException {
+        public Object getAttribute(final String attrName) throws FileSystemException {
             belatedlyAttach();
             return delegate.getAttribute(attrName);
         }
@@ -114,19 +115,19 @@ public class AstroscopeFileObject extends DelegateFileObject {
             return delegate.getOutputStream();
         }
 
-        public OutputStream getOutputStream(boolean append)
+        public OutputStream getOutputStream(final boolean append)
                 throws FileSystemException {
             belatedlyAttach();
             return delegate.getOutputStream(append);
         }
 
-        public RandomAccessContent getRandomAccessContent(RandomAccessMode mode)
+        public RandomAccessContent getRandomAccessContent(final RandomAccessMode mode)
                 throws FileSystemException {
             belatedlyAttach();
             return delegate.getRandomAccessContent(mode);
         }
 
-        public boolean hasAttribute(String attrName) throws FileSystemException {
+        public boolean hasAttribute(final String attrName) throws FileSystemException {
             belatedlyAttach();
             return delegate.hasAttribute(attrName);
         }
@@ -140,18 +141,18 @@ public class AstroscopeFileObject extends DelegateFileObject {
             }
         }
 
-        public void removeAttribute(String attrName) throws FileSystemException {
+        public void removeAttribute(final String attrName) throws FileSystemException {
             belatedlyAttach();
             delegate.removeAttribute(attrName);
         }
 
-        public void setAttribute(String attrName, Object value)
+        public void setAttribute(final String attrName, final Object value)
                 throws FileSystemException {
             belatedlyAttach();
             delegate.setAttribute(attrName,value);
         }
 
-        public void setLastModifiedTime(long modTime)
+        public void setLastModifiedTime(final long modTime)
                 throws FileSystemException {
             belatedlyAttach();
             delegate.setLastModifiedTime(modTime);
@@ -161,7 +162,7 @@ public class AstroscopeFileObject extends DelegateFileObject {
             try { // awkward - can't throw at this point
             belatedlyAttach();
             return delegate.getContentInfo().getContentEncoding();
-            } catch (FileSystemException e) {
+            } catch (final FileSystemException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -174,7 +175,7 @@ public class AstroscopeFileObject extends DelegateFileObject {
         return doGetType();
     }
     
-    public FileObject resolveFile(String name, NameScope scope)
+    public FileObject resolveFile(final String name, final NameScope scope)
             throws FileSystemException {
         if (name.equals(".")) {
             return this;
@@ -183,7 +184,7 @@ public class AstroscopeFileObject extends DelegateFileObject {
         }
     }
 
-    public boolean canRenameTo(FileObject newfile) {
+    public boolean canRenameTo(final FileObject newfile) {
         return false;
     }
     public FileContent getContent() throws FileSystemException {
@@ -221,7 +222,7 @@ public class AstroscopeFileObject extends DelegateFileObject {
     /**
      * @param node
      */
-    public final void setNode(TreeNode node) {
+    public final void setNode(final TreeNode node) {
         this.node = node;
     }
     /** access the result-tree-node that this result is associated with */
@@ -231,12 +232,12 @@ public class AstroscopeFileObject extends DelegateFileObject {
     
     // helper methods for working with delegte file objects.
     /** determine if fo is a delegate, but NOT an astroscopeFileObject */
-    public static final boolean isOnlyDelegateFileObject(FileObject fo) {
+    public static final boolean isOnlyDelegateFileObject(final FileObject fo) {
         return (fo instanceof DelegateFileObject && ! (fo instanceof AstroscopeFileObject));
     }
    
     /** determin if fo is a delegate of any kind( including an astroscope file object) */
-    public static final boolean isDelegateOrAstroscopeFileObject(FileObject fo) {
+    public static final boolean isDelegateOrAstroscopeFileObject(final FileObject fo) {
         return fo instanceof DelegateFileObject;
     }
     

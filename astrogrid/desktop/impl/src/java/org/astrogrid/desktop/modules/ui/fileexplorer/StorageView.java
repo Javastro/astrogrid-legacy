@@ -81,12 +81,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.l2fprod.common.swing.BaseDialog;
 import com.l2fprod.common.swing.JDirectoryChooser;
-/** View for storage.
+/** Main Pane of FileExplorer.
  * 
- * based on ubuntu nautilus, mostly.
- * a 'places' sidebar - which later we'll add in options for 'history' and maybe even 'tree'.
- * Alternately, keep it as 'places', but add in some recent history under a divider, 
- * and provide a 'tree' view in hte main window.
+ * Uses a {@link StorageFoldersList} on the left, File activities at the bottom, and on the right a
+ * {@code FlipPanel} of {@link NavigableFilesList} and {@link NavigableFilesTable}.
  * 
  *@future - add tree to 'list' view - as in OSX. also could add OSX's 'columns' view - which 
  * is nice to navigate through.

@@ -20,7 +20,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/** ui panel that displays an 'external' annotation.
+/** {@link JPanel} that displays an 'external' annotation.
  * Only displays those fields which are set.
  * Uneditable - just a display.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -28,15 +28,15 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class AnnotationPanel extends JPanel {
 
-	public AnnotationPanel(Annotation ann, HyperlinkListener hyperLinkHandler) {
+	public AnnotationPanel(final Annotation ann, final HyperlinkListener hyperLinkHandler) {
 		//@todo share these layouts - mk static?
-		FormLayout layout = new FormLayout(
+		final FormLayout layout = new FormLayout(
 				"0dlu,60dlu,0dlu"
 				,"d,0dlu,d,1dlu,p,1dlu,d,0dlu,d"
 				);
-		CellConstraints cc = new CellConstraints();
-		PanelBuilder builder = new PanelBuilder(layout,this);
-		String t = StringUtils.trimToNull(ann.getAlternativeTitle());
+		final CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(layout,this);
+		final String t = StringUtils.trimToNull(ann.getAlternativeTitle());
 		if (t != null) {
 			title = new JTextField();				
 			title.setFont(UIConstants.SMALL_DIALOG_FONT);
@@ -49,7 +49,7 @@ public class AnnotationPanel extends JPanel {
 			title = null;
 		}
 		
-		String n = StringUtils.trimToNull(ann.getNote());
+		final String n = StringUtils.trimToNull(ann.getNote());
 		if (n != null) {
 			note = new JEditorPane();
 			note.setContentType("text/html");		
@@ -61,7 +61,7 @@ public class AnnotationPanel extends JPanel {
 			note.setText(n);
 			// necessary to wrap it all in a scroll pane (even though we don't want any scroll bars)
 			// to ensure all text content is displayed. odd.
-			JScrollPane sp = new JScrollPane(note,JScrollPane.VERTICAL_SCROLLBAR_NEVER,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			final JScrollPane sp = new JScrollPane(note,JScrollPane.VERTICAL_SCROLLBAR_NEVER,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			sp.setBorder(null);
 		//	builder.addLabel("Notes",cc.xy(2,5)).setFont(SMALL_FONT);
 			builder.add(sp,cc.xy(2,5));
@@ -69,12 +69,12 @@ public class AnnotationPanel extends JPanel {
 			note = null;
 		}
 		
-		Set ta = ann.getTags();
+		final Set ta = ann.getTags();
 		if (ta != null && ta.size() > 0) {
 			tags = new JTextField();
 			tags.setFont(UIConstants.SMALL_DIALOG_FONT);
 			tags.setEditable(false);
-			StrBuilder sb = new StrBuilder();
+			final StrBuilder sb = new StrBuilder();
 			sb.appendWithSeparators(ta,", ");
 			tags.setText(sb.toString());
 			tags.setBorder(BorderFactory.createEmptyBorder());

@@ -5,7 +5,7 @@ package org.astrogrid.desktop;
 
 
 /** 
- * used within test setup for unti tests.
+ * Only used within setup for integration tests.
  * @author Noel Winstanley
  * @since Jun 6, 20061:02:10 AM
  */

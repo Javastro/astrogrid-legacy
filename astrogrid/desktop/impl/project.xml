@@ -16,19 +16,19 @@
     </repository>
     <packageGroups>
         <packageGroup>
-            <title>ACR Framework</title>
-            <packages>org.astrogrid.desktop.framework*:org.astrogrid.desktop:org.astrogrid.acr.builtin:org.astrogrid.desktop.hivemind:org.astrogrid.desktop.protocol*</packages>
+            <title>Framework</title>
+            <packages>org.astrogrid.desktop.framework*:org.astrogrid:org.astrogrid.desktop:org.astrogrid.desktop.hivemind:org.astrogrid.desktop.protocol*:org.astrogrid.desktop.alternatives:org.astrogrid.desktop.modules.test</packages>
         </packageGroup>
         <packageGroup>
-            <title>System Modules</title>
-            <packages>org.astrogrid.desktop.modules.system*:org.astrogrid.desktop.modules.util:org.astrogrid.desktop.modules.background:org.astrogrid.desktop.modules.auth</packages>
+            <title>System</title>
+            <packages>org.astrogrid.desktop.modules.system*:org.astrogrid.desktop.modules.auth</packages>
         </packageGroup>
         <packageGroup>
-            <title>VO Modules</title>
-            <packages>org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.cds*:org.astrogrid.desktop.modules.ivoa*:org.astrogrid.desktop.modules.vo*</packages>
+            <title>Virtual Observatory</title>
+            <packages>org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.cds*:org.astrogrid.desktop.modules.ivoa*:org.astrogrid.desktop.modules.vo*:org.astrogrid.desktop.modules.plastic:org.astrogrid.desktop.modules.util</packages>
         </packageGroup>
         <packageGroup>
-            <title>UI Modules</title>
+            <title>UI and Dialogues</title>
             <packages>org.astrogrid.desktop.modules.dialogs*:org.astrogrid.desktop.modules.ui*:org.astrogrid.desktop.icons:org.astrogrid.desktop.modules.adqlEditor*</packages>
         </packageGroup>
     </packageGroups>
@@ -276,6 +276,7 @@
             <artifactId>xmlrpc-client</artifactId>
             <version>3.1</version>
             <type>jar</type>
+            <url>http://ws.apache.org/xmlrpc/</url>
             <properties>
                 <dist.bundle>true</dist.bundle>
                 <strip>true</strip>             

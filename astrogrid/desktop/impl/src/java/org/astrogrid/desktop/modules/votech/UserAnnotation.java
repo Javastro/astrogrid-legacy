@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.votech;
 
 import java.awt.Color;
 
-/** representation on an annotation made by a user.
+/** A single annotation made by a user.
  * 
  * extends the external annotation with additional fields only available to the 
  * user.
@@ -31,7 +31,7 @@ public class UserAnnotation extends Annotation {
 	/**
 	 * @param flagged the flagged to set
 	 */
-	public final void setFlagged(boolean flagged) {
+	public final void setFlagged(final boolean flagged) {
 		this.flagged = flagged;
 	}
 
@@ -45,7 +45,7 @@ public class UserAnnotation extends Annotation {
 	/**
 	 * @param highlight the highlight to set
 	 */
-	public final void setHighlight(Color highlightColour) {
+	public final void setHighlight(final Color highlightColour) {
 		this.highlight = highlightColour;
 	}
 	

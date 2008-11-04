@@ -12,7 +12,11 @@ import javax.swing.TransferHandler;
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
-/** display a table of files, and allow selection, drag-n-drop and right-click popup menu
+/** 
+ * Extends {@code FilesTable} with operations on files.
+ * 
+ * 
+ * abilities: allow selection, drag-n-drop and right-click popup menu
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 24, 20071:33:35 PM
  */

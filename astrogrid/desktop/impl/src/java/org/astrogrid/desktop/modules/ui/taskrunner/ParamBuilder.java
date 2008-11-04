@@ -13,14 +13,14 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.ag.ToolManipulator;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/** construct a parameter model of a cea application
+/** Construct a parameter model of a cea application.
  * takes care of merging parameter values, refs and descriptions
  * into a single list of containers - saves a lot of search and iteration 
  * throughout the code to do it all once upfront/
  * @TEST
  * */
 public final class ParamBuilder {
-    /** a struct containing the parameter, descirpitn and reference.*/
+    /** a struct containing the parameter name, description and reference.*/
     public static class Param {
         /** the parameter reference */
         public final ParameterReferenceBean ref;
@@ -28,8 +28,8 @@ public final class ParamBuilder {
         public final ParameterBean description;
         /** values we started off with in the original tool (loaded, from state, or template*/
         public final ParameterValue[] values; // may be many-valued.
-        private Param(ParameterReferenceBean ref, ParameterBean description,
-                ParameterValue[] values) {
+        private Param(final ParameterReferenceBean ref, final ParameterBean description,
+                final ParameterValue[] values) {
             super();
             this.ref = ref;
             this.description = description;
@@ -47,10 +47,10 @@ public final class ParamBuilder {
     public final ParamBuilder.Param[] inputs;
     public final ParamBuilder.Param[] outputs;
 
-    public ParamBuilder(String iName, CeaApplication resource,Tool t) {
+    public ParamBuilder(final String iName, final CeaApplication resource,final Tool t) {
     
         final InterfaceBean iface = ToolManipulator.findInterface(iName,resource.getInterfaces());
-        Map descriptions = createDescriptionMap(resource);
+        final Map descriptions = createDescriptionMap(resource);
         
         // inputs
         ParameterReferenceBean[] refs = iface.getInputs();
@@ -78,8 +78,8 @@ public final class ParamBuilder {
     /** find the values for this parameter in the tool document
      * will never return null, but may return an empty array.
      *  */
-    private final ParameterValue[] findValues(String pName, ParameterValue[] vals) {
-        List l = new ArrayList();
+    private final ParameterValue[] findValues(final String pName, final ParameterValue[] vals) {
+        final List l = new ArrayList();
         for (int i = 0; i < vals.length; i++) {
             if (pName.equals(vals[i].getName())){
                 l.add(vals[i]);
@@ -88,9 +88,9 @@ public final class ParamBuilder {
         return (ParameterValue[])l.toArray(new ParameterValue[l.size()]);
     }
 
-    private final Map createDescriptionMap(CeaApplication applicationResource) {
-        ParameterBean[] descriptions = applicationResource.getParameters();
-        Map descriptionMap = new HashMap();
+    private final Map createDescriptionMap(final CeaApplication applicationResource) {
+        final ParameterBean[] descriptions = applicationResource.getParameters();
+        final Map descriptionMap = new HashMap();
         for (int i = 0; i < descriptions.length; i++) {
             descriptionMap.put(descriptions[i].getName(),descriptions[i]);
         }

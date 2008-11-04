@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.EventObject;
 
 import javax.swing.Timer;
@@ -22,7 +23,7 @@ import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-/** Enhances standard posion text field by also accepting  object names - these are
+/** Position input field that also accepts object names. these are
  * resolved into positions using simbad.
  * <p/>
  * If the user enters an input into the field that the superclass parser fails to parse (i.e. not in the format ra,dec)
@@ -38,8 +39,8 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  * @since May 16, 20068:12:34 AM
  */
 public class NameResolvingPositionTextField extends PositionTextField implements DocumentListener, ActionListener {
-
-    public static interface ResolutionListener{
+    /**listener interface for components that wish to be notified of resolution behaviour. */
+    public static interface ResolutionListener extends EventListener{
         /** messaged when this position text field starts resolving an object name via sesame
          * (and so the contents of the field are currently invalid)
          * @param ev
@@ -63,13 +64,13 @@ public class NameResolvingPositionTextField extends PositionTextField implements
         /**
          * @param source
          */
-        public ResolutionEvent(Object source) {
+        public ResolutionEvent(final Object source) {
             super(source);
         }
     }
     
 	/** Construct a new resolving component */
-    public NameResolvingPositionTextField(UIComponent parent, Sesame ses) {
+    public NameResolvingPositionTextField(final UIComponent parent, final Sesame ses) {
         super();
         this.ses = ses;
         this.parent = parent;
@@ -99,55 +100,55 @@ public class NameResolvingPositionTextField extends PositionTextField implements
     // event machinery
     private final ArrayList listeners= new ArrayList();
     
-    public void addResolutionListener(ResolutionListener l) {
+    public void addResolutionListener(final ResolutionListener l) {
         listeners.add(l);
     }
-    public void removeResolutionListener(ResolutionListener l) {
+    public void removeResolutionListener(final ResolutionListener l) {
         listeners.remove(l);
     }
     
     protected void fireResolving() {
-        ResolutionEvent re = new ResolutionEvent(this);
+        final ResolutionEvent re = new ResolutionEvent(this);
         for (int i = 0; i < listeners.size(); i++) {
             ((ResolutionListener)listeners.get(i)).resolving(re);
         }
     }
     
     protected void fireResolved() {
-        ResolutionEvent re = new ResolutionEvent(this);
+        final ResolutionEvent re = new ResolutionEvent(this);
         for (int i = 0; i < listeners.size(); i++) {
             ((ResolutionListener)listeners.get(i)).resolved(re);
         }        
     }
     protected void fireResolveFailed() {
-        ResolutionEvent re = new ResolutionEvent(this);
+        final ResolutionEvent re = new ResolutionEvent(this);
         for (int i = 0; i < listeners.size(); i++) {
             ((ResolutionListener)listeners.get(i)).resolveFailed(re);
         }        
     }    
     
     protected class SesameResolver extends AbstractFormatter {
-    	public SesameResolver(AbstractFormatter orig) {
+    	public SesameResolver(final AbstractFormatter orig) {
     		this.orig = orig;
     	}
     	private final AbstractFormatter orig;
-		public Object stringToValue(String arg0) throws ParseException {
+		public Object stringToValue(final String arg0) throws ParseException {
 			// try the coordinate parser first
 			objectName=null;
 			try {
-				Point2D.Double p = (Point2D.Double)orig.stringToValue(arg0);
+				final Point2D.Double p = (Point2D.Double)orig.stringToValue(arg0);
 				// construct a fake sesame bean from this..
 				pos = new SesamePositionBean();
 				pos.setRa(p.getX());
 				pos.setDec(p.getY());
 				return p;
-			} catch (ParseException e) {
+			} catch (final ParseException e) {
 			}
 			// if not returned yet, try name resolving..
 			resolveNameToPosition(arg0);
 			return new Point2D.Double(Double.NaN,Double.NaN); // temporary value, while we're finding the correct one.
 		}
-		public String valueToString(Object arg0) throws ParseException {
+		public String valueToString(final Object arg0) throws ParseException {
 			return orig.valueToString(arg0);
 		}
     }
@@ -187,7 +188,7 @@ public class NameResolvingPositionTextField extends PositionTextField implements
 				    setEnabled(true);				    
 				}
 			}
-			protected void doError(Throwable ex) {
+			protected void doError(final Throwable ex) {
 			    if (this == latest) {
 			        setText(inputPos); // put things back as they were.
 			        if (ex instanceof NotFoundException ) {
@@ -200,7 +201,7 @@ public class NameResolvingPositionTextField extends PositionTextField implements
 			        fireResolveFailed();
 			    }
 			}
-			protected void doFinished(Object result) {	
+			protected void doFinished(final Object result) {	
 			    if (this == latest) { // i.e. hasn't been superceded by a more recent task
 			        pos = (SesamePositionBean)result;
 			        setPosition(new Point2D.Double(pos.getRa(),pos.getDec()));
@@ -218,17 +219,17 @@ public class NameResolvingPositionTextField extends PositionTextField implements
 		return pos;
 	}
 	// document listener interface.
-    public void changedUpdate(DocumentEvent e) {
+    public void changedUpdate(final DocumentEvent e) {
         if (latest == null) { // otherwise this is a change driven by the timer anyhow.
             timer.restart();
         }
     }
-    public void insertUpdate(DocumentEvent e) {
+    public void insertUpdate(final DocumentEvent e) {
         if (latest == null) {
             timer.restart();
         }
     }
-    public void removeUpdate(DocumentEvent e) {
+    public void removeUpdate(final DocumentEvent e) {
         if (latest == null) {
             timer.restart();
         }
@@ -239,11 +240,11 @@ public class NameResolvingPositionTextField extends PositionTextField implements
     }};
 
     // called by the timer.
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         if (latest == null && StringUtils.isNotEmpty(getText())) { // if we're resolving at the moment, take no more action
             try {
                 commitEdit();
-            } catch (ParseException x) {
+            } catch (final ParseException x) {
                 // don't care.
             }
         }

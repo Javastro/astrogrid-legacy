@@ -3,7 +3,7 @@ package org.astrogrid.desktop.modules.auth;
 import java.security.Principal;
 
 /** 
- * represents an unauthenticated session 
+ * an unauthenticated session. 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 20, 20072:57:35 PM
  */

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <module id="performance" version="1.0.0" package="org.astrogrid.acr.system">
-Performance Configuration
+Configuration of performance parameters.
 	
     <contribution configuration-id="framework.preferences">
             <preference name="performance.maxWorkerThreads" 

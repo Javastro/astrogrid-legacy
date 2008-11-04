@@ -18,7 +18,7 @@ import org.astrogrid.acr.ivoa.resource.TapCapability;
 import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.acr.ivoa.resource.Validation;
 
-/** Adapter class that synthesizes a cea application
+/** Adapter class that synthesizes a cea application resource
  * from a tap service.
  * 
  * most methods delegate to tap object.

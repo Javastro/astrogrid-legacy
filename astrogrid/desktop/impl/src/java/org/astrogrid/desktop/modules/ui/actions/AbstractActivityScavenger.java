@@ -21,7 +21,8 @@ import ca.odell.glazedlists.event.ListEventListener;
 
 import com.l2fprod.common.swing.JTaskPaneGroup;
 
-/** base class for components that manage a dynamic list of activities - a 'scavenger' (inspired by taverna terminology)
+/** base class for components that manage a dynamic list of activities.
+ *  - a 'scavenger' (inspired by taverna terminology)
  * To the outside, appears as a single activity - this class takes care of delegating
  * to the list of activities it manages.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -35,11 +36,11 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		super();
 	}
 
-	public AbstractActivityScavenger(String name, Icon icon) {
+	public AbstractActivityScavenger(final String name, final Icon icon) {
 		super(name, icon);
 	}
 
-	public AbstractActivityScavenger(String name) {
+	public AbstractActivityScavenger(final String name) {
 		super(name);
 	}
 	
@@ -61,7 +62,7 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 	 * this method will be called to populate the chldren list lazily.*/
     protected abstract void loadChildren();
 
-	public void addTo(JTaskPaneGroup grp) {
+	public void addTo(final JTaskPaneGroup grp) {
 		if (! loaded) {
 			loadChildren();
 			loaded =true;
@@ -69,7 +70,7 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		new EventListTaskPaneGroupManager(grp,getChildren());
 	}
 
-	public void addTo(JTaskPaneGroup grp,int pos) {
+	public void addTo(final JTaskPaneGroup grp,final int pos) {
 		if (! loaded) {
 			loadChildren();
 			loaded =true;
@@ -77,7 +78,7 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		new EventListTaskPaneGroupManager(grp,getChildren(),pos);
 	}
 	
-	public void addTo(JMenu menu) {
+	public void addTo(final JMenu menu) {
 		if (! loaded) {
 			loadChildren();
 			loaded = true;
@@ -85,7 +86,7 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
         new EventListMenuManager(createNewMenuItemList(false),menu,false); 		
 	}
 	
-	public void addTo(JPopupMenu menu) {
+	public void addTo(final JPopupMenu menu) {
 		if (! loaded) {
 			loadChildren();
 			loaded = true;
@@ -95,8 +96,8 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 
 	protected EventList createNewMenuItemList(final boolean hiding) {
 		return new FunctionList(getChildren(), new FunctionList.Function() {
-			public Object evaluate(Object arg0) {
-				AbstractActivity a = (AbstractActivity)arg0;
+			public Object evaluate(final Object arg0) {
+				final AbstractActivity a = (AbstractActivity)arg0;
 				if (hiding) {
 				    return a.createHidingMenuItem();
 				} else {
@@ -111,16 +112,16 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 	
 	public void noneSelected() {
 		latest= null;
-		for (Iterator i = getChildren().iterator(); i.hasNext();) {
-			Activity a = (Activity) i.next();
+		for (final Iterator i = getChildren().iterator(); i.hasNext();) {
+			final Activity a = (Activity) i.next();
 			a.noneSelected();
 		}
 	}
 
-	public void selected(Transferable t) {
+	public void selected(final Transferable t) {
 		latest = t;
-		for (Iterator i = getChildren().iterator(); i.hasNext();) {
-			Activity a = (Activity) i.next();
+		for (final Iterator i = getChildren().iterator(); i.hasNext();) {
+			final Activity a = (Activity) i.next();
 			a.selected(t);
 		}		
 	}
@@ -137,7 +138,7 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		public EventListTaskPaneGroupManager(final JTaskPaneGroup pane, final EventList list) {
 			this(pane,list,-1);
 		}
-			public EventListTaskPaneGroupManager(final JTaskPaneGroup pane, final EventList list,int startPos) {
+			public EventListTaskPaneGroupManager(final JTaskPaneGroup pane, final EventList list,final int startPos) {
 			super();
 			this.pane = pane;
 			this.list = list;
@@ -153,21 +154,21 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 			list.addListEventListener(this);
 			int startIndex = findStartIndex();
 			logger.debug("startindex: " + startIndex);
-			for (Iterator i = list.iterator(); i.hasNext();) {
-				AbstractActivity a = (AbstractActivity) i.next();
+			for (final Iterator i = list.iterator(); i.hasNext();) {
+				final AbstractActivity a = (AbstractActivity) i.next();
 				a.addTo(pane,startIndex++);
 			}
 		}
 	
-		public void listChanged(ListEvent arg0) {
+		public void listChanged(final ListEvent arg0) {
 			// find pstarting position
-			int startPos = findStartIndex();
+			final int startPos = findStartIndex();
 			while (arg0.hasNext()) {
 				arg0.next();
-				int i = arg0.getIndex();
+				final int i = arg0.getIndex();
 				switch(arg0.getType()) {
 				case ListEvent.INSERT:			
-					AbstractActivity a = (AbstractActivity)list.get(i);
+					final AbstractActivity a = (AbstractActivity)list.get(i);
 					a.addTo(pane,startPos + i);
 					// need to adjust according to selection - causes the action to be enabled /disabled
 					// which enables / disables related menu items in turn.
@@ -189,7 +190,7 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		}
 		private int findStartIndex() {
 			//JTaskPane overrides addImpl to add children to it's 'contentPane' - so it's there we need to look.
-			Component[] contents = pane.getContentPane().getComponents();
+			final Component[] contents = pane.getContentPane().getComponents();
 			for (int i = 0; i < contents.length; i++) {
 				if (markerComponent.equals(contents[i])) {
 					return i + 1; // real components start at position of the marker + 1

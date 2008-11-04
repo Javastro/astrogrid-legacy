@@ -13,8 +13,9 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
 
-/** A combo box that displays a list of Actions, and delegates selection
- * of an item to the 'actionPerformed' method of that action
+/** A combo box that displays a list of Actions.
+ * On selection
+ * of an item, delegates to the 'actionPerformed' method of that action
  * 
  * also, list of actions is an <i>EventList</i>, which means that actions
  * can be added / removed / reordered, and the JComboBox will update automatically.
@@ -25,14 +26,14 @@ public final class ActionComboBox extends JComboBox {
 	/**
 	 * @param actions new list of actions.
 	 */
-	public ActionComboBox(EventList actions) {
+	public ActionComboBox(final EventList actions) {
 		super(new EventComboBoxModel(actions));
 		setEditable(false);
 		setSelectedIndex(0);
 
 		// renderer that displays Actions.
 		setRenderer(new BasicComboBoxRenderer() {
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
 				if (isSelected) {
 					setBackground(list.getSelectionBackground());
 					setForeground(list.getSelectionForeground());
@@ -40,7 +41,7 @@ public final class ActionComboBox extends JComboBox {
 					setBackground(list.getBackground());
 					setForeground(list.getForeground());
 				}
-				Action a = (Action)value;
+				final Action a = (Action)value;
 				setIcon((Icon)a.getValue(Action.SMALL_ICON));
 				setText((String)a.getValue(Action.NAME));
 				return this;
@@ -49,7 +50,7 @@ public final class ActionComboBox extends JComboBox {
 		});
 		// delegate to the action implementation itself
 		addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				((Action)getSelectedItem()).actionPerformed(e);
 			}
 		});

@@ -11,7 +11,6 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.SystemTrayInternal;
@@ -24,7 +23,10 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.CollectionList.Model;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 
-/** * @author Noel.Winstanley@manchester.ac.uk
+/**
+ * A scavenger that monitors the plastic-registered applications, and provides activities suitable for 
+ * communicating with each application.
+ *  @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20071:29:37 PM
  * @TEST this.
  */
@@ -32,7 +34,7 @@ public final class PlasticScavenger extends AbstractActivityScavenger implements
 
 private final SystemTrayInternal systray;
 
-public PlasticScavenger(EventList apps,TupperwareInternal tupp, SystemTrayInternal systray) {
+public PlasticScavenger(final EventList apps,final TupperwareInternal tupp, final SystemTrayInternal systray) {
 	super("Send to");
 	this.tupp = tupp;   
 	this.apps = apps;
@@ -57,9 +59,9 @@ protected void loadChildren() {
 	 // no need to do anything. - eventlist is already populated.
 }
 // Model interface implementation- maps a single plastic app to 0 or more activities.
-public List getChildren(Object sourceValue) {
-    PlasticApplicationDescription plas= (PlasticApplicationDescription)sourceValue;
-    List butts = new ArrayList();
+public List getChildren(final Object sourceValue) {
+    final PlasticApplicationDescription plas= (PlasticApplicationDescription)sourceValue;
+    final List butts = new ArrayList();
     if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)
             || plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD)) {
         AbstractActivity activity = new PlasticVotableActivity(plas,this);
@@ -87,12 +89,12 @@ public List getChildren(Object sourceValue) {
     }		
     if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD)
             || plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST)) {
-        Activity activity = new PlasticRegistryActivity(plas,this);
+        final Activity activity = new PlasticRegistryActivity(plas,this);
         activity.setUIParent(uiParent.get());
         butts.add(activity);
     }
     if (plas.understandsMessage(VOExplorerFactoryImpl.BIBCODE_MESSAGE)) {
-        Activity activity = new PlasticBibcodeActivity(plas,this);
+        final Activity activity = new PlasticBibcodeActivity(plas,this);
         activity.setUIParent(uiParent.get());
         butts.add(activity);
     }
@@ -100,9 +102,9 @@ public List getChildren(Object sourceValue) {
 }
 
 /** configure the name and icon of an activity from a plastic description */
-	public static void configureActivity(String type,AbstractActivity act,PlasticApplicationDescription plas) {
+	public static void configureActivity(final String type,final AbstractActivity act,final PlasticApplicationDescription plas) {
 		if (plas.getIcon() != null) {
-	        ImageIcon scaled = new ImageIcon((plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
+	        final ImageIcon scaled = new ImageIcon((plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
 			act.setIcon(scaled);
 		} else {
 			act.setIcon(IconHelper.loadIcon("plasticeye.gif"));

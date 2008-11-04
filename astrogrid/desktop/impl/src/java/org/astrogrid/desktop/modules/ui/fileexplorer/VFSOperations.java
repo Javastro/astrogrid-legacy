@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.commons.vfs.FileSystemManager;
 
 /** interface to a component that performs VFS operations
- * understanding is that this component provides UI feedback, does tasks in background thread, etc.
+ * This component provides UI feedback, does tasks in background thread, etc.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 30, 20073:20:49 PM

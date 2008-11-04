@@ -3,11 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import java.awt.event.MouseListener;
 import java.text.Format;
 import java.util.Map;
-
-import javax.swing.JMenu;
 
 import net.sourceforge.hiveutils.service.ObjectBuilder;
 
@@ -19,7 +16,6 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.hivemind.EventDispatchThreadObjectBuilder;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
-import org.astrogrid.desktop.modules.auth.SwingLoginDialogue;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
@@ -51,8 +47,7 @@ import ca.odell.glazedlists.impl.matchers.FixedMatcherEditor;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.matchers.Matchers;
 
-/** extends the event dispatch object builder with methods to build particular kinds 
- * of ui components.
+/** Implementation of {@code TypesafeObjectBuilder}, that ensures objects are created on the EDT.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 23, 200712:36:50 AM
  */
@@ -64,8 +59,8 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
      * @param objectTranslator
      * @param linker
      */
-    public TypesafeObjectBuilderImpl(Log logger, Map config,
-            Translator objectTranslator, EventLinker linker) {
+    public TypesafeObjectBuilderImpl(final Log logger, final Map config,
+            final Translator objectTranslator, final EventLinker linker) {
         super(logger, config, objectTranslator, linker);
     }
     
@@ -73,7 +68,7 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
         return (AstroScopeLauncherImpl)create("astroscope");
     }
 
-    public ExecutionTracker createExecutionTracker(UIComponent parent) {
+    public ExecutionTracker createExecutionTracker(final UIComponent parent) {
         return (ExecutionTracker)create("executionTracker",parent);
     }
 
@@ -81,14 +76,14 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
         return (FileExplorerImpl)create("fileExplorer");
     }
     
-    public StorageView createStorageView(UIComponent parent, ActivitiesManager acts) {
+    public StorageView createStorageView(final UIComponent parent, final ActivitiesManager acts) {
         return (StorageView)create("storageView",new Object[]{parent,acts});
     }
 
-    public RegistryGooglePanel createGooglePanel(UIComponent parent) {
+    public RegistryGooglePanel createGooglePanel(final UIComponent parent) {
         return (RegistryGooglePanel)create("registryGooglePanel",parent);
     }
-    public ScopeServicesList createScopeServicesList(UIComponent parent) {
+    public ScopeServicesList createScopeServicesList(final UIComponent parent) {
         return (ScopeServicesList)create("scopeServiceList",parent);
     }
 
@@ -109,84 +104,84 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
         return this;
     }
 
-    public ADQLEditorPanel createAdqlEditorPanel(org.astrogrid.applications.beans.v1.parameters.ParameterValue pb,
-            CeaApplication app, UIComponentWithMenu parent) {
+    public ADQLEditorPanel createAdqlEditorPanel(final org.astrogrid.applications.beans.v1.parameters.ParameterValue pb,
+            final CeaApplication app, final UIComponentWithMenu parent) {
         return (ADQLEditorPanel)create("adqlPanel",new Object[]{pb,app,parent});
     }
 
-    public AdqlTextFormElement createAdqlTextFormElement(ParameterValue pv,
-            ParameterBean pb,CeaApplication app, UIComponentWithMenu parent) {
+    public AdqlTextFormElement createAdqlTextFormElement(final ParameterValue pv,
+            final ParameterBean pb,final CeaApplication app, final UIComponentWithMenu parent) {
         return (AdqlTextFormElement)create("adqlFormElement",new Object[]{pv,pb,app,parent});
     }
 
-    public BinaryFormElement createBinaryFormElement(ParameterValue pv,
-            ParameterBean pb) {
+    public BinaryFormElement createBinaryFormElement(final ParameterValue pv,
+            final ParameterBean pb) {
         return (BinaryFormElement)create("binaryFormElement",new Object[]{pv,pb});
     }
 
-    public BooleanFormElement createBooleanFormElement(ParameterValue pv,
-            ParameterBean pb) {
+    public BooleanFormElement createBooleanFormElement(final ParameterValue pv,
+            final ParameterBean pb) {
         return (BooleanFormElement)create("booleanFormElement",new Object[]{pv,pb});
     }
 
     public EnumerationFormElement createEnumerationFormElement(
-            ParameterValue pv, ParameterBean pb) {
+            final ParameterValue pv, final ParameterBean pb) {
         return (EnumerationFormElement)create("enumerationFormElement",new Object[]{pv,pb});
     }
 
-    public LargeTextFormElement createLargeTextFormElement(ParameterValue pv,
-            ParameterBean pb) {
+    public LargeTextFormElement createLargeTextFormElement(final ParameterValue pv,
+            final ParameterBean pb) {
         return (LargeTextFormElement)create("largeFormElement",new Object[]{pv,pb});
     }
 
     public LooselyFormattedFormElement createLooselyFormattedFormElement(
-            ParameterValue pv, ParameterBean pb, Format format) {
+            final ParameterValue pv, final ParameterBean pb, final Format format) {
         return (LooselyFormattedFormElement)create("looseFormElement",new Object[]{pv,pb,format});
     }
 
-    public OutputFormElement createOutputFormElement(ParameterValue pv,
-            ParameterBean pb) {
+    public OutputFormElement createOutputFormElement(final ParameterValue pv,
+            final ParameterBean pb) {
         return (OutputFormElement)create("outputFormElement",new Object[]{pv,pb});
     }
 
-    public PositionFormElement createPositionFormElement(ParameterValue ra,
-            ParameterBean raDesc, ParameterValue dec, ParameterBean decDesc, UIComponent parent) {
+    public PositionFormElement createPositionFormElement(final ParameterValue ra,
+            final ParameterBean raDesc, final ParameterValue dec, final ParameterBean decDesc, final UIComponent parent) {
         return (PositionFormElement)create("positionFormElement",new Object[]{ra,raDesc,dec,decDesc,parent});
     }
     
 
-    public RadiusFormElement createRadiusFormElement(ParameterValue radius,
-            ParameterBean radiusDesc) {
+    public RadiusFormElement createRadiusFormElement(final ParameterValue radius,
+            final ParameterBean radiusDesc) {
         return (RadiusFormElement)create("radiusFormElement",new Object[]{radius,radiusDesc});
     }
 
-    public RadiusFormElement createRadiusFormElement(ParameterValue radius,
-            ParameterBean radiusDesc, DecSexToggle toggle) {
+    public RadiusFormElement createRadiusFormElement(final ParameterValue radius,
+            final ParameterBean radiusDesc, final DecSexToggle toggle) {
         return (RadiusFormElement)create("radiusFormElementExternal",new Object[]{radius,radiusDesc,toggle});
         
     }
 
-    public TextFormElement createTextFormElement(ParameterValue pv,
-            ParameterBean pb) {
+    public TextFormElement createTextFormElement(final ParameterValue pv,
+            final ParameterBean pb) {
         return (TextFormElement)create("textFormElement",new Object[]{pv,pb});
     }
 
-    public TaskParametersForm createTaskParametersForm(UIComponentWithMenu parent) {
+    public TaskParametersForm createTaskParametersForm(final UIComponentWithMenu parent) {
         return (TaskParametersForm)create("taskParametersForm",parent);
     }
 
-    public FileNavigator createFileNavigator(UIComponent parent,
-            MatcherEditor ed, ActivitiesManager acts) {
+    public FileNavigator createFileNavigator(final UIComponent parent,
+            final MatcherEditor ed, final ActivitiesManager acts) {
         return (FileNavigator) create("fileNavigator",new Object[]{parent, ed, acts});
     }
 
-    public FileNavigator createFileNavigator(UIComponent parent,
-            ActivitiesManager acts) {
+    public FileNavigator createFileNavigator(final UIComponent parent,
+            final ActivitiesManager acts) {
         return createFileNavigator(parent,new FixedMatcherEditor(Matchers.trueMatcher()),acts);
     }
 
-    public ParametersInfoPane createParametersInfoPane(Model model,
-            EventList elements) {
+    public ParametersInfoPane createParametersInfoPane(final Model model,
+            final EventList elements) {
         return (ParametersInfoPane)create("parametersInfoPane",new Object[]{model,elements});
      }
 
@@ -198,13 +193,13 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
         return (ResourceViewer)create("formattedResourceView");
     }
 
-    public ResourceViewer createResultsResourceView(AstroScopeLauncherImpl parent,
-            ActivitiesManager acts) {
+    public ResourceViewer createResultsResourceView(final AstroScopeLauncherImpl parent,
+            final ActivitiesManager acts) {
         return (ResourceViewer)create("resultsResourceView",new Object[]{parent,acts});        
     }
 
-    public ScopeServicesList createScopeServicesList(AstroScopeLauncherImpl parent,
-            ActivitiesManager acts) {
+    public ScopeServicesList createScopeServicesList(final AstroScopeLauncherImpl parent,
+            final ActivitiesManager acts) {
         return (ScopeServicesList)create("scopeServiceList",new Object[]{parent,acts});
     }
 
@@ -212,7 +207,7 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
         return (ResourceViewer)create("tableResourceView");
     }
 
-    public ResourceViewer createXMLResourceView(UIComponent parent) {
+    public ResourceViewer createXMLResourceView(final UIComponent parent) {
         return (ResourceViewer)create("xmlResourceView",parent);
     }
 

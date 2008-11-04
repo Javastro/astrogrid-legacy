@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.19 2008/04/23 10:52:20 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.20 2008/11/04 14:35:47 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,8 @@ import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-/** implementation of a remote process manager.
+/** Implementation of {@code RemoteProcessManagerInternal}.
+ * 
  *  - handles running cea / jes / whatever else.
  * 
  *  - kind of a central clearing house - delegates to appropriate strategy based on uri / document type.
@@ -63,10 +64,10 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 		 * be added to all subsequent processes
 		 * @param rpl
 		 */
-		public void addWildcardListener(RemoteProcessListener rpl) {
+		public void addWildcardListener(final RemoteProcessListener rpl) {
 			wildcardListeners.add(rpl);
-			for (Iterator i = m.values().iterator(); i.hasNext();) {
-				ProcessMonitor rpm = (ProcessMonitor) i.next();
+			for (final Iterator i = m.values().iterator(); i.hasNext();) {
+				final ProcessMonitor rpm = (ProcessMonitor) i.next();
 				rpm.addRemoteProcessListener(rpl);
 			}
 		}
@@ -75,39 +76,39 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 		 * fact that it wishes to be added to subsequent processes.
 		 * @param rpl
 		 */
-		public void removeWildcardListener(RemoteProcessListener rpl) {
+		public void removeWildcardListener(final RemoteProcessListener rpl) {
 			wildcardListeners.remove(rpl);
-			for (Iterator i = m.values().iterator(); i.hasNext();) {
-				ProcessMonitor rpm = (ProcessMonitor) i.next();
+			for (final Iterator i = m.values().iterator(); i.hasNext();) {
+				final ProcessMonitor rpm = (ProcessMonitor) i.next();
 				rpm.removeRemoteProcessListener(rpl);
 			}			
 		}
 		
 		/** add a new remot process monitor */
-		public void add(ProcessMonitor monitor) {
+		public void add(final ProcessMonitor monitor) {
 			m.put(monitor.getId(),monitor);
-			for (Iterator i = wildcardListeners.iterator(); i.hasNext();) {
-				RemoteProcessListener l = (RemoteProcessListener) i.next();
+			for (final Iterator i = wildcardListeners.iterator(); i.hasNext();) {
+				final RemoteProcessListener l = (RemoteProcessListener) i.next();
 				monitor.addRemoteProcessListener(l);
 			}
 		}
 		/** remote a remote processes monitor */
-		public void remove(URI id) {
-			ProcessMonitor rpm = get(id);
+		public void remove(final URI id) {
+			final ProcessMonitor rpm = get(id);
 			if (rpm != null) {
 				remove(rpm);
 			}
 			
 		}
 		
-		public void remove(ProcessMonitor pm) {
+		public void remove(final ProcessMonitor pm) {
 			m.remove(pm.getId());
 			if (pm instanceof AbstractProcessMonitor) {
 				((AbstractProcessMonitor)pm).cleanUp();
 			}
 		}
 		/** access a monitor - may return null */
-		public ProcessMonitor get(URI id) {
+		public ProcessMonitor get(final URI id) {
 			return (ProcessMonitor)m.get(id);
 		}
 		/** list the keys of the current monitors */
@@ -121,8 +122,8 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
     private static final Log logger = LogFactory.getLog(RemoteProcessManagerImpl.class);
 
     //@todo remove usage of myspace.
-    public RemoteProcessManagerImpl(List strategies, 
-            FileSystemManager vfs, SnitchInternal snitch ) {
+    public RemoteProcessManagerImpl(final List strategies, 
+            final FileSystemManager vfs, final SnitchInternal snitch ) {
         super();
         this.vfs = vfs;
         this.strategies = strategies;
@@ -135,9 +136,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
     final SnitchInternal snitch;
 
     /** unused at the moment - but will be used when we want to enable resumable cea apps */
-    private RemoteProcessStrategy selectStrategy(URI uri) throws InvalidArgumentException {
-        for (Iterator i = strategies.iterator(); i.hasNext(); ) {
-            RemoteProcessStrategy s= (RemoteProcessStrategy)i.next();
+    private RemoteProcessStrategy selectStrategy(final URI uri) throws InvalidArgumentException {
+        for (final Iterator i = strategies.iterator(); i.hasNext(); ) {
+            final RemoteProcessStrategy s= (RemoteProcessStrategy)i.next();
             if (s.canProcess(uri)) {
                 return s;
             }
@@ -145,13 +146,13 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
         throw new InvalidArgumentException("Could not find handler for " +uri);
     }
     
-    public ProcessMonitor create(Document doc) throws InvalidArgumentException, ServiceException {
-        for (Iterator i = strategies.iterator(); i.hasNext(); ) {
-            RemoteProcessStrategy s= (RemoteProcessStrategy)i.next();
-            String name = s.canProcess(doc);
+    public ProcessMonitor create(final Document doc) throws InvalidArgumentException, ServiceException {
+        for (final Iterator i = strategies.iterator(); i.hasNext(); ) {
+            final RemoteProcessStrategy s= (RemoteProcessStrategy)i.next();
+            final String name = s.canProcess(doc);
             if (name != null) {
             	if (snitch != null) { // be extra safe..
-                	Map m = new HashMap();
+                	final Map m = new HashMap();
                 	m.put("name",name);
                 	snitch.snitch("SUBMIT",m); 
                 	// not strictly true.. but at least snitching here means that snitching is uniform across all strategies            		
@@ -166,9 +167,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
     	return monitors.listKeys();
     }
 
-    public URI submit(Document arg0) throws ServiceException, SecurityException, NotFoundException,
+    public URI submit(final Document arg0) throws ServiceException, SecurityException, NotFoundException,
             InvalidArgumentException {
-        ProcessMonitor rpm = create(arg0);
+        final ProcessMonitor rpm = create(arg0);
         rpm.start();
         //@todo would like to be able to add rpm to the monitors list before I've called
         // start, but not possible, as no ID has been associated.
@@ -182,33 +183,33 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
     }
 
 
-    public URI submitTo(Document arg0, URI arg1) throws NotFoundException,
+    public URI submitTo(final Document arg0, final URI arg1) throws NotFoundException,
             InvalidArgumentException, ServiceException, SecurityException {
-        ProcessMonitor rpm = create(arg0);
+        final ProcessMonitor rpm = create(arg0);
         rpm.start(arg1);
         monitors.add(rpm);
         return rpm.getId();
     }
 
    
-    private Document loadDocument(URI location) throws NotFoundException, InvalidArgumentException {
+    private Document loadDocument(final URI location) throws NotFoundException, InvalidArgumentException {
         InputStream is = null;
         try {
             is = vfs.resolveFile(location.toString()).getContent().getInputStream();
             return XMLUtils.newDocument(is);
-          } catch (FileSystemException x) {
+          } catch (final FileSystemException x) {
             throw new NotFoundException(x);
-        } catch (ParserConfigurationException x) {
+        } catch (final ParserConfigurationException x) {
             throw new InvalidArgumentException(x);
-        } catch (SAXException x) {
+        } catch (final SAXException x) {
             throw new InvalidArgumentException(x);
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new InvalidArgumentException(x);
         } finally {
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     logger.warn("Failed to close read stream",e);
                 }
             }
@@ -216,23 +217,23 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
             
     }
     
-    public URI submitStored(URI arg0) throws NotFoundException, InvalidArgumentException,
+    public URI submitStored(final URI arg0) throws NotFoundException, InvalidArgumentException,
             SecurityException, ServiceException {
-        Document doc = loadDocument(arg0);
+        final Document doc = loadDocument(arg0);
         return submit(doc);
     }
 
 
-    public URI submitStoredTo(URI arg0, URI arg1) throws NotFoundException,
+    public URI submitStoredTo(final URI arg0, final URI arg1) throws NotFoundException,
             InvalidArgumentException, ServiceException, SecurityException {
-        Document doc = loadDocument(arg0);
+        final Document doc = loadDocument(arg0);
         return submitTo(doc,arg1);
     }
 
 
-    public void halt(URI arg0) throws NotFoundException, InvalidArgumentException,
+    public void halt(final URI arg0) throws NotFoundException, InvalidArgumentException,
             ServiceException, SecurityException {
-    	ProcessMonitor rpm = monitors.get(arg0);
+    	final ProcessMonitor rpm = monitors.get(arg0);
     	if (rpm == null) {
     		throw new NotFoundException(arg0.toString());
     	}
@@ -240,17 +241,17 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
     }
 
 
-    public void delete(URI arg0) throws NotFoundException, ServiceException, SecurityException, InvalidArgumentException {
+    public void delete(final URI arg0) throws NotFoundException, ServiceException, SecurityException, InvalidArgumentException {
     	monitors.remove(arg0);        
     }
 
-	public void delete(ProcessMonitor pm) {
+	public void delete(final ProcessMonitor pm) {
 		monitors.remove(pm);
 	}
     
-    public ExecutionInformation getExecutionInformation(URI arg0) throws ServiceException,
+    public ExecutionInformation getExecutionInformation(final URI arg0) throws ServiceException,
             NotFoundException, SecurityException, InvalidArgumentException {
-    	ProcessMonitor rpm = monitors.get(arg0);
+    	final ProcessMonitor rpm = monitors.get(arg0);
     	if (rpm == null) {
     		throw new NotFoundException(arg0.toString());
     	}
@@ -258,25 +259,25 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
     }
 
 
-    public ExecutionMessage[] getMessages(URI arg0) throws ServiceException, NotFoundException {
-    	ProcessMonitor rpm = monitors.get(arg0);
+    public ExecutionMessage[] getMessages(final URI arg0) throws ServiceException, NotFoundException {
+    	final ProcessMonitor rpm = monitors.get(arg0);
     	if (rpm == null) {
     		throw new NotFoundException(arg0.toString());
     	}
     	return rpm.getMessages();
     }
 
-    public Map getResults(URI arg0) throws ServiceException, SecurityException, NotFoundException,
+    public Map getResults(final URI arg0) throws ServiceException, SecurityException, NotFoundException,
             InvalidArgumentException {
-    	ProcessMonitor rpm = monitors.get(arg0);
+    	final ProcessMonitor rpm = monitors.get(arg0);
     	if (rpm == null) {
     		throw new NotFoundException(arg0.toString());
     	}
     	return rpm.getResults();
     }
     
-    public String getSingleResult(URI arg0, String resultName) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
-        Map m = getResults(arg0);
+    public String getSingleResult(final URI arg0, final String resultName) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+        final Map m = getResults(arg0);
         if (!m.containsKey(resultName)) {
             if (m.size() == 1) { // return the single result - it's probably what they want.
                 return m.values().iterator().next().toString();
@@ -287,11 +288,11 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
         return m.get(resultName).toString();
     }
     
-    public void addRemoteProcessListener(URI arg0, RemoteProcessListener arg1) {
+    public void addRemoteProcessListener(final URI arg0, final RemoteProcessListener arg1) {
         if (arg0 == null) {
             monitors.addWildcardListener(arg1);
         } else {
-        	ProcessMonitor rpm = monitors.get(arg0);
+        	final ProcessMonitor rpm = monitors.get(arg0);
         	if (rpm != null) {
         		rpm.addRemoteProcessListener(arg1);
         	}
@@ -299,22 +300,22 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
     }
 
 
-    public void removeRemoteProcessListener(URI arg0, RemoteProcessListener arg1) {
+    public void removeRemoteProcessListener(final URI arg0, final RemoteProcessListener arg1) {
         if (arg0 == null) {
             monitors.removeWildcardListener(arg1);
         } else {
-        	ProcessMonitor rpm = monitors.get(arg0);
+        	final ProcessMonitor rpm = monitors.get(arg0);
         	if (rpm != null) {
         		rpm.removeRemoteProcessListener(arg1);
         	}
         }
     }
 
-	public ProcessMonitor findMonitor(URI id) {
+	public ProcessMonitor findMonitor(final URI id) {
 		return monitors.get(id);
 	}
 
-    public void addMonitor(ProcessMonitor pm) {
+    public void addMonitor(final ProcessMonitor pm) {
         monitors.add(pm);
     }
 
@@ -326,6 +327,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.20  2008/11/04 14:35:47  nw
+javadoc polishing
+
 Revision 1.19  2008/04/23 10:52:20  nw
 marked as needing test.
 

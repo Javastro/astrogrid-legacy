@@ -8,7 +8,7 @@ import java.util.Comparator;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 
-/** comparison for file objects - first on filetype (folders get prominence), then on name
+/** comparison for file objects. - first on filetype (folders get prominence), then on name
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 28, 20074:19:29 PM
  */
@@ -25,10 +25,10 @@ public class FileObjectComparator implements Comparator {
     }
     private static final FileObjectComparator theInstance = new FileObjectComparator();
     
-	public int compare(Object arg0, Object arg1) {
+	public int compare(final Object arg0, final Object arg1) {
 		try {
-		FileObject a = (FileObject)arg0;
-		FileObject b = (FileObject)arg1;
+		final FileObject a = (FileObject)arg0;
+		final FileObject b = (FileObject)arg1;
 		if (a.getType().equals(b.getType())) {
 			return a.getName().getBaseName().compareTo(b.getName().getBaseName());
 		} else if (a.getType().hasChildren()) {
@@ -38,7 +38,7 @@ public class FileObjectComparator implements Comparator {
 		} else { // something else...
 			return a.getName().getBaseName().compareTo(b.getName().getBaseName());
 		}
-		} catch (FileSystemException e) {
+		} catch (final FileSystemException e) {
 			return 0;
 		}
 	} 

@@ -10,7 +10,8 @@ import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.acr.ui.QueryBuilder;
 
-/** Interface to a query builder component. Methods on this interface are called by VOExplorer to create new query builder windows
+/** Internal interface to the query builder factory.
+ * Methods on this interface are called by VOExplorer to create new query builder windows
  * for selected resources.
  * 
  * @future add a public interface with some ar-suitable methods - i.e. passing uri of fileObject / resource Object as the parameter.

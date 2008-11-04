@@ -1,4 +1,4 @@
-/*$Id: ServiceBean.java,v 1.3 2006/06/15 09:42:04 nw Exp $
+/*$Id: ServiceBean.java,v 1.4 2008/11/04 14:35:49 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,8 @@
 package org.astrogrid.desktop.hivemind;
 
 import org.apache.hivemind.internal.Module;
-/** description of one acr service - these beans are read from the hivemind descriptors */
+/** 
+ * Description of a single AR component.*/
 public class ServiceBean {
 
     public ServiceBean() {
@@ -25,7 +26,7 @@ public class ServiceBean {
     public String getId() {
         return this.id;
     }
-    public void setId(String id) {
+    public void setId(final String id) {
     	if (id == null || id.trim().length() == 0) {
     		throw new IllegalArgumentException("Empty Id");
     	}
@@ -34,7 +35,7 @@ public class ServiceBean {
     public Class getInterface() {
         return this.iface;
     }
-    public void setInterface(Class iface) {
+    public void setInterface(final Class iface) {
     	if (! iface.isInterface()) {
     		throw new IllegalArgumentException("Expected an interface, got " + iface.getName());
     	}
@@ -43,7 +44,7 @@ public class ServiceBean {
     public Module getModule() {
         return this.module;
     }
-    public void setModule(Module module) {
+    public void setModule(final Module module) {
     	if (module == null) {
     		throw new IllegalArgumentException("Null module");
     	}
@@ -51,7 +52,7 @@ public class ServiceBean {
     }
     
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         sb.append("ServiceBean[");
         sb.append("id: ");
         sb.append(id);
@@ -69,6 +70,9 @@ public class ServiceBean {
 
 /* 
 $Log: ServiceBean.java,v $
+Revision 1.4  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.3  2006/06/15 09:42:04  nw
 improvements coming from unit testing
 

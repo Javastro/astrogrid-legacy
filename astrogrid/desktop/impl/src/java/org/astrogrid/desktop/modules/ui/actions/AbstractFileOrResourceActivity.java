@@ -14,7 +14,7 @@ import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
-/** abstract class for when either some kind of resource, or a file, is acceptable.
+/** base class for activities can are applicable to file objects and registry resources.
  * 
  * a merge of the funtionality provided vby the AbstractFileActivity and AbstractResourceActivity classes
  * 
@@ -27,7 +27,7 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
 	private Resource[] currentResources = null;
 	
 // machinery for files
-	public void oneSelected(FileObject fo){
+	public void oneSelected(final FileObject fo){
         if (invokable(fo)) {
             setEnabled(true);
             currentFiles =new FileObject[]{fo};
@@ -38,7 +38,7 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
             currentResources = null;
         }	    
 	}
-	public void manySelected(FileObject[] list) {
+	public void manySelected(final FileObject[] list) {
         for (int i = 0; i < list.length; i++) {
             if(invokable(list[i])) { // lazy - only goes as far as the first 'yes'
                 setEnabled(true);
@@ -67,7 +67,7 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
         if (currentFiles == null || currentFiles.length == 0) {
             return Collections.EMPTY_LIST;
         }
-        List r = new ArrayList();
+        final List r = new ArrayList();
         for (int i = 0; i < currentFiles.length; i++) {
             if (invokable(currentFiles[i])) {
                 r.add(currentFiles[i]);
@@ -77,7 +77,7 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
     }	
 
 // machinery for resouces	
-	public void oneSelected(Resource resource) {
+	public void oneSelected(final Resource resource) {
         if (invokable(resource)) {
             setEnabled(true);
             currentResources =new Resource[]{resource};
@@ -91,7 +91,7 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
     /**
      * @param list
      */
-    public void someSelected(Resource[] list) {
+    public void someSelected(final Resource[] list) {
         for (int i = 0; i < list.length; i++) {
             if(invokable(list[i])) {
                 setEnabled(true);
@@ -114,7 +114,7 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
         if (currentResources == null || currentResources.length == 0) {
             return Collections.EMPTY_LIST;
         }
-        List r = new ArrayList();
+        final List r = new ArrayList();
         for (int i = 0; i < currentResources.length; i++) {
             if (invokable(currentResources[i])) {
                 r.add(currentResources[i]);
@@ -135,7 +135,7 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
 	    currentFiles = null;
 	    currentResources = null;
 	}
-	public final void selected(Transferable r) {
+	public final void selected(final Transferable r) {
 	    if (r == null) {
 	        return;
 	    }
@@ -155,9 +155,9 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
 		} else {
 			noneSelected();
 		}
-		} catch (IOException x) {
+		} catch (final IOException x) {
 			logger.error("UnsupportedFlavorException",x);			
-		} catch (UnsupportedFlavorException x) {
+		} catch (final UnsupportedFlavorException x) {
 			logger.error("UnsupportedFlavorException",x);
 		}
 	}

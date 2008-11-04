@@ -16,7 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.hivemind.schema.Translator;
 import org.apache.hivemind.service.EventLinker;
 
-/** implementaiton of the extended object builder.
+/** Implementation of {@code IterableObjectBuilder}
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 5, 200711:19:15 AM
@@ -30,7 +30,7 @@ public class IterableObjectBuilderImpl extends ObjectBuilderImpl implements
 	 * @param arg2
 	 * @param arg3
 	 */
-	public IterableObjectBuilderImpl(Log arg0, Map arg1, Translator arg2, EventLinker arg3) {
+	public IterableObjectBuilderImpl(final Log arg0, final Map arg1, final Translator arg2, final EventLinker arg3) {
 		super(arg0, arg1, arg2, arg3);
 		this.objects = new TreeMap( arg1) ; // sorts the entries by key value
 	}
@@ -40,7 +40,7 @@ public class IterableObjectBuilderImpl extends ObjectBuilderImpl implements
 		return IteratorUtils.transformedIterator(objects.keySet().iterator(),
 				new Transformer() {
 
-					public Object transform(Object arg0) {
+					public Object transform(final Object arg0) {
 						return create((String)arg0);
 					}
 		});
@@ -50,7 +50,7 @@ public class IterableObjectBuilderImpl extends ObjectBuilderImpl implements
 		return IteratorUtils.transformedIterator(objects.keySet().iterator(),
 				new Transformer() {
 
-					public Object transform(Object arg0) {
+					public Object transform(final Object arg0) {
 						return create((String)arg0,o);
 					}
 		});
@@ -60,7 +60,7 @@ public class IterableObjectBuilderImpl extends ObjectBuilderImpl implements
 		return IteratorUtils.transformedIterator(objects.keySet().iterator(),
 				new Transformer() {
 
-					public Object transform(Object arg0) {
+					public Object transform(final Object arg0) {
 						return create((String)arg0,o);
 					}
 		});

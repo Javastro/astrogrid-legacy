@@ -32,7 +32,6 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
@@ -70,10 +69,8 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.l2fprod.common.swing.BaseDialog;
 
-/** view and controller for a set of storage 'roots' - either roots of mounted filesystems,
- * or shortcuts to favorite locations within these mounts. - add a divider between roots and 
- * favorites.. Wonder whether I should represent this as 2 lists, or a single list?
- * - single list, but add a filter over the top of it to sort items depending on type.
+/** View and Controller for a set of storage 'roots'. - either roots of mounted filesystems,
+ * or shortcuts to favorite locations within these mounts. 
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 200710:24:52 PM
@@ -86,7 +83,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 			.getLog(StorageFoldersList.class);
     private final FileSystemManager vfs;
 
-	public StorageFoldersList(EventList folderList, UIComponent parent,FileSystemManager vfs) {
+	public StorageFoldersList(final EventList folderList, final UIComponent parent,final FileSystemManager vfs) {
 		this.parent = parent;
         this.vfs = vfs;
 		CSH.setHelpIDString(this,"files.bookmarks");
@@ -104,10 +101,10 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 		setSelectedIndex(0);
 		addListSelectionListener(this);
 		setCellRenderer(new DefaultListCellRenderer() {
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-				JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
+			public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+				final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
 						cellHasFocus);
-				StorageFolder f = (StorageFolder)value;				
+				final StorageFolder f = (StorageFolder)value;				
 				l.setText(f == null ? "" : f.getName());
 				l.setIcon(f == null ? null : f.getIcon());
 				if (f.getDescription() != null) {
@@ -135,10 +132,10 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             putValue(SHORT_DESCRIPTION,"Add a new bookmark");
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
         }
-        public void actionPerformed(ActionEvent e) {
-            StorageFolder f = new StorageFolder();
-            Component pc = parent.getComponent();
-            Window w = pc instanceof Window
+        public void actionPerformed(final ActionEvent e) {
+            final StorageFolder f = new StorageFolder();
+            final Component pc = parent.getComponent();
+            final Window w = pc instanceof Window
                      ? (Window) pc
                      : SwingUtilities.getWindowAncestor(pc);
             final BaseDialog d;
@@ -154,16 +151,16 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
         /** dialog for creating a new bookmark */
         private final class CreateBookmarkDialog extends BookmarkDialog {
         
-            public CreateBookmarkDialog(Dialog w, StorageFolder f2) {
+            public CreateBookmarkDialog(final Dialog w, final StorageFolder f2) {
                 super(w, f2);
             }
         
-            public CreateBookmarkDialog(Frame owner, StorageFolder f)
+            public CreateBookmarkDialog(final Frame owner, final StorageFolder f)
                     throws HeadlessException {
                 super(owner, f);
             }
         
-            public CreateBookmarkDialog(StorageFolder f2) {
+            public CreateBookmarkDialog(final StorageFolder f2) {
                 super(f2);
             }
             
@@ -192,8 +189,8 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             setEnabled(false);
         }
 
-        public void actionPerformed(ActionEvent e) {
-            Folder f = (Folder)getSelectedValue();
+        public void actionPerformed(final ActionEvent e) {
+            final Folder f = (Folder)getSelectedValue();
             if (f != null) {
                 folderList.remove(f);
                 setSelectedIndex(0);
@@ -208,12 +205,12 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_E,UIComponentMenuBar.MENU_KEYMASK));
             setEnabled(false);
         }
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             final StorageFolder f = (StorageFolder)getSelectedValue();
             final int ix = getSelectedIndex();
             if (f != null) {
-                Component pc = parent.getComponent();
-                Window w = pc instanceof Window
+                final Component pc = parent.getComponent();
+                final Window w = pc instanceof Window
                          ? (Window) pc
                          : SwingUtilities.getWindowAncestor(pc);
                 final BaseDialog d;
@@ -232,18 +229,18 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
         private final class EditBookmarkDialog extends BookmarkDialog {
         
             private final int ix;
-            public EditBookmarkDialog(Frame owner, StorageFolder f, int ix)
+            public EditBookmarkDialog(final Frame owner, final StorageFolder f, final int ix)
                     throws HeadlessException {
                 super(owner, f);
                 this.ix = ix;
             }
         
-            public EditBookmarkDialog(Dialog w, StorageFolder f2, int ix2) {
+            public EditBookmarkDialog(final Dialog w, final StorageFolder f2, final int ix2) {
                 super(w, f2);
                 this.ix = ix2;
             }
         
-            public EditBookmarkDialog(StorageFolder f2, int ix2) {
+            public EditBookmarkDialog(final StorageFolder f2, final int ix2) {
                 super(f2);
                 this.ix = ix2;
             }
@@ -271,35 +268,35 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	private final UIComponent parent;
 
 	// listening to myself.
-	public void valueChanged(ListSelectionEvent e) {
+	public void valueChanged(final ListSelectionEvent e) {
 		if (e.getSource() != this || e.getValueIsAdjusting()) {
 			return; // ignore
 		}
-		Folder f = (Folder) getSelectedValue();
+		final Folder f = (Folder) getSelectedValue();
 		delete.setEnabled(f != null);
 		edit.setEnabled(f != null);		
 	}
 
 //	 listen for popup menu trigger.
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(final MouseEvent e) {
 	}
 
-	public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(final MouseEvent e) {
 	}
 
-	public void mouseExited(MouseEvent e) {
+	public void mouseExited(final MouseEvent e) {
 	}
 
-	public void mousePressed(MouseEvent e) {
+	public void mousePressed(final MouseEvent e) {
 		checkForTriggerEvent( e );
 	}
 
-	public void mouseReleased(MouseEvent e) {
+	public void mouseReleased(final MouseEvent e) {
 		checkForTriggerEvent( e);
 	}
 
 //	 determine whether event should trigger popup menu
-	private void checkForTriggerEvent( MouseEvent event ){
+	private void checkForTriggerEvent( final MouseEvent event ){
 	   if ( event.isPopupTrigger() ) {
 	      popup.show( event.getComponent(),
 	         event.getX(), event.getY() );
@@ -320,10 +317,10 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	 * a storage folder */
 	private class StorageFoldersListTransferHandler extends TransferHandler {
 
-	    public int getSourceActions(JComponent c) {
+	    public int getSourceActions(final JComponent c) {
 	        return COPY;
 	    }
-	    public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
+	    public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
 	        // don't want to import into self - how do I prevent that?
 	        // can't here - but can in thje 'import data' method
 	        for (int i = 0; i < transferFlavors.length; i++) {
@@ -334,14 +331,14 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	        return false;	        
 	    }
 	    
-	    public boolean importData(JComponent comp, Transferable t) {
+	    public boolean importData(final JComponent comp, final Transferable t) {
 	        if (t instanceof StorageFoldersListTransferable || ! canImport(comp,t.getTransferDataFlavors())) {
 	            return false; // don't import things that originate here
 	        }
 	        try {
                 StorageFolder sf = null;
                 if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
-                    FileObject fo = (FileObject)t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT);
+                    final FileObject fo = (FileObject)t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT);
                     if (fo.getType().hasChildren()) {
                         sf = build(fo.getName());
                         sf.setFile(fo);
@@ -358,23 +355,23 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
                 } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST)) {
                     BufferedReader r = null;
                     try {
-                        InputStream is = (InputStream)t.getTransferData(VoDataFlavour.URI_LIST);
+                        final InputStream is = (InputStream)t.getTransferData(VoDataFlavour.URI_LIST);
                         r = new BufferedReader(new InputStreamReader(is));
                         String line;
                         // we only parse the first in the list.
                         if ((line = r.readLine()) != null) {
                             // must be a url (as we've registered a url handler for all our types of uri)
-                            URL u = VoDataFlavour.mkJavanese(new URL(line.trim()));
+                            final URL u = VoDataFlavour.mkJavanese(new URL(line.trim()));
                             sf = build(u);
                         }                        
                     } finally {
                         if (r != null) {
-                            try { r.close(); } catch (IOException e) { /* ignored*/ }
+                            try { r.close(); } catch (final IOException e) { /* ignored*/ }
                         }
                     }
                 } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST_STRING)) {
                         String s= (String)t.getTransferData(VoDataFlavour.URI_LIST_STRING);
-                        StringTokenizer tok = new StringTokenizer(s);
+                        final StringTokenizer tok = new StringTokenizer(s);
                         s = tok.nextToken();
                         sf = build(s);
                 } else if(t.isDataFlavorSupported(VoDataFlavour.STRING)) {
@@ -386,9 +383,9 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
                     folderList.add(sf);     
                     return true;
                 } 
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 parent.showTransientError("Failed to import",ExceptionFormatter.formatException(e));
-            } catch (UnsupportedFlavorException x) {
+            } catch (final UnsupportedFlavorException x) {
                 parent.showTransientError("Failed to import",ExceptionFormatter.formatException(x));     
             }
             return false;
@@ -403,31 +400,31 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 
 	    
 	    /** attempt to build a storage folder from an object (via vfs parsing of  toString()) */
-	    private StorageFolder build(Object o) {
+	    private StorageFolder build(final Object o) {
             try {
-                FileName fn = vfs.resolveURI(o.toString());                
+                final FileName fn = vfs.resolveURI(o.toString());                
                 return build(fn);
-            } catch (FileSystemException x) {
+            } catch (final FileSystemException x) {
                 
                 parent.showTransientError("Failed to parse as filename",ExceptionFormatter.formatException(x));
             }	        
             return null;
 	    }
 	    
-	    private StorageFolder build(FileName fn) {
+	    private StorageFolder build(final FileName fn) {
 	        try {
-            StorageFolder sf = new StorageFolder();
+            final StorageFolder sf = new StorageFolder();
             sf.setName(fn.getBaseName());
             sf.setUriString(fn.getURI());
             return sf;
-            } catch (URISyntaxException e) {
+            } catch (final URISyntaxException e) {
                 parent.showTransientError("Failed to parse dropped uri",ExceptionFormatter.formatException(e));
             }
             return null;
 	    }
 	    
-	    protected Transferable createTransferable(JComponent c) {
-	        StorageFolder s = (StorageFolder)getSelectedValue();
+	    protected Transferable createTransferable(final JComponent c) {
+	        final StorageFolder s = (StorageFolder)getSelectedValue();
 	        
 	        return new StorageFoldersListTransferable(s);
 	    }
@@ -443,11 +440,11 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 
         private final URI uri;
 
-        public StorageFoldersListTransferable(StorageFolder sf) {
+        public StorageFoldersListTransferable(final StorageFolder sf) {
             this.uri = sf.getUri();
         }
 
-        public Object getTransferData(DataFlavor flavor)
+        public Object getTransferData(final DataFlavor flavor)
                 throws UnsupportedFlavorException, IOException {
             if (! isDataFlavorSupported(flavor)) {
                 throw new UnsupportedFlavorException(flavor);
@@ -466,7 +463,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             return flavs;
         }
 
-        public boolean isDataFlavorSupported(DataFlavor flavor) {
+        public boolean isDataFlavorSupported(final DataFlavor flavor) {
             return ArrayUtils.contains(flavs,flavor);
         }
         
@@ -495,8 +492,8 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             getBanner().setSubtitleVisible(true);
             
             final JPanel cp = (JPanel)getContentPane();
-            CellConstraints cc = new CellConstraints();
-            PanelBuilder pb = new PanelBuilder(new FormLayout("right:d,2dlu,fill:100dlu:grow","d,2dlu,d"),cp);
+            final CellConstraints cc = new CellConstraints();
+            final PanelBuilder pb = new PanelBuilder(new FormLayout("right:d,2dlu,fill:100dlu:grow","d,2dlu,d"),cp);
             pb.addLabel("Name :",cc.xy(1,1));
             pb.add(name,cc.xy(3,1));
             pb.addLabel("Location :",cc.xy(1,3));
@@ -506,20 +503,20 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             
         }
     
-        public BookmarkDialog(Frame owner, StorageFolder f)
+        public BookmarkDialog(final Frame owner, final StorageFolder f)
                 throws HeadlessException {
             super(owner);
             this.f = f;
             init();
         }
     
-        public BookmarkDialog(Dialog w, StorageFolder f2) {
+        public BookmarkDialog(final Dialog w, final StorageFolder f2) {
             super(w);
             f = f2;
             init();
         }
     
-        public BookmarkDialog(StorageFolder f2) {
+        public BookmarkDialog(final StorageFolder f2) {
             f = f2;
             init();
         }
@@ -531,7 +528,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             this.f.setName(name.getText().trim());
             try {
                 this.f.setUriString(uri.getText().trim());
-            } catch (URISyntaxException e) {
+            } catch (final URISyntaxException e) {
                 getBanner().setSubtitle("Invalid location entered - please try again");
                 return;
             }

@@ -3,15 +3,15 @@
  */
 package org.astrogrid.desktop.modules.util;
 
-import org.apache.commons.lang.SystemUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/** Run through some tests to verify we've got the correct versions of things
+import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**  Self-tests to verify we've got the correct versions of Java.
  * 
  * 
  * at the moment it's only the Java version.

@@ -13,6 +13,7 @@ import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.w3c.dom.Document;
 
 /** An Internal interface to the 'External Registry' service.
+ * <p/>
  * Provides streaming variants of the standard query methods - allows 
  * in-vm users to stream results direct to consumers.
  * 

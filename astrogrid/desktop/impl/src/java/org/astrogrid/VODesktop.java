@@ -1,4 +1,4 @@
-/*$Id: VODesktop.java,v 1.3 2008/03/27 16:23:30 nw Exp $
+/*$Id: VODesktop.java,v 1.4 2008/11/04 14:35:53 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid;
 
 import org.astrogrid.desktop.SplashWindow;
 
-/** Entry point for launching voexplorer
+/** Main class - displays splash screen, then delegates to {@link VODesktop1}
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Jul-2005
  */
 public class VODesktop {
@@ -24,7 +24,7 @@ public class VODesktop {
         super();
     }
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SplashWindow.splash(VODesktop.class.getResource("vodesktop-splash.gif"));//("acr-splash.gif"));
         SplashWindow.invokeMain("org.astrogrid.VODesktop1", args);
         SplashWindow.disposeSplash();

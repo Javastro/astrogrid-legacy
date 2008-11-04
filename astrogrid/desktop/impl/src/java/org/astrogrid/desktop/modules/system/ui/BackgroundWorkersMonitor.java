@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.system.ui;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-/** interfvace to a monitor for background processes.
+/** Progress monitor UI for background tasks.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 23, 20072:20:17 PM
  */

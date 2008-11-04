@@ -11,7 +11,7 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
 
-/** Helper class that extends strbuilder with methods for writing out html constructs.
+/** Extension of StrBuilder that provides methods for generating HTML.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 8, 200710:19:15 AM
  */
@@ -22,26 +22,26 @@ public class HtmlBuilder extends StrBuilder {
 		append("<html>");
 	}
 	// allocate more space at a time.
-	public StrBuilder ensureCapacity(int capacity) {
+	public StrBuilder ensureCapacity(final int capacity) {
         if (capacity > buffer.length) {
-            char[] old = buffer;
+            final char[] old = buffer;
             buffer = new char[(int) (capacity * 1.5)];
             System.arraycopy(old, 0, buffer, 0, size);
         }
         return this;
     }
 
-	public HtmlBuilder h2(String text) {
+	public HtmlBuilder h2(final String text) {
 		append("<h2>").append(text).append("</h2>");
 		return this;
 	}
 	
-	public HtmlBuilder h3(String text) {
+	public HtmlBuilder h3(final String text) {
 		append("<h3>").append(text).append("</h3>");
 		return this;
 	}
 	
-	public HtmlBuilder h3(String text, Object o) {
+	public HtmlBuilder h3(final String text, final Object o) {
 		append("<h3>").append(text).append(" ").append(o).append("</h3>");
 		return this;
 	}
@@ -60,14 +60,14 @@ public class HtmlBuilder extends StrBuilder {
 		return this;
 	}
 	
-	public HtmlBuilder appendWrap(Object txt, int wrap) {
+	public HtmlBuilder appendWrap(final Object txt, final int wrap) {
 	    append(WordUtils.wrap(ObjectUtils.toString(txt),wrap,"<br>",false));
 	    return this;
 	}
 	
 	/** appends the list, prefixed with the title, if the list is non-null & length > 0 
 	 * also adds br afterwards.*/
-	public HtmlBuilder appendTitledSequence(String title,Object[] list) {
+	public HtmlBuilder appendTitledSequence(final String title,final Object[] list) {
 		if (list != null && list.length > 0) {
 			appendLabel(title)
 				.appendWithSeparators(list,", ")
@@ -75,7 +75,7 @@ public class HtmlBuilder extends StrBuilder {
 		} 
 		return this;
 	}
-    public HtmlBuilder appendTitledSequenceNoBR(String title,Object[] list) {
+    public HtmlBuilder appendTitledSequenceNoBR(final String title,final Object[] list) {
         if (list != null && list.length > 0) {
             appendLabel(title)
                 .appendWithSeparators(list,", ")
@@ -85,14 +85,14 @@ public class HtmlBuilder extends StrBuilder {
     }
     
     /** append text, formatted as a label */
-    public HtmlBuilder appendLabel(String text) {
+    public HtmlBuilder appendLabel(final String text) {
         append("<cite class='label'>").append(text).append("</cite>&nbsp;");
         return this;
     }
     
 	/** appends the list, prefixed with the title, if the object is non-null
 	 * also adds a br afterwards */
-	public HtmlBuilder appendTitledObject(String title,Object o) {
+	public HtmlBuilder appendTitledObject(final String title,final Object o) {
 		if (o != null) {
 			appendLabel(title)
 				.append(o)
@@ -101,7 +101,7 @@ public class HtmlBuilder extends StrBuilder {
 		return this;
 	}
 	
-	   public HtmlBuilder appendTitledObjectNoBR(String title,Object o) {
+	   public HtmlBuilder appendTitledObjectNoBR(final String title,final Object o) {
 	        if (o != null) {
 	            appendLabel(title)	              
 	                .append(o)
@@ -110,13 +110,13 @@ public class HtmlBuilder extends StrBuilder {
 	        return this;
 	    }
 	   
-       public HtmlBuilder appendTitledObjectNoBR(String title,int i) {
+       public HtmlBuilder appendTitledObjectNoBR(final String title,final int i) {
                appendLabel(title)                
                    .append(i)
                    .append("&nbsp; ");
            return this;
        }
-       public HtmlBuilder appendTitledObjectNoBR(String title,double d) {
+       public HtmlBuilder appendTitledObjectNoBR(final String title,final double d) {
                appendLabel(title)                
                    .append(d)
                    .append("&nbsp; ");
@@ -125,12 +125,12 @@ public class HtmlBuilder extends StrBuilder {
 /** append a reouscr name, prefixed with title, if the resource name is non-null
  * adds a br afterwards
  */
-	public HtmlBuilder appendTitledResourceName(String title,ResourceName name) {
+	public HtmlBuilder appendTitledResourceName(final String title,final ResourceName name) {
 	    if (name != null) {
 	        appendLabel(title);
 	        if (name.getId() != null) {
 	            append("<a class='res' href='").append(name.getId()).append("'>");
-	            String v = name.getValue();
+	            final String v = name.getValue();
 	            append(v == null  ? name.getId().toString() : v);
 	            append("</a>");
 	        } else {
@@ -141,12 +141,12 @@ public class HtmlBuilder extends StrBuilder {
 
 		return this;
 	}
-	   public HtmlBuilder appendTitledResourceNameNoBR(String title,ResourceName name) {
+	   public HtmlBuilder appendTitledResourceNameNoBR(final String title,final ResourceName name) {
 	        if (name != null) {
 	            appendLabel(title);
 	            if (name.getId() != null) {
 	                append("<a class='res' href='").append(name.getId()).append("'>");
-	                String v = name.getValue();
+	                final String v = name.getValue();
 	                append(v == null ? name.getId().toString() : v);
 	                append("</a>");
 	            } else {
@@ -158,7 +158,7 @@ public class HtmlBuilder extends StrBuilder {
 	        return this;
 	    }
 	/** appends a resouce name, hyperlinked if an id is provided. */
-	public HtmlBuilder appendResourceName(ResourceName name) {
+	public HtmlBuilder appendResourceName(final ResourceName name) {
 	    if (name == null) {
 	        return this;
 	    }
@@ -170,7 +170,7 @@ public class HtmlBuilder extends StrBuilder {
 	    }
 		if (url != null) {
 			append("<a class='res' href='").append(url).append("'>");
-			String v = name.getValue();
+			final String v = name.getValue();
 			append(v == null? url : v);
 			append("</a>");
 		} else {
@@ -182,7 +182,7 @@ public class HtmlBuilder extends StrBuilder {
 	/** appends a list of resourcenames, formatted, prefixed with a title,
 	 * with a trailing br if the list is non-null and non-empty.
 	 */
-	public HtmlBuilder appendTitledResourceNames(String title, ResourceName[] list) {
+	public HtmlBuilder appendTitledResourceNames(final String title, final ResourceName[] list) {
 		if (list != null && list.length > 0) {
 			appendLabel(title);
 			for (int i = 0; i < list.length; i++) {
@@ -193,7 +193,7 @@ public class HtmlBuilder extends StrBuilder {
 		} 
 		return this;
 	}	
-    public HtmlBuilder appendTitledResourceNamesNoBR(String title, ResourceName[] list) {
+    public HtmlBuilder appendTitledResourceNamesNoBR(final String title, final ResourceName[] list) {
         if (list != null && list.length > 0) {
             appendLabel(title);
             for (int i = 0; i < list.length; i++) {
@@ -203,7 +203,7 @@ public class HtmlBuilder extends StrBuilder {
         } 
         return this;
     }   
-	public HtmlBuilder appendTitledURIs(String title, URI[] list) {
+	public HtmlBuilder appendTitledURIs(final String title, final URI[] list) {
 		if (list != null && list.length > 0) {
 			appendLabel(title);
 			for (int i = 0; i < list.length; i++) {
@@ -221,9 +221,9 @@ public class HtmlBuilder extends StrBuilder {
 	 */
 	public  HtmlBuilder appendURI( final URI url) {
 		if (url != null) {
-		String scheme = url.getScheme();
+		final String scheme = url.getScheme();
 		// fix for BZ 1970 - odd scheme types.
-		String wrappedURL = StringUtils.replace(url.toString(),"/","/<wbr>");
+		final String wrappedURL = StringUtils.replace(url.toString(),"/","/<wbr>");
 		if ("http".equals(scheme) || "ftp".equals(scheme)) {
 			append("<a href='").append(url).append("'>");
 			append(wrappedURL).append("</a>");
@@ -236,9 +236,9 @@ public class HtmlBuilder extends StrBuilder {
 		}
 		return this;
 	}
-    public  HtmlBuilder appendURI(String text, final URI url) {
+    public  HtmlBuilder appendURI(final String text, final URI url) {
         if (url != null) {
-        String scheme = url.getScheme();
+        final String scheme = url.getScheme();
         if ("http".equals(scheme) || "ftp".equals(scheme)) {
             append("<a href='").append(url).append("'>");
             append(text).append("</a>");
@@ -247,7 +247,7 @@ public class HtmlBuilder extends StrBuilder {
                 append(text).append("</a>");            
         } else {
             // fix for BZ 1970 - odd scheme types.
-            String wrappedURL = StringUtils.replace(url.toString(),"/","/<wbr>");
+            final String wrappedURL = StringUtils.replace(url.toString(),"/","/<wbr>");
                 append("&lt;")
                 .append(text)
                 .append(" - ")
@@ -260,7 +260,7 @@ public class HtmlBuilder extends StrBuilder {
   
 	
 	/** append o if pred is true, following with a hr */
-	public HtmlBuilder conditionalAppend(boolean pred,Object o) {
+	public HtmlBuilder conditionalAppend(final boolean pred,final Object o) {
 		if (pred) {
 			append(o);
 			append("<hr>");
@@ -269,7 +269,7 @@ public class HtmlBuilder extends StrBuilder {
 	}
 	
 	/** append o if non-null, following with a hr */
-	public HtmlBuilder conditionalAppend(Object o) {
+	public HtmlBuilder conditionalAppend(final Object o) {
 		if (o != null) {
 			append(o);
 			append("<hr>");
@@ -278,7 +278,7 @@ public class HtmlBuilder extends StrBuilder {
 	}
 	
 	/** write a table cell (td) */
-	public HtmlBuilder td(Object o) {
+	public HtmlBuilder td(final Object o) {
 		append("<td>");
 		append(o);
 		append("</td>");

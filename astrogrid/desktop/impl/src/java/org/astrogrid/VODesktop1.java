@@ -5,7 +5,7 @@ package org.astrogrid;
 
 import org.astrogrid.desktop.hivemind.Launcher;
 
-/**
+/** Entry point for launching VODesktop
  * @author Noel Winstanley
  * @since Apr 11, 20062:41:10 AM
  */
@@ -14,12 +14,12 @@ public class VODesktop1 {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 	    // forces initialization of default properties before loading CmdLineParser (where some are required - i.e. log4j.logger)
 	    Launcher.spliceInDefaults();
 	    // now get on with the parsing.
-		CmdLineParser parser = new CmdLineParser();
-		Launcher l = parser.parse(args,"vodesktop");  
+		final CmdLineParser parser = new CmdLineParser();
+		final Launcher l = parser.parse(args,"vodesktop");  
 		configureLauncherAsVODesktop(l);
      	parser.processCommandLine(l);    	
     	l.run();
@@ -28,7 +28,7 @@ public class VODesktop1 {
 	/**
 	 * @param l
 	 */
-	public static void configureLauncherAsVODesktop(Launcher l) {
+	public static void configureLauncherAsVODesktop(final Launcher l) {
 		// we're packaging log4j in this release, so configure clogging to use it.
     	System.setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.Log4JLogger");
   		

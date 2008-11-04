@@ -11,14 +11,14 @@ import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.provider.AbstractFileName;
 import org.astrogrid.store.Ivorn;
 
-/**
+/** VFS FileName for the Myspace file system.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 3, 20071:55:10 PM
  */
 public class MyspaceFileName extends AbstractFileName {
 
 
-	public MyspaceFileName(String community, String user, String path, FileType type) {
+	public MyspaceFileName(final String community, final String user, final String path, final FileType type) {
 		super("ivo", path, type);
 		this.community = community;
 		this.user = user;
@@ -26,7 +26,7 @@ public class MyspaceFileName extends AbstractFileName {
 	private final String community;
 	private final String user;
 	
-	protected void appendRootUri(StringBuffer buffer, boolean addPassword) {
+	protected void appendRootUri(final StringBuffer buffer, final boolean addPassword) {
 		buffer.append("ivo://");
 		buffer.append(community);
 		buffer.append("/");
@@ -34,7 +34,7 @@ public class MyspaceFileName extends AbstractFileName {
 		buffer.append("#");
 	}
 
-	public FileName createName(String absPath, FileType type) {
+	public FileName createName(final String absPath, final FileType type) {
 		return new MyspaceFileName(community, user,absPath,type);
 	}
 	

@@ -39,7 +39,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 import ca.odell.glazedlists.EventList;
 
 /** 
- * implementation of Filemodel based on a swing transfer handler.
+ *Filemodel based on a swing transfer handler.
  * 
  * 
  * issues - popup not appearing in right place.
@@ -83,23 +83,23 @@ public class FileModelTransferHandler extends TransferHandler{
         /**
      * @param filemodel
      */
-    public FileModelTransferHandler(Filemodel filemodel) {
+    public FileModelTransferHandler(final Filemodel filemodel) {
         this.filemodel = filemodel;
     }
-        protected Transferable createTransferable(JComponent c) {
-             Transferable t = filemodel.getSelectionTransferable();
+        protected Transferable createTransferable(final JComponent c) {
+             final Transferable t = filemodel.getSelectionTransferable();
              if (logger.isDebugEnabled()) {
-                 DataFlavor[] flavs = t.getTransferDataFlavors();
+                 final DataFlavor[] flavs = t.getTransferDataFlavors();
                  for (int i = 0; i < flavs.length; i++) {
                      logger.debug(flavs[i]);
                  }
              }
              return t;
         }
-        public int getSourceActions(JComponent c) {
+        public int getSourceActions(final JComponent c) {
             return COPY_OR_MOVE;
         }
-        public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
+        public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
             for (int i = 0; i < transferFlavors.length; i++) {
                 if (ArrayUtils.contains(inputFlavors,transferFlavors[i])) {
                     return true;
@@ -108,9 +108,9 @@ public class FileModelTransferHandler extends TransferHandler{
             return false;
         }
         
-        public boolean importData(JComponent comp, Transferable t) {
+        public boolean importData(final JComponent comp, final Transferable t) {
             if (logger.isDebugEnabled()) {
-                DataFlavor[] flavs = t.getTransferDataFlavors();
+                final DataFlavor[] flavs = t.getTransferDataFlavors();
                 for (int i = 0; i < flavs.length; i++) {
                     logger.debug(flavs[i]);
                 }
@@ -123,14 +123,14 @@ public class FileModelTransferHandler extends TransferHandler{
                         objects = Collections.singletonList(t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT));
                     } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY)) {
                         logger.debug("local fileobject array");
-                         FileObject[] arr = (FileObject[])t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY);
+                         final FileObject[] arr = (FileObject[])t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY);
                          objects = Arrays.asList(arr);
                     } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URI)) {
                         logger.debug("local uri");
                         objects = Collections.singletonList(t.getTransferData(VoDataFlavour.LOCAL_URI));
                     } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URI_ARRAY)) {
                         logger.debug("local uri array");
-                        URI[] arr = (URI[])t.getTransferData(VoDataFlavour.LOCAL_URI_ARRAY);
+                        final URI[] arr = (URI[])t.getTransferData(VoDataFlavour.LOCAL_URI_ARRAY);
                         objects = Arrays.asList(arr);                        
                     } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URL)) {
                         logger.debug("local url");
@@ -140,31 +140,31 @@ public class FileModelTransferHandler extends TransferHandler{
                         BufferedReader r = null;
                         objects = new ArrayList();
                         try {
-                            InputStream is = (InputStream)t.getTransferData(VoDataFlavour.URI_LIST);
+                            final InputStream is = (InputStream)t.getTransferData(VoDataFlavour.URI_LIST);
                             r = new BufferedReader(new InputStreamReader(is));
                             String line;
                             while ((line = r.readLine()) != null) {
                                 // see if we can at least make a URL from it.
-                                URL u = VoDataFlavour.mkJavanese(new URL(line.trim()));                                
+                                final URL u = VoDataFlavour.mkJavanese(new URL(line.trim()));                                
                                 objects.add(u);
                             }                        
                         } finally {
                             if (r != null) {
-                                try { r.close(); } catch (IOException e) { /* ignored*/ }
+                                try { r.close(); } catch (final IOException e) { /* ignored*/ }
                             }
                         }     
                     } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST_STRING)) {
                         logger.debug("external uri list as string");
                         objects = new ArrayList();
-                        StringTokenizer tok = new StringTokenizer((String)t.getTransferData(VoDataFlavour.URI_LIST_STRING));
+                        final StringTokenizer tok = new StringTokenizer((String)t.getTransferData(VoDataFlavour.URI_LIST_STRING));
                         while (tok.hasMoreElements()) {
-                            String s= tok.nextToken();
-                            URL u = VoDataFlavour.mkJavanese(new URL(s));
+                            final String s= tok.nextToken();
+                            final URL u = VoDataFlavour.mkJavanese(new URL(s));
                             objects.add(u);
                         }
                     } else if (t.isDataFlavorSupported(VoDataFlavour.URL)) { // seems to be used for a multiple selection, but only returns first - so demote after uri-list
                         logger.debug("external url");
-                        URL u = (URL) t.getTransferData(VoDataFlavour.URL);                        
+                        final URL u = (URL) t.getTransferData(VoDataFlavour.URL);                        
                         objects = Collections.singletonList(VoDataFlavour.mkJavanese(u));                        
                     } else {
                         logger.error("Unknown type of transferable " + t);   
@@ -174,15 +174,15 @@ public class FileModelTransferHandler extends TransferHandler{
                      if (objects != null && ! objects.isEmpty()) {
                          // see if we've got anything that is read-only.
                          boolean moveAllowed =true;
-                         for (Iterator i = objects.iterator(); i
+                         for (final Iterator i = objects.iterator(); i
                                 .hasNext();) {
-                           Object o = i.next();
+                           final Object o = i.next();
                            if (!( o instanceof FileObject)) {
                                // something else, so best not to move it.
                                moveAllowed = false;
                                break;
                            }
-                           FileObject fo = (FileObject)o;
+                           final FileObject fo = (FileObject)o;
                             if (AstroscopeFileObject.isDelegateOrAstroscopeFileObject(fo) || ! fo.isWriteable()) {
                                 moveAllowed = false;
                                 break;
@@ -196,9 +196,9 @@ public class FileModelTransferHandler extends TransferHandler{
                          }
                          return true;
                      }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     logger.error("Failed to import data",e);
-                } catch (UnsupportedFlavorException e) {
+                } catch (final UnsupportedFlavorException e) {
                     logger.error("Failed to import data",e);
                 }                
             }
@@ -209,29 +209,29 @@ public class FileModelTransferHandler extends TransferHandler{
         /** show a popup to the user. 
          * and perform a save or a move according to his selection.
          */
-        private void promptUserForSaveOrMove(JComponent comp, final List fileObjects) {
-            JPopupMenu m = new JPopupMenu(); // create a fresh one each time, as the model might be shared
-            int sz = fileObjects.size();
+        private void promptUserForSaveOrMove(final JComponent comp, final List fileObjects) {
+            final JPopupMenu m = new JPopupMenu(); // create a fresh one each time, as the model might be shared
+            final int sz = fileObjects.size();
             m.add("Copy " + sz + " items here").addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                     filemodel.ops.copyToCurrent(fileObjects);
                 }
             });
             m.add("Move " + sz + " items here").addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                     filemodel.ops.moveToCurrent(fileObjects);      
                 }
             });
             
                 // center it in the component
                 // would like to get drop position, but not possible using a TransferHandler.
-                Dimension size = comp.getSize();
-                Point  location = new Point(size.width/2,size.height/2);
+                final Dimension size = comp.getSize();
+                final Point  location = new Point(size.width/2,size.height/2);
             m.show(comp,location.x,location.y);
             
         }
-        public Icon getVisualRepresentation(Transferable t) {
-            EventList selected = filemodel.selection.getSelected();            
+        public Icon getVisualRepresentation(final Transferable t) {
+            final EventList selected = filemodel.selection.getSelected();            
             if (selected.size() > 1) {
                 return ResourceTable.RESOURCES_ICON;
             } else {

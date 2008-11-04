@@ -1,4 +1,4 @@
-/*$Id: WindowedRadialColorFunction.java,v 1.3 2007/01/29 10:43:49 nw Exp $
+/*$Id: WindowedRadialColorFunction.java,v 1.4 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,27 +20,27 @@ import edu.berkeley.guir.prefuse.VisualItem;
 import edu.berkeley.guir.prefuse.action.assignment.ColorFunction;
 import edu.berkeley.guir.prefuse.util.ColorMap;
 /**
- * colorer that determines color of elemnts in astroscope vizualizations
+ *  Prefuse colorer that determines color of elemnts in astroscope vizualizations.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
 public class WindowedRadialColorFunction extends ColorFunction {
-    private Color graphEdgeColor = Color.LIGHT_GRAY;
-     private Color highlightColor = new Color(50,50,255);
-     private Color focusColor = new Color(255,50,50);
-     private Color selectedColor = Color.YELLOW;
-     private ColorMap colorMap;
+    private final Color graphEdgeColor = Color.LIGHT_GRAY;
+     private final Color highlightColor = new Color(50,50,255);
+     private final Color focusColor = new Color(255,50,50);
+     private final Color selectedColor = Color.YELLOW;
+     private final ColorMap colorMap;
 
-    public WindowedRadialColorFunction(int thresh) {
+    public WindowedRadialColorFunction(final int thresh) {
         colorMap = new ColorMap(
             ColorMap.getInterpolatedMap(thresh+1, Color.RED, Color.BLACK),
             0, thresh);
     } //
            
-    public Paint getFillColor(VisualItem item) {
+    public Paint getFillColor(final VisualItem item) {
         if ( item instanceof NodeItem ) {
             //NodeItem n = (NodeItem)item;
-            String attr=  item.getAttribute("selected");                
+            final String attr=  item.getAttribute("selected");                
             if (attr != null && attr.equals("true")) {
                 return selectedColor;
             } else {               
@@ -55,16 +55,16 @@ public class WindowedRadialColorFunction extends ColorFunction {
         }
     } //
 
-    public Paint getColor(VisualItem item) {
+    public Paint getColor(final VisualItem item) {
         if ( item.isFocus() ) {
             return focusColor;
         } else if ( item.isHighlighted() ) {
              return highlightColor;
          } else if (item instanceof NodeItem) {
-             int d = ((NodeItem)item).getDepth();
+             final int d = ((NodeItem)item).getDepth();
              return colorMap.getColor(d);
         } else if (item instanceof EdgeItem) {
-            EdgeItem e = (EdgeItem) item;
+            final EdgeItem e = (EdgeItem) item;
             if ( e.isTreeEdge() ) {
                 int d, d1, d2;
                  d1 = ((NodeItem)e.getFirstNode()).getDepth();
@@ -82,6 +82,9 @@ public class WindowedRadialColorFunction extends ColorFunction {
 
 /* 
 $Log: WindowedRadialColorFunction.java,v $
+Revision 1.4  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.3  2007/01/29 10:43:49  nw
 documentation fixes.
 

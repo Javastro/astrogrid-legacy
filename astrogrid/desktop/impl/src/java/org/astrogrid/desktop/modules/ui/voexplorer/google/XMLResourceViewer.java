@@ -24,7 +24,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
-/** displays raw xml of resource.
+/** A {@link ResourceViewer} that displays the raw XML of a resource.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 13, 20072:33:10 PM
  */
@@ -32,7 +32,7 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 	/**
 	 * 
 	 */
-	public XMLResourceViewer(UIComponent parent,RegistryInternal reg, Preference advanced) {
+	public XMLResourceViewer(final UIComponent parent,final RegistryInternal reg, final Preference advanced) {
 		this.reg = reg;
 		this.parent = parent;
 		this.advancedPreference = advanced;
@@ -60,11 +60,11 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 		        setTransient(true);
 		    }
 			protected Object construct() throws Exception {
-				Document doc = reg.getResourceXML(res.getId());
+				final Document doc = reg.getResourceXML(res.getId());
 				//return XMLUtils.DocumentToString(doc);
 				return DomHelper.DocumentToString(doc);
 			}
-			protected void doFinished(Object o) {
+			protected void doFinished(final Object o) {
 				setText(o.toString());
 				setCaretPosition(0); 
 			}
@@ -72,13 +72,13 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 	}
 
 	// called to copy text to clipboard.
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		copy();
 	}
 
 	// delayed add. we take a reference to everything we need,
 	// but add in the propertyChange listener..
-	public void addTo(JTabbedPane t) {
+	public void addTo(final JTabbedPane t) {
 		this.tabPane = t;
 		advancedPreference.addPropertyChangeListener(this);
 		advancedPreference.initializeThroughListener(this);		
@@ -89,12 +89,12 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 	
 
 	/** triggered when value of preference changes. - shows / hides xml representation. */
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(final PropertyChangeEvent evt) {
 		if (evt.getSource() == this.advancedPreference ) {
 			if (advancedPreference.asBoolean()) {
 				tabPane.addTab("XML", IconHelper.loadIcon("xml.gif"), scroller, "View the XML source for this resource");       			
 			} else {
-				int ix = tabPane.indexOfComponent(scroller);
+				final int ix = tabPane.indexOfComponent(scroller);
 				if (ix != -1) {
 					tabPane.removeTabAt(ix);
 				}

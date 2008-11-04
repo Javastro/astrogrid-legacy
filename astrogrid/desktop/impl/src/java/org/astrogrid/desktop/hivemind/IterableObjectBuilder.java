@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 import net.sourceforge.hiveutils.service.ObjectBuilder;
 
-/** Custom object builder that provides access to a list of all objects it will construct.
+/** Hivemind object builder that allows iteration throught the constructed objects.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 5, 200711:07:49 AM
  */

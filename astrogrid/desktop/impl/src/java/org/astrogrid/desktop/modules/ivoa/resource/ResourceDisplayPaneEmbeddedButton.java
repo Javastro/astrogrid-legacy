@@ -14,8 +14,9 @@ import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 
-/** A button designed to be embedded in the resource viewer html
- * needs to access all it's requirements through its containing class,
+/** A button designed to be embedded in the resource viewer HTML.
+ * <p/>
+ * As it's written as html, this obect needs to access all it's requirements through its containing class,
  * or through param tags.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 19, 20083:09:36 PM
@@ -29,8 +30,8 @@ public class ResourceDisplayPaneEmbeddedButton extends JButton {
      */
     
     
-    protected ResourceDisplayPane getResourceDisplayPane(EventObject e) {
-        Container ancestor = SwingUtilities.getAncestorNamed(ResourceDisplayPane.class.getName(),(Component)e.getSource());
+    protected ResourceDisplayPane getResourceDisplayPane(final EventObject e) {
+        final Container ancestor = SwingUtilities.getAncestorNamed(ResourceDisplayPane.class.getName(),(Component)e.getSource());
         if (ancestor == null) {
             throw new ProgrammerError("No ancestor available");
         }
@@ -43,8 +44,8 @@ public class ResourceDisplayPaneEmbeddedButton extends JButton {
          
     }
     
-    protected UIComponent getUIComponent(EventObject e) {
-        Container ancestor = SwingUtilities.getAncestorOfClass(UIComponent.class,(Component)e.getSource());
+    protected UIComponent getUIComponent(final EventObject e) {
+        final Container ancestor = SwingUtilities.getAncestorOfClass(UIComponent.class,(Component)e.getSource());
         if (ancestor == null) {
             throw new ProgrammerError("No ancestor available");
         }

@@ -6,29 +6,31 @@ import java.net.URL;
 
 import org.apache.commons.vfs.FileObject;
 
-/** represents a 'copy as' command, where the source plus a target filename are specified.
- * target filename - is only a recommendation, and is only the filename, not the path.
+/** A 'copy as' command to the Bulk Copy Woeker.
+ * The source plus a target filename are specified.
+ * target filename is only a recommendation, and is only the filename, not the path.
+ * @see BulkCopyWorker
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 17, 20082:56:18 PM
  */
 public class CopyAsCommand extends CopyCommand {
 
-    public CopyAsCommand(File src, String target) {
+    public CopyAsCommand(final File src, final String target) {
         super(src);
         this.targetFilename = target;
     }
 
-    public CopyAsCommand(FileObject src, String target) {
+    public CopyAsCommand(final FileObject src, final String target) {
         super(src);
         this.targetFilename = target;
     }
 
-    public CopyAsCommand(URI src, String target) {
+    public CopyAsCommand(final URI src, final String target) {
         super(src);
         this.targetFilename = target;
     }
 
-    public CopyAsCommand(URL src, String target) {
+    public CopyAsCommand(final URL src, final String target) {
         super(src);
         this.targetFilename = target;
     }

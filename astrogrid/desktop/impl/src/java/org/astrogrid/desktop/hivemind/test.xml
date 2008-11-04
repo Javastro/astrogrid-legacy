@@ -3,7 +3,7 @@
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/test-descriptors.xml">
 	]>
 <module id="test" version="1.0.0" package="org.astrogrid.acr.test">
-Components for self-testing
+Integration tests - only used within build.
 	
 	<!-- PREAMBLE-->
 	<contribution configuration-id="framework.acrServices">

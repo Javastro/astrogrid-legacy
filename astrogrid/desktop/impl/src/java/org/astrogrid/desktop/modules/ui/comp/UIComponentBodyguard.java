@@ -2,7 +2,7 @@ package org.astrogrid.desktop.modules.ui.comp;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-/** class that guards an instance of UIComponent - ensures
+/** Guards an instance of UIComponent. - ensures
  * that all access to the parent is though the setter, not the 
  * member field reference - and traps any calls before parent is set.
  * 
@@ -19,7 +19,7 @@ public final class UIComponentBodyguard {
 		}
 		return parent;
 	}		
-	public void set(UIComponent parent) {
+	public void set(final UIComponent parent) {
 		if (parent == null) {
 			throw new IllegalArgumentException("Parent set to null");
 		}

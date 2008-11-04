@@ -7,7 +7,7 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
 import org.joda.time.Duration;
 
-/** A process monitor which (probably) polls, driven by a timer.
+/** A process monitor which is driven by a timer, probably polling for status updates.
  * 
  * comes with pre-canned timing stuff.
  * @author Noel.Winstanley@manchester.ac.uk

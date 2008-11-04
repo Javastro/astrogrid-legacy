@@ -41,7 +41,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
 
 import ca.odell.glazedlists.swing.EventSelectionModel;
 
-/** quite a mashup class - a resoource viewer for displaying query results.
+/** Extended resource viewer that also displays query results for that service.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 11, 20072:05:19 AM
  */

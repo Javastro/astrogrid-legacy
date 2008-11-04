@@ -1,4 +1,4 @@
-/*$Id: Module.java,v 1.5 2007/06/18 16:20:04 nw Exp $
+/*$Id: Module.java,v 1.6 2008/11/04 14:35:52 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ModuleDescriptor;
 
 
-/** interface to a module - a collection of components
+/** Description of an AR module - a collection of components
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 09-Aug-2005
  *
  */
@@ -32,6 +32,9 @@ public interface Module  {
 
 /* 
 $Log: Module.java,v $
+Revision 1.6  2008/11/04 14:35:52  nw
+javadoc polishing
+
 Revision 1.5  2007/06/18 16:20:04  nw
 javadoc fixes.
 

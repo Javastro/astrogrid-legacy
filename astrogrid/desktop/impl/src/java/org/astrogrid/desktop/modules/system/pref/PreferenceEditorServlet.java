@@ -17,22 +17,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that provides a way to view and edito configuration preferences.
+/** Servlet that provides viewing and editing of application preferences.
  * @todo implement test, choose, reset buttons for each item.
  * @author Noel Winstanley
  * @since Jan 9, 20072:48:57 PM
  */
 public class PreferenceEditorServlet extends HttpServlet {
 
-public void init(ServletConfig conf) throws ServletException {
+public void init(final ServletConfig conf) throws ServletException {
 	super.init(conf);
-	List prefs = (List)conf.getServletContext().getAttribute(PREFERENCES_CONTEXT_KEY);
+	final List prefs = (List)conf.getServletContext().getAttribute(PREFERENCES_CONTEXT_KEY);
 	arranger = (PreferencesArranger)conf.getServletContext().getAttribute(ARRANGER_CONTEXT_KEY);
 	if (prefs == null || arranger == null) {
 		throw new ServletException("Could not retrieve required components from servlet context");
 	}
-	for (Iterator i = prefs.iterator(); i.hasNext();) {
-		Preference p = (Preference) i.next();
+	for (final Iterator i = prefs.iterator(); i.hasNext();) {
+		final Preference p = (Preference) i.next();
 		prefMap.put(p.getName(), p);
 	}
 	
@@ -45,12 +45,12 @@ public void init(ServletConfig conf) throws ServletException {
 	public final static String ARRANGER_CONTEXT_KEY = "arranger";
 
 	// displays a form.
-	protected void doGet(HttpServletRequest arg0, HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter out = response.getWriter();
+	protected void doGet(final HttpServletRequest arg0, final HttpServletResponse response) throws ServletException, IOException {
+		final PrintWriter out = response.getWriter();
 		out.println("<html><head><title>Preferences</title></html>");
 		out.println("<body><a href='./.' >up</a><h1>Preferences</h1>");
-		for (Iterator catNames = arranger.listPreferenceCategories().iterator(); catNames.hasNext(); ) {
-			String catname = (String)catNames.next();
+		for (final Iterator catNames = arranger.listPreferenceCategories().iterator(); catNames.hasNext(); ) {
+			final String catname = (String)catNames.next();
 			out.println("<h2>" + catname + "</h2>");
 			buildForms(out, arranger.listBasicPreferencesForCategory(catname));
 			buildForms(out, arranger.listAdvancedPreferencesForCategory(catname));			
@@ -65,9 +65,9 @@ public void init(ServletConfig conf) throws ServletException {
 	 * @param out
 	 * @param modulePreferences
 	 */
-	private void buildForms(PrintWriter out, final List modulePreferences) {
-		for (Iterator i = modulePreferences.iterator(); i.hasNext(); ) {
-			Preference p= (Preference) i.next();
+	private void buildForms(final PrintWriter out, final List modulePreferences) {
+		for (final Iterator i = modulePreferences.iterator(); i.hasNext(); ) {
+			final Preference p= (Preference) i.next();
 			if (p.isAdvanced()) {
 				out.println("<div style='background:#cccccc;border:thin solid black;padding:5px;margin:2px'>");
 			} else {
@@ -79,9 +79,9 @@ public void init(ServletConfig conf) throws ServletException {
 
 			out.println("<b>" + p.getUiName() + " </b> ");
 
-			String[] options = p.getOptions();
+			final String[] options = p.getOptions();
 			if (options.length ==0) { // free text entry
-			int sz = p.getDefaultValue().length() < 10 ? 10 : 60;
+			final int sz = p.getDefaultValue().length() < 10 ? 10 : 60;
 			out.print("<input type='text' size='" + sz +"' name='");
 			out.print(p.getName());
 			out.print("' value='");
@@ -110,7 +110,7 @@ public void init(ServletConfig conf) throws ServletException {
 
 			out.println("<br>");
 			out.println(p.getDescription());
-			String[] alts = p.getAlternatives();
+			final String[] alts = p.getAlternatives();
 			if (alts.length != 0) {
 				out.println("<br><i>Alternative suggested values: </i>");
 				for (int ix = 0; ix < alts.length; ix++) {
@@ -129,14 +129,14 @@ public void init(ServletConfig conf) throws ServletException {
 	}
 	
 	// processes updates to the form.
-protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 	// process change.
 	// now the response.
-	Enumeration e = request.getParameterNames();
+	final Enumeration e = request.getParameterNames();
 	while (e.hasMoreElements()) {
-		String name = (String)e.nextElement();
-		Preference p = (Preference)prefMap.get(name);
-		String value = request.getParameter(name);
+		final String name = (String)e.nextElement();
+		final Preference p = (Preference)prefMap.get(name);
+		final String value = request.getParameter(name);
 		if (p != null && value != null) {
 			p.setValue(value); // shoudl we be doing checking here?
 		}

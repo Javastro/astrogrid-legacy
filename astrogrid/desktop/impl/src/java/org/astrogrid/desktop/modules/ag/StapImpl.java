@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.15 2008/05/09 11:31:55 nw Exp $
+/*$Id: StapImpl.java,v 1.16 2008/11/04 14:35:47 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.ag;
 import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -21,8 +20,6 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.acr.ivoa.resource.ConeCapability;
-import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.StapCapability;
@@ -30,7 +27,7 @@ import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ivoa.DALImpl;
 
-/** Implementaiton of a component that does stap queries.
+/** Client for Simple Time Access Protocol.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  * @modified Noel Winstanley changed from using Calendar to using Date.
  *@TEST
@@ -42,13 +39,13 @@ public class StapImpl extends DALImpl implements Stap {
 	/** Construct a new SiapImpl
      * 
      */
-    public StapImpl(Registry reg, MyspaceInternal ms) {
+    public StapImpl(final Registry reg, final MyspaceInternal ms) {
         super(reg,ms);
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // why has this format got '-' in it? 
         
     }
     
-    private URL constructQueryPrim(URI arg0, Date start, Date end) throws InvalidArgumentException, NotFoundException {
+    private URL constructQueryPrim(final URI arg0, final Date start, final Date end) throws InvalidArgumentException, NotFoundException {
         return addOption(
         		addOption(resolveEndpoint(arg0),"START",dateFormat.format(start))
         		, "END", dateFormat.format(end));
@@ -68,14 +65,14 @@ public class StapImpl extends DALImpl implements Stap {
     }
     
 
-    private URL constructQueryPrim(URI service, Date start, Date end, double ra,double dec) throws InvalidArgumentException, NotFoundException {
+    private URL constructQueryPrim(final URI service, final Date start, final Date end, final double ra,final double dec) throws InvalidArgumentException, NotFoundException {
         return addOption(constructQueryPrim(service,start,end),"POS",Double.toString(ra).concat(",").concat(Double.toString(dec)));
     }
     
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQuery(java.net.URI, double, double, double)
      */
-    public URL constructQuery(URI service, Date start, Date end)
+    public URL constructQuery(final URI service, final Date start, final Date end)
             throws InvalidArgumentException, NotFoundException {
         return constructQueryPrim(service,start,end);
     }
@@ -83,7 +80,7 @@ public class StapImpl extends DALImpl implements Stap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQueryF(java.net.URI, double, double, double, java.lang.String)
      */
-    public URL constructQueryF(URI service, Date start,Date end, String format)
+    public URL constructQueryF(final URI service, final Date start,final Date end, final String format)
             throws InvalidArgumentException, NotFoundException {
         return addOption(constructQueryPrim(service,start,end),"FORMAT",format);
     }
@@ -93,7 +90,7 @@ public class StapImpl extends DALImpl implements Stap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQuery(java.net.URI, double, double, double)
      */
-    public URL constructQueryP(URI service, Date start, Date end, double ra, double dec, double size)
+    public URL constructQueryP(final URI service, final Date start, final Date end, final double ra, final double dec, final double size)
             throws InvalidArgumentException, NotFoundException {
         return addOption(constructQueryPrim(service, start, end, ra, dec),"SIZE",Double.toString(size));
     }
@@ -101,7 +98,7 @@ public class StapImpl extends DALImpl implements Stap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQueryF(java.net.URI, double, double, double, java.lang.String)
      */
-    public URL constructQueryPF(URI service,Date start, Date end, double ra, double dec, double size, String format)
+    public URL constructQueryPF(final URI service,final Date start, final Date end, final double ra, final double dec, final double size, final String format)
             throws InvalidArgumentException, NotFoundException {
         return addOption(constructQueryP(service,start, end, ra, dec, size),"FORMAT",format);
     }
@@ -109,12 +106,12 @@ public class StapImpl extends DALImpl implements Stap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQueryS(java.net.URI, double, double, double, double)
      */
-    public URL constructQueryS(URI service, Date start, Date end, double ra, double dec, double ra_size, double dec_size)
+    public URL constructQueryS(final URI service, final Date start, final Date end, final double ra, final double dec, final double ra_size, final double dec_size)
             throws InvalidArgumentException, NotFoundException {
         if (ra_size == dec_size) {
             return constructQueryP(service, start, end, ra, dec,ra_size);
         } else {
-            String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
+            final String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
             return addOption(constructQueryPrim(service,start, end, ra,dec),"SIZE",sizeStr);
         }
     }
@@ -122,7 +119,7 @@ public class StapImpl extends DALImpl implements Stap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQuerySF(java.net.URI, double, double, double, double, java.lang.String)
      */
-    public URL constructQuerySF(URI service, Date start, Date end, double ra, double dec, double ra_size, double dec_size, String format)
+    public URL constructQuerySF(final URI service, final Date start, final Date end, final double ra, final double dec, final double ra_size, final double dec_size, final String format)
             throws InvalidArgumentException, NotFoundException {
             return addOption(constructQueryS(service, start, end, ra, dec, ra_size, dec_size),"FORMAT",format);        
     }    
@@ -147,10 +144,10 @@ public class StapImpl extends DALImpl implements Stap {
 		throw new NotImplementedException("not avalable in stap");
 	}
 
-    protected URL findAccessURL(Service s) throws InvalidArgumentException {
+    protected URL findAccessURL(final Service s) throws InvalidArgumentException {
         if (s instanceof StapService) {
-            StapCapability cap = ((StapService)s).findStapCapability();
-            Interface[] interfaces = cap.getInterfaces();
+            final StapCapability cap = ((StapService)s).findStapCapability();
+            final Interface[] interfaces = cap.getInterfaces();
             Interface std = null;
             switch (interfaces.length) {
                 case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's stap capability");
@@ -159,7 +156,7 @@ public class StapImpl extends DALImpl implements Stap {
                     break;
                 default:    
                     for (int i = 0; i < interfaces.length; i++) {
-                        Interface cand = interfaces[i];
+                        final Interface cand = interfaces[i];
                         if ("std".equals(cand.getRole())) {
                             std = cand;
                         }
@@ -181,6 +178,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.16  2008/11/04 14:35:47  nw
+javadoc polishing
+
 Revision 1.15  2008/05/09 11:31:55  nw
 Incomplete - task 392: joda time
 

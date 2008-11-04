@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.Set;
 
-/** representaiton of an annotation from an internal source.
+/** An annotation from an internal source.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20077:13:12 PM
  */
@@ -37,7 +37,7 @@ public class Annotation implements Serializable {
 	/**
 	 * @param alternativeTitle the alternativeTitle to set
 	 */
-	public final void setAlternativeTitle(String altTitle) {
+	public final void setAlternativeTitle(final String altTitle) {
 		this.alternativeTitle = altTitle;
 	}
 
@@ -51,7 +51,7 @@ public class Annotation implements Serializable {
 	/**
 	 * @param notes the notes to set
 	 */
-	public final void setNote(String notes) {
+	public final void setNote(final String notes) {
 		this.note = notes;
 	}
 
@@ -66,7 +66,7 @@ public class Annotation implements Serializable {
 	/**
 	 * @param source the source to set
 	 */
-	public final void setSource(AnnotationSource source) {
+	public final void setSource(final AnnotationSource source) {
 		this.source = source;
 	}
 
@@ -80,7 +80,7 @@ public class Annotation implements Serializable {
 	/**
 	 * @param tags the tags to set
 	 */
-	public final void setTags(Set tags) {
+	public final void setTags(final Set tags) {
 		this.tags = tags;
 	}
 
@@ -94,7 +94,7 @@ public class Annotation implements Serializable {
 	/**
 	 * @param resourceId the resourceId to set
 	 */
-	public final void setResourceId(URI annotatedResourceId) {
+	public final void setResourceId(final URI annotatedResourceId) {
 		this.resourceId = annotatedResourceId;
 	}
 
@@ -104,7 +104,7 @@ public class Annotation implements Serializable {
 	
 		 */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Annotation[");
 			buffer.append("resourceId = ").append(resourceId);
 			buffer.append(", source = ").append(source);

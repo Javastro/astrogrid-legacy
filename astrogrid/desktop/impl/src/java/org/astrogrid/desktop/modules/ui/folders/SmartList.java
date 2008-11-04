@@ -6,26 +6,26 @@ import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
 
-/** represents a smart / dynamic folder of resouces 
- *  defined by a filter expression
+/** A dynamic folder of resouces 
+ *  defined by a SRQL expression.
  *  @TEST mock out display, edit, equals.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 2, 20075:29:27 PM
  */
 public class SmartList extends ResourceFolder {
 
-	public SmartList(String name,String srql) throws InvalidArgumentException {
+	public SmartList(final String name,final String srql) throws InvalidArgumentException {
 		this();
 		setName(name);
-		SRQLParser p = new SRQLParser(srql);
-		SRQL sq = p.parse();
+		final SRQLParser p = new SRQLParser(srql);
+		final SRQL sq = p.parse();
 		if (sq == null) {
 			throw new InvalidArgumentException("Failed to parse");
 		}
 		setQuery(sq);
 	}
 	
-	public SmartList(String name, SRQL query) {
+	public SmartList(final String name, final SRQL query) {
 		super(name, defaultIcon);
 		setQuery(query);
 	}	
@@ -34,7 +34,7 @@ public class SmartList extends ResourceFolder {
 		super("New Smartlist",defaultIcon);
 	}
 
-	public void setQuery(SRQL query) {
+	public void setQuery(final SRQL query) {
 		this.query = query;
 	}
 	public SRQL getQuery() {
@@ -46,16 +46,16 @@ public class SmartList extends ResourceFolder {
 		
 
 	
-	public void display(RegistryGooglePanel p) {
+	public void display(final RegistryGooglePanel p) {
 		logger.info("Displaying " + getName());
 		p.displayQuery("Contents of " + getName(),query);
 	}
 
-	public void edit(VOExplorerImpl voe) {
+	public void edit(final VOExplorerImpl voe) {
 		voe.editExistingSmartList(this);
 	}
 
-	public void editAsNew(VOExplorerImpl voe) {
+	public void editAsNew(final VOExplorerImpl voe) {
 		voe.editNewSmartList(this);
 	}
 
@@ -67,19 +67,24 @@ public class SmartList extends ResourceFolder {
         return result;
     }
 
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final SmartList other = (SmartList) obj;
         if (this.query == null) {
-            if (other.query != null)
+            if (other.query != null) {
                 return false;
-        } else if (!this.query.equals(other.query))
+            }
+        } else if (!this.query.equals(other.query)) {
             return false;
+        }
         return true;
     }
 	

@@ -17,7 +17,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 
-/** Button that allows user to test availability.
+/** HTML-Button that allows user to test VOSI availability.
  * 
  * @todo - unused. should remove at some point.
  * @author Noel.Winstanley@manchester.ac.uk

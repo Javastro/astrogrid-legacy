@@ -14,7 +14,7 @@ import org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl;
 
 import com.l2fprod.common.swing.JLinkButton;
 
-/** subclass of activity that presents a 'load resource' plastic button
+/** Send a PLASTIC Resource message for a resource.
  * I've modified this so that it only appears on the main menu - as it's advanced, and because of poor resource typeing, not universally applicable.
  *  */
 public class PlasticRegistryActivity extends AbstractResourceActivity {

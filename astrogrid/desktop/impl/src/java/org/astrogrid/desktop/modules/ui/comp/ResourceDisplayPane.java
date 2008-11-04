@@ -1,6 +1,5 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
-import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 
 import org.astrogrid.acr.ivoa.Vosi;
@@ -10,10 +9,7 @@ import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 
-/** Exgtensaion to an JEditorPane  with methods for displaying resources,
- * (and a performance-optimization)
- * 
- * this component is named 'ResourceDisplayPane.class.getName()'
+/** Custom widget to display resources.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 11, 20072:22:46 PM
@@ -23,7 +19,7 @@ public class ResourceDisplayPane extends JEditorPane {
     private final Vosi vosiTester;
 	
 	/** construct a display pane with additional support for following hyperlinks */
-	public ResourceDisplayPane(final BrowserControl browser, final RegistryBrowser regBrowser, CapabilityTester capTester, Vosi vosiTester) {
+	public ResourceDisplayPane(final BrowserControl browser, final RegistryBrowser regBrowser, final CapabilityTester capTester, final Vosi vosiTester) {
 		this.vosiTester = vosiTester;
         setContentType("text/html");
 		setBorder(null);
@@ -37,7 +33,7 @@ public class ResourceDisplayPane extends JEditorPane {
 	
 	protected Resource currentResource;
 	private String currentHTML;
-	public void display(Resource r) {
+	public void display(final Resource r) {
 		if (currentResource != r) {
 			currentResource = r;
 			currentHTML = PrettierResourceFormatter.renderResourceAsHTML(r);

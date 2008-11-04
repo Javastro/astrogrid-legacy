@@ -1,4 +1,4 @@
-/*$Id: SiapProtocol.java,v 1.16 2008/05/28 12:27:49 nw Exp $
+/*$Id: SiapProtocol.java,v 1.17 2008/11/04 14:35:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 
-/**
+/** Protocol for SIAP services.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  * @author Mark Taylor
  *@TEST
@@ -31,7 +31,7 @@ public class SiapProtocol extends SpatialDalProtocol {
 
     /** Construct a new SiapProtocol
      */
-    public SiapProtocol(RegistryInternal reg,Siap siap) {
+    public SiapProtocol(final RegistryInternal reg,final Siap siap) {
         super("Images",IconHelper.loadIcon("siap16.png").getImage(),reg);
         this.siap = siap;
     }
@@ -45,16 +45,16 @@ public class SiapProtocol extends SpatialDalProtocol {
 
 
 
-    public AbstractRetriever[] createRetrievers(Service service, double ra, double dec, double raSize, double decSize) {
-        Capability[] capabilities = service.getCapabilities();
-        List cList = new ArrayList();
+    public AbstractRetriever[] createRetrievers(final Service service, final double ra, final double dec, final double raSize, final double decSize) {
+        final Capability[] capabilities = service.getCapabilities();
+        final List cList = new ArrayList();
         for (int i = 0; i < capabilities.length; i++) {
             if (capabilities[i] instanceof SiapCapability && findParamUrl(capabilities[i]) != null) {
                 cList.add(capabilities[i]);
             }
         }
-        SiapCapability[] siaps = (SiapCapability[]) cList.toArray(new SiapCapability[0]);
-        int nsiap = siaps.length;
+        final SiapCapability[] siaps = (SiapCapability[]) cList.toArray(new SiapCapability[0]);
+        final int nsiap = siaps.length;
         final AbstractRetriever[] retrievers;
         if (nsiap == 0) {
             retrievers = new AbstractRetriever[0];
@@ -65,7 +65,7 @@ public class SiapProtocol extends SpatialDalProtocol {
             };
         }
         else {
-            NodeSocket socket = createIndirectNodeSocket(service);
+            final NodeSocket socket = createIndirectNodeSocket(service);
             retrievers = new AbstractRetriever[nsiap];
             for (int i = 0; i < nsiap; i++) {
                 retrievers[i] = new SiapRetrieval(service, siaps[i], findParamUrl(siaps[i]), socket, getVizModel(), siap, ra, dec, raSize, decSize);
@@ -76,7 +76,7 @@ public class SiapProtocol extends SpatialDalProtocol {
     }
     
 	   
-    protected boolean isSuitable(Resource r)  {
+    protected boolean isSuitable(final Resource r)  {
         return r instanceof SiapService;
     }
 
@@ -85,6 +85,9 @@ public class SiapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SiapProtocol.java,v $
+Revision 1.17  2008/11/04 14:35:48  nw
+javadoc polishing
+
 Revision 1.16  2008/05/28 12:27:49  nw
 Complete - task 408: Adjust count reporting in astroscope and voexplorer.
 

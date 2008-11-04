@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.swing.JComponent;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -20,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 
-/** transferable object that represents a single file object
+/** {@code Transferable} for a single file object.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 30, 200712:15:13 AM
  */
@@ -38,21 +36,21 @@ public class FileObjectTransferable implements Transferable{
 	 * @param fo
 	 * @throws FileSystemException
 	 */
-	public FileObjectTransferable(FileObject fo) throws FileSystemException{
+	public FileObjectTransferable(final FileObject fo) throws FileSystemException{
 	    this(fo,fo.getType().hasChildren());
 	}
 		/** constructor where the kind of file object is specified
      * @param fileObject
      * @param isFolder if true, this is a folder. else it's a file.
      */
-    public FileObjectTransferable(FileObject fileObject, boolean isFolder) {
+    public FileObjectTransferable(final FileObject fileObject, final boolean isFolder) {
         this.fo = fileObject;
         flavs = isFolder ? folderDataFlavours : fileDataFlavours;
     }
         private final DataFlavor[] flavs;
 	
 	private final FileObject fo;
-	public Object getTransferData(DataFlavor flavor)
+	public Object getTransferData(final DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException {
 		if (! isDataFlavorSupported(flavor)) {
 			throw new UnsupportedFlavorException(flavor);
@@ -62,9 +60,9 @@ public class FileObjectTransferable implements Transferable{
 		} else if (VoDataFlavour.LOCAL_URI.equals(flavor)) {
 			try {
 				return new URI(StringUtils.replace(fo.getName().getURI()," ","%20"));
-			} catch (URISyntaxException x) {
+			} catch (final URISyntaxException x) {
 				logger.error("Unable to create URI for fileObject",x);
-				UnsupportedFlavorException exception = new UnsupportedFlavorException(flavor);
+				final UnsupportedFlavorException exception = new UnsupportedFlavorException(flavor);
 				exception.initCause(x);
 				throw exception;
 			}
@@ -81,7 +79,7 @@ public class FileObjectTransferable implements Transferable{
 		return flavs;
 	}
 
-	public boolean isDataFlavorSupported(DataFlavor flavor) {
+	public boolean isDataFlavorSupported(final DataFlavor flavor) {
 		return ArrayUtils.contains(flavs,flavor);
 	}
 	

@@ -21,7 +21,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
-/**
+/** Open a file using the system browser or default helper application.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 10, 20071:03:46 PM
  */

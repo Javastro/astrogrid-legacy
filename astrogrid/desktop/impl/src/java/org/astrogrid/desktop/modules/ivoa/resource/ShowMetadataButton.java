@@ -14,8 +14,9 @@ import javax.swing.event.AncestorListener;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataResourceViewer;
 
-/**
- *  static button class that attempts to flip tabs
+/** HTML-Embedded button to show metadata.
+ * <p/>
+ *  Attempts to flip tabs to metadata viewer
  *  also changes tab heading, to indicate when table metadata is present.
  * 
  * necessarily static so that it can be inserted
@@ -46,22 +47,22 @@ public final class ShowMetadataButton extends ResourceDisplayPaneEmbeddedButton 
            // to indicate whether it has rights to re-set the icon.
            addAncestorListener(new AncestorListener() {
 
-            public void ancestorAdded(AncestorEvent event) {
-                JTabbedPane tabPane = findTabPane();
-                int ix = findIndexOfTabularTab(tabPane);
+            public void ancestorAdded(final AncestorEvent event) {
+                final JTabbedPane tabPane = findTabPane();
+                final int ix = findIndexOfTabularTab(tabPane);
                 tabPane.setIconAt(ix,TabularMetadataResourceViewer.STARRED_TABLE_ICON);
                 tabPane.putClientProperty(RESET_ICON_KEY,ShowMetadataButton.this);
             }
 
-            public void ancestorMoved(AncestorEvent event) {
+            public void ancestorMoved(final AncestorEvent event) {
                 // ignored
             }
 
-            public void ancestorRemoved(AncestorEvent event) {
-                JTabbedPane tabPane = findTabPane();
+            public void ancestorRemoved(final AncestorEvent event) {
+                final JTabbedPane tabPane = findTabPane();
                 if (ShowMetadataButton.this == tabPane.getClientProperty(RESET_ICON_KEY)) {
                     // another button hasn't already reset the icon
-                    int ix = findIndexOfTabularTab(tabPane);
+                    final int ix = findIndexOfTabularTab(tabPane);
                     tabPane.setIconAt(ix,TabularMetadataResourceViewer.TABLE_ICON);
                     tabPane.putClientProperty(RESET_ICON_KEY,null);
                 }
@@ -73,9 +74,9 @@ public final class ShowMetadataButton extends ResourceDisplayPaneEmbeddedButton 
            
 
 
-    public void actionPerformed(ActionEvent e) {
-        JTabbedPane tabs = findTabPane();
-        int ix = findIndexOfTabularTab(tabs);        
+    public void actionPerformed(final ActionEvent e) {
+        final JTabbedPane tabs = findTabPane();
+        final int ix = findIndexOfTabularTab(tabs);        
         if (ix > -1) {
             tabs.setSelectedIndex(tabs.getSelectedIndex()+1);
         }
@@ -97,7 +98,7 @@ public final class ShowMetadataButton extends ResourceDisplayPaneEmbeddedButton 
     
     // private, lazily initialized.
     private int _ix = -1;
-    private int findIndexOfTabularTab(JTabbedPane tabs) {        
+    private int findIndexOfTabularTab(final JTabbedPane tabs) {        
         if (_ix ==-1 && tabs != null) {
             // uninitialized
             _ix = tabs.indexOfTab(TabularMetadataResourceViewer.TAB_TITLE);

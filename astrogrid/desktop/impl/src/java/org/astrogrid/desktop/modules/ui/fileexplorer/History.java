@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 
-/** models the browsing history 
+/** The file browsing history 
 */
 public class History  {
 	
@@ -23,7 +23,7 @@ public class History  {
 		/**
 		 * @param source
 		 */
-		public HistoryEvent(Object source, Object current) {
+		public HistoryEvent(final Object source, final Object current) {
 			super(source);
 			this.current = current;
 		}
@@ -37,19 +37,24 @@ public class History  {
 			result = PRIME * result + ((this.current == null) ? 0 : this.current.hashCode());
 			return result;
 		}
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
+		public boolean equals(final Object obj) {
+			if (this == obj) {
+                return true;
+            }
+			if (obj == null) {
+                return false;
+            }
+			if (getClass() != obj.getClass()) {
+                return false;
+            }
 			final HistoryEvent other = (HistoryEvent) obj;
 			if (this.current == null) {
-				if (other.current != null)
-					return false;
-			} else if (!this.current.equals(other.current))
-				return false;
+				if (other.current != null) {
+                    return false;
+                }
+			} else if (!this.current.equals(other.current)) {
+                return false;
+            }
 			return true;
 		}
 
@@ -60,18 +65,18 @@ public class History  {
 	}
 	
 	private final Set listeners = new HashSet();
-	public void addHistoryListener(HistoryListener l) {
+	public void addHistoryListener(final HistoryListener l) {
 		listeners.add(l);
 	}
-	public void removeHistoryListener(HistoryListener l) {
+	public void removeHistoryListener(final HistoryListener l) {
 		listeners.remove(l);
 	}
 	
 	protected void fireCurrentChanged() {
 		if (listeners.size() > 0) {
-			HistoryEvent he = new HistoryEvent(this,current());
-			for (Iterator i = listeners.iterator(); i.hasNext();) {
-				HistoryListener l = (HistoryListener) i.next();
+			final HistoryEvent he = new HistoryEvent(this,current());
+			for (final Iterator i = listeners.iterator(); i.hasNext();) {
+				final HistoryListener l = (HistoryListener) i.next();
 				l.currentChanged(he);
 			}
 		}
@@ -91,7 +96,7 @@ public class History  {
 	 */
 	public static class BoundedUniqueEventStack {
 
-		public BoundedUniqueEventStack(int maxSize) {
+		public BoundedUniqueEventStack(final int maxSize) {
 			this.sz = maxSize;
 		}
 		private final int sz;
@@ -120,8 +125,8 @@ public class History  {
 			return l.remove(l.size()-1);
 		}
 
-		public void push(Object arg0) {
-			int i = l.size();
+		public void push(final Object arg0) {
+			final int i = l.size();
 			if (i > 0 && l.get(i-1).equals(arg0)) {
 				// do nothing. already at the top of the stack.
 				return;
@@ -147,7 +152,7 @@ public class History  {
 		this(DEFAULT_HISTORY_LENGTH);
 	}
 	
-	public History(int sz) {
+	public History(final int sz) {
 		previousStack = new BoundedUniqueEventStack(sz);
 		nextStack = new BoundedUniqueEventStack(sz);
 	}
@@ -186,7 +191,7 @@ public class History  {
 	
 	/** take a peek at the previous entry */
 	public Object peekPrevious() {
-	    EventList list = previousStack.getEventList();
+	    final EventList list = previousStack.getEventList();
 	    return list.get(list.size()-2);
 	}
 	
@@ -233,7 +238,7 @@ public class History  {
 	    previousStack.clear();
 	}
 	
-	public void move(Object location) {
+	public void move(final Object location) {
 		if (location.equals(current())) {
 			return; // ignore
 		}
@@ -261,7 +266,7 @@ public class History  {
      * use to resolve a location to a more concrete equivalent, replace a child with it's parent, etc.
      * @param location
      */
-    public void replace(Object location) {
+    public void replace(final Object location) {
         if (location.equals(current())) {
             return; // ignore
         }

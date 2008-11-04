@@ -6,9 +6,8 @@ package org.astrogrid.desktop.modules.ui.voexplorer.google;
 import javax.swing.JTabbedPane;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 
-/** Inteface to a component that views resources.
+/** Inteface to a component that displays a resource in some way.
  * 
  * would prefer this to be an asbtract class, but this then fixes the base class.
  * @author Noel.Winstanley@manchester.ac.uk

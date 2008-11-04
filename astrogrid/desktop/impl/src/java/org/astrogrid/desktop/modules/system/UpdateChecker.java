@@ -26,7 +26,7 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 import com.l2fprod.common.swing.BaseDialog;
 
-/** checks for updates to the software.
+/** Checks for updates to the application.
  * 
  * Previous code was a bit too brittle. have replaced previous method with an xml-update document - that way I don't need to hard-code a download URL.
  * something like.

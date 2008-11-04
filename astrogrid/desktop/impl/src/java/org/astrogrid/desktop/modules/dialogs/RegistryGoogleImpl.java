@@ -10,7 +10,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 
-/**
+/** Implementation of the RegistryGoogle component.
  * @author Noel Winstanley
  * @since Aug 4, 20061:28:18 AM
  */ 

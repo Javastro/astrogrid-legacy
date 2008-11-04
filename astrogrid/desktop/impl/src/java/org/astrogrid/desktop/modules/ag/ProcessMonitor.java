@@ -18,7 +18,7 @@ import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/** Inteface to a remote process.
+/** Monitors the progress of a remote process.
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 16, 20071:10:27 PM
@@ -112,12 +112,13 @@ public interface ProcessMonitor {
 	    
 	}
 
+	/** event listener for notification of process progress */
 	public static interface ProcessListener extends EventListener {
 		public void messageReceived(ProcessEvent ev);
 		public void resultsReceived(ProcessEvent ev);
 		public void statusChanged(ProcessEvent ev);
 	}
-	
+	/** event object for process progress */
 	public static class ProcessEvent extends EventObject {
 
 		/**

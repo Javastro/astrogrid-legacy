@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.26 2008/04/23 10:51:04 nw Exp $
+/*$Id: Launcher.java,v 1.27 2008/11/04 14:35:49 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,6 @@
 **/
 package org.astrogrid.desktop.hivemind;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileSystemManager;
-
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
@@ -24,6 +20,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileSystemManager;
 import org.apache.hivemind.ClassResolver;
 import org.apache.hivemind.ModuleDescriptorProvider;
 import org.apache.hivemind.Registry;
@@ -32,12 +31,15 @@ import org.apache.hivemind.impl.RegistryBuilder;
 import org.apache.hivemind.impl.XmlModuleDescriptorProvider;
 import org.apache.hivemind.util.ClasspathResource;
 import org.apache.hivemind.util.URLResource;
-
 import org.astrogrid.desktop.modules.system.pref.WorkaroundTransformerFactory;
 
 /**
- *Assembles and starts some flavour of AR. Used by the main classes in {@link org.astrogrid}
+ *Assembles hivemind descriptors and instantiates AR.
  *
+ *<p/>
+ * Called from the main classes in {@link org.astrogrid}
+ *
+ *<p/>
  *starts with the pre-requisite modules preloaded.
  *clients of this class should call {@link #addModuleURL(URL)}
  *or {@link #addModuleByName(String)} to add other modules into the system,
@@ -53,7 +55,7 @@ import org.astrogrid.desktop.modules.system.pref.WorkaroundTransformerFactory;
  */
 public class Launcher implements Runnable {
 
-    /**
+    /** a URLStreamHandlerFactory that allows additional handler factories to be specified later.
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Jul 17, 20071:13:04 PM
 	 */
@@ -61,7 +63,7 @@ public class Launcher implements Runnable {
 			URLStreamHandlerFactory {
 		private URLStreamHandlerFactory followOn;
 
-		public URLStreamHandler createURLStreamHandler(String protocol) {
+		public URLStreamHandler createURLStreamHandler(final String protocol) {
 			if ("classpath".equals(protocol)) {
 				return new org.astrogrid.desktop.protocol.classpath.Handler();
 			} else if ("fallback".equals(protocol)) {
@@ -78,7 +80,7 @@ public class Launcher implements Runnable {
 		/** add in a subsequent handler factory - can only be called once.
 		 * @param streamHandlerFactory
 		 */
-		public void setFollowOnHandler(URLStreamHandlerFactory streamHandlerFactory) {
+		public void setFollowOnHandler(final URLStreamHandlerFactory streamHandlerFactory) {
 			followOn = streamHandlerFactory;
 		}
 	}
@@ -193,7 +195,7 @@ public class Launcher implements Runnable {
      * to be called before {@link #run}
   @param resourceURL url pointing to to a hivemind descriptor.
      *  */
-    public void addModuleURL(URL resourceURL){
+    public void addModuleURL(final URL resourceURL){
     	logger.info("Adding moduleURL " + resourceURL);
     	this.resources.add(new URLResource(resourceURL));
     }
@@ -202,7 +204,7 @@ public class Launcher implements Runnable {
      * to be called before {@link #run} 
      * @param resourceName for <i>resourceName</i>, there must be a resource named on the classpath named <tt>/org/astrogrid/desktop/hivemind/<i>resourceName</i>.xml</tt>
 */
-     public  void addModuleByName(String resourceName) {   
+     public  void addModuleByName(final String resourceName) {   
     	 logger.info("Adding module " + resourceName);
        this.resources.add(new ClasspathResource(cl,"/org/astrogrid/desktop/hivemind/" + resourceName + ".xml"));
     }
@@ -211,13 +213,13 @@ public class Launcher implements Runnable {
     public void run() { 
     	logger.info("Running");
     	
-        RegistryBuilder builder = new RegistryBuilder();
+        final RegistryBuilder builder = new RegistryBuilder();
         builder.addModuleDescriptorProvider(createModuleDescriptorProvider()); // this one loads our own descriptors
         reg = builder.constructRegistry(Locale.getDefault());      
         
         // extract vfs, and splice into stream handler..
         logger.info("Setting vfs as url protocol handler");
-        FileSystemManager vfs = (FileSystemManager) reg.getService(FileSystemManager.class);
+        final FileSystemManager vfs = (FileSystemManager) reg.getService(FileSystemManager.class);
         extensibleStreamHandler.setFollowOnHandler(vfs.getURLStreamHandlerFactory());
     }
 
@@ -226,8 +228,8 @@ public class Launcher implements Runnable {
 	 */
 	public static void spliceInDefaults() {
 		// splice our defaults _behind_ existing system properties
-    	for (Iterator i = defaults.entrySet().iterator(); i.hasNext(); ) {
-    		Map.Entry e = (Map.Entry)i.next();
+    	for (final Iterator i = defaults.entrySet().iterator(); i.hasNext(); ) {
+    		final Map.Entry e = (Map.Entry)i.next();
     		if (System.getProperty(e.getKey().toString()) == null) {
     			System.setProperty(e.getKey().toString(),e.getValue().toString());
     		}
@@ -247,6 +249,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.27  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.26  2008/04/23 10:51:04  nw
 removed unused protocol handler.
 

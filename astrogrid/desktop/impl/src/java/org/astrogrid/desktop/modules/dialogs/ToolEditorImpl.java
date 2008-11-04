@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.19 2008/08/21 12:56:29 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.20 2008/11/04 14:35:52 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 
-/** Implementation of the ToolEditor component
+/** Implementation of the ToolEditor component.
  *  @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-May-2005
  *
  */
@@ -116,6 +116,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.20  2008/11/04 14:35:52  nw
+javadoc polishing
+
 Revision 1.19  2008/08/21 12:56:29  nw
 Complete - task 103: tool editor dialogue
 

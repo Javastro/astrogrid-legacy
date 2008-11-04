@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.List;
 
-import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -23,21 +22,21 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
-/** save one or more resources to disk.
+/** Save xml of resources.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 200711:54:38 AM
  * @TEST
  */
 public class SaveResourceActivity extends AbstractResourceActivity implements Activity.NoContext, Activity.NoTask{
 
-	protected boolean invokable(Resource r) {
+	protected boolean invokable(final Resource r) {
 		return true;
 	}
 
 	/**
 	 * 
 	 */
-	public SaveResourceActivity(UIContext cxt,ResourceChooserInternal chooser, RegistryInternal reg,FileSystemManager vfs) {
+	public SaveResourceActivity(final UIContext cxt,final ResourceChooserInternal chooser, final RegistryInternal reg,final FileSystemManager vfs) {
 		this.chooser = chooser;
 		setHelpID("activity.save");
 		this.vfs = vfs;
@@ -53,7 +52,7 @@ private final FileSystemManager vfs;
 private final RegistryInternal reg;
 private final UIContext cxt;
 
-public void actionPerformed(ActionEvent e) {
+public void actionPerformed(final ActionEvent e) {
 	Component comp = null;
 	if (e.getSource() instanceof Component) {
 		comp = (Component)e.getSource();
@@ -65,7 +64,7 @@ public void actionPerformed(ActionEvent e) {
 			protected Object construct() throws Exception {
 				OutputStream os = null;
                 FileObject fo = null;
-				int max = l.size() + 2;
+				final int max = l.size() + 2;
 				int count = 0;
 				setProgress(count,max);
 				try {
@@ -76,8 +75,8 @@ public void actionPerformed(ActionEvent e) {
 				        os.write("<resources>\n".getBytes());
 				    }
 				    for (int i = 0; i < l.size(); i++) {
-				        Resource res = (Resource)l.get(i);
-				        Document doc = reg.getResourceXML(res.getId());
+				        final Resource res = (Resource)l.get(i);
+				        final Document doc = reg.getResourceXML(res.getId());
 				        DomHelper.ElementToStream(doc.getDocumentElement(),os);
 				        setProgress(++count,max);
 				    }
@@ -90,14 +89,14 @@ public void actionPerformed(ActionEvent e) {
 						try {
 							os.close();
                             fo.refresh();
-						} catch (IOException e) {
+						} catch (final IOException e) {
 							// ignored
 						}
 					}
 				}
 				return null;
 			}
-			protected void doFinished(Object result) {
+			protected void doFinished(final Object result) {
 			    parent.showTransientMessage("Export complete","");
 			}
 		}).start();

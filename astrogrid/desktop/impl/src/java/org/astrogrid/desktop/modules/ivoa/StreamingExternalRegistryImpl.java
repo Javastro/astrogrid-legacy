@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/** Streaming implementation of registry client for v1.0
+/** Streaming implementation of a client for an external registry.
  * @author Noel Winstanley
  * @since Aug 1, 20061:30:54 AM
  */
@@ -82,7 +82,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 			return this.doc;
 		}
 		private static final QName RESOURCE = new QName(XPathHelper.VOR_NS,"Resource");
-		public void process(XMLStreamReader r) throws XMLStreamException{
+		public void process(final XMLStreamReader r) throws XMLStreamException{
 		    if (cutoutSingleResource) {
 		        // scan until we find the resource element.
 		        for (; r.hasNext(); r.next()) {
@@ -102,13 +102,13 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
          * @throws ParserConfigurationException
          * @throws XMLStreamException
          */
-        private void constructDOM(XMLStreamReader r)
+        private void constructDOM(final XMLStreamReader r)
                 throws XMLStreamException {
             DocumentBuilder builder;
 			synchronized (fac) {
 			    try {
 			        builder = fac.newDocumentBuilder();
-			    } catch (ParserConfigurationException e) {
+			    } catch (final ParserConfigurationException e) {
 			        throw new RuntimeException(e);
 			    }
 			}
@@ -124,7 +124,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
          * @param b if true, find the first vor:Resource and use this as the document root element.
          * else create a document root from the entire stream. 
          */
-        public DocumentBuilderStreamProcessor(boolean cutoutSingleResource) {
+        public DocumentBuilderStreamProcessor(final boolean cutoutSingleResource) {
             this.cutoutSingleResource = cutoutSingleResource;
             
         }
@@ -141,8 +141,8 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		public Resource[] getResult() {
 			return this.rs;
 		}
-		public void process(XMLStreamReader r)  {
-			ResourceStreamParser parser = new ResourceStreamParser(r);
+		public void process(final XMLStreamReader r)  {
+			final ResourceStreamParser parser = new ResourceStreamParser(r);
 			rs= (Resource[]) IteratorUtils.toArray(parser,Resource.class);
 		
 		}
@@ -152,14 +152,14 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	/** adpater class that takes care of making a stream reader look like a handler */
 	private static class StreamProcessorHandler extends AbstractHandler {
 		private final StreamProcessor proc;
-		public StreamProcessorHandler(StreamProcessor proc) {
+		public StreamProcessorHandler(final StreamProcessor proc) {
 			setPhase(Phase.SERVICE);
 			this.proc = proc;
 		}
-		public void invoke(MessageContext arg0) throws Exception {
+		public void invoke(final MessageContext arg0) throws Exception {
 			final AbstractMessage currentMessage = arg0.getCurrentMessage();
 			//System.err.println(currentMessage.toString());
-			List l = (List)currentMessage.getBody();
+			final List l = (List)currentMessage.getBody();
 			
 			// NOT to sure about this. sometimes errors just seem to do the right thing.
 			// other times, this code here gets called with no body elements.
@@ -167,7 +167,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 			if (l.size() == 0) {
 				throw new ServiceException("No Body found in response");
 			}
-			XMLStreamReader r = (XMLStreamReader)l.get(0);
+			final XMLStreamReader r = (XMLStreamReader)l.get(0);
 			this.proc.process(r);
 		
 		} 
@@ -188,7 +188,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
     /** used just to resolve registry identifier to endpoint */
     private final RegistryInternal sysReg;
 	
-	public StreamingExternalRegistryImpl(RegistryInternal sysReg,AdqlInternal adql) throws URISyntaxException {
+	public StreamingExternalRegistryImpl(final RegistryInternal sysReg,final AdqlInternal adql) throws URISyntaxException {
 		this.sysReg = sysReg;
         this.adql = adql;
         this.osf = new ObjectServiceFactory(new MessageBindingProvider());
@@ -198,82 +198,82 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		this.inputFactory = XMLInputFactory.newInstance();
 	}
 	
-	public Resource[] adqlsSearch(URI arg0, String arg1)
+	public Resource[] adqlsSearch(final URI arg0, final String arg1)
 			throws ServiceException, InvalidArgumentException {
 		return adqlxSearch(arg0,adql.s2x(arg1));
 	}
 
-	public Document adqlsSearchXML(URI arg0, String arg1, boolean arg2)
+	public Document adqlsSearchXML(final URI arg0, final String arg1, final boolean arg2)
 			throws ServiceException, InvalidArgumentException {
 		return adqlxSearchXML(arg0,adql.s2x(arg1),arg2);
 	}
 	
-	public Resource[] adqlxSearch(URI arg0, Document arg1)
+	public Resource[] adqlxSearch(final URI arg0, final Document arg1)
 			throws ServiceException, InvalidArgumentException {
-		ResourceArrayBuilder proc = new ResourceArrayBuilder();
+		final ResourceArrayBuilder proc = new ResourceArrayBuilder();
 		adqlxSearchStream(arg0,arg1,false,proc);
 		return proc.getResult();
 	}
 
-	public Document adqlxSearchXML(URI arg0, Document arg1, boolean arg2)
+	public Document adqlxSearchXML(final URI arg0, final Document arg1, final boolean arg2)
 			throws ServiceException, InvalidArgumentException {
-		DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor();
+		final DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor();
 		adqlxSearchStream(arg0,arg1,arg2,proc);
 		return proc.getDocument();
 	}
 	
 
-	public void adqlxSearchStream(URI endpoint,Document queryDocument,boolean identifiersOnly, StreamProcessor proc) 
+	public void adqlxSearchStream(final URI endpoint,final Document queryDocument,final boolean identifiersOnly, final StreamProcessor proc) 
 		throws ServiceException, InvalidArgumentException {
-		Client c = createClient(endpoint);
+		final Client c = createClient(endpoint);
 		c.addInHandler(new StreamProcessorHandler(proc));
 		try {
-	          Document doc = DomHelper.newDocument();
-			Element rootE = doc.createElementNS(REG_NS,"s:Search");
+	          final Document doc = DomHelper.newDocument();
+			final Element rootE = doc.createElementNS(REG_NS,"s:Search");
 			doc.appendChild(rootE);
 
 			// find the condition inside the where clause of the adql query, and import it into the query document
-			NodeList nl = queryDocument.getElementsByTagNameNS(XPathHelper.ADQL_NS,"Condition"); 
+			final NodeList nl = queryDocument.getElementsByTagNameNS(XPathHelper.ADQL_NS,"Condition"); 
 			if (nl.getLength() < 1) {
 				throw new InvalidArgumentException("No adql condition provided");
 			}
-			Node importedCondition = doc.importNode(nl.item(0),true);
+			final Node importedCondition = doc.importNode(nl.item(0),true);
 			((Element)importedCondition).setAttributeNS(XPathHelper.XMLNS_NS,"xmlns",XPathHelper.ADQL_NS);
 	        
-			Element where = doc.createElementNS(REG_NS,"s:Where"); // tricky - this where is in the reg search NS, not ADQL.			
+			final Element where = doc.createElementNS(REG_NS,"s:Where"); // tricky - this where is in the reg search NS, not ADQL.			
 			where.appendChild(importedCondition);
 			rootE.appendChild(where);
 			
-			Element idsOnly = doc.createElementNS(REG_NS,"s:identifiersOnly");
+			final Element idsOnly = doc.createElementNS(REG_NS,"s:identifiersOnly");
             idsOnly.appendChild(doc.createTextNode(Boolean.toString( identifiersOnly)));			
 			rootE.appendChild(idsOnly);
 
-			XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
+			final XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
 					new DOMSource(doc));
 			c.invoke("Search",new Object[]{inStream});
-		} catch (XFireFault f) {
+		} catch (final XFireFault f) {
 		   // f.printStackTrace(System.err);
 			throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f,ExceptionFormatter.INNERMOST));
-		} catch (Exception x) {
+		} catch (final Exception x) {
 				throw new ServiceException("Failed to query registry",x);
 		}
 	}
 
-	public Resource[] buildResources(Document doc) throws ServiceException {
+	public Resource[] buildResources(final Document doc) throws ServiceException {
 		XMLStreamReader is;
 		try {
 			is = inputFactory.createXMLStreamReader(new DOMSource(doc));
-		} catch (XMLStreamException x) {
+		} catch (final XMLStreamException x) {
 			throw new ServiceException("Unable to read document",x);
 		}
-		ResourceStreamParser parser = new ResourceStreamParser(is);
+		final ResourceStreamParser parser = new ResourceStreamParser(is);
 		return (Resource[]) IteratorUtils.toArray(parser,Resource.class);
 	}
 
-	public RegistryService getIdentity(URI endpoint) throws ServiceException {
-		ResourceArrayBuilder proc = new ResourceArrayBuilder();
+	public RegistryService getIdentity(final URI endpoint) throws ServiceException {
+		final ResourceArrayBuilder proc = new ResourceArrayBuilder();
 		getIdentityStream(endpoint,proc);
-		Resource[] ri =  proc.getResult();
+		final Resource[] ri =  proc.getResult();
 		if (ri.length == 0) {
 			throw new ServiceException("No identity document returned");
 		} 
@@ -283,10 +283,10 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		return (RegistryService)ri[0];
 	}
 
-	public Document getIdentityXML(URI endpoint) throws ServiceException {
-		DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor(true);
+	public Document getIdentityXML(final URI endpoint) throws ServiceException {
+		final DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor(true);
 		getIdentityStream(endpoint,proc);
-		Document doc = proc.getDocument();
+		final Document doc = proc.getDocument();
 		if (doc == null) {
 		    throw new ServiceException("No identity document returned");
 		}
@@ -308,19 +308,19 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 //		}
 	}
 
-	public void getIdentityStream(URI endpoint,StreamProcessor proc) throws ServiceException {
-		Client c = createClient(endpoint);
+	public void getIdentityStream(final URI endpoint,final StreamProcessor proc) throws ServiceException {
+		final Client c = createClient(endpoint);
 		c.addInHandler(new StreamProcessorHandler(proc));
 		try {
-			Document doc = DomHelper.newDocument();
-			Element rootE = doc.createElementNS(REG_NS,"s:GetIdentity");
+			final Document doc = DomHelper.newDocument();
+			final Element rootE = doc.createElementNS(REG_NS,"s:GetIdentity");
 			doc.appendChild(rootE);
-			XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
+			final XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
 					new DOMSource(doc));
 			c.invoke("GetIdentity",new Object[]{inStream}); 
-		} catch (XFireFault f) {
+		} catch (final XFireFault f) {
 			throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f));
-		} catch (Exception x) {
+		} catch (final Exception x) {
 				throw new ServiceException("Failed to query registry",x);
 		}
 	}
@@ -330,22 +330,22 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		return null;
 	}
 
-	public Resource getResource(URI endpoint, URI ivorn) throws NotFoundException,
+	public Resource getResource(final URI endpoint, final URI ivorn) throws NotFoundException,
 			ServiceException {
-		ResourceArrayBuilder proc = new ResourceArrayBuilder();
+		final ResourceArrayBuilder proc = new ResourceArrayBuilder();
 		getResourceStream(endpoint,ivorn,proc);
-		Resource[] ri =  proc.getResult();
+		final Resource[] ri =  proc.getResult();
 		if (ri.length == 0) {
 			throw new NotFoundException(ivorn.toString());
 		} 
 		return ri[0];
 	}
 
-	public Document getResourceXML(URI endpoint, URI ivorn)
+	public Document getResourceXML(final URI endpoint, final URI ivorn)
 			throws NotFoundException, ServiceException {
-		DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor(true);
+		final DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor(true);
 		getResourceStream(endpoint,ivorn,proc);
-		Document doc =  proc.getDocument();
+		final Document doc =  proc.getDocument();
 		if (doc == null) {
 		    throw new NotFoundException(ivorn.toString());
 		}
@@ -367,98 +367,98 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	}
 	
 
-	public void getResourceStream(URI endpoint,URI ivorn, StreamProcessor processor) throws ServiceException, NotFoundException{
-		Client c = createClient(endpoint);
+	public void getResourceStream(final URI endpoint,final URI ivorn, final StreamProcessor processor) throws ServiceException, NotFoundException{
+		final Client c = createClient(endpoint);
 		c.addInHandler(new StreamProcessorHandler(processor));
 		try {
-			Document doc = DomHelper.newDocument();
-			Element rootE = doc.createElementNS(REG_NS,"s:GetResource"); 
+			final Document doc = DomHelper.newDocument();
+			final Element rootE = doc.createElementNS(REG_NS,"s:GetResource"); 
 			doc.appendChild(rootE);
-			Element kw = doc.createElementNS(REG_NS,"s:identifier"); 
+			final Element kw = doc.createElementNS(REG_NS,"s:identifier"); 
 			rootE.appendChild(kw);
 			kw.appendChild(doc.createTextNode(ivorn.toString()));		
-			XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
+			final XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
 					new DOMSource(doc));
 			c.invoke("GetResource",new Object[]{inStream});
-		} catch (XFireFault f) {
+		} catch (final XFireFault f) {
 			if (f.getMessage().toLowerCase().indexOf("not found") != -1) {
 				throw new NotFoundException(ivorn.toString());
 			} else {
 				throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f));
 			}
-		} catch (Exception x) {
+		} catch (final Exception x) {
 				throw new ServiceException("Failed to query registry",x);
 		}
 	}
 
 
-	public Resource[] keywordSearch(URI arg0, String arg1, boolean arg2)	throws ServiceException {
-		ResourceArrayBuilder proc = new ResourceArrayBuilder();
+	public Resource[] keywordSearch(final URI arg0, final String arg1, final boolean arg2)	throws ServiceException {
+		final ResourceArrayBuilder proc = new ResourceArrayBuilder();
 		keywordSearchStream(arg0,arg1,arg2,proc);
 		return proc.getResult();
 	}
 
-	public Document keywordSearchXML(URI arg0, String arg1, boolean arg2) throws ServiceException {
-		DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor();
+	public Document keywordSearchXML(final URI arg0, final String arg1, final boolean arg2) throws ServiceException {
+		final DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor();
 		keywordSearchStream(arg0,arg1,arg2,proc);
 		return proc.getDocument();
 	}
 	
-	public void keywordSearchStream(URI endpoint,String keywords, boolean orValues, StreamProcessor proc) throws ServiceException {
-		Client c = createClient(endpoint);
+	public void keywordSearchStream(final URI endpoint,final String keywords, final boolean orValues, final StreamProcessor proc) throws ServiceException {
+		final Client c = createClient(endpoint);
 		c.addInHandler(new StreamProcessorHandler(proc));
 		try {
-			Document doc = DomHelper.newDocument();
-			Element rootE = doc.createElementNS(REG_NS,"s:KeywordSearch");
+			final Document doc = DomHelper.newDocument();
+			final Element rootE = doc.createElementNS(REG_NS,"s:KeywordSearch");
 			doc.appendChild(rootE);
-			Element kw = doc.createElementNS(REG_NS,"s:keywords"); 
+			final Element kw = doc.createElementNS(REG_NS,"s:keywords"); 
 			rootE.appendChild(kw);
 			kw.appendChild(doc.createTextNode(keywords));
-			Element orV = doc.createElementNS(REG_NS,"s:orValues"); 
+			final Element orV = doc.createElementNS(REG_NS,"s:orValues"); 
 			rootE.appendChild(orV);
 			orV.appendChild(doc.createTextNode(Boolean.toString(orValues)));	
-			XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
+			final XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
 					new DOMSource(doc));
 			c.invoke("KeywordSearch",new Object[]{inStream});
-		} catch (XFireFault f) {
+		} catch (final XFireFault f) {
 			throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f));			
-		} catch (Exception x) {
+		} catch (final Exception x) {
 				throw new ServiceException("Failed to query registry",x);
 		}
 	}
 	
 
-	public Resource[] xquerySearch(URI endpoint, String xquery)throws ServiceException {
-		ResourceArrayBuilder proc = new ResourceArrayBuilder();
+	public Resource[] xquerySearch(final URI endpoint, final String xquery)throws ServiceException {
+		final ResourceArrayBuilder proc = new ResourceArrayBuilder();
 		xquerySearchStream(endpoint,xquery,proc);
 		return proc.getResult();
 	}
 
-	public Document xquerySearchXML(URI endpoint, String xquery)	throws ServiceException {
-		DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor();
+	public Document xquerySearchXML(final URI endpoint, final String xquery)	throws ServiceException {
+		final DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor();
 		xquerySearchStream(endpoint,xquery,proc);
 		return proc.getDocument();
 	}
-	public void xquerySearchStream(URI endpoint, String xquery, StreamProcessor processor)
+	public void xquerySearchStream(final URI endpoint, final String xquery, final StreamProcessor processor)
 	throws ServiceException {
-			Client c = createClient(endpoint);
+			final Client c = createClient(endpoint);
 			c.addInHandler(new StreamProcessorHandler(processor));
 			try {
-				Document doc = DomHelper.newDocument();
-				Element rootE = doc.createElementNS(REG_NS,"s:XQuerySearch");
+				final Document doc = DomHelper.newDocument();
+				final Element rootE = doc.createElementNS(REG_NS,"s:XQuerySearch");
 				doc.appendChild(rootE);
-				Element xq = doc.createElementNS(REG_NS,"s:xquery"); 
+				final Element xq = doc.createElementNS(REG_NS,"s:xquery"); 
 				rootE.appendChild(xq);
 				xq.appendChild(doc.createTextNode(prependProlog(xquery)));
-				XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
+				final XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
 						new DOMSource(doc));
 				c.invoke("XQuerySearch",new Object[]{inStream});
-			} catch (XFireFault f) {
+			} catch (final XFireFault f) {
 				logger.error("Error",f);
 				throw new ServiceException("Unable to query the registry service at " + endpoint,f);
-			} catch (ParserConfigurationException x) {
+			} catch (final ParserConfigurationException x) {
 			    throw new RuntimeException(x);				
-			} catch (Exception x) {
+			} catch (final Exception x) {
 					throw new ServiceException("Unable to query the registry service at "+ endpoint,x);
 			}
 }
@@ -467,28 +467,28 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	    if (endpoint.getScheme().equals("ivo")) {
 	        // resolve endpoint first.
 	        try {
-	        Resource res = sysReg.getResource(endpoint);
+	        final Resource res = sysReg.getResource(endpoint);
 	        
 	        if (! (res instanceof RegistryService)) {
 	            throw new ServiceException(endpoint + " is not a registry service");
 	        }
-	        SearchCapability searchCapability = ((RegistryService)res).findSearchCapability();
+	        final SearchCapability searchCapability = ((RegistryService)res).findSearchCapability();
 	        // assume that the capability has at least one interface, and this contains at least one access url.
 	        if (searchCapability == null || searchCapability.getInterfaces().length == 0 || searchCapability.getInterfaces()[0].getAccessUrls().length == 0) {
 	            throw new ServiceException(endpoint + " provides no search endpoint");
 	        }
 	        endpoint = searchCapability.getInterfaces()[0].getAccessUrls()[0].getValueURI();
-	        } catch (NotFoundException e) {
+	        } catch (final NotFoundException e) {
 	            throw new ServiceException(endpoint + " is not a known registry service");
 	        }
 	    } 
-		Client client = new Client(this.transport,this.serv,endpoint.toString());
+		final Client client = new Client(this.transport,this.serv,endpoint.toString());
 		client.setProperty(CommonsHttpMessageSender.GZIP_RESPONSE_ENABLED, true); // enable gzip of the response, if.		
 		return client;
 	}
-    protected String prependProlog(String xquery) {
-        String[][] ns = XPathHelper.listDefaultNamespaces();
-        StrBuilder sb = new StrBuilder(ns.length * 50);
+    protected String prependProlog(final String xquery) {
+        final String[][] ns = XPathHelper.listDefaultNamespaces();
+        final StrBuilder sb = new StrBuilder(ns.length * 50);
  
         for (int i = 0; i < ns.length; i++) {
             sb.append("declare namespace ")

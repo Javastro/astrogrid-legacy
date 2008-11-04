@@ -1,4 +1,4 @@
-/*$Id: XPathHelper.java,v 1.10 2008/02/01 07:55:51 nw Exp $
+/*$Id: XPathHelper.java,v 1.11 2008/11/04 14:35:47 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,8 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.DOMException;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-/** Class of Helper methods for working with XPath, namespaces, and registry documents in particular.
+/**Helpers for working with XPath, namespaces, and registry documents.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
  *
  */
@@ -111,6 +102,9 @@ public class XPathHelper {
 
 /* 
 $Log: XPathHelper.java,v $
+Revision 1.11  2008/11/04 14:35:47  nw
+javadoc polishing
+
 Revision 1.10  2008/02/01 07:55:51  nw
 commented out obsolebits
 

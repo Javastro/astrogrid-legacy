@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.system.pref;
 
 import java.util.List;
 
-/** A component that arranges the list of preferneces in the system into a structrure that
+/** Arranges the set of system preferences into a structrure that
  * is more digestible to a user.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jan 26, 20071:15:00 PM

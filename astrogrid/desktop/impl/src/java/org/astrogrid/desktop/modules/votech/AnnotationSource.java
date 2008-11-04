@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/** represents a static file containing a list of annotations to ingest into the 
+/** A pointer to a static file containing a list of annotations to ingest into the 
  * annotation service.
  * built via hivemind contributions.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -15,7 +15,7 @@ public class AnnotationSource implements Serializable, Comparable{
 	protected URI source;
 	/** a name for the annotation source */
 	protected String name;
-	public AnnotationSource(URI source, String name) {
+	public AnnotationSource(final URI source, final String name) {
 		super();
 		this.source = source;
 		this.name = name;
@@ -36,11 +36,11 @@ public class AnnotationSource implements Serializable, Comparable{
 	/**
 	 * @param sortOrder the sortOrder to set
 	 */
-	public final void setSortOrder(int sortOrder) {
+	public final void setSortOrder(final int sortOrder) {
 		this.sortOrder = sortOrder;
 	}
 
-	public AnnotationSource(String source, String name) throws URISyntaxException {
+	public AnnotationSource(final String source, final String name) throws URISyntaxException {
 		super();
 		this.source = new URI(source);
 		this.name = name;
@@ -70,14 +70,14 @@ public class AnnotationSource implements Serializable, Comparable{
 	/**
 	 * @param name the name to set
 	 */
-	public final void setName(String name) {
+	public final void setName(final String name) {
 		this.name = name;
 	}
 
 	/**
 	 * @param source the source to set
 	 */
-	public final void setSource(URI url) {
+	public final void setSource(final URI url) {
 		this.source = url;
 	}
 
@@ -88,19 +88,24 @@ public class AnnotationSource implements Serializable, Comparable{
 		return result;
 	}
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final AnnotationSource other = (AnnotationSource) obj;
 		if (this.source == null) {
-			if (other.source != null)
-				return false;
-		} else if (!this.source.equals(other.source))
-			return false;
+			if (other.source != null) {
+                return false;
+            }
+		} else if (!this.source.equals(other.source)) {
+            return false;
+        }
 		return true;
 	}
 
@@ -111,7 +116,7 @@ public class AnnotationSource implements Serializable, Comparable{
 	
 		 */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("AnnotationSource[");
 			buffer.append("source = ").append(source);
 			buffer.append(", name = ").append(name);
@@ -119,7 +124,7 @@ public class AnnotationSource implements Serializable, Comparable{
 			return buffer.toString();
 		}
 
-	public int compareTo(Object arg0) {
+	public int compareTo(final Object arg0) {
 		return sortOrder - ((AnnotationSource)arg0).sortOrder;
 	}
 

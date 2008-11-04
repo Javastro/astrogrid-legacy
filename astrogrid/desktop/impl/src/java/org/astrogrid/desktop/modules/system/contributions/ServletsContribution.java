@@ -1,4 +1,4 @@
-/*$Id: ServletsContribution.java,v 1.5 2007/01/29 11:11:37 nw Exp $
+/*$Id: ServletsContribution.java,v 1.6 2008/11/04 14:35:53 nw Exp $
  * Created on 16-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,7 @@
  *
 **/
 package org.astrogrid.desktop.modules.system.contributions;
- /** bean that declares a servlet to be deployed. 
+ /** contributes a servlet to be deployed in the servlet container. 
  *
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Mar-2006
  *
@@ -27,21 +27,21 @@ public class ServletsContribution {
     public String getName() {
         return this.name;
     }
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
     /** path to deploy this servlet to */
     public String getPath() {
         return this.path;
     }
-    public void setPath(String path) {
+    public void setPath(final String path) {
         this.path = path;
     }
     /** implementation class for this servlet */
     public Class getServletClass() {
         return this.servletClass;
     }
-    public void setServletClass(Class servletClass) {
+    public void setServletClass(final Class servletClass) {
         this.servletClass = servletClass;
     }
     
@@ -51,6 +51,9 @@ public class ServletsContribution {
 
 /* 
 $Log: ServletsContribution.java,v $
+Revision 1.6  2008/11/04 14:35:53  nw
+javadoc polishing
+
 Revision 1.5  2007/01/29 11:11:37  nw
 updated contact details.
 

@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.system.contributions;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/** object containing a single help item contribution.
+/** A single help item contribution.
  * @author Noel Winstanley
  * @since Jan 11, 200712:44:44 PM
  */
@@ -17,7 +17,7 @@ public class HelpItemContribution {
 	public String getId() {
 		return this.id;
 	}
-	public void setId(String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 	// necessary to have this a different name to the String setter for this propery - 
@@ -25,7 +25,7 @@ public class HelpItemContribution {
 	public URL getUrlObject() {
 		return this.url;
 	}
-	public void setUrl(String url) throws MalformedURLException {
+	public void setUrl(final String url) throws MalformedURLException {
 		this.url = new URL(url);
 	}
 	public int hashCode() {
@@ -34,19 +34,24 @@ public class HelpItemContribution {
 		result = PRIME * result + ((this.id == null) ? 0 : this.id.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final HelpItemContribution other = (HelpItemContribution) obj;
 		if (this.id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!this.id.equals(other.id))
-			return false;
+			if (other.id != null) {
+                return false;
+            }
+		} else if (!this.id.equals(other.id)) {
+            return false;
+        }
 		return true;
 	}
 	/**
@@ -55,7 +60,7 @@ public class HelpItemContribution {
 	
 		 */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("HelpItemContribution[");
 			buffer.append("id = ").append(id);
 			buffer.append(", url = ").append(url);

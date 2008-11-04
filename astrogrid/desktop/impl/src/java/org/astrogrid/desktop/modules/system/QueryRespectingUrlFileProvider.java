@@ -21,7 +21,7 @@ import org.apache.commons.vfs.provider.url.UrlFileNameParser;
 import org.apache.commons.vfs.provider.url.UrlFileProvider;
 import org.apache.commons.vfs.provider.url.UrlFileSystem;
 
-/** extended  url file provider that respects the ?query part of a url. 
+/** Extended VFS url file provider that respects the ?query part of a url. 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Dec 9, 200712:03:09 PM
  */
@@ -35,19 +35,19 @@ public class QueryRespectingUrlFileProvider extends UrlFileProvider {
         setFileNameParser(new QueryRespectingFileNameParser());
     }
     
-    public synchronized FileObject findFile(FileObject baseFile, String uri,
-            FileSystemOptions fileSystemOptions) throws FileSystemException {
+    public synchronized FileObject findFile(final FileObject baseFile, final String uri,
+            final FileSystemOptions fileSystemOptions) throws FileSystemException {
         {
             try
             {
                 final URL url = new URL(uri);
 
-                URL rootUrl = new URL(url, "/");
+                final URL rootUrl = new URL(url, "/");
                 final String key = this.getClass().getName() + rootUrl.toString();
                 FileSystem fs = findFileSystem(key, fileSystemOptions);
                 if (fs == null)
                 {
-                    String extForm = rootUrl.toExternalForm();
+                    final String extForm = rootUrl.toExternalForm();
                     final FileName rootName =
                         getContext().parseURI(extForm);
                     // final FileName rootName =
@@ -75,19 +75,20 @@ public class QueryRespectingUrlFileProvider extends UrlFileProvider {
          * @param rootName
          * @param fileSystemOptions
          */
-        public QueryRespectingUrlFileSystem(FileName rootName,
-                FileSystemOptions fileSystemOptions) {
+        public QueryRespectingUrlFileSystem(final FileName rootName,
+                final FileSystemOptions fileSystemOptions) {
             super(rootName, fileSystemOptions);
         }
     }
     
-    /** subclassed to  get at the nested parser */
+    /** The parser.
+     * subclassed to  get at the nested parser */
     public static class QueryRespectingFileNameParser extends UrlFileNameParser {
-        private URLFileNameParser url = new QueryRespectingURLFileNameParser(80);
-        private GenericFileNameParser generic = new GenericFileNameParser();
+        private final URLFileNameParser url = new QueryRespectingURLFileNameParser(80);
+        private final GenericFileNameParser generic = new GenericFileNameParser();
 
-        public FileName parseUri(VfsComponentContext context, FileName base,
-                String filename) throws FileSystemException {
+        public FileName parseUri(final VfsComponentContext context, final FileName base,
+                final String filename) throws FileSystemException {
             if (isUrlBased(base, filename))
             {
                 return url.parseUri(context, base, filename);
@@ -102,10 +103,10 @@ public class QueryRespectingUrlFileProvider extends UrlFileProvider {
         /**
          * @param defaultPort
          */
-        public QueryRespectingURLFileNameParser(int defaultPort) {
+        public QueryRespectingURLFileNameParser(final int defaultPort) {
             super(defaultPort);
         }
-        public FileName parseUri(final VfsComponentContext context, FileName base, final String filename) throws FileSystemException
+        public FileName parseUri(final VfsComponentContext context, final FileName base, final String filename) throws FileSystemException
         {
             // FTP URI are generic URI (as per RFC 2396)
             final StringBuffer name = new StringBuffer();
@@ -114,12 +115,12 @@ public class QueryRespectingUrlFileProvider extends UrlFileProvider {
             final Authority auth = extractToPath(filename, name);
 
             // Extract the queryString
-            String queryString = UriParser.extractQueryString(name);
+            final String queryString = UriParser.extractQueryString(name);
 
             // Decode and normalise the file name
             UriParser.canonicalizePath(name, 0, name.length(), this);
             UriParser.fixSeparators(name);
-            FileType fileType = UriParser.normalisePath(name);
+            final FileType fileType = UriParser.normalisePath(name);
             final String path = name.toString();
 
             return new QueryRespectingURLFileName(
@@ -135,7 +136,8 @@ public class QueryRespectingUrlFileProvider extends UrlFileProvider {
         }
     }
     
-    /** phew! finally got here. all this just to override equals */
+    /** Extended file name.
+     * All this delving down just to override equals */
     public static class QueryRespectingURLFileName extends URLFileName {
 
         /**
@@ -149,13 +151,13 @@ public class QueryRespectingUrlFileProvider extends UrlFileProvider {
          * @param type
          * @param queryString
          */
-        public QueryRespectingURLFileName(String scheme, String hostName,
-                int port, int defaultPort, String userName, String password,
-                String path, FileType type, String queryString) {
+        public QueryRespectingURLFileName(final String scheme, final String hostName,
+                final int port, final int defaultPort, final String userName, final String password,
+                final String path, final FileType type, final String queryString) {
             super(scheme, hostName, port, defaultPort, userName, password, path, type,
                     queryString);
         }
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (!(obj instanceof QueryRespectingURLFileName))
             {
                 return false;

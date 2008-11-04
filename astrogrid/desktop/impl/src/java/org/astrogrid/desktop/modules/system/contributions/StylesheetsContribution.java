@@ -18,7 +18,7 @@ import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 
-/** Contribution bean for a stylesheet for rendering xml results into html.
+/** Contribution a stylesheet for rendering xml results into html.
  * buids and caches an xslt transformer for the stylesheet on first access.
  * @author Noel Winstanley
  * @since Apr 18, 20064:42:12 PM
@@ -33,7 +33,7 @@ public class StylesheetsContribution {
 	 * @param name the name of the sheet - resource path, releative to {@link Xml2XhtmlTransformer}
 	 * @throws TransformerConfigurationException 
 	 */
-	public void setSheet(String name) throws TransformerConfigurationException {
+	public void setSheet(final String name) throws TransformerConfigurationException {
 		final InputStream stream = Xml2XhtmlTransformer.class.getResourceAsStream(name);
 		if (stream == null) {
 			throw new TransformerConfigurationException("Failed to read resource: " + name);
@@ -45,25 +45,25 @@ public class StylesheetsContribution {
 	/** Configures when this contribution is applicable.
 	 * @param regexp the regexp to set
 	 */
-	public void setRegexp(String regexp) {
+	public void setRegexp(final String regexp) {
 		this.pattern = Pattern.compile(regexp, Pattern.DOTALL);
 	}
 	
 	/** @see #isApplicable(CharSequence) */
-	public boolean isApplicable(Document d) {
+	public boolean isApplicable(final Document d) {
 		try {
 			return isApplicable(DomHelper.DocumentToString(d));
-		} catch (IOException x) {
+		} catch (final IOException x) {
 			return false;
 		}
 		
 	}
 	/** test if this sheet is applicable to an input by matching the regexp against it */
-	public boolean isApplicable(CharSequence input) {
+	public boolean isApplicable(final CharSequence input) {
 		if (pattern == null) {
 			return false;
 		}
-		Matcher m = pattern.matcher(input);
+		final Matcher m = pattern.matcher(input);
 		return m.lookingAt(); // tests whether a prefix of the pattern matches.
 	}
 	
@@ -75,7 +75,7 @@ public class StylesheetsContribution {
 		if (templates == null) {
 			throw new TransformerConfigurationException("No template supplied");
 		}
-		Transformer t =  templates.newTransformer();
+		final Transformer t =  templates.newTransformer();
 		//t.setOutputProperty(OutputKeys.METHOD,"html");
 		return t;
 	}

@@ -9,9 +9,7 @@ import org.xml.sax.SAXException;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** taks that retreives, parses and adds to the display the results of one cone service 
- *  Variation that doesn't draw bubbles below the catalog name - as suggested by andy.
- *  @TEST
+/**Variant retriever for a cone service that doesn't draw bubbles below the catalog name. 
  * */
 public class CatalogTerminalConeRetrieval extends ConeRetrieval {
     

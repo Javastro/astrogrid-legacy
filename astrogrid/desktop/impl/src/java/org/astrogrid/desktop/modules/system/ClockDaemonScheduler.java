@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.19 2008/05/28 12:28:15 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.20 2008/11/04 14:35:49 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import org.joda.time.Duration;
 import EDU.oswego.cs.dl.util.concurrent.ClockDaemon;
 import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
 
-/** implmentation of the scheduler using the oswego clock daemon.
+/** Implementation of the scheduler using the <a href='http://g.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html'>oswego clock daemon</a>.
  * 
  * Just creatres a new backgroundWorker for each task every period seconds..
  * takes a list of services to schedule.
@@ -42,7 +42,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
     /**  
      * 
      */
-    public ClockDaemonScheduler(final List tasks, UIContext context,SessionManagerInternal session) {
+    public ClockDaemonScheduler(final List tasks, final UIContext context,final SessionManagerInternal session) {
         super();
         this.defaultSession = session.findSessionForKey(session.getDefaultSessionId());
         this.context = context;
@@ -50,8 +50,8 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
         this.daemon.setThreadFactory(new ThreadFactory() {
             private final ThreadFactory wrapped = daemon.getThreadFactory();
 
-            public Thread newThread(Runnable arg0) {
-                Thread t = wrapped.newThread(arg0);
+            public Thread newThread(final Runnable arg0) {
+                final Thread t = wrapped.newThread(arg0);
                 t.setDaemon(true);
                 t.setName("Scheduled Tasks Thread - " + t.getName());
                 t.setPriority(Thread.MIN_PRIORITY+3);
@@ -63,13 +63,13 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
         daemon.restart();
         // register all known scheduled tasks.
         if (tasks != null) {
-        for (Iterator i = tasks.iterator(); i.hasNext(); ) {
-           Object o = i.next();
+        for (final Iterator i = tasks.iterator(); i.hasNext(); ) {
+           final Object o = i.next();
            if (o instanceof DelayedContinuation ) {
-               DelayedContinuation d = (DelayedContinuation)o;
+               final DelayedContinuation d = (DelayedContinuation)o;
                this.schedule(d);
            } else if (o instanceof ScheduledTask){
-               ScheduledTask st = (ScheduledTask)o;
+               final ScheduledTask st = (ScheduledTask)o;
                this.schedule(st);
            } else {
                logger.error("List of services to schedule contains something that isn't a ScheduledTask or DelayedContinuation " + o);
@@ -85,7 +85,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
     public void schedule(final ScheduledTask task) {
         daemon.executePeriodically(task.getPeriod(), new Runnable() {
         	public void run() {
-        		BackgroundWorker worker = new BackgroundWorker(context,task.getName(),BackgroundWorker.VERY_LONG_TIMEOUT,Thread.MIN_PRIORITY) {
+        		final BackgroundWorker worker = new BackgroundWorker(context,task.getName(),BackgroundWorker.VERY_LONG_TIMEOUT,Thread.MIN_PRIORITY) {
 
 					protected Object construct() throws Exception {
 						task.execute(this);
@@ -106,10 +106,10 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 		daemon.executeAfterDelay(task.getDelay().getMillis(),new Runnable() {
 
 			public void run() {// rund on scheduler thread. just submits a new backgroundWorker for execution.
-				BackgroundWorker worker = new BackgroundWorker(context,task.getTitle(),BackgroundWorker.LONG_TIMEOUT) {
+				final BackgroundWorker worker = new BackgroundWorker(context,task.getTitle(),BackgroundWorker.LONG_TIMEOUT) {
 
 					protected Object construct() throws Exception {
-						DelayedContinuation next =  task.execute();
+						final DelayedContinuation next =  task.execute();
 						if (next != null) {
 							schedule(next); // recursive call.
 						}
@@ -122,11 +122,11 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 		});
 	}
 
-    public void executeAfterDelay(Duration delay, Runnable task) {
+    public void executeAfterDelay(final Duration delay, final Runnable task) {
     	daemon.executeAfterDelay(delay.getMillis(),task);
     }
     
-    public void executeAt(Date d, Runnable task) {
+    public void executeAt(final Date d, final Runnable task) {
     	daemon.executeAt(d,task);
     }
  
@@ -149,6 +149,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.20  2008/11/04 14:35:49  nw
+javadoc polishing
+
 Revision 1.19  2008/05/28 12:28:15  nw
 Incomplete - task 400: Alternate caching strategy.
 

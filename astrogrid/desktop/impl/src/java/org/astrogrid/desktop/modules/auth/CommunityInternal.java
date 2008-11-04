@@ -13,10 +13,9 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.security.SecurityGuard;
 
-/**
- * Extension of the AR Community interface which allows access to credentials.
- * Inside the AR, this type is exposed as a service. The accessor
- * getSecurityGuard gives access to the user's credentials and principals.
+/** Internal interface to community. 
+ * <p />
+ * Extension of the AR Community interface which allows access to credentials, and also to change password.
  *
  * @author Guy Rixon
  */

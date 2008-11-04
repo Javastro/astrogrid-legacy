@@ -17,7 +17,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.Builder;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 
-/** Class that estimates size of queries. 
+/** Implementation of {@link QuerySizer}.
  * 
  * returns Integer objects, instead of int primitives, as it's easier to cache these
  * and these methods are often called from a background worker - which prefers to 
@@ -100,7 +100,7 @@ public class QuerySizerImpl implements QuerySizer {
 //			return super.visit(q);
 //		}
 //	}
-	
+	/** a xml stream process that parses the registry response to extract the sizing */
 	private static class SizingStreamProcessor implements StreamProcessor {
 		private Integer size = ERROR;
 		public void process(final XMLStreamReader r) throws XMLStreamException {

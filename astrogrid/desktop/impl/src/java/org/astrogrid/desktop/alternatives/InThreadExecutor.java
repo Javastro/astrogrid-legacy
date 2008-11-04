@@ -12,7 +12,7 @@ import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 
 /** Alternative implementation of Background Executor
- *  - implements the task in-thread.
+ *  - executes the task in-thread.
  * and executes <i>all</i> parts of a backgroundworker on the calling
  * thread - not on EDT or a backgrund thread.
  * @author noel
@@ -27,10 +27,10 @@ public class InThreadExecutor implements BackgroundExecutor {
 	private final Executor exec = new DirectExecutor();
 	/* overridden
 	 */
-	public void executeWorker(BackgroundWorker worker) {
+	public void executeWorker(final BackgroundWorker worker) {
 		try {
 			exec.execute(worker);
-		} catch (InterruptedException x) {
+		} catch (final InterruptedException x) {
 			logger.warn("interrupted", x);
 			
 		}
@@ -38,19 +38,19 @@ public class InThreadExecutor implements BackgroundExecutor {
 
 	/* overridden
 	 */
-	public void interrupt(Runnable r) {
+	public void interrupt(final Runnable r) {
 		// not possible. just log and ignore.
 	}
 
 	/* overridden
 	 */
-	public void execute(Runnable worker) throws InterruptedException {
+	public void execute(final Runnable worker) throws InterruptedException {
 		try {
 			exec.execute(worker);
-		} catch (InterruptedException x) {
+		} catch (final InterruptedException x) {
 			logger.warn("interrupted", x);
 			
-		} catch (Throwable t) {
+		} catch (final Throwable t) {
 			// catch and log all exceptions - preserves semantics of original background executor, where runnables are run
 			// in separate thread, and so any thrown exceptions are just swallowed.
 			logger.error("Worker Task threw",t);
@@ -58,7 +58,7 @@ public class InThreadExecutor implements BackgroundExecutor {
 
 	}
 	
-    public void executeLaterEDT(Runnable r) {
+    public void executeLaterEDT(final Runnable r) {
         r.run();
     }
 

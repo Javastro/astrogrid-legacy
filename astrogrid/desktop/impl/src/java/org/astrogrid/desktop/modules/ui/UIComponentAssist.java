@@ -3,9 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -14,10 +11,6 @@ import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
@@ -26,12 +19,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
-import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -39,19 +28,17 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.CSH;
-import org.astrogrid.desktop.modules.ui.comp.EventListPopupMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.IndeterminateProgressIndicator;
 import org.astrogrid.desktop.modules.ui.comp.MessageTimerProgressBar;
 import org.astrogrid.desktop.modules.ui.comp.TimedPopup;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import ca.odell.glazedlists.FilterList;
-import ca.odell.glazedlists.FunctionList;
-import ca.odell.glazedlists.RangeList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.matchers.Matcher;
@@ -60,7 +47,7 @@ import ca.odell.glazedlists.swing.EventListModel;
 import com.l2fprod.common.swing.BaseDialog;
 import com.l2fprod.common.swing.StatusBar;
 /**
- * common implementation of most of the UIComponent functionality.
+ * Common implementation of most of the UIComponent functionality.
  * as we want an implementation of UIComponent that extends JFrame, and an
  * implementation of UIComponent that extends JDialog, this functionality
  * can't be placed in a baseclass common to both - instead it's in this separate
@@ -126,27 +113,27 @@ public final class UIComponentAssist {
     }        
     /** halt all tasks owned by this component (and not special) */
     public void haltMyTasks() {
-        for (Iterator i =parent.getContext().getTasksList().iterator(); i.hasNext();) {
-            BackgroundWorker w = (BackgroundWorker) i.next();            
+        for (final Iterator i =parent.getContext().getTasksList().iterator(); i.hasNext();) {
+            final BackgroundWorker w = (BackgroundWorker) i.next();            
             if (w.parent == parent) {
                 w.interrupt();
             }
         }
     }
     /** set maximum value for progress bar */
-    public void setProgressMax(int i) {
+    public void setProgressMax(final int i) {
         getProgressBar().setMaximum(i);
         getProgressBar().setString("");
     }
     /** set current value in progress bar - between <tt>0</tt> and <tt>getProgressMax()</tt> */
-    public void setProgressValue(int i) {
+    public void setProgressValue(final int i) {
         getProgressBar().setValue(i);
     }
     /** set the status message at the bottom of this pane
      * 
      * @param s a message ("" to clear a previous message");
      */
-    public void setStatusMessage(String s) {
+    public void setStatusMessage(final String s) {
         getProgressBar().setString(s);
     }
     
@@ -158,7 +145,7 @@ public final class UIComponentAssist {
         if (GraphicsEnvironment.isHeadless()) {
             logger.error(s);
         } else {
-            BaseDialog bd = BaseDialog.newBaseDialog(parent.getComponent());
+            final BaseDialog bd = BaseDialog.newBaseDialog(parent.getComponent());
             bd.setModal(false);
             bd.setTitle("An Error Occurred");
             bd.getBanner().setTitle("An Error Occurred");
@@ -177,19 +164,19 @@ public final class UIComponentAssist {
      * @param e the exception that is the cause.
      */
       
-    public void showError(String msg, Throwable e) {
+    public void showError(final String msg, final Throwable e) {
         ExceptionFormatter.showError(parent.getComponent(),msg,e);
     }
     /** display an error message in a popup, which will vanish after a few seconds */
-    public void showTransientError(String title, String message) {
+    public void showTransientError(final String title, final String message) {
         TimedPopup.showErrorMessage(getTasksButton(),title,message);
     }
     /** display a message in a popup, which will vanish after a few seconds */
-    public void showTransientMessage(String title, String message) {
+    public void showTransientMessage(final String title, final String message) {
         TimedPopup.showInfoMessage(getTasksButton(),title,message);
     }        
     /** display a warning in a popup, which will vanish after a few seconds */
-        public void showTransientWarning(String title, String message) {
+        public void showTransientWarning(final String title, final String message) {
             TimedPopup.showWarningMessage(getTasksButton(),title,message);     
         }
     private StatusBar getBottomPanel() {
@@ -234,7 +221,7 @@ public final class UIComponentAssist {
                     // hack - text for tooltip is stuffed in ActionCommand of model. changes between enabled / disabled.
                     setToolTipText(getModel().getActionCommand());
                     addChangeListener(new ChangeListener() {
-                        public void stateChanged(ChangeEvent e) {
+                        public void stateChanged(final ChangeEvent e) {
                             setToolTipText(getModel().getActionCommand());
                         }
                         
@@ -261,10 +248,10 @@ public final class UIComponentAssist {
                     l.setMaximumSize(new Dimension(16,16));
                     l.setFont(new Font("Dialog",Font.PLAIN,8));
                 }
-                public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                    PlasticApplicationDescription plas = (PlasticApplicationDescription)value;
+                public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+                    final PlasticApplicationDescription plas = (PlasticApplicationDescription)value;
                     if (plas.getIcon() != null) {
-                        ImageIcon scaled = new ImageIcon((plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
+                        final ImageIcon scaled = new ImageIcon((plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
                         l.setIcon(scaled);
                     } else {
                         l.setIcon(IconHelper.loadIcon("plasticeye.gif"));
@@ -295,21 +282,21 @@ public final class UIComponentAssist {
             tasksButton.setBorder(BorderFactory.createEtchedBorder());
             tasksButton.setToolTipText("List running processes");
             tasksButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(final ActionEvent e) {
                     parent.getContext().getWorkersMonitor().showProcessesFor(parent);
                 }
             });
             // filter down to this window's tasks.
             final FilterList fl = new FilterList(parent.getContext().getTasksList(),new Matcher() {
 
-                public boolean matches(Object arg0) {
+                public boolean matches(final Object arg0) {
                     final BackgroundWorker backgroundWorker = ((BackgroundWorker)arg0);
                     return backgroundWorker.getParent() == parent && ! backgroundWorker.getInfo().isSystem();
                 }
             });
             // now listen to changes to this list, and enable / disable the button.
             fl.addListEventListener(new ListEventListener() {
-                public void listChanged(ListEvent arg0) {
+                public void listChanged(final ListEvent arg0) {
                     tasksButton.setEnabled(! fl.isEmpty());                    
                 }
             });

@@ -23,7 +23,7 @@ TABLES
  -->
 	
 	<service-point id="tables" interface="Tables">
-		Table Manipulation Utilities (STIL)
+		Table Manipulation Utilities, implemented using STIL
         <interceptor service-id="system.edt" />        
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.util.TablesImpl" >
@@ -39,7 +39,8 @@ TABLES
 <!-- 
 ===========================================
 SELF-TESTING
-
+-->
+    <service-point id="selftest" interface="org.astrogrid.desktop.modules.util.SelfTester">
 This component consumes junit tests contributed by other services, and runs them
 all on startup in a background thread. If any errors occur, a UI is shown that displays the 
 problems and allows the tests to be re-run.
@@ -47,11 +48,7 @@ problems and allows the tests to be re-run.
 Intention is that self-tests can be used to verify that the network is accessible, file locations
 readable etc - i.e. things that might go wrong in a usage environment. Self tests aren't a
 good place to put functionality and coding tests - which should be part of the main test tree.
-
- -->
- 
-    <service-point id="selftest" interface="org.astrogrid.desktop.modules.util.SelfTester">
-        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> <!-- implement a headless selftester?? -->
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />
     </service-point>
         
     <implementation service-id="selftest" if="not (property java.awt.headless)">
@@ -85,7 +82,7 @@ good place to put functionality and coding tests - which should be part of the m
             </preference>
     </contribution>
     
-        <implementation service-id="selftest" if="property util.selftest.disabled">
+     <implementation service-id="selftest" if="property util.selftest.disabled">
         <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> 
     </implementation>   
     
@@ -95,7 +92,7 @@ good place to put functionality and coding tests - which should be part of the m
     
     <configuration-point id="selftest" schema-id="system.objects">
         Allows services to export junit tests to be used in self testing.
-        Each object exported should be a TestCase or TestSuite
+        Each object exported should be a junit TestCase or TestSuite
     </configuration-point>
  
  

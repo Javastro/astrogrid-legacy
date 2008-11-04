@@ -24,7 +24,7 @@
 RESOURCE (FILE) CHOOSER
  -->
 	<service-point id="resourceChooser" interface="org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal">
-		Select a local or myspace file
+		Dialogue to select a local or myspace file
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</service-point>
 
@@ -43,7 +43,7 @@ RESOURCE (FILE) CHOOSER
 TOOL EDITOR
  -->	
 	<service-point id="toolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
-		Edit a remote application invocation.
+		Dialogue to edit a remote application tool document
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
      
 	</service-point>
@@ -65,7 +65,7 @@ TOOL EDITOR
 REGISTRY GOOGLE
  -->
 	<service-point id="registryGoogle" interface="org.astrogrid.desktop.modules.dialogs.RegistryGoogleInternal">
-		Select a registry resource
+		Dialogue to select a registry resource
         <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> 
 	</service-point>
     

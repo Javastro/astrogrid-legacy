@@ -99,7 +99,7 @@ import org.astrogrid.desktop.modules.ui.folders.XQueryList;
 import com.l2fprod.common.swing.BaseDialog;
 
 /**
- * Tree containing resource folders.
+ * {@link JTree} containing resource folders, displayed on left hand side of VOExplorer.
  * The tree model is a {@link javax.swing.tree.DefaultTreeModel},
  * and its nodes are {@link javax.swing.tree.DefaultMutableTreeNodes}
  * with user objects which are instances of 

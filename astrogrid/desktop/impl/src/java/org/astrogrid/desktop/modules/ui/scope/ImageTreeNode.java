@@ -7,7 +7,7 @@ import java.awt.Image;
 
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 
-/** extended tree node that contains an image.
+/**A Tree node that contains an image.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Dec 10, 200711:31:50 AM
  */
@@ -17,7 +17,7 @@ public class ImageTreeNode extends DefaultTreeNode implements
     public Image getImage() {
         return img;
     }
-    public void setImage(Image img) {
+    public void setImage(final Image img) {
         this.img = img;
     }
     
@@ -27,7 +27,7 @@ public class ImageTreeNode extends DefaultTreeNode implements
     public ImageTreeNode() {
     }
   
-    public ImageTreeNode(Image img) {
+    public ImageTreeNode(final Image img) {
         this.img = img;
     }    
 }

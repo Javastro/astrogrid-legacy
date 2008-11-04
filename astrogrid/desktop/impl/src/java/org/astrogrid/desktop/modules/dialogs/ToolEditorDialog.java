@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.23 2008/10/23 16:34:03 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.24 2008/11/04 14:35:52 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ import org.astrogrid.desktop.modules.ui.taskrunner.UIComponentWithMenu;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl.TaskRunnerToolbar;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/** dialog that allows the user to edit a tool document - i.e. a set of parameters.
+/** Dialog that allows the user to edit a tool document - i.e. a set of parameters.
  * 
  * this class is just concerned with the dialogue side of thinigs
  * 
@@ -213,6 +213,9 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.24  2008/11/04 14:35:52  nw
+javadoc polishing
+
 Revision 1.23  2008/10/23 16:34:03  nw
 Incomplete - taskadd support for TAP
 

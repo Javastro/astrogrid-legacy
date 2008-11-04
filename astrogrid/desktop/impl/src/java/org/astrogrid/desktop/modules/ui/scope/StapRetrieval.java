@@ -24,7 +24,7 @@ import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 
-/** 
+/** Retreiver for STAP.
  * task that retrives, parses and adds to the display results of one siap service 
  * @TEST
  * */

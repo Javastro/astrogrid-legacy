@@ -30,7 +30,7 @@ import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 import com.l2fprod.common.swing.BaseDialog;
 
-/** Activity to rename a single file.
+/** Rename a single file.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 10, 20071:03:46 PM
  * @TEST
@@ -53,14 +53,14 @@ public class RenameActivity extends AbstractFileActivity {
          * @param owner
          * @param original
          */
-        private RenameDialog(Frame owner, FileObject original)
+        private RenameDialog(final Frame owner, final FileObject original)
                 throws HeadlessException {
             super(owner);
             this.original = original;  
             init();
         }
         
-        private RenameDialog(Dialog owner, FileObject original) {
+        private RenameDialog(final Dialog owner, final FileObject original) {
             super(owner);
             this.original = original;
             init();
@@ -69,7 +69,7 @@ public class RenameActivity extends AbstractFileActivity {
         /**
          * @param original2
          */
-        public RenameDialog(FileObject original2) {
+        public RenameDialog(final FileObject original2) {
             this.original = original2;
             init();
         }
@@ -100,11 +100,11 @@ public class RenameActivity extends AbstractFileActivity {
                 
                 protected Object construct() throws Exception {
                     final FileObject parent = original.getParent();
-                    String nuName = tf.getText();
+                    final String nuName = tf.getText();
                     if (StringUtils.isEmpty(nuName) || originalName.equals(nuName)) {
                             return null; // no input, or no change - just close the dialogue
                         }
-                   FileObject f = parent.resolveFile(nuName);
+                   final FileObject f = parent.resolveFile(nuName);
                    if (f.exists()) {
                        return nuName + " already exists";
                    }
@@ -116,13 +116,13 @@ public class RenameActivity extends AbstractFileActivity {
                       });                     
                    // now get on with the task in hand.
                     original.moveTo(f);
-                    FileSystem fs = parent.getFileSystem();
+                    final FileSystem fs = parent.getFileSystem();
                     if (fs instanceof AbstractFileSystem) {
                         ((AbstractFileSystem)fs).fireFileChanged(parent);
                     }
                     return null;
                 }
-                protected void doFinished(Object result) {
+                protected void doFinished(final Object result) {
                     if (result == null && isVisible()) {
                         RenameDialog.super.ok();
                     } else {
@@ -138,11 +138,11 @@ public class RenameActivity extends AbstractFileActivity {
     private final FileSystemManager vfs;
 	
 	
-	protected boolean invokable(FileObject f) { 
+	protected boolean invokable(final FileObject f) { 
 		try {
             return (! AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
                     && f.isWriteable());
-        } catch (FileSystemException x) {
+        } catch (final FileSystemException x) {
             return false;
         }
 	}
@@ -158,16 +158,16 @@ public class RenameActivity extends AbstractFileActivity {
 	}
 	
 	// can only handle a single selection.
-	public void manySelected(FileObject[] list) {
+	public void manySelected(final FileObject[] list) {
 		noneSelected();
 	}
 	
-	public void actionPerformed(ActionEvent e) {
-		List l = computeInvokable();
+	public void actionPerformed(final ActionEvent e) {
+		final List l = computeInvokable();
 		logger.debug(l);
 		final FileObject original = (FileObject)l.get(0);
-        Component pc = uiParent.get().getComponent();
-        Window w = pc instanceof Window
+        final Component pc = uiParent.get().getComponent();
+        final Window w = pc instanceof Window
                  ? (Window) pc
                  : SwingUtilities.getWindowAncestor(pc);
 		

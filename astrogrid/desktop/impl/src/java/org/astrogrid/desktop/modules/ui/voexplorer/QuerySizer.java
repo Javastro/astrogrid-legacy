@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.ui.voexplorer;
 
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 
-/** Computes the size (i.e. number of resources returned) of queries
+/** Computes the number of results a query will return.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 27, 20071:19:25 PM
  */
