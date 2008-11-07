@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.6 2008/10/03 11:56:33 pah Exp $ -->
+<!-- $Id: pom.xml,v 1.7 2008/11/07 14:13:07 pah Exp $ -->
    <!--
       This pom is intended to contain the "version" information for the astrogrid (and other commonly used) components.
       In addition it contains the basic project information - however it *must not* contain any specific build information - this is contained in the
@@ -456,78 +456,6 @@
       </developer>
    </developers>
    
-   <repositories>
-   <!-- A local re reinstate when fuller...
-      <repository>
-         <id>vosrepomirror</id>
-         <name>VOS maven mirror repository to capture the dependencies actually used...</name>
-         <url>${vos.server.url}/maven2repo</url>
-      </repository>
-      -->
-      <!-- put central first in hope of getting proper maven2 versions early - they are not as good as the ones at repo1.maven.org/maven2
- -->
-      <repository>
-         <id>central</id>
-         <layout>default</layout>
-         <name>Ibiblio Repository</name>
-         <url>http://repo1.maven.org/maven2/</url>
-      </repository>
-      
-      <repository>
-         <id>astrogrid1</id>
-         <name>Astrogrid maven 1 repository</name>
-         <url>http://www.astrogrid.org/maven/</url>
-         <layout>legacy</layout>
-         <snapshots><enabled>true</enabled><checksumPolicy>ignore</checksumPolicy></snapshots>
-      </repository>
-<!-- 
-      <repository>
-         <id>codehaus.org</id>
-         <name>CodeHaus Snapshots</name>
-         <url>http://snapshots.repository.codehaus.org</url>
-         <releases>
-            <enabled>false</enabled>
-         </releases>
-         <snapshots>
-            <enabled>true</enabled>
-         </snapshots>
-      </repository>
-       -->
-      <!--  
-      <repository>
-         <id>vosproducts</id>
-         <name>VOS maven repository where locally created products are placed</name>
-         <url>${vos.server.url}/products</url>
-      </repository>-->
-      
-   </repositories>
-   <!-- 
-   <pluginRepositories>
-      <pluginRepository>
-         <id>maven2-repository.dev.java.net</id>
-         <name>Java.net Maven 2 Repository</name>
-         <url>http://download.java.net/maven/2</url>
-      </pluginRepository>
-      <pluginRepository>
-         <id>maven-repository.dev.java.net</id>
-         <name>Java.net Maven 1 Repository (legacy)</name>
-         <url>http://download.java.net/maven/1</url>
-         <layout>legacy</layout>
-      </pluginRepository>
-        <pluginRepository>
-               <id>codehaus.org</id>
-               <name>CodeHaus Main</name>
-               <url>http://repository.codehaus.org</url>
-               <releases>
-                  <enabled>true</enabled>
-               </releases>
-               <snapshots>
-                  <enabled>false</enabled>
-               </snapshots>
-         </pluginRepository>
- 
-   </pluginRepositories>
-    -->
    <distributionManagement>
     <site>
       <id>agsite</id>
@@ -538,7 +466,14 @@
        <id>agrepo</id>
        <name>Astrogrid Maven 2 Repository</name>
        <url>scpexe://katatjuta.star.le.ac.uk/var/www/html/software/m2repo/</url> <!-- also known as maven.astrogrid.org -->
+       
     </repository>
+    <snapshotRepository>
+        <id>agreposnapshot</id>
+        <name>Astrogrid Maven 2 Snapshot repository</name>
+        <url></url>
+        <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
   </distributionManagement>
     <profiles>
       <profile>
@@ -549,22 +484,7 @@
             <maven.base.dir>/this/needs/to/be set to directory containing this pom in your settings.xml</maven.base.dir>
          </properties>
       </profile>
-      <profile>
-      <!-- this is the profile for uploading to the maven 1 repository -->
-      <id>ag1</id>
-      <distributionManagement>
-   <site>
-      <id>agsite</id>
-      <name>Default Site</name>
-      <url>scpexe://maven.astrogrid.org/software/doc/${astrogrid_release}</url>
-    </site>
-    <repository>
-       <id>agrepo1</id> <!-- legacy maven 1 site for ag -->
-       <name>Astrogrid Maven 1 Repository</name>
-       <url>scpexe://maven.astrogrid.org/maven/</url>
-       <layout>legacy</layout>
-    </repository>
-      </distributionManagement></profile>
+      
    </profiles>
   
 </project>
