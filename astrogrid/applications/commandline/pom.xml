@@ -152,7 +152,7 @@
      </dependency>
      
      <dependency>
-        <groupId>starlink</groupId>
+        <groupId>uk.ac.starlink</groupId>
         <artifactId>stil</artifactId>
         <version>2.0-1</version>
      </dependency>
@@ -247,11 +247,6 @@
             <groupId>uk.ltd.getahead</groupId>
             <artifactId>dwr</artifactId>
             <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>apache-xalan</groupId>
-            <artifactId>serializer</artifactId>
-            <version>j_2.7.0</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
