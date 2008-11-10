@@ -15,9 +15,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="1.2.2" date="unreleased">
+<release version="1.2.2" date="2008-11-10">
     <action dev="nw" type="fix">
-    </action>
+    Fixed to work with new CEA registrations
+	</action>
 </release>
 <release version="1.2.1" date="2008-10-24">
     <action dev="nw" type="add">
