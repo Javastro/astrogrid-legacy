@@ -3,13 +3,54 @@
 
     <extend>../../maven-base/project.xml</extend>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <logo></logo><!--  fill in when we get one -->
-        <url>http://www.astrogrid.org/desktop/astro-runtime</url>
+        <logo></logo>
+        <url>http://www.astrogrid.org/wiki/Help/AstroRuntime</url>
         <description>
 	Template maven project that all other workbench projects should extend from.
 	
 	Provides a common set of version numbers.
 		  </description>
 
-	
+	<!-- dependencies inherited by both api and impl projects -->
+<dependencies>
+	     <!-- Latest version of the javadoc plugin. -->
+    <dependency>
+        <groupId>maven</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>1.9</version>
+        <type>plugin</type>
+    </dependency>
+    <!-- nice set of custom taglets -->
+    <dependency>
+        <groupId>taglets</groupId>
+        <artifactId>taglets</artifactId>
+        <version>2.0.3</version>
+        <type>jar</type>
+        <url>http://taglets.sourceforge.net</url>
+        <properties>
+            <comment>only used within build</comment>
+        </properties>
+</dependency>                
+    <!--  diagram drawing taglet -->
+    <dependency>
+        <groupId>ditaa</groupId>
+        <artifactId>ditaa</artifactId>
+        <version>0_6b</version>
+        <type>jar</type>
+        <url>http://ditaa.sourceforge.net/</url>
+        <properties>
+            <comment>only used within build</comment>
+        </properties>
+</dependency>   
+    <dependency>
+        <groupId>ditaa</groupId>
+        <artifactId>TextDiagramTaglet</artifactId>
+        <version>1.0</version>
+        <type>jar</type>
+        <url>http://ditaa-addons.sourceforge.net/</url>
+        <properties>
+            <comment>only used within build</comment>
+        </properties>
+</dependency> 
+</dependencies>
 </project>
