@@ -1,0 +1,65 @@
+<document>
+    <properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>VOExplorer</title>
+    </properties>
+    <body>
+        <section name="VOExplorer">
+            <p>
+                <img align="right"
+                    width="50%" height="50%"
+                    alt="screenshot of voexplorer"
+                    src='http://www.astrogrid.org/raw-attachment/wiki/Help/IntroVODesktop/UsingVOExplorer/voexplorer_small.png' />
+                VOExplorer is an advanced application for resource
+                discovery, with a user interface inspired by iTunes.
+                It queries<as href="http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/IvoaResReg">IVOA Registries</as> 
+                (such as the <a href="http://technology.astrogrid.org/">AstroGrid Registry Implementation</a> )
+                 using XQuery.
+                <p></p>
+                See the
+                <a
+                    href="http://www.astrogrid.org/wiki/Help/IntroVODesktop/UsingVOExplorer">VODesktop User Guide</a>
+                <br clear="right" />
+            </p>
+        </section>
+        <section name="Resource List Subscriptions">
+            <p>
+                It's possible to subscribe to a shared or remote set of
+                resource lists using the
+                <tt>File > New Subscription</tt>
+                menu item.
+            </p>
+            <p> Subscribing to resource lists means that additional
+                items or updates can be added to the file, and they
+                appear for all subscribing users automatically. An
+                interesting possibility is generating a resource list
+                file using some kind of CGI script.</p>
+            <p>
+                The file containing the resource lists must be
+                URL-accessible (file, http, ftp, or myspace) - and in the same
+                format as produced from the
+                <tt>File > Export...</tt>
+                menu entry in voexplorer. See the
+                <a href="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/exampleResourceLists.xml">default set of examples</a>
+                for an example of this format.                
+            </p>
+            
+        </section>
+        <section name="Annotations">
+            <p>In the resource details display, (bottom pane of VOExplorer), 
+            a list of <i>annotations</i> for a resource are displayed on the right hand side.
+            An annotation is a piece of information about a resource which <b>does not</b> come from the registry, but instead
+            originates elsewhere. At the moment, there's 3 main sources of annotation - the user's own notes, 
+            external annotation files, and annotation services.
+           </p>
+           <p>
+            VOExplorer comes pre-configured to display annotations from 'AG Science Team'. These annotations are defined 
+            in
+            <a href="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/ag-annotations.xml">this file</a>.
+            Additional annotation files, in the same format, may be added by contributing to the <tt>votech.annotationSources</tt> configuration point 
+            (<a href="configuration.html">details</a>).
+           </p>
+           <!-- TODO: write a bit describing how to integrate a new annotation service -->
+        </section>
+    </body>
+</document>

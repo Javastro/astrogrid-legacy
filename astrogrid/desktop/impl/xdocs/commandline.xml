@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Commandline Options</title>
+</properties>
+<body>
+<section name="Commandline Options">
+<p>
+VODesktop can be passed a number of commandline options, which alter
+it's behaviour.
+</p>
+
+<subsection name="-help">
+<p>
+Passing the <tt>-help</tt> flag returns the following message.
+</p>
+<source><![CDATA[
+usage: vodesktop <options>
+ -addModule <module file>          file location of additional module file
+ -addModuleURL <URL>               URL location of additional module file
+ -debugEDT                         Enable UI Debugging
+ -headless                         Run in Headless AR-only mode (no user
+                                   interface)
+ -help                             Shows this help and exit
+ -hivedoc                          Generate Hivedoc and exit
+ -list                             List configuration properties and exit
+ -propertyFile <properties file>   file location of properties file
+ -propertyURL <URL>                URL location of properties file
+
+]]></source>
+</subsection>
+
+<subsection name="-headless">
+<p>
+This flag causes vodesktop to run  in headless mode. No user interface 
+or windows will be shown. This flag makes it possible to run an AstroRuntime
+on a server with no attached display; or to run an AstroRuntime in the 
+background of the user's computer as a scripting host.
+</p>
+<p>
+If the machine <i>does</i> possess a display, then a splashscreen will be shown 
+at startup.
+</p>
+</subsection>
+
+</section>
+
+<section name="Configuration">
+<p>
+The following flags are used to control the configuration of vodesktop.
+Through these flags, it's possible to alter many of the runtime settings.
+For further information, see the note on <a href="configuration.html">Configuration</a>.
+</p>
+<subsection name="-list">
+<p>
+Lists the configuration keys, and their current values. 
+</p>
+</subsection>
+<subsection name="-propertyFile">
+<p>
+Load configuration settings from the specified file
+</p>
+</subsection>
+<subsection name="-propertyURL">
+<p>
+Load configuration settings from the specified URL
+</p>
+</subsection>
+<subsection name="-Dkey=value">
+<p>
+Set a configuration key on the commandline. This is a JVM argument, and must occur 
+before the vodesktop jar name. For example, to set the key 
+<tt>system.checkForUpdates</tt> to <tt>false</tt>, do the following
+</p>
+<source><![CDATA[
+java -Dsystem.checkForUpdates=false -jar vodesktop-app.jar <other arguments>
+]]></source>
+<p>
+This key may be repeated. However, when setting many keys <tt>-propertyFile</tt>
+is more convenient.
+</p>
+</subsection>
+</section>
+
+<section name="Extension">
+<p>
+The features and functionality of VODesktop can be altered radically
+by implementing extension code and adding this to the application.
+For further information, see the note on <a href="extending.html">Extending VODesktop</a>.
+
+</p>
+<subsection name="-hivedoc">
+<p>
+Generate documentation describing the internal architecture and extension
+points of vodesktop, leaving results in a subdirectory called <tt>hivedoc</tt>. 
+A standard copy of this documentation is 
+<a href="hivedoc/index.html">here</a>. 
+</p>
+</subsection>
+<subsection name="-addModule">
+Load xml description of extensions from a file.
+</subsection>
+<subsection name="-addModuleURL">
+Load xml description of extensions from a URL
+</subsection>
+</section>
+
+</body>
+</document>

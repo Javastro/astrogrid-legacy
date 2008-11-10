@@ -1,0 +1,20 @@
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Astro Runtime</title>
+</properties>
+<body>
+<section name="Astro Runtime">
+<p>
+Astro Runtime (AR) is middleware that makes it simple to call Virtual Observatory 
+services from any programming language. The VODesktop user interface is 
+implemented upon this middleware.
+
+</p>
+<p>
+AstroRuntime within VODesktop can also be called directly from external scripts and
+other applications. See <a href="http://www.astrogrid.org/wiki/Help/AstroRuntime">AstroRuntime Documentation</a>
+</p>
+</section>
+</body>
+</document>

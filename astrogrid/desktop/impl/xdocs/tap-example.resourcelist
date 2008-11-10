@@ -1,0 +1,3 @@
+<resource-list name="TAP" iconName="doc16.png" fixed="false">
+  <resource>ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED</resource>
+</resource-list>

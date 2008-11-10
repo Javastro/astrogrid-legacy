@@ -2,9 +2,31 @@
 <document>
 <properties>
         <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
-        <title>Astrogrid Client Runtime and Workbench</title>
+        <title>VODesktop and Astro Runtime Project</title>
 </properties>
 <body>
-See <a href="http://www.astrogrid.org/desktop/contributing">http://www.astrogrid.org/desktop/contributing</a>
+<section name="VODesktop and Astro Runtime">
+<p>
+This is the <i>project documentation</i> for VODesktop and Astro Runtime. It contains information on 
+how to develop, compile, package, configure and deploy the software.  It also describes some of the behaviour and requirements
+of the application.
+</p>
+<p>
+Note that this is not the <i>user documentation</i>. Although advanced users and scripters may find things of use here, 
+the average user should look at the <a href="http://www.astrogrid.org/wiki/Help">User Documentation</a>.
+</p>
+</section>
+
+<section name="Releases">
+<p>
+Public releases can be found at
+<a href="http://www.astrogrid.org/wiki/Install/Downloads">http://www.astrogrid.org/wiki/Install/Downloads</a>
+</p>
+
+<p>
+Development snapshots can be found at
+<a href="http://wiki.astrogrid.org/bin/view/Astrogrid/DesktopAstroGridSnapshots">http://wiki.astrogrid.org/bin/view/Astrogrid/DesktopAstroGridSnapshots</a>
+</p>
+</section>
 </body>
 </document>

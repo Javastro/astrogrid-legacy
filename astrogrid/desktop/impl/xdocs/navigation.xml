@@ -1,23 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="AstroGrid">
-
-  <title>AstroGrid Project</title>
-
-  <body>
-    <links>
-    <item name="AstroGrid"       href="http://www.astrogrid.org"/>
-       <item name="Workbench" href="http://www.astrogrid.org/desktop" />
-       <item name="Astro Runtime" href="http://www.astrogrid.org/desktop/astro-runtime" />
-    </links>
-
-    <menu name="Navigation">
-	<item name="Home" href="/index.html" />
-	<item name="History" href="/changes-report.html" />
-	<item name="Hivedoc" href="/hivedoc/index.html" />
-	<item name="Javadoc" href="/apidocs/index.html" />
-	<item name="Config Doc" href="/config.txt" />
-		
-    </menu>
-
-  </body>
+    <title>AstroGrid Project</title>
+    <body>
+        <links>
+            <item name="VO Desktop"
+                href="http://www.astrogrid.org/wiki/Home/AboutAGDesktop" />
+            <item name="Astro Runtime"
+                href="http://www.astrogrid.org/wiki/Help/AstroRuntime" />
+            <item name="AstroGrid" href="http://www.astrogrid.org" />
+        </links>
+        <menu name="Main">
+            <item name="Home" href="/index.html" />
+            <item name="Presentations" href="/presentations.html" /> <!-- done -->
+            <item name="History" href="/changes-report.html" />
+            <item name="Download"
+                href="http://www.astrogrid.org/wiki/Install/Downloads" />
+        </menu>
+        <menu name="Features"> <!--  summary of features of VODesktop, from advanced user point of view. -->
+            <!--  write each of the following, prune back wiki pages -->
+            <item name="VOExplorer" href="/voexplorer.html"/>
+            <item name="TaskRunner &amp; QueryBuilder" href="/taskrunner.html" />
+            <item name="Astroscope &amp; Helioscope" href="/voscope.html" />
+            <item name="FileExplorer" href="/fileexplorer.html" />
+            <!--  maybe add these two later, or just have an 'additional features' page
+            <item name="Self Tests" href="/selftests.html" />
+            <item name="Background Processes" href="/backgroundprocesses.html" />
+             -->
+            <item name="AstroRuntime" href="/astroruntime.html" />
+        </menu>
+        <menu name="Using"> <!--  how to alter / understand vodesktop's behaviour -->
+            <item name="Commandline Options" href="/commandline.html" /> 
+            <item name="Logging" href="/logging.html" />
+            <item name="Configuration" href="/configuration.html" />
+            <item name="File &amp; Directories" href="/files.html"/> 
+            <item name="External Resources" href="/external-resources.html"/>    
+            <!-- write these up and add them in
+            <item name="Extending VODesktop" href="/extending.html" />
+            <item name="Scripting Host">running headless on the desktop, link
+                to commandline scripts</item>
+            <item name="Server-Side AR" />
+             -->
+        </menu>
+        <menu name="Development">
+        <!-- edit these up
+            <item name="Process" href="/development.html" />
+            <item name="Unit Testing" href="/testing.html"> Add to this notes about
+                different testing libraries used.</item>
+            <item name="Testing Process" href="/testingprocess.html" />
+         -->
+            <!--
+                edit, then delete most of
+                http://wiki.astrogrid.org/bin/view/Astrogrid/DesktopAstroGridTestingProcess
+            -->
+            <!-- 
+            <item name="Writing Documentation"> Guidance on when to use XDoc, when to iuse
+                javadoc and custom javadoc tags, and taglets.</item>
+            <item name="Release Procedure" href="/release.html" />
+            <item name="Hivemind" collapse="true" href="/vodesktop-hivemind.html" >
+                <item name="Background" href="/dependencyinjectioncontainers.html" />
+                <item name="HiveDoc" href="/hivedoc/index.html" />
+            </item>
+            <item name="Notes" collapse="false" href="/notes.html"> 
+                <item name="Querying Strategy"> how voexplorer submits queries to
+                    registry</item>
+                <item name="AR API Design restrictions">
+                </item>
+                <item name="JForms"> describe how it works. tips for getting
+                    resizing to work, etc.</item>
+                <item name="Desktop Activities"> describe philosophy - modular
+                    implementaitons, applicable everywhere (in voexp,
+                    task runner, etc), simple to implement - possibly
+                    extensible by the user - script scavenger -
+                    framework - hivemind aspects - code structure -
+                    necessity for a progress-indication and management
+                    dialogue.</item>
+                <item name="SRQL" href="/srql.html">
+                </item>
+                <item name="Glazed Lists"> intro to their use.</item>
+            </item>
+             -->
+            <item name="Reference" collapse="false" href="/reference.html">
+                <item name="Javadoc" href="/apidocs/index.html" />
+                <item name="Hivedoc" href="/hivedoc/index.html" />
+                <item name="Source" href="/xref/index.html" />
+            </item>
+        </menu>
+    </body>
 </project>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Logging</title>
+</properties>
+<body>
+<section name="Logging">
+<p>VODesktop is configured to report errors to the console, and a
+fuller log to the file <tt>~/astro-runtime.log</tt>.
+</p>
+</section>
+
+<section name="Changing Logging Behaviour">
+<p>
+VODesktop logs messages using a library called
+<a href="http://logging.apache.org/log4j/1.2/index.html">Log4J</a>.
+Log4J is very flexible - both in the quantity of messages it produces, 
+and also the destination and format for log messages. Details of the 
+configuration options are given on their website.
+</p>
+
+<p>To alter the logging behaviour of VODesktop, the application
+must be started with a pointer to  a custom logging configuration file.
+This file is customarily called <tt>log4j.properties</tt>. This can
+be done as follows:
+</p>
+<source>
+java -Dlog4j.configuration=file:///home/user/path/to/log4j.properties -jar vodesktop-app.jar
+</source>
+<p>
+This uses the JVM <tt>-D</tt> option to set the system property 
+<tt>log4j.configuration</tt>. This property expects a URL which points to 
+the logging configuration file - the example shows how to write a reference
+to a file.
+</p>
+</section>
+
+<section name="Sample log4j.properties">
+<p>
+The default logging configuration used by VODesktop is given below.
+(this can be used as a basis for custom <tt>log4j.properties</tt> files)
+</p>
+<source>
+log4j.rootLogger=INFO, CONSOLE, FILE
+
+log.pattern=%5p %c %m%n
+
+log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
+log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
+log4j.appender.CONSOLE.layout.ConversionPattern=${log.pattern}
+log4j.appender.CONSOLE.threshold=WARN
+
+log4j.appender.FILE=org.apache.log4j.RollingFileAppender
+log4j.appender.FILE.layout=org.apache.log4j.PatternLayout
+log4j.appender.FILE.layout.ConversionPattern=${log.pattern}
+log4j.appender.FILE.MaxBackupIndex=1
+log4j.appender.FILE.MaxFileSize=100KB
+log4j.appender.FILE.threshold=INFO
+
+log4j.appender.FILE.File=${user.home}/astro-runtime.log
+
+#Custom rules for some parts of the system
+log4j.logger.org.astrogrid.registry.client.RegistryDelegateFactory=WARN
+log4j.logger.org.apache.hivemind=WARN
+log4j.logger.org.apache.axis=ERROR
+log4j.logger.org.astrogrid.registry.client.query=FATAL
+log4j.logger.net.sf.ehcache=FATAL
+</source>
+</section>
+
+</body>
+</document>

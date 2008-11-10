@@ -1,0 +1,20 @@
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>File Explorer</title>
+</properties>
+<body>
+<section name="File Explorer">
+<p>
+<img align="right" width="50%" height="50%"
+    alt="screenshot of fileexplorer"
+    src="http://www.astrogrid.org/raw-attachment/wiki/Help/IntroVODesktop/UsingFileExplorer/FileExplorer-main-small.png" />
+FileExplorer is a file management tool that can browse and work with local, 
+FTP, SFTP and Myspace files.
+</p>
+<p>
+See the <a href="http://www.astrogrid.org/wiki/Help/IntroVODesktop/UsingFileExplorer">File Explorer User Guide</a>
+</p>
+</section>
+</body>
+</document>

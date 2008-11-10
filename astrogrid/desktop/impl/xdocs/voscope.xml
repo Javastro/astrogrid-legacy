@@ -1,0 +1,45 @@
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Astroscope and Helioscope</title>
+</properties>
+<body>
+
+
+<section name="Astroscope">
+<p>
+<img align="right" width="50%" height="50%"
+    alt="screenshot of astroscope"
+    src="http://www.astrogrid.org/raw-attachment/wiki/Help/IntroVODesktop/UsingAstroscope/DR5-images-hyper.jpg" />
+Astroscope is a search aggregator that, given an RA,Dec position, can query multiple 
+Catalog (<a href="http://www.ivoa.net/Documents/latest/ConeSearch.html">Cone</a>), 
+Image (<a href="http://www.ivoa.net/Documents/latest/SIA.html">SIAP</a>),
+Spectra (<a href="http://www.ivoa.net/Documents/latest/SSA.html">SSAP</a>).
+and Time Series/VOEvent (<a href="http://wiki.astrogrid.org/bin/view/Astrogrid/SimpleTimeAccessProtocol">STAP</a>) services. It is either launched from a selection
+of services in VOExplorer, or is run in 'All-VO' mode, where it will perform
+an exhaustive search of <b>all</b> suitable known services.
+</p>
+<p>
+See the <a href="http://www.astrogrid.org/wiki/Help/IntroVODesktop/UsingAstroscope">Astroscope User Guide</a>
+<br clear="right" />
+</p>
+</section>
+
+
+<section name="Helioscope">
+<p>
+<img 
+    align="right" width="50%" height="50%"
+    alt="screenshot of helioscope"
+    src="http://www.astrogrid.org/raw-attachment/wiki/Help/IntroVODesktop/UsingHelioscope/helioscope-small.png" />
+Helioscope is a specialized form of Astroscope tailored to
+query heliospheric datasets for data in a time range specified by the user.
+It queries a pre-specified set of solar data services.
+
+</p>
+<p>
+See the <a href="http://www.astrogrid.org/wiki/Help/IntroVODesktop/UsingHelioscope">Helioscope User Guide</a>
+</p>
+</section>
+</body>
+</document>

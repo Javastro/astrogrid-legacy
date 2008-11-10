@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Presentations and Papers</title>
+</properties>
+<body>
+<section name="Presentations and Papers">
+<p>
+A selection of presentations made about VODesktop, Astro Runtime, VOExplorer.
+</p>
+
+<subsection name="Astro Runtime">
+<ul>
+<li>
+<a href="/astro-runtime-adass-2006.pdf">Astro Runtime: An API for the Virtual Observatory (Presentation)</a>, ADASS 2006
+</li>
+<li>
+ <a href="/O6a.2pdf">Astro Runtime: An API for the Virtual Observatory (Paper)</a>, ADASS 2006
+</li>
+</ul>
+</subsection>
+
+<subsection name="VO Explorer">
+<ul>
+<li>
+<a href="/apps-voexplorer-beijing-2007.pdf">Resource-Centric Access to the Virtual Observatory</a>, IVOA Interop Meeting, 5/07
+</li>
+
+<li><a href="http://wiki.eurovotech.org/twiki/pub/VOTech/DS4PlanningStage05/votech-munich-voexplorer.pdf">Introduction to VOExplorer</a>, VOTech Meeting, 3/07
+</li>
+
+
+</ul>
+</subsection>
+
+
+
+
+</section>
+
+</body>
+</document>

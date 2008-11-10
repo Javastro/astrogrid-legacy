@@ -15,15 +15,19 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="1.2.1" date="unreleased">
-    <action dev="nw">
+<release version="1.2.2" date="unreleased">
+    <action dev="nw" type="fix">
+    </action>
+</release>
+<release version="1.2.1" date="2008-10-24">
+    <action dev="nw" type="add">
     Experimental support for TAP
     </action>
-    <action dev="nw">
+    <action dev="nw" type="add">
     Implemented support for 0.4 of Vosi Availability Standard (as well as existing 0.3), 
     exposed as an AR API.
     </action>
-    <action dev="nw">
+    <action dev="nw" type="add">
     VoExplorer: Exposed VOSI availability as a side-box.
     </action>
 </release>

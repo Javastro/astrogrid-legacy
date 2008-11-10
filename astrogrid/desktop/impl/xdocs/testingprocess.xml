@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+<properties>
+<title>Testing Process</title>
+</properties>
+<body>
+<section>
+<p>
+<a name="PageTop"></a>
+<div id="patternScreen">
+<div id="patternPageShadow">
+<div id="patternPage">
+<div id="patternOuter">
+<div id="patternFloatWrap">
+<div id="patternMain">
+<div id="patternMainContents">
+<div class="patternContent">
+<div class="patternTopic">
+<div style="position: relative; float:right; margin:0 1em 1em 0; padding:0; border:0;">
+
+<p></p>
+<div style="position: relative; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%; width:20em; border:2px solid #99CCFF; padding:5px; margin:10px 0 0 0;">
+
+<p></p>
+<strong>Table of Contents</strong>
+<p></p>
+<div class="twikiToc">
+<ul>
+<li>
+<a href="#Types_of_Test">Types of Test</a>
+<ul>
+<li>
+<a href="#Test_Organization">Test Organization</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Hand_Running_Tests">Hand Running Tests</a>
+<ul>
+<li>
+<a href="#UI_testing">UI testing</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Smoke_Tests">Smoke Tests</a>
+</li>
+<li>
+<a href="#Hand_testing_Checklist">Hand-testing Checklist.</a>
+</li>
+<li>
+<a href="#Platform_Testing">Platform Testing</a>
+</li>
+</ul>
+</div>
+<p></p>
+</div>
+<p></p>
+<div style="position: relative; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%; width:20em; border:2px solid #99CCFF; padding:5px; margin:10px 0 0 0;">
+
+<p></p>
+<strong>Children of this topic</strong>
+<br></br>
+<p></p>
+<p></p>
+<p></p>
+</div>
+</div>
+<p></p>
+<h1>
+<a name="Process_forDesktop_Astro_Grid_Te"></a>
+<a name="_Process_forDesktop_Astro_Grid_T"></a>Process for 
+<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
+Desktop Astro Grid</a>Testing.</h1>
+<p></p>The testing process for a workbench release is 
+<p></p>
+<ol>
+<li>automated tests</li>
+<li>smoke tests</li>
+<li>hand-running system &amp; other tests</li>
+<li>hand-testing checklist</li>
+<li>platform testing</li>
+</ol>
+<p></p>
+<br clear="all"></br>
+<p></p>
+<h1>
+<a name="Types_of_Test"></a>Types of Test</h1>
+<p></p>The JUnit tests in Desktop 
+<a href="/bin/view/Astrogrid/AstroGrid" class="twikiLink">
+AstroGrid</a>fall into 4 main different kinds: 
+<p></p>
+<table cellspacing="1" cellpadding="1" class="twikiTable"
+border="0">
+<tr>
+<th bgcolor="#dadada" class="twikiFirstCol">
+<a rel="nofollow"
+href="http://wiki.astrogrid.org/bin/view/Astrogrid/DesktopAstroGridTestingProcess?template=viewprint&amp;amp;sortcol=0;table=1;up=0#sorted_table"
+title="Sort by this column">
+<font color="#000000">Kind</font>
+</a>
+</th>
+<th bgcolor="#dadada" align="center">
+<a rel="nofollow"
+href="http://wiki.astrogrid.org/bin/view/Astrogrid/DesktopAstroGridTestingProcess?template=viewprint&amp;amp;sortcol=1;table=1;up=0#sorted_table"
+title="Sort by this column">
+<font color="#000000">Unit Tests</font>
+</a>
+</th>
+<th bgcolor="#dadada" align="center">
+<a rel="nofollow"
+href="http://wiki.astrogrid.org/bin/view/Astrogrid/DesktopAstroGridTestingProcess?template=viewprint&amp;amp;sortcol=2;table=1;up=0#sorted_table"
+title="Sort by this column">
+<font color="#000000">Integration Tests</font>
+</a>
+</th>
+<th bgcolor="#dadada" align="center">
+<a rel="nofollow"
+href="http://wiki.astrogrid.org/bin/view/Astrogrid/DesktopAstroGridTestingProcess?template=viewprint&amp;amp;sortcol=3;table=1;up=0#sorted_table"
+title="Sort by this column">
+<font color="#000000">System Tests</font>
+</a>
+</th>
+<th bgcolor="#dadada" align="center">
+<a rel="nofollow"
+href="http://wiki.astrogrid.org/bin/view/Astrogrid/DesktopAstroGridTestingProcess?template=viewprint&amp;amp;sortcol=4;table=1;up=0#sorted_table"
+title="Sort by this column">
+<font color="#000000">Transport Tests</font>
+</a>
+</th>
+</tr>
+<tr>
+<th bgcolor="#dadada" align="center" class="twikiFirstCol">
+<strong>
+<font color="#000000">Tests</font>
+</strong>
+</th>
+<td bgcolor="#ffffff">a single class in isolation</td>
+<td bgcolor="#ffffff">integration of components within the hivemind
+container</td>
+<td bgcolor="#ffffff">operation of workbench calling remote
+services</td>
+<td bgcolor="#ffffff">equivalent functionality available using the
+xmlrpc or rmi AR interface</td>
+</tr>
+<tr>
+<th bgcolor="#dadada" align="center" class="twikiFirstCol">
+<strong>
+<font color="#000000">Repeatability</font>
+</strong>
+</th>
+<td bgcolor="#eaeaea">repeatable</td>
+<td bgcolor="#eaeaea">repeatable</td>
+<td bgcolor="#eaeaea">dependent on remote services</td>
+<td bgcolor="#eaeaea">depends</td>
+</tr>
+<tr>
+<th bgcolor="#dadada" align="center" class="twikiFirstCol">
+<strong>
+<font color="#000000">Test should be named</font>
+</strong>
+</th>
+<td bgcolor="#ffffff">
+<code>xxxUnitTest.java</code>
+</td>
+<td bgcolor="#ffffff">
+<code>xxxIntegrationTest.java</code>
+</td>
+<td bgcolor="#ffffff">
+<code>xxxSystemTest.java</code>
+</td>
+<td bgcolor="#ffffff">
+<code>xxxTransportTest.java</code>
+</td>
+</tr>
+<tr>
+<th bgcolor="#dadada" align="center" class="twikiFirstCol">
+<strong>
+<font color="#000000">added to a suite named</font>
+</strong>
+</th>
+<td bgcolor="#eaeaea">
+<code>AllxxxUnitTests.java</code>
+</td>
+<td bgcolor="#eaeaea">
+<code>AllxxxIntegrationTests.java</code>
+</td>
+<td bgcolor="#eaeaea">
+<code>AllxxxSystemTests.java</code>
+</td>
+<td bgcolor="#eaeaea">
+<code>AllxxxTransportTests.java</code>
+</td>
+</tr>
+<tr>
+<th bgcolor="#dadada" align="center" class="twikiFirstCol">
+<strong>
+<font color="#000000">Details</font>
+</strong>
+</th>
+<td bgcolor="#ffffff">tests a class in isolation, outside the
+hivemind / workbench framework. No external resources or network
+services to be called. Other dependencies should be mocked or
+stubbed. If the test needs to fetch a url, provide a classpath
+resource and pass it the url of that.</td>
+<td bgcolor="#ffffff">exercises a class within the hivemind /
+workbench framework -either via its public interface, or other
+backdoors. No external resources or services to be called. Other
+dependencies should be provided by hivemind system. Use 
+<code>ARTestSetup.java</code>as a fixture</td>
+<td bgcolor="#ffffff">Test a class within the hivemind / workbench
+framework using it's public AR api where possible. Use 
+<code>ARTestSetup.java</code>as a fixture</td>
+<td bgcolor="#ffffff">Repeats a system or integration test but
+drives it using the RMI or XMLRPC interface instead of the
+direct-function-call interface. Implemented by subclassing an
+existing system or integration test and changing the connection
+method.</td>
+</tr>
+</table>
+<p></p>
+<h2>
+<a name="Test_Organization"></a>Test Organization</h2>
+<p></p>In the 
+<code>org.astrogrid</code>package there are top-level test suites,
+which provide a handy way to run a large amount of tests in one go.
+These can be run from within Eclipse, or from the commandline using
+maven. 
+<p></p>
+<dl>
+<dt>
+<code>
+<b>AllRepeatableTests</b>
+</code>
+</dt>
+<dd>The useful set of tests while developing. 100% pass, 5 minutes
+to run, 30% coverage of the source (as of 26/6/07) .Comprises - 
+<dl>
+<dt>
+<code>
+<b>AbsolutelyAllUnitTests</b>
+</code>
+</dt>
+<dd>A fast suite of all unit tests. Expect 100% pass</dd>
+<dt>
+<code>AbsolutelyAllIntegrationTests</code>
+</dt>
+<dd>A fairly fast suite of all integration tests - useful for
+detecting hivemind errors. Expect 100% pass
+<br></br>
+<img width="16" alt="warning" align="top"
+src="/pub/TWiki/TWikiDocGraphics/warning.gif" height="16"
+border="0"></img>Slightly twitchy - you may find a run occasionally
+fails - usually because they require login to the community service
+(this should be coded out).</dd>
+</dl></dd>
+<dt>
+<code>BestSystemTests</code>
+</dt>
+<dd>The most useful / reliable / uptodate of the system tests.
+Slow, and likely to fail in places at the moment.</dd>
+<dt>
+<code>AbsolutelyAllTransportTests</code>
+</dt>
+<dd>Exercises the transports - tends to fail often at the
+moment.</dd>
+</dl>
+<p></p>
+<p></p>These top-level test suites compose the individual
+package-level test suites. So, when writing tests, be sure to add
+them to an existing package test-suite (and add newly-written test
+suites to an existing parent test-suite) to ensure these top-level
+suites remain up-to-date. 
+<p></p>The most important one to maintain is 
+<code>
+<b>AbsolutelyAllUnitTests</b>
+</code>, which forms the automated tests for the maven build. Maven
+runs this test suite after compiling the source. I hope to use 
+<code>
+<b>AllRepeatableTests</b>
+</code>as the maven build test suite, but need to rework to remove
+the dependency on external services (community) first. 
+<p></p>Occasionally, it's necessary to comment out a failing test
+so that the build will proceed. I try to keep this to a minimum,
+and mark it with a 
+<code>@fixme</code>to come back to later. 
+<p></p>
+<h1>
+<a name="Hand_Running_Tests"></a>Hand Running Tests</h1>
+<p></p>
+<img width="16" alt="wip" align="top"
+src="/pub/TWiki/TWikiDocGraphics/wip.gif" height="16" border="0">
+</img>At present, the system &amp; transport tests are liable to
+fail at various places, depending on various services being
+accessible., and take a very long time to run in their entirity.
+This means at the moment these tests are only useful in development
+- not as part of the build process. 
+<p></p>
+<h2>
+<a name="UI_testing"></a>UI testing</h2>
+<p></p>After some thought, I've decided not to write JUnit tests
+for UI code. It's hard to do, and will only catch what the tests
+are written to catch - not formatting problems, layout errors, etc,
+etc. The only approach for the UI is to hand-test. 
+<p></p>Because of this, it's important that the non-visual parts of
+the UI (datastructures and controlling logic) should be factored
+out into classes separate from the UI, so that they can be
+conveniently unit tested. 
+<p></p>
+<h1>
+<a name="Smoke_Tests"></a>Smoke Tests</h1>
+<p></p>After the maven build assembles the application jar (which
+contains the desktop code plus all libraries), it uses a stripping
+tool to remove unused classes and code, to reduce the download
+size. At the moment, this reduces the size of the full 
+<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
+DesktopAstroGrid</a>from a whopping 35M to 20M. With finer tuning
+of the stripping tool, this size could be reduced further. 
+<p></p>After stripping, a subset of the repeatable tests are run by
+maven as a 
+<a href="http://en.wikipedia.org/wiki/Smoke_test#Smoke_testing_in_software_development"
+target="_top">Smoke test</a>to verify that no required classes have
+been stripped. If the smoke test fails, the build halts. 
+<p></p>
+<h1>
+<a name="Hand_testing_Checklist"></a>
+<a name="Hand_testing_Checklist_"></a>Hand-testing Checklist.</h1>
+<p></p>Assuming the smoke tests succeed, the build goes on to
+produce an installer jar. I then go through a checklist of testing 
+<p></p>
+<ol>
+<li>plastic - try running topcat - see if it connects to the hub.
+likewise for aladin. 
+<ul>
+<li>check whether a notification shows up in system tray.</li>
+</ul></li>
+<li>web interface. Open in browser, 
+<ul>
+<li>navigate around,</li>
+<li>exercise preferences,</li>
+<li>try calling a function - e.g. 
+<code>Webserver &gt; getURLRoot</code></li>
+</ul></li>
+<li>click on the 
+<code>?</code>button, then on one of the items in main UI 
+<ul>
+<li>verify the browser displays correct help.</li>
+</ul></li>
+<li>quit the application. 
+<ul>
+<li>verify that aladin notifies of closure.</li>
+</ul></li>
+<li>TODO: collect some test scripts that exercise a fair portion of
+AR</li>
+<li>astroscope. 
+<ol>
+<li>enter position: 
+<code>crab</code>, radius 
+<code>0.01</code>* expect position to be resolved to
+coordinate</li>
+<li>run search</li>
+<li>verify that buttons for aladin and topcat appear in LHS.</li>
+<li>check history</li>
+<li>switch to hyperbolic view (as it's still downloading).</li>
+<li>switch between degrees and sexagesimal, and observe display and
+inputs change</li>
+<li>switch to services tab. select a service and click the link -
+verify registry viewer appears for this entry.</li>
+<li>verify that there's not overmany errors in the services -
+should expect &lt; 10%</li>
+<li>click on the 'tasks indicator' to see list of pending
+queries.</li>
+<li>back to hyperbolic view. try moving through the tree, and using
+the 'go to top' button</li>
+<li>do same on radial view.</li>
+<li>use 'halt' to halt query before it gets overlarge.</li>
+<li>right-click on data nodes and send them to aladin / topcat</li>
+<li>double click on nodes to select 
+<ol>
+<li>test displaying in aladin / topcat / saving by clicking on
+buttons on LHS</li>
+<li>test 'clear selection'</li>
+</ol></li>
+</ol></li>
+<li>Helioscope. * repeat similar to astroscope. run with default
+parameters.</li>
+<li>Task Runner: Complete this... 1 Loading and saving tasks 1
+Query Builder 1 test authenticated access to CEA app</li>
+<li>
+<a href="/bin/view/Astrogrid/VoExplorer" class="twikiLink">
+VoExplorer</a>: Complete this...</li>
+<li>
+<a href="/bin/view/Astrogrid/FileExplorer" class="twikiLink">
+FileExplorer</a>: Complete...</li>
+</ol>
+<p></p>
+<p></p>
+<h1>
+<a name="Platform_Testing"></a>Platform Testing</h1>
+<p></p>For each variant of workbench, repeat a subset of the manual
+testing checklist on each target operating system - Windows XP, OS
+X, Ubuntu Linux. For XP and Ubuntu, verify that system tray icon
+appears. 
+<p></p>(I use Parallels to run XP and Ubuntu in a window on OSX) 
+<p></p>See also: 
+<ul>
+<li>
+<a href="/bin/view/Astrogrid/WorkbenchWebstartTesting"
+class="twikiLink">WorkbenchWebstartTesting</a>- historical testing
+of webstart on different platforms.</li>
+</ul>
+<p></p>
+<p></p>-- 
+<a href="/bin/view/Main/NoelWinstanley" class="twikiLink">
+NoelWinstanley</a>- 22 Jan 2007</div>
+</div>
+<div class="patternTopicFooter">
+<span class="patternHomePath">This topic: Astrogrid 
+<span class="sep">&gt;</span>
+<a href="/bin/view/Astrogrid/ComponentTestingProcess"
+class="twikiLink">ComponentTestingProcess</a>
+<span class="sep">&gt;</span>
+<a href="/bin/view/Astrogrid/DesktopAstroGridTestingProcess"
+class="twikiLink">DesktopAstroGridTestingProcess</a></span>
+<div class="patternTopicInfo patternRevInfo">History: r7 - 02 May
+2008 - 10:12:05 - 
+<a href="/bin/view/Main/NoelWinstanley" class="twikiLink">
+NoelWinstanley</a></div>
+<!-- /patternTopicInfo -->
+</div>
+<!-- /patternTopicFooter -->
+</div>
+<!-- /patternMainContents-->
+</div>
+<!-- /patternMain-->
+</div>
+<!-- /patternFloatWrap-->
+<div class="clear">&#160;</div>
+</div>
+<!-- /patternOuter-->
+<div id="patternBottomBar">
+<div id="patternBottomBarContents">
+<span class="twikiRight">
+<a href="http://twiki.org/">
+<img src="/pub/TWiki/TWikiLogos/T-logo-80x15.gif"
+alt="This site is powered by the TWiki collaboration platform"
+width="80" height="15"
+title="This site is powered by the TWiki collaboration platform"
+border="0"></img>
+</a>
+</span>Copyright &#169; by the contributing authors. All material
+on this collaboration platform is the property of the contributing
+authors. 
+<br></br>Ideas, requests, problems regarding TWiki? 
+<a href="mailto:agsitemeister@star.le.ac.uk?subject=TWiki Feedback on Astrogrid.DesktopAstroGridTestingProcess">
+Send feedback</a></div>
+<!-- /patternBottomBarContents-->
+</div>
+<!-- /patternBottomBar-->
+</div>
+<!-- /patternPage-->
+</div>
+<!-- /patternPageShadow-->
+</div>
+<!-- /patternScreen-->
+</p>
+</section>
+</body>
+</document>

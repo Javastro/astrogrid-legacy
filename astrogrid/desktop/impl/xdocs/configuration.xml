@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Configuration</title>
+</properties>
+<body>
+<section name="Configuration">
+<p>
+Many of the operating parameters of VODesktop are controlled
+by configuration settings. Each setting has a name, and a value.
+</p>
+<p>
+The available configuration settings are listed in the file  <a href="config.txt">config.txt</a>.
+An equivalent file that contains the current setting values can be generated from VODesktop by using the <tt>-list</tt>
+commandline flag (see <a href="commandline.html">Commandline</a>).
+</p>
+</section>
+
+
+<section name="Changing Configuration">
+<p>
+The configuration of VODesktop can be altered in a number of ways.
+</p>
+<subsection name="Preferences Dialogue">
+<p>
+A subset of the most useful configuration settings can be edited using the VODesktop Preferences Dialogue.
+Configuration changes made using this dialogue persist between invocations of VODesktop.
+</p>
+</subsection>
+
+<subsection name="Preferences Webform">
+<p>
+This is a web-form that provides equivalent functionality to the preferences dialogue - it lists the same set of configuration settings, 
+and any changes made persist between invocations. It's convenient to use in a headless setting where the preference dialogue cannot be displayed.
+The web-form can be accessed at the <tt>preferences</tt> page relative to the context url given in the file <tt>~/.astrogrid-desktop</tt>. Alternatively, 
+navigate to the context url given in <tt>~/.astrogrid-desktop</tt>, from where there's a link to the preferences webform.
+</p>
+</subsection>
+<subsection name="Commandline">
+<p>
+The configuration can also be altered using the commandline. See <a href="commandline.html#Configuration">Commandline</a> for details of the flags.
+Any configuration changes made via the commandline apply only for that invocation of VODesktop: they override any configuration
+provided using the preferences dialogue, but these overrides do not persist between invocations.
+</p>
+<p>
+Note: the output of the <tt>-list</tt> commandline flag can be saved to file, edited, and then used to 
+configure VODesktop by passing it in using the <tt>-propertyFile</tt> or <tt>-propertyURL</tt> commandline arguments
+</p>
+</subsection>
+</section>
+
+<section name="Advanced">
+<subsection name="Disabling parts of the application">
+<p>
+Many of the components of VODesktop and Astro Runtime can be disabled by setting commandline properties. For example, to disable RMI access to Astro Runtime,
+set the configuration property  <tt>system.rmi.disabled</tt> to <tt>true</tt>. Some of the other keys that can be used in the same way are.
+<table>
+<tr><th>Key</th><th>Description</th></tr>
+<tr><td><tt>astrogrid.myspace.disabled</tt></td><td>remove support for myspace</td></tr>
+<tr><td><tt>astrogrid.loginDialogue.disabled</tt></td><td>disable the login dialogue - all logins must be programmatic</td></tr>
+<tr><td><tt>plastic.hub.disabled</tt></td><td>disable the internal PLASTIC hub</td></tr>
+<tr><td><tt>system.preference.servlet.disabled</tt></td><td>disable the preferences web-form</td></tr>
+<tr><td><tt>system.webservice.disabled</tt></td><td>disable the internal webserver (which in turn will disable HTTP and XML-RPC access, PLASTIC, and preferences web-form)</td></tr>
+<tr><td><tt>system.xmlrpc.disabled</tt></td><td>disable XML-RPC access to AstroRuntime</td></tr>
+<tr><td><tt>system.rmi.disabled</tt></td><td>disable RMI access to Astro Runtime</td></tr>
+<tr><td><tt>system.html.disabled</tt></td><td>disable the HTML (HTTP) access to AstroRuntime</td></tr>
+<tr><td><tt>system.systray.disabled</tt></td><td>disable support for the system tray</td></tr>
+<tr><td><tt>util.selftest.disabled</tt></td><td>disable selftesting</td></tr>
+</table>
+
+
+Inspect the <a href="hivedoc/index.html">Hivedoc</a> for other components that can be disabled in the same way.
+</p>
+</subsection>
+
+<subsection name="Contribution to Configuration Points">
+<p>
+More extensive configuration - such as providing new plugins and extensions to the application - can be achieved
+by using commandline parameters to specify additional Hivemind descriptors. The hivemind system
+still needs to be documented properly.
+
+<!-- TODO: document this properly. --> 
+</p>
+</subsection>
+
+</section>
+
+<section name="Implementation">
+<p>
+Within the code, individual configuration settings are modelled by 
+<tt>org.astrogrid.desktop.modules.system.pref.Preference</tt> objects.
+These are produced and managed by <tt>org.astrogrid.desktop.modules.system.pref.PreferenceManagerImpl</tt>.
+Individual preferences are declared and documented in the hivemind configuration
+<tt>framework.preferences</tt>, and are available to be passed into 
+other components using the <tt>preference:</tt> prefix.
+</p>
+</section>
+
+</body>
+</document>

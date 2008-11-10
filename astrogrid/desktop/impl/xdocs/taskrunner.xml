@@ -1,0 +1,51 @@
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>TaskRunner and QueryBuilder</title>
+</properties>
+<body>
+<section name="TaskRunner and QueryBuilder">
+<p>
+<img align="right" width="50%" height="50%"
+ alt="screenshot of taskrunner" 
+ src="http://www.astrogrid.org/raw-attachment/wiki/Help/ReferenceHelp/TaskRunner/taskrunner-small.png" />
+TaskRunner allows the user to: build complex adql queries against
+remote databases; and  invoke long-running remote applications. 
+</p>
+<p>At the moment
+it communicates with services that support the <a href="http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/CommonExecutionArchitecture">CEA</a> protocol
+(<a href='http://technology.astrogrid.org/wiki/CEA'>CEA Application Servers</a>, and <a href='http://technology.astrogrid.org/'>DSA Remote Databases</a>)
+</p>
+<p> There's experimental
+support for an early version of <a href="http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/TableAccess">TAP</a>, while support for <a href="http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/AsynchronousHome">UWS</a> services is planned. 
+</p>
+<p>
+See the <a href="http://www.astrogrid.org/wiki/Help/IntroVODesktop/UsingTaskRunner">TaskRunner User Guide</a>
+and <a href="http://www.astrogrid.org/wiki/Help/IntroVODesktop/BuildingQueries">Query Builder User Guide</a>
+<br clear="right" />
+</p>
+</section>
+
+<section name="Experimental TAP Support">
+<p>
+<img align="right" width="50%" height="50%"
+    alt="screenshot of taskrunner in TAP mode"
+    src="taptask.png" />
+The latest version adds basic support for asynchronous TAP  (Table Access Protocol) queries.
+</p>
+<p>
+To see it in action - In VOExplorer search for  the resource
+      Hipparcos catalogue - <tt>ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED</tt> (or
+      subscribe to this <a href="tap-example.resourcelist">resource list</a>)
+and then choose the <tt>TAP Query</tt> action.
+(In the final a release, we'll probably not differentiate between cea-adql and tap-adql - it's not relevant to the user).
+A simplified form of the task runner appears, from which queries can be built and submitted.
+</p>
+<p>
+At the moment, selecting the output format for the result does not work - so I've omitted that from the UI. 
+(I might omit it from the production version too). Likewise, it's not possible to instruct TAP/DSA to send results to myspace - so that's been omitted too.
+</p>
+</section>
+
+</body>
+</document>

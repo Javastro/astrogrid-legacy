@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+    <properties>
+        <title>Dependency Injection Containers</title>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+    </properties>
+    <body>
+        <section name="Dependency Injectionn Containers">
+            <p> This article gives the background to the adoption of a
+                container system in VODesktop, and the selection of
+                Hivemind in particular.</p>
+        </section>
+        <section name="Assembling Programs">
+            <p>Programs in Java are assembled out of objects.
+            </p>
+            <p>Objects are instantiations of classes.</p>
+            <p>Well-designed objects depend on other
+                objects for some of their functionality - they're
+                composed from them, or aggregate other objects together.
+            </p>
+            <p>These dependent objects are either created one-per
+                parent, or are shared or (a singleton) between all
+                instances. There are other possible patterns too -
+                groups (such as singleto-per-window), pools (such as
+                thread pools).</p>
+            <p>The core question is - 'how best to assemble the
+                objects into an application?'</p>
+            <subsection name="Vanilla Java">
+                <p>One technique, used in small Java programs, is to
+                    have the parent / owner object create all the
+                    dependent objects it requires. This makes the code
+                    brittle - as the implementation itself specifies the
+                    implementation class to use for dependent objects.
+                    This technique gives no easy way to access the
+                    'shared' objects - leading to poor architectures
+                    that use static classes and static singletons.</p>
+                <source><![CDATA[
+class FooImpl {
+   private final Bar b;
+   private final Neep n;
+
+   public FooImpl() {
+      // initialize dependent objects
+      this.b = new BarImpl(); // implementation class is fixed.
+      this.n = Neep.getInstance(); // shared object plucked from
+environment
+     // perform further initialization
+   }
+   ...
+  // rest of class.
+}
+]]></source>
+                <p>An object that creates all its dependent objects
+                    and accesses finds its own shared objects (whether
+                    this is via global singletons,context objects, or
+                    JNDI lookup) is opaque, and because of this not
+                    easily tested, reused or extended. It's strongly
+                    tied into the environment, so it's hard to
+                    substitute objects for other implementations (for
+                    example test mocks)</p>
+                <p>This is not a good way to go.</p>
+            </subsection>
+            <subsection name="Dependency Injection">
+                <p>
+                    A better pattern is called
+                    <a href="http://c2.com/cgi/wiki?DependencyInjection">
+                        dependency injection</a>
+                    In this pattern, some external agent takes care of
+                    instantiating objects and providing their
+                    dependencies.
+                </p>
+                <p>As well as solving the problems identified with the
+                    'Vanilla Java' technique, dependency injection also
+                    has the benefit that classes only need to describe
+                    what they do - not how to construct themselves. This
+                    simplifies the code by separating concerns - the
+                    construction task is left to an external agent.</p>
+                <p>
+                    A sensible use of
+                    <a
+                        href="http://c2.com/cgi/wiki?BuildInterfaceImplementationPairs">
+                        Interface-Implementation separation</a>
+                    adds great flexibility - allowing the external agent
+                    to substitute different implementations. This allows
+                    mocks for testing, or implementations for different
+                    settings to be supplied without the consumer of the
+                    object caring.
+                </p>
+            </subsection>
+            <subsection name="Constructor Injection">
+                <p>
+                    There's 2 main forms of Dependency Injection -
+                    <a
+                        href="http://c2.com/cgi/wiki?DependencyInjectionContainers">Constructor Injection</a>
+                    and
+                    <a href="http://c2.com/cgi/wiki?SetterInjection"> Setter Injection</a>
+                    .
+                </p>
+                <p>
+                    Constructor injection is when the external agent
+                    supplies dependent objects to the classes'
+                    <em>constructor</em>
+                    . Setter Injection is when dependent objects are
+                    supplied via the classes'
+                    <em>setter methods</em>
+                    .
+                </p>
+                <p>
+                    I prefer constructor injection, as the constructor
+                    clearly declares what dependent objects are required
+                    to construct an instance. Even better, the instance
+                    is constructed in a
+                    <em>valid</em>
+                    state. This is less clear with setter injection -
+                    which
+                    <code>set()</code>
+                    methods are to be called? and which also often
+                    requires a separate
+                    <code>init()</code>
+                    method to be defined, which the external agent is to
+                    call after performing the setter injection to
+                    'start' the instance.
+                </p>
+                <p>
+                    Most of the code in VODesktop are designed around
+                    this constructor injection pattern. The typical
+                    pattern is something like:
+                    <source><![CDATA[
+class FooImpl implements Foo {
+   // dependent objects, declared as 'final'
+   private final Bar b;
+   private final Neep n;
+
+   public FooImpl(Bar b,Neep n) {
+      // initialize dependent objects
+      this.b = b;
+      this.n = n;
+     // perform further initialization
+   }
+   ...
+  // rest of class.
+}
+]]></source>
+                </p>
+                <p>I use setters only for configuration, or when when I
+                    need to write / use the JavaBeans pattern - where a
+                    0-args construtor is mandated.</p>
+            </subsection>
+            <subsection name="Disadvantages of Constructor Injection">
+                <p>
+                    If a class has a lot of dependencies - say more than
+                    5, the constructor method signature starts to get
+                    unwieldy. This has to be lived with - however, many
+                    dependencies suggests a
+                    <a href="http://c2.com/cgi/wiki?CodeSmell">code smell</a>
+                    - and maybe this class should be refactored to
+                    separate concerns.
+                </p>
+            </subsection>
+        </section>
+        <section name="What's the Injector?">
+            <p>Constructor Injection is all well, but leads
+                on to the question - what is the external agent that
+                instantiates and supplies dependencies?</p>
+            <subsection name="Roll your own">
+                <p>
+                    In the most trivial of cases, it can just be the
+                    static
+                    <code>main</code>
+                    method - which instantiates each of the objects, and
+                    plumbs them all together. This simple approach has
+                    the following limitations:
+                    <ul>
+                        <li>Soon becomes unwieldy when the
+                            application grows to large numbers and types
+                            of objects.</li>
+                        <li>
+                            Requires additional work if objects need to
+                            be created lazily / dynamically during the
+                            execution of the program
+                            <ul>
+                                <li>Factory code needs to be kept
+                                    around, and provided to objects so
+                                    that new objects can be instantiated
+                                    as needed</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Hard to construct object structures with
+                            cyclic dependencies.
+                            <ul>
+                                <li>Some kind of proxy / adapter is
+                                    required to break the cycle.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </p>
+            </subsection>
+            <subsection name="Use a container library">
+                <p> There's a number of dependency-injection container
+                    systems which are better to use once your
+                    application grows beyond a certain size.</p>
+                <p>
+                    Sadly, there isn't one in the Java standard
+                    libraries - and I'm not aware of a JSR to
+                    standardize these. Which is a pity, because theres
+                    many commonalities between them. The usual mode of
+                    operation is
+                    <ul>
+                        <li>Instantiate the container</li>
+                        <li>
+                            Tell the container about your implementation
+                            objects - for each the
+                            <ul>
+                                <li>public interface</li>
+                                <li>implementation class
+                                </li>
+                                <li>Dependencies (optional,
+                                    sometimes deduced from constructor
+                                    signature)</li>
+                                <li>Configuration (what
+                                    properties to set, or config data to
+                                    pass in)</li>
+                            </ul>
+                        </li>
+                        <li>Instruct the container to 'start',
+                            which insantiates certain objects.</li>
+                    </ul>
+                </p>
+                <p>At this point, you have a running container. It's
+                    usually possible to query the container for objects
+                    - although this might be considered bad form. If
+                    there's something outside the container that needs
+                    access to the managed objects, shouldn't it be
+                    inside the container itself, and have whatever it
+                    needs injected like everything else? This is a
+                    design call - where to draw the line between what is
+                    inside the container, and what code remains outside.
+                </p>
+                <p>In VODesktop as much is kept inside the container
+                    as possible - Outside the container there is only
+                    the startup code that parses commandline options and
+                    creates the container.</p>
+            </subsection>
+            <subsection name="PicoContainer">
+                <p>
+                    Some containers, like
+                    <a href="http://www.picocontainer.org/">
+                        PicoContainer</a>
+                    , are intentionally very simple. The registration of
+                    implementation objects is done programatically using
+                    methods like
+                    <code>pico.register(Class iface,
+                        Class implementation)</code>
+                    . In these systems dependencies are computed
+                    automatically - which only works with constructor
+                    injection. There's little provision for
+                    setter-injection or configuration.
+                </p>
+                <p>I've previously used PicoContainer in the
+                    CEA-server and JES implementations. I also used it
+                    in an early version of AstroRuntime - but I soon
+                    reached its limits.</p>
+            </subsection>
+            <subsection name="Spring">
+                <p>
+                    I looked at other dependency-injection containers.
+                    The most famous is
+                    <a href="http://www.springframework.org/">Spring</a>
+                    - but I was put off by it's complexity and download
+                    size - it seems to be better suited for
+                    application-server-type server-side installations.
+                    It comes with many pre-defined components / aspects
+                    - so that adding persistence, web services,
+                    transactions, etc to your objects is just a matter
+                    of configuration. Few of these pre-defined aspects
+                    were of use to AR.
+                </p>
+            </subsection>
+            <subsection name="HiveMind">
+                <p>
+                    So I settled on
+                    <a href="http://hivemind.apache.org/"> HiveMind
+                    </a>
+                    - a middle-weight container. It was developed by
+                    apache primarily as the underpinnings of Tapestry -
+                    a web application framework - but has also been used
+                    in other settings - notably in client-side Swing
+                    applications.
+                </p>
+                <p>
+                    Hivemind out-of-the-box comes with very few
+                    predefined components or aspects. Instead, it's very
+                    extensible and quite straightforward to do so.
+                    There's a sister project called
+                    <a
+                        href="http://hivetranse.sourceforge.net/web/index.html">Hivemind-Utils</a>
+                    that defines additional some components to support
+                    UI, locking and different ways of constructing
+                    objects. However, often it's simplest to extend by
+                    hand so that the solution precisely matches the
+                    application's needs.
+                </p>
+                <p>This versatility leads to a hivemind system that
+                    is tailored just to the application it's being used
+                    within. This means that there is less commonality
+                    between hivemind systems than there might be between
+                    Spring systems in the same usage, although it is
+                    much clearer than picocontainer, and download bulk
+                    and startup time are more easily controlled.</p>
+            </subsection>
+        </section>
+    </body>
+</document>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document><properties><title>SimpleRegistryQueryLanguage &lt; VOTech &lt; TWiki</title></properties><body><section><p><a name="PageTop"></a><div id="patternScreen">
+<div id="patternPageShadow">
+<div id="patternPage">
+<div id="patternOuter">
+<div id="patternFloatWrap">
+<div id="patternMain">
+<div id="patternMainContents"><div class="patternContent"><div class="patternTopic"><h1><a name="SRQL_Simple_Registry_Query_Langu"></a> SRQL - Simple Registry Query Language </h1>
+<p></p>
+As XPath is too techie, and Adql unforgiving and still evolving, I'd like to suggest a user-facing query language called SRQL. It's a forgiving, google-ish little language, where the user can rarely input a syntactically incorrect query.
+<p></p>
+I've implemented a standalone java library that converts SRQL to XQuery. It'd be straightforward to extend this to target other query languages. -  <a href="http://wiki.eurovotech.org/twiki/pub/VOTech/SimpleRegistryQueryLanguage/srql.tgz" target="_top">srql.tgz</a>: zip of sources, tests, docs and executable jarfile.
+<p></p>
+<p></p>
+SRQL is used as the query language in <a href="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer" target="_top">VOExplorer</a>, a resource browser for the vo.
+<p></p>
+All text matching is case insensitive. So if you enter 'John', it will match resources containing 'John','john','JOhN', etc.
+<p></p>
+All matching is done by substring. So if you enter 'sol' it will match resources containing 'sol','solar', 'insole', etc.
+<p></p>
+<p></p>
+<p></p>
+<table cellspacing="1" cellpadding="1" class="twikiTable" border="0"><tr><th bgcolor="#dadada" class="twikiFirstCol"> <a rel="nofollow" href="http://wiki.eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage?template=viewprint&amp;amp;sortcol=0;table=1;up=0#sorted_table" title="Sort by this column"><font color="#000000">SRQL query</font></a> </th><th bgcolor="#dadada"> <a rel="nofollow" href="http://wiki.eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage?template=viewprint&amp;amp;sortcol=1;table=1;up=0#sorted_table" title="Sort by this column"><font color="#000000">Searches For</font></a> </th></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>galaxy</code> </td><td bgcolor="#ffffff"> resources containing <code>galaxy</code> in any of <em>title</em>, <em>shortName</em>, <em>identifier</em>, <em>content/description</em> and <em>content/subject</em> fields </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>radio galaxy</code> </td><td bgcolor="#eaeaea"> resources containing <code>radio</code> <strong>or</strong> <code>galaxy</code> in any of <em>title</em>, ... fields </td></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>radio or galaxy</code> </td><td bgcolor="#ffffff"> resources containing <code>radio</code> <strong>or</strong> <code>galaxy</code> in any of <em>title</em>, ... fields </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>radio and galaxy</code> </td><td bgcolor="#eaeaea"> resources  containing <code>radio</code> <strong>and</strong> <code>galaxy</code> in any of <em>title</em>, ... fields </td></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>"radio galaxy"</code> </td><td bgcolor="#ffffff"> resources containing the phrase <code>"radio galaxy"</code> in any of <em>title</em>, ...fields </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>not "radio galaxy"</code> </td><td bgcolor="#eaeaea"> resources that do not contain the phrase <code>"radio galaxy"</code> in any of <em>title</em>, ... fields </td></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>not (radio galaxy)</code> </td><td bgcolor="#ffffff"> resources that do not contain <code>radio</code> <strong>or</strong> <code>galaxy</code> in any of <em>title</em>, ... fields </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>pulsar and not (radio galaxy)</code> </td><td bgcolor="#eaeaea"> resources that contain <code>pulsar</code> that do not contain <code>radio</code> <strong>or</strong> <code>galaxy</code> in any of <em>title</em>, ... fields </td></tr>
+<tr><th bgcolor="#dadada" colspan="2" class="twikiFirstCol">  <strong><font color="#000000">specifying the target of a query</font></strong>  </th></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>name = first</code> </td><td bgcolor="#ffffff"> resources that contain <code>first</code> in <strong>just</strong> the <em>title</em> or <em>shortname</em> fields </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>name = (first wfcam) </code></td><td bgcolor="#eaeaea"> resources that contain =first <strong>or</strong> <code>wfcam</code> in <strong>just</strong> the <em>title</em> or <em>shortname</em> fields </td></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>shortname = <em>expr</em></code><em> </em></td><td bgcolor="#ffffff"> resources that match _expr in <strong>just</strong> the <em>shortname</em> field </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>title = <em>expr</em></code><em> </em></td><td bgcolor="#eaeaea"> resources that match _expr in <strong>just</strong> the <em>title</em> field </td></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>title = first or shortname = wfcam</code> </td><td bgcolor="#ffffff"> resources that contain <code>first</code> in <strong>just</strong> the <em>title</em> field, <strong>or</strong> that contain <code>wfcam</code> in <strong>just</strong> the <em>shortname</em> field </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>subject = <em>expr</em></code><em> </em></td><td bgcolor="#eaeaea"> resources that match _expr in <strong>just</strong> the <em>content/subject</em> field </td></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>description = <em>expr</em></code><em> </em></td><td bgcolor="#ffffff"> resources that match _expr in <strong>just</strong> the <em>content/description</em> field </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>id = <em>expr</em></code><em> </em></td><td bgcolor="#eaeaea"> resources that match _expr in <strong>just</strong> the <em>identifier</em> field </td></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>any = <em>expr</em></code><em> </em></td><td bgcolor="#ffffff"> resources that match _expr in <strong>any</strong> field </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>default =_expr</code> </td><td bgcolor="#eaeaea"> resources that match  <em>expr</em>  in <strong>just</strong> the <em>shortname</em> fields </td></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>curation = <em>expr</em></code><em> </em></td><td bgcolor="#ffffff"> resources that match _expr anywhere in the <em>curation</em> fields (<em>creator</em>, <em>publisher</em>, <em>contributor</em>, etc) </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>type = <em>expr</em></code><em> </em></td><td bgcolor="#eaeaea"> resources that match _expr in <strong>just</strong> the <em>xsi:type</em> or <em>content/type</em> fields </td></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>waveband = <em>expr</em></code><em> </em></td><td bgcolor="#ffffff"> resources that match _expr in <strong>just</strong> the <em>coverage/spectral/waveband</em> field </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>level = <em>expr</em></code><em> </em></td><td bgcolor="#eaeaea"> resources that match _expr in <strong>just</strong> the _content/contentLevel field </td></tr>
+<tr><td bgcolor="#ffffff" class="twikiFirstCol"> <code>col = <em>expr</em></code><em> </em></td><td bgcolor="#ffffff"> resources that match _expr in a column name </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>ucd = <em>expr</em></code><em> </em></td><td bgcolor="#eaeaea"> resources that match _expr in a column ucd </td></tr>
+<tr><td bgcolor="#ffffff" colspan="2" class="twikiFirstCol"> <strong>Inline XPath query</strong> - denoted by backquotes (Optional, assumes XQuery backend). Could implement pass-thru sql in same way </td></tr>
+<tr><td bgcolor="#eaeaea" class="twikiFirstCol"> <code>type = cone and `cs:capability/cs:maxSR &gt; 90`</code> </td><td bgcolor="#eaeaea"> resources that are of type <code>cone</code> where the xpath <code>cs:capability/cs:maxSR &gt; 90</code>  evaluates to <code>true</code> (i.e. catalog services where the maximum search radius is larger than 90 degrees) </td></tr>
+</table>
+<p></p>
+targetted and untargetted expressions can be mixed in the same query.
+<p></p>
+Examples.
+<p></p>
+<code>abell and ucd=pos_eq_ra_main and waveband=(not uv)</code>
+<p></p>
+<p></p>
+<p></p>
+<h3><a name="Performance"></a> Performance </h3>
+Using a more targetted search like <code>name = first</code> will be faster than just <code>first</code>, while <code>any = first</code> takes much longer.
+<p></p>
+<p></p>
+-- <a href="/twiki/bin/view/Main/NoelWinstanley" class="twikiLink">NoelWinstanley</a> - 09 Mar 2007 <ul>
+<li> <a href="http://wiki.eurovotech.org/twiki/pub/VOTech/SimpleRegistryQueryLanguage/srql.tgz" target="_top">srql.tgz</a>: zip of sources, tests, docs and jarfile.
+</li></ul> </div>
+<div class="twikiAttachments">
+<span id="attachmentsshow" class="twistyMakeOpaque"><a href="#" class="twistyTrigger"><img width="16" alt="toggleopen" align="top" src="/twiki/pub/TWiki/TWikiDocGraphics/toggleopen.gif" height="16" border="0"></img><span class="twikiLinkLabel" id="attachmentsshowlink">Show attachments</span></a></span><span id="attachmentshide" class="twistyHidden twistyMakeOpaque"><a href="#" class="twistyTrigger"><img width="16" alt="toggleclose" align="top" src="/twiki/pub/TWiki/TWikiDocGraphics/toggleclose.gif" height="16" border="0"></img><span class="twikiLinkLabel" id="attachmentshidelink">Hide attachments</span></a></span>
+<div id="attachmentstoggle" class="twistyMakeHidden twistyRememberSetting">
+<table summary="Topic attachments" cellspacing="0" id="twikiAttachmentsTable" cellpadding="0" class="twikiTable" border="0"><caption>Topic attachments</caption><tr><th bgcolor="#dadada" class="twikiFirstCol"> <a rel="nofollow" href="http://wiki.eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage?template=viewprint&amp;amp;sortcol=0;table=2;up=0#sorted_table" title="Sort by this column"><font color="#000000">I</font></a> </th><th bgcolor="#dadada"> <a rel="nofollow" href="http://wiki.eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage?template=viewprint&amp;amp;sortcol=1;table=2;up=0#sorted_table" title="Sort by this column"><font color="#000000">Attachment</font></a> </th><th bgcolor="#dadada"> <a rel="nofollow" href="http://wiki.eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage?template=viewprint&amp;amp;sortcol=2;table=2;up=0#sorted_table" title="Sort by this column"><font color="#000000">Action</font></a> </th><th bgcolor="#dadada"> <a rel="nofollow" href="http://wiki.eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage?template=viewprint&amp;amp;sortcol=3;table=2;up=0#sorted_table" title="Sort by this column"><font color="#000000">Size</font></a> </th><th bgcolor="#dadada"> <a rel="nofollow" href="http://wiki.eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage?template=viewprint&amp;amp;sortcol=4;table=2;up=0#sorted_table" title="Sort by this column"><font color="#000000">Date</font></a> </th><th bgcolor="#dadada"> <a rel="nofollow" href="http://wiki.eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage?template=viewprint&amp;amp;sortcol=5;table=2;up=0#sorted_table" title="Sort by this column"><font color="#000000">Who</font></a> </th><th bgcolor="#dadada"> <a rel="nofollow" href="http://wiki.eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage?template=viewprint&amp;amp;sortcol=6;table=2;up=0#sorted_table" title="Sort by this column"><font color="#000000">Comment</font></a> </th></tr>
+<tr><td bgcolor="#FFFFFF" class="twikiFirstCol"> <img width="16" alt="zip" align="top" src="/twiki/pub/TWiki/TWikiDocGraphics/zip.gif" height="16" border="0"></img><span class="twikiHidden">tgz</span> </td><td bgcolor="#FFFFFF"> <a href="/twiki/bin/viewfile/VOTech/SimpleRegistryQueryLanguage?rev=3;filename=srql.tgz">srql.tgz</a> </td><td bgcolor="#FFFFFF"> <a href="/twiki/bin/attach/VOTech/SimpleRegistryQueryLanguage?filename=srql.tgz&amp;revInfo=1" title="change, update, previous revisions, move, delete..." rel="nofollow">manage</a> </td><td bgcolor="#FFFFFF" align="right"> 86.5 K </td><td bgcolor="#FFFFFF"> 12 Mar 2007 - 13:46 </td><td bgcolor="#FFFFFF"> <a href="/twiki/bin/view/Main/NoelWinstanley" class="twikiLink">NoelWinstanley</a> </td><td bgcolor="#FFFFFF"> zip of sources, tests, docs and jarfile. </td></tr>
+</table>
+</div></div>
+<script type="text/javascript">
+//&lt;!CDATA[
+	var table = document.getElementById("twikiAttachmentsTable");
+	if (table) {
+		var count = table.getElementsByTagName("tr").length - 1;
+		var countStr = "(" + count + ")";
+		var showlink = document.getElementById('attachmentsshowlink');
+		if (showlink != undefined) showlink.firstChild.data += " " + countStr;
+		var hidelink = document.getElementById('attachmentshidelink');
+		if (hidelink != undefined) hidelink.firstChild.data += " " + countStr;
+	}
+//]]&gt;
+</script>
+</div>
+<div class="patternTopicFooter"><span class="patternHomePath">This topic: VOTech  <span class="sep">&gt;</span> <a href="/twiki/bin/view/VOTech/StageFive" class="twikiLink">StageFive</a> &gt; <a href="/twiki/bin/view/VOTech/StageFiveHackAThon" class="twikiLink">StageFiveHackAThon</a>
+<span class="sep">&gt;</span> <a href="/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage" class="twikiLink">SimpleRegistryQueryLanguage</a></span>
+<div class="patternTopicInfo patternRevInfo">History: r5 - 24 Oct 2008 - 17:10:32 - <a href="/twiki/bin/view/Main/NoelWinstanley" class="twikiLink">NoelWinstanley</a></div><!-- /patternTopicInfo --> </div> <!-- /patternTopicFooter --> 
+</div><!-- /patternMainContents-->
+</div><!-- /patternMain-->
+</div><!-- /patternFloatWrap-->
+<div class="clear"> </div>
+</div><!-- /patternOuter--><div id="patternBottomBar"><div id="patternBottomBarContents"><span class="twikiRight"> <a href="http://twiki.org/"><img src="/twiki/pub/TWiki/TWikiLogos/T-logo-80x15.gif" alt="This site is powered by the TWiki collaboration platform" width="80" height="15" title="This site is powered by the TWiki collaboration platform" border="0"></img></a></span>Copyright © by the contributing authors. All material on this collaboration platform is the property of the contributing authors. <br></br> Ideas, requests, problems regarding TWiki? <a href="mailto:msh@roe.ac.uk?subject=TWiki Feedback on VOTech.SimpleRegistryQueryLanguage">Send feedback</a> 
+</div><!-- /patternBottomBarContents--></div><!-- /patternBottomBar-->
+</div><!-- /patternPage-->
+</div><!-- /patternPageShadow-->
+</div><!-- /patternScreen--></p></section></body></document>

@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+<properties>
+<title>HivemindInDesktopAstroGrid &lt; Astrogrid &lt; TWiki</title>
+</properties>
+<body>
+<section>
+<p>
+<a name="PageTop"></a>
+<div id="patternScreen">
+<div id="patternPageShadow">
+<div id="patternPage">
+<div id="patternOuter">
+<div id="patternFloatWrap">
+<div id="patternMain">
+<div id="patternMainContents">
+<div class="patternContent">
+<div class="patternTopic">
+<div style="position: relative; float:right; margin:0 1em 1em 0; padding:0; border:0;">
+
+<div style="position: relative; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%; width:20em; border:2px solid #99CCFF; padding:5px; margin:10px 0 0 0;">
+
+<strong>Table of Contents</strong>
+<div class="twikiToc">
+<ul>
+<li>
+<a href="#HiveMind_Basics">HiveMind Basics</a>
+<ul>
+<li>
+<a href="#Services">Services</a>
+</li>
+<li>
+<a href="#Implementations">Implementations</a>
+</li>
+<li>
+<a href="#Configuration_Points">Configuration Points</a>
+</li>
+<li>
+<a href="#Contributions">Contributions.</a>
+</li>
+<li>
+<a href="#Hivedoc">Hivedoc</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Hivemind_Aspects">Hivemind Aspects</a>
+<ul>
+<li>
+<a href="#Core">Core</a>
+</li>
+<li>
+<a href="#HiveUtils">HiveUtils</a>
+</li>
+<li>
+<a href="#HiveLock">HiveLock</a>
+</li>
+<li>
+<a href="#Home_rolled">Home-rolled</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Other_details">Other details</a>
+<ul>
+<li>
+<a href="#Startup_information">Startup information</a>
+</li>
+<li>
+<a href="#Pattern_each_module_follows">Pattern each module
+follows</a>
+</li>
+<li>
+<a href="#Configurability">Configurability</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Services_by_Module">Services, by Module.</a>
+<ul>
+<li>
+<a href="#General_Notes">General Notes</a>
+</li>
+<li>
+<a href="#Hivemind_Hivemind_util">Hivemind, Hivemind.util, ...</a>
+</li>
+<li>
+<a href="#Astrogrid">Astrogrid</a>
+</li>
+<li>
+<a href="#Background">Background</a>
+</li>
+<li>
+<a href="#Builtin">Builtin</a>
+</li>
+<li>
+<a href="#CDS">CDS</a>
+</li>
+<li>
+<a href="#Dialogs">Dialogs</a>
+</li>
+<li>
+<a href="#Framework">Framework</a>
+</li>
+<li>
+<a href="#IVOA">IVOA</a>
+</li>
+<li>
+<a href="#NVO">NVO</a>
+</li>
+<li>
+<a href="#Plastic">Plastic</a>
+</li>
+<li>
+<a href="#System">System</a>
+</li>
+<li>
+<a href="#Test">Test</a>
+</li>
+<li>
+<a href="#UI">UI</a>
+</li>
+<li>
+<a href="#Util">Util</a>
+</li>
+<li>
+<a href="#VOEvent">VOEvent</a>
+</li>
+<li>
+<a href="#VOTech">VOTech</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div style="position: relative; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%; width:20em; border:2px solid #99CCFF; padding:5px; margin:10px 0 0 0;">
+
+<strong>Children of this topic</strong>
+<br></br>
+<p></p>
+</div>
+</div>
+<h1>
+<a name="How_HiveMind_is_used_in_DesktopA"></a>
+<a name="_How_HiveMind_is_used_in_Desktop"></a>How 
+<a href="/bin/view/Astrogrid/HiveMind" class="twikiLink">
+HiveMind</a>is used in 
+<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
+DesktopAstroGrid</a></h1>This page documents how 
+<a href="/bin/view/Astrogrid/HiveMind" class="twikiLink">
+HiveMind</a>works, how it's applied in 
+<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
+DesktopAstroGrid</a>, and, as part of this, the 
+<strong>architecture</strong>of 
+<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
+DesktopAstroGrid</a>
+<p></p>See 
+<a href="/bin/view/Astrogrid/DependencyInjectionContainers"
+class="twikiLink">DependencyInjectionContainers</a>for 
+<em>why</em>
+<a href="/bin/view/Astrogrid/HiveMind" class="twikiLink">
+HiveMind</a>is used in 
+<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
+DesktopAstroGrid</a>
+<p></p>
+<h1>
+<a name="HiveMind_Basics"></a>
+<a href="/bin/view/Astrogrid/HiveMind" class="twikiLink">
+HiveMind</a>Basics</h1>
+<a href="/bin/view/Astrogrid/HiveMind" class="twikiLink">
+HiveMind</a>is centered around a Registry, which reads a series of
+XML descriptors. 
+<p></p>These descriptors define 
+<p></p>
+<h2>
+<a name="Services"></a>Services</h2>
+<p></p>
+<h2>
+<a name="Implementations"></a>Implementations</h2>
+<p></p>
+<h3>
+<a name="Classes"></a>Classes</h3>
+<p></p>
+<h3>
+<a name="Interceptors"></a>Interceptors</h3>
+<p></p>
+<h2>
+<a name="Configuration_Points"></a>Configuration Points</h2>
+<p></p>
+<h2>
+<a name="Contributions"></a>
+<a name="Contributions_"></a>Contributions.</h2>
+<p></p>
+<h2>
+<a name="Hivedoc"></a>Hivedoc</h2>
+<p></p>
+<h1>
+<a name="Hivemind_Aspects"></a>Hivemind Aspects</h1>This describes
+all the builtin 'aspects' of hivemind, and the extensions we've
+incorporated or written. These, taken all together define the
+'language' of 
+<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
+DesktopAstroGrid</a>'s hivemind 
+<p></p>
+<h2>
+<a name="Core"></a>Core</h2>
+<p></p>
+<h3>
+<a name="Symbol_Sources_ApplicationDefaul"></a>Symbol Sources, 
+<span class="twikiNewLink">ApplicationDefaults
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/ApplicationDefaults?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>&amp; 
+<span class="twikiNewLink">FactoryDefaults
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/FactoryDefaults?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span></h3>Provides a list of sources for values of
+substitution symbols. 
+<p></p>Extension point for setting "factory defaults" for symbol
+values. 
+<p></p>Extension point for setting application defaults; these
+defaults will override factory defaults specified in the 
+<span class="twikiNewLink">FactoryDefaults
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/FactoryDefaults?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>configuration point. 
+<p></p>
+<h3>
+<a name="EagerLoad_Startup"></a>
+<span class="twikiNewLink">EagerLoad
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/EagerLoad?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>&amp; Startup</h3>Configuration to which services may be
+contributed. The corresponding services are instantiated eagerly,
+as the Registry is started. The order in which services are
+instantiated is not specified. 
+<p></p>A configuration to which startup objects may be contributed
+(as objects or services). Startup objects must implement the
+java.lang.Runnable interface. Order of execution is expliclitly NOT
+defined. 
+<p></p>
+<p></p>
+<h3>
+<a name="ObjectProviders"></a>
+<span class="twikiNewLink">ObjectProviders
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/ObjectProviders?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>
+</h3>Services that can provide objects for the object translator. 
+<p></p>
+<h3>
+<a name="ChainFactory_PipelineFactory_Str"></a>
+<span class="twikiNewLink">ChainFactory
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/ChainFactory?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>, 
+<span class="twikiNewLink">PipelineFactory
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/PipelineFactory?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>, 
+<span class="twikiNewLink">StrategyFactory
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/StrategyFactory?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>&amp; other oddities</h3>Service implementation factory
+that produces a chain of command based on a configuration point
+that conforms tothe hivemind.lib.ChainContribution schema. 
+<p></p>A service implementation factory that assembles a pipeline
+of filters into a service. 
+<p></p>Creates a service as a wrapper around a 
+<span class="twikiNewLink">StrategyRegistry
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/StrategyRegistry?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>. The first parameter to each method of the service
+interface is used to select a strategy instance, and then the
+method implementation delegates to that instance. 
+<p></p>
+<h3>
+<a name="DefaultImplementationBuilder"></a>
+<span class="twikiNewLink">DefaultImplementationBuilder
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/DefaultImplementationBuilder?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>
+</h3>A service which can create a default implementation of an
+arbitrary interface. The instance returned does nothing. Returned
+instances are cached and re-used. 
+<p></p>
+<h2>
+<a name="HiveUtils"></a>
+<span class="twikiNewLink">HiveUtils
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/HiveUtils?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>
+</h2>
+<h3>
+<a name="LiteralObjectProvider"></a>
+<span class="twikiNewLink">LiteralObjectProvider
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/LiteralObjectProvider?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>
+</h3>
+<span class="twikiNewLink">ObjectProvider
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/ObjectProvider?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>that can inject a literal (string, boolean or integral).
+Mapped to the literal: prefix ("literal:
+<type>:
+<value>"). 
+<p></p>
+<h3>
+<a name="ObjectBuilder"></a>
+<span class="twikiNewLink">ObjectBuilder
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/ObjectBuilder?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>
+</h3>Utility service to build (and optionnally cache) POJO
+instances while injecting dependencies into them (both constructor
+and setter injections are supported). The configuration of each
+POJO to be created is defined as a contribution to the 
+<span class="twikiNewLink">ObjectBuilderObjects
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/ObjectBuilderObjects?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>configuration point. Most often, you will not need to
+directly access this service sicne you can also inject POJOs that
+have been built by 
+<span class="twikiNewLink">ObjectBuilder
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/ObjectBuilder?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>into other POJOs or service points, configuration points
+through the "object:" object provider. 
+<p></p>I also define additional object builders using hte same
+machinery. 
+<h2>
+<a name="HiveLock"></a>
+<span class="twikiNewLink">HiveLock
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/HiveLock?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>
+</h2>principals, userContextStorage - used in 
+<a href="/bin/view/Astrogrid/HivemindInDesktopAstroGrid#SessionManager"
+class="twikiAnchorLink">SessionManager</a>
+<p></p>
+<h2>
+<a name="Home_rolled"></a>Home-rolled</h2>
+<p></p>
+<h3>
+<a name="Preferences"></a>Preferences</h3>
+<p></p>
+<h3>
+<a name="AcrServices_Desriptors"></a>
+<span class="twikiNewLink">AcrServices
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/AcrServices?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>&amp; Desriptors</h3>public api descriptions and marking
+of services so they can be found by the public AR intefaces. 
+<p></p>
+<h3>
+<a name="Caches"></a>Caches</h3>
+<p></p>
+<h3>
+<a name="Transformers_Convertors_Styleshe"></a>Transformers,
+Convertors &amp; Stylesheets</h3>
+<p></p>
+<h3>
+<a name="Scheduled_Tasks"></a>Scheduled Tasks</h3>
+<p></p>
+<h3>
+<a name="Servlets_Servlet_Context"></a>Servlets &amp; Servlet
+Context</h3>
+<p></p>
+<h3>
+<a name="User_Interface_Structures"></a>User Interface
+Structures</h3>
+<h3>
+<a name="Help_Links"></a>Help Links</h3>
+<p></p>
+<h3>
+<a name="Iterable_Object_Builders"></a>Iterable Object
+Builders</h3>
+<h3>
+<a name="UI_Window_Factories"></a>UI Window Factories</h3>
+<h3>
+<a name="Plastic_Message_Handlers"></a>Plastic Message
+Handlers</h3>
+<p></p>
+<h1>
+<a name="Other_details"></a>Other details</h1>
+<h2>
+<a name="Startup_information"></a>Startup information</h2>Order
+that modules are loaded. Location of module xml 
+<p></p>
+<h2>
+<a name="Pattern_each_module_follows"></a>Pattern each module
+follows</h2>
+<p></p>Each of the AR modules then follows a common pattern. -
+includes the corresponding 
+<span class="twikiNewLink">AcrDescriptions
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/AcrDescriptions?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>. - defines a bunch of services, and contributions to
+existing config points. 
+<p></p>
+<h2>
+<a name="Configurability"></a>Configurability</h2>
+<span class="twikiNewLink">ConfigDocs
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/ConfigDocs?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>
+<h3>
+<a name="Properties_Flags"></a>Properties / Flags</h3>
+<h3>
+<a name="Extension_modules"></a>
+<a name="Extension_modules_"></a>Extension modules.</h3>
+<p></p>
+<h1>
+<a name="Services_by_Module"></a>
+<a name="Services_by_Module_"></a>Services, by Module.</h1>
+<p></p>
+<h2>
+<a name="General_Notes"></a>General Notes</h2>Some components also
+provide hidden internal interfaces - these contain extra methods
+that are really handy to have, but which have parameter types that
+can't be passed over RMI, and so can't be part of the public
+interface. Internal interfaces have the same name as the
+corresponding public interface, suffixed with 'Internal'. These
+interfaces are found in the same package as the implementation
+class. Try to minimize the use of internal interfaces where
+possible. 
+<p></p>A component is described in the hivemine module descriptor,
+which specifies the class names of the public interface and
+implementation class to use. The implementation class is
+instantiated lazily by hivemind when that component is needed. Only
+a single instance of each component is produced. 
+<p></p>An implementation will typically depend on other, lower
+level components - for example configuration, help system, and
+maybe some of the components in the astrogrid module such as
+Registry. An implementation can gain instances of the components it
+depends on by declaring the interfaces in it's constructor. This is
+the typical pattern: 
+<p></p>public class 
+<span class="twikiNewLink">MyComponent
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/MyComponent?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>{ public 
+<span class="twikiNewLink">MyComponent
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/MyComponent?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>(Registry reg,Configuration conf,MySpaceInternal msi) {
+this.reg = reg; this.conf = conf; this.msi = msi; } private final
+Registry reg; private final Configuration conf; private final 
+<span class="twikiNewLink">MySpaceInternal
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/MySpaceInternal?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>msi; // ... } 
+<p></p>
+<p></p>The hivemind container takes care of providing the required
+components when it instantiates the class - by passing in
+constructor parameters as described in the hivemind descriptor.
+Note that this means all dependencies the class may need have to be
+declared in the constructor - there's no way to get at more later.
+Public or Internal interface can be used as dependencies - other
+classes or interfaces won't work. Finally, it's not possible to
+cast from an interface to the implementation class. 
+<p></p>
+<p></p>
+<p></p>
+<h2>
+<a name="Hivemind_Hivemind_util"></a>
+<a name="Hivemind_Hivemind_util_"></a>Hivemind, Hivemind.util,
+...</h2>
+<p></p>
+<h2>
+<a name="Astrogrid"></a>Astrogrid</h2>
+<p></p>
+<h2>
+<a name="Background"></a>Background</h2>
+<p></p>
+<h2>
+<a name="Builtin"></a>Builtin</h2>
+<h3>
+<a name="SessionManager"></a>
+<span class="twikiNewLink">SessionManager
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/SessionManager?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>
+</h3>user model 
+<p></p>
+<h2>
+<a name="CDS"></a>CDS</h2>
+<p></p>
+<h2>
+<a name="Dialogs"></a>Dialogs</h2>UI object factories, and lists of
+object factories 
+<p></p>
+<h2>
+<a name="Framework"></a>Framework</h2>transformers, core
+definitions 
+<p></p>
+<h2>
+<a name="IVOA"></a>IVOA</h2>
+<p></p>
+<h2>
+<a name="NVO"></a>NVO</h2>
+<p></p>
+<h2>
+<a name="Plastic"></a>Plastic</h2>
+<p></p>
+<h2>
+<a name="System"></a>System</h2>
+<span class="twikiNewLink">RmiListenerInterfaces
+<a rel="nofollow"
+href="/bin/edit/Astrogrid/RmiListenerInterfaces?topicparent=Astrogrid.HivemindInDesktopAstroGrid"
+title="Create this topic">
+<sup>?</sup>
+</a></span>Deprecation Executor plasticList snitch systray &amp;
+throbber UI , UIBuilder, UIView update &amp; upgrade 
+<p></p>
+<h2>
+<a name="Test"></a>Test</h2>
+<p></p>
+<h2>
+<a name="UI"></a>UI</h2>Actions Protocols 
+<p></p>
+<h2>
+<a name="Util"></a>Util</h2>
+<p></p>
+<h2>
+<a name="VOEvent"></a>VOEvent</h2>
+<p></p>
+<h2>
+<a name="VOTech"></a>VOTech</h2>annotation sources 
+<p></p>
+<p></p>
+<p></p>-- 
+<a href="/bin/view/Main/NoelWinstanley" class="twikiLink">
+NoelWinstanley</a>- 28 Jun 2007</value></type></div>
+</div>
+<div class="patternTopicFooter">
+<span class="patternHomePath">This topic: Astrogrid 
+<span class="sep">&gt;</span>
+<a href="/bin/view/Astrogrid/WebHome" class="twikiLink">
+WebHome</a>&gt; 
+<a href="/bin/view/Astrogrid/AstroGrid" class="twikiLink">
+AstroGrid</a>&gt; 
+<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
+DesktopAstroGrid</a>&gt; 
+<a href="/bin/view/Astrogrid/DesktopAstroGridDevelopment"
+class="twikiLink">DesktopAstroGridDevelopment</a>
+<span class="sep">&gt;</span>
+<a href="/bin/view/Astrogrid/HivemindInDesktopAstroGrid"
+class="twikiLink">HivemindInDesktopAstroGrid</a></span>
+<div class="patternTopicInfo patternRevInfo">History: r3 - 29 Jun
+2007 - 17:44:30 - 
+<a href="/bin/view/Main/NoelWinstanley" class="twikiLink">
+NoelWinstanley</a></div>
+<!-- /patternTopicInfo -->
+</div>
+<!-- /patternTopicFooter -->
+</div>
+<!-- /patternMainContents-->
+</div>
+<!-- /patternMain-->
+</div>
+<!-- /patternFloatWrap-->
+<div class="clear">&#160;</div>
+</div>
+<!-- /patternOuter-->
+<div id="patternBottomBar">
+<div id="patternBottomBarContents">
+<span class="twikiRight">
+<a href="http://twiki.org/">
+<img src="/pub/TWiki/TWikiLogos/T-logo-80x15.gif"
+alt="This site is powered by the TWiki collaboration platform"
+width="80" height="15"
+title="This site is powered by the TWiki collaboration platform"
+border="0"></img>
+</a>
+</span>Copyright &#169; by the contributing authors. All material
+on this collaboration platform is the property of the contributing
+authors. 
+<br></br>Ideas, requests, problems regarding TWiki? 
+<a href="mailto:agsitemeister@star.le.ac.uk?subject=TWiki Feedback on Astrogrid.HivemindInDesktopAstroGrid">
+Send feedback</a></div>
+<!-- /patternBottomBarContents-->
+</div>
+<!-- /patternBottomBar-->
+</div>
+<!-- /patternPage-->
+</div>
+<!-- /patternPageShadow-->
+</div>
+<!-- /patternScreen-->
+</p>
+</section>
+</body>
+</document>

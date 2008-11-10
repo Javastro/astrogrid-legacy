@@ -1,0 +1,171 @@
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>External Resources</title>
+</properties>
+<body>
+<section name="External Resources">
+<p>
+VODesktop uses a number of external resources. This document lists them.
+For details on how to alter the resources used, see <a href="configuration.html">Configuration</a>.
+</p>
+</section>
+<section name="Services">
+<p>
+As a VO client, VODesktop can call many different kinds of Virtual Observatory 
+service. Mostly, which services are called depends on the user's interaction with the
+software, and so it's not possible to list them here. However, there are a 
+number of hard-coded external services that are always used.
+</p>
+
+<subsection name="Registry">
+<p>
+VOExplorer queries an IVOA Registry service. The default registry endpoint 
+is :
+<source>
+http://registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0
+</source>
+If this service is unavailable, a fallback registry is queried:
+<source>
+http://alt.registry.astrogrid.org/astrogrid-registry_v1_0/services/RegistryQueryv1_0
+</source>
+The endpoints can be altered using the <tt>org.astrogrid.registry.query.endpoint</tt>
+and <tt>org.astrogrid.registry.query.altendpoint</tt> configuration keys,
+or via the preferences dialogue.
+</p>
+</subsection>
+
+<subsection name="Sesame Object Name Resolver">
+<p>
+The CDS <a href="http://cdsweb.u-strasbg.fr/cdsws/name_resolver.gml">Sesame service</a> is used within Astroscope and 
+Taskrunner to resolve object names to RA,Dec positions. The default
+service endpoint is 
+<source>
+http://vizier.u-strasbg.fr/viz-bin/nph-sesame/
+</source>
+The service endpoint can be altered using the <tt>cds.sesame.rest.endpoint</tt> configuration key,
+or via the preferences dialogue. 
+</p>
+</subsection>
+
+<subsection name="Service Monitoring">
+<p>
+To ascertain the availability of external services, VOExplorer and TaskRunner 
+call a <a href="http://vomon.sourceforge.net/">Vomon</a> service, whose default
+endpoint is
+<source>
+http://vomon.roe.ac.uk/status.xml
+</source>
+This endpoint can be altered using the
+<tt>votech.vomon.endpoint</tt> configuration key, or via the preferences dialogue.
+</p>
+</subsection>
+
+<subsection name="Annotation Services">
+<p>
+If the preference <tt>experimental.suggestions.services</tt> is <tt>true</tt>
+then the following service will be queried by VOExplorer for resource annotations:
+<source>
+http://thor.roe.ac.uk/jackdaw/like
+</source>
+This endpoint can be altered using the <tt>votech.jackdaw.endpoint</tt> configuration
+key, or via the preferences dialogue.
+</p>
+</subsection>
+
+<subsection name="Usage Tracking">
+<p>
+VODesktop reports anonymized usage information back to the developers. The endpoint called 
+to report this information stems from.
+<source>
+http://software.astrogrid.org/snitch/
+</source>
+Usage tracking can be disabled by setting the <tt>system.doSnitch</tt> configuration 
+key to false, or via the preferences dialogue.
+</p> 
+</subsection>
+</section>
+
+<section name="Files">
+<p>
+VODesktop also fetches some static files from http servers. These are
+all hosted on the <a href="http://technology.astrogrid.org">technology.astrogrid.org</a> webserver.
+</p>
+
+<subsection name="Example VOExplorer Lists">
+<p>
+The example resource lists in VOExplorer are defined by the file:
+<source>
+http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/exampleResourceLists.xml
+</source>
+An alternate definition can be used by 
+setting the <tt>resourcetree.examples.location</tt> configuration key.
+Alternately, it night be easier to add an additional subscription to 
+another file of resource lists. See <a href="voexplorer.html">VOExplorer</a>
+for details.
+
+</p>
+</subsection>
+
+<subsection name="Annotation Sources">
+<p>
+The 'AG Science Team' annotations displayed by VOExplorer are 
+defined by the following file.
+<source>
+http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/ag-annotations.xml
+</source>
+Additional annotations should be added to this file. See <a href="voexplorer.html">VOExplorer</a>
+for information about annotations.
+</p>
+</subsection>
+
+<subsection name="Trust Anchors">
+<p>
+These are a list of certificates to use as anchors for trust chains.
+The default list is at
+<source>
+http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/trust-anchor-list.xml
+</source>
+Additional trust anchors can be added by contributing to the <tt>astrogrid.certificateLists</tt>
+configuration point.
+</p>
+</subsection>
+
+<subsection name="Update Checking">
+<p>
+By default, VODesktop checks on startup whether there is a more 
+recent version of the application available. The URL used for update check is
+<source>
+http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/vodesktopReleaseInfo.xml
+</source>
+which can be altered using the <tt>update.release.info.url</tt> configuration key. Incidentally,
+this update-checking behaviour can be turned off by using the <tt>system.checkForUpdates</tt>
+configuration key (or via the Preferences Dialogue).
+</p>
+</subsection>
+
+<subsection name="Help Map">
+<p>
+An XML file that maps between help keys and URLs of documentation. Used
+to provide context-specific help. The default helpmap is 
+<source>
+http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/helpmap.xml
+</source>
+This can be altered using the <tt>helpmap.url</tt> configuration key.
+</p>
+</subsection>
+
+<subsection name="Plastic">
+<p>
+When connected to a PLASTIC Hub, VODesktop passes the URL of an icon 
+to other connected applications. The URL is 
+<source>
+http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/AGlogo.png
+</source>
+which can be altered via the <tt>interop.app.icon</tt> configuration key.
+</p>
+</subsection>
+</section>
+
+</body>
+</document>
