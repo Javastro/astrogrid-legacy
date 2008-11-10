@@ -266,58 +266,7 @@
 		</properties>
 	</dependency>
 
-     <!-- Latest version of the javadoc plugin. -->
-    <dependency>
-        <groupId>maven</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>1.9</version>
-        <type>plugin</type>
-    </dependency>
-    <!-- nice set of custom taglets -->
-    <dependency>
-        <groupId>taglets</groupId>
-        <artifactId>taglets</artifactId>
-        <version>2.0.3</version>
-        <type>jar</type>
-        <url>http://taglets.sourceforge.net</url>
-        <properties>
-            <comment>only used within build</comment>
-        </properties>
-</dependency>                
-    <!--  diagram drawing taglet -->
-    <dependency>
-        <groupId>ditaa</groupId>
-        <artifactId>ditaa</artifactId>
-        <version>0_6b</version>
-        <type>jar</type>
-        <url>http://ditaa.sourceforge.net/</url>
-        <properties>
-            <comment>only used within build</comment>
-        </properties>
-</dependency>   
-    <dependency>
-        <groupId>ditaa</groupId>
-        <artifactId>TextDiagramTaglet</artifactId>
-        <version>1.0</version>
-        <type>jar</type>
-        <url>http://ditaa-addons.sourceforge.net/</url>
-        <properties>
-            <comment>only used within build</comment>
-        </properties>
-</dependency>   
-  
-    <!-- Only used within build?
-     !   Seems to be required for com.sun.* doclet classes. 
-    <dependency>
-        <groupId>sun</groupId>
-        <artifactId>tools</artifactId>
-        <version>1.5.0</version>
-        <type>jar</type>
-        <properties>
-            <comment>only used within build</comment>
-        </properties>
-    </dependency>
-     -->
+
   
     </dependencies>
 </project>
