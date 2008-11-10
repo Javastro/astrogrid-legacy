@@ -28,6 +28,7 @@ import org.astrogrid.acr.InvalidArgumentException;
  * phrase :=  ''' any string ''' | '"' any string '"'
  * }
 * @author Noel Winstanley
+* @see Project Documentatio for SRQL.
  * @since Aug 9, 20062:47:14 PM
  */
 public final class SRQLParser {
