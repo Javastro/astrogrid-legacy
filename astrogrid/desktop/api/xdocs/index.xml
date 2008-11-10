@@ -34,7 +34,7 @@ successfully used from Python, Perl, C, C++, Java, and Bash.
             <p>
                 Requires an installation of the Astro Runtime, which is
                 provided as part of 
-                <a href="http://www.astrogrid.org/wiki/Home/AboutAGDesktop">VODesktop</a>
+                <a href="http://www.astrogrid.org/wiki/Help/IntroVODesktop">VODesktop</a>
             </p>
         </section>
         <section name="Status">

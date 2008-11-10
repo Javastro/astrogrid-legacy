@@ -13,7 +13,7 @@
     </p>
     <p>
     The utilities are implemented as Python scripts which call functions of the AstroRuntime. Therefore
-    <b>you must launch <a href="http://www.astrogrid.org/wiki/Home/AboutAGDesktop">VODesktop</a></b> (which contains AstroRuntime)
+    <b>you must launch <a href="http://www.astrogrid.org/wiki/Help/IntroVODesktop">VODesktop</a></b> (which contains AstroRuntime)
      before making use of these utilities. 
      </p>
   </section>

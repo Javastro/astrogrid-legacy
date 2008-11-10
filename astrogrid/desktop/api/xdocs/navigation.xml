@@ -7,7 +7,7 @@
     <links>
        
        <item name="Astro Runtime" href="http://www.astrogrid.org/wiki/Help/AstroRuntime" />
-       <item name="VODesktop" href="http://www.astrogrid.org/wiki/Home/AboutAGDesktop" />
+       <item name="VODesktop" href="http://www.astrogrid.org/wiki/Help/IntroVODesktop" />
        
        <item name="IVOA" href="http://www.ivoa.net" />
        <item name="AstroGrid"       href="http://www.astrogrid.org"/>
@@ -22,7 +22,7 @@
     
     <menu name="Links">        
        <item name="Astro Runtime" href="http://www.astrogrid.org/wiki/Help/AstroRuntime" />
-        <item name="VODesktop" href="http://www.astrogrid.org/wiki/Home/AboutAGDesktop"/>
+        <item name="VODesktop" href="http://www.astrogrid.org/wiki/Help/IntroVODesktop"/>
         <item name="AstroGrid Python" href="http://www.astrogrid.org/wiki/Help/IntroScripting/AstrogridPython"/>
        <item name="IVOA" href="http://www.ivoa.net" />
        <item name="AstroGrid"       href="http://www.astrogrid.org"/>
