@@ -9,12 +9,11 @@
    <description>The components that are in a typical web service - these can be included as a dependency on this pom, not as inheritance</description>
    <version>2008.2</version>
    <packaging>pom</packaging>
-<!--  <parent>
-      <artifactId>astrogrid-base</artifactId>
+   <parent>
       <groupId>org.astrogrid</groupId>
-      <version>2008.2-SNAPSHOT</version>
-    </parent>
-     -->  
+      <artifactId>astrogrid-versions</artifactId>
+      <version>2009.1-SNAPSHOT</version>
+   </parent>
    <dependencies>
       <!-- axis -really only the topmost axis should be a dependency if it had a proper pom..-->
       <dependency>
