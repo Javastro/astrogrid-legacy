@@ -5,10 +5,11 @@
     <pomVersion>1</pomVersion>
     <artifactId>vodesktop</artifactId>
     <name>VODesktop</name>
-    <groupId>vodesktop</groupId>
-    <organization />
     <description>AstroGrid VODesktop</description>
     <shortDescription>VODesktop - Explore the Virtual Observatory</shortDescription>
+     <siteAddress>terror.star.le.ac.uk</siteAddress>
+      <siteDirectory>/software_docs/vodesktop-${pom.currentVersion}</siteDirectory>
+    
     <repository>
         <connection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/desktop/impl</connection>
         <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/desktop/impl</developerConnection>

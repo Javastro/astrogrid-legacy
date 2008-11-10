@@ -50,7 +50,18 @@
     <goal name="astrogrid-build-artifact" prereqs="dist:build-bin"
     description="Build the artifacts and leave in the target directory"
     />  
+	
+	<goal name="astrogrid-deploy-artifact" prereqs="astrogrid-build-artifact,app-deploy,site:deploy"
+	description="build artifacts, upload app jar to maven repo, dev docs to technology.a.o"
+	/>
     
+	<goal name="app-deploy" description="deploy app.jar">
+		   <artifact:deploy
+		      artifact="${maven.build.dir}/${maven.final.name}-app.jar"
+		      type="app.jar"
+		      project="${pom}"
+		   />
+	</goal>
 
             
 <!--  all the libs are now in maven.dist.bin.assembly.dir -here we list all the other things we're going to do with them-->
