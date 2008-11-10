@@ -39,7 +39,7 @@ public class StylesheetsContributionUnitTest extends TestCase {
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.StylesheetsContribution.isApplicable(Document)'
 	 */
 	public void testIsApplicableDocument() throws ParserConfigurationException, SAXException, IOException {
-		Document doc = DomHelper.newDocument("<foo></foo>");
+		final Document doc = DomHelper.newDocument("<foo></foo>");
 		assertFalse(sc.isApplicable(doc));
 		sc.setRegexp("<foo"); // doesn't match, as not a prefix - ther's an xml header before this.
 		assertFalse(sc.isApplicable(doc));
@@ -65,7 +65,7 @@ public class StylesheetsContributionUnitTest extends TestCase {
 		try {
 			sc.createTransformer();
 			fail("expected to chuck");
-		} catch (TransformerConfigurationException x) {
+		} catch (final TransformerConfigurationException x) {
 			//expecteed
 		}
 
@@ -75,15 +75,11 @@ public class StylesheetsContributionUnitTest extends TestCase {
 		try {
 			sc.setSheet("not-present.xsl");
 			fail("expected to fail");
-		} catch (TransformerConfigurationException x) {
+		} catch (final TransformerConfigurationException x) {
 			// ok
 		}
 	}
-	
-	public void testCreateTransformer() throws TransformerConfigurationException {
-		sc.setSheet("workflow.xsl"); // releative to Xml2XhtmlTransformer.
-		assertNotNull(sc.createTransformer());
-	}
+
 
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.StylesheetsContribution.toString()'
