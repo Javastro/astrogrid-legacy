@@ -79,9 +79,7 @@
          <!-- Docs on how to operate this software. This refers to the CEC as
             an AstroGrid component, not to the applications it provides. Hence,
             the value set by AstroGrid is the right one. -->
-         <referenceURL>
-            http://www.astrogrid.org/maven/docs/head/applications/
-         </referenceURL>
+         <referenceURL>http://software.astrogrid.org/doc/release/cea/</referenceURL>
          <!-- Don't change this; the machines need this to be set to Other. -->
          <type>Other</type>
       </content>
