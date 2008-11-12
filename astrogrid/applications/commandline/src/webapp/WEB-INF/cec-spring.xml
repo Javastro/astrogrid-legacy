@@ -78,7 +78,7 @@
   <bean class="org.astrogrid.applications.description.SimpleApplicationDescriptionLibrary">
     <property name="applications">
        <list>
-         <bean class="org.astrogrid.applications.db.stap.STAPApplicationDescription">
+         <bean class="org.astrogrid.applications.dal.stap.STAPApplicationDescription">
            <constructor-arg type="javax.sql.DataSource" index="1"><jee:jndi-lookup jndi-name="jdbc/STAP" resource-ref="true" expected-type="javax.sql.DataSource"></jee:jndi-lookup></constructor-arg>
          </bean>
        </list>
