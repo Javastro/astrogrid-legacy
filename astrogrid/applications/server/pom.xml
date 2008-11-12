@@ -8,7 +8,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-cea-server</artifactId><!--  would be better to rename to astrogrid-cea-common -->
   <name>CEA server library</name>
-  <version>2008.3-SNAPSHOT</version>
+  <version>2009.1-SNAPSHOT</version>
   <parent>
       <artifactId>astrogrid-cea-base</artifactId>
       <groupId>org.astrogrid</groupId>
