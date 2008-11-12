@@ -32,4 +32,4 @@ kinds of registration.
   software are in circulation.
 </p>
 </div>
-<%@ include file="../inc/header.jsp" %>
+<%@ include file="../inc/footer.jsp" %>
