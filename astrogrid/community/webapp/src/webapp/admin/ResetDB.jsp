@@ -3,16 +3,17 @@
                  org.astrogrid.community.server.database.manager.DatabaseManagerImpl"
     session="true" %>
 <%
-	DatabaseManagerImpl dmi = new DatabaseManagerImpl();
+	DatabaseConfiguration dbc =
+      new DatabaseConfiguration("org.astrogrid.community.database");
     String resetdb = request.getParameter("resetdb");
 
     if (resetdb != null && "true".equals(resetdb))
         {
         System.out.println("resetting db tables");
-        dmi.resetDatabaseTables();
+        dbc.resetDatabaseTables();
         }
 
-    String status = dmi.checkDatabaseTables() ? "<font color=\"green\">Ok</font>" : "<font color=\"red\">Fail</font>" ;
+    String status = dbc.checkDatabaseTables() ? "<font color=\"green\">Ok</font>" : "<font color=\"red\">Fail</font>" ;
 %>
 <html>
     <head>
@@ -40,11 +41,11 @@
 
           <p>
           If you have just installed the community
-          software, initializing the database should check the "health"
+          software, initializing the database should change the "health"
           indication from "not useable" to "OK". If the "health" indication
           doesn't change to "OK" after initialization, then the connection
           between this web application and the database is suspect: check the
-          configuration of the JEE DataSource.
+          DB-configuration file.
           </p>
           
           <p>
