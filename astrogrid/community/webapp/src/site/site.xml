@@ -14,5 +14,6 @@
       <item name="CA operation" href="CA-operation.html"/>
       <item name="Back-ups" href="backing-up.html"/>
    </menu>
+   <menu ref="modules" />
   </body>
 </project>
