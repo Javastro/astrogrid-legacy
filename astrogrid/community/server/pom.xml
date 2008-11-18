@@ -11,6 +11,14 @@
   <version>2008.2.01</version>
   <description>This project builds the jar of classes needed for the community web-application.</description>
   <inceptionYear>2003</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>Academic Free License v2.1</name>
+      <url>http://opensource-definition.org/licenses/afl-2.1.html</url>
+      <distribution>manual</distribution>
+    </license>
+  </licenses>
   
   <developers>
     <developer>
