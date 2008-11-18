@@ -92,6 +92,12 @@
           </includes>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
