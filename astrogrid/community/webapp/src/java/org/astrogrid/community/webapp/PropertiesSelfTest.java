@@ -4,11 +4,9 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
 import junit.framework.TestCase;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.community.resolver.GullibleX509TrustManager;
+import org.astrogrid.security.SecurityGuard;
 
 /**
  * JUnit tests on the settings of community properties. 
@@ -51,10 +49,14 @@ public class PropertiesSelfTest extends TestCase {
     
     // Check that something responds.
     HttpsURLConnection c = (HttpsURLConnection) (vosi.openConnection());
+    SecurityGuard sg = new SecurityGuard();
+    sg.configureHttps(c);
+    /*
     SSLContext ssl = SSLContext.getInstance("TLS");
     TrustManager[] tms = {new GullibleX509TrustManager()};
     ssl.init(null, tms, null);
     c.setSSLSocketFactory(ssl.getSocketFactory());
+    */
     c.getContent();
   }
   
@@ -80,7 +82,7 @@ public class PropertiesSelfTest extends TestCase {
     System.out.println("Testing the database-configuration URL");
     URL db = 
         SimpleConfig.getSingleton().getUrl("org.astrogrid.community.dbconfigurl");
-    System.out.println(db);;
+    System.out.println(db);
     
     // Check that something responds
     db.getContent();
