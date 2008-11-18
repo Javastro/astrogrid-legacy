@@ -3,23 +3,28 @@
 This file specifies how Castor JDO connects to the community database.
 Edit this to specify where the DB files are kept.
 -->
-<!DOCTYPE databases PUBLIC
+<!DOCTYPE jdo-conf PUBLIC
     "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
-    "http://castor.exolab.org/jdo-conf.dtd">
+    "http://www.castor.org/jdo-conf.dtd">
 
-<database name="org.astrogrid.community.database" engine="hsql">
+<jdo-conf>
+  <database name="org.astrogrid.community.database" engine="hsql">
         
-  <!-- This specifies a direct JDBC connection to a HypersonicSQL DB, not using
-       JEE or JNDI. I.e., the connection is managed by the web application
-       without help from the servlet container. Change the value of the 
-       url attribute to specifies where the DB files are kept; change only
-       the part following jdbc:hsqldb: and preceding /org.astrogrid.community. -->
-  <driver class-name="org.hsqldb.jdbcDriver" 
-      url="jdbc:hsqldb:/astrogrid/community/db/org.astrogrid.community">
-    <param name="user" value="sa" />
-    <param name="password" value="" />
-  </driver>
+    <!-- This specifies a direct JDBC connection to a HypersonicSQL DB, not using
+         JEE or JNDI. I.e., the connection is managed by the web application
+         without help from the servlet container. Change the value of the
+         url attribute to specifies where the DB files are kept; change only
+         the part following jdbc:hsqldb: and preceding /org.astrogrid.community. -->
+    <driver class-name="org.hsqldb.jdbcDriver"
+        url="jdbc:hsqldb:/astrogrid/community/db/org.astrogrid.community">
+      <param name="user" value="sa" />
+      <param name="password" value="" />
+    </driver>
   
-  <!-- This refers to a mapping file in the same directory as this file. -->
-  <mapping href="astrogrid-community-mapping.xml"/>
-</database>
+    <!-- This refers to a mapping file in the same directory as this file. -->
+    <mapping href="astrogrid-community-mapping.xml"/>
+  </database>
+  
+  <transaction-demarcation mode="local"/>
+</jdo-conf>
+
