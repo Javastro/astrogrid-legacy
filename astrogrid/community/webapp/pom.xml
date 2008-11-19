@@ -147,8 +147,8 @@
       <version>1.0.4</version>
     </dependency>
     <dependency>
-      <groupId>servletapi</groupId>
-      <artifactId>servletapi</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
       <version>2.4</version>
     </dependency>
     <dependency>
@@ -161,12 +161,6 @@
   </dependencies>
   <reporting>
     <plugins>
-      <plugin>
-        <artifactId>maven-changes-plugin</artifactId>
-        <configuration>
-          <xmlPath>${basedir}/xdocs/changes.xml</xmlPath>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
@@ -183,9 +177,9 @@
   </reporting>
   <distributionManagement>
     <repository>
-      <id>IoA</id>
-      <name>Maven-2 repository at IoA Cambridge</name>
-      <url>scp://astrogrid.ast.cam.ac.uk/maven2</url>
+      <id>ag-m2</id>
+      <name>AstroGrid's Maven-2 repository</name>
+      <url>scp://katatjuta.star.le.ac.uk/maven2</url>
       <layout>default</layout>
     </repository>
     <site>
