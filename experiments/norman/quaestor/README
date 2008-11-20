@@ -6,6 +6,13 @@ Installation
 
 See the file web/install.html for installation notes.
 
+Licence
+-------
+
+Since it was originally written under the aegis of the AstroGrid
+project, Quaestor is distributed under the terms of the Academic Free Licence
+http://www.opensource.org/licenses/afl-3.0.php
+
 Building from source
 --------------------
 
