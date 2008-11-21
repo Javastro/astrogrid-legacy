@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+      <title>Release notes: 2008.2.01</title>
+    </properties>
+    <body>
+    <section name="Release notes for community web-appplication 2008.2.01">
+
+      <p>
+        V2008.2.01 fixes some defects that make it hard to set up a new community.
+        Deployers with working communities need not upgrade to this version.
+      </p>
+      <p>
+        In v2008.2, the example document for database configuration was
+        out of date: it did not include the structural changes needed to work
+        with Castor v1.0+ and had an obsolete URL for its DTD. These matters
+        are ixed in the current release.
+      </p>
+      <p>
+        In V2008.2, the administration control to initialize the database is
+        broken and cannot be used at all, making it impossible to set up a
+        new community. This is fixed in the current release.
+      </p>
+      
+    </section>
+    </body>
+</document>
