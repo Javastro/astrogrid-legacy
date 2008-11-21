@@ -24,6 +24,18 @@
         <i>/astrogrid/community/db/astrogrid-community-database.xml</i>.
       </p>
       <p>
+        If you are upgrading the software for an existing comunity, and if the
+        previous version was 2008.1.02 or older, then you must change the
+        structure of your database-configuration file to suit the current
+        software (this change is forced on us by changes in 3rd-party software).
+        Please see the
+        <a href="release-notes-2008.2.a01.html">release notes for Community v2008.2.a01</a>
+        for instructions, and the example configuration as a guide.
+        If you have successfuly run a community with any version of the web
+        application from 2008.2.a01 onward, then your current
+        database-configuration file is structurally correct.
+      </p>
+      <p>
         Download the 
         <a href="astrogrid-community-mapping.xml">mapping file</a>. 
         This is the same for all installations of
@@ -33,7 +45,11 @@
       </p>
       <p>
         If you are upgrading an existing community with a populated database, then
-        you will need to copy the data files from the previous installation.
+        you will need to copy the data files from the previous installation. (If
+        you are using the
+        <a href="standard-directories.html">standard directory-layout</a>
+        then your database files stay in the same place during the upgrade and
+        do not need to be copied.)
         There are two files to copy: <i>org.astrogrid.community.properties</i>
         and <i>org.astrogrid.community.script</i>. Put them both in
         <i>/astrogrid/community/db</i>. The actual contents of the database are

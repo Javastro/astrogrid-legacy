@@ -18,6 +18,18 @@
         user-credentials.
       </p>
       <p>
+        If the
+        previous version was 2008.1.02 or older, then you must change the
+        structure of your database-configuration file to suit the current
+        software (this change is forced on us by changes in 3rd-party software).
+        Please see the
+        <a href="release-notes-2008.2.a01.html">release notes for Community v2008.2.a01</a>
+        for instructions, and the example configuration as a guide.
+        If you have successfuly run a community with any version of the web
+        application from 2008.2.a01 onward, then your current
+        database-configuration file is structurally correct.
+      </p>
+      <p>
         Before upgrading, please read the release notes to see if you need
         to change anything in your configuration.
       </p>
