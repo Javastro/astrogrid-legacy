@@ -7,12 +7,17 @@
     <menu name="Documents">  
       <item name="Overview" href="overview.html"/>
       <item name="Release notes" href="release-notes.html"/>
-      <item name="Installation" href="installation.html"/>      
+      <item name="Installation" href="installation.html"/>
       <item name="Self-Testing" href="self_testing.html"/>         
       <item name="Upgrading" href="upgrading.html"/>
       <item name="Uninstallation" href="uninstall.html"/>
       <item name="CA operation" href="CA-operation.html"/>
       <item name="Back-ups" href="backing-up.html"/>
+   </menu>
+   <menu name="Templates">
+     <item name="DB configuration" href="astrogrid-community-database.xml"/>
+     <item name="DB mapping" href="astrogrid-community-mapping.xml"/>
+     <item name="Service context" href="sample-environment.xml"/>
    </menu>
    <menu ref="reports" />
   </body>

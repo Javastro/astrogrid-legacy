@@ -12,8 +12,8 @@
         This is known as the <i>context file</i>. 
       </p>
       <p>
-        Download the 
-        <a href="sample-environment.xml">sample context-file.</a>
+        Download the sample context-file ("service context" in the templates
+        menu of this page).
         You will have to edit some of the values to suit your installation.
       </p>
       <p>

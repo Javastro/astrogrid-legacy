@@ -13,9 +13,8 @@
         XML configuration-files.
       </p>
       <p>
-        Download the sample copy of the 
-        <a href="astrogrid-community-database.xml">main configuration file</a>
-        for the database. If you are
+        Download the sample copy of the main configuration file ("DB configuration"
+        on the templates manu of this page). If you are
         using the <a href="standard-directories.html">standard directory-layout</a>
         then this sample is correct for your community. If you are using a
         variant set of directories then you must edit the file to tell the
@@ -36,8 +35,7 @@
         database-configuration file is structurally correct.
       </p>
       <p>
-        Download the 
-        <a href="astrogrid-community-mapping.xml">mapping file</a>. 
+        Download the mapping file ("DB mapping" in the templates menu of this page).
         This is the same for all installations of
         the community. Install the mapping file at
         <i>/astrogrid/community/db/astrogrid-community-mapping.xml</i> (it
