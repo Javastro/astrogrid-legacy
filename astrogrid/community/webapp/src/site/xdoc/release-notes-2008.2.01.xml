@@ -14,7 +14,7 @@
         In v2008.2, the example document for database configuration was
         out of date: it did not include the structural changes needed to work
         with Castor v1.0+ and had an obsolete URL for its DTD. These matters
-        are ixed in the current release.
+        are fixed in the current release.
       </p>
       <p>
         In V2008.2, the administration control to initialize the database is
