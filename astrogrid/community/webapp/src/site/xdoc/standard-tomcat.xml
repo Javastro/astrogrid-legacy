@@ -6,7 +6,7 @@
     <body>
     <section name="Standard Configuration of Apache Tomcat">
       <p>
-        Use Apache Tomcat 5.5.x. Version 2008.0 of the community web-application
+        Use Apache Tomcat 5.5.x. Version 2008.2.01 of the community web-application
         was tested with Tomcat 5.5.26.
       </p>
       <p>
@@ -17,9 +17,10 @@
         port 443. These ports are specified in Tomcat's <i>conf/server.xml</i> 
         file, in <i>Connector</i> elements; edit the file if they are not already
         correct.
-        The default configuration in the downloaded Tomcat usually has the
-        correct ports, but make sure that the HTTPS connector has not
-        been commented out.
+        The default configuration in the downloaded Tomcat usually has the correct
+        connectors but on different ports: change HTTP from port 8080 to 80 and
+        HTTPS from port 8443 to 443 if necessary. Uncomment the declaration of
+        the HTTPS connector if it is commented out.
       </p>
       <p>
         Ensure that you can get to Tomcat's manager page; that page is linked
@@ -31,7 +32,7 @@
       <p>
         Configure HTTPS with credentials for the host running Tomcat, following
         Tomcat's normal procedure. Self-signed credentials are sufficient for
-        the current community, but later upgrades might require you to get
+        the current release, but later upgrades might require you to get
         credentials from a recognised certificate-authority. You need the
         credentials to make HTTPS work, and you need HTTPS to run the
         community accounts service. There are some 
