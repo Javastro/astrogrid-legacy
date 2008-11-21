@@ -11,22 +11,17 @@
          resources. The community is supplied as a web application that
          provides a number of services.
        </p>
-     <dl>    
-       <dt>Security service:</dt>
-           <dd>a SOAP service that allows users to authenticate with passwords.</dd>
-           <dd>
-           This service is obsolecent since it does not supply the credentials
-           needed for modern, secure services. It is 
-           retained for compatibility with old
-           clients of MySpace.</dd>
-       <dt>Policy manager:</dt>
-       <dd>a SOAP service with reports to the client the IVORN for the user's
-       home space.</dd>
-       <dd>This is also obscelecent.</dd>
+     <dl>
        <dt>Accounts service:</dt>
-       <dd>a RESTful web-service that dispenses credentials.</dd>
-       <dd>This service replaces the SOAPy security service. It will later
-           be extended to replace the policy manager.</dd>
+       <dd>a RESTful web-service that dispenses credentials and reveals the
+           URL for a user's home space in VOSpace.</dd>
+       <dt>Policy manager:</dt>
+       <dd>a SOAP service which reports to the client the IVORN for the user's
+       home space.</dd>
+       <dd>This is service is deprecated, its role being taken over by the
+           accounts service. Clients using this service should switch to
+           the accounts service immediately, as the policy manager will
+           be removed in later releases.</dd>
        <dt>Administration interface:</dt>
        <dd>a classical web-browser interface for the community operators.</dd>
      </dl>
