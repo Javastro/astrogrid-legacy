@@ -1,0 +1,378 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AstroGrid - Certificate-authority generator</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+          <meta name="author" content="Guy Rixon" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Community Web Application
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2008-11-24
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documents</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="overview.html">Overview</a>
+          </li>
+              
+    <li class="none">
+                    <a href="release-notes.html">Release notes</a>
+          </li>
+              
+    <li class="none">
+                    <a href="installation.html">Installation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="self_testing.html">Self-Testing</a>
+          </li>
+              
+    <li class="none">
+                    <a href="upgrading.html">Upgrading</a>
+          </li>
+              
+    <li class="none">
+                    <a href="uninstall.html">Uninstallation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="CA-operation.html">CA operation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="backing-up.html">Back-ups</a>
+          </li>
+          </ul>
+              <h5>Templates</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="astrogrid-community-database.xml">DB configuration</a>
+          </li>
+              
+    <li class="none">
+                    <a href="astrogrid-community-mapping.xml">DB mapping</a>
+          </li>
+              
+    <li class="none">
+                    <a href="sample-environment.xml">Service context</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name="Creating_and_installing_a_certificate_authority"></a>
+Creating and installing a certificate authority</h2>
+<p>
+        The certificate authority consists in:
+      </p>
+<ul><li>the OpenSSL package;</li>
+<li>Java software to drive OpenSSL;</li>
+<li>three files of credentials and configuration which you mus supply.</li>
+</ul>
+<p>
+        Most Unix and Linux platforms provide OpenSSL, but you may need to
+        install it yourself. The executable programme <i>openssl</i>
+ must
+        be on the PATH of the account that runs Tomcat (i.e., in the
+        standard installation, on root's PATH).
+      </p>
+<p>
+        The Java software for the CA is included in the community
+        web-application.
+      </p>
+<p>
+        The credential files turn the generic CA-software into your
+        CA, specific to your community; therefore you have to generate them.
+        They are:
+      </p>
+<ul><li>a root certificate that identifies the certificate authority;</li>
+<li>a private key, use of which is protected by a password;</li>
+<li>a file recording the serial number of the last certificate issued by
+      the CA (number 00 means the CA's own, self-signed certificate).</li>
+</ul>
+<p>
+      The CA files follow OpenSSL's conventions, since it is the <i>openssl</i>
+
+      excutable that uses them. This means, <i>inter alia</i>
+ that the key
+      and certificate are in PEM format.
+    </p>
+<p>
+      The standard way to generate the files is to use AstroGrid's
+      CA-generator application.
+    </p>
+<div class="section"><h3><a name="Downloading_and_running_the_generator"></a>
+Downloading and running the generator</h3>
+<p>
+        You can
+        <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/cagenerator-app-2007.2.jar" class="externalLink">download the generator</a>
+
+        from AstroGrid's site.
+      </p>
+<p>
+        To run the generator, use this command:
+      </p>
+<pre>
+        java -jar cagenerator-app-2007.2.jar
+      </pre><p>
+        (I.e. the downloaded jar is a self-contained Java application.)
+      </p>
+</div>
+<div class="section"><h3><a name="What_you_have_to_do"></a>
+What you have to do</h3>
+<ol type="1"><li>Set the formal name of the CA, using the form.</li>
+<li>Choose the password for the private key (must be at least 8 characters long).</li>
+<li>Press the <em>generate CA files</em> button.</li>
+<li>Copy the three files into the appropriate places in your community service 
+      (see below).</li>
+</ol>
+</div>
+<div class="section"><h3><a name="Naming_the_CA"></a>
+Naming the CA</h3>
+<p>
+      The formal name of the CA has to be unique within the virtual observatory.
+    To achieve this, the name has a specific structure with several components.
+    Each of these components restricts the set of CAs that are peers of your new
+    CA and reduces the chance of a name clash.
+    </p>
+<p>
+      The <em>country code</em> is drawn from a a standard set.
+    </p>
+<p>
+      They community of users for which you're creating a CA is probably 
+      associated with a <em>virtual-observatory</em> project. If you know that
+      you are working in or with such a project, please select it here. If you
+      think your project is missing from the list, then please type in its name
+      (but please check for name clashes, especially if the name is an acronym).
+      If you don't want to be associated with any VO project, then you can enter
+      enter the name of some other organization or project.
+    </p>
+<p><em>Institution</em> typically means the university department or laboratory
+        operating the CA.
+      </p>
+<p>
+      Your institution is treated as a unit in a VO project for the purposes of
+      naming the CA. E.g. the Institute of Astronomy, Cambridge, UK, is treated
+      as a unit in AstroGrid. This nesting is just a way of managing the names;
+      it doesn't imply that the project is going to control your community or
+      interfere with your business.
+    </p>
+<p>
+      You may want two or more communities at your institution, perhaps for
+      separate research groups. In this case, you should set the <em>group</em>
+      field which adds another element to the CA's name. If you only expect one
+      community with one CA, just leave this field blank.
+    </p>
+<p>
+      Ultimately, it's your responsibility to make sure that the name is unique.
+      The generator tool helps as much as it can, but you need to check before
+      putting your CA into service.
+    </p>
+</div>
+<div class="section"><h3><a name="Naming_the_users"></a>
+Naming the users</h3>
+<p>
+      The purpose of the CA is to give formal names to users, so how will they
+      look? Each member of the community, including the CA, has a formal name
+      that is the same apart from the &quot;common name&quot; part. The CA's common name
+      is just &quot;CA&quot; and you can see it in the generator: it's on the end of the 
+      CA's formal name, written as &quot;/CN=CA&quot;. For any user, just replace &quot;CA&quot;
+      with their real name. The CA does this automatically when it is installed.
+    </p>
+</div>
+<div class="section"><h3><a name="The_CA_password"></a>
+The CA password</h3>
+<p>
+      You have to give a password when you generate the CA files. The password is
+      used to control access to the encrypted private-key file so that anybody
+      not knowing the password can't use the CA to sign certificates for users.
+      When you install the CA files in the community service and use them there,
+      you will have to tell the service the CA password each time you need to
+      generate user credentials. That is, only you know the password; the
+      system doesn't record it anywhere.
+    </p>
+<p>
+      Please bear in mind that the password is <em>precious</em>
+      to your community. If the password becomes known to the wrong
+      people then your CA is <em>compromised</em> and you will have to
+      replace it. This means issuing new certificates to all your
+      users and then contacting everybody who trusts your old CA to
+      tell them to switch their trust to the new one. It is a hard
+      road and you don't want to go there. Therefore, treat your
+      CA password as more valuable than the root password on your servers.
+      It's less hassle to rebuild cracked servers than it is to rebuild
+      a cracked community.
+    </p>
+<p>
+      The password must be at least eight characters long: this is a restriction
+      of the OpenSSL software on which the CA package is based.
+    </p>
+</div>
+<div class="section"><h3><a name="Installing_the_files"></a>
+Installing the files</h3>
+<p>
+        When you have generated the CA files, you must then install them.
+        In the standard directory layout, they go here:
+      </p>
+<pre>
+  /astrogrid/community/ca/ca-key.pem
+  /astrogrid/community/ca/ca-certificate.pem
+  /astrogrid/community/ca/ca-serial.txt
+      </pre><p>
+        If you don't follow the standard layout, make sure that you edit the
+        <a href="standard-context.html">context file</a>
+ to match where you
+        do install them.
+      </p>
+<p>
+        The community would like the key and certificate file to be
+        write-locked but the serial-number file must be writable by its owner.
+      </p>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2003-2008
+    
+          AstroGrid
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

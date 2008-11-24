@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AstroGrid - Release notes: 2008.2.a01</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Community Web Application
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2008-11-24
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documents</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="overview.html">Overview</a>
+          </li>
+              
+    <li class="none">
+                    <a href="release-notes.html">Release notes</a>
+          </li>
+              
+    <li class="none">
+                    <a href="installation.html">Installation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="self_testing.html">Self-Testing</a>
+          </li>
+              
+    <li class="none">
+                    <a href="upgrading.html">Upgrading</a>
+          </li>
+              
+    <li class="none">
+                    <a href="uninstall.html">Uninstallation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="CA-operation.html">CA operation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="backing-up.html">Back-ups</a>
+          </li>
+          </ul>
+              <h5>Templates</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="astrogrid-community-database.xml">DB configuration</a>
+          </li>
+              
+    <li class="none">
+                    <a href="astrogrid-community-mapping.xml">DB mapping</a>
+          </li>
+              
+    <li class="none">
+                    <a href="sample-environment.xml">Service context</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name="Release_notes_for_community_service_2008.2.a01"></a>
+Release notes for community service 2008.2.a01</h2>
+<p>
+        This is the first alpha version in the series leading to v2008.2.
+      </p>
+<div class="section"><h3><a name="Version_3_of_accounts_protocol"></a>
+Version 3 of accounts protocol</h3>
+<p>
+          This release supports version 3 of the accounts protocol. With this
+          upgrade, it is possible for a client to change a user's password.
+        </p>
+</div>
+<div class="section"><h3><a name="Revision_to_configuration_of_community_database"></a>
+Revision to configuration of community database</h3>
+<p>
+          This version of the community web-application uses Castor v1.2, 
+          an upgrade from v0.9.5 using in Community 2008.1. The upgrade entrains
+          a small change to the XML configuration of the community database.
+        </p>
+<p>
+          Two changes are needed to existing configurations:
+        </p>
+<ul><li>Wrap the <i>database</i>
+ element in a <i>jdo-conf</i>
+ element;</li>
+<li>add a <i>transaction-demarcation</i>
+ element with 
+          attribute <i>mode=&quot;local&quot;</i>
+ as a child of the <i>jdo-conf</i>
+.</li>
+</ul>
+<p>
+          The sample configuration in the web application has already been altered
+          to suit.
+        </p>
+</div>
+<div class="section"><h3><a name="Bug_fix:_encoding_of_passwords"></a>
+Bug fix: encoding of passwords</h3>
+<p>
+          V2008.1.01 and earlier had a serious problem in the handling of
+          passwords: see 
+          <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2809" class="externalLink">bugzilla</a>
+
+          for details. That problem is fixed in this new release.
+        </p>
+</div>
+<div class="section"><h3><a name="Refactoring"></a>
+Refactoring</h3>
+<p>
+          The code for the password handling and database configuration has been
+          refactored into a smaller set of classes. More unit tests have been
+          written. This should, ultimately, improve the reliability of the
+          community, but for now, operators should stay alert for problems with
+          passwords.
+        </p>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2003-2008
+    
+          AstroGrid
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

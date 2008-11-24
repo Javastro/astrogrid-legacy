@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AstroGrid - AstroGrid community: host certificate</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Community Web Application
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2008-11-24
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documents</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="overview.html">Overview</a>
+          </li>
+              
+    <li class="none">
+                    <a href="release-notes.html">Release notes</a>
+          </li>
+              
+    <li class="none">
+                    <a href="installation.html">Installation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="self_testing.html">Self-Testing</a>
+          </li>
+              
+    <li class="none">
+                    <a href="upgrading.html">Upgrading</a>
+          </li>
+              
+    <li class="none">
+                    <a href="uninstall.html">Uninstallation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="CA-operation.html">CA operation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="backing-up.html">Back-ups</a>
+          </li>
+          </ul>
+              <h5>Templates</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="astrogrid-community-database.xml">DB configuration</a>
+          </li>
+              
+    <li class="none">
+                    <a href="astrogrid-community-mapping.xml">DB mapping</a>
+          </li>
+              
+    <li class="none">
+                    <a href="sample-environment.xml">Service context</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name="Notes_on_generating_a_host_certificate"></a>
+Notes on generating a host certificate</h2>
+<p>
+        You need an identity certificate for your host computer in order to 
+        serve pages over HTTPS. The nature of the host certificate determines
+        whether the HTTPS client will trust the community service. If the
+        client does not trust the host certificate then it aborts the HTTPS
+        exchange and your service fails.
+      </p>
+<p>
+        There are, broadly, four ways to get a host certificate:
+      </p>
+<ol type="1"><li>use any old certificate you already have;</li>
+<li>buy a certificate from a commercial certificate authority (CA);</li>
+<li>get a free certificate from your academic CA;</li>
+<li>generate your own certificate and sign it as if you were a CA.</li>
+</ol>
+<p>
+        The first option <em>doesn't work</em>. Clients will not trust a
+        host certificate unless the common-name (CN) part of the distinguished
+        name (DN) in the certificate is the name of the host. You can't use
+        your personal certificate as a host certificate.
+      </p>
+<p>
+        The second option is expensive and the third can be painful. The rest
+        of these note describe the fourth option using a &quot;self-signed&quot;
+        certificate.
+      </p>
+<p>
+        Here is an example of generating a self-signed, host certificate using
+        the <i>keytool</i>
+ utility in the SUN JDK.
+      </p>
+<pre>
+        keytool -genkey -alias tomcat -keyalg RSA -validity 365 \
+            -keystore host.jks -storetype JKS \
+            -dname &quot;C=UK,O=Example University,OU=Astronomy,CN=ivo.example.ac.uk&quot;
+      </pre><p>
+        The <strong>alias</strong> allows the Tomcat software to pick out the 
+        right certificate from a keystore that may contain more than one such.
+        Tomcat assumes the alias <i>tomcat</i>
+.
+      </p>
+<p>
+        The <strong>key algorithm</strong> can be RSA or DSA. Most tests of
+        the community use RSA.
+      </p>
+<p>
+        The <strong>validity period</strong>, which is in days, should be
+        longer than <i>keytool's</i>
+ default of 90 days. A year is reasonable,
+        and you might choose to make the certificate valid for 10 years. You
+        will need to renew the certificate before it expires, by repeating
+        the current procedure.
+      </p>
+<p>
+        The name of the file in which you store the credentials 
+        (<i>host.jks</i>
+ in the example above) can be anything you like, but
+        the <strong>store type</strong> should be JKS as Tomcat's support for
+        other types is questionable. Therefore, the file-name should end in
+        <i>.jks</i>
+. You will need to edit Tomcat's confguration to tell it
+        which key-store file to use.
+      </p>
+<p>
+        The <strong>distinguished name</strong> must be globally unique,
+        should identify the operation hosting the service and <em>must</em>
+        have the correct common-name component. In the example above, C stands 
+        for country, O stands for organization, OU stands for organizational
+        unit (typically a department within the organization) and CN stands
+        for common name. The value of the common name is the fully-qualified
+        host-name of the computer <em>as seen by the client</em></p>
+<p>
+        &quot;Fully-qualified host-name of the computer as seen by the client&quot;
+        mean a host visible via HTTP outside your site. In the example above,
+        a user should be able to type <i>http://ivo.example.ac.uk/</i>
+ into a
+        web-browser and get the default page of the Tomcat installation.
+      </p>
+<p><i>keytool</i>
+ will prompt for a password to secure the private key and
+        another to secure the key-store as a whole. You should set both of these
+        to &quot;changeit&quot; since Tomcat assumes this password. You could use a
+        different password but you would then need to write it down, in clear
+        text, in Tomcat's configuration, so this does not add much security.
+      </p>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2003-2008
+    
+          AstroGrid
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

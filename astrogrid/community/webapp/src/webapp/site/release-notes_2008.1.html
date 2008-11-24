@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AstroGrid - Release notes: version 2008.1</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Community Web Application
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2008-11-24
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documents</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="overview.html">Overview</a>
+          </li>
+              
+    <li class="none">
+                    <a href="release-notes.html">Release notes</a>
+          </li>
+              
+    <li class="none">
+                    <a href="installation.html">Installation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="self_testing.html">Self-Testing</a>
+          </li>
+              
+    <li class="none">
+                    <a href="upgrading.html">Upgrading</a>
+          </li>
+              
+    <li class="none">
+                    <a href="uninstall.html">Uninstallation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="CA-operation.html">CA operation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="backing-up.html">Back-ups</a>
+          </li>
+          </ul>
+              <h5>Templates</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="astrogrid-community-database.xml">DB configuration</a>
+          </li>
+              
+    <li class="none">
+                    <a href="astrogrid-community-mapping.xml">DB mapping</a>
+          </li>
+              
+    <li class="none">
+                    <a href="sample-environment.xml">Service context</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name="Release_notes"></a>
+Release notes</h2>
+<p>
+        These are differences between version 2008.1 and version 2008.0.01.
+      </p>
+<div class="section"><h3><a name="Password_and_credential_problems"></a>
+Password and credential problems</h3>
+<p>
+            In the previous version, there were three major problems with 
+            passwords and credentials:
+          </p>
+<ul><li>a user couldn't log in until he had reset his password 
+            (<a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2694" class="externalLink">Bugzilla ticket 2694</a>
+);</li>
+<li>credentials for new accounts were created with wrong
+              passwords and were therefore unavailable to users
+            (<a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2686" class="externalLink">Bugzilla ticket 2694</a>
+);</li>
+<li>passwords on credentials were not being changed by the
+              password-reset pages for either the user or community
+            administrator (no ticket issued).</li>
+</ul>
+<p>
+            These issues are all related and have been fixed by an emergency
+            patch in the current version. This quick solution is imperfect and
+            may give further problems as follows.
+          </p>
+<p>
+            A user's password is held in two places: in the community database
+            and in the user's private-key file (in the community's credentials
+            directory). These two passwords should have the same value, but a
+            failed password-change could leave them with different values. 
+            In this case, the user will
+            probably be unable to log in and the password-change buttons
+            won't work for either the user or the community administrator.
+            If an account gets into this state, the administrator should:
+          </p>
+<ol type="1"><li>resissue the user's credentials;</li>
+<li>reset the user's password to a temporary value;</li>
+<li>contact the user, tell him the temporary password and ask him
+            to change his password to his preferred value.</li>
+</ol>
+<p>
+            (The first step synchronizes the passwords in the database and
+            key file.)
+          </p>
+<p>
+            A better solution for password handling is known but will take
+            some time to develop. It will be included in version 2008.2.
+          </p>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2003-2008
+    
+          AstroGrid
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AstroGrid - Release notes: 2008.0.01</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Community Web Application
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2008-11-24
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documents</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="overview.html">Overview</a>
+          </li>
+              
+    <li class="none">
+                    <a href="release-notes.html">Release notes</a>
+          </li>
+              
+    <li class="none">
+                    <a href="installation.html">Installation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="self_testing.html">Self-Testing</a>
+          </li>
+              
+    <li class="none">
+                    <a href="upgrading.html">Upgrading</a>
+          </li>
+              
+    <li class="none">
+                    <a href="uninstall.html">Uninstallation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="CA-operation.html">CA operation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="backing-up.html">Back-ups</a>
+          </li>
+          </ul>
+              <h5>Templates</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="astrogrid-community-database.xml">DB configuration</a>
+          </li>
+              
+    <li class="none">
+                    <a href="astrogrid-community-mapping.xml">DB mapping</a>
+          </li>
+              
+    <li class="none">
+                    <a href="sample-environment.xml">Service context</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name="Release_notes"></a>
+Release notes</h2>
+<p>
+        These are differences between version 2008.0.01 and 2008.0.
+      </p>
+<div class="section"><h3><a name="Generation_of_proxy_certificates_by_accounts_service"></a>
+Generation of proxy certificates by accounts service</h3>
+<p>
+          In 2008.0, when the accounts service generated a certificate chain, 
+          it made the proxy certificate wrongly. Instead of setting the name of
+          the issuer to the subject of the following certificate in the chain,
+          it set the issuer name of the proxy to the <em>issuer</em> of the 
+          following certificate. This made the proxy certificate valid but
+          the chain invalid, and caused authentication checks to fail.
+        </p>
+<p>
+          This issue is 
+          <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2668" class="externalLink">BZ2668</a>
+.
+          It has been fixed.
+        </p>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2003-2008
+    
+          AstroGrid
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

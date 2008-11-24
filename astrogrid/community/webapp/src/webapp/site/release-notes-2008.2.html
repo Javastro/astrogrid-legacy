@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AstroGrid - Release notes: 2008.2</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Community Web Application
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2008-11-24
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documents</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="overview.html">Overview</a>
+          </li>
+              
+    <li class="none">
+                    <a href="release-notes.html">Release notes</a>
+          </li>
+              
+    <li class="none">
+                    <a href="installation.html">Installation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="self_testing.html">Self-Testing</a>
+          </li>
+              
+    <li class="none">
+                    <a href="upgrading.html">Upgrading</a>
+          </li>
+              
+    <li class="none">
+                    <a href="uninstall.html">Uninstallation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="CA-operation.html">CA operation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="backing-up.html">Back-ups</a>
+          </li>
+          </ul>
+              <h5>Templates</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="astrogrid-community-database.xml">DB configuration</a>
+          </li>
+              
+    <li class="none">
+                    <a href="astrogrid-community-mapping.xml">DB mapping</a>
+          </li>
+              
+    <li class="none">
+                    <a href="sample-environment.xml">Service context</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name="Release_notes_for_community_web-appplication_2008.2"></a>
+Release notes for community web-appplication 2008.2</h2>
+<p>
+        These notes describe changes between v2008.1.02 and v2008.2.
+      </p>
+<div class="section"><h3><a name="Feature:_version_3_of_accounts_protocol"></a>
+Feature: version 3 of accounts protocol</h3>
+<p>
+          This release supports version 3 of the accounts protocol. With this
+          upgrade, it is possible for a client to change a user's password.
+        </p>
+</div>
+<div class="section"><h3><a name="Feature:_backing_up_the_community"></a>
+Feature: backing up the community</h3>
+<p>
+          This release introduces a back-up function for the user credentials
+          and community database.
+        </p>
+</div>
+<div class="section"><h3><a name="Compatibility_warning:_retirement_of_SOAPy_security_service"></a>
+Compatibility warning: retirement of SOAPy 'security service'</h3>
+<p>
+          The community service called &quot;security service&quot; has been removed from
+          the web application. This (SOAP) web service was the only sign-on mechanism
+          in the 2007 releases and was deprecated after the introduction of the
+          accounts protocol with the 2008.0 release. Since then all usable
+          copies of VODesktop and the Astro Runtime have adopted the accounts
+          protocol and the older service is obsolete.
+        </p>
+<p>
+          However, it was recently discovered that the file-manager-delegate
+          library still has one call to the obsolete service, and this call was
+          actually being used in VODesktop, causing 
+          <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2815" class="externalLink">bug 2815</a>
+.
+          This is now fixed, but versions of VODesktop before 2008.1.1 will not
+          work with community 2008.2.
+        </p>
+<p>
+          Tests show that Topcat is not affected by this issue. Code inspection
+          shows that the MySpace clients embedded in DSA and CEA services
+          can't be affected since they don't have user-name and password to
+          send to a community service.
+        </p>
+</div>
+<div class="section"><h3><a name="Compatibility_warning:_revision_to_configuration_of_community_database"></a>
+Compatibility warning: revision to configuration of community database</h3>
+<p>
+          This version of the community web-application uses Castor v1.2, 
+          an upgrade from v0.9.5 using in Community 2008.1. The upgrade entrains
+          a small change to the XML configuration of the community database.
+        </p>
+<p>
+          Two changes are needed to existing configurations:
+        </p>
+<ul><li>Wrap the <i>database</i>
+ element in a <i>jdo-conf</i>
+ element;</li>
+<li>add a <i>transaction-demarcation</i>
+ element with 
+          attribute <i>mode=&quot;local&quot;</i>
+ as a child of the <i>jdo-conf</i>
+.</li>
+</ul>
+<p>
+          The sample configuration in the web application has already been altered
+          to suit.
+        </p>
+</div>
+<div class="section"><h3><a name="Bug_fix:_encoding_of_passwords"></a>
+Bug fix: encoding of passwords</h3>
+<p>
+          V2008.1.01 and earlier had a serious problem in the handling of
+          passwords: see 
+          <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2809" class="externalLink">bugzilla</a>
+
+          for details. That problem now fixed.
+        </p>
+</div>
+<div class="section"><h3><a name="Bug_fix:_suprious_failures_of_permissions_self-test"></a>
+Bug fix: suprious failures of permissions self-test</h3>
+<p><a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2628" class="externalLink">Bug 2628</a>
+,
+          concerning failed tests of the CA credentials, is fixed.
+        </p>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2003-2008
+    
+          AstroGrid
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

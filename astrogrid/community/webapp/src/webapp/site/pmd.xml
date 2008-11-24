@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd version="4.2.2" timestamp="2008-11-24T17:01:08.373">
+<file name="/Users/guy/NetBeansProjects/merge/astrogrid/community/webapp/src/java/org/astrogrid/community/vosi/VosiServlet.java">
+<violation beginline="4" endline="4" begincolumn="1" endcolumn="20" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.vosi" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.net.URI'
+</violation>
+</file>
+<file name="/Users/guy/NetBeansProjects/merge/astrogrid/community/webapp/src/java/org/astrogrid/community/webapp/AccountAdminServlet.java">
+<violation beginline="108" endline="108" begincolumn="16" endcolumn="26" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="org.astrogrid.community.webapp" class="AccountAdminServlet" method="update" variable="oldPassword" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
+Avoid unused local variables such as 'oldPassword'.
+</violation>
+</file>
+<file name="/Users/guy/NetBeansProjects/merge/astrogrid/community/webapp/src/java/org/astrogrid/community/webapp/AccountBean.java">
+<violation beginline="6" endline="6" begincolumn="1" endcolumn="77" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.astrogrid.community.common.exception.CommunityIdentifierException'
+</violation>
+<violation beginline="7" endline="7" begincolumn="1" endcolumn="73" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.astrogrid.community.common.exception.CommunityPolicyException'
+</violation>
+<violation beginline="8" endline="8" begincolumn="1" endcolumn="75" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.astrogrid.community.common.exception.CommunitySecurityException'
+</violation>
+<violation beginline="9" endline="9" begincolumn="1" endcolumn="74" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.astrogrid.community.common.exception.CommunityServiceException'
+</violation>
+<violation beginline="11" endline="11" begincolumn="1" endcolumn="62" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.astrogrid.community.server.ca.CertificateAuthority'
+</violation>
+<violation beginline="15" endline="15" begincolumn="1" endcolumn="51" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.bouncycastle.asn1.smime.SMIMEAttributes'
+</violation>
+</file>
+<file name="/Users/guy/NetBeansProjects/merge/astrogrid/community/webapp/src/java/org/astrogrid/community/webapp/AccountServlet.java">
+<violation beginline="4" endline="4" begincolumn="1" endcolumn="28" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.io.OutputStream'
+</violation>
+<violation beginline="13" endline="13" begincolumn="1" endcolumn="42" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.security.cert.X509Certificate'
+</violation>
+<violation beginline="14" endline="14" begincolumn="1" endcolumn="27" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.util.ArrayList'
+</violation>
+<violation beginline="28" endline="28" begincolumn="1" endcolumn="42" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.bouncycastle.openssl.PEMWriter'
+</violation>
+<violation beginline="229" endline="229" begincolumn="12" endcolumn="22" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="org.astrogrid.community.webapp" class="AccountServlet" method="postToUser" variable="rptPassword" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
+Avoid unused local variables such as 'rptPassword'.
+</violation>
+<violation beginline="243" endline="243" begincolumn="14" endcolumn="20" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="org.astrogrid.community.webapp" class="AccountServlet" method="postToUser" variable="verdict" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
+Avoid unused local variables such as 'verdict'.
+</violation>
+</file>
+<file name="/Users/guy/NetBeansProjects/merge/astrogrid/community/webapp/src/java/org/astrogrid/community/webapp/DatabaseServlet.java">
+<violation beginline="9" endline="9" begincolumn="1" endcolumn="55" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.exolab.castor.jdo.DatabaseNotFoundException'
+</violation>
+<violation beginline="10" endline="10" begincolumn="1" endcolumn="50" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.exolab.castor.jdo.PersistenceException'
+</violation>
+<violation beginline="11" endline="11" begincolumn="1" endcolumn="50" rule="UnusedImports" ruleset="Import Statement Rules" package="org.astrogrid.community.webapp" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.exolab.castor.mapping.MappingException'
+</violation>
+</file>
+<file name="/Users/guy/NetBeansProjects/merge/astrogrid/community/webapp/src/java/org/astrogrid/community/webapp/PropertiesSelfTest.java">
+<violation beginline="25" endline="25" begincolumn="9" endcolumn="9" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="org.astrogrid.community.webapp" class="PropertiesSelfTest" method="testCommunityIdent" variable="u" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
+Avoid unused local variables such as 'u'.
+</violation>
+</file>
+</pmd>

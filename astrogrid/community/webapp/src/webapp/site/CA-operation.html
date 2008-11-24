@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AstroGrid - Operating the community CA</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+          <meta name="author" content="Guy Rixon" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Community Web Application
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2008-11-24
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documents</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="overview.html">Overview</a>
+          </li>
+              
+    <li class="none">
+                    <a href="release-notes.html">Release notes</a>
+          </li>
+              
+    <li class="none">
+                    <a href="installation.html">Installation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="self_testing.html">Self-Testing</a>
+          </li>
+              
+    <li class="none">
+                    <a href="upgrading.html">Upgrading</a>
+          </li>
+              
+    <li class="none">
+                    <a href="uninstall.html">Uninstallation</a>
+          </li>
+              
+    <li class="none">
+              <strong>CA operation</strong>
+        </li>
+              
+    <li class="none">
+                    <a href="backing-up.html">Back-ups</a>
+          </li>
+          </ul>
+              <h5>Templates</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="astrogrid-community-database.xml">DB configuration</a>
+          </li>
+              
+    <li class="none">
+                    <a href="astrogrid-community-mapping.xml">DB mapping</a>
+          </li>
+              
+    <li class="none">
+                    <a href="sample-environment.xml">Service context</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name="Operating_the_community_CA"></a>
+Operating the community CA</h2>
+<p>
+      Your community web-application contains code to operate a local 
+      certificate authority (CA). If, when setting up the community, you chose to
+      generate and install the CA credentials, then you can now issue
+      identity certificates to members of your community. If you didn't
+      install the CA credentials then members of your community will have to
+      get their certificates elsewhere; this is a reasonable choice if it is
+      easy for them to get national-level certificates. 
+    </p>
+<p>
+      To issue certificates, you need to enable the CA by giving the
+      password that unlocks the CA's credentials. You set this password when you
+      generated those credentials, and the system does not remember it from the
+      installation. Once you have enabled the CA, the system retains the unlocked
+      credentials until you close your web-browser. You can enable the CA using
+      the command in the administration menu.
+    </p>
+<p>
+      With the CA enabled, go to the accounts page in the administration menu.
+      For each account there is a button (on the extreme right; it may be
+      scrolled off the screen) labelled &quot;Issue ID certificate&quot;. Pressing this
+      generates the long-term certificate for the account. You need to do this
+      for each member of your community as their account is added. If you
+      have upgraded the community software from a version that did not support
+      the the comunity CA, then you can generate the credentials now for all the
+      existing users.
+    </p>
+<p>
+      If you were to issue new credentials to a user who already has a
+      community certificate then trhey would get a new certificate with the
+      same formal name. This is probably harmless.
+    </p>
+<p>
+      When you issue a community certificate, it is a long-term certificate,
+      valid for a year. This certificate is passed to the MyProxy service
+      accompanying your community web-application and stored there. When the
+      certificate owner asks the MyProxy service for credentials, that service
+      generates a short-term &quot;proxy&quot; certificate using the stored, long-term
+      certificate and returns that. There is no way for a user to extract his
+      long-term community certificate from the community, nor shall there be.
+      The point of the community CA is to hide from users the process of getting
+      and managing long-term certificates. Please note that this is a
+      different approach to that used with external, national-level certificates.
+    </p>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2003-2008
+    
+          AstroGrid
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

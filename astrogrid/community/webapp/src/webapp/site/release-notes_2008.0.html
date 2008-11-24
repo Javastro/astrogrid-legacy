@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AstroGrid - Release notes: version 2008.0</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Community Web Application
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2008-11-24
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documents</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="overview.html">Overview</a>
+          </li>
+              
+    <li class="none">
+                    <a href="release-notes.html">Release notes</a>
+          </li>
+              
+    <li class="none">
+                    <a href="installation.html">Installation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="self_testing.html">Self-Testing</a>
+          </li>
+              
+    <li class="none">
+                    <a href="upgrading.html">Upgrading</a>
+          </li>
+              
+    <li class="none">
+                    <a href="uninstall.html">Uninstallation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="CA-operation.html">CA operation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="backing-up.html">Back-ups</a>
+          </li>
+          </ul>
+              <h5>Templates</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="astrogrid-community-database.xml">DB configuration</a>
+          </li>
+              
+    <li class="none">
+                    <a href="astrogrid-community-mapping.xml">DB mapping</a>
+          </li>
+              
+    <li class="none">
+                    <a href="sample-environment.xml">Service context</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name="Release_notes"></a>
+Release notes</h2>
+<p>
+        These are differences between version 2008.0 and the last release
+        of 2007.
+      </p>
+<div class="section"><h3><a name="Accounts_service"></a>
+Accounts service</h3>
+<p>
+            The new &quot;accounts&quot; service is a RESTful web-service that is gradually
+            taking over from the SOAP services. In the current version, the
+            accounts service replaces MyProxy and the Security service as the
+            means for users to sign on and receive certificates.
+          </p>
+<p>
+            A client for the accounts service is built into the community
+            resolver library, starting at version 2008.0a7. Clients using this
+            library will automatically use the accounts service if they find it
+            registered. In practice, this means that versions of VODesktop from
+            2008.1 onward will typically log in using the accounts service.
+          </p>
+</div>
+<div class="section"><h3><a name="MyProxy"></a>
+MyProxy</h3>
+<p>
+          You are no longer recommended to run a MyProxy service for new
+          communities. The accounts service takes over MyProxy's function and
+          does so on a less-troublesome port.
+        </p>
+<p>
+          Sites that have already installed MyProxy may go on using it.
+          MyProxy support will be retained in the AR and versions of the AR
+          from 2008.1 will use MyProxy as a second choice if they cannot
+          find an accounts service. To use MyProxy, you would need to hand-edit
+          the community's registration, adding a MyProxy capability and
+          possibly removing the capability for the accounts service. MyProxy
+          and the accounts service can run in parallel, working from the
+          same user-credentials.
+        </p>
+</div>
+<div class="section"><h3><a name="Certificate_authority"></a>
+Certificate authority</h3>
+<p>
+            The certificate authority is now a required part of the community
+            rather than an experimental option.
+          </p>
+</div>
+<div class="section"><h3><a name="HTTPS"></a>
+HTTPS</h3>
+<p>
+            The community requires a copy of Tomcat with HTTPS enabled in order
+            that passwords may be exchanged safely.
+          </p>
+<p>
+            Initially, only the accounts web-service uses HTTPS, in order to
+            protect the users' personal passwords. The adminstration interface
+            uses plain HTTP, but this will be changed in a later version.
+          </p>
+</div>
+<div class="section"><h3><a name="Registry_compatibility"></a>
+Registry compatibility</h3>
+<p>
+            This release has been revised to work with registries providing
+            registry interface v1.0 and containing documents based on
+            VOResource v1.0. A registry of this kind is required in order to
+            publish the community service. A further registry of this kind is
+            required at run-time in order that the community amy look up external
+            services. This version of community cannot work with the older
+            registries (registry interface v0.1 and VOResource v0.10).
+          </p>
+</div>
+<div class="section"><h3><a name="VOSpace_compatibility"></a>
+VOSpace compatibility</h3>
+<p>
+          This community software is intended to work with the first
+          release of AstroGrid's VOSpace product. It does so using the
+          legacy &quot;file manager&quot; interface in the latter software.
+        </p>
+<p>
+          Therefore, the current release is expected to work with old
+          installations of AstroGrid MySpace. However, this combination
+          is not officially supported.
+        </p>
+<p>
+          This community release does <em>not</em> work with IVOA's VOSpace
+          interface. That interface will be introduced in a later release.
+        </p>
+</div>
+<div class="section"><h3><a name="Root_ownership"></a>
+Root ownership</h3>
+<p>
+            The standard installation now requires that Tomcat be run from
+            the root account. This allows Tomcat to use ports 80 and 443, which
+            are preferred to port 8080 and 8443 due to firewall problems. Running
+            as root also gives better protection to the stored credentials.
+          </p>
+</div>
+<div class="section"><h3><a name="Revised_installation_procedure"></a>
+Revised installation procedure</h3>
+<p>
+            A new installation-procedure has been documented. This standard
+            procedure is designed to avoid the worst weaknesses and instability
+            of Apache Tomcat while also giving the simplest installation.
+          </p>
+</div>
+<div class="section"><h3><a name="Reuse_of_files_from_old_installations"></a>
+Reuse of files from old installations</h3>
+<p>
+            The new software should work with the community database from
+            any previous version.
+          </p>
+<p>
+            Certificate-authority files (CA key, certificate and serial-number
+            record) that were used with the 2007.x community-software work
+            with the current release. If you follow the new, standard layout of 
+            files, then you will have to put the CA files (or copies of them) in
+            a new location.
+          </p>
+<p>
+            User-credential files from all old versions may be reused with the
+            current release. If you want to use the standard layout of files
+            then you will have to move or copy your credential files. If you
+            have a working community with symbiotic MyProxy service then you
+            should <em>not</em> move the user credentials to the new location.
+            Instead, change the community configuration to find the credentials
+            where they are currently kept.
+          </p>
+<p>
+            The context file from old installations is <em>not</em>
+            fully compatible with the new software. Using your old context
+            file as a reference, you should make a new one starting from the
+            supplied template; see the standard installation-sequence. Note that
+            the new release doesn't use a JNDI <i>DataSource</i>
+ object to
+            locate its database; the associated configuration is dropped from
+            the context file.
+          </p>
+<p>
+            The current release uses a database-configuration file and
+            requires you to edit it to locate the community database. This
+            file is not apparent in earlier versions (it's in there, but not
+            as something that you can change).
+          </p>
+</div>
+<div class="section"><h3><a name="Self-tests"></a>
+Self-tests</h3>
+<p>
+            Some self-tests have been added to the administration interface.
+            These are only a partial test of the installation, but they
+            may help to find some configuration problems.
+          </p>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2003-2008
+    
+          AstroGrid
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

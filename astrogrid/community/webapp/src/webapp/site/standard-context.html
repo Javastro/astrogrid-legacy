@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AstroGrid - AstroGrid community: standard context file</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Community Web Application
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2008-11-24
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documents</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="overview.html">Overview</a>
+          </li>
+              
+    <li class="none">
+                    <a href="release-notes.html">Release notes</a>
+          </li>
+              
+    <li class="none">
+                    <a href="installation.html">Installation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="self_testing.html">Self-Testing</a>
+          </li>
+              
+    <li class="none">
+                    <a href="upgrading.html">Upgrading</a>
+          </li>
+              
+    <li class="none">
+                    <a href="uninstall.html">Uninstallation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="CA-operation.html">CA operation</a>
+          </li>
+              
+    <li class="none">
+                    <a href="backing-up.html">Back-ups</a>
+          </li>
+          </ul>
+              <h5>Templates</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="astrogrid-community-database.xml">DB configuration</a>
+          </li>
+              
+    <li class="none">
+                    <a href="astrogrid-community-mapping.xml">DB mapping</a>
+          </li>
+              
+    <li class="none">
+                    <a href="sample-environment.xml">Service context</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name="Standard_form_of_the_context_file"></a>
+Standard form of the context file</h2>
+<p>
+        The community web-application needs to be told where to find
+        various files and external services. When using Tomcat, you do this 
+        by preparing an XML configuration-file listing <i>environment entries</i>
+.
+        This is known as the <i>context file</i>
+. 
+      </p>
+<p>
+        Download the sample context-file (&quot;service context&quot; in the templates
+        menu of this page).
+        You will have to edit some of the values to suit your installation.
+      </p>
+<p>
+        These entries have to be set specifically for your registry, even if
+        you are using the standard installation.
+      </p>
+<dl><dt>org.astrogrid.community.ident</dt>
+<dd>The formal name of the community. This is the registry identifier
+        (&quot;IVORN&quot;) of the community with the ivo:// prefix stripped off.</dd>
+<dt>org.astrogrid.vosi.baseurl</dt>
+<dd>The URL at which you installed the web-application. This is the URL
+        leading to the web-application's front page. This affects the
+        registration of the community.</dd>
+<dt>org.astrogrid.vosi.baseurlsecure</dt>
+<dd>The same as <i>org.astrogrid.community.baseurl</i>
+, but for HTTPS.</dd>
+<dt>org.astrogrid.community.default.vospace</dt>
+<dd>The registry identifier (&quot;IVORN&quot;) for the VOSpace service associated
+        with the community.</dd>
+</dl>
+<p>
+        These entries are already correct for your community if you are
+        following the standard installation. You may need to change them if
+        you change the installation details.
+      </p>
+<dl><dt>org.astrogrid.registry.query.endpoint</dt>
+<dd>The URL for the web service for queries to the full registry. (Given
+          value is for a registry run by AstroGrid in the UK; you might want
+          to use a local registry.)</dd>
+<dt>org.astrogrid.registry.query.alt.endpoint</dt>
+<dd>The URL for the web service for queries to the back-up full-registry.
+         (Given
+          value is for a registry run by AstroGrid in the UK; you might want
+          to use a local registry.)</dd>
+<dt>org.astrogrid.community.dbconfigurl</dt>
+<dd>The URL for the main database-configuration file (should begin with 
+        <i>file:</i>
+).</dd>
+<dt>org.astrogrid.community.myproxy</dt>
+<dd>The directory in which the community keeps its user credentials.
+         (so named because the MyProxy server shares this directory when present;
+         you still need this value even if you do not run MyProxy).</dd>
+<dt>org.astrogrid.community.cakey</dt>
+<dd>The file holding the CA's private key (always a <i>.pem</i>
+ file.</dd>
+<dt>org.astrogrid.community.cacert</dt>
+<dd>The file holding the CA's root certificate (always a <i>.pem</i>
+ file.</dd>
+<dt>org.astrogrid.community.caserial</dt>
+<dd>The file holding the CA's record of certificate serial-numbers.</dd>
+</dl>
+<p>
+        Having made the context file, put a copy somewhere safe, where it will be
+        backed up. In the standard directory-layout, 
+        <i>/astrogrid/community/context.xml</i>
+ is the best place. Storing a
+        copy here does not actually apply the settings; that is done when the
+        web application is deployed into Tomcat.
+      </p>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2003-2008
+    
+          AstroGrid
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>
