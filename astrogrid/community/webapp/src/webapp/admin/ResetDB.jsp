@@ -1,7 +1,6 @@
-<%@ page import="org.astrogrid.community.common.ivorn.CommunityIvornParser,
-                 org.astrogrid.store.Ivorn,                 
-                 org.astrogrid.community.server.database.manager.DatabaseManagerImpl"
-    session="true" %>
+<%@ page 
+  import="org.astrogrid.community.server.database.configuration.DatabaseConfiguration"
+  session="true" %>
 <%
 	DatabaseConfiguration dbc =
       new DatabaseConfiguration("org.astrogrid.community.database");
