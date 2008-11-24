@@ -183,8 +183,8 @@
       <layout>default</layout>
     </repository>
     <site>
-      <id>default</id>
-      <name>Default Site</name>
+      <id>ag-deployer</id>
+      <name>deployer.astrogrid.org</name>
       <url>scp://terror.star.le.ac.uk/software_docs/community-${pom.version}</url>
     </site>
   </distributionManagement>
