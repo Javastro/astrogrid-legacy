@@ -27,6 +27,7 @@
          <li><a href="<%=request.getContextPath()%>/browse.jsp">2.Browse</a></li>
          <li><a href="<%=request.getContextPath()%>/keywordquery.jsp" >3.Keyword Query</a></li>
          <li><a href="<%=request.getContextPath()%>/xquerysearch.jsp">4.XQuery Search</a></li>
+         <li><a href="<%=request.getContextPath()%>/tree">5.Tree view</a></li>
       </ul>
    </div>
    <div id="menuRegister">

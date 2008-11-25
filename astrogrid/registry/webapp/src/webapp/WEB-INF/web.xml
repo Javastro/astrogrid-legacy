@@ -283,6 +283,12 @@
         <servlet-class>org.astrogrid.registry.registration.CoverageServlet</servlet-class>
     </servlet>
     
+    <servlet>
+      <servlet-name>TreeServlet</servlet-name>
+      <description>Provides a browesable tree-view of the registry.</description>
+      <servlet-class>astrogrid.registry.tree.TreeServlet</servlet-class>
+    </servlet>
+    
     <servlet-mapping>
         <servlet-name>DublinCoreServlet</servlet-name>
         <url-pattern>/registration/DublinCore</url-pattern>
@@ -369,6 +375,10 @@
           <url-pattern>/xmlrpc</url-pattern>
       </servlet-mapping>
 
+    <servlet-mapping>
+      <servlet-name>TreeServlet</servlet-name>
+      <url-pattern>/tree/*</url-pattern>
+    </servlet-mapping>
 
   <!-- various MIME type mappings ====================================== -->
 
