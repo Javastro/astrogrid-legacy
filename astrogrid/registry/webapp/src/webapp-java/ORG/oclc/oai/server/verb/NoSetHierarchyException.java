@@ -28,6 +28,6 @@ package ORG.oclc.oai.server.verb;
  */
 public class NoSetHierarchyException extends Exception {
     public NoSetHierarchyException() {
-	super("<error code=\"noSetHierarchy\">The repository does not support sets.</error>");
+	super("<oai:error code=\"noSetHierarchy\">The repository does not support sets.</oai:error>");
     }
 }

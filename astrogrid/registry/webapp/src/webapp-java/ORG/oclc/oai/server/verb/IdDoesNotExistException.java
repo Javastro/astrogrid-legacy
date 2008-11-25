@@ -28,6 +28,6 @@ package ORG.oclc.oai.server.verb;
  */
 public class IdDoesNotExistException extends Exception {
     public IdDoesNotExistException(String identifier) {
-	super("<error code=\"idDoesNotExist\">\"" + identifier + "\" is unknown or illegal in this repository</error>");
+	super("<oai:error code=\"idDoesNotExist\">\"" + identifier + "\" is unknown or illegal in this repository</oai:error>");
     }
 }

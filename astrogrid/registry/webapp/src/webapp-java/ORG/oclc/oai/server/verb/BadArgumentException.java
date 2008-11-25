@@ -28,6 +28,6 @@ package ORG.oclc.oai.server.verb;
  */
 public class BadArgumentException extends Exception {
     public BadArgumentException() {
-	super("<error code=\"badArgument\">The request includes illegal arguments, is missing required arguments, includes a repeated argument, or values for arguments have an illegal syntax.</error>");
+	super("<oai:error code=\"badArgument\">The request includes illegal arguments, is missing required arguments, includes a repeated argument, or values for arguments have an illegal syntax.</oai:error>");
     }
 }

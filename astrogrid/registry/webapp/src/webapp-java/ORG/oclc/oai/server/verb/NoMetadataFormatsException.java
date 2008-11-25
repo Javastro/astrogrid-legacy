@@ -28,6 +28,6 @@ package ORG.oclc.oai.server.verb;
  */
 public class NoMetadataFormatsException extends Exception {
     public NoMetadataFormatsException() {
-	super("<error code=\"noMetadataFormats\">There are no metadata formats available for the specified item.</error>");
+	super("<oai:error code=\"noMetadataFormats\">There are no metadata formats available for the specified item.</oai:error>");
     }
 }

@@ -28,6 +28,6 @@ package ORG.oclc.oai.server.verb;
  */
 public class NoItemsMatchException extends Exception {
     public NoItemsMatchException() {
-	super("<error code=\"noRecordsMatch\">The combination of the values of the from, until, set, and metadataPrefix arguments results in an empty list.</error>");
+	super("<oai:error code=\"noRecordsMatch\">The combination of the values of the from, until, set, and metadataPrefix arguments results in an empty list.</oai:error>");
     }
 }

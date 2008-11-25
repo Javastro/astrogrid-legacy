@@ -116,10 +116,10 @@ public class ListIdentifiers extends ServerVerb {
 // 	sb.append("</requestURL>");
             
 	if (!abstractCatalog.isHarvestable()) {
-	    sb.append("<request verb=\"ListIdentifiers\">");
+	    sb.append("<oai:request verb=\"ListIdentifiers\">");
 	    sb.append(baseURL);
-	    sb.append("</request>");
-	    sb.append("<error code=\"badArgument\">Database is unavailable for harvesting</error>");
+	    sb.append("</oai:request>");
+	    sb.append("<oai:error code=\"badArgument\">Database is unavailable for harvesting</oai:error>");
 	} else {
 	    ArrayList validParamNames = null;
 	    ArrayList requiredParamNames = null;
@@ -250,7 +250,11 @@ public class ListIdentifiers extends ServerVerb {
 			       + sb.toString());
 	}
 	//System.out.println("cleaning listidentmap from ListIdentifiers Verb");
-	listIdentifiersMap.clear();
+	/*
+	if(listIdentifiersMap != null) {
+		listIdentifiersMap.clear();
+	}
+	*/
 	listIdentifiersMap = null;
 	String resultReturn = sb.toString();
 	sb = null;

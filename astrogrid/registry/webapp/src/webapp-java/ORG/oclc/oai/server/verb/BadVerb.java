@@ -66,20 +66,20 @@ public class BadVerb extends ServerVerb {
         sb.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         sb.append(" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/");
         sb.append(" http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd\">");
-	sb.append("<responseDate>");
+	sb.append("<oai:responseDate>");
 	sb.append(createResponseDate(new Date()));
-	sb.append("</responseDate>");
+	sb.append("</oai:responseDate>");
 // 	sb.append("<requestURL>");
 //         sb.append(getRequestURL(request));
 // 	sb.append("</requestURL>");
-	sb.append("<request>");
+	sb.append("<oai:request>");
 	try {
 	    sb.append(request.getRequestURL().toString());
 	} catch (java.lang.NoSuchMethodError e) {
 	    sb.append(HttpUtils.getRequestURL(request).toString());
 	}
-	sb.append("</request>");
-	sb.append("<error code=\"badVerb\">Illegal verb</error>");
+	sb.append("</oai:request>");
+	sb.append("<oai:error code=\"badVerb\">Illegal verb</oai:error>");
         sb.append("</OAI-PMH>");
 	return render(response, "text/xml; charset=UTF-8", sb.toString(), serverTransformer);
     }

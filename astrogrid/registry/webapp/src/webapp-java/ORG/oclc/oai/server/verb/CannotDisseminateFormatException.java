@@ -28,6 +28,6 @@ package ORG.oclc.oai.server.verb;
  */
 public class CannotDisseminateFormatException extends Exception {
     public CannotDisseminateFormatException(String metadataPrefix) {
-	super("<error code=\"cannotDisseminateFormat\">\"" + metadataPrefix + "\" is not supported by the item or by the repository</error>");
+	super("<oai:error code=\"cannotDisseminateFormat\">\"" + metadataPrefix + "\" is not supported by the item or by the repository</oai:error>");
     }
 }

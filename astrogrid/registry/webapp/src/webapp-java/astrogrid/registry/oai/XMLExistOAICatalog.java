@@ -612,9 +612,9 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    }
         listIdentifiersMap.put("headers", headers.iterator());
         listIdentifiersMap.put("identifiers", identifiers.iterator());
-        System.out.println("cleaning out nativeMap should be done with it");
-        nativeMap.clear();
-        nativeMap = null;
+        //System.out.println("cleaning out nativeMap should be done with it");
+        //nativeMap.clear();
+        //nativeMap = null;
         return listIdentifiersMap;
     }
 
@@ -735,9 +735,9 @@ public class XMLExistOAICatalog extends AbstractCatalog {
              listIdentifiersMap.put("headers", headers.iterator());
              listIdentifiersMap.put("identifiers", identifiers.iterator());
 
-             System.out.println("cleaning out nativeMap should be done with it (with resumptiontoken)");
-             nativeMap.clear();
-             nativeMap = null;             
+             //System.out.println("cleaning out nativeMap should be done with it (with resumptiontoken)");
+             //nativeMap.clear();
+             //nativeMap = null;             
              return listIdentifiersMap;
     }
 

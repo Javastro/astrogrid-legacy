@@ -28,6 +28,6 @@ package ORG.oclc.oai.server.verb;
  */
 public class BadResumptionTokenException extends Exception {
     public BadResumptionTokenException() {
-	super("<error code=\"badResumptionToken\">The value of the resumptionToken argument is invalid or expired</error>");
+	super("<oai:error code=\"badResumptionToken\">The value of the resumptionToken argument is invalid or expired</oai:error>");
     }
 }
