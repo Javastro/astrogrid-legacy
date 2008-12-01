@@ -3,14 +3,15 @@
 import unittest
 
 class XQueryTrials(unittest.TestCase):
-    def testFullQuery(self):
+    def setUp(self):
         xq = """
         for $r in //vor:Resource[not (@status='inactive' or @status='deleted')] 
 where $r/@xsi:type  &=  '*DataCollection' 
 return $r
 """
         rs = ar.ivoa.registry.xquerySearch(xq)
-        print "Full", len(rs)
+        self.assertTrue(len(rs) > 0)
+        self.expectedSize = len(rs)
 
     def testShorterForm(self):
         xq = """
@@ -18,14 +19,14 @@ return $r
         return $r
         """
         rs = ar.ivoa.registry.xquerySearch(xq)
-        print "Shorter", len(rs)
+        self.assertEqual(self.expectedSize,len(rs))
         
     def testShortestForm(self):
         xq = "//vor:Resource[@xsi:type  &=  '*DataCollection']"
         rs = ar.ivoa.registry.xquerySearch(xq)
-        print "Shortest",len(rs)
+        self.assertEqual(self.expectedSize,len(rs))
 
-    def testNewExample(self):
+    def testCustomXQuery(self):
         xq = """
 	<ssap-wavebands> 
           {
@@ -46,7 +47,7 @@ return $r
        </ssap-wavebands>
         """
         doc = ar.ivoa.registry.xquerySearchXML(xq)
-        print doc
+        #if we've got this far without error, it's a pass.
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(XQueryTrials)

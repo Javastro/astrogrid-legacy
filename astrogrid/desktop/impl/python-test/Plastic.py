@@ -9,17 +9,20 @@ class Plastic(unittest.TestCase):
         self.id = self.hub.getHubId()
         l = self.hub.getRegisteredIds()
         l.remove(self.id)
-        self.vdId = l.pop()
+        self.vdId = None
+        for id in l:
+            n = self.hub.getName(id)
+            if n == 'VO Desktop':
+                self.vdId = id
+        self.assertTrue(self.vdId != None,"Vodesktop not registered with plastic?")
         self.ECHO = 'ivo://votech.org/test/echo'
+        self.ownName = 'testScript' 
         
     def testHubRegistered(self):
         self.assertTrue(self.id in self.hub.getRegisteredIds())
     
     def testHubName(self):
         self.assertEquals("hub",self.hub.getName(self.id))
-    
-    def testAppName(self):
-        self.assertEquals('VO Desktop',self.hub.getName(self.vdId))
     
     def testHubUnderstoodMessages(self):
         l = self.hub.getUnderstoodMessages(self.id)
@@ -33,14 +36,13 @@ class Plastic(unittest.TestCase):
         
     def testMessageRegisteredIds(self):
         ids = self.hub.getMessageRegisteredIds(self.ECHO)
-        self.assertEquals(2,len(ids))
         self.assertTrue(self.id in ids)
         self.assertTrue(self.vdId in ids)
         self.assertEquals(0,len(self.hub.getMessageRegisteredIds('ivo://unknown')))
         
     def testRegister(self):
         prevSize = len(self.hub.getRegisteredIds())
-        myId = self.hub.registerNoCallBack('testScript')
+        myId = self.hub.registerNoCallBack(self.ownName )
         ids = self.hub.getRegisteredIds()
         self.assertEquals(prevSize,len(ids) - 1)
         self.assertTrue(myId in ids)
@@ -50,7 +52,7 @@ class Plastic(unittest.TestCase):
         self.assertFalse(myId in ids)
         
     def testRequest(self):
-        myId = self.hub.registerNoCallBack('testScript')
+        myId = self.hub.registerNoCallBack(self.ownName)
         r = self.hub.request(myId,self.ECHO,['msg'])
         self.hub.unregister(myId)
         self.assertTrue(self.id in r)
@@ -60,7 +62,7 @@ class Plastic(unittest.TestCase):
 
 
     def testRequestToSubset(self):
-        myId = self.hub.registerNoCallBack('testScript')
+        myId = self.hub.registerNoCallBack(self.ownName)
         r = self.hub.requestToSubset(myId,self.ECHO,['msg'],[self.id,self.vdId])
         self.hub.unregister(myId)
         self.assertTrue(self.vdId in r,msg='VODesktop did not respond')
@@ -70,10 +72,12 @@ class Plastic(unittest.TestCase):
         self.assertEquals(2,len(r))
 
     def testRegisterAsMockService(self):        
-        myId = self.hub.registerXMLRPC('testService',[self.ECHO],'http://localhost:7090')
+        myId = self.hub.registerXMLRPC(self.ownName,[self.ECHO],'http://localhost:7090')
         self.assertTrue(myId in self.hub.getRegisteredIds())
         self.assertTrue(myId in self.hub.getMessageRegisteredIds(self.ECHO))
         self.hub.unregister(myId)
+        self.assertTrue(myId not in self.hub.getRegisteredIds())
+        self.assertTrue(myId not in self.hub.getMessageRegisteredIds(self.ECHO))
         
     def testRegisterAsService(self):
         from SimpleXMLRPCServer import SimpleXMLRPCServer
@@ -87,7 +91,7 @@ class Plastic(unittest.TestCase):
         thread.start_new_thread(server.serve_forever,())
         
         servId = self.hub.registerXMLRPC('testService',[self.ECHO],'http://localhost:7090')
-        myId = self.hub.registerNoCallBack('testScript')
+        myId = self.hub.registerNoCallBack(self.ownName)
         
         r = self.hub.request(myId,self.ECHO,['msg'])
         self.assertTrue(self.id in r)
@@ -105,7 +109,8 @@ class Plastic(unittest.TestCase):
         self.hub.unregister(myId)
         self.hub.unregister(servId)
 
-    def testRegisterAsAsynchService(self):
+#sadly it's too hard to clean up all the stuff that this one creates.
+    def noTestRegisterAsAsynchService(self):
         from SimpleXMLRPCServer import SimpleXMLRPCServer
         server = SimpleXMLRPCServer(('localhost',7091))
         server.register_introspection_functions()
@@ -119,8 +124,8 @@ class Plastic(unittest.TestCase):
         import thread
         thread.start_new_thread(server.serve_forever,())
         
-        servId = self.hub.registerXMLRPC('testService',[self.ECHO],'http://localhost:7090')
-        myId = self.hub.registerNoCallBack('testScript')
+        servId = self.hub.registerXMLRPC('testService',[self.ECHO],'http://localhost:7091')
+        myId = self.hub.registerNoCallBack(self.ownName)
         
         import time
         self.hub.requestAsynch(myId,self.ECHO,['msg'])
@@ -144,5 +149,5 @@ if __name__ == '__main__':
     import alltests
     alltests.setupAR()
     #run the tests.
-    unittest.TextTestRunner(verbosity=2).run(suite())
+    unittest.TextTestRunner(verbosity=1).run(suite())
     

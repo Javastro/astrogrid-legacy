@@ -3,6 +3,7 @@
 
 import unittest
 
+#NB - if SDSS is broken, all these tests will fail - no fault of ours.
 serviceQuery = 'http://casjobs.sdss.org/vo/DR4SIAP/SIAP.asmx/getSiapInfo?BANDPASS=ugriz&POS=180.0%2C2.0&SIZE=1.0&FORMAT=ALL'
 
 class Bug2157(unittest.TestCase):

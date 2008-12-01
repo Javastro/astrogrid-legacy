@@ -7,6 +7,8 @@ class CdsSesame(unittest.TestCase):
         self.s = ar.cds.sesame
     def testResolve(self):
         b =  self.s.resolve("crab")
+        import pprint
+        #pprint.pprint(b)
         self.assertEquals("crab",b['target'])
     def testResolveM32(self):
         b =  self.s.resolve("m32")

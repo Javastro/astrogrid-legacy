@@ -18,12 +18,17 @@ class Report(unittest.TestCase):
     def setUp(self):
         self.apps = ar.astrogrid.applications
         self.ms = ar.astrogrid.myspace
+        self.vosi = ar.ivoa.vosi
     def testApplicationExists(self):
         try:
             ar.ivoa.registry.getResource(testApp)
         except Fault:
             self.fail(testApp + " not found")
-        
+    def testApplicationIsUp(self):
+        services = self.apps.listServersProviding(testApp)
+        self.assertEqual(1,len(services),"Expected a single app server provider")
+        avail = self.vosi.checkAvailability(services[0]['id'])
+        self.assertTrue(avail['available'],"The app server is unavailable, other tests will fail: " + str(avail))
     def testReport(self):
         dict = self.apps.createTemplateStruct(testApp,'ADQL')
         dict['input']['Query']['value']='Select a.filterID From Filter as a' #simple query

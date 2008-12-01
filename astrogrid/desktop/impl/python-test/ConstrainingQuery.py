@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+#simple test to verify that pre-canned xqueries can be composed
 import unittest
 
 class ConstrainingQuery(unittest.TestCase):
@@ -11,9 +12,7 @@ class ConstrainingQuery(unittest.TestCase):
         return $r
         """
         rs = ar.ivoa.registry.xquerySearch(abellConeQuery)
-        print len(rs)
-        for r in rs:
-            print r['id']
+        self.assertTrue(len(rs) > 0)
 
 def suite():
     return unittest.TestLoader().loadTestsFromTestCase(ConstrainingQuery)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-#Launch AR, and then
-#Run all unit and system tests.
+#Run the automatable system tests.
+#pre-reqs - startup AR by hand
 
 import unittest
 import xmlrpclib
@@ -16,7 +16,10 @@ import CdsCoordinate
 import CdsSesame
 import CdsVizier
 import IvoaSiap
-
+import ConstrainingQuery
+import XQueryTrials
+import Plastic
+import Vosi
 
 def setupAR():
     """connect to the ar, initialize a global variable"""
@@ -38,7 +41,12 @@ if __name__ == '__main__':
         ,CdsCoordinate.suite()
         ,CdsSesame.suite()
         ,CdsVizier.suite()
-        ,IvoaSiap.suite()
+        ,ConstrainingQuery.suite()
+        ,IvoaSiap.suite() # to test
+
+        ,Plastic.suite()
+        ,Vosi.suite()
+        ,XQueryTrials.suite()
         
                                    ])
     #run the tests.
