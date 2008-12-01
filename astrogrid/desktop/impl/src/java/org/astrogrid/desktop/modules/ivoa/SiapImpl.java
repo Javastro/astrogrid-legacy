@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.19 2008/11/04 14:35:51 nw Exp $
+/*$Id: SiapImpl.java,v 1.20 2008/12/01 23:31:38 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,8 @@ import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.ivoa.SsapImpl.SsapDatasetSaver;
+import org.astrogrid.desktop.modules.ivoa.SsapImpl.SsapStructureBuilder;
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.StarTable;
@@ -111,17 +113,31 @@ public class SiapImpl extends DALImpl implements Siap {
 		return new SiaStructureBuilder();
 	}
 	
-	protected static class SiaStructureBuilder extends StructureBuilder {
-		public void startTable(final StarTable t) throws SAXException {
-			super.startTable(t);
-			// now iterate over the keys, mapping them from ucds if recognized.
-			for (int i = 0; i < keys.length; i++) {
-				final String term = Sia10Map.mapUCD(keys[i]);
-				if (term != null) {
-					keys[i] = term;
-				}
-			}
-		}
+	/** extend the ssapstructurebuilder (which checks for the 'results' table)
+	 * by code to map keys from UCDs to siap datamodel.
+	 * @author Noel.Winstanley@manchester.ac.uk
+	 * @since Nov 26, 20083:12:37 PM
+	 */
+	protected static class SiaStructureBuilder extends SsapStructureBuilder {
+	    public void startTable(final StarTable t) throws SAXException {
+	        super.startTable(t);
+	        // now iterate over the keys, mapping them from ucds if recognized.
+	        if (keys != null) {
+	            for (int i = 0; i < keys.length; i++) {
+	                final String term = Sia10Map.mapUCD(keys[i]);
+	                if (term != null) {
+	                    keys[i] = term;
+	                }
+	            }
+	        }
+	    }
+		
+	}
+	
+	/** uses the same code modifications as ssap to detect the 'results' table */
+	@Override
+	protected DatasetSaver newDatasetSaver() {
+	    return new SsapDatasetSaver();
 	}
 
 	protected URL findAccessURL(final Service s) throws InvalidArgumentException {
@@ -156,6 +172,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.20  2008/12/01 23:31:38  nw
+Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
+
 Revision 1.19  2008/11/04 14:35:51  nw
 javadoc polishing
 

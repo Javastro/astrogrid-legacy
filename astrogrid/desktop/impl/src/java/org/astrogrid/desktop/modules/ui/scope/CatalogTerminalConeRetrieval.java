@@ -24,7 +24,7 @@ public class CatalogTerminalConeRetrieval extends ConeRetrieval {
 	}
 	
 	/** table handler that just counts the number of rows */
-    public class CatalogTerminalTableHandler extends ConeTableHandler {
+    public class CatalogTerminalTableHandler extends BasicTableHandler {
 
 		/**
 		 * @param serviceNode

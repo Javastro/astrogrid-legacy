@@ -15,6 +15,8 @@ import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException.AccessReference_UNDETECTED;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException.InsufficientMetadata;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -195,12 +197,12 @@ public class SiapRetrieval extends AbstractRetriever {
 	}
         
     @Override
-    protected void isWorthProceeding() throws InsufficientMetadataException{
+    protected void isWorthProceeding() throws InsufficientMetadata{
     	if (imgCol == -1) {// maybe it's a non-standard service - give it a second chance.
     		imgCol = dataLinkCol;
     	}
     	if (imgCol == -1) {
-    	    throw new InsufficientMetadataException("Access Reference column not detected");
+    	    throw new AccessReference_UNDETECTED(); 
     	}
         super.isWorthProceeding();
     }  

@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
+import static org.easymock.EasyMock.*;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,8 +27,6 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.util.TablesImplUnitTest;
 import org.easymock.IArgumentMatcher;
-
-import static org.easymock.EasyMock.*;
 import org.w3c.dom.Document;
 
 /**
@@ -66,7 +66,7 @@ public class DalUnitTest extends TestCase {
 
 	public void testResolveEndpointURL() throws InvalidArgumentException, NotFoundException, URISyntaxException {
 	    replay(mockMs,mockReg);
-		URL resolved = dal.resolveEndpoint(new URI(u.toString()));
+		final URL resolved = dal.resolveEndpoint(new URI(u.toString()));
 		assertEquals(resolved,u);
 	}
 	/* @todo implement - if we can find a way to mock resources
@@ -83,13 +83,13 @@ public class DalUnitTest extends TestCase {
 	*/
 	
 	public void testResolveEndpointIVOUnknown() throws NotFoundException, ServiceException, URISyntaxException, InvalidArgumentException {
-		URI uri = new URI("ivo://wibble");
+		final URI uri = new URI("ivo://wibble");
 		expect(mockReg.getResource(uri)).andThrow(new NotFoundException());
 		replay(mockMs,mockReg);
 		try {
-			URL resolved = dal.resolveEndpoint(uri);
+			final URL resolved = dal.resolveEndpoint(uri);
 			fail("expected to fail");
-		} catch (NotFoundException e) {
+		} catch (final NotFoundException e) {
 			// ok
 		}
 	}
@@ -99,7 +99,7 @@ public class DalUnitTest extends TestCase {
 		try {
 			dal.resolveEndpoint(new URI("isbn:1023456"));
 			fail("expected to fail");
-		} catch (InvalidArgumentException e) {
+		} catch (final InvalidArgumentException e) {
 			// ok
 		}
 	}
@@ -114,7 +114,7 @@ public class DalUnitTest extends TestCase {
 		// expect no calls on myspace or reg.
         replay(mockMs,mockReg);
 
-		URL u1 = dal.addOption(u,"page","foo 32");
+		final URL u1 = dal.addOption(u,"page","foo 32");
 		assertNotNull(u1);
 		assertEquals(u.getHost(),u1.getHost());
 		assertEquals(u.getPath(),u1.getPath());
@@ -126,8 +126,8 @@ public class DalUnitTest extends TestCase {
 	public void testAddOptionToExistingOptions() throws InvalidArgumentException {
 		// expect no calls on myspace or reg.
         replay(mockMs,mockReg);
-		URL url1 = dal.addOption(u,"page","foo 32");
-		URL url2 = dal.addOption(url1,"length","32");
+		final URL url1 = dal.addOption(u,"page","foo 32");
+		final URL url2 = dal.addOption(url1,"length","32");
 		assertNotNull(url2);
 		assertEquals("page=foo+32&length=32",url2.getQuery());
 	}
@@ -135,8 +135,8 @@ public class DalUnitTest extends TestCase {
 	public void testAddOptionThatIsAlreadyPresent() throws InvalidArgumentException {
 		// expect no calls on myspace or reg.
         replay(mockMs,mockReg);
-		URL url1 = dal.addOption(u,"page","foo 32");
-		URL url2 = dal.addOption(url1,"page","foo 32");
+		final URL url1 = dal.addOption(u,"page","foo 32");
+		final URL url2 = dal.addOption(url1,"page","foo 32");
 		assertNotNull(url2);
 		assertEquals("page=foo+32",url2.getQuery());
 	}
@@ -147,13 +147,13 @@ public class DalUnitTest extends TestCase {
 		try {
 			dal.addOption(null,"foo","bar");
 			fail("expected to fail");
-		} catch(InvalidArgumentException e) {
+		} catch(final InvalidArgumentException e) {
 			//ok
 		}
 		try {
 			dal.addOption(u,null,"bar");
 			fail("expected to fail");
-		} catch(InvalidArgumentException e) {
+		} catch(final InvalidArgumentException e) {
 			//ok
 		}	
 	}
@@ -162,7 +162,7 @@ public class DalUnitTest extends TestCase {
 	public void testAddNullOptionValue() throws InvalidArgumentException {
 		// expect no calls on myspace or reg.
         replay(mockMs,mockReg);	
-		URL u1 = dal.addOption(u,"page",null);
+		final URL u1 = dal.addOption(u,"page",null);
 		assertNotNull(u1);
 		assertEquals(u.getHost(),u1.getHost());
 		assertEquals(u.getPath(),u1.getPath());
@@ -174,7 +174,7 @@ public class DalUnitTest extends TestCase {
 	public void testAddEmptyOptionValue() throws InvalidArgumentException {
 		// expect no calls on myspace or reg.
         replay(mockMs,mockReg);
-		URL u1 = dal.addOption(u,"page","");
+		final URL u1 = dal.addOption(u,"page","");
 		assertNotNull(u1);
 		assertEquals(u.getHost(),u1.getHost());
 		assertEquals(u.getPath(),u1.getPath());
@@ -196,7 +196,7 @@ public class DalUnitTest extends TestCase {
 		assertEquals(0,u.getQuery().length());
 		
 		//pass it into the dal code.
-		URL u1 = dal.addOption(u,"page","foo 32");
+		final URL u1 = dal.addOption(u,"page","foo 32");
 		assertNotNull(u1);
 		assertEquals(u.getHost(),u1.getHost());
 		assertEquals(u.getPath(),u1.getPath());
@@ -214,7 +214,7 @@ public class DalUnitTest extends TestCase {
 		assertEquals("foo=bar&",u.getQuery());
 		
 		//pass it into the dal code.
-		URL u1 = dal.addOption(u,"page","foo 32");
+		final URL u1 = dal.addOption(u,"page","foo 32");
 		assertNotNull(u1);
 		assertEquals(u.getHost(),u1.getHost());
 		assertEquals(u.getPath(),u1.getPath());
@@ -225,7 +225,7 @@ public class DalUnitTest extends TestCase {
 	public void testExecute() throws Exception {
 		assertNotNull(localSiapURL);
         replay(mockMs,mockReg);
-		Map[] r = dal.execute(localSiapURL);
+		final Map[] r = dal.execute(localSiapURL);
 		assertNotNull(r);
 		assertTrue(r.length > 0);
 		for (int i = 0; i < r.length; i++) {
@@ -234,7 +234,7 @@ public class DalUnitTest extends TestCase {
 			if (i > 0) {
 				assertFalse(r[0].values().equals(r[i].values()));
 			}
-			for (Iterator j = r[i].values().iterator(); j.hasNext() ; ) {
+			for (final Iterator j = r[i].values().iterator(); j.hasNext() ; ) {
 				assertNotNull(j.next());
 			}
 		}
@@ -244,7 +244,7 @@ public class DalUnitTest extends TestCase {
 		try {
 			dal.execute(nonCompliantSiapService);
 			fail("expected to fail");
-		} catch (ServiceException e) {
+		} catch (final ServiceException e) {
 			// ok
 		}
 		
@@ -253,7 +253,7 @@ public class DalUnitTest extends TestCase {
 	public void testExecuteVotable() throws ServiceException {
 		assertNotNull(localSiapURL);
         replay(mockMs,mockReg);
-		Document d = dal.executeVotable(localSiapURL);
+		final Document d = dal.executeVotable(localSiapURL);
 		assertNotNull(d);
 	}
 	
@@ -261,7 +261,7 @@ public class DalUnitTest extends TestCase {
 		try {
 			dal.executeVotable(nonCompliantSiapService);
 			fail("expected to fail");
-		} catch (ServiceException e) {
+		} catch (final ServiceException e) {
 			// ok
 		}		
 	}
@@ -270,8 +270,8 @@ public class DalUnitTest extends TestCase {
 	 * Test method for 'org.astrogrid.desktop.modules.ivoa.DALImpl.saveResults(URL, URI)'
 	 */
 	public void testExecuteAndSaveIvo() throws URISyntaxException, NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException {
-		URI location = new URI("ivo://org.astrogrid/test#storage/foo/result.vot");
-		mockMs.copyURLToContent(localSiapURL,location);
+		final URI location = new URI("ivo://org.astrogrid/test#storage/foo/result.vot");
+		mockMs.copyURLToContent((URL)anyObject(),eq(location));
         replay(mockMs,mockReg);
 		dal.executeAndSave(localSiapURL,location);
         verify(mockMs,mockReg);
@@ -290,7 +290,7 @@ public class DalUnitTest extends TestCase {
 		        ); // expected values are ignored in this case - just need to tbe the correct type.
 	
 		// find size of the dataset.
-		int resultSize = dal.execute(localSiapURL).length;
+		final int resultSize = dal.execute(localSiapURL).length;
 		// call this method as many times as the dataset size.
 		expectLastCall().times(resultSize);
         replay(mockMs,mockReg);
@@ -305,8 +305,8 @@ public class DalUnitTest extends TestCase {
 		        saveLocation(location)); // expected values are ignored in this case - just need to tbe the correct type.
 				
 		// find size of the dataset.
-		int resultSize = dal.execute(localSiapURL).length;
-		List subset = new ArrayList();
+		final int resultSize = dal.execute(localSiapURL).length;
+		final List subset = new ArrayList();
 		subset.add(new Integer(0));
 		subset.add(new Integer(resultSize -1));
 		subset.add(new Integer(resultSize / 2));
@@ -318,20 +318,20 @@ public class DalUnitTest extends TestCase {
         verify(mockMs,mockReg);
 
 	}
-	public static URI saveLocation(URI in) {
+	public static URI saveLocation(final URI in) {
 	    reportMatcher(new SaveLocationMatcher(in));
 	    return null;
 	}
 	private static class SaveLocationMatcher implements IArgumentMatcher {
 	    private final Object location;
 	    
-        public void appendTo(StringBuffer sb) {
+        public void appendTo(final StringBuffer sb) {
             sb.append("saveLocation(")
             .append(location)
             .append(")");
         }
 
-        public boolean matches(Object actual) {
+        public boolean matches(final Object actual) {
             if (actual != null && actual instanceof URI ) {
                 return actual.toString().startsWith(location.toString() + "/");            
             } else {
@@ -339,7 +339,7 @@ public class DalUnitTest extends TestCase {
             }           
         }
 
-        public SaveLocationMatcher(Object location) {
+        public SaveLocationMatcher(final Object location) {
             super();
             this.location = location;
         }
@@ -352,7 +352,7 @@ public static class TestDAL extends DALImpl {
 	 * @param reg
 	 * @param ms
 	 */
-	public TestDAL(Registry reg, MyspaceInternal ms) {
+	public TestDAL(final Registry reg, final MyspaceInternal ms) {
 		super(reg, ms);
 	}
 
@@ -368,7 +368,7 @@ public static class TestDAL extends DALImpl {
 		throw new NotImplementedException("not implemntet");
 	}
 
-    protected URL findAccessURL(Service s) throws InvalidArgumentException {
+    protected URL findAccessURL(final Service s) throws InvalidArgumentException {
         return null;
     }
 

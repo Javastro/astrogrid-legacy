@@ -15,6 +15,8 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.StapCapability;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException.AccessReference_UNDETECTED;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException.InsufficientMetadata;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -315,9 +317,9 @@ public class StapRetrieval extends AbstractRetriever {
 		}
 
 		@Override
-        protected void isWorthProceeding() throws InsufficientMetadataException {
+        protected void isWorthProceeding() throws InsufficientMetadata {
 		    if (accessCol == -1) {
-		        throw new InsufficientMetadataException("Access Reference column not detected");
+		        throw new AccessReference_UNDETECTED(); 
 		    }
 		}  
 

@@ -9,8 +9,6 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 public interface AstroscopeTableHandler extends VotableHandler {
     /** return a count of the number of rows parsed - or {@link QueryResultCollector#ERROR} if failed to parse */
     public int getResultCount();
-    /** return an optional message about the results of the parse */
-    public String getMessage();
     /** return the service tree node with all the results attached to it */
     public TreeNode getServiceNode();
 

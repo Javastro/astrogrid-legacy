@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.15 2008/11/04 14:35:51 nw Exp $
+/*$Id: SsapImpl.java,v 1.16 2008/12/01 23:31:39 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,9 @@ import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.xml.sax.SAXException;
+
+import uk.ac.starlink.table.StarTable;
 
 /** Simple Spectral Access client.
  * complies with v1.04 of the SSAP spec.
@@ -119,12 +122,105 @@ public class SsapImpl extends DALImpl implements Ssap {
         }
     }
   
+    /** overridden to inject our own structure builder */
+    @Override
+    protected StructureBuilder newStructureBuilder() {
+        return new SsapStructureBuilder();
+    }
+    
+    /** An Extended structyre builder that selects one resource table out
+     * of the response, and ignores the rest.
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Nov 26, 20082:54:38 PM
+     */
+    public static class SsapStructureBuilder extends StructureBuilder {
+        boolean skipNextTable = false;
+        boolean resultsTableParsed = false;
+        
+        @Override
+        public void resource(final String name, final String id, final String type)
+                throws SAXException {
+            skipNextTable = ! "results".equalsIgnoreCase(type);
+            
+        }
+        
+        @Override
+        public void startTable(final StarTable t) throws SAXException {
+            if (skipNextTable || resultsTableParsed) {
+                return;
+            }
+            super.startTable(t);
+        }
+        
+        @Override
+        public void rowData(final Object[] cells) throws SAXException {
+            if (skipNextTable || resultsTableParsed) {
+                return;
+            }
+            super.rowData(cells);
+        }
+        
+        @Override
+        public void endTable() throws SAXException {
+            if (skipNextTable || resultsTableParsed) {
+                return;
+            }
+            resultsTableParsed = true;
+            super.endTable();
+        }
+    }
+    
+    @Override
+    protected DatasetSaver newDatasetSaver() {
+        return new SsapDatasetSaver();
+    }
+    
+    /** same algorithmic adjustments as SsapStructureBuilder */
+    public static class SsapDatasetSaver extends DatasetSaver {
+        boolean skipNextTable = false;
+        boolean resultsTableParsed = false;
+        
+        @Override
+        public void resource(final String name, final String id, final String type)
+                throws SAXException {
+            skipNextTable = ! "results".equalsIgnoreCase(type);
+            
+        }
+        
+        @Override
+        public void startTable(final StarTable t) throws SAXException {
+            if (skipNextTable || resultsTableParsed) {
+                return;
+            }
+            super.startTable(t);
+        }
+        
+        @Override
+        public void rowData(final Object[] cells) throws SAXException {
+            if (skipNextTable || resultsTableParsed) {
+                return;
+            }
+            super.rowData(cells);
+        }
+        
+        @Override
+        public void endTable() throws SAXException {
+            if (skipNextTable || resultsTableParsed) {
+                return;
+            }
+            resultsTableParsed = true;
+            super.endTable();
+        }
+    }
     
 }
 
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.16  2008/12/01 23:31:39  nw
+Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
+
 Revision 1.15  2008/11/04 14:35:51  nw
 javadoc polishing
 

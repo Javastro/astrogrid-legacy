@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.25 2008/11/04 14:35:48 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.26 2008/12/01 23:33:44 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,8 @@ import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException.AccessReference_UNDETECTED;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException.InsufficientMetadata;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -143,17 +145,9 @@ public class SsapRetrieval extends AbstractRetriever {
         @Override
         public void resource(final String name, final String id, final String type)
                 throws SAXException {
-            skipNextTable = ! "results".equals(type);
+            skipNextTable = ! "results".equalsIgnoreCase(type);
         }
         
-        @Override
-        public void info(final String name, final String value, final String content)
-                throws SAXException {
-            // assume we're inside the 'result' resource.
-            if ("QUERY_STATUS".equals(name) && ! "OK".equalsIgnoreCase(value)) {
-                throw new DalProtocolException(content != null ? content : value);
-            }
-        }
                 
         @Override
         public void startTable(final StarTable starTable) throws SAXException {
@@ -396,13 +390,13 @@ public class SsapRetrieval extends AbstractRetriever {
     	}
         
         @Override
-        protected void isWorthProceeding() throws InsufficientMetadataException {
+        protected void isWorthProceeding() throws InsufficientMetadata {
             // minimal subset of stuff.
             if (posCol == -1) { // check for ra and dec then
                 super.isWorthProceeding();
             }
             if(urlCol == -1) {
-                throw new InsufficientMetadataException("Access Reference column not detected");
+                throw new AccessReference_UNDETECTED();
             }
         
         }
@@ -447,6 +441,9 @@ public class SsapRetrieval extends AbstractRetriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.26  2008/12/01 23:33:44  nw
+Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
+
 Revision 1.25  2008/11/04 14:35:48  nw
 javadoc polishing
 

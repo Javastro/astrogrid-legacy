@@ -16,17 +16,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.modules.ivoa.DALImpl.BasicErrorChecker;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl.ListServicesRegistryQuerier;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException.Dec_UNDETECTED;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException.InsufficientMetadata;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException.RA_UNDETECTED;
 import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler.VotableHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import uk.ac.starlink.table.ColumnInfo;
-import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.StarTable;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
@@ -160,7 +163,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     /** sax-style parser for votables - these methods get called in callbacks, sax-style, as the document whizzes by, instead of having an in-memory model
     * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Dec-2005
      */
-   public class BasicTableHandler implements AstroscopeTableHandler {
+   public class BasicTableHandler extends BasicErrorChecker implements AstroscopeTableHandler {
 		/**
 		 * Logger for this class
 		 */
@@ -207,7 +210,6 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
        }
        protected TreeNode serviceNode;
        protected int resultCount = 0;
-       protected String message = null;
        protected int raCol = -1;
        protected int decCol = -1;
        protected String[] titles;
@@ -215,9 +217,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
        public final int getResultCount() {
            return resultCount;
        }
-       public final String getMessage() {
-           return message;
-       }
+ 
        public final TreeNode getServiceNode() {
            return serviceNode;
        } 
@@ -231,23 +231,8 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
             reportProgress("Parsing response");
     	newTableExtensionPoint(starTable);
     	// get the info.
-    	DescribedValue qStatus = starTable.getParameterByName("Error");
-    	if (qStatus != null) {
-    	    
-    	    message = qStatus.getInfo().getDescription();
-    	    if (message == null) {
-    	        message = qStatus.getValueAsString(1000);
-    	    }
-    	    throw new DalProtocolException(message);
-    	}
-    	qStatus = starTable.getParameterByName("QUERY_STATUS");
-    	if (qStatus != null && qStatus.getValue() != null &&  ! "OK".equalsIgnoreCase(qStatus.getValueAsString(1000))) {
-            message = qStatus.getInfo().getDescription();
-            if (message == null) {
-                message = qStatus.getValueAsString(1000);
-            }
-    	    throw new DalProtocolException(message);
-    	}
+    	checkStarTableErrors(starTable);
+
         titles = new String[starTable.getColumnCount()];
         for (int col = 0; col < starTable.getColumnCount(); col++) {
             final ColumnInfo columnInfo = starTable.getColumnInfo(col);
@@ -263,6 +248,8 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
             titles[col] = columnInfo.getName() + " (" + columnInfo.getUCD() + ")";
         }            
     }
+    
+    
    // extension point for subclasses - override thie to be passed each 
     // column info object - use for extracting other positions.
    protected void startTableExtensionPoint(final int col,final ColumnInfo columnInfo) {
@@ -409,34 +396,14 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
      otherwise, we just skip it.
      if table is acceptable, just passes, else should throw a descriptive exception. 
      */
-    protected void isWorthProceeding() throws InsufficientMetadataException {
+    protected void isWorthProceeding() throws InsufficientMetadata {
         if (raCol == -1) {
-            throw new InsufficientMetadataException("RA column not detected");
+            throw new RA_UNDETECTED();
         }
         if (decCol == -1) {
-            throw new InsufficientMetadataException("Dec column not detected");
+            throw new Dec_UNDETECTED();
         }        
     }
-
-// methods for inspecting votable content outside tables.
-    public void info(final String name, final String value, final String content)
-            throws SAXException {
-        // unused in this impl
-    }
-
-
-    public void param(final String name, final String value, final String description)
-            throws SAXException {
-        // unused in this impl        
-    }
-
-
-    public void resource(final String name, final String id, final String type)
-            throws SAXException {
-        // unused in this impl        
-    }
-
-     
     
     } //end of table parser.
 

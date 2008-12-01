@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.22 2008/10/01 09:53:43 nw Exp $
+/*$Id: DALImpl.java,v 1.23 2008/12/01 23:31:49 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.desktop.modules.ivoa;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,6 +29,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,7 +45,9 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
-import org.astrogrid.io.Piper;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException;
+import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler;
+import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler.VotableHandler;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -52,8 +55,6 @@ import org.xml.sax.XMLReader;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.StarTable;
-import uk.ac.starlink.votable.TableContentHandler;
-import uk.ac.starlink.votable.TableHandler;
 
 
 /** Abstract class for implemntations of HTTP-GET based DAL standards
@@ -79,7 +80,7 @@ public abstract class DALImpl implements Dal{
 
 
     /** utility method for subclasses to use to resolve an abstract service id to url endpoint
-     * @fixme replace this general class with protocol-specific methods.
+     * @TODO this will be involved in handling multiple similar capabilities in the same resource.
      * @param arg0 service id (ivo://) or endpoint (http://)
      * @return resolved, or pass-thru service endpoint.
      * @throws InvalidArgumentException if arg0 is an unknown scheme of URI.
@@ -127,7 +128,7 @@ public abstract class DALImpl implements Dal{
      * @return
      * @throws InvalidArgumentException
      */
-    protected URL findFirstAccessURL( final Service s)
+    private URL findFirstAccessURL( final Service s)
             throws InvalidArgumentException {
         if (s.getCapabilities().length == 0 || s.getCapabilities()[0].getInterfaces().length == 0 || s.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length == 0){
         	throw new InvalidArgumentException(s.getId() + " does not provide an access URL");
@@ -177,31 +178,70 @@ public abstract class DALImpl implements Dal{
     }
     
     public final Map[] execute(final URL arg0) throws ServiceException {
-		try {
-			final SAXParserFactory newInstance = SAXParserFactory.newInstance();
-			newInstance.setValidating(false);
-            final XMLReader parser = newInstance.newSAXParser().getXMLReader();
-        final TableContentHandler votHandler = new TableContentHandler(false);
-        votHandler.setReadHrefTables(true);
-        final StructureBuilder sb = newStructureBuilder();
-        votHandler.setTableHandler(sb);
-        parser.setContentHandler(votHandler);
-        parser.parse(	arg0.toString());
-        return sb.getResult();
-		} catch (final Exception x) {
-			throw new ServiceException(new ExceptionFormatter().format(x));
-		}
-	}
-
-
-    
-    public final Document executeVotable(final URL arg0) throws ServiceException {
         try {
-            return XMLUtils.newDocument(arg0.toString());
+            final XMLReader parser = createParser();
+            final VotableContentHandler votHandler = new VotableContentHandler(false);
+            votHandler.setReadHrefTables(true);
+            final StructureBuilder sb = newStructureBuilder();
+            votHandler.setVotableHandler(sb);
+            parser.setContentHandler(votHandler);
+            parser.parse(	arg0.toString());
+            return sb.getResult();
+        } catch (final Exception x) {
+            throw new ServiceException(new ExceptionFormatter().format(x));
+        }
+    }
+
+    /** Simply create a parser.
+     * @return
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
+    private XMLReader createParser() throws SAXException,
+            ParserConfigurationException {
+        final SAXParserFactory newInstance = SAXParserFactory.newInstance();
+        newInstance.setValidating(false);
+        final XMLReader parser = newInstance.newSAXParser().getXMLReader();
+        return parser;
+    }
+
+    public final Document executeVotable(final URL arg0) throws ServiceException {
+        final File f = downloadAndValidate(arg0);
+        try {
+            return XMLUtils.newDocument(f.toURL().toString());
         } catch (final Exception e) {
             throw new ServiceException(e);
         }
     }
+    
+    /** download a remote votable, validate, and then provide access to the cached file
+     * 
+     * @param arg0 the url to fetch.
+     * @return input stream of cached content
+     * @throws IOException 
+     */
+    private File downloadAndValidate(final URL arg0) throws ServiceException{
+        try {
+            // create a temporary file.
+            final File f = File.createTempFile("dalCached",".vot");
+            f.deleteOnExit();
+            //fetch URL down to this file.
+            FileUtils.copyURLToFile(arg0,f);
+            //now parse and validate this.
+            final XMLReader parser = createParser();
+            final VotableContentHandler votHandler = new VotableContentHandler(false);
+            votHandler.setReadHrefTables(true);
+            final StructureBuilder sb = newStructureBuilder();
+            votHandler.setVotableHandler(sb);
+            parser.setContentHandler(votHandler);
+            parser.parse(f.toURL().toString());
+            // ok. now return the temporary file.
+            return f;
+        } catch (final Exception x) {
+            throw new ServiceException(new ExceptionFormatter().format(x));
+        }        
+    }
+    
     /**
      * @see org.astrogrid.acr.nvo.Cone#getResults(java.net.URL)
      */
@@ -212,27 +252,25 @@ public abstract class DALImpl implements Dal{
     public final void saveResults(final URL arg0, final URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
     	executeAndSave(arg0,arg1);
     }
-    /**
-     * @throws InvalidArgumentException
-     * @throws ServiceException
-     * @throws SecurityException
-     * @see org.astrogrid.acr.nvo.Cone#saveResults(java.net.URL, java.net.URI)
-     */
+
     public final void executeAndSave(final URL arg0, final URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
+        final File f = downloadAndValidate(arg0);
         if (arg1.getScheme().equals("ivo")) { // save to myspace - can optimize this
             try {
-                ms.copyURLToContent(arg0,arg1);
+                ms.copyURLToContent(f.toURL(),arg1);
             } catch (final NotFoundException e) {
                 throw new InvalidArgumentException(e);
             } catch (final NotApplicableException e) {
                 throw new InvalidArgumentException(e);
+            } catch (final MalformedURLException x) {
+                throw new ServiceException(x);
             }
         } else {
             OutputStream os = null;
             try {
                 os = getOutputStream(arg1);
-                final InputStream is = arg0.openStream();
-                Piper.pipe(is,os);
+                final InputStream is = FileUtils.openInputStream(f);
+                IOUtils.copy(is,os);
             } catch (final FileNotFoundException e) {
             	throw new InvalidArgumentException(e);
             } catch (final MalformedURLException e) {
@@ -240,39 +278,30 @@ public abstract class DALImpl implements Dal{
             } catch (final IOException e) {
                 throw new ServiceException(e);
             } finally {
-                if (os != null) {
-                    try {
-                        os.close();
-                    } catch (final Exception e) {
-                        logger.warn("Exception closing output stream",e);
-                    }
-                }
+                IOUtils.closeQuietly(os);               
             }
         }
     }
-
-	public int saveDatasets(final URL query, final URI root) throws SecurityException, ServiceException, InvalidArgumentException {
-		try {
-			final SAXParserFactory newInstance = SAXParserFactory.newInstance();
-			newInstance.setValidating(false);
-            final XMLReader parser = newInstance.newSAXParser().getXMLReader();
-        final TableContentHandler votHandler = new TableContentHandler(false);
-        votHandler.setReadHrefTables(true);
-        final DatasetSaver saver = newDatasetSaver();
-        saver.setRoot(root);
-        votHandler.setTableHandler(saver);
-        parser.setContentHandler(votHandler);
-        parser.parse(	query.toString());
-        return doSaveDatasets(saver);
-
-		} catch (final SAXException x) {
-			throw new ServiceException(new ExceptionFormatter().format(x));
-		} catch (final ParserConfigurationException x) {
-			throw new ServiceException(new ExceptionFormatter().format(x));
-		} catch (final IOException x) {
-			throw new ServiceException(new ExceptionFormatter().format(x));
-		}		
-	}
+    
+    public int saveDatasets(final URL query, final URI root) throws SecurityException, ServiceException, InvalidArgumentException {
+        try {
+            final XMLReader parser = createParser();
+            final VotableContentHandler votHandler = new VotableContentHandler(false);
+            votHandler.setReadHrefTables(true);
+            final DatasetSaver saver = newDatasetSaver();
+            saver.setRoot(root);
+            votHandler.setVotableHandler(saver);
+            parser.setContentHandler(votHandler);
+            parser.parse(query.toString());
+            return doSaveDatasets(saver);
+        } catch (final SAXException x) {
+            throw new ServiceException(new ExceptionFormatter().format(x));
+        } catch (final ParserConfigurationException x) {
+            throw new ServiceException(new ExceptionFormatter().format(x));
+        } catch (final IOException x) {
+            throw new ServiceException(new ExceptionFormatter().format(x));
+        }			
+    }
 
 	/**
 	 * @param saver
@@ -280,14 +309,14 @@ public abstract class DALImpl implements Dal{
 	 * @throws ServiceException
 	 * @throws SecurityException
 	 */
-	private int doSaveDatasets(final DatasetSaver saver) throws InvalidArgumentException, ServiceException, SecurityException {
-		int saved = 0;
-		for (final Iterator i = saver.getResult().entrySet().iterator(); i.hasNext(); ) {
-			saved++;
-        	final Map.Entry entry = (Map.Entry)i.next();
-        	final URL u = (URL)entry.getKey();
-        	final URI location = (URI)entry.getValue();
-        	if (location.getScheme().equals("ivo")) {
+    private int doSaveDatasets(final DatasetSaver saver) throws InvalidArgumentException, ServiceException, SecurityException {
+        int saved = 0;
+        for (final Iterator i = saver.getResult().entrySet().iterator(); i.hasNext(); ) {
+            saved++;
+            final Map.Entry entry = (Map.Entry)i.next();
+            final URL u = (URL)entry.getKey();
+            final URI location = (URI)entry.getValue();
+            if (location.getScheme().equals("ivo")) {
                 try {
                     ms.copyURLToContent(u,location);
                 } catch (final NotFoundException e) {
@@ -295,32 +324,27 @@ public abstract class DALImpl implements Dal{
                 } catch (final NotApplicableException e) {
                     throw new InvalidArgumentException(e);
                 }        		
-        	} else {
-        	     OutputStream os = null;
-                 try {
-                	 os = getOutputStream(location);
-                     final InputStream is = u.openStream();
-                     Piper.pipe(is,os);
-                 
-                 } catch (final FileNotFoundException x) {
-                	 throw new InvalidArgumentException(x);
-                 } catch (final MalformedURLException x) {
-                	 throw new InvalidArgumentException(x);
-                 }  catch (final IOException e) {
-                     throw new ServiceException(e);
-				} finally {
-                     if (os != null) {
-                         try {
-                             os.close();
-                         } catch (final Exception e) {
-                             logger.warn("Exception closing output stream",e);
-                         }
-                     }
-                 }        		
-        	}
+            } else {
+                OutputStream os = null;
+                InputStream is = null;
+                try {
+                    os = getOutputStream(location);
+                    is = u.openStream();
+                    IOUtils.copy(is,os);
+                } catch (final FileNotFoundException x) {
+                    throw new InvalidArgumentException(x);
+                } catch (final MalformedURLException x) {
+                    throw new InvalidArgumentException(x);
+                }  catch (final IOException e) {
+                    throw new ServiceException(e);
+                } finally {
+                    IOUtils.closeQuietly(os);
+                    IOUtils.closeQuietly(is);
+                }        		
+            }
         }
-		return saved;
-	}
+        return saved;
+    }
 
 	/** returns a stream for any non-myspace URI.
 	 * @param location
@@ -331,67 +355,115 @@ public abstract class DALImpl implements Dal{
 	 */
 	private OutputStream getOutputStream(final URI location) throws FileNotFoundException, IOException, MalformedURLException {
 		OutputStream os;
-		if (location.getScheme().equals("file")) { //FIXME - this code needs to be factored out and reused
-			 os = new FileOutputStream(new File(location));
+		if (location.getScheme().equals("file")) { 
+			 os = FileUtils.openOutputStream(new File(location));
 		 } else {
 			 os = location.toURL().openConnection().getOutputStream();
 		 }
 		return os;
 	}
 
-	public int saveDatasetsSubset(final URL query, final URI root, final List rows) throws SecurityException, ServiceException, InvalidArgumentException {
-		try {
-			final SAXParserFactory newInstance = SAXParserFactory.newInstance();
-			newInstance.setValidating(false);
-            final XMLReader parser = newInstance.newSAXParser().getXMLReader();
-        final TableContentHandler votHandler = new TableContentHandler(false);
-        votHandler.setReadHrefTables(true);
-        final DatasetSaver saver = newDatasetSaver();
-        saver.setRoot(root);
-        saver.setSubset(rows);
-        votHandler.setTableHandler(saver);
-        parser.setContentHandler(votHandler);
-        parser.parse(	query.toString());
-        return doSaveDatasets(saver);
-
-		} catch (final SAXException x) {
-			throw new ServiceException(new ExceptionFormatter().format(x));
-		} catch (final ParserConfigurationException x) {
-			throw new ServiceException(new ExceptionFormatter().format(x));
-		} catch (final IOException x) {
-			throw new ServiceException(new ExceptionFormatter().format(x));
-		}		        
-
+	public int saveDatasetsSubset(final URL query, final URI root, final List rows) throws SecurityException, ServiceException, InvalidArgumentException {		
+        try {
+            final XMLReader parser = createParser();
+            final VotableContentHandler votHandler = new VotableContentHandler(false);
+            votHandler.setReadHrefTables(true);
+            final DatasetSaver saver = newDatasetSaver();
+            saver.setRoot(root);
+            saver.setSubset(rows);
+            votHandler.setVotableHandler(saver);
+            parser.setContentHandler(votHandler);
+            parser.parse(   query.toString());
+            return doSaveDatasets(saver);
+        } catch (final SAXException x) {
+            throw new ServiceException(new ExceptionFormatter().format(x));
+        } catch (final ParserConfigurationException x) {
+            throw new ServiceException(new ExceptionFormatter().format(x));
+        } catch (final IOException x) {
+            throw new ServiceException(new ExceptionFormatter().format(x));
+        }   
 	}
 	// factory method - allows subclasses to substitute their own implementaiton.
 	protected StructureBuilder newStructureBuilder() {
 		return new StructureBuilder();
 	}
+	
+	/** basic table handler which parses for errors -
+	 * forces all subclasses to be votableHandler, which means
+	 * thay they need to consider all forms that errrors can be reported in*/
+	public abstract static class BasicErrorChecker implements VotableHandler {
+
+	    /** check a star table for parameters called 'Error' or 'Query_STARTUS'
+	     * 
+	     *  this method should be called from 'startTable'*/
+	    public void checkStarTableErrors(final StarTable starTable) throws SAXException {
+	        DescribedValue qStatus = starTable.getParameterByName("Error");
+	        String message;
+	        if (qStatus != null) {
+	            
+	            message = qStatus.getInfo().getDescription();
+	            if (message == null) {
+	                message = qStatus.getValueAsString(1000);
+	            }
+	            throw new DalProtocolException.ERROR(message);
+	        }
+	        qStatus = starTable.getParameterByName("QUERY_STATUS");	        
+	        if (qStatus != null && qStatus.getValue() != null &&  ! "OK".equalsIgnoreCase(qStatus.getValueAsString(1000))) {
+	            message = qStatus.getInfo().getDescription();
+	            if (message == null) {
+	                message = qStatus.getValueAsString(1000);
+	            }
+	            throw new DalProtocolException.QUERY_STATUS(message);
+	        }	        
+	    }
+	    
+	 // methods for inspecting votable content outside tables.
+	    /** check for a info field called 'Error' or querystatus != OK */
+        public void info(final String name, final String value, final String content)
+                throws SAXException {
+               checkForError(name,value,content);
+               checkForQueryStatus(name,value,content);
+        }
+        /** check for an external param called 'Error', or querystatus != OK */
+        public void param(final String name, final String value, final String description)
+                throws SAXException {
+           checkForError(name,value,description);
+           checkForQueryStatus(name,value,description);           
+        }
+        
+        private void checkForError(final String name,final String value,final String description) throws DalProtocolException {
+            if ("error".equalsIgnoreCase(name)) {
+                final String message = description != null ? description : value;
+                throw new DalProtocolException.ERROR(message);
+            }
+        }
+        
+        private void checkForQueryStatus(final String name,final String value,final String description) throws DalProtocolException {
+            if ("query_status".equalsIgnoreCase(name) && ! "OK".equalsIgnoreCase(value)) {
+                final String message = description != null ? description : value;
+                throw new DalProtocolException.QUERY_STATUS(message);
+            }
+        }        
+  
+        /** hook called when a new resource is encountered */
+	    public void resource(final String name, final String id, final String type)
+	            throws SAXException {
+	        // unused in this impl        
+	    }
+
+	}
+	
+	
 	/** table handler that builds an array of maps as a result of parsing a votable */
-	protected static class StructureBuilder implements TableHandler {
+	protected static class StructureBuilder extends BasicErrorChecker{
 		List result = new ArrayList();
 		public Map[] getResult() {
 			return (Map[])result.toArray(new Map[result.size()]);
 		}
-		protected String[] keys;
+		protected String[] keys = null;
 		int colCount;
 		public void startTable(final StarTable t) throws SAXException {
-		      DescribedValue qStatus = t.getParameterByName("Error");
-		        if (qStatus != null) {
-		            String message = qStatus.getInfo().getDescription();
-		            if (message == null) {
-		                message = qStatus.getValueAsString(1000);
-		            }
-		            throw new SAXException(message);
-		        }
-		        qStatus = t.getParameterByName("QUERY_STATUS");		        
-		        if (qStatus != null && qStatus.getValue() != null &&  ! "OK".equalsIgnoreCase(qStatus.getValueAsString(1000))) {
-	                    String message = qStatus.getInfo().getDescription();
-	                    if (message == null) {
-	                        message = qStatus.getValueAsString(1000);
-	                    }
-	                    throw new SAXException(message);		            
-		        }
+		    checkStarTableErrors(t);
 			colCount = t.getColumnCount();
 			keys = new String[colCount];
 			for (int col = 0; col < colCount; col++) {
@@ -418,7 +490,7 @@ public abstract class DALImpl implements Dal{
 		return new DatasetSaver();
 	}
 	/** table handler that saves linked data to disk */
-	protected static class DatasetSaver implements TableHandler {
+	protected static class DatasetSaver extends BasicErrorChecker {
 		public void setSubset(final List rows) {
 			subset = true;
 			this.rows = rows;
@@ -444,6 +516,7 @@ public abstract class DALImpl implements Dal{
 		}
 		int colCount;
 		public void startTable(final StarTable t) throws SAXException {
+		    checkStarTableErrors(t);
 			colCount = t.getColumnCount();
 			for (int col = 0; col < colCount; col++) {
 				final ColumnInfo nfo = t.getColumnInfo(col);
@@ -481,6 +554,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.23  2008/12/01 23:31:49  nw
+Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
+
 Revision 1.22  2008/10/01 09:53:43  nw
 removed final modifier to allow override.
 

@@ -8,7 +8,6 @@ import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
@@ -59,35 +58,7 @@ public class ConeRetrieval extends AbstractRetriever {
     }
     /** can be overridden to provide an alternat table handler */
 	protected BasicTableHandler createTableHandler(final TreeNode serviceNode) {
-		return new ConeTableHandler(serviceNode);
-	}
-	
-	/** extension that detected various odd ways that a cone service can report error */
-	public class ConeTableHandler extends BasicTableHandler {
-	    @Override
-        public void info(final String name, final String value, final String content)
-	            throws SAXException {
-	           checkForError(name,value,content);
-	    }
-	    @Override
-        public void param(final String name, final String value, final String description)
-	            throws SAXException {
-	       checkForError(name,value,description);
-	    }
-	    
-	    private void checkForError(final String name,final String value,final String description) throws DalProtocolException {
-	        if ("Error".equals(name)) {
-	            message = description != null ? description : value;	            
-	            throw new DalProtocolException(message);
-	        }
-	    }
-	    
-        /**
-         * @param serviceNode
-         */
-        public ConeTableHandler(final TreeNode serviceNode) {
-            super(serviceNode);
-        }
+		return new BasicTableHandler(serviceNode);
 	}
 	
     @Override
