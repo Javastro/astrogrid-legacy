@@ -61,7 +61,7 @@ public class WorkspaceProvider extends AbstractFileProvider implements VfsFilePr
 	      uri = "workspace:/";
 	    }
 	    final URI u = new URI(uri);
-            System.out.println("findFile(): " + uri);
+           
 	    final String target = homespace + u.getSchemeSpecificPart();
 	    //@todo add in alternate machinery for resolving to vospace where available.
 	    return getContext().getFileSystemManager().resolveFile(target);

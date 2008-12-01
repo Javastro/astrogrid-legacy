@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ag.vfs;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileName;
@@ -29,7 +28,7 @@ public class DesktopFilesCache extends SoftRefFilesCache implements FilesCache {
         final FileObject fo = super.getFile(filesystem, name);
         if (fo == null && logger.isDebugEnabled()) {
             logger.debug("Cache miss for " + name);
-            MapUtils.debugPrint(System.out,"FileObjects cache for " + filesystem,getOrCreateFilesystemCache(filesystem));
+           // MapUtils.debugPrint(System.out,"FileObjects cache for " + filesystem,getOrCreateFilesystemCache(filesystem));
         }
         return fo;
     }
