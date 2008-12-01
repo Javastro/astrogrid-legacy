@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  *  <dt>{@link Stap}</dt><dd>for time-series data</dd>
  * </dl> 
  * 
- * All the query construction functions follow the same form - from inputs of which service to query, search position and other query parameters 
+ * However, all the query construction functions follow the same form - from inputs of which service to query, search position and other query parameters 
  * they produce a <i>query URL</i>. This can then be passed to the functions in this class to perform the query and save the results. An example of constructing a cone 
  * query is shown below. Consult the protocol-specific subclasses for further examples.
  *  
@@ -234,6 +234,37 @@ ar.ivoa.siap.saveDatasets(q,dir) #save the images
 ar.util.tables.convertFiles(q, "votable",dir + "/resp.txt","ascii")
 }
 
+<h2>Querying resources with multiple similar capabilities</h2>
+In some cases, a registry resource may possess more than one cone-search capability. If the identifier for that resource is passed to {@code constructQuery}
+than it is the <b>first suitable<b/> capability in the resource that will be used. If you wish to query against one of the other cone-search capabilities, 
+the service endpoint URL for that capability must be manually extracted and passed to {@code constructQuery}. This can be done by using the {@link Registry} component.
+
+{@example "Extracting the endpoint for a capability"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')        
+cone = ar.ivoa.cone #take a reference to the AR Cone component
+registry = ar.ivoa.registry # a reference to the AR Registry component.
+
+#A registry resource with multiple capabilities
+service = "ivo://an.example.multiple.capability/resource"
+
+#retrieve the resource metadata for this service.
+resource = registry.getResource(service)
+
+#traverse the resource to select the capability we're interersted in (the 3rd in the resource)
+capability = resource['capabilities'][2]
+#extract the accessURL for this capabilitiy
+url = capability['interfaces'][0]['accessUrls'][0]['value']
+
+#use this URL to build a query
+query = cone.constructQuery(url,140.0,10.0,0.001)
+
+#execute the query as normal..
+print cone.execute(query)
+}
+
  * @author Noel Winstanley
 
  * @see Tables Tables - convert betwee votable and other formats.
@@ -258,7 +289,7 @@ public interface Dal {
 	    * @return  The service response parsed as a list of
 	    * of rows. Each row is represented is a map between UCD or datamodel keys 
 	    *  and values from the response
-	    * @throws ServiceException if an error occurs while communicating with the  service
+	    * @throws ServiceException if an error occurs while communicating with the  service, or if the service is unable to process the request
 	    * @note When querying a SIAP service, the result uses keys drawn from the SIAP dataset datamodel
 
 	    */
@@ -268,8 +299,8 @@ public interface Dal {
 	    * 
 	    * @note This is a convenience method that just performs a 'GET' on the query url. Many programming languages support this functionality internally.
 	 * @param query query url to execute
-	 * @return a votable document of results
-	 * @throws ServiceException if an error occurs while communicating with the  service
+	 * @return a votable document.
+	 *  @throws ServiceException if an error occurs while communicating with the  service, or if the service is unable to process the request
 
 	    * 
 	    */
@@ -287,8 +318,7 @@ public interface Dal {
 	 * @param query query url to execute
 	 * @param saveLocation location to save result document - May be {@code file:/}, {@code ivo://} (myspace), {@code ftp://} location
 	 * @throws SecurityException if the user is not permitted to write to the save location
-	 * @throws ServiceException if an error occurs while communicating with the query service
-	 * @throws InvalidArgumentException if the save location cannot be written to
+        * @throws ServiceException if an error occurs while communicating with the  service, or if the service is unable to process the request	 * @throws InvalidArgumentException if the save location cannot be written to
 
 	 */
 	void executeAndSave(URL query, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
