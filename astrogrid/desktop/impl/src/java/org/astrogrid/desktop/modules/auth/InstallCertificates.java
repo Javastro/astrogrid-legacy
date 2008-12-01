@@ -4,10 +4,7 @@
 package org.astrogrid.desktop.modules.auth;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -16,12 +13,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.io.Piper;
 
 /** Download and install certificates.
  * never overwrites a certificate which is already there. 
@@ -94,8 +91,6 @@ public class InstallCertificates implements Runnable {
 			// checks whether we've already downloaded a particular certificate.
 			// and fetches it if not.
 			private void handleSingleCertificate(final String certificateURL) {
-				InputStream is = null;
-				OutputStream os = null;
 				URL url = null;
 				try {
 					url = new URL(certificateURL);
@@ -103,28 +98,11 @@ public class InstallCertificates implements Runnable {
 					final File cert = new File(certDir,certName);
 					if (!cert.exists()) { // missing - download it.
 						logger.info("Downloading new certificate " + url);
-						os = new FileOutputStream(cert);
-						is = url.openStream();
-						Piper.pipe(is,os);
+						FileUtils.copyURLToFile(url,cert);
 					}
 				} catch (final IOException e) {
 					logger.warn("Failed to downlooad certificate " + url);
-				} finally {
-					if (is != null) {
-						try {
-							is.close();
-						} catch (final IOException x) {
-							// oh-well.
-						}
-					}
-					if (os != null) {
-						try {
-							os.close();
-						} catch (final IOException x) {
-							// never mind
-						}
-					}
-				}
+				} 
 			}
 		}).start();
 	}

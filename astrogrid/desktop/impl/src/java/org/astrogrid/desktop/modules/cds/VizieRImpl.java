@@ -1,4 +1,4 @@
-/*$Id: VizieRImpl.java,v 1.10 2008/11/04 14:35:50 nw Exp $
+/*$Id: VizieRImpl.java,v 1.11 2008/12/01 23:31:16 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.cds;
 
-import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.io.IOUtils;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.VizieR;
 import org.astrogrid.desktop.modules.system.pref.Preference;
@@ -50,8 +50,7 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
         
         final String r=  executeHttpMethod(meth);
         try {
-            final ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
-            return XMLUtils.newDocument(is);
+            return XMLUtils.newDocument(IOUtils.toInputStream(r));
         } catch (final Exception e) {
             throw new ServiceException(e);
         }      
@@ -71,8 +70,7 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
         
         final String r=  executeHttpMethod(meth);
         try {
-            final ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
-            return XMLUtils.newDocument(is);
+            return XMLUtils.newDocument(IOUtils.toInputStream(r));
         } catch (final Exception e) {
             throw new ServiceException(e);
         }      
@@ -94,8 +92,7 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
         
         final String r=  executeHttpMethod(meth);
         try {
-            final ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
-            return XMLUtils.newDocument(is);
+            return XMLUtils.newDocument(IOUtils.toInputStream(r));
         } catch (final Exception e) {
             throw new ServiceException(e);
         }      
@@ -116,8 +113,7 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
         
         final String r=  executeHttpMethod(meth);
         try {
-            final ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
-            return XMLUtils.newDocument(is);
+            return XMLUtils.newDocument(IOUtils.toInputStream(r));
         } catch (final Exception e) {
             throw new ServiceException(e);
         }      
@@ -134,8 +130,7 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
         
         final String r=  executeHttpMethod(meth);
         try {
-            final ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
-            return XMLUtils.newDocument(is);
+            return XMLUtils.newDocument(IOUtils.toInputStream(r));
         } catch (final Exception e) {
             throw new ServiceException(e);
         }            
@@ -147,6 +142,9 @@ public class VizieRImpl extends BaseCDSClient implements VizieR {
 
 /* 
 $Log: VizieRImpl.java,v $
+Revision 1.11  2008/12/01 23:31:16  nw
+used commons.io utilities
+
 Revision 1.10  2008/11/04 14:35:50  nw
 javadoc polishing
 

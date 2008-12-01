@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.11 2008/11/04 14:35:54 nw Exp $
+/*$Id: IconHelper.java,v 1.12 2008/12/01 23:29:55 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.icons;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -20,9 +19,9 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.io.Piper;
 
 /** Locates and loads icons.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 06-Apr-2005
@@ -49,31 +48,15 @@ public class IconHelper {
     public static ImageIcon loadIcon(final URL iconUrl) {
     	if (iconUrl!= null) {
     		InputStream is = null;
-    		ByteArrayOutputStream bos = null;
 		      try { //need to do this the long way, rather than just passing the url to ImageIcon, because that seems to 
 	                // throw security exceptions when runnning under webstart.
 		    	  	// should run this on background thread - dunno how to.
-	                bos = new ByteArrayOutputStream();
 	                is = iconUrl.openStream();
-	                Piper.pipe(is,bos); 
-	                return  new ImageIcon(bos.toByteArray());	               
+	                return  new ImageIcon( IOUtils.toByteArray(is));          
 	            } catch (final IOException e ) {
 	                logger.warn("Failed to download icon " + iconUrl);	                
 	            }  finally {
-	            	if (is != null) {
-	            		try {
-	            			is.close();
-	            		} catch (final IOException e) {
-	            			logger.warn("Failed to close stream",e);
-	            		}
-	            	}
-	            	if (bos != null) {
-	            		try {
-	            			bos.close();
-	            		} catch (final IOException e) {
-	            			logger.warn("Failed to close stream",e);
-	            		}
-	            	}
+	            	   IOUtils.closeQuietly(is);
 	            }
     	}
     	return null;
@@ -119,6 +102,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.12  2008/12/01 23:29:55  nw
+used commons.io utilities
+
 Revision 1.11  2008/11/04 14:35:54  nw
 javadoc polishing
 

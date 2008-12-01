@@ -25,7 +25,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -73,6 +72,8 @@ import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -627,9 +628,7 @@ public class ResourceTree extends JTree {
                     reportProgress("Completed");
                 }
                 finally {
-                    if (os != null) {
-                        os.close();
-                    }
+                    IOUtils.closeQuietly(os);
                 }
                 return null;
             }
@@ -667,14 +666,7 @@ public class ResourceTree extends JTree {
                     return bean;
                 }
                 finally {
-                    if (is != null) {
-                        try {
-                            is.close();
-                        }
-                        catch (final IOException e) {
-                            // ignore
-                        }
-                    }
+                  IOUtils.closeQuietly(is);
                 }
             }
             @Override
@@ -1156,20 +1148,22 @@ public class ResourceTree extends JTree {
             if (o == null) {
                 throw new InvalidArgumentException("null dropped - how odd");
             }
-            BufferedReader r = null;
+            Reader r = null;
+            LineIterator it = null;
             if (o instanceof String) {
-                r = new BufferedReader(new StringReader((String)o));
+                r = new StringReader((String)o);
             } else if (o instanceof InputStream ) {
-                r = new BufferedReader(new InputStreamReader((InputStream)o));
+                r = new InputStreamReader((InputStream)o);
             } else if (o instanceof Reader) {
-                r = new BufferedReader((Reader)o);
+                r = (Reader)o;
             } else {
                 throw new InvalidArgumentException("Unknow type dropped " + o.getClass().getName());
             }
             try {
                 final List result = new ArrayList();
-                String line;
-                while ((line = r.readLine()) != null) {
+                it = IOUtils.lineIterator(r);
+                while (it.hasNext()) {
+                    final String line = it.nextLine();               
                     try {
                         final URI u = new URI(line);
                         if (! u.getScheme().equals("ivo")) { // we only want ivo uris.
@@ -1185,11 +1179,7 @@ public class ResourceTree extends JTree {
                 }
                 return (URI[])result.toArray(new URI[result.size()]);
             } finally {               
-                    try {
-                        r.close();
-                    } catch (final IOException e) {
-                        //netch
-                    }
+               LineIterator.closeQuietly(it);
                 
             }
         }
@@ -1228,7 +1218,7 @@ public class ResourceTree extends JTree {
                     throw (IOException) new IOException("Serialization error")
                                        .initCause(e);
                 }
-                os.close();
+                IOUtils.closeQuietly(os);
                 return new ByteArrayInputStream(os.toByteArray());
             }
             else {

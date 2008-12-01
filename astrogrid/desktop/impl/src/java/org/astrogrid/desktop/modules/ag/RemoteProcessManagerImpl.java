@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.20 2008/11/04 14:35:47 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.21 2008/12/01 23:29:55 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileSystemException;
@@ -206,13 +207,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
         } catch (final IOException x) {
             throw new InvalidArgumentException(x);
         } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (final IOException e) {
-                    logger.warn("Failed to close read stream",e);
-                }
-            }
+            IOUtils.closeQuietly(is);
         }
             
     }
@@ -327,6 +322,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.21  2008/12/01 23:29:55  nw
+used commons.io utilities
+
 Revision 1.20  2008/11/04 14:35:47  nw
 javadoc polishing
 

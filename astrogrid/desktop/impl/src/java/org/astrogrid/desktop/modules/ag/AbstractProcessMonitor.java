@@ -3,9 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
@@ -17,6 +14,7 @@ import java.util.Map;
 
 import javax.swing.event.EventListenerList;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,7 +34,6 @@ import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
-import org.astrogrid.io.Piper;
 
 /** Abstract implementation of {@link ProcessMonitor}.
  * 
@@ -226,32 +223,18 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
      */
     protected void addResult(final String resultname,final String filename,final String result) {
         OutputStream os = null;
-        InputStream is = null;
         try {
             final FileObject tmp = vfs.resolveFile(localResultsRoot,filename);
             tmp.createFile();
-            is = new ByteArrayInputStream(result.getBytes());
+           
             os = tmp.getContent().getOutputStream();
-            Piper.pipe(is,os);
+            IOUtils.write(result,os);
             sys.addJunction(filename,tmp);
             resultMap.put(resultname,result); // doh! don't really want to cache value in memory too, but can't be helped - map is passed back throught eh RemoteProcessManager AR api, so can't contain any weirdness.
         } catch (final Exception x) {
             throw new RuntimeException("Unexpected storage error",x);
         } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (final IOException e) {
-                    //meh
-                }
-            }
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (final IOException e) {
-                    // meh
-                }
-            }  
+          IOUtils.closeQuietly(os);
         }
     }
     /** helper methods that adds a remote result.

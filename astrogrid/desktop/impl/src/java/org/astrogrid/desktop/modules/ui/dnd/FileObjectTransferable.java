@@ -6,11 +6,11 @@ package org.astrogrid.desktop.modules.ui.dnd;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -67,7 +67,7 @@ public class FileObjectTransferable implements Transferable{
 				throw exception;
 			}
 		} else if (VoDataFlavour.URI_LIST.equals(flavor)) {
-			return new ByteArrayInputStream((StringUtils.replace(fo.getName().getURI()," ","%20")).getBytes());
+			return IOUtils.toInputStream((StringUtils.replace(fo.getName().getURI()," ","%20")));
 		} else if (VoDataFlavour.URI_LIST_STRING.equals(flavor)){
 		    return StringUtils.replace(fo.getName().getURI()," ","%20");
 		} else { // must be asking for the content of the file then..

@@ -4,8 +4,6 @@
 package org.astrogrid.desktop.modules.ivoa;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -33,6 +31,8 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.Status;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -386,13 +386,13 @@ public void xquerySearchSave(final String xquery, final File saveLocation) throw
         XMLStreamWriter writer = null;
         OutputStream os = null;
         try {
-            os = new FileOutputStream(saveLocation);
+            os = FileUtils.openOutputStream(saveLocation);
             writer = outputFactory.createXMLStreamWriter(os);
             final WriterStreamProcessor proc = new WriterStreamProcessor(writer);
             xquerySearchStream(xquery,proc);
         } catch (final XMLStreamException x) {
             throw new InvalidArgumentException("Failed to open location for writing",x);
-        } catch (final FileNotFoundException x) {
+        } catch (final IOException x) {
             throw new InvalidArgumentException("Failed to open location for writing",x);
         } finally {
             if (writer != null) {
@@ -402,13 +402,7 @@ public void xquerySearchSave(final String xquery, final File saveLocation) throw
                     logger.warn("Exception while closing writer",ex);
                 }
             }
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (final IOException ex) {
-                    logger.warn("Exception while closing stream",ex);
-                }
-            }
+            IOUtils.closeQuietly(os);            
         }
     }
 

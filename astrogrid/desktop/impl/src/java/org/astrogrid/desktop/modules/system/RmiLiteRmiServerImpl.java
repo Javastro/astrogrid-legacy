@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.18 2008/09/25 16:03:30 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.19 2008/12/01 23:32:16 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,6 +35,7 @@ import net.ladypleaser.rmilite.RemoteInvocationException;
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandler;
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandlerImpl;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
@@ -262,13 +263,7 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
                 } catch (final IOException x) {
                     fail("unable to read ~/.acr-rmi-port");
                 } finally {
-                    if (fr != null) {
-                        try {
-                            fr.close();
-                        } catch (final IOException e) {
-                            // ho hum
-                        }
-                    }
+                   IOUtils.closeQuietly(fr);
                 }
             }
         });
@@ -311,6 +306,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.19  2008/12/01 23:32:16  nw
+used commons.io utilities
+
 Revision 1.18  2008/09/25 16:03:30  nw
 code improvements.
 

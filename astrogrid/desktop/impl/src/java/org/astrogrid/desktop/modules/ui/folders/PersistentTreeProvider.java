@@ -1,8 +1,6 @@
 package org.astrogrid.desktop.modules.ui.folders;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,6 +12,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
@@ -51,8 +51,8 @@ public abstract class PersistentTreeProvider implements TreeProvider {
      * @param  storage   file to which state will be persisted
      * @param  persister  xml persistence implementation
      */
-    public PersistentTreeProvider(UIContext parent, File storage,
-                                  XmlPersist persister) {
+    public PersistentTreeProvider(final UIContext parent, final File storage,
+                                  final XmlPersist persister) {
         this.parent = parent;
         this.storage = storage;
         this.persister = persister;
@@ -67,19 +67,19 @@ public abstract class PersistentTreeProvider implements TreeProvider {
      * @param  treeModel  an empty instance of the model which will 
      *                    be provided by this object
      */
-    protected void init(DefaultTreeModel treeModel) {
+    protected void init(final DefaultTreeModel treeModel) {
         this.treeModel = treeModel;
         treeModel.addTreeModelListener(new TreeModelListener() {
-            public void treeNodesChanged(TreeModelEvent evt) {
+            public void treeNodesChanged(final TreeModelEvent evt) {
                 treeChanged();
             }
-            public void treeNodesInserted(TreeModelEvent evt) {
+            public void treeNodesInserted(final TreeModelEvent evt) {
                 treeChanged();
             }
-            public void treeNodesRemoved(TreeModelEvent evt) {
+            public void treeNodesRemoved(final TreeModelEvent evt) {
                 treeChanged();
             }
-            public void treeStructureChanged(TreeModelEvent evt) {
+            public void treeStructureChanged(final TreeModelEvent evt) {
                 treeChanged();
             }
             private void treeChanged() {
@@ -96,10 +96,10 @@ public abstract class PersistentTreeProvider implements TreeProvider {
                            + " top-level nodes " + "from " + this.storage );
             }
         }
-        catch (IOException e) {
+        catch (final IOException e) {
             logger.error("Error loading from " + this.storage, e);
         }
-        catch (ServiceException e) {
+        catch (final ServiceException e) {
             logger.error("Error deserializing " + this.storage, e);
         }
 
@@ -113,7 +113,7 @@ public abstract class PersistentTreeProvider implements TreeProvider {
 
         // Ensure root is appropriately titled.
         if (root instanceof DefaultMutableTreeNode) {
-            Object userObj = ((DefaultMutableTreeNode) root).getUserObject();
+            final Object userObj = ((DefaultMutableTreeNode) root).getUserObject();
             if (userObj instanceof ResourceBranch) {
                 ((Folder) userObj).setName("Resource Lists");
             }
@@ -166,14 +166,14 @@ public abstract class PersistentTreeProvider implements TreeProvider {
      *
      * @param   root  tree state to save
      */
-    public synchronized void save(TreeNode root) {
+    public synchronized void save(final TreeNode root) {
 
         // If we're not already saving, save now in a background thread.
         if (this.saver == null) {
             this.saver = new Saver(root);
             try {
                 parent.getExecutor().execute(saver);
-            } catch (InterruptedException x) {
+            } catch (final InterruptedException x) {
                 logger.error("InterruptedException",x);
             }
         }
@@ -214,19 +214,12 @@ public abstract class PersistentTreeProvider implements TreeProvider {
             logger.info("Loading tree from " + storage);
             InputStream fis = null;
             try {
-                fis = new FileInputStream(storage);
-                Object obj = persister.fromXml(fis);
+                fis = FileUtils.openInputStream(storage);
+                final Object obj = persister.fromXml(fis);
                 return BranchBean.toTreeRoot(obj, "root");
             }
             finally {
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    }
-                    catch (IOException e) {
-                        // never mind
-                    }
-                }
+               IOUtils.closeQuietly(fis);
             }
         }
         else {
@@ -251,7 +244,7 @@ public abstract class PersistentTreeProvider implements TreeProvider {
          *
          * @param   root  state to save
          */
-        Saver(TreeNode root) {
+        Saver(final TreeNode root) {
           //  super("Tree saver");
             bean = BranchBean.fromTreeNode(root);
         }
@@ -260,15 +253,15 @@ public abstract class PersistentTreeProvider implements TreeProvider {
             try {
                 save();
             }
-            catch (IOException e) {
+            catch (final IOException e) {
                 logger.error("Error writing to " + storage, e);
             }
-            catch (ServiceException e) {
+            catch (final ServiceException e) {
                 logger.error("Error serializing to " + storage, e);
             }
             finally {
-                PersistentTreeProvider owner = PersistentTreeProvider.this;
-                Saver workingSaver = owner.saver;
+                final PersistentTreeProvider owner = PersistentTreeProvider.this;
+                final Saver workingSaver = owner.saver;
 
                 // If we are the most recently submitted save request, 
                 // remove ourself from the owner to indicate that no save
@@ -282,7 +275,7 @@ public abstract class PersistentTreeProvider implements TreeProvider {
                 else if (workingSaver != null) {
                     try {
                         parent.getExecutor().execute(workingSaver);
-                    } catch (InterruptedException x) {
+                    } catch (final InterruptedException x) {
                         logger.error("InterruptedException",x);
                     }
                 }
@@ -293,12 +286,12 @@ public abstract class PersistentTreeProvider implements TreeProvider {
          * Perform the actual save.
          */
         private void save() throws IOException, ServiceException {
-            OutputStream out = new FileOutputStream(storage);
+            final OutputStream out =FileUtils.openOutputStream(storage);
             try {
                 persister.toXml(bean, out);
             }
             finally {
-                out.close();
+                IOUtils.closeQuietly(out);
             }
         }
     }

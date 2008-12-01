@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.37 2008/11/04 14:35:47 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.38 2008/12/01 23:29:55 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.desktop.modules.ag;
 
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -25,6 +24,7 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileSystemManager;
@@ -319,8 +319,9 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 
     public void validateStored(final URI documentLocation) throws ServiceException, InvalidArgumentException, NotFoundException {
         Document doc;
+        InputStream r = null;
         try {
-            final InputStream r = vfs.resolveFile(documentLocation.toString()).getContent().getInputStream();
+            r = vfs.resolveFile(documentLocation.toString()).getContent().getInputStream();
             doc = XMLUtils.newDocument(r);
   
         } catch (final ParserConfigurationException e) {
@@ -329,7 +330,9 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
             throw new InvalidArgumentException(e);
         } catch (final IOException e) {
             throw new NotFoundException(e);
-        } 
+        } finally {
+            IOUtils.closeQuietly(r);
+        }
         validate(doc);
         
 
@@ -395,7 +398,7 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
             for (int i = 0; i < adqlParameters.length; i++) {
                 final ParameterValue val = (ParameterValue) document.findXPathValue("input/parameter[name='" + adqlParameters[i] + "']");
                 if (!val.getIndirect()) { // it's an inline value
-                    final InputStream is = new ByteArrayInputStream(val.getValue().getBytes());
+                    final InputStream is = IOUtils.toInputStream(val.getValue());
                     // try parsing the value as xml
                     try {
                         XMLUtils.newDocument(is);
@@ -406,7 +409,10 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 						} catch (final InvalidArgumentException x) {
 							throw new ServiceException(x);
 						}
+                    } finally {
+                        IOUtils.closeQuietly(is);
                     }
+                    
                 }               
             }
         }
@@ -460,6 +466,9 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.38  2008/12/01 23:29:55  nw
+used commons.io utilities
+
 Revision 1.37  2008/11/04 14:35:47  nw
 javadoc polishing
 

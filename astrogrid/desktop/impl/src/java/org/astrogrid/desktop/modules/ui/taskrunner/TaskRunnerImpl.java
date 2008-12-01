@@ -43,6 +43,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.collections.ListUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -398,20 +399,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                         newRes= reg.getResource(new URI("ivo://" + tool.getName()));
                         return null; // all passed back in member variables.
                    } finally {
-                        if (sw != null) {
-                            try {
-                                sw.close();
-                            } catch (final IOException x) {
-                                // ignored
-                            }
-                        }
-                        if (r != null) {
-                            try {
-                                r.close();
-                            } catch (final IOException x) {
-                                //ignored
-                            }
-                        }
+                      IOUtils.closeQuietly(sw);
+                      IOUtils.closeQuietly(r);
                     }                    
                 }
                 @Override
@@ -476,13 +465,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                reportProgress("Completed");
                return t;
             	} finally {
-            		if (fr != null) {
-            			try {
-            				fr.close();
-            			} catch (final IOException ignored) {
-            			    //meh
-            			}
-            		}
+            		IOUtils.closeQuietly(fr);
             	}
             }
             @Override

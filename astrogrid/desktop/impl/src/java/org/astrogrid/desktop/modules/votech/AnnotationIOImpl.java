@@ -4,7 +4,6 @@
 package org.astrogrid.desktop.modules.votech;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,6 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
@@ -137,13 +138,7 @@ public class AnnotationIOImpl implements AnnotationIO {
 	    } catch (final ServiceException x) {
 	        logger.warn(x.getMessage());
 	    } finally {
-	        if (is != null) {
-	            try {
-	                is.close();
-	            } catch (final IOException x1) {
-	                //meh
-	            }
-	        }				
+	      IOUtils.closeQuietly(is);	
 	    }
 	    // something's gone wrong - so just return an empty array.
 	    return Collections.EMPTY_LIST;
@@ -188,16 +183,10 @@ public class AnnotationIOImpl implements AnnotationIO {
 	                    }
 	                }
 	                
-	                fos = new FileOutputStream(userAnnotationsFile);
+	                fos =FileUtils.openOutputStream(userAnnotationsFile);
 	                xml.toXml(persistList,fos);
 	            } finally {
-	                if (fos != null) {
-	                    try {
-	                        fos.close();
-	                    } catch (final IOException x) {
-	                        logger.error("Failed to save user annotations",x);
-	                    }
-	                }
+	               IOUtils.closeQuietly(fos);
 	            }		
 	            return null;
 	        }

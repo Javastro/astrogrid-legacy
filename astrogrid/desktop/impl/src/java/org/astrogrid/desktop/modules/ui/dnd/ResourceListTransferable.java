@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.ui.dnd;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
 
@@ -52,7 +52,7 @@ public class ResourceListTransferable implements Transferable {
 				s.append(r.getId());
 				s.append("\n");
 			}
-			return new ByteArrayInputStream( s.toString().getBytes());
+			return IOUtils.toInputStream(s.toString());
 			
 		} else {
 			throw new UnsupportedFlavorException(flavor);		

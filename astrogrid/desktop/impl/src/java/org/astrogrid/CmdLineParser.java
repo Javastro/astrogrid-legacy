@@ -4,7 +4,6 @@
 package org.astrogrid;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -21,6 +20,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.hivemind.GenerateHivedoc;
@@ -252,13 +253,7 @@ class CmdLineParser {
 			} catch (final IOException e) {
 				logger.warn("Failed to load properties file " + u,e);
 			} finally {
-				if (is != null ) {
-					try {
-						is.close();
-					} catch (final IOException e) {
-						// don't care.
-					}
-				}
+				IOUtils.closeQuietly(is);
 			}
 		}
 	}
@@ -276,18 +271,12 @@ class CmdLineParser {
 			InputStream is = null;
 			try {
 				logger.info("Loading properties from " + f);
-				is = new FileInputStream(f);
+				is = FileUtils.openInputStream(f);
 				loadPropertiesFile(is);
 			} catch (final IOException e) {
 				logger.warn("Warning: Failed to load properties file " + f,e);
 			} finally {
-				if (is != null ) {
-					try {
-						is.close();
-					} catch (final IOException e) {
-						// don't care.
-					}
-				}
+				IOUtils.closeQuietly(is);
 			}
 		}
 	}

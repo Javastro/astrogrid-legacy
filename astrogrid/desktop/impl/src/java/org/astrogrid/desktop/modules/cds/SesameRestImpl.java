@@ -30,6 +30,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.NotFoundException;
@@ -182,11 +183,7 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
         } catch (final XMLStreamException x) {
             throw new ServiceException("Failed to parse response from Sesame",x);
         } finally {
-            try {
-                str.close();
-            } catch (final IOException x) {
-                //ignored
-            }
+         IOUtils.closeQuietly(str);
         }
         // we've either got a resilt with a valid position, or we need to throw a not found exception..
         if (result.getPosStr() == null) {

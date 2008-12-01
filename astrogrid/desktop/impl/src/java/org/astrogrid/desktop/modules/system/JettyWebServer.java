@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.22 2008/11/04 14:35:49 nw Exp $
+/*$Id: JettyWebServer.java,v 1.23 2008/12/01 23:32:16 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
@@ -411,13 +412,7 @@ public URL getContextBase(final String sessionId) {
                     logger.info("unable to read ~/.astrogrid-desktop");
                     fail("unable to read ~/.astrogrid-desktop");
                 } finally {
-                    if (fr != null) {
-                        try {
-                            fr.close();
-                        } catch (final IOException e) {
-                            // ho hum
-                        }
-                    }
+                   IOUtils.closeQuietly(fr);
                 }
                 if (endpoint == null) {
                     fail("unable to parse contents of ~/.astrogrid-desktop");
@@ -449,13 +444,7 @@ public URL getContextBase(final String sessionId) {
                     logger.error("unable to call html interface",x);
                     fail("Unable to call html interface");
                 } finally {
-                    if (br != null) {
-                        try {
-                            br.close();
-                        } catch (final IOException e) {
-                            // don't care
-                        }
-                    }
+                    IOUtils.closeQuietly(br);
                 }                
             }
         });
@@ -493,6 +482,9 @@ public URL getContextBase(final String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.23  2008/12/01 23:32:16  nw
+used commons.io utilities
+
 Revision 1.22  2008/11/04 14:35:49  nw
 javadoc polishing
 

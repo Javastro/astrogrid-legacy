@@ -4,8 +4,6 @@
 package org.astrogrid.desktop.hivemind;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -17,7 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.astrogrid.io.Piper;
+import org.apache.commons.io.FileUtils;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -43,14 +41,14 @@ public class GenerateHivedoc extends Launcher {
 		try {
 		final File tmpResult = File.createTempFile("hivedoc",".xml");
 		// seems to be a problem in the sun impl of DOMSource - so serialize to a file, and read back in.
-		final FileOutputStream fos = new FileOutputStream(tmpResult);
+		final OutputStream fos = FileUtils.openOutputStream(tmpResult);
 		DomHelper.DocumentToStream(result,fos);
 		fos.close();
 		// create hivedoc.
 		targetDir.mkdir();
 		//Source source = new DOMSource(result);
-		final Source source = new StreamSource(new FileInputStream(tmpResult));
-		final OutputStream sw = new FileOutputStream(new File(targetDir,"index.html"));
+		final Source source = new StreamSource(FileUtils.openInputStream(tmpResult));
+		final OutputStream sw = FileUtils.openOutputStream(new File(targetDir,"index.html"));
 		final Result sink = new StreamResult(sw);
 		final InputStream styleStream = GenerateHivedoc.class.getResourceAsStream("hivedoc/hivemind.xsl");
 		
@@ -64,12 +62,12 @@ public class GenerateHivedoc extends Launcher {
 		}
 		// copy resources to target directory.
 		try {
-		Piper.pipe(GenerateHivedoc.class.getResourceAsStream("hivedoc/hivemind.css")
-				,new FileOutputStream(new File(targetDir,"hivemind.css")));
-		Piper.pipe(GenerateHivedoc.class.getResourceAsStream("hivedoc/public.png")
-				,new FileOutputStream(new File(targetDir,"public.png")));
-		Piper.pipe(GenerateHivedoc.class.getResourceAsStream("hivedoc/private.png")
-				,new FileOutputStream(new File(targetDir,"private.png")));		
+		FileUtils.copyURLToFile(GenerateHivedoc.class.getResource("hivedoc/hivemind.css")
+				,new File(targetDir,"hivemind.css"));
+		    FileUtils.copyURLToFile(GenerateHivedoc.class.getResource("hivedoc/public.png")
+				,new File(targetDir,"public.png"));
+		    FileUtils.copyURLToFile(GenerateHivedoc.class.getResource("hivedoc/private.png")
+				,new File(targetDir,"private.png"));		
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}

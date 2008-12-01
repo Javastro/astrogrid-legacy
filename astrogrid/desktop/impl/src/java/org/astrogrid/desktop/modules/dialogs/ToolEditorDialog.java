@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.24 2008/11/04 14:35:52 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.25 2008/12/01 23:31:16 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.dialogs;
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
@@ -23,6 +22,7 @@ import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.IOUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -185,11 +185,7 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
                     is = new InputStreamReader(location.toURL().openStream());
                     return Tool.unmarshalTool(is);
                 } finally {
-                    try {
-                        is.close();
-                    } catch (final IOException e) {
-                        // don 't care
-                    }
+                    IOUtils.closeQuietly(is);
                 }
             }
             @Override
@@ -213,6 +209,9 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.25  2008/12/01 23:31:16  nw
+used commons.io utilities
+
 Revision 1.24  2008/11/04 14:35:52  nw
 javadoc polishing
 

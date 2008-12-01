@@ -5,11 +5,11 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -85,14 +85,11 @@ public void actionPerformed(final ActionEvent e) {
                     }				    
                     setProgress(++count,max);
 				} finally {
-					if (os != null) {
-						try {
-							os.close();
-                            fo.refresh();
-						} catch (final IOException e) {
-							// ignored
-						}
-					}
+				    IOUtils.closeQuietly(os);
+				    if (fo != null) {
+				        fo.refresh();
+				    }
+				
 				}
 				return null;
 			}

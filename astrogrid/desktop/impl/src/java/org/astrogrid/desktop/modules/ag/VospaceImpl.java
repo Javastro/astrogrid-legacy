@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.29 2008/11/04 14:35:47 nw Exp $
+/*$Id: VospaceImpl.java,v 1.30 2008/12/01 23:29:55 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,22 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -36,6 +26,8 @@ import java.net.URLConnection;
 import java.rmi.RemoteException;
 
 import org.apache.axis.types.URI.MalformedURIException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FilesCache;
@@ -64,7 +56,6 @@ import org.astrogrid.filemanager.common.DuplicateNodeFault;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
 import org.astrogrid.filemanager.common.TransferInfo;
-import org.astrogrid.io.Piper;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
 
@@ -238,46 +229,29 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     }
     // content
     public String read(final URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
-        Reader reader = null;
-        StringWriter writer = null;
+        InputStream reader = null;
         try {
-           reader =new InputStreamReader(node(ivorn).readContent());
-           writer = new StringWriter();
-            Piper.pipe(reader,writer);
-            return writer.toString();
+           reader =node(ivorn).readContent();
+            return IOUtils.toString(reader);
         } catch (final UnsupportedOperationException e) {
             throw new InvalidArgumentException(e);            
         } catch (final IOException e) {
             throw new ServiceException(e);
         } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    // meh
-               }
-            }
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (final IOException e) {
-                    //meh
-               }
-            }            
+            IOUtils.closeQuietly(reader);      
         }                                    
     }
 
 
     public void write(final URI ivorn, final String content) throws InvalidArgumentException, ServiceException, SecurityException {
-        final Reader r = new StringReader(content);
-        Writer w = null;
+        OutputStream w = null;
         if (! exists(ivorn)) {
             createFile(ivorn);
         }
         try {
-            w = new OutputStreamWriter (mkOutputStream(ivorn,content.getBytes().length));
+            w = mkOutputStream(ivorn,content.getBytes().length);
             //w = new OutputStreamWriter(node(ivorn).writeContent());
-            Piper.pipe(r, w);
+            IOUtils.write(content,w);
         } catch (final IOException e) {
             throw new ServiceException(e);
         } catch (final UnsupportedOperationException e) {
@@ -285,13 +259,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
         } catch (final NotFoundException e) {
             throw new ServiceException(e);
         } finally {
-            if (w != null) {
-                try {
-                    w.close();
-                } catch (final IOException e) {
-                    // meh
-                }
-            }
+           IOUtils.closeQuietly(w);
         }
     }
 
@@ -372,44 +340,26 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
     public byte[] readBinary(final URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         InputStream reader = null;
-        ByteArrayOutputStream writer = null;
         try {
            reader = node(ivorn).readContent();
-           writer = new ByteArrayOutputStream();
-            Piper.pipe(reader,writer);
-            return writer.toByteArray();
+            return IOUtils.toByteArray(reader);
         } catch (final UnsupportedOperationException e) {
             throw new InvalidArgumentException(e);            
         } catch (final IOException e) {
             throw new ServiceException(e);
         } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    // meh
-               }
-            }
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (final IOException e) {
-                    //meh
-               }
-            }            
+           IOUtils.closeQuietly(reader);   
         }   
     }
 
     public void writeBinary(final URI ivorn, final byte[] content) throws InvalidArgumentException, ServiceException, SecurityException {
-        final InputStream r = new ByteArrayInputStream(content);
         OutputStream w = null;
         if (! exists(ivorn)) {
             createFile(ivorn);
         }
         try {
             w = mkOutputStream(ivorn,content.length);
-            //w = node(ivorn).writeContent();
-            Piper.pipe(r, w);
+            IOUtils.write(content,w);
         } catch (final IOException e) {
             throw new ServiceException(e);
         } catch (final UnsupportedOperationException e) {
@@ -417,13 +367,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
         } catch (final NotFoundException e) {
             throw new ServiceException(e);
         } finally {
-            if (w != null) {
-                try {
-                    w.close();
-                } catch (final IOException e) {
-                    //meh
-                }
-            }
+            IOUtils.closeQuietly(w);
         }        
     }
     
@@ -505,9 +449,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
                 //do we care if the above method was false just means your going to overwrite
                 //the file which is a typical "cp" like thing to do.                
             }
-            os = new FileOutputStream(file);
+            os = FileUtils.openOutputStream(file);
             is = node.readContent();
-            Piper.pipe(is,os);
+            IOUtils.copy(is,os);
             } catch (final FileNotFoundException e) {
                 throw new InvalidArgumentException(e);
             } catch (final IOException e) {
@@ -517,20 +461,8 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
             } catch (final URISyntaxException e) {
                 throw new InvalidArgumentException(e);
             } finally {
-                if (os != null) {                    
-                        try {
-                            os.close();
-                        } catch (final IOException e1) {                           
-                            logger.warn("IOException",e1);
-                        }                    
-                } 
-                if (is != null) {                    
-                    try {
-                        is.close();
-                    } catch (final IOException e1) {
-                        logger.warn("IOException",e1);
-                    }
-                }
+              IOUtils.closeQuietly(is);
+              IOUtils.closeQuietly(os);
             }
         } else {            
             try {
@@ -560,33 +492,18 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
         if (src.getProtocol().equals("file")) {
             try {
             is = src.openStream();
-            final File f = new File(new URI(src.toString()));            
+            final File f = FileUtils.toFile(src);            
             os = mkOutputStream(ivorn,f.length());
-            //os = node.writeContent();
-            Piper.pipe(is,os);
+            IOUtils.copy(is,os);
             } catch (final FileNotFoundException e) {
                 throw new InvalidArgumentException(e);
             } catch (final UnsupportedOperationException e) {
                 throw new InvalidArgumentException(e);
             } catch (final IOException e) {
                 throw new ServiceException(e);
-            } catch (final URISyntaxException e) {
-                throw new InvalidArgumentException(e);
             } finally {
-                if (os != null) {                    
-                        try {
-                            os.close();
-                        } catch (final IOException e1) {                           
-                            logger.warn("IOException",e1);
-                        }                    
-                } 
-                if (is != null) {                    
-                    try {
-                        is.close();
-                    } catch (final IOException e1) {
-                        logger.warn("IOException",e1);
-                    }
-                }
+               IOUtils.closeQuietly(is);
+               IOUtils.closeQuietly(os);
             }
         } else {
             try {
@@ -829,7 +746,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
         if (u.getScheme() == null || u.getScheme().equals("ivo")) {
             return node(u).readContent();
         } else if (u.getScheme().equals("file")) {
-            return new FileInputStream(new File(u));
+            return FileUtils.openInputStream(FileUtils.toFile(u.toURL()));
         } else {
             return u.toURL().openStream();
         }
@@ -857,7 +774,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
             //return node(u).writeContent();
             return mkOutputStream(u);
         } else if (u.getScheme().equals("file")) {
-            return new FileOutputStream(new File(u));
+            return FileUtils.openOutputStream(new File(u));
         } else {
             return u.toURL().openConnection().getOutputStream();                      
         }      
@@ -876,7 +793,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
                 //return node(u).writeContent();
                 return mkOutputStream(u,size);
             } else if (u.getScheme().equals("file")) {
-                return new FileOutputStream(new File(u));
+                return FileUtils.openOutputStream(new File(u));
             } else {
                 return u.toURL().openConnection().getOutputStream();                      
             }      
@@ -917,6 +834,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.30  2008/12/01 23:29:55  nw
+used commons.io utilities
+
 Revision 1.29  2008/11/04 14:35:47  nw
 javadoc polishing
 

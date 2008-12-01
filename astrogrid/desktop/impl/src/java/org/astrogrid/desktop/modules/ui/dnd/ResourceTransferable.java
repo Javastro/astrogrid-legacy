@@ -6,10 +6,10 @@ package org.astrogrid.desktop.modules.ui.dnd;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
@@ -37,11 +37,11 @@ public class ResourceTransferable implements Transferable {
 		} else if (VoDataFlavour.LOCAL_URI.equals(flavor)){
 			return r.getId();
 		} else if (VoDataFlavour.URI_LIST.equals(flavor) || VoDataFlavour.PLAIN.equals(flavor)) {
-			return new ByteArrayInputStream( (r.getId().toString() ).getBytes());
+		    return IOUtils.toInputStream(r.getId().toString());
 		} else if (VoDataFlavour.HTML.equals(flavor)) {
 			//@todo add more efficient stream method here later?
 			final String s = PrettierResourceFormatter.renderResourceAsHTML(r);
-			return new ByteArrayInputStream(s.getBytes());
+			return IOUtils.toInputStream(s);
 		} else {
 			throw new UnsupportedFlavorException(flavor);
 		}

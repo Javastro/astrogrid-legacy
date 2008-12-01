@@ -6,9 +6,6 @@ package org.astrogrid.desktop.modules.ui.folders;
 import java.beans.ExceptionListener;
 import java.beans.XMLDecoder;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
@@ -90,7 +89,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
         logger.info("Loading list from " + f);
         InputStream fis = null;
         try { 
-            fis = new FileInputStream(f);
+            fis = FileUtils.openInputStream(f);
             final List rs = (List)xml.fromXml(fis);
             if (rs != null) {
                 l.addAll(rs);
@@ -98,7 +97,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
             } else {
                 logger.info("File is empty");
             }
-        } catch (final FileNotFoundException ex) {
+        } catch (final IOException ex) {
             logger.error(f.toString(),ex);        
         } catch (final ServiceException x) {
             logger.info("Failed to read file");
@@ -107,13 +106,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
             loadOldXmlDecoder(f,l);
             save(f,l); // and if it loaded, save it again.
         }finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (final IOException x1) {
-                    logger.error("IOException",x1);
-                }
-            }
+            IOUtils.closeQuietly(fis);
         }
     }
 
@@ -126,17 +119,11 @@ implements ListEventListener,  ListProvider, ExceptionListener{
                 reportProgress("Saving list to " + file);
                 OutputStream fos = null;
                 try {
-                    fos = new FileOutputStream(file);
+                    fos = FileUtils.openOutputStream(file);
                     final List output = new ArrayList(content); // necessary to copy, as glazedList doesn't serialize
                     xml.toXml(output,fos);
                 } finally {
-                    if (fos != null) {
-                        try {
-                            fos.close();
-                        } catch (final IOException x) {
-                            logger.error("Failed to save list.",x);
-                        }
-                    }
+                    IOUtils.closeQuietly(fos);
                 }
                 return null;
             }
@@ -165,7 +152,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
         InputStream fis = null;
         XMLDecoder x = null;
         try { 
-            fis = new FileInputStream(f);
+            fis = FileUtils.openInputStream(f);
             x = new XMLDecoder(fis,this,this);
             final Folder[] rs = (Folder[])x.readObject();
             if (rs != null) {
@@ -174,7 +161,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
             } else {
                 logger.info("File is empty");
             }
-        } catch (final FileNotFoundException ex) {
+        } catch (final IOException ex) {
             logger.error(storage.toString(),ex);
         } catch (final ArrayIndexOutOfBoundsException ex) {
             // thrown when the file contains no data - a bit crap - no way to check this.
@@ -188,13 +175,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
             if (x != null) {
                 x.close();
             } 
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (final IOException x1) {
-                    logger.error("IOException",x1);
-                }
-            }
+           IOUtils.closeQuietly(fis);
         }
     }
 //    private void saveOldXmlDecoder(final File file, final List source) {

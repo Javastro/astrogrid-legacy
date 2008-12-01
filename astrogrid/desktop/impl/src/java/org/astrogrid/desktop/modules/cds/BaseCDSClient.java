@@ -19,6 +19,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
@@ -37,7 +38,7 @@ public class BaseCDSClient implements PropertyChangeListener {
      * Commons Logger for this class
      */
     protected  final Log logger;
-    public BaseCDSClient(HttpClient http,Preference endpoint)  {
+    public BaseCDSClient(final HttpClient http,final Preference endpoint)  {
         super();
         logger = LogFactory.getLog(this.getClass());
         this.http = http;
@@ -52,24 +53,24 @@ public class BaseCDSClient implements PropertyChangeListener {
      * builds the basic http method, to which the query string should be added. 
      */
     protected HttpMethod buildHttpMethod() {
-        HttpMethod meth = new GetMethod(base);
+        final HttpMethod meth = new GetMethod(base);
         meth.setFollowRedirects(true);
         return meth;
     }
     
     /** executes a http method to return a string. calls 'parseResponse' to parse the response. */
-    protected String executeHttpMethod(HttpMethod meth) throws ServiceException {
+    protected String executeHttpMethod(final HttpMethod meth) throws ServiceException {
         try {            
-            int status = http.executeMethod(meth);
+            final int status = http.executeMethod(meth);
             if (status != HttpStatus.SC_OK) {
                 throw new ServiceException("Failed to query service: returned HTTP Error " + status);
             }
             return parseResponse(meth.getResponseBodyAsStream());
-        } catch (HttpException x) {
+        } catch (final HttpException x) {
             throw new ServiceException("Failed to query service",x);
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new ServiceException("Failed to query service",x);
-        } catch (XMLStreamException x) {
+        } catch (final XMLStreamException x) {
             throw new ServiceException("Failed to parse response from service",x);
         } finally {
             meth.releaseConnection();
@@ -79,14 +80,14 @@ public class BaseCDSClient implements PropertyChangeListener {
     
     /** parse response: this implementation just extracts the content of the 'return' element 
      * @throws XMLStreamException */
-    protected String parseResponse(InputStream str) throws XMLStreamException, ServiceException {
+    protected String parseResponse(final InputStream str) throws XMLStreamException, ServiceException {
         try {
-          XMLStreamReader is = inputFactory.createXMLStreamReader(str);
+          final XMLStreamReader is = inputFactory.createXMLStreamReader(str);
           for (is.next(); ! (is.isEndElement() && is.getLocalName().equals("Sesame")); is.next()) {
               if (is.isStartElement()) { // otherwise, we don't care.
-                  String elementName = is.getLocalName();
+                  final String elementName = is.getLocalName();
                   if (elementName.equals("return")) {
-                      String s=  is.getElementText();
+                      final String s=  is.getElementText();
                       if (s == null) {
                           return "";
                       } else {
@@ -97,22 +98,19 @@ public class BaseCDSClient implements PropertyChangeListener {
           }
           throw new ServiceException("No return from service");
         } finally {
-            try {
-                str.close();
-            } catch (IOException ignored) {
-            }
+          IOUtils.closeQuietly(str);          
         }
     }
 
     
     
     
-    public void propertyChange(PropertyChangeEvent evt) {        
+    public void propertyChange(final PropertyChangeEvent evt) {        
         try {
-            URL u = new URL(endpoint.getValue());
+            final URL u = new URL(endpoint.getValue());
             base = u.toString();
          
-        } catch (MalformedURLException x) {
+        } catch (final MalformedURLException x) {
             logger.error("Endpoint is malformed",x);
         }        
     }

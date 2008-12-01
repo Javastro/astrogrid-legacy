@@ -15,6 +15,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
@@ -46,7 +47,7 @@ public class ResourceTreeModel extends DefaultTreeModel {
      * @param    parent  context
      * @param    persister   XML persistence implementation
      */
-    public ResourceTreeModel(UIContext parent, XmlPersist persister) {
+    public ResourceTreeModel(final UIContext parent, final XmlPersist persister) {
         super(null);
         this.parent = parent;
         this.persister = persister;
@@ -59,22 +60,22 @@ public class ResourceTreeModel extends DefaultTreeModel {
         // that if the load fails the worst the user sees is failure to
         // update the out-of-date content.
         addTreeModelListener(new TreeModelListener() {
-            public void treeNodesChanged(TreeModelEvent evt) {
-                Object[] children = evt.getChildren();
+            public void treeNodesChanged(final TreeModelEvent evt) {
+                final Object[] children = evt.getChildren();
                 for (int i = 0; i < children.length; i++) {
                     updateSubscriptions(children[i]);
                 }
             }
-            public void treeNodesInserted(TreeModelEvent evt) {
-                Object[] children = evt.getChildren();
+            public void treeNodesInserted(final TreeModelEvent evt) {
+                final Object[] children = evt.getChildren();
                 for (int i = 0; i < children.length; i++) {
                     updateSubscriptions(children[i]);
                 }
             }
-            public void treeStructureChanged(TreeModelEvent evt) {
+            public void treeStructureChanged(final TreeModelEvent evt) {
                 updateSubscriptions(evt.getTreePath().getLastPathComponent());
             }
-            public void treeNodesRemoved(TreeModelEvent evt) {
+            public void treeNodesRemoved(final TreeModelEvent evt) {
             }
         });
     }
@@ -86,26 +87,26 @@ public class ResourceTreeModel extends DefaultTreeModel {
      * @param   identical  true for an identical copy, false for one which is
      *          obviously a copy of the original
      */
-    public DefaultMutableTreeNode duplicateNode(DefaultMutableTreeNode node,
-                                                boolean identical) {
+    public DefaultMutableTreeNode duplicateNode(final DefaultMutableTreeNode node,
+                                                final boolean identical) {
 
         // The implementation of this method serializes to XML and then
         // deserializes back again.  This is not maximally efficient, but
         // it's not performance-critical and it ensures a deep copy.
         DefaultMutableTreeNode dupNode;
         try {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            final ByteArrayOutputStream os = new ByteArrayOutputStream();
             persister.toXml(BranchBean.fromTreeNode(node), os);
             os.close();
-            InputStream is = new ByteArrayInputStream(os.toByteArray());
+            final InputStream is = new ByteArrayInputStream(os.toByteArray());
             dupNode = BranchBean.toTreeNode(persister.fromXml(is));
             is.close();
         }
-        catch (IOException e) {
+        catch (final IOException e) {
             throw (Error) new AssertionError("XStream persistence trouble?")
                          .initCause(e);
         }
-        catch (ServiceException e) {
+        catch (final ServiceException e) {
             throw (Error) new AssertionError("XStream persistence trouble?")
                          .initCause(e);
         }
@@ -119,11 +120,11 @@ public class ResourceTreeModel extends DefaultTreeModel {
         subscriptionSet.add(dupNode);        
 
         if (! identical) {
-            ResourceFolder folder = (ResourceFolder) dupNode.getUserObject();
+            final ResourceFolder folder = (ResourceFolder) dupNode.getUserObject();
             folder.setFixed(false);
             folder.setSubscription(null);
-            String fname = folder.getName();
-            String prefix = "Copy of ";
+            final String fname = folder.getName();
+            final String prefix = "Copy of ";
             if (! fname.startsWith(prefix)) {
                 folder.setName(prefix + fname);
             }
@@ -140,14 +141,14 @@ public class ResourceTreeModel extends DefaultTreeModel {
      *
      * @param   nodeObj  node to update
      */
-    private void updateSubscriptions(Object nodeObj) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) nodeObj;
-        ResourceFolder folder = (ResourceFolder) node.getUserObject();
-        String subscrip = folder.getSubscription();
+    private void updateSubscriptions(final Object nodeObj) {
+        final DefaultMutableTreeNode node = (DefaultMutableTreeNode) nodeObj;
+        final ResourceFolder folder = (ResourceFolder) node.getUserObject();
+        final String subscrip = folder.getSubscription();
 
         // No subscription - check the children recursively.
         if (subscrip == null) {
-            for (Enumeration en = node.children(); en.hasMoreElements();) {
+            for (final Enumeration en = node.children(); en.hasMoreElements();) {
                 updateSubscriptions(en.nextElement());
             }
         }
@@ -179,24 +180,20 @@ public class ResourceTreeModel extends DefaultTreeModel {
             protected Object construct() throws IOException, ServiceException {
 
                 // Load content from remote location.
-                URL url = new URL(subscription);
-                InputStream is = url.openStream();
+                final URL url = new URL(subscription);
+                final InputStream is = url.openStream();
                 try {
-                    Object bean = persister.fromXml(is);
-                    DefaultMutableTreeNode newNode =
+                    final Object bean = persister.fromXml(is);
+                    final DefaultMutableTreeNode newNode =
                         BranchBean.toTreeNode(bean);
                     return newNode;
                 }
                 finally {
-                    try {
-                        is.close();
-                    }
-                    catch (IOException e) {
-                    }
+                   IOUtils.closeQuietly(is);
                 }
             }
 
-            protected void doFinished(Object obj) {
+            protected void doFinished(final Object obj) {
 
                 // Node may have been removed from tree while we were working.
                 if (!isAttached()) {
@@ -204,17 +201,17 @@ public class ResourceTreeModel extends DefaultTreeModel {
                 }
 
                 // Replace original node in the tree with the generated one
-                ResourceFolder oldFolder = 
+                final ResourceFolder oldFolder = 
                     (ResourceFolder) oldNode.getUserObject();
-                DefaultMutableTreeNode newNode = (DefaultMutableTreeNode) obj;
-                ResourceFolder newFolder =
+                final DefaultMutableTreeNode newNode = (DefaultMutableTreeNode) obj;
+                final ResourceFolder newFolder =
                     (ResourceFolder) newNode.getUserObject();
                 newFolder.setSubscription(subscription);
                 newFolder.setName(oldFolder.getName());
                 newFolder.setIconName(oldFolder.getIconName());
-                DefaultMutableTreeNode parentNode =
+                final DefaultMutableTreeNode parentNode =
                     (DefaultMutableTreeNode) oldNode.getParent();
-                int childIndex = parentNode.getIndex(oldNode);
+                final int childIndex = parentNode.getIndex(oldNode);
 
                 // Remember that this one has been read from XML
                 subscriptionSet.add(newNode);
@@ -226,13 +223,13 @@ public class ResourceTreeModel extends DefaultTreeModel {
                 
                 // Recursively check new node's children for any subscription
                 // elements
-                for (Enumeration en = newNode.children();
+                for (final Enumeration en = newNode.children();
                      en.hasMoreElements();) {
                     updateSubscriptions(en.nextElement());
                 }
             }
 
-            protected void doError(Throwable e) {
+            protected void doError(final Throwable e) {
 
                 // Node may have been removed from tree while we were working.
                 if (!isAttached()) {
@@ -245,7 +242,7 @@ public class ResourceTreeModel extends DefaultTreeModel {
                 // Recursively check old node's children for any subscription
                 // elements.  This wasn't done previously in expectation that
                 // they would be replaced.
-                for (Enumeration en = oldNode.children();
+                for (final Enumeration en = oldNode.children();
                      en.hasMoreElements();) {
                     updateSubscriptions(en.nextElement());
                 }
