@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.27 2008/11/04 14:35:49 nw Exp $
+/*$Id: Launcher.java,v 1.28 2008/12/01 23:29:23 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -145,7 +145,8 @@ public class Launcher implements Runnable {
     	writeLogHeader();
         // try fixing class loading bugs under jnlp
     	// original, no-security method - fixes classloading bugs under jnlp
-        System.setSecurityManager(null); 
+        // TODO: doubt this is needed now, as we're not doing JNLP anymore. 
+    	System.setSecurityManager(null); 
         Thread.currentThread().setContextClassLoader(Launcher.class.getClassLoader()); 
         Thread.currentThread().setName("Main Thread");
         cl = new DefaultClassResolver(Thread.currentThread().getContextClassLoader());
@@ -249,6 +250,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.28  2008/12/01 23:29:23  nw
+removed some jnlp stuff
+
 Revision 1.27  2008/11/04 14:35:49  nw
 javadoc polishing
 
