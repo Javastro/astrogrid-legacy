@@ -28,6 +28,8 @@ import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.TransferHandler;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -85,7 +87,8 @@ public class FileModelTransferHandler extends TransferHandler{
      */
     public FileModelTransferHandler(final Filemodel filemodel) {
         this.filemodel = filemodel;
-    }
+    } 
+        @Override
         protected Transferable createTransferable(final JComponent c) {
              final Transferable t = filemodel.getSelectionTransferable();
              if (logger.isDebugEnabled()) {
@@ -96,9 +99,11 @@ public class FileModelTransferHandler extends TransferHandler{
              }
              return t;
         }
+        @Override
         public int getSourceActions(final JComponent c) {
             return COPY_OR_MOVE;
         }
+        @Override
         public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
             for (int i = 0; i < transferFlavors.length; i++) {
                 if (ArrayUtils.contains(inputFlavors,transferFlavors[i])) {
@@ -108,14 +113,16 @@ public class FileModelTransferHandler extends TransferHandler{
             return false;
         }
         
-        public boolean importData(final JComponent comp, final Transferable t) {
+        @Override
+        public boolean importData(final JComponent dest, final Transferable t) {
             if (logger.isDebugEnabled()) {
                 final DataFlavor[] flavs = t.getTransferDataFlavors();
                 for (int i = 0; i < flavs.length; i++) {
                     logger.debug(flavs[i]);
                 }
             }
-            if (canImport(comp,t.getTransferDataFlavors())) {
+            
+            if (canImport(dest,t.getTransferDataFlavors())) {
                 try {
                     List objects = null;
                     if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
@@ -137,21 +144,18 @@ public class FileModelTransferHandler extends TransferHandler{
                         objects = Collections.singletonList(t.getTransferData(VoDataFlavour.LOCAL_URL));                        
                     } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST)) {
                         logger.debug("external uri list");
-                        BufferedReader r = null;
+                        LineIterator it = null;
                         objects = new ArrayList();
                         try {
                             final InputStream is = (InputStream)t.getTransferData(VoDataFlavour.URI_LIST);
-                            r = new BufferedReader(new InputStreamReader(is));
-                            String line;
-                            while ((line = r.readLine()) != null) {
-                                // see if we can at least make a URL from it.
+                            it = IOUtils.lineIterator(new InputStreamReader(is));
+                            while (it.hasNext()) {
+                                final String line = it.nextLine();
                                 final URL u = VoDataFlavour.mkJavanese(new URL(line.trim()));                                
                                 objects.add(u);
                             }                        
                         } finally {
-                            if (r != null) {
-                                try { r.close(); } catch (final IOException e) { /* ignored*/ }
-                            }
+                            LineIterator.closeQuietly(it);
                         }     
                     } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST_STRING)) {
                         logger.debug("external uri list as string");
@@ -183,6 +187,8 @@ public class FileModelTransferHandler extends TransferHandler{
                                break;
                            }
                            final FileObject fo = (FileObject)o;
+                           
+                           // check whether it's a writable kind of file object
                             if (AstroscopeFileObject.isDelegateOrAstroscopeFileObject(fo) || ! fo.isWriteable()) {
                                 moveAllowed = false;
                                 break;
@@ -190,7 +196,7 @@ public class FileModelTransferHandler extends TransferHandler{
                         }
                          logger.debug("can move: " + moveAllowed);
                          if (moveAllowed) {
-                             promptUserForSaveOrMove(comp,objects);
+                             promptUserForSaveOrMove(dest,objects);
                          } else {
                              filemodel.ops.copyToCurrent(objects);
                          }
@@ -230,6 +236,7 @@ public class FileModelTransferHandler extends TransferHandler{
             m.show(comp,location.x,location.y);
             
         }
+        @Override
         public Icon getVisualRepresentation(final Transferable t) {
             final EventList selected = filemodel.selection.getSelected();            
             if (selected.size() > 1) {

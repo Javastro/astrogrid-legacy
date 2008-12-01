@@ -65,8 +65,8 @@ public class Filemodel implements ListSelectionListener{
      * @param event
      */
         public final void maybeShowPopupMenu( final MouseEvent event ){
-           if ( event.isPopupTrigger() && activities.getPopupMenu() != null ) {
-               //@todo - only update activities if what we've clicked on is not alreays part of the selection
+           if ( event.isPopupTrigger() && activities.getPopupMenu() != null ) {               
+               //minor optimization - we should only update activities if what we've clicked on is not alreays part of the selection
                updateActivities();           
                 activities.getPopupMenu().show( event.getComponent(),
                         event.getX(), event.getY() );
@@ -79,6 +79,11 @@ public class Filemodel implements ListSelectionListener{
          * to be triggered anyhow.
          */
         public void updateActivities() {
+            if (activities.getPopupMenu().isVisible()) {
+                // if the popup menu is showing, then whatever click caused a change of the selection should really be directed at the popup menu
+                // so we should ignore it here.
+                return;
+            }
             final Transferable tran =getSelectionTransferable();
                 if (tran == null) {
                     activities.clearSelection();

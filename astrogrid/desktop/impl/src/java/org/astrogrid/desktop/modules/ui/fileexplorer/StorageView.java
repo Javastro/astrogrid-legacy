@@ -501,6 +501,8 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    		,"list");
     	    final JScrollPane tableScroll = new JScrollPane(fileTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     	    tableScroll.getViewport().setBackground(Color.WHITE);
+    	    // need to make the scrollPane containing the table a drop target too - otherwise dropping on the 'background' of the table won't work.
+    	    navigator.getModel().enableDragAndDropFor(tableScroll);
             mainPanel.add(tableScroll,"table");
             
             if (PREFERENCES.get(PREFERRED_VIEW_KEY,"list").equals("list")) {

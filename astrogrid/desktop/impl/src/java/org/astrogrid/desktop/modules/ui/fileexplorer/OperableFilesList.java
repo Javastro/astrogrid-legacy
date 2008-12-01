@@ -19,7 +19,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
  *   - make this a source for drag and drop (but not a sink)
  *    - the ability to select items and  show a right-click popup.
  * 
- * @author Noel.Winstanley@manchester.ac.uk
+ * @author Noel.Winstanley@manchest er.ac.uk
  * @since Jul 24, 200711:58:12 AM
  */
 public class OperableFilesList extends FilesList implements MouseListener{

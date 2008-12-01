@@ -50,7 +50,9 @@ public class NavigableFilesTable extends OperableFilesTable implements MouseList
 		     } catch (final FileSystemException ex) {
 		    	 // @todo report?
 		     }
-		 }		
+		 } else {
+		     super.mouseClicked(e);
+		 }
 	}
 
 

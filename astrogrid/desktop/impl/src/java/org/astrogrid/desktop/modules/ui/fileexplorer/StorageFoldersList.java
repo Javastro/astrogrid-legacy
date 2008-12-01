@@ -16,7 +16,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,6 +42,7 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -365,9 +365,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
                             sf = build(u);
                         }                        
                     } finally {
-                        if (r != null) {
-                            try { r.close(); } catch (final IOException e) { /* ignored*/ }
-                        }
+                        IOUtils.closeQuietly(r);
                     }
                 } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST_STRING)) {
                         String s= (String)t.getTransferData(VoDataFlavour.URI_LIST_STRING);
@@ -450,7 +448,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
                 throw new UnsupportedFlavorException(flavor);
             }
             if (VoDataFlavour.URI_LIST.equals(flavor)) {
-                return new ByteArrayInputStream(uri.toString().getBytes());
+                return IOUtils.toInputStream(uri.toString());
             } else if (VoDataFlavour.URI_LIST_STRING.equals(flavor)) {
                 return uri.toString();
             } else {

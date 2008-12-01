@@ -48,6 +48,8 @@ public class NavigableFilesList extends OperableFilesList {
 		     } catch (final FileSystemException ex) {
 		    	 //@todo report or recover
 		     }
+		 } else {
+		     super.mouseClicked(e);
 		 }
 	}
 
