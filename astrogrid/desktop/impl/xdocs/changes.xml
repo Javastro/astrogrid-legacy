@@ -15,6 +15,17 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="1.2.3" date="unreleased">
+    <action dev="nw" type="fix">
+        Improved parsing of DAL responses in AR API. (to test)
+    </action>
+    <action dev="nw" type="fix">
+        Improved drag-n-drop behaviour of file table.
+    </action>
+    <action dev="nw" type="fix">
+        Improved behaviour of popup menus in file table.
+    </action>
+</release>
 <release version="1.2.2" date="2008-11-10">
     <action dev="nw" type="fix">
     Fixed to work with new CEA registrations
