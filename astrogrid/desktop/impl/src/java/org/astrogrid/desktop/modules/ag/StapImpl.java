@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.16 2008/11/04 14:35:47 nw Exp $
+/*$Id: StapImpl.java,v 1.17 2008/12/03 19:40:56 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.astrogrid.acr.ivoa.resource.StapCapability;
 import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ivoa.DALImpl;
+import org.astrogrid.desktop.modules.ivoa.DatasetSaver;
 
 /** Client for Simple Time Access Protocol.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
@@ -173,11 +174,20 @@ public class StapImpl extends DALImpl implements Stap {
         }   
     }
 
+    @Override
+    protected DatasetSaver newDatasetSaver() {
+        final DatasetSaver saver = new DatasetSaver();
+        saver.setLookForResultTable(false);
+        return saver;
+    }
 }
 
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.17  2008/12/03 19:40:56  nw
+Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
+
 Revision 1.16  2008/11/04 14:35:47  nw
 javadoc polishing
 

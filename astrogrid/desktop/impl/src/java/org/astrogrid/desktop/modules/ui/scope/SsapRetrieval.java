@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.26 2008/12/01 23:33:44 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.27 2008/12/03 19:40:56 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -87,11 +87,6 @@ public class SsapRetrieval extends AbstractRetriever {
     //constants used with tablehandler.
     // the keys are UCDs - this makes it simpler to pass all metadata onto another app via plastic.
     
-    // the Attribute keys are also used as constants for the UCDS to search for.
-    // latest SSA spec has replaced useage of UCD by utype - but is poorly implemented at present
-    // so keeping both systems at present.
-    // only implemented a partial list of the utypes for now - even less than for the ucd.
-    public static final String SPECTRA_URL_LEGACY_ATTRIBUTE = "DATA_LINK";
     public static final String SPECTRA_URL_UCD = "meta.ref.url";
     public static final String POS_UCD = "pos.eq";
     public static final String RA_UCD = "pos.eq.ra";
@@ -196,7 +191,7 @@ public class SsapRetrieval extends AbstractRetriever {
             }
 
             if (ucd != null) {
-                if (containsIgnoreCase(ucd,SPECTRA_URL_LEGACY_ATTRIBUTE)
+                if (containsIgnoreCase(ucd,SiapRetrieval.LEGACY_IMG_ACCREF_UCD)
                         || containsIgnoreCase(ucd,SPECTRA_URL_UCD)) {
                     urlCol = col;
                 } else if (containsIgnoreCase(ucd,RA_UCD)) {
@@ -232,7 +227,7 @@ public class SsapRetrieval extends AbstractRetriever {
         protected void rowDataExtensionPoint(final Object[] row, final TreeNode valNode) {
             try {
                 final URL url = new URL(safeTrim(row[urlCol]));
-                valNode.setAttribute(SPECTRA_URL_LEGACY_ATTRIBUTE,url.toString());
+                valNode.setAttribute(SiapRetrieval.LEGACY_IMG_ACCREF_UCD,url.toString());
 
                 String title;
                 if (titleCol > -1) {
@@ -441,6 +436,9 @@ public class SsapRetrieval extends AbstractRetriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.27  2008/12/03 19:40:56  nw
+Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
+
 Revision 1.26  2008/12/01 23:33:44  nw
 Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
 

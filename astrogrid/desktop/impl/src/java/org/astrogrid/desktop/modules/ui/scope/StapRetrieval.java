@@ -40,6 +40,8 @@ public class StapRetrieval extends AbstractRetriever {
 	private final Date end;
 	private final String format;
     private final URI accessUrl;
+    public static final String IMG_ACCREF_UCD =  "VOX:AccessReference";
+    public static final String IMG_FORMAT_UCD = "VOX:Format";
 
 	public StapRetrieval(final Service information,final StapCapability cap,final URI acurl,final NodeSocket socket,final VizModel model, 
 			final Stap stap, final Date start,final Date end, final double ra, final double dec, final double raSize,final double decSize, final String format)  {
@@ -127,9 +129,9 @@ public class StapRetrieval extends AbstractRetriever {
 			final String ucd = columnInfo.getUCD();
 			final String colName = columnInfo.getName();
 
-			if (ucd != null && ucd.equalsIgnoreCase("VOX:AccessReference")) {
+			if (ucd != null && ucd.equalsIgnoreCase(IMG_ACCREF_UCD)) {
 				accessCol = col;
-			} else if (ucd != null && ucd.equalsIgnoreCase("VOX:Format")) {
+			} else if (ucd != null && ucd.equalsIgnoreCase(IMG_FORMAT_UCD)) {
 				formatCol = col;
 			} else if (ucd != null && ucd.equalsIgnoreCase("VOX:Image_Title")) {
 				titleCol = col;

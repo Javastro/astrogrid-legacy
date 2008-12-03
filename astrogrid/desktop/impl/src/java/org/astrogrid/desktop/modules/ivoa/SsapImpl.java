@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.16 2008/12/01 23:31:39 nw Exp $
+/*$Id: SsapImpl.java,v 1.17 2008/12/03 19:40:56 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -170,54 +170,16 @@ public class SsapImpl extends DALImpl implements Ssap {
         }
     }
     
-    @Override
-    protected DatasetSaver newDatasetSaver() {
-        return new SsapDatasetSaver();
-    }
-    
-    /** same algorithmic adjustments as SsapStructureBuilder */
-    public static class SsapDatasetSaver extends DatasetSaver {
-        boolean skipNextTable = false;
-        boolean resultsTableParsed = false;
-        
-        @Override
-        public void resource(final String name, final String id, final String type)
-                throws SAXException {
-            skipNextTable = ! "results".equalsIgnoreCase(type);
-            
-        }
-        
-        @Override
-        public void startTable(final StarTable t) throws SAXException {
-            if (skipNextTable || resultsTableParsed) {
-                return;
-            }
-            super.startTable(t);
-        }
-        
-        @Override
-        public void rowData(final Object[] cells) throws SAXException {
-            if (skipNextTable || resultsTableParsed) {
-                return;
-            }
-            super.rowData(cells);
-        }
-        
-        @Override
-        public void endTable() throws SAXException {
-            if (skipNextTable || resultsTableParsed) {
-                return;
-            }
-            resultsTableParsed = true;
-            super.endTable();
-        }
-    }
+
     
 }
 
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.17  2008/12/03 19:40:56  nw
+Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
+
 Revision 1.16  2008/12/01 23:31:39  nw
 Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
 

@@ -31,7 +31,11 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * */
 public class SiapRetrieval extends AbstractRetriever {
 
-
+    /** UCD keys */
+    public static final String IMG_ACCREF_UCD = "VOX:Image_AccessReference";
+    public static final String IMG_FORMAT_UCD = "VOX:Image_Format";
+    public static final String LEGACY_IMG_ACCREF_UCD = "DATA_LINK";
+    
     public SiapRetrieval(final Service service, final SiapCapability cap, final URI acurl, final NodeSocket socket,final VizModel model, final Siap siap,final double ra, final double dec, final double raSize,final double decSize)  {
         super(service,cap,socket,model,ra,dec);
         this.accessUrl = acurl;
@@ -122,18 +126,20 @@ public class SiapRetrieval extends AbstractRetriever {
             if (ucd == null) {
                 return;
             }
-        if (ucd.equalsIgnoreCase("VOX:Image_AccessReference")) {
+        if (ucd.equalsIgnoreCase(IMG_ACCREF_UCD)) {
             imgCol = col;
-        } else if (ucd.equalsIgnoreCase("VOX:Image_Format")) {
+        } else if (ucd.equalsIgnoreCase(IMG_FORMAT_UCD)) {
             formatCol = col;
         } else if (ucd.equalsIgnoreCase("VOX:Image_FileSize")) {
             sizeCol = col;
         } else if (ucd.equalsIgnoreCase("VOX:Image_Title")) {
             titleCol = col;
-        } else if (ucd.equalsIgnoreCase("DATA_LINK")) { // non-srtandard, but seen occasionally
+        } else if (ucd.equalsIgnoreCase(LEGACY_IMG_ACCREF_UCD)) { // non-srtandard, but seen occasionally
         	dataLinkCol = col;
         } 
      }
+        
+
         
         @Override
         protected boolean omitRowFromTooltip(final int rowIndex) {

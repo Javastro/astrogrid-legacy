@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.23 2008/12/01 23:31:49 nw Exp $
+/*$Id: DALImpl.java,v 1.24 2008/12/03 19:40:56 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -303,7 +302,14 @@ public abstract class DALImpl implements Dal{
         }			
     }
 
-	/**
+	/**  extension point that subclasses can override.
+     * @return
+     */
+    protected DatasetSaver newDatasetSaver() {
+        return new DatasetSaver();
+    }
+
+    /**
 	 * @param saver
 	 * @throws InvalidArgumentException
 	 * @throws ServiceException
@@ -311,11 +317,11 @@ public abstract class DALImpl implements Dal{
 	 */
     private int doSaveDatasets(final DatasetSaver saver) throws InvalidArgumentException, ServiceException, SecurityException {
         int saved = 0;
-        for (final Iterator i = saver.getResult().entrySet().iterator(); i.hasNext(); ) {
+        for (final Map.Entry<URL,URI> entry : saver.getResult().entrySet()) {
             saved++;
-            final Map.Entry entry = (Map.Entry)i.next();
-            final URL u = (URL)entry.getKey();
-            final URI location = (URI)entry.getValue();
+            final URL u = entry.getKey();
+            final URI location = entry.getValue();
+
             if (location.getScheme().equals("ivo")) {
                 try {
                     ms.copyURLToContent(u,location);
@@ -468,7 +474,7 @@ public abstract class DALImpl implements Dal{
 			keys = new String[colCount];
 			for (int col = 0; col < colCount; col++) {
 				final ColumnInfo nfo = t.getColumnInfo(col);
-				keys[col] = nfo.getUCD() != null ? nfo.getUCD() : nfo.getName();
+				keys[col] = StringUtils.isNotBlank(nfo.getUCD()) ? nfo.getUCD() : nfo.getName();
 			}
 		}
 		public void endTable() throws SAXException {
@@ -485,75 +491,14 @@ public abstract class DALImpl implements Dal{
 
 	}
 	
-	// factory method - allows subclasses of dalImpl to use their own impl
-	protected DatasetSaver newDatasetSaver() {
-		return new DatasetSaver();
-	}
-	/** table handler that saves linked data to disk */
-	protected static class DatasetSaver extends BasicErrorChecker {
-		public void setSubset(final List rows) {
-			subset = true;
-			this.rows = rows;
-		}
-		public void setRoot(final URI root)  {
-			if (! root.toString().endsWith("/")) {
-				this.root = URI.create(root.toString() + "/");
-			} else {
-				this.root = root;
-			}
-		}
-		private  boolean subset;
-		private List rows;
-		private URI root;
-		private int currentRow;
-		private final Map result = new LinkedHashMap();
-		
-		private int urlIx = -1;
-		private int formatIx = -1;
-		
-		public Map getResult() {
-			return result;
-		}
-		int colCount;
-		public void startTable(final StarTable t) throws SAXException {
-		    checkStarTableErrors(t);
-			colCount = t.getColumnCount();
-			for (int col = 0; col < colCount; col++) {
-				final ColumnInfo nfo = t.getColumnInfo(col);
-				if ("VOX:Image_AccessReference".equalsIgnoreCase(nfo.getUCD())) {
-					urlIx = col;
-				} else if ("VOX:Image_Format".equalsIgnoreCase(nfo.getUCD())) {
-					formatIx = col;
-				}
-			}
-		}
-		public void endTable() throws SAXException {
-		    //does nothing
-		}
-
-		public void rowData(final Object[] cells) throws SAXException {
-			if (!subset || rows.contains(Integer.valueOf(currentRow))) {
-					String format = null;
-					if (formatIx > -1) {
-						format = "." + StringUtils.substringAfterLast(cells[formatIx].toString(),"/");
-					}
-					try {
-					result.put(new URL(cells[urlIx].toString()),
-							URI.create(root.toString() + "data-" + currentRow + format )
-							);
-					} catch (final MalformedURLException e) {
-						logger.warn("Failed to construct url",e); // @todo find a way to report this to client..
-					}
-			}
-			currentRow++;
-		}
-	}
-	
 }
 
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.24  2008/12/03 19:40:56  nw
+Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
+
 Revision 1.23  2008/12/01 23:31:49  nw
 Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
 

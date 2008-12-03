@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.20 2008/12/01 23:31:38 nw Exp $
+/*$Id: SiapImpl.java,v 1.21 2008/12/03 19:40:56 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,6 @@ import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.ivoa.SsapImpl.SsapDatasetSaver;
 import org.astrogrid.desktop.modules.ivoa.SsapImpl.SsapStructureBuilder;
 import org.xml.sax.SAXException;
 
@@ -134,11 +133,6 @@ public class SiapImpl extends DALImpl implements Siap {
 		
 	}
 	
-	/** uses the same code modifications as ssap to detect the 'results' table */
-	@Override
-	protected DatasetSaver newDatasetSaver() {
-	    return new SsapDatasetSaver();
-	}
 
 	protected URL findAccessURL(final Service s) throws InvalidArgumentException {
 	    if (!(s instanceof SiapService)) {
@@ -172,6 +166,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.21  2008/12/03 19:40:56  nw
+Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
+
 Revision 1.20  2008/12/01 23:31:38  nw
 Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
 
