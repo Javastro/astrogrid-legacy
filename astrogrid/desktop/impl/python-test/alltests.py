@@ -16,6 +16,11 @@ import CdsCoordinate
 import CdsSesame
 import CdsVizier
 import IvoaSiap
+import IvoaCone
+import IvoaSsap
+import IvoaStap
+import IvoaStapVoevent
+import Cea
 import ConstrainingQuery
 import XQueryTrials
 import Plastic
@@ -42,8 +47,12 @@ if __name__ == '__main__':
         ,CdsSesame.suite()
         ,CdsVizier.suite()
         ,ConstrainingQuery.suite()
-        ,IvoaSiap.suite() # to test
-
+        ,IvoaCone.suite()
+        ,IvoaSiap.suite() 
+        ,IvoaSsap.suite()
+        ,IvoaStap.suite()
+        ,IvoaStapVoevent.suite()
+        ,Cea.suite()
         ,Plastic.suite()
         ,Vosi.suite()
         ,XQueryTrials.suite()

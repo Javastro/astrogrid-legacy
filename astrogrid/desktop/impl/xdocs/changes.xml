@@ -17,7 +17,7 @@
 <body>
 <release version="1.2.3" date="unreleased">
     <action dev="nw" type="fix">
-        Improved parsing of DAL responses in AR API. (to test)
+        Improved parsing of DAL responses in AR API.
     </action>
     <action dev="nw" type="fix">
         Improved drag-n-drop behaviour of file table.

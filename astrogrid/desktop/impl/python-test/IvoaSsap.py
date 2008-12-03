@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#tests for the siap component
+#tests for the ssap component
 
 import unittest
 from xmlrpclib import Fault
@@ -11,32 +11,28 @@ from tempfile import mkdtemp
 from os import listdir, remove, rmdir
 
 
-#siap service, with a test query.
-service = 'ivo://nasa.heasarc/skyview/rass'
+#ssap service
+service = 'ivo://mast.stsci.edu/ssap/iue'
 
-class Siap(unittest.TestCase):
+class Ssap(unittest.TestCase):
 
     def constructQuery(self):
-        """ helper method - reads test query from capabilities, asserts, and constructs query url from that"""
+        """ helper method - checks for ssap capability, then builds query url from that"""
         serv = self.reg.getResource(service)
-        siapCap = None
+        ssapCap = None
         self.assertTrue('capabilities' in serv, 'no capabilities')
         for cap in serv['capabilities']:
-            if cap['standardID'] == 'ivo://ivoa.net/std/SIA':
-                siapCap = cap
-        self.assertTrue(siapCap != None, 'no sia capability')
-        self.assertTrue('testQuery' in siapCap, 'no test query in sia capability')
-        tq = siapCap['testQuery']
-        pos = tq['pos']
-        size = tq['size']
-        #try running a query.
-        query = self.siap.constructQuery(service, pos['long'], pos['lat'], size['long'])
+            if cap['standardID'] == 'ivo://ivoa.net/std/SSA':
+                ssapCap = cap
+        self.assertTrue(ssapCap != None, 'no ssa capability')
+        pos = self.sesame.resolve('crab')
+        query = self.ssap.constructQuery(service, pos['ra'], pos['dec'], 0.001)
         return query
 
     def setUp(self):
         self.sesame = ar.cds.sesame
         self.reg = ar.ivoa.registry
-        self.siap = ar.ivoa.siap
+        self.ssap = ar.ivoa.ssap
         self.vosi = ar.ivoa.vosi
     def testApplicationExists(self):
         try:
@@ -51,37 +47,39 @@ class Siap(unittest.TestCase):
     def testExecute(self):
         query = self.constructQuery()
         #run query to fetch raw votable
-        result = self.siap.executeVotable(query)
+        result = self.ssap.executeVotable(query)
         #check I can parse this as votable.
         vot = VOTable()
         vot.parseText(result)
         rowCount = len(vot.getDataRows())
         self.assertTrue(rowCount > 0,'no rows found')
+        self.assertEquals(2,rowCount,'expected 2 rows')
         colCount = len(vot.getFields())
-        self.assertTrue(colCount > 0,'no cols found')
+        self.assertTrue(colCount > 0,'no cols found')    
         #now re-run to fetch as a datastructure.
-        result = self.siap.execute(query)
+        result = self.ssap.execute(query)        
         #check equivalence.
         self.assertEquals(rowCount,len(result), "not all rows in votable returned")
         line = result[0]
-        self.assertEquals(colCount,len(line),'not all columns in votable returned')
+        # can't test this - this service returns two columns with same UCD - non unique.
+        #self.assertEquals(colCount,len(line),'not all columns in votable returned')
         #check for access reference.
         for l in result:
-            self.assertTrue('AccessReference' in l,'row lacks an access reference')
+            self.assertTrue('DATA_LINK' in l,'row lacks an access reference')
         
         
     def testExecuteAndSave(self):
         query = self.constructQuery()
-        tmp = mktemp("vot", "ivoaSiapSystemTest")
+        tmp = mktemp("vot", "ivoaSsapSystemTest")
         #convert this to a url
-        tmpURL= urlunsplit(['file','',abspath(tmp),'',''])
-        result = self.siap.executeAndSave(query,tmpURL)
+        tmpURL= urlunsplit(['file','',abspath(tmp),'',''])        
+        result = self.ssap.executeAndSave(query,tmpURL)        
         #parse from disk, check what we've got.
         vot = VOTable()
-        vot.parse(tmp)
+        vot.parse(tmp)        
         # and now create a control document
         control = VOTable()
-        control.parseText(self.siap.executeVotable(query))
+        control.parseText(self.ssap.executeVotable(query))        
         #should have the same document in both cases
         self.assertEquals(len(control.getDataRows()),len(vot.getDataRows()),'number of rows differ')
         self.assertEquals(len(control.getFields()),len(vot.getFields()),'number of columns differ')
@@ -89,12 +87,12 @@ class Siap(unittest.TestCase):
         
     def testSaveDatasets(self):
         query = self.constructQuery()
-        tmpDir = mkdtemp("dir","ivoaSiapDatasets")
+        tmpDir = mkdtemp("dir","ivoaSsapDatasets")
         tmpURL = urlunsplit(['file','',abspath(tmpDir),'',''])        
-        count = self.siap.saveDatasets(query,tmpURL)
+        count = self.ssap.saveDatasets(query,tmpURL)
         # check how many rows we should have got.
-        result = self.siap.execute(query)
-        self.assertEquals(count,len(result),"didn't download all files")
+        result = self.ssap.execute(query)
+        self.assertEquals(count,len(result),"failed to download all required files: expected " +str(len(result)) + "but got " +  str(count) )
         self.assertEquals(count,len(listdir(tmpDir)),"not all files downloaded")
         #clean up
         import os
@@ -105,11 +103,11 @@ class Siap(unittest.TestCase):
         
     def testSaveDatasetsSubset(self):
         query = self.constructQuery()
-        tmpDir = mkdtemp("dir","ivoaSiapDatasets")
+        tmpDir = mkdtemp("dir","ivoaSsapDatasets")
         tmpURL = urlunsplit(['file','',abspath(tmpDir),'',''])        
-        count = self.siap.saveDatasetsSubset(query,tmpURL,[1])
+        count = self.ssap.saveDatasetsSubset(query,tmpURL,[1])
         # check how many rows we should have got.
-        self.assertEquals(1,count,"didn't download all instructed files")
+        self.assertEquals(1,count,"failed to download all required files")
         self.assertEquals(1,len(listdir(tmpDir)),"not all files downloaded")
         #clean up
         import os
@@ -121,7 +119,7 @@ class Siap(unittest.TestCase):
       
 
 def suite():
-    return unittest.TestLoader().loadTestsFromTestCase(Siap)
+    return unittest.TestLoader().loadTestsFromTestCase(Ssap)
 
 
 if __name__ == '__main__':
