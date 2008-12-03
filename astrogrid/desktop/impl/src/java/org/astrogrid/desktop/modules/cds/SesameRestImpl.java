@@ -134,7 +134,7 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
             for (is.next(); ! (is.isEndElement() && is.getLocalName().equals("Sesame")); is.next()) {
                 if (is.isStartElement()) { // otherwise, we don't care.
                     final String elementName = is.getLocalName();
-                    if (elementName.equals("target")) {
+                    if (elementName.equals("name")) { //used to be called 'target'
                         result.setTarget(is.getElementText());
                     } else if (elementName.equals("Resolver")) {
                         // reset the position bean, only copying across the target field.
@@ -142,7 +142,7 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
                         result = new SesamePositionBean();
                         result.setTarget(target);
                         result.setService(is.getAttributeValue(null,"name"));
-                    } else if (elementName.equals("INFO")) { // confusingly, also used to indicate an error..
+                    } else if (elementName.equals("INFO") || elementName.equals("ERROR")) { 
                         // add to message list..
                         infoList.add(result.getService() + ": " + is.getElementText());
                     } else if (elementName.equals("otype")) {
