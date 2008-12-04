@@ -18,7 +18,7 @@ public class HeadClauseSRQLVisitor extends BasicRegistrySRQLVisitor {
         adjustTargets(defaultTarget);
         for (final String[] t : targets.values()) {
             adjustTargets(t);            
-        }
+        }    
     }
     /** remove any referenc to $r/
      * @param t
@@ -27,7 +27,7 @@ public class HeadClauseSRQLVisitor extends BasicRegistrySRQLVisitor {
         for (int i = 0; i < t.length; i++) {
             final String target = t[i];
             if (target.startsWith("$r/")) {
-                t[i] = target.substring(3); 
+                t[i] = "." + target.substring(2);
             }
         }
     }
