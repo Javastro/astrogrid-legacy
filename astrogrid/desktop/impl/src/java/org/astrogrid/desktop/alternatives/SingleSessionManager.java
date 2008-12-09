@@ -67,7 +67,7 @@ public class SingleSessionManager implements SessionManagerInternal {
 	protected final String defaultSessionId;
 	protected final SecurityService ss;
 	protected final WebServerInternal ws;
-	protected final Map sessionMap = new HashMap(); // barely used in htis class, but useful for subclasses.
+	protected final Map<String, MutablePrincipal> sessionMap = new HashMap<String, MutablePrincipal>(); // barely used in htis class, but useful for subclasses.
 	
 	// create a new unlimited session
 	protected String createNewSession()  {
@@ -109,7 +109,7 @@ public class SingleSessionManager implements SessionManagerInternal {
 	}
 
 	public Principal findSessionForKey(final String key) {
-		return (Principal)sessionMap.get(key);
+		return sessionMap.get(key);
 	}
 
 	public String createNewSession(final long arg0) throws NotApplicableException,

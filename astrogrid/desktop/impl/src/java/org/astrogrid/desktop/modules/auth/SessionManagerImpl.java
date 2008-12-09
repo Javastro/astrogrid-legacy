@@ -6,6 +6,8 @@ package org.astrogrid.desktop.modules.auth;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sourceforge.hivelock.SecurityService;
 
@@ -17,6 +19,8 @@ import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.desktop.alternatives.SingleSessionManager;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.WebServerInternal;
+import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
+import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 /** Manages sessions and interfaces between {@code Community} and hivelock library.
@@ -77,9 +81,9 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 
 // sessionManager interface
 
-	public String createNewSession(final long minutes)  {
+	public String createNewSession(final long inactivityMinutes)  {
 		final String sid = generateSessionId();
-		final Principal newSession = new MutablePrincipal();
+		final MutablePrincipal newSession = new MutablePrincipal();
 		sessionMap.put(sid,newSession);
 		// now attach ourselves to this session's instance of community too - so we receive notifications there.
 		final Principal previousSession = currentSession();
@@ -90,13 +94,68 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 			adoptSession(previousSession);
 		}
 		
-		final Duration millis = new Duration(minutes * 60 * 1000);
-		scheduler.executeAfterDelay(millis,new Runnable() {
-			public void run() {
-				dispose(sid);
-			}
-		});
+		final SessionExpirer expirer = new SessionExpirer(sid,inactivityMinutes);
+		expirerMap.put(newSession,expirer);
+		scheduler.schedule(expirer);
 		return sid;
+	}
+	
+	protected final Map<Principal,SessionExpirer> expirerMap = new HashMap<Principal,SessionExpirer>();
+	
+	
+	/** overridden to reset inactivity timer associated with the session */
+	@Override
+	public void adoptSession(final Principal p) {
+	    final SessionExpirer expirer = expirerMap.get(p);
+	    if (expirer != null) {
+	        expirer.reset();
+	    }
+	    super.adoptSession(p);
+	}
+	/** scheduled task that expires a session, if no activity is seen */
+	private class SessionExpirer implements SchedulerInternal.DelayedContinuation {
+
+	    private final String sid;
+	    private final Duration threshold;
+	    private volatile DateTime latestActivity; // volatile, as may be reset by a different thread.
+	    private Duration delay;
+	    
+	    /** called to reset the inactivity timer */
+	    public void reset() {
+	        latestActivity = new DateTime();
+	    }
+        public SessionExpirer(final String sid, final long inactivityMinutes) {
+            super();
+            this.latestActivity = new DateTime();
+            this.sid = sid;
+            this.threshold = new Duration(inactivityMinutes * 60 * 1000);
+            this.delay = this.threshold;
+        }
+
+        public DelayedContinuation execute() {
+            final DateTime now = new DateTime();
+            final Duration inactivity = new Duration(latestActivity,now);
+            if (! inactivity.isShorterThan(threshold)) { // i.e. inactivity >= threshold
+                dispose(sid);
+                return null;
+            } else {
+                // some activity happended, need to wait again.
+                delay = threshold.minus(inactivity); // wait for the remaining amount of the threshold
+                return this;
+            }
+        }
+
+        public Duration getDelay() {
+            return delay;
+        }
+
+        public Principal getPrincipal() {
+            return null; // doesn't matter which principal this runs as.
+        }
+
+        public String getTitle() {
+            return "Expirer for Session " + sid;
+        }
 	}
 	
 	public void dispose(final String arg0)  {
@@ -104,7 +163,7 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 			return; // ignore requests to dispose default session.
 		}
 		// remove ourselves as a listener to this session (necessary?)
-		final Principal p = (Principal)sessionMap.remove(arg0); 
+		final Principal p = sessionMap.remove(arg0); 
 		if (p == null) {
 			return;
 		}
