@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.93 2008/11/04 14:35:51 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.94 2008/12/09 14:29:59 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -253,7 +253,13 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		dsToggle = new DecSexToggle();
 		dsToggle.addListener(posText);
 		dsToggle.addListener(regionText);
+		dsToggle.addListener(servicesList);
 		dsToggle.addListener(this);
+		//if we start as sexa,  servicesList and other visualizations needs initializing.
+		if (!dsToggle.isDegrees()) {
+		    servicesList.sexaSelected(null);
+		    this.sexaSelected(null);
+		}
 		builder.add(dsToggle.getDegreesRadio(),cc.xy(2,row));
 		builder.add(dsToggle.getSexaRadio(),cc.xy(4,row));
 
@@ -553,14 +559,14 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 // DecSexListener interface
 	// another listener to the decSex toggle - convert node display
 	public void degreesSelected(final EventObject e) {
-	    if (isShowing()) {
 	        toggleAndConvertNodes(vizModel.getTree().getRoot(),false);
+	        if (isShowing()) {
 	        vizualizations.reDrawGraphs();
 	    }
 	}
 	public void sexaSelected(final EventObject e) {
-	    if (isShowing()) {
 	        toggleAndConvertNodes(vizModel.getTree().getRoot(),true);
+	        if (isShowing()) {
 	        vizualizations.reDrawGraphs();
 	    }
 	}

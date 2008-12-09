@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.EventObject;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -32,6 +33,7 @@ import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
+import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesTable;
@@ -45,7 +47,7 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 11, 20072:05:19 AM
  */
-public class ResultsResourceViewer extends FlipPanel implements ResourceViewer , ActionListener, FileNavigator.NavigationListener{
+public class ResultsResourceViewer extends FlipPanel implements ResourceViewer , ActionListener, FileNavigator.NavigationListener, DecSexListener{
 
     private final AstroScopeLauncherImpl parent;
     private final FileNavigator navigator;
@@ -195,6 +197,17 @@ public void display(final Resource res) {
     }
 
     public void moving() {
+    }
+
+    // dec sex listener
+    public void degreesSelected(final EventObject e) {
+      //TODO: implement
+      //  System.err.println("degrees");
+    }
+
+    public void sexaSelected(final EventObject e) {
+    // TODO: implement
+    //    System.err.println("sexa");
     }
 
 }

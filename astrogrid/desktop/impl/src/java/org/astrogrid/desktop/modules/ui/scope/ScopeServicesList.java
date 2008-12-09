@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.EventObject;
 import java.util.List;
 
 import javax.swing.table.TableColumn;
@@ -23,6 +24,7 @@ import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ModularColumn;
+import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.scope.QueryResults.QueryResult;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
@@ -39,7 +41,7 @@ import org.astrogrid.desktop.modules.votech.VoMonInternal;
  * @since May 2, 20075:58:51 PM
  */
 public class ScopeServicesList extends RegistryGooglePanel
-	implements QueryResultCollector{
+	implements QueryResultCollector, DecSexListener{
 
     /**
      * 
@@ -63,6 +65,7 @@ public class ScopeServicesList extends RegistryGooglePanel
 		        ,createServicesListViews(parent,uiBuilder,acts)
 		        ,vomon, iconFac,annServer,pref);
         this.astroscope = parent;		
+        this.resultsView = (ResultsResourceViewer) this.resourceViewers[0]; // we know this is the resultsResourceViewer, because it's set up in createServicesListViews()
 		summary.setTitle("Query Results");
 		CSH.setHelpIDString(this,"scope.viz.services");
 	} 
@@ -79,9 +82,10 @@ public class ScopeServicesList extends RegistryGooglePanel
 	}
 
 	protected static  ResourceViewer[] createServicesListViews(final AstroScopeLauncherImpl parent, final TypesafeObjectBuilder uiBuilder, final ActivitiesManager acts) {
-	    return (ResourceViewer[])ArrayUtils.addAll(
+	    final ResourceViewer resultsView = uiBuilder.createResultsResourceView(parent,acts);
+        return (ResourceViewer[])ArrayUtils.addAll(
                 new ResourceViewer[]{
-                        uiBuilder.createResultsResourceView(parent,acts)
+                        resultsView
                         }
                 ,createDefaultViews(parent,uiBuilder)
                 );
@@ -92,6 +96,7 @@ public class ScopeServicesList extends RegistryGooglePanel
  * value - an Integer (number of results), or String (err message);
  */
 	private final QueryResults queryResults = new QueryResults();
+	private final ResultsResourceViewer resultsView;
 	/** overridden - to show additional columns */
 	@Override
     protected ResourceTableFomat createTableFormat() {
@@ -246,5 +251,15 @@ public class ScopeServicesList extends RegistryGooglePanel
 
     public final QueryResults getQueryResults() {
         return this.queryResults;
+    }
+
+    // listens to changes to decimal or sexagesimal repr.
+    public void degreesSelected(final EventObject e) {
+        // just delegate onto the resultsView.
+        resultsView.degreesSelected(e);
+    }
+
+    public void sexaSelected(final EventObject e) {
+        resultsView.sexaSelected(e);
     }
 }
