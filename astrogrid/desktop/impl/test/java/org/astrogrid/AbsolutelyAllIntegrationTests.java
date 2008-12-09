@@ -9,8 +9,11 @@ import junit.framework.TestSuite;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.framework.AllFrameworkIntegrationTests;
 import org.astrogrid.desktop.modules.cds.AllCdsIntegrationTests;
+import org.astrogrid.desktop.modules.dialogs.AllDialogIntegrationTests;
 import org.astrogrid.desktop.modules.ivoa.AllIvoaIntegrationTests;
 import org.astrogrid.desktop.modules.system.pref.AllPreferenceIntegrationTests;
+import org.astrogrid.desktop.modules.ui.AllUiIntegrationTests;
+import org.astrogrid.desktop.modules.util.AllUtilIntegrationtests;
 import org.astrogrid.desktop.modules.votech.AllVotechIntegrationTests;
 
 /**All integration tests, run inside a single instance of AR
@@ -31,7 +34,11 @@ public class AbsolutelyAllIntegrationTests {
         inar.addTest(org.astrogrid.desktop.modules.system.transformers.AllTransformerIntegrationTests.suite());
         inar.addTest(AllCdsIntegrationTests.suite());
         inar.addTest(AllVotechIntegrationTests.suite());
+        inar.addTest(AllDialogIntegrationTests.suite());
+        inar.addTest(AllUiIntegrationTests.suite());
+        inar.addTest(AllUtilIntegrationtests.suite());
 		return new ARTestSetup(inar);
+		
 	}
 	
 

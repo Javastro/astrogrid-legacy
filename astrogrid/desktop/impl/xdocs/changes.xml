@@ -16,6 +16,10 @@
 	</head>
 <body>
 <release version="1.2.3" date="unreleased">
+    <action dev="nw" type="fix">
+        AR: util.tables was unavailable in previous release. Added integration tests
+        to verify availability of all components.
+    </action>
     <action dev="nw" type="fix" issue="2856">
         astroscope work-around for NED quirks.
     </action>

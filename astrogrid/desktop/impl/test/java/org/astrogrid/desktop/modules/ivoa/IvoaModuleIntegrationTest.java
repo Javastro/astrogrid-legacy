@@ -14,6 +14,7 @@ import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.Ssap;
+import org.astrogrid.acr.ivoa.Vosi;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.util.DomHelper;
@@ -42,46 +43,50 @@ public class IvoaModuleIntegrationTest extends InARTestCase {
 	}
 	
 	public void testExternalRegistry() throws Exception {
-		Object r = assertServiceExists(ExternalRegistry.class, "ivoa.externalRegistry");
+		final Object r = assertServiceExists(ExternalRegistry.class, "ivoa.externalRegistry");
 		
 		// call a method - triggers invocation - nothing that can be called however without going to a service.
 
 	}
 	
 	public void testRegistry() throws Exception {
-		Registry r = (Registry) assertServiceExists(Registry.class, "ivoa.registry");
+		final Registry r = (Registry) assertServiceExists(Registry.class, "ivoa.registry");
 		assertNotNull(r.getFallbackSystemRegistryEndpoint());
 		assertNotNull(r.getSystemRegistryEndpoint());
 	}
 	
 
 	public void testCOne() throws Exception {
-		Cone c = (Cone)assertServiceExists(Cone.class,"ivoa.cone");
+		final Cone c = (Cone)assertServiceExists(Cone.class,"ivoa.cone");
 		c.getRegistryXQuery(); 
 	}
 	
 	public void testSiap() throws Exception {
-		Siap c = (Siap)assertServiceExists(Siap.class,"ivoa.siap");
+		final Siap c = (Siap)assertServiceExists(Siap.class,"ivoa.siap");
 		c.getRegistryXQuery(); 
 	}
 	
 	public void testSsap() throws Exception {
-		Ssap c = (Ssap)assertServiceExists(Ssap.class,"ivoa.ssap");
+		final Ssap c = (Ssap)assertServiceExists(Ssap.class,"ivoa.ssap");
 		c.getRegistryXQuery(); 
 	}
 	
 	public void testCache() throws Exception {
-		CacheFactory fac = (CacheFactory)assertComponentExists(CacheFactory.class, "ivoa.cache");
+		final CacheFactory fac = (CacheFactory)assertComponentExists(CacheFactory.class, "ivoa.cache");
 		//@todo find something non-descrutive to do here.
 	}
 	
 	
 	public void testAdql() throws Exception {
-		Adql adql = (Adql)assertComponentExists(Adql.class,"ivoa.adql");
-		Document d= adql.s2x("select * from x as a");
+		final Adql adql = (Adql)assertComponentExists(Adql.class,"ivoa.adql");
+		final Document d= adql.s2x("select * from x as a");
 		assertNotNull(d);
-		String string = DomHelper.DocumentToString(d);
+		final String string = DomHelper.DocumentToString(d);
 		assertTrue(string.indexOf("Select") != -1);
+	}
+	
+	public void testVosi() throws Exception {
+	    final Vosi vosi = (Vosi)assertComponentExists(Vosi.class,"ivoa.vosi");
 	}
 
     public static Test suite() {

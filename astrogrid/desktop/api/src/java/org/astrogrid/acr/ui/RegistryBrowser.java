@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowser.java,v 1.9 2008/09/25 16:02:09 nw Exp $
+/*$Id: RegistryBrowser.java,v 1.10 2008/12/09 21:20:20 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.acr.dialogs.RegistryGoogle;
 
 /** AR Service: Launch a new VOExplorer GUI
  * 
- * @service userInterface.registryBrowser
+ * @service ui.registryBrowser
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
  *@see org.astrogrid.acr.ivoa.Registry
  *@see RegistryGoogle Registry Dialogue
@@ -45,6 +45,9 @@ public interface RegistryBrowser {
 
 /* 
  $Log: RegistryBrowser.java,v $
+ Revision 1.10  2008/12/09 21:20:20  nw
+ Complete - taskutil.tables is missing.
+
  Revision 1.9  2008/09/25 16:02:09  nw
  documentation overhaul
 

@@ -15,7 +15,7 @@ Used to provide in-program api documentation within the workbench implementation
 <!-- compute a list of package names - will reuse this to iterate through later.. -->
 <xsl:variable name="packages" select="/jel/jelclass[
 	not(@package=preceding-sibling::jelclass/@package)
-	]/@package[not (.='org.astrogrid.acr' or .='org.astrogrid.acr.opt')]" />
+	]/@package[not (.='org.astrogrid.acr' or .='org.astrogrid.acr.opt' or .='org.astrogrid.util')]" />
 
 <!-- list of service interfaces -->
 <xsl:variable name="services" select="/jel/jelclass[@interface='true' 
@@ -27,21 +27,25 @@ Used to provide in-program api documentation within the workbench implementation
 
 <!-- generate package descriptions -->
 <xsl:template match="jel">
-  <xsl:for-each select="$packages">
-       <xsl:sort />
-       <xsl:variable name="curr" select="." />
-    	<xsl:variable name="packageName">
- 	<xsl:call-template name="substring-after-last">
- 		<xsl:with-param name="input" select="." />
- 		<xsl:with-param name="marker" select="'.'" />
- 	</xsl:call-template>
-	</xsl:variable>
-    <redirect:write file="{concat($outputDir,$packageName,'-descriptors.xml')}" >
-	   <xsl:apply-templates select="$services[@package=$curr]">
-		<xsl:sort select="@type" />
-	    </xsl:apply-templates>
-	</redirect:write> 
-  </xsl:for-each>
+    <xsl:for-each select="$packages">
+        <xsl:sort />
+        <xsl:variable name="curr" select="." />
+        <xsl:variable name="packageName">
+            <xsl:call-template name="substring-after-last">
+                <xsl:with-param name="input" select="." />
+                <xsl:with-param name="marker" select="'.'" />
+            </xsl:call-template>
+        </xsl:variable>
+        <xsl:message>
+            <xsl:value-of select="." />
+        </xsl:message>
+        <redirect:write
+            file="{concat($outputDir,$packageName,'-descriptors.xml')}">
+            <xsl:apply-templates select="$services[@package=$curr]">
+                <xsl:sort select="@type" />
+            </xsl:apply-templates>
+        </redirect:write>
+    </xsl:for-each>
 </xsl:template>
 
 

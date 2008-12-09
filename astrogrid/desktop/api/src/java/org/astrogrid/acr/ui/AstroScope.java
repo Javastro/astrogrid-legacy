@@ -1,4 +1,4 @@
-/*$Id: AstroScope.java,v 1.4 2008/09/25 16:02:09 nw Exp $
+/*$Id: AstroScope.java,v 1.5 2008/12/09 21:20:20 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr.ui;
 
 /**AR Servuce: Launch a new AstroScope GUI
  * 
- * @service userInterface.astroscope
+ * @service ui.astroscope
  * @author Kevin Benson
  */
 public interface AstroScope {
@@ -25,6 +25,9 @@ public interface AstroScope {
 
 /* 
 $Log: AstroScope.java,v $
+Revision 1.5  2008/12/09 21:20:20  nw
+Complete - taskutil.tables is missing.
+
 Revision 1.4  2008/09/25 16:02:09  nw
 documentation overhaul
 

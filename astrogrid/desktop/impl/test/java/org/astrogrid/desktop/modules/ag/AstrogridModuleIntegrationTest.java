@@ -8,7 +8,6 @@ import junit.framework.TestSuite;
 
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.astrogrid.Stap;
@@ -33,33 +32,33 @@ public class AstrogridModuleIntegrationTest extends InARTestCase {
 		super.tearDown();
 	}
 	
+	public void testMyspace() throws Exception {
+		final Myspace m = (Myspace) assertServiceExists(Myspace.class,"astrogrid.myspace");
 //	// forces login - need to fix this first.
-//	public void testMyspace() throws Exception {
-//		Myspace m = (Myspace) assertServiceExists(Myspace.class,"astrogrid.myspace");
 //		m.listStores();
-//	}
+	}
 	
 	public void testCommunity() throws Exception {
-		Community c = (Community) assertServiceExists(Community.class,"astrogrid.community");
+		final Community c = (Community) assertServiceExists(Community.class,"astrogrid.community");
 		c.isLoggedIn();
 	}
 	
 	public void testApplications() throws Exception {
-		Applications a = (Applications)assertServiceExists(Applications.class,"astrogrid.applications");
-		a.getRegistryAdqlQuery();
+		final Applications a = (Applications)assertServiceExists(Applications.class,"astrogrid.applications");
+		a.getRegistryXQuery();
 	}
 
 	
 	//
 	public void testRemoteProcessManager() throws Exception {
-		RemoteProcessManager rpm  = (RemoteProcessManager)assertServiceExists(RemoteProcessManager.class, "astrogrid.processManager");
+		final RemoteProcessManager rpm  = (RemoteProcessManager)assertServiceExists(RemoteProcessManager.class, "astrogrid.processManager");
 		rpm.list();
 	}
 	
 	
 	public void testStap() throws Exception {
-		Stap s = (Stap)assertServiceExists(Stap.class, "astrogrid.stap");
-		s.getRegistryAdqlQuery();
+		final Stap s = (Stap)assertServiceExists(Stap.class, "astrogrid.stap");
+		s.getRegistryXQuery();
 	}
 	
 

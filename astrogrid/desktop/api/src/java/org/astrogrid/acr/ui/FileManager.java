@@ -4,7 +4,7 @@
 package org.astrogrid.acr.ui;
 
 /** AR Service: Launch a new FileManager GUI
- * @service userInterface.fileManager
+ * @service ui.fileManager
  * @author Noel.Winstanley@manchester.ac.uk
 
  */

@@ -15,8 +15,8 @@ import org.astrogrid.desktop.ARTestSetup;
 public class AllUtilIntegrationtests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Integration tests for Utils module.l");
+		final TestSuite suite = new TestSuite(
+				"Integration tests for Utils module");
 		suite.addTest(UtilModuleIntegrationTest.suite());
 		return new ARTestSetup(suite);
 	}

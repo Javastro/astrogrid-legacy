@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncher.java,v 1.6 2008/09/25 16:02:09 nw Exp $
+/*$Id: ApplicationLauncher.java,v 1.7 2008/12/09 21:20:20 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr.ui;
 
 /**AR Service: Launch a new Task Runner / Query Builder GUI
  * 
- * @service userInterface.applicationLauncher
+ * @service ui.applicationLauncher
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-May-2005
  *@see org.astrogrid.acr.astrogrid.Applications
  */
@@ -29,6 +29,9 @@ public interface ApplicationLauncher {
 
 /* 
 $Log: ApplicationLauncher.java,v $
+Revision 1.7  2008/12/09 21:20:20  nw
+Complete - taskutil.tables is missing.
+
 Revision 1.6  2008/09/25 16:02:09  nw
 documentation overhaul
 
