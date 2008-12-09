@@ -16,6 +16,9 @@
 	</head>
 <body>
 <release version="1.2.3" date="unreleased">
+    <action dev="nw" type="fix" issue="2856">
+        astroscope work-around for NED quirks.
+    </action>
     <action dev="nw" type="fix" issue="2870">
         'any field' smartlist query now works.
     </action>
@@ -23,7 +26,7 @@
         Updated to work with latest Sesame schema from CDS
     </action>
     <action dev="nw" type="fix">
-        Improved parsing of DAL responses in AR API.
+        Improved parsing of DAL responses in AR API, and reporting of metadata inadequacies.
     </action>
     <action dev="nw" type="fix">
         Improved drag-n-drop behaviour of file table.

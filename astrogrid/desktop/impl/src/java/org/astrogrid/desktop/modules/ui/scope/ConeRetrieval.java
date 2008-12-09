@@ -32,8 +32,16 @@ public class ConeRetrieval extends AbstractRetriever {
         final URL coneURL = cone.constructQuery(accessUrl,ra,dec,sz);        
         // construct 2 urls - one that returns minimal results to query on to get data for astroscope.
         // other - with fullest data -  to use as the url passed to plastic apps / saved to disk
-        final URL prelimURL = cone.addOption(coneURL,"VERB","1"); // least verbose.
-        final URL fullURL = cone.addOption(coneURL,"VERB","3"); // most verbose
+        final URL prelimURL;
+        final URL fullURL;
+        if (((ConeCapability)capability).isVerbosity()) {
+            // bug 2856 - only use different urls if VERB flag is supported.
+            prelimURL = cone.addOption(coneURL,"VERB","1"); // least verbose.
+            fullURL = cone.addOption(coneURL,"VERB","3"); // most verbose
+        } else {
+            // verbose flag not supported.
+            prelimURL = fullURL = coneURL;
+        }
         final StringBuffer sb = new StringBuffer();
         sb.append("<html>").append(service.getTitle())
         .append("<br>ID: ").append(service.getId());
