@@ -38,14 +38,12 @@ public interface SessionManager {
 
 	/** create a new session.
 	 * 
-	 * Create a new session that will be available for at least the specified 
-	 * number of minutes, after which it will be disposed and inaccessible.
-	 * @param leaseMinutes number of minutes that this session will be available for. 
+	 * @param inactivityTimeout number of minutes that this session must be inactive before it is disposed. 
 	 * @return a sessionId - an identifier for the newly created session.
 	 * @throws NotApplicableException if this AR does not support creating new sessions.
 	 * @throws SecurityException if the current user or client is not permitted to create new sessions.
 	 */
-	String createNewSession(long leaseMinutes) throws NotApplicableException, SecurityException;
+	String createNewSession(long inactivityTimeout) throws NotApplicableException, SecurityException;
 	
 	/** check whether a session exists and is accessible */
 	boolean exists(String sessionId);
