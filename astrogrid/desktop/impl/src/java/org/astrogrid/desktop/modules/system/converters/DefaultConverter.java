@@ -1,4 +1,4 @@
-/*$Id: DefaultConverter.java,v 1.7 2008/11/04 14:35:54 nw Exp $
+/*$Id: DefaultConverter.java,v 1.8 2008/12/10 21:02:09 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.system.converters;
 
+import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.logging.Log;
@@ -46,7 +47,7 @@ public class DefaultConverter implements Converter {
         final Converter lookup = ConvertUtils.lookup(c);
         if (lookup == null) {
         	logger.error("No Convertor able to produce " + c.getName());
-        	throw new IllegalArgumentException("No convertor to produce " + c.getName());
+        	throw new ConversionException("No convertor to produce " + c.getName());
         }
         return lookup.convert(c,o);
     }
@@ -56,6 +57,10 @@ public class DefaultConverter implements Converter {
 
 /* 
 $Log: DefaultConverter.java,v $
+Revision 1.8  2008/12/10 21:02:09  nw
+Complete - taskadd input convertor to produce Date
+altered other input convertors to throw correct exception.
+
 Revision 1.7  2008/11/04 14:35:54  nw
 javadoc polishing
 

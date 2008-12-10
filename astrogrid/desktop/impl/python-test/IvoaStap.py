@@ -16,7 +16,7 @@ service = 'ivo://mssl.ucl.ac.uk/stap/cdaw/cluster'
 
 class Stap(unittest.TestCase):
 
-    def constructQuery(self):
+    def constructQuery(self,useDateObject=True):
         """ helper method - checks for stap capability, then builds query url from that"""
         serv = self.reg.getResource(service)
         stapCap = None
@@ -25,8 +25,12 @@ class Stap(unittest.TestCase):
             if cap['standardID'] == 'ivo://org.astrogrid/std/STAP/v1.0':
                 stapCap = cap
         self.assertTrue(stapCap != None, 'no stap capability')
-        start = DateTime('20000101T00:00:00')
-        end = DateTime('20000102T00:00:00')
+        if useDateObject:
+            start = DateTime('20000101T00:00:00')
+            end = DateTime('20000102T00:00:00')
+        else:
+            start = '20000101T00:00:00'
+            end = '20000102T00:00:00'
         query = self.stap.constructQuery(service, start,end)
         return query
 
@@ -47,6 +51,29 @@ class Stap(unittest.TestCase):
 
     def testExecute(self):
         query = self.constructQuery()
+        #run query to fetch raw votable
+        result = self.stap.executeVotable(query)
+        #check I can parse this as votable.
+        vot = VOTable()
+        vot.parseText(result)
+        rowCount = len(vot.getDataRows())
+        self.assertTrue(rowCount > 0,'no rows found')
+        self.assertEquals(1,rowCount,'expected 1 rows')
+        colCount = len(vot.getFields())
+        self.assertTrue(colCount > 0,'no cols found')    
+        #now re-run to fetch as a datastructure.
+        result = self.stap.execute(query)        
+        #check equivalence.
+        self.assertEquals(rowCount,len(result), "not all rows in votable returned")
+        line = result[0]
+        # can't test this - this service returns two columns with same UCD - non unique.
+        self.assertEquals(colCount,len(line),'not all columns in votable returned')
+        #check for access reference.
+        for l in result:
+            self.assertTrue('VOX:AccessReference' in l,'row lacks an access reference')
+
+    def testExecuteStringDates(self):
+        query = self.constructQuery(useDateObject=False)
         #run query to fetch raw votable
         result = self.stap.executeVotable(query)
         #check I can parse this as votable.

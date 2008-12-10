@@ -1,4 +1,4 @@
-/*$Id: URIConverter.java,v 1.6 2007/01/29 11:11:36 nw Exp $
+/*$Id: URIConverter.java,v 1.7 2008/12/10 21:02:09 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.system.converters;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.Converter;
 
 /** convets strings to URI
@@ -27,17 +28,17 @@ public class URIConverter implements Converter {
      * @throws URISyntaxException
      * @see org.apache.commons.beanutils.Converter#convert(java.lang.Class, java.lang.Object)
      */
-    public Object convert(Class arg0, Object arg1) {
+    public Object convert(final Class arg0, final Object arg1) {
         if (arg0 != URI.class) {
-            throw new RuntimeException("Can only convert to URI" + arg0.getName());
+            throw new ConversionException("Can only convert to URI" + arg0.getName());
         }      
         if (arg0 == null) {
-        	throw new RuntimeException("Null argument");
+        	throw new ConversionException("Null argument");
         }
         try {
             return new URI(arg1.toString().trim());
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Cannot convert " + arg1 + " to URI");
+        } catch (final URISyntaxException e) {
+            throw new ConversionException("Cannot convert " + arg1 + " to URI");
         }
     }
     
@@ -47,6 +48,10 @@ public class URIConverter implements Converter {
 
 /* 
 $Log: URIConverter.java,v $
+Revision 1.7  2008/12/10 21:02:09  nw
+Complete - taskadd input convertor to produce Date
+altered other input convertors to throw correct exception.
+
 Revision 1.6  2007/01/29 11:11:36  nw
 updated contact details.
 

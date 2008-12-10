@@ -427,7 +427,15 @@ TRANSFORMERS (object -> stirng) for types introduced by this module
 CONVERTORS (String-> object) for types introduced by this module
  -->
 	<contribution configuration-id="framework.converters">
-		<register output="org.astrogrid.workflow.beans.v1.Tool" converter="instance:org.astrogrid.desktop.modules.ag.converters.CastorBeanUtilsConvertor" />
+		<register 
+            output="org.astrogrid.workflow.beans.v1.Tool" 
+            converter="instance:org.astrogrid.desktop.modules.ag.converters.CastorBeanUtilsConvertor"
+             />
+        <register 
+            output="java.util.Date" 
+            converter="instance:org.astrogrid.desktop.modules.ag.converters.DateConvertor" 
+            />
+
 		</contribution>
 	
 	

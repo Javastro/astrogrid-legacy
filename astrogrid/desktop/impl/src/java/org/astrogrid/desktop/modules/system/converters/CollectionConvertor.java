@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -37,7 +38,7 @@ public class CollectionConvertor implements Converter {
         Collection result;
         Class resultType = arg0;
         if (!Collection.class.isAssignableFrom(arg0)) {
-        	throw new IllegalArgumentException("Can only convert to collections: " + arg0.getName());
+        	throw new ConversionException("Can only convert to collections: " + arg0.getName());
         }
         //Need to choose default implementations if 
         //we're not given one
@@ -61,10 +62,10 @@ public class CollectionConvertor implements Converter {
             result = (Collection) resultType.newInstance();
         } catch (final InstantiationException e) {
             logger.error("Could not convert object ",e);
-            throw new IllegalArgumentException("Can't create collection type: " + arg0.getName());
+            throw new ConversionException("Can't create collection type: " + arg0.getName());
         } catch (final IllegalAccessException e) {
             logger.error("Could not convert object ",e);
-            throw new IllegalArgumentException("Can't create collection type : " + arg0.getName());
+            throw new ConversionException("Can't create collection type : " + arg0.getName());
         }
         
         if (arg1.getClass().isArray()) {
@@ -87,6 +88,10 @@ public class CollectionConvertor implements Converter {
 
 /* 
 $Log$
+Revision 1.8  2008/12/10 21:02:09  nw
+Complete - taskadd input convertor to produce Date
+altered other input convertors to throw correct exception.
+
 Revision 1.7  2008/08/04 16:37:24  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

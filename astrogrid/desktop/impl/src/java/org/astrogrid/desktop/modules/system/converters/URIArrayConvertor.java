@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +30,7 @@ public class URIArrayConvertor implements Converter {
     public Object convert(final Class arg0, final Object arg1) {
         if (!(arg0.isArray()
                 && arg0.getComponentType().equals(URI.class))) {
-            throw new IllegalArgumentException("Can only convert  to URI arrays: "
+            throw new ConversionException("Can only convert  to URI arrays: "
                     + arg0.getName() + " " + arg1.getClass().getName());
         }
         final Collection c;
@@ -38,7 +39,7 @@ public class URIArrayConvertor implements Converter {
         } else if (arg1 instanceof Object[]) {
             c = Arrays.asList((Object[])arg1);
         } else {
-            throw new IllegalArgumentException("Can only convert from Collections and Object[] " + arg1.getClass().getName());
+            throw new ConversionException("Can only convert from Collections and Object[] " + arg1.getClass().getName());
         }
         final List<URI> results = new ArrayList<URI>();
         for (final Object o : c) {

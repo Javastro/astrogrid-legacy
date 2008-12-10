@@ -10,6 +10,7 @@ import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.Converter;
 
 /** unit test for the collection convertor
@@ -36,35 +37,35 @@ protected void tearDown() throws Exception {
 	 * Test method for 'org.astrogrid.desktop.modules.system.converters.CollectionConvertor.convert(Class, Object)'
 	 */
 	public void testConvertList() {
-		Object o = conv.convert(List.class,sequence);
+		final Object o = conv.convert(List.class,sequence);
 		assertNotNull(o);
 		assertTrue(o instanceof List);
 		assertEquals(4,((List)o).size());
 	}
 	
 	public void testConvertListEmpty() {
-		Object o = conv.convert(List.class,"");
+		final Object o = conv.convert(List.class,"");
 		assertNotNull(o);
 		assertTrue(o instanceof List);
 		assertEquals(0,((List)o).size());
 	}
 	
 	public void testConvertListSingleton() {
-		Object o = conv.convert(List.class,"a");
+		final Object o = conv.convert(List.class,"a");
 		assertNotNull(o);
 		assertTrue(o instanceof List);
 		assertEquals(1,((List)o).size());
 	}
 	
 	public void testConvertCollection() {
-		Object o = conv.convert(Collection.class,sequence);
+		final Object o = conv.convert(Collection.class,sequence);
 		assertNotNull(o);
 		assertTrue(o instanceof Collection);
 		assertEquals(4,((Collection)o).size());
 	}
 	
 	public void testConvertSet() {
-		Object o = conv.convert(Set.class,sequence);
+		final Object o = conv.convert(Set.class,sequence);
 		assertNotNull(o);
 		assertTrue(o instanceof Set);
 		assertEquals(4,((Set)o).size());
@@ -72,7 +73,7 @@ protected void tearDown() throws Exception {
 
 	// arbiutrary implementation class.
 	public void testConvertTreeSet() {
-		Object o = conv.convert(TreeSet.class,sequence);
+		final Object o = conv.convert(TreeSet.class,sequence);
 		assertNotNull(o);
 		assertTrue(o instanceof TreeSet);
 		assertEquals(4,((TreeSet)o).size());
@@ -82,7 +83,7 @@ protected void tearDown() throws Exception {
 		try {
 			conv.convert(Integer.class,sequence);
 			fail("expected to fail");
-		} catch (IllegalArgumentException x) {
+		} catch (final ConversionException x) {
 			//ok
 		}
 	}

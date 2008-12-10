@@ -1,4 +1,4 @@
-/*$Id: CastorBeanUtilsConvertor.java,v 1.4 2008/11/04 14:35:53 nw Exp $
+/*$Id: CastorBeanUtilsConvertor.java,v 1.5 2008/12/10 21:02:09 nw Exp $
  * Created on 03-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ag.converters;
 
 import java.io.StringReader;
 
+import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.Converter;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
@@ -29,9 +30,9 @@ public final class CastorBeanUtilsConvertor implements Converter {
         try {
             return Unmarshaller.unmarshal(arg0,new StringReader(arg1.toString()));
         } catch (final MarshalException e) {
-            throw new RuntimeException("Failed to unmarshall from " + arg1.toString(),e);
+            throw new ConversionException("Failed to unmarshall from " + arg1.toString(),e);
         } catch (final ValidationException e) {
-            throw new RuntimeException("Document to unmarshall was not valid " + arg1.toString(),e);
+            throw new ConversionException("Document to unmarshall was not valid " + arg1.toString(),e);
         }
         
     }
@@ -40,6 +41,10 @@ public final class CastorBeanUtilsConvertor implements Converter {
 
 /* 
 $Log: CastorBeanUtilsConvertor.java,v $
+Revision 1.5  2008/12/10 21:02:09  nw
+Complete - taskadd input convertor to produce Date
+altered other input convertors to throw correct exception.
+
 Revision 1.4  2008/11/04 14:35:53  nw
 javadoc polishing
 
