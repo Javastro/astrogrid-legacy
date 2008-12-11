@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.13 2008/10/23 16:35:56 nw Exp $
+/*$Id: Applications.java,v 1.14 2008/12/11 14:43:44 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -107,16 +107,14 @@ public interface Applications {
        
     
     /** get information for a specific application from the registry. 
+     * A convenience function for {@link Registry#getResource(URI)}
      * @param applicationName name of the application to hunt for
      * @return details of this application
      * @throws ServiceException if error occurs when talking to the sever
      * @throws NotFoundException if this application could not be found
      * @throws InvalidArgumentException if the application name is malformed, or is not a CeaApplication, or can not be transformed into one.
      * @xmlrpc returns a structure containing attributes of {@link CeaApplication}
-     * @deprecated use {@link Registry#getResource(URI)}
-     * @exclude
      * */
-    @Deprecated
     CeaApplication getCeaApplication(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException;
     
     /** get formatted information about an application 
@@ -321,6 +319,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.14  2008/12/11 14:43:44  nw
+ Incomplete - taskar: cea functions more input tolerant
+
  Revision 1.13  2008/10/23 16:35:56  nw
  Incomplete - taskadd support for TAP
 
