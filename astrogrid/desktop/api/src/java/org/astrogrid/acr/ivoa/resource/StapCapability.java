@@ -151,7 +151,8 @@ public StapCapability() {
     public final void setSupportPositioning(final boolean supportPositioning) {
         this.supportPositioning = supportPositioning;
     }
-    /** the formats that query results can be returned in */
+    /** the formats that query results can be returned in
+     * @return an array of 'FITS','CDF' */
     public final String[] getSupportedFormats() {
         return this.supportedFormats;
     }
