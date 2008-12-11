@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.38 2008/12/01 23:29:55 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.39 2008/12/11 14:46:33 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -137,9 +137,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
         return getCeaApplication(uri);
     }
     
-    /** duff method - time to remove it ? 
-     * @deprecated*/
-    @Deprecated
+
     public CeaApplication getCeaApplication(final URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
         final Resource resource = nuReg.getResource(arg0);
         if (resource == null) {
@@ -147,21 +145,20 @@ public class ApplicationsImpl implements ApplicationsInternal {
         }
         if (resource instanceof CeaApplication) { 
             return (CeaApplication)resource;
+        } else if (resource instanceof CeaService                
+                && ((CeaService)resource).findCeaServerCapability().getManagedApplications().length == 1
+                ) { // a cea servier with a single capability.
+            final URI appId = ((CeaService)resource).findCeaServerCapability().getManagedApplications()[0];
+            return getCeaApplication(appId); // recursive call.
         } else {
             throw new InvalidArgumentException("Not a CEA Application " + arg0);
         }	
 
     }
 
-    
- 
 
 
-
- 
-    
-    
-  public String getDocumentation(final URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
+    public String getDocumentation(final URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
 	  final CeaApplication app = getCeaApplication(applicationName);
 	  
     return getInfoFor(app);
@@ -350,8 +347,7 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 	
 				"and capability[@xsi:type &= '*CeaCapability' or @standardID='"
 		        + StandardIds.CEA_1_0
-//		        +"']/managedApplications/ApplicationReference='"+ arg0 +"']");
-                +"']/managedApplications/*='"+ arg0 +"']");  // work around for pauls cosmetic changes to schema.
+                +"']/managedApplications/*='"+ c.getId() +"']");  // work around for pauls cosmetic changes to schema.
 		        final List result = new ArrayList();
 		// check ttypes.
 		for (int i = 0; i < res.length; i++) {
@@ -466,6 +462,9 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.39  2008/12/11 14:46:33  nw
+Complete - taskar: cea functions more input tolerant
+
 Revision 1.38  2008/12/01 23:29:55  nw
 used commons.io utilities
 

@@ -17,40 +17,43 @@
 <body>
 <release version="1.2.3" date="unreleased">
     <action dev="nw" type="fix">
+        AR: made applications api more forgiving or user input
+    </action>
+    <action dev="nw" type="fix">
         AR: util.tables was unavailable in previous release. Added integration tests
         to verify availability of all components.
     </action>
     <action dev="nw" type="fix" issue="2856">
-        astroscope work-around for NED quirks.
+        Astroscope: work-around for NED quirks.
     </action>
     <action dev="nw" type="fix" issue="2870">
-        'any field' smartlist query now works.
+        VoExplorer: 'any field' smartlist query now works.
     </action>
     <action dev="nw" type="update">
-        Updated to work with latest Sesame schema from CDS
+        AR: Updated to work with latest Sesame schema from CDS
     </action>
     <action dev="nw" type="fix">
-        Improved parsing of DAL responses in AR API, and reporting of metadata inadequacies.
+        AR: Improved parsing of DAL responses, and reporting of metadata inadequacies.
     </action>
     <action dev="nw" type="fix">
-        Improved drag-n-drop behaviour of file table.
+        File Explorer: Improved drag-n-drop behaviour of file table.
     </action>
     <action dev="nw" type="fix">
-        Improved behaviour of popup menus in file table.
+        File Explorer: Improved behaviour of popup menus in file table.
     </action>
 </release>
 <release version="1.2.2" date="2008-11-10">
     <action dev="nw" type="fix">
-    Fixed to work with new CEA registrations
+    AR: Fixed to work with new CEA registrations
 	</action>
 </release>
 <release version="1.2.1" date="2008-10-24">
     <action dev="nw" type="add">
-    Experimental support for TAP
+    TaskRunner: Experimental support for TAP
     </action>
     <action dev="nw" type="add">
-    Implemented support for 0.4 of Vosi Availability Standard (as well as existing 0.3), 
-    exposed as an AR API.
+    AR: Implemented support for 0.4 of Vosi Availability Standard (as well as existing 0.3), 
+    exposed as an API.
     </action>
     <action dev="nw" type="add">
     VoExplorer: Exposed VOSI availability as a side-box.
