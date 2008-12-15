@@ -17,13 +17,13 @@
 <cap:capabilities
     xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
     xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
-    xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0rc1"
+    xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
     xmlns:cap="urn:astrogrid:schema:Capabilities"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://www.ivoa.net/xml/VOResource/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd
         http://www.ivoa.net/xml/VODataService/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v1.0/VODataService.xsd
-        http://www.ivoa.net/xml/CEA/v1.0rc1 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v1.0rc1/CEAService.xsd
+        http://www.ivoa.net/xml/CEA/v1.0 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v1.0/CEAService.xsd
         urn:astrogrid:schema:Capabilities <%=base%>/VOSI/Capabilities.xsd
     "
 >
