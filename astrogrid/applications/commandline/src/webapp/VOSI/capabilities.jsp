@@ -6,6 +6,9 @@
   if (base == null) {
     base = "";
   }
+  if(!base.endsWith("/")){
+      base = base + "/";
+  }
   String[] apps = (String[]) request.getAttribute("cea.apps");
   if (apps == null) {
     apps = new String[0];
@@ -24,7 +27,7 @@
         http://www.ivoa.net/xml/VOResource/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd
         http://www.ivoa.net/xml/VODataService/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v1.0/VODataService.xsd
         http://www.ivoa.net/xml/CEA/v1.0 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v1.0/CEAService.xsd
-        urn:astrogrid:schema:Capabilities <%=base%>/VOSI/Capabilities.xsd
+        urn:astrogrid:schema:Capabilities <%=base%>VOSI/Capabilities.xsd
     "
 >
 
