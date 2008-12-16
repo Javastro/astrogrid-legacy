@@ -1,4 +1,4 @@
-/*$Id: TestApplicationDescriptionLibrary.java,v 1.8 2008/10/06 12:16:16 pah Exp $
+/*$Id: TestApplicationDescriptionLibrary.java,v 1.9 2008/12/16 19:29:04 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,15 @@
 package org.astrogrid.applications.description.base;
 
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
+import net.ivoa.resource.Contact;
+import net.ivoa.resource.Content;
+import net.ivoa.resource.Creator;
+import net.ivoa.resource.Curation;
+import net.ivoa.resource.ResourceName;
+
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.MockCeaConfiguration;
 import org.astrogrid.applications.description.ApplicationDescription;
@@ -22,6 +31,7 @@ import org.astrogrid.applications.description.exception.ApplicationDescriptionNo
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.security.SecurityGuard;
+import org.joda.time.DateTime;
 
 /**
  * Test / Mock implementation of an application description library. will contain a single resource.
@@ -35,20 +45,45 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
     private AbstractApplicationDescription appDesc;
     private String shortname;
     /**
-     *  Construct a new TestApplicationDescriptionLibrary
+     * Construct a new TestApplicationDescriptionLibrary
      * @param RES_NAME name of the single resource to place in the library
      * @throws ParameterDescriptionNotFoundException 
+     *
      */
     public TestApplicationDescriptionLibrary(String RES_NAME, String shortName) throws ParameterDescriptionNotFoundException {        
         super();
         this.RES_NAME = RES_NAME;
         this.shortname = shortName;
         
-        
+  //FIXME would be better to read this description from a file....      
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(null,null,null);
         appMeta = new CeaApplication();
 	appMeta.setIdentifier(RES_NAME);
 	appMeta.setShortName(shortName);
+	appMeta.setCreated(new DateTime());
+	appMeta.setUpdated(new DateTime());
+	appMeta.setStatus("active");
+	appMeta.setTitle("dummy");
+	Curation curation = new Curation();
+	ResourceName rname = new ResourceName();
+	rname.setValue("ag");
+	Creator creator = new Creator();
+	creator.setName(rname);
+	creator.setLogo("??");
+	Contact contact = new Contact();
+	contact.setName(rname);
+	contact.setEmail("silly@any.com");
+    curation.getContact().add(contact);
+    curation.getCreator().add(creator);
+    curation.setPublisher(rname);
+	curation.setVersion("v1");
+    appMeta.setCuration(curation);
+    Content content = new Content();
+    content.setDescription("this is an app");
+    content.getSubject().add(new  JAXBElement<String>(new QName("subject"),String.class,"dontknow"));
+    content.setReferenceURL("http//silly.org");
+    
+    appMeta.setContent(content);
         InterfaceDefinition appIface = new InterfaceDefinition();
         appIface.setId("iface");
         BaseParameterDefinition foo = new BaseParameterDefinition();
@@ -63,12 +98,15 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
         appIface.addInputParameter("foo");
         appIface.addOutputParameter("bar");
         appMeta.addInterface(appIface);
+        ApplicationKind kind = ApplicationKind.PROCESSING;
+        appMeta.getApplicationDefinition().getApplicationType().add(kind);
 	appDesc = new AbstractApplicationDescription(new AppMetadataAdapter(appMeta), new MockCeaConfiguration() ) {
             public Application initializeApplication(String jobStepID, SecurityGuard secGuard, Tool tool )
                 throws Exception {
                 return null;
             }
         };
+       
 
     }
     public ApplicationDescription getDescription(String name) throws ApplicationDescriptionNotFoundException {
@@ -93,6 +131,12 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: TestApplicationDescriptionLibrary.java,v $
+Revision 1.9  2008/12/16 19:29:04  pah
+RESOLVED - bug 2875: Application registration lacks schemaLocation
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2875
+
+added more structure to make this valid
+
 Revision 1.8  2008/10/06 12:16:16  pah
 factor out classes common to server and client
 
