@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTestBase.java,v 1.9 2008/09/13 09:51:02 pah Exp $
+ * $Id: RegistryEntryBuilderTestBase.java,v 1.10 2008/12/16 19:29:38 pah Exp $
  * 
  * Created on 02-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -63,13 +63,14 @@ public abstract class RegistryEntryBuilderTestBase extends TestCase {
    @Override
 protected void setUp() throws Exception {
      super.setUp();
-     ApplicationDescriptionLibrary lib = createDesciptionLibrary();
+     lib = createDesciptionLibrary();
      Configuration configuration = new MockNonSpringConfiguredConfig();
      ServiceDefinitionFactory fac = new TemplatedServiceDefinition(configuration);
     builder = new DefaultMetadataService(lib,configuration, fac);
    }
    
    protected DefaultMetadataService builder;
+protected ApplicationDescriptionLibrary lib;
    
    /** test to see if get description as objects and if castor thinks that they are valid.*/
    public void testGetDescription() throws Exception {
@@ -82,7 +83,7 @@ protected void setUp() throws Exception {
    
 /** test to see if get description as DOM and if XML valid from schema directly */
    public void testDescriptionValidity() throws Exception {
-       Document desc =  builder.getServerDescription();
+       Document desc =  builder.getApplicationDescription(lib.getApplicationNames()[0]);
        assertNotNull(desc);
        //this tests xml validity via xml parser
        StringWriter writer = new StringWriter();
@@ -125,6 +126,12 @@ protected void setUp() throws Exception {
 
 /*
  * $Log: RegistryEntryBuilderTestBase.java,v $
+ * Revision 1.10  2008/12/16 19:29:38  pah
+ * RESOLVED - bug 2875: Application registration lacks schemaLocation
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2875
+ *
+ * made the test actually test an application instance
+ *
  * Revision 1.9  2008/09/13 09:51:02  pah
  * code cleanup
  *
