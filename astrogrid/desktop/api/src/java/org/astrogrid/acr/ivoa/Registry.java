@@ -76,22 +76,22 @@ public interface Registry {
 	
 	
 	/** Perform a keyword  search.
-	 * <p/>
-    * {@example "Python Example"
-     *  # connect to the AR
-     * from xmlrpc import Server
-     * from os.path import expanduser
-     * ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
-     *  #call this function
-     * rs = ar.ivoa.registry.keywordSearch("abell",False)
-     * #see what we've got  
-     * print len(rs)
-     * #list first 10 identifiers
-     * for r in rs[:10]
-     *    print r['id']:
-    * }
-    * The output is
-    * <pre>
+<p/>
+{@example "Python Example"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+#call this function
+rs = ar.ivoa.registry.keywordSearch("abell",False)
+#see what we've got  
+print len(rs)
+#list first 10 identifiers
+for r in rs[:10]
+    print r['id']:
+}
+The output is
+<pre>
 150
 ivo://CDS.VizieR/J/A+A/486/755
 ivo://uk.ac.le.star.tmpledas/ledas/ledas/abell
@@ -103,7 +103,7 @@ ivo://nasa.heasarc/noras
 ivo://nasa.heasarc/eingalclus
 ivo://nasa.heasarc/abell
 ivo://CDS.VizieR/VII/96 
-    * </pre>	 
+</pre>	 
      * @param keywords space separated list of keywords to search for
      * @param orValues - true to 'OR' together matches. false to 'AND' together matches
      * @return list of matching resources.
@@ -142,9 +142,9 @@ ivo://CDS.VizieR/VII/96
      * The above XQuery could be written in a longer equivalent form, which is 
      * convenient when there are many filter clauses:
      * {@source
-        for $r in //vor:Resource 
-        where $r/@xsi:type  &=  '*DataCollection' 
-        return $r     
+     *   for $r in //vor:Resource 
+     *   where $r/@xsi:type  &=  '*DataCollection' 
+     *   return $r     
      * }
      * 
      * @param xquery An XQuery that should return a document, or nodeset, containing whole {@code <Resource>} elements. 

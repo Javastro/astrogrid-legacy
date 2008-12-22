@@ -1,4 +1,4 @@
-/*$Id: Coordinate.java,v 1.4 2008/09/25 16:02:04 nw Exp $
+/*$Id: Coordinate.java,v 1.5 2008/12/22 18:12:24 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr.cds;
 
 import org.astrogrid.acr.ServiceException;
 
-/** AR Service: Astronomical Coordinate Web Service, from CDS
+/** AR Service: Astronomical Coordinate Web Service, from CDS.
  * @author CDS
  * @see <a href='http://cdsweb.u-strasbg.fr/cdsws/astroCoo.gml'>Webservice Description</a>
  * @service cds.coordinate
@@ -78,6 +78,9 @@ public interface Coordinate {
 
 /* 
 $Log: Coordinate.java,v $
+Revision 1.5  2008/12/22 18:12:24  nw
+doc fix
+
 Revision 1.4  2008/09/25 16:02:04  nw
 documentation overhaul
 

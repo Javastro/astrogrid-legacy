@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Astro Runtime">
+<project name="Astro Runtime API">
 
-  <title>Astro Runtime</title>
+  <title>Astro Runtime API</title>
 
   <body>
     <links>

@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.14 2008/10/08 17:28:57 nw Exp $
+/*$Id: Myspace.java,v 1.15 2008/12/22 18:13:43 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ui.MyspaceBrowser;
 
-/**  AR Service: A distributed storage system.
+/**  AR Service: A distributed file storage system.
  * 
  * <p/> Myspace is Astrogrid's prototype implementation of VOSpace.
  * 
@@ -483,6 +483,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.15  2008/12/22 18:13:43  nw
+ doc fix
+
  Revision 1.14  2008/10/08 17:28:57  nw
  exluded unimplementable methods.
 

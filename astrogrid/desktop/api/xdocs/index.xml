@@ -32,13 +32,15 @@ successfully used from Python, Perl, C, C++, Java, and Bash.
         </section>
         <section name="External Dependencies">
             <p>
-                Requires an installation of the Astro Runtime, which is
+                This project documents the public API to the Astro Runtime.
+                To use this API from your own programs, a running instance
+                of the Astro Runtime is required. This is
                 provided as part of 
                 <a href="http://www.astrogrid.org/wiki/Help/IntroVODesktop">VODesktop</a>
             </p>
         </section>
         <section name="Status">
-            <p> The current Astro Runtime implementation is a stable
+            <p> The current Astro Runtime API is a stable
                 release that is used in a number of projects. Any
                 alterations to this public API will be made in a
                 backwards-compatible manner.</p>

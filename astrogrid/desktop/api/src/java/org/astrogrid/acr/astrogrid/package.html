@@ -2,6 +2,37 @@
 <body>
 <h1>Astrogrid Webservices</h1>
 
+This module provides access to Astrogrid-Specific services. Many of 
+these services are fore-runners of upcoming IVOA standards.
+
+<h2>Remote File Storage</h2>
+{@link org.astrogrid.acr.astrogrid.Myspace} is a prototype of the upcoming
+IVOA VOSpace standard for distributed file systems.
+
+<h2>Long-running Remote Applications and Queries</h2>
+
+Astrogrid provides a framework for remote execution of
+complex database queries and 
+long-running processing applications (such as cross-matching codes). 
+This powerful functionality takes a little more
+effort to access than synchronous data services (such as provided by 
+{@link org.astrogrid.acr.ivoa.Dal} services). It is split between two components
+<dl>
+<dt>{@link org.astrogrid.acr.astrogrid.Applications}</dt>
+<dd>Handles selecting a remote application, and constructing an invocation</dd>
+<dt>{@link org.astrogrid.acr.astrogrid.RemoteProcessManager}</dt>
+<dd>Execute the application, manage the execution, and retreive the results</dd>
+</dl>
+
+
+<h2>Authentication</h2>
+Sign-on and Authentication for Astrogrid services is provided by the
+{@link org.astrogrid.acr.astrogrid.Community} component. 
+
+<h2>Time-Series Data</h2>
+The {@link org.astrogrid.acr.astrogrid.Stap} component provides access to 
+Time-Series data from a range of astronomical and solar data providers.
+
 
 </body>
 </html>

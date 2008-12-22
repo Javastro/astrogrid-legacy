@@ -1,4 +1,4 @@
-/*$Id: Community.java,v 1.6 2008/09/25 16:02:04 nw Exp $
+/*$Id: Community.java,v 1.7 2008/12/22 18:14:00 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,9 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 
 /** AR Service: Single sign-on and authentication.
+ * <p/>
+ * This implements a facade in front of the evolving
+ * IVOA single-sign-on mechanism.
  * 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 18-Mar-2005
  * @service astrogrid.community
@@ -65,6 +68,9 @@ public interface Community {
 
 /* 
  $Log: Community.java,v $
+ Revision 1.7  2008/12/22 18:14:00  nw
+ doc fix
+
  Revision 1.6  2008/09/25 16:02:04  nw
  documentation overhaul
 
