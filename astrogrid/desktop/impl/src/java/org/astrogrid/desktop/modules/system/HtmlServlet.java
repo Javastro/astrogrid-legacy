@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.15 2008/11/04 14:35:49 nw Exp $
+/*$Id: HtmlServlet.java,v 1.16 2008/12/22 18:18:00 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,8 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -53,10 +55,17 @@ public class HtmlServlet extends AbstractReflectionServlet {
      */
     protected void processRoot(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         final PrintWriter out = response.getWriter();
-        header(out);
-        out.println("<h1>Modules</h1><dl>");
+        header(null,out);
+        out.println("<h1>Astro Runtime API</h1>");
+        out.println("See <a href='http://www.astrogrid.org/wiki/Help/AstroRuntime'>www.astrogrid.org</a> for documentation.");
+        out.println("<h2>Modules</h2>");
+        out.println("Follow the links below to explore what's available, and call AR API functions.");
+        out.println("<dl>");
         for (final Iterator ms = reg.getDescriptors().values().iterator(); ms.hasNext(); ) {
             final ModuleDescriptor m = (ModuleDescriptor)ms.next();
+            if (m.isExcluded()) {
+                continue;
+            }
             out.println("<dt>");
             out.print("<a href='./");
             out.print(m.getName());
@@ -64,15 +73,19 @@ public class HtmlServlet extends AbstractReflectionServlet {
             out.println(m.getName());
             out.println("</a>");
             out.println("</dt><dd>");
-            out.println(m.getDescription());
+            final String title = StringUtils.capitalize(m.getDescription());
+            out.print(title);
+            if (! title.endsWith(".")) {
+                out.print(".");
+            }
             out.println("</dd>");
         }
         out.println("</dl>");
-        out.println("<h1><a href='./preferences'>Preferences</a></h1>");
-        out.println("View and edit the configuration settings for this AR<p/>");
-        out.println("<a href='./system/configuration/reset'>Reset configuration to factory settings</a>");
-        out.println("<a href='./xmlrpc'><h1>XML-RPC interface</h1></a>");
-        out.println("Endpoint for the XML-RPC interface to this AR");
+        out.println("<h2>Configuration Editor</h2>");
+        out.println("<a id='Preferences' href='./preferences'>View and edit the configuration settings</a> for this Astro Runtime<p/>");
+        out.println("or <a href='./system/configuration/reset'>reset the configuration to factory settings</a>.");
+        out.println("<h2>XML-RPC interface</h2>");
+        out.println("<a href='./xmlrpc'>Endpoint for the XML-RPC</a> interface to this Astro Runtime.");
         footer(out);
     }
     
@@ -81,12 +94,16 @@ public class HtmlServlet extends AbstractReflectionServlet {
      */
     protected void processModule(final ModuleDescriptor md, final HttpServletRequest request, final HttpServletResponse response) throws IOException {
         final PrintWriter out = response.getWriter();
-        header(out);
+        header(md.getName() + " Module",out);
         out.println("<p><a href='../.'>up</a></p>");
-        out.print("<h1>Module: ");
+        out.print("<h1>");
         out.print(md.getName());
+        out.print(" Module");
         out.println("</h1>");
          formatDescription(out,md);
+         out.print("<h2>Components in ");
+         out.print(md.getName());
+         out.println("</h2>");
         descriptorList(out, md.componentIterator());
         footer(out);                    
     }
@@ -96,14 +113,18 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
     protected void processComponent(final ModuleDescriptor md,final ComponentDescriptor cd, final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         final PrintWriter out = response.getWriter();
-        header(out);
+        header(md.getName() + '.' + cd.getName() + " Component",out);
         out.println("<p><a href='../.'>up</a></p>");
-        out.print("<h1>Component: <a href='../.'>" );
+        out.print("<h1><a href='../.'>" );
         out.print(md.getName());
         out.print("</a>.");
         out.print(cd.getName());
+        out.print(" Component");
         out.print("</h1>");
          formatDescription(out,cd);
+         out.print("<h2>Functions in ");
+         out.print(cd.getName());
+         out.println("</h2>");
         descriptorList(out,cd.methodIterator());
         footer(out);
     }
@@ -111,64 +132,94 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
     protected void processMethod(final ModuleDescriptor md, final ComponentDescriptor cd,final MethodDescriptor methodDescriptor, final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {        
         final PrintWriter out = response.getWriter();
-        header(out);
-        out.println("<p><a href='../.'>up</a></p>");        
-        out.print("<h1>Function: <a href='../../.'>");
+        header(md.getName() + '.' + cd.getName() + "." + methodDescriptor.getName() + "()",out);
+        out.println("<p><a href='../.'>up</a></p>");    
+        
+        // fn prototype
+        out.print("<h2><tt>");
+        final ValueDescriptor returnValue = methodDescriptor.getReturnValue();
+        out.print(returnValue.getUitype());
+        out.print(" <a href='../../.'>");
         out.print(md.getName());
         out.print( "</a>.<a href='../.'>");
         out.print(cd.getName());
         out.print("</a>.");
         out.print( methodDescriptor.getName());
-        out.print("()</h1>");
+        out.print("(");
+        boolean parameterDescriptionSeen = false;
+        final ValueDescriptor[] parameters = methodDescriptor.getParameters();
+        for (int i = 0; i < parameters.length; i++) {
+            if (i > 0) {
+                out.print(", ");
+            }
+            final ValueDescriptor p = parameters[i];
+            out.print(p.getUitype());
+            out.print("&nbsp;");
+            out.print(p.getName());
+            parameterDescriptionSeen = parameterDescriptionSeen 
+            ||  StringUtils.isNotBlank(p.getDescription()) ;            
+        }
+        out.print(")</tt></h2>");
+        // description
         formatDescription(out,methodDescriptor);
-         out.println("<h2>Parameters</h2><dl>");    
-        {
-        final Iterator params = methodDescriptor.parameterIterator();
-        if (!params.hasNext()) {
-            out.println("<dt><i>none</i></dt><dd></dd>");
-        } else {
-            while  (params.hasNext()) {
-                final ValueDescriptor v = (ValueDescriptor)params.next();
-                out.println("<dt>");
+        // parameters
+        if (parameters.length > 0 && parameterDescriptionSeen){
+            out.println("<h2>Parameters</h2><dl>");    
+            for (int i = 0; i < parameters.length; i++) {
+                final ValueDescriptor v= parameters[i];
+                out.println("<dt><tt><b>");
                 out.println(v.getName() );
-                out.println("</dt><dd>");
+                out.println("</b></tt></dt><dd>");
                 out.println(v.getDescription());
-                out.println("<br /><i>Type:</i> ");
-                out.println(v.getUitype());
                 out.println("</dd>");           
             }        
+            out.println("</dl>");
         }
+
+        // return value
+        if (StringUtils.isNotBlank(returnValue.getDescription())) {
+            out.println("<h2>Return</h2>");
+            out.println("<blockquote>");
+            out.println(returnValue.getDescription());       
+            out.println("</blockquote>");   
         }
-        out.println("</dl><h2>Return</h2>");
-        final ValueDescriptor v = methodDescriptor.getReturnValue();
-        out.println("<dl><dt>");
-       //never contains useful nformation: out.println(v.getName() );
-        out.println("</dt><dd>");
-        out.println(v.getDescription());       
-        out.println("<br /><i>Type:</i> ");
-        out.println(v.getUitype());       
-        out.println("</dd></dl>");    
-                
-        out.println("<hr/><h1>Call Function</h1>");
+
+        out.println("<hr/><h1>Try out this function</h1>");
         for (final Iterator i = resultTypes.iterator(); i.hasNext(); ) {
             final String method = i.next().toString();
-            out.println("<hr/><h2>");
+            out.println("<h2>");
             out.print(method);
-            out.print(" result</h2>");
+            out.print(" output</h2>");
             out.println("<form name='call' method='POST' action='./" + method+ "'><table>");
-            for (final Iterator params = methodDescriptor.parameterIterator(); params.hasNext(); ) {
-                out.println("<tr><td>");
-                final ValueDescriptor p  = (ValueDescriptor)params.next();
+            for (int j = 0; j < parameters.length; j++) {
+                final ValueDescriptor p = parameters[j];
+                
+                out.println("<tr><td><tt><b>");
                 out.println(p.getName());
-                out.println("</td><td>");
+                out.println("</b></tt></td><td>");
                 out.println("<input type='text' name='" +p.getName() + "'>");
                 out.println("</td></tr>");
             }
-            out.println("</table><input type='submit' value='Call'></form>");
+            out.println("</table><input type='submit' value='Execute'></form>");
         }       
-        
-        out.println("<hr/><h1>Invocation URL</h1>");
-        out.print("<i>base-url</i>/");
+
+        out.println("<hr/><h1>Use this function from a script</h1>");
+        out.println("<h2>RMI Access</h2>");        
+        out.println("<tt>");
+        out.print(cd.getInterfaceClass().getName());
+        out.print(".");
+        out.print(methodDescriptor.getName());
+        out.println("()</tt>");
+        out.println("<h2>XML-RPC Access</h2>");
+        out.println("<tt>");
+        out.print(md.getName());
+        out.print(".");
+        out.print(cd.getName());
+        out.print(".");
+        out.print(methodDescriptor.getName());
+        out.println("()</tt>");
+        out.println("<h2>HTTP Access</h2>");
+        out.print("<tt><i>base-url</i>/");
         out.print(md.getName());
         out.print("/");
         out.print(cd.getName());
@@ -177,23 +228,23 @@ public class HtmlServlet extends AbstractReflectionServlet {
         out.println("/<i>[");
         out.println(StringUtils.join(resultTypes.iterator(),'|'));
         out.print("]</i>?");
-        for (final Iterator params = methodDescriptor.parameterIterator(); params.hasNext();) {
-            final ValueDescriptor p = (ValueDescriptor)params.next();
-            out.print(p.getName());
-            out.print("=<i>val</i>");
-            if (params.hasNext()) {
+        for (int i = 0; i < parameters.length; i++) {
+            final ValueDescriptor p = parameters[i];
+            if (i > 0) {
                 out.print("&amp;");
             }
+            out.print(p.getName());
+            out.print("=<i>val</i>");
         }
-        
-        
-        
+        out.print("</tt>");
+
         footer(out);
     }
-    
+
     private void formatDescription(final PrintWriter out, final Descriptor d) {
         out.println("<p>");
-        out.println(StringUtils.replace(d.getDescription(),"\n","<br />"));
+        out.println(d.getDescription());
+      //  out.println(StringUtils.replace(d.getDescription(),"\n","<br />"));
         out.println("</p>");
     }
     
@@ -202,20 +253,46 @@ public class HtmlServlet extends AbstractReflectionServlet {
         out.println("<dl>");
         while (ds.hasNext()) {
             final Descriptor d = (Descriptor)ds.next();
+            if (d.isExcluded()) {
+                continue;
+            }        
             out.println("<dt>");
             out.println("<a href='./" + d.getName() + "/'>");
             out.println(d.getName());
             out.println("</a>");
             out.println("</dt><dd>");
-            out.println(StringUtils.substringBefore(d.getDescription(),"."));
+            final String description = d.getDescription();
+            final String title = summarize(description);
+            out.print(title);
+            if (StringUtils.isNotEmpty(title) && ! title.endsWith(".")) {
+                out.print(".");
+            }
             out.println("</dd>");
         }
         out.println("</dl>");
     }
 
+    /** Summarize a description. - extracts the first sentance, stripping noise at front.
+     * @param description
+     * @return
+     */
+    static String summarize(final String description) {
+        final Matcher m = summarizePattern.matcher(description);
+        if (! m.find()) {
+            return "";
+        }
+        final String title = m.group(1);
+        return title;
+    }
+
     protected Converter conv;
     protected Transformer html;
     protected Transformer plain;   
+
+    // pattern used in summarizing.
+    private static Pattern summarizePattern = Pattern.compile(
+            "\\A\\s*(?:AR\\s+(?:System\\s+)?Service\\s*:\\s*)?(.+?)(\\.|<dl|<p|\\z|$)"
+            ,Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
     
     /** list of supported result types */
     private static final Set resultTypes = new HashSet();
@@ -270,8 +347,13 @@ public class HtmlServlet extends AbstractReflectionServlet {
     /**
      * @param out
      */
-    private void header(final PrintWriter out) {
-        out.println("<html><body>");
+    private void header(final String title,final PrintWriter out) {
+        out.print("<html><head><title>Astro Runtime API");
+        if (StringUtils.isNotBlank(title)) {
+            out.print(": ");
+            out.print(title);
+        }
+        out.println("</title></head><body>");
     }
     
     /**
@@ -292,6 +374,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.16  2008/12/22 18:18:00  nw
+improved in-program API help.
+
 Revision 1.15  2008/11/04 14:35:49  nw
 javadoc polishing
 

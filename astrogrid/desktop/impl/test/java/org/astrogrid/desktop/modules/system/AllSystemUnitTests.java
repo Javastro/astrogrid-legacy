@@ -19,6 +19,8 @@ public class AllSystemUnitTests {
         suite.addTestSuite(HelpServerImplUnitTest.class);
         suite.addTestSuite(ClockDaemonSchedulerUnitTest.class);
         suite.addTestSuite(VersionComparatorUnitTest.class);
+        suite.addTestSuite(ApiHelpImplUnitTest.class);
+        suite.addTestSuite(HtmlServletUnitTest.class);
         //$JUnit-END$
         return suite;
     }

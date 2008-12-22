@@ -202,7 +202,7 @@ FUNDAMENTAL CONFIGURATION POINTS
                     </attribute>
 					<attribute name="description">
                     Description of this module.
-                    </attribute>
+                    </attribute>                  
 				<element name="component" >
                     Describes a component of the AR
 					<attribute name="name" required="true">
@@ -213,7 +213,10 @@ FUNDAMENTAL CONFIGURATION POINTS
                     </attribute>
 					<attribute name="description">
                     A description of the component.
-                    </attribute>										
+                    </attribute>	
+                    <attribute name="excluded" translator="boolean">
+                    Whether this entity should be excluded from documentation
+                    </attribute>                                        									
 					<element name="method" >
                         Describes a method of the component
 						<attribute name="name" required="true">
@@ -222,6 +225,9 @@ FUNDAMENTAL CONFIGURATION POINTS
 						<attribute name="description">
                         A description of the method
                         </attribute>
+                        <attribute name="excluded" translator="boolean">
+                        Whether this entity should be excluded from documentation
+                        </attribute>                                            
 						<element name="return">
                             The return of the method
 							<attribute name="type" translator="class">
@@ -232,7 +238,7 @@ FUNDAMENTAL CONFIGURATION POINTS
                             </attribute>							
 							<attribute name="uitype">
                             Human-readable description of the return type. 
-                            </attribute>					
+                            </attribute>                            					
 							<conversion 
 								class="org.astrogrid.acr.builtin.ValueDescriptor"
 								parent-method="setReturnValue"/>	

@@ -13,7 +13,6 @@ import net.sourceforge.jwebunit.WebTestCase;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.modules.system.ConfigurationInternal;
-import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** Integration test that exercises the preferences html interace.
  * @author Noel Winstanley
@@ -55,24 +54,24 @@ public class PreferenceEditorServletIntegrationTest	 extends WebTestCase {
 	
 	public void testLinks() {
 		beginAt("/");
-		assertLinkPresentWithText("Preferences");
-		clickLinkWithText("Preferences");
+		assertLinkPresent("Preferences");
+		clickLink("Preferences");
 		assertLinkPresentWithText("up");
 		clickLinkWithText("up");
 	}
 	
 	public void testInputPreference() {
 		beginAt("/");
-		assertLinkPresentWithText("Preferences");
-		clickLinkWithText("Preferences");
+        assertLinkPresent("Preferences");
+        clickLink("Preferences");
 		
 		assertFormPresent(TEST_PREFERENCE_KEY);
 		setWorkingForm(TEST_PREFERENCE_KEY);
 		assertFormElementEquals(TEST_PREFERENCE_KEY,pref.getValue());
-		Watcher watcher = new Watcher();
+		final Watcher watcher = new Watcher();
 		pref.addPropertyChangeListener(watcher);
 		
-		String orig = pref.getValue();
+		final String orig = pref.getValue();
 		
 		setFormElement(TEST_PREFERENCE_KEY, "foo");
 		submit();
@@ -121,7 +120,7 @@ public class PreferenceEditorServletIntegrationTest	 extends WebTestCase {
 	
 	class Watcher implements PropertyChangeListener {
 		boolean seen;
-		public void propertyChange(PropertyChangeEvent evt) {
+		public void propertyChange(final PropertyChangeEvent evt) {
 			seen = true;
 		}
 	}

@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.12 2008/11/04 14:35:49 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.13 2008/12/22 18:18:00 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import java.util.List;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
@@ -215,9 +216,9 @@ public class ApiHelpImpl implements ApiHelp {
                 throw new NotFoundException("Unknown module " + moduleName);
             }
             final StringBuffer result = new StringBuffer();
-            result.append("Module ")
+            result
             .append(m.getName())
-            .append("\n\t")
+            .append(" - ")
             .append(m.getDescription())    ;
             return result.toString();        
                                   
@@ -238,21 +239,17 @@ public class ApiHelpImpl implements ApiHelp {
                 throw new NotFoundException("Unknown component " + names[1]);
             }                        
             final StringBuffer result = new StringBuffer()
-            .append("Component ")
-            .append(cd.getName())
-            .append(" in module ")
-            .append(m.getName())
-            .append("\n\t")
-            .append(cd.getDescription());
+            .append(componentName)
+            .append("\n")
+            .append(stripHTML(cd.getDescription()));
             return result.toString();                   
     }
     
 
-    //@todo improve format - remove cruft - from method & component help.
     public String methodHelp(final String methodName) throws NotFoundException {
-    	if (methodName == null) {
-    		throw new NotFoundException("null");
-    	}
+        if (methodName == null) {
+            throw new NotFoundException("null");
+        }
         final String[] names = methodName.split("\\.");
         final ModuleDescriptor m = reg.getDescriptors().get(names[0]);
         if (m == null) {
@@ -262,7 +259,7 @@ public class ApiHelpImpl implements ApiHelp {
         if (m.getName().equals("system") && names.length == 2) {
             return methodHelp("system.apihelp." + names[1]);
         }
-        
+
         final ComponentDescriptor cd = m.getComponent(names[1]);
         if (cd == null) {
             throw new NotFoundException("Unknown component " + names[1]);
@@ -271,33 +268,46 @@ public class ApiHelpImpl implements ApiHelp {
         if (md == null) {
             throw new NotFoundException("Unknown method "+ names[2]);
         }
-     
-        final StringBuffer result = new StringBuffer()
-                .append("Method ")
-                .append(md.getName())
-                .append(" belonging to component ")
-                .append(cd.getName())
-                .append(" in module ")
-                .append(m.getName())
-                .append("\n\t")
-                .append(md.getDescription());
-        for (final Iterator i = md.parameterIterator(); i.hasNext(); ) {
-            final ValueDescriptor vd = (ValueDescriptor)i.next();
-            result.append("\n")
-                    .append(vd.getName())
-                    .append(" : ")
-                    .append(getXMLRPCType(vd))
-                    .append("\n")
-                    .append(vd.getDescription());                                
-        }           
-        result.append("\n")
-                .append(md.getReturnValue().getName())
-                .append(" : ")
-                .append(getXMLRPCType(md.getReturnValue()))
-                .append("\n")
-                .append(md.getReturnValue().getDescription());
-        return result.toString();
+
+        final StringBuilder result = new StringBuilder()  
+            .append(getXMLRPCType(md.getReturnValue()))
+            .append(' ')
+            .append(methodName)
+            .append('(');
+        
+        final ValueDescriptor[] parameters = md.getParameters();
+        boolean parameterDescriptionSeen = false;
+        for (int ix = 0; ix < parameters.length; ix++) {
+            if (ix > 0) {
+                result.append(", ");
+            }
+            final ValueDescriptor vd = parameters[ix];
+            result.append(getXMLRPCType(vd))
+                .append(" ")
+                .append(vd.getName());
+            
+            parameterDescriptionSeen = parameterDescriptionSeen 
+                        ||  StringUtils.isNotBlank(vd.getDescription()) ;
+        }   
+        result.append(")\n").append(stripHTML(md.getDescription()));
+
+        if (parameters.length > 0 && parameterDescriptionSeen) {
+            result.append("\n\nParameters:\n");
+            for (int ix = 0; ix < parameters.length; ix++) {
+                final ValueDescriptor vd = parameters[ix];
+                result.append("   ")
+                .append(vd.getName())
+                .append(" - ")
+                .append(stripHTML(vd.getDescription()))
+                .append("\n");
+            }           
         }
+        if (StringUtils.isNotBlank(md.getReturnValue().getDescription())) {
+            result.append("\nReturns:\n   ")
+            .append(stripHTML(md.getReturnValue().getDescription()));
+        }
+        return result.toString();
+    }
 
     //@todo merge ApiHelp.callFunction,  XMLRPCServlet.execute() and HtmlServlet.callMethod
 	public Object callFunction(final String methodName, final int returnKind, final Object[] args) throws ACRException, InvalidArgumentException, NotFoundException {
@@ -368,13 +378,26 @@ public class ApiHelpImpl implements ApiHelp {
 	        
 	}
 
-
+	/** strips specific HTML tags known to occur in doc.
+	 * doesn't blindluy strip all tags, else xml examples (e.g. registry resource documents)
+	 * will get trashed too.
+	 * @param in
+	 * @return
+	 */
+	public static String stripHTML(final String in) {
+	    return in.replaceAll("</?(A|a|B|b|BR|br|DD|dd|DL|dl|DT|dt|H2|h2|I|i|LI|li|P|p|PRE|pre|TT|tt|UL|ul|BLOCKQUOTE|blockquote)\\s*[^>]*>","");
+//        return in.replaceAll("<\\w+\\s*[^>]>","");
+        //return in.replaceAll("<(B|BR)\\s*[^>]*>","");
+	}
     }        
 
 
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.13  2008/12/22 18:18:00  nw
+improved in-program API help.
+
 Revision 1.12  2008/11/04 14:35:49  nw
 javadoc polishing
 

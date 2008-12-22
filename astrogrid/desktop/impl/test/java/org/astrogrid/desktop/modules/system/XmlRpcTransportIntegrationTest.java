@@ -1,4 +1,4 @@
-/*$Id: XmlRpcTransportIntegrationTest.java,v 1.9 2008/08/04 16:37:24 nw Exp $
+/*$Id: XmlRpcTransportIntegrationTest.java,v 1.10 2008/12/22 18:18:18 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,31 +55,31 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         }
 
     public void testInstrospection1() throws XmlRpcException, IOException {
-        Object[] results = (Object[])client.execute("system.listMethods",new Vector());
+        final Object[] results = (Object[])client.execute("system.listMethods",new Vector());
         assertNotNull(results);
         assertThat(results,hasItemInArray((Object)"system.configuration.list"));
     }
     
     public void testInstrospection2() throws XmlRpcException, IOException {
         v.add("system.configuration.setKey");
-        Object[] results = (Object[]) client.execute("system.methodSignature",v);
+        final Object[] results = (Object[]) client.execute("system.methodSignature",v);
         assertNotNull(results);
         assertEquals(1,results.length);
-        Object[] l = (Object[])results[0];
+        final Object[] l = (Object[])results[0];
         assertEquals(3, l.length);
-        assertEquals("string",l[1]);
-        assertEquals("string",l[2]);
+        assertEquals("String",l[1]);
+        assertEquals("String",l[2]);
     }
     
     public void testInstrospection3() throws XmlRpcException, IOException {
         v.add("system.configuration.setKey");
-        String results = (String)client.execute("system.methodHelp",v);
+        final String results = (String)client.execute("system.methodHelp",v);
         assertNotNull(results);
     }
     
     public void testSetGetRemove() throws XmlRpcException, IOException {
     	v.add("xmltest");
-        String val = Integer.toString((new Random()).nextInt());
+        final String val = Integer.toString((new Random()).nextInt());
         v.add(val);
         Object o = client.execute("system.configuration.setKey",v);
         assertNotNull(o);
@@ -87,7 +87,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         
         v.clear();        
         v.add("xmltest");
-        String results = (String)client.execute("system.configuration.getKey",v);
+        final String results = (String)client.execute("system.configuration.getKey",v);
         assertEquals(val,results);
         
         
@@ -103,9 +103,9 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
    
     public void testCheckedException() throws IOException {
     	try {
-    	Object o = client.execute("test.transporttest.throwCheckedException",v);
+    	final Object o = client.execute("test.transporttest.throwCheckedException",v);
     	fail("expected to puke");
-    	} catch (XmlRpcException e){
+    	} catch (final XmlRpcException e){
     	    assertThat(e.getMessage(),containsString("NotFound"));
     	    assertNull(e.getCause()); // pity - but too much to hope for really.
     	}
@@ -113,9 +113,9 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
     
     public void testUncheckedException() throws IOException {
     	try {
-        	Object o = client.execute("test.transporttest.throwUncheckedException",v);
+        	final Object o = client.execute("test.transporttest.throwUncheckedException",v);
         	fail("expected to puke");
-        	} catch (XmlRpcException e){
+        	} catch (final XmlRpcException e){
                 assertThat(e.getMessage(),containsString("NullPointer"));
         		assertNull(e.getCause()); // pity - but too much to hope for really.
         	}    
@@ -123,18 +123,18 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
     
     public void testUncheckedUnknownException() throws IOException {
     	try {
-        	Object o = client.execute("test.transporttest.throwUncheckedExceptionOfUnknownType",v);
+        	final Object o = client.execute("test.transporttest.throwUncheckedExceptionOfUnknownType",v);
         	fail("expected to puke");
-        	} catch (XmlRpcException e){
+        	} catch (final XmlRpcException e){
                 assertThat(e.getMessage(),containsString("AnUnknownRuntimeException"));        		
         		assertNull(e.getCause()); // pity - but too much to hope for really.
         	}    
         }
 
     public void testByteArrayTransport() throws XmlRpcException, IOException {
-    	byte[] bytes = "fred".getBytes();
+    	final byte[] bytes = "fred".getBytes();
     	v.add(bytes);
-        Object o = client.execute("test.transporttest.echoByteArray",v);
+        final Object o = client.execute("test.transporttest.echoByteArray",v);
         assertNotNull(o);
         assertThat(o,is(byte[].class));
         assertNotSame(bytes,o);
@@ -147,7 +147,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
     	try {    		
     		client.execute("unknownMethod",v);
     		fail("expected to fail");
-    	} catch (XmlRpcException e) {
+    	} catch (final XmlRpcException e) {
     		// ok. should we test what message is in the exception? naah.
     	}
     }
@@ -157,7 +157,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         try {
         	client.execute("system.apihelp.listComponentsOfModule",v);
         	fail("expected to chuck");
-        } catch (XmlRpcException e) {
+        } catch (final XmlRpcException e) {
             assertThat(e.getMessage(),containsString("Incorrect number of parameters"));   
         }
 
@@ -187,6 +187,9 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: XmlRpcTransportIntegrationTest.java,v $
+Revision 1.10  2008/12/22 18:18:18  nw
+improved in-program API help.
+
 Revision 1.9  2008/08/04 16:37:24  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

@@ -41,6 +41,9 @@
     <action dev="nw" type="fix">
         File Explorer: Improved behaviour of popup menus in file table.
     </action>
+    <action dev="nw" type="update">
+        AR: improved presentation of in-program help.
+    </action>
 </release>
 <release version="1.2.2" date="2008-11-10">
     <action dev="nw" type="fix">

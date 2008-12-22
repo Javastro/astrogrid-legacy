@@ -1,4 +1,4 @@
-/*$Id: ApiHelpIntegrationTest.java,v 1.5 2008/05/28 12:26:18 nw Exp $
+/*$Id: ApiHelpIntegrationTest.java,v 1.6 2008/12/22 18:18:18 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        ACR reg =getACR();
+        final ACR reg =getACR();
         assertNotNull(reg);
         help = (ApiHelp) reg.getService(ApiHelp.class);
         assertNotNull(help);
@@ -52,21 +52,21 @@ public class ApiHelpIntegrationTest extends InARTestCase {
 
 
     public void testListMethods() {
-        List l = Arrays.asList(help.listMethods());
+        final List l = Arrays.asList(help.listMethods());
         assertNotNull(l);
         assertTrue(l.size() > 20);
         assertTrue(l.contains("system.configuration.getKey"));
     }
 
     public void testListModules() {
-        List l = Arrays.asList(help.listModules());
+        final List l = Arrays.asList(help.listModules());
         assertNotNull(l);
         assertTrue(l.contains("system"));
         assertTrue(l.size() > 3);
     }
 
     public void testListModuleDescriptors() {
-    	List l = Arrays.asList(help.listModuleDescriptors());
+    	final List l = Arrays.asList(help.listModuleDescriptors());
     	assertNotNull(l);
     	assertTrue(l.size() > 3);
     	assertNotNull(l.get(0));
@@ -84,7 +84,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.listComponentsOfModule("unknown");
     		fail("Exp[ected to barf");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		// ok
     	}
     }
@@ -93,13 +93,13 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.listComponentsOfModule(null);
     		fail("Expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}
     	try {
     		help.listComponentsOfModule("");
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     	}
     }
     public void testInterfaceClassName() throws NotFoundException {
@@ -111,7 +111,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.interfaceClassName("foo.bar");
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		// ok
     	}
     }
@@ -120,7 +120,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.interfaceClassName(null);
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		// ok
     	}
     }    	
@@ -129,7 +129,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.interfaceClassName("wibble");
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		// ok
     	}
     }  
@@ -147,13 +147,13 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.listComponentsOfModule(null);
     		fail("Expected to barf");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}
     	try {
     		help.listComponentsOfModule("");
     		fail("Expected to barf");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	
     	
@@ -163,7 +163,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.listComponentsOfModule("wibble.foo");
     		fail("Expected to barf");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	
     
@@ -173,7 +173,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.listComponentsOfModule("wibb");
     		fail("Expected to barf");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	
     }
@@ -181,17 +181,17 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     
     
     public void testMethodSignature() throws Exception {
-        List result = Arrays.asList(help.methodSignature("system.configuration.list"));
+        final List result = Arrays.asList(help.methodSignature("system.configuration.list"));
         assertEquals(1,result.size());
-        String[] sig1 = (String[])result.get(0);
+        final String[] sig1 = (String[])result.get(0);
         assertEquals(1,sig1.length);
-        assertEquals("key-value map",sig1[0]); 
+        assertEquals("Map",sig1[0]); 
     }
     
     public void testMethodSignatureParameters() throws NotFoundException {
-        List result = Arrays.asList(help.methodSignature("system.configuration.setKey"));
+        final List result = Arrays.asList(help.methodSignature("system.configuration.setKey"));
         assertEquals(1,result.size());
-        String[] sig1 = (String[])result.get(0);
+        final String[] sig1 = (String[])result.get(0);
         assertEquals(3,sig1.length);
         System.out.println(Arrays.asList(sig1));
         assertEquals("boolean",sig1[0]); 
@@ -201,7 +201,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.methodSignature(null);
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}
     }
@@ -210,7 +210,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.methodSignature("foo.bar");
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	
     }
@@ -219,13 +219,13 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.methodSignature("foo");
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	
     }
     
     public void testMethodSignatureInternal() throws NotFoundException {
-    	String[][] r = help.methodSignature("system.listMethods");
+    	final String[][] r = help.methodSignature("system.listMethods");
     	assertNotNull(r);
     	assertEquals(1,r.length);
     	assertEquals(2,r[0].length);
@@ -241,13 +241,13 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.moduleHelp(null);
     		fail("Expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}
     	try {
     		help.moduleHelp("");
     		fail("Expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	
     }
@@ -256,7 +256,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.moduleHelp("unknown");
     		fail("Expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	
     }
@@ -271,13 +271,13 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.componentHelp(null);
     		fail("Expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	
     	try {
     		help.componentHelp("");
     		fail("Expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	    	
     }
@@ -286,7 +286,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.componentHelp("unknown.unknown");
     		fail("Expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	    	
     }
@@ -295,7 +295,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.componentHelp("unknown");
     		fail("Expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok
     	}    	    	
     }
@@ -308,13 +308,13 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.methodHelp(null);
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok.
     	}
     	try {
     		help.methodHelp("");
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok.
     	}    	
     }
@@ -323,7 +323,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.methodHelp("foo.bar.choo");
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok.
     	}    	
     }
@@ -332,13 +332,13 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     	try {
     		help.methodHelp("foo");
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok.
     	}   
     	try {
     		help.methodHelp("foo.bar");
     		fail("expected to fail");
-    	} catch (NotFoundException e) {
+    	} catch (final NotFoundException e) {
     		//ok.
     	}    	
     }
@@ -353,6 +353,9 @@ public class ApiHelpIntegrationTest extends InARTestCase {
 
 /* 
 $Log: ApiHelpIntegrationTest.java,v $
+Revision 1.6  2008/12/22 18:18:18  nw
+improved in-program API help.
+
 Revision 1.5  2008/05/28 12:26:18  nw
 improved tsts
 
