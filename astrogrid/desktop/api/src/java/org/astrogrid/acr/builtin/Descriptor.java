@@ -1,4 +1,4 @@
-/*$Id: Descriptor.java,v 1.3 2008/09/25 16:02:04 nw Exp $
+/*$Id: Descriptor.java,v 1.4 2008/12/22 18:13:26 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,14 +48,32 @@ public abstract class Descriptor implements Serializable {
         this.name = name;
     }
     
+    private boolean excluded;
+    
 
         
+    /** Whether the entity should be excluded from documentation
+     * @return the excluded
+     */
+    public boolean isExcluded() {
+        return this.excluded;
+    }
+    /** @exclude
+     * @param excluded the excluded to set
+     */
+    public void setExcluded(final boolean excluded) {
+        this.excluded = excluded;
+    }
     /** @exclude */
     public String toString() {
         final StringBuffer buffer = new StringBuffer();
         buffer.append(" name: ");
         buffer.append(name);
         buffer.append('\n');
+        if (excluded) {
+            buffer.append("excluded");
+            buffer.append('\n');
+        }
         buffer.append(" description: ");
         buffer.append(description);
         buffer.append('\n');        
@@ -84,6 +102,9 @@ public abstract class Descriptor implements Serializable {
 
 /* 
 $Log: Descriptor.java,v $
+Revision 1.4  2008/12/22 18:13:26  nw
+added field to model exclusion
+
 Revision 1.3  2008/09/25 16:02:04  nw
 documentation overhaul
 
