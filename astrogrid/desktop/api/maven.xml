@@ -90,7 +90,11 @@
         <!--  run javadoc -->
 		<mkdir dir="${basedir}/target/jel" />
 		<attainGoal name="javadoc" />
-        
+
+        <!--  expand inline javadoc tags. 
+        -->
+        <attainGoal name="expandJavadoc" />
+                       
 		<!-- splitting stylesheet. -->
 		<mkdir dir="${basedir}/target/classes/org/astrogrid/desktop/hivemind" />
 		<xslt style="${basedir}/build/split.xsl"
@@ -109,6 +113,37 @@
         <j:set var="maven.javadoc.usestandardparameters" value="true" />
         
 	</goal>
+    
+    <goal name="expandJavadoc" description="expand javadoc tags into html">        
+        <!-- run some regexps to replace @javadoc tags with html markup 
+            - need a separate pass for each tag.
+            - need to double-escape substitutions, which is a bit ugly.
+        -->
+        <replaceregexp file="${basedir}/target/jel/jel.xml" 
+            match="\{@link\s#?([^\}]+)\}" 
+            replace="&amp;lt;tt&amp;gt;\1&amp;lt;/tt&amp;gt;" flags="g"/>
+        <replaceregexp file="${basedir}/target/jel/jel.xml" 
+            match="\{@code\s([^\}]+)\}" 
+            replace="&amp;lt;tt&amp;gt;\1&amp;lt;/tt&amp;gt;" flags="g"/>
+        <replaceregexp file="${basedir}/target/jel/jel.xml" 
+            match="\{@stickyNote\s([^\}]+)\}" 
+            replace="&amp;lt;blockquote&amp;gt;&amp;lt;b&amp;gt;Note: &amp;lt;/b&amp;gt;\1&amp;lt;/blockquote&amp;gt;" 
+            flags="g"/>
+        <replaceregexp file="${basedir}/target/jel/jel.xml" 
+            match="\{@stickyWarning\s([^\}]+)\}" 
+            replace="&amp;lt;blockquote&amp;gt;&amp;lt;b&amp;gt;Warning: &amp;lt;/b&amp;gt;\1&amp;lt;/blockquote&amp;gt;" 
+            flags="g"/>                      
+            <!--  todo: find a way for source, example to ignore nested } -->
+        <replaceregexp file="${basedir}/target/jel/jel.xml" 
+            match="\{@(textdiagram|source)\s([^\}]+)\}" 
+            replace="&amp;lt;pre&amp;gt;\2&amp;lt;/pre&amp;gt;" 
+            flags="g"/>            
+        <replaceregexp file="${basedir}/target/jel/jel.xml" 
+            match="\{@example\s([^\}]+)\}" 
+            replace="&amp;lt;pre&amp;gt;&amp;lt;b&amp;gt;Example: &amp;lt;/b&amp;gt;\1&amp;lt;/pre&amp;gt;" 
+            flags="g"/>
+            
+    </goal>
 
 
 </project>

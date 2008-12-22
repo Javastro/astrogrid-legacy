@@ -19,7 +19,7 @@ Used to provide in-program api documentation within the workbench implementation
 
 <!-- list of service interfaces -->
 <xsl:variable name="services" select="/jel/jelclass[@interface='true' 
-		and comment/attribute[@name='@service']
+		and comment/attribute[@name='@service']        
 		]"/>
 		
 <!-- keep deprecated services.  		and not ( comment/attribute[@name='@deprecated']) -->
@@ -49,7 +49,6 @@ Used to provide in-program api documentation within the workbench implementation
 </xsl:template>
 
 
-<!-- todo - later pass-thru propery @attributes -->
 <xsl:template match="jelclass">
 	<xsl:variable name="id" select="comment/attribute[@name='@service']/description" />
     	<xsl:variable name="name">
@@ -64,8 +63,10 @@ Used to provide in-program api documentation within the workbench implementation
 		</xsl:call-template>
 	</xsl:variable>
   <component interface-class="{@fulltype}"  name="{$name}" description="{$classDescription}">
-	<!-- todo put in useful @attributes - e.g. singleton? -->
-	<xsl:variable name="inheritanceTypes" select="implements/interface/@fulltype" />
+	<xsl:if test="comment/attribute[@name='@exclude']">
+                <xsl:attribute name="excluded"><xsl:text>true</xsl:text></xsl:attribute>
+    </xsl:if>
+    <xsl:variable name="inheritanceTypes" select="implements/interface/@fulltype" />
 	<xsl:variable name="inheritanceStack" select=". | /jel/jelclass[@fulltype =$inheritanceTypes]" />
 	<xsl:for-each select="$inheritanceStack/methods/method[@visibility='public' and not (contains(@name, 'Listener')) ]	">
 	<xsl:variable name="methodDescription">
@@ -74,6 +75,9 @@ Used to provide in-program api documentation within the workbench implementation
 		</xsl:call-template>
 	</xsl:variable>
 		<method name="{@name}" description="{$methodDescription}">
+            <xsl:if test="comment/attribute[@name='@exclude']">
+                <xsl:attribute name="excluded"><xsl:text>true</xsl:text></xsl:attribute>
+            </xsl:if>
 			<xsl:variable name="uitype">
 				<xsl:call-template name="convert-type">
 					<xsl:with-param name="p" select="." />		
@@ -104,32 +108,43 @@ Used to provide in-program api documentation within the workbench implementation
 
 <xsl:template name="convert-type">
 <xsl:param name="p" />
+<!-- 
 <xsl:if test="contains($p/@fulltype,'[]')">
-	<xsl:text>List of : </xsl:text>
+	<xsl:text>Array-of:</xsl:text>
 </xsl:if>
+ -->
 <xsl:choose>
+<!-- 
   <xsl:when test="contains($p/@type,'Information') or contains($p/@type,'Bean')">
-  	key-value map, See <xsl:value-of select='$p/@type'/> for structure.
+  	key-value-map, See <xsl:value-of select='$p/@type'/> for structure.
   </xsl:when>
+ -->
+  <!-- 
   <xsl:when test="$p/@type = 'Map'">
-  	<xsl:text>key-value map</xsl:text>
+  	<xsl:text>Key/Value-Map</xsl:text>
   </xsl:when>
   <xsl:when test="$p/@type = 'String'">
   	<xsl:text>string</xsl:text>
   </xsl:when>
+   -->
   <xsl:when test="$p/@type = 'Document'">
-  	<xsl:text>string containing XML</xsl:text>
+  	<xsl:text>XML</xsl:text>
   </xsl:when>
+  <!--
   <xsl:when test="$p/@type = 'URI'">
-  	<xsl:text>Ivorn or other URI</xsl:text>
+  	<xsl:text>URI-string</xsl:text>
   </xsl:when>
   <xsl:when test="$p/@type = 'void'">
   	<xsl:text>nothing</xsl:text>
   </xsl:when>
+   -->
   <xsl:otherwise>
     <xsl:value-of select="$p/@type" />
-  </xsl:otherwise>
+  </xsl:otherwise>  
 </xsl:choose>
+<xsl:if test="contains($p/@fulltype,'[]')">
+    <xsl:text>[]</xsl:text>
+</xsl:if>
 </xsl:template>
 
 <xsl:template name="substring-after-last">
@@ -152,17 +167,70 @@ Used to provide in-program api documentation within the workbench implementation
 </xsl:template>
 
 <xsl:template name="fmtDescription">
+    <!-- output tags from this template are all escaped, 
+    to combine with the already-escaped tags from comment/description,
+    this is also necssary because the result is going to be stored in
+    an attribute in the result document. This, in turn, is necessary
+    so that hivemind doesn't need to parse the documentation XHTML tags,
+    but just slurps in the whole unparsed. 
+    
+    NB: following whitespace is all carefully arranged
+    to produce nice plaintext output too, once html tags are stripped-->
 	<xsl:param name="input" />
-	<xsl:choose>
-	<xsl:when test="comment/attribute[@name='@deprecated']">
-		<xsl:text>Deprecated: </xsl:text>
-		<xsl:value-of select="comment/attribute[@name='@deprecated']" />
-	</xsl:when>
-	<xsl:otherwise>
-		<xsl:value-of select="comment/description" />
-	</xsl:otherwise>
-	</xsl:choose>
+	<xsl:if test="comment/attribute[@name='@deprecated']">
+		<xsl:text>&lt;b&gt;Deprecated: &lt;/b&gt;</xsl:text> 
+        <xsl:value-of select="comment/attribute[@name='@deprecated']/description" />
+        <xsl:text>&lt;p /&gt;
+</xsl:text>
+	</xsl:if>
+		<xsl:value-of select="comment/description" /> 
+        <xsl:if test="comment/attribute[@name='@equivalence' or @name='@note' or @name='@warning' or @name='@xmlrpc' or @name='@see']">
+        <xsl:text>&lt;dl&gt;</xsl:text>
+            <xsl:for-each select="comment/attribute">
+                <xsl:sort select="@name" />                
+                <xsl:choose>
+                    <xsl:when test="@name='@equivalence'">
+                        <xsl:text>
+&lt;dt&gt;Equivalent To:&lt;/dt&gt;&lt;dd&gt;&lt;tt&gt;
+   </xsl:text><xsl:value-of select="description" />
+                        <xsl:text>&lt;/tt&gt;&lt;/dd&gt;</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="@name='@note'">
+                        <xsl:text>
+&lt;dt&gt;Note:&lt;/dt&gt;&lt;dd&gt;
+   </xsl:text><xsl:value-of select="description" />
+                        <xsl:text>&lt;/dd&gt;</xsl:text>                  
+                    </xsl:when>
+                    <xsl:when test="@name='@warning'">
+                        <xsl:text>
+&lt;dt&gt;Warning:&lt;/dt&gt;&lt;dd&gt;
+   </xsl:text><xsl:value-of select="description" />
+                        <xsl:text>&lt;/dd&gt;</xsl:text>  
+                    </xsl:when>       
+                    <xsl:when test="@name='@xmlrpc'">
+                        <xsl:text>
+&lt;dt&gt;XMLRPC:&lt;/dt&gt;&lt;dd&gt;
+   </xsl:text><xsl:value-of select="description" />
+                        <xsl:text>&lt;/dd&gt;</xsl:text>                     
+                    </xsl:when>                                                                  
+                </xsl:choose>
+            </xsl:for-each>
+            <!--  finally - collate all 'see' together. -->
+            <xsl:if test="comment/attribute[@name='@see']">
+            <xsl:text>
+&lt;dt&gt;See:&lt;/dt&gt;&lt;dd&gt;
+   </xsl:text><xsl:for-each select="comment/attribute[@name='@see']">
+                <xsl:value-of select="description"/><xsl:text>, </xsl:text>            
+            </xsl:for-each>
+            <xsl:text>&lt;/dd&gt;</xsl:text>
+            </xsl:if>
+        <xsl:text>&lt;/dl&gt;</xsl:text>
+        </xsl:if>
+    
 </xsl:template>
+
+
+
 
 
 </xsl:stylesheet>
