@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.30 2008/12/01 23:29:55 nw Exp $
+/*$Id: VospaceImpl.java,v 1.31 2008/12/22 18:19:04 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -90,7 +90,6 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     protected FileManagerClient client;
     private final FilesCache cache;
     
-    //@todo move this client creation into it's own service,
     public synchronized FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException {
         if (client == null) {
      //       FileManagerClientFactory fac = new FileManagerClientFactory(prefs);
@@ -168,7 +167,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     }
     
 
-    public FileManagerNode node(final URI ivorn) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
+    private FileManagerNode node(final URI ivorn) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
         try {
             final Ivorn ivo = cvt(ivorn);
             final FileManagerNode node =  getClient().node(ivo);
@@ -733,79 +732,6 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     }
 
 
-    /**
-     * @throws NotFoundException
-     * @throws ServiceException
-     * @throws SecurityException
-     * @throws InvalidArgumentException
-     * @throws UnsupportedOperationException
-     * @see org.astrogrid.desktop.modules.ag.MyspaceInternal#getInputStream(java.net.URI)
-     */
-    public InputStream getInputStream(final URI u) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
-        try{
-        if (u.getScheme() == null || u.getScheme().equals("ivo")) {
-            return node(u).readContent();
-        } else if (u.getScheme().equals("file")) {
-            return FileUtils.openInputStream(FileUtils.toFile(u.toURL()));
-        } else {
-            return u.toURL().openStream();
-        }
-    } catch (final FileNotFoundException e) {
-        throw new NotFoundException(e);
-    } catch (final FileManagerFault e) {
-        throw new ServiceException(e);
-    } catch (final IOException e) {
-        throw new ServiceException(e);
-    }
-   
-    }
-
-    /**
-     * @throws ServiceException
-     * @throws SecurityException
-     * @throws NotFoundException
-     * @throws InvalidArgumentException
-     * @throws UnsupportedOperationException
-     * @see org.astrogrid.desktop.modules.ag.MyspaceInternal#getOutputStream(java.net.URI)
-     */
-    public OutputStream getOutputStream(final URI u) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
-       try {
-        if (u.getScheme() == null || u.getScheme().equals("ivo")) {
-            //return node(u).writeContent();
-            return mkOutputStream(u);
-        } else if (u.getScheme().equals("file")) {
-            return FileUtils.openOutputStream(new File(u));
-        } else {
-            return u.toURL().openConnection().getOutputStream();                      
-        }      
-       } catch (final FileNotFoundException e) {
-           throw new NotFoundException(e);
-       } catch (final FileManagerFault e) {
-           throw new ServiceException(e);
-       } catch (final IOException e) {
-           throw new ServiceException(e);
-       }
-    }
-
-    public OutputStream getOutputStream(final URI u, final long size) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
-        try {
-            if (u.getScheme() == null || u.getScheme().equals("ivo")) {
-                //return node(u).writeContent();
-                return mkOutputStream(u,size);
-            } else if (u.getScheme().equals("file")) {
-                return FileUtils.openOutputStream(new File(u));
-            } else {
-                return u.toURL().openConnection().getOutputStream();                      
-            }      
-           } catch (final FileNotFoundException e) {
-               throw new NotFoundException(e);
-           } catch (final FileManagerFault e) {
-               throw new ServiceException(e);
-           } catch (final IOException e) {
-               throw new ServiceException(e);
-           }
-    }
-
 	public Service[] listStores() throws ServiceException {
 		return new Service[]{};
 		//@FIXME implement in reg 1.0
@@ -834,6 +760,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.31  2008/12/22 18:19:04  nw
+removed unused methods.
+
 Revision 1.30  2008/12/01 23:29:55  nw
 used commons.io utilities
 

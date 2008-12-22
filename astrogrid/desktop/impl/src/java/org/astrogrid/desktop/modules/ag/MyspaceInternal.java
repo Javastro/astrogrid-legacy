@@ -1,4 +1,4 @@
-/*$Id: MyspaceInternal.java,v 1.9 2008/11/04 14:35:47 nw Exp $
+/*$Id: MyspaceInternal.java,v 1.10 2008/12/22 18:19:05 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.filemanager.client.FileManagerClient;
-import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.registry.RegistryException;
 
 /** Internal interface to additional myspace operations.
@@ -31,52 +23,9 @@ import org.astrogrid.registry.RegistryException;
  */
 public interface MyspaceInternal extends Myspace {
 
-    /** get the internal filemanager node for a myspace ivorn (i.e. get an internal delegate)
-     * <b>NB</b> use the node returned just for display / metadata - for data transfer, prefer the methods in the Myspace & MyspaceInternal interfaces
-     * @param ivorn a uri of form ivo://
-     * @return the node object for this ivorn
-     */
-    public FileManagerNode node(URI ivorn) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException ;
-
-   
-    /** Helper method to open an arbitrary uri for reading
-     * @param uri http://, file://, ftp://, ivo://
-     * @return appropriate input stream
-     * @throws InvalidArgumentException
-     * @throws NotFoundException
-     * @throws SecurityException
-     * @throws ServiceException
-     *  *@deprecated use FileSystemManager (<tt>system.vfs</tt>) instead
-     */
-    @Deprecated
-    public InputStream getInputStream(URI uri) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
-    /** Helper method to open an abitrary uri for writing
-     * NB: not a good idea for large files. - use the variant where output file size is specified.
-     * @param ui http://, file://, ftp://, ivo://
-     * @return a suitable output stream
-     * @throws InvalidArgumentException
-     * @throws NotFoundException
-     * @throws SecurityException
-     * @throws ServiceException
-     *  *@deprecated use FileSystemManager (<tt>system.vfs</tt>) instead
-     */
-    @Deprecated
-    public OutputStream getOutputStream(URI ui) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
-
-    /** Helper method to open an abitrary uri for writing
-     * @param ui http://, file://, ftp://, ivo://
-     * @return a suitable output stream
-     * @throws InvalidArgumentException
-     * @throws NotFoundException
-     * @throws SecurityException
-     * @throws ServiceException
-     *  *@deprecated use FileSystemManager (<tt>system.vfs</tt>) instead
-     */
-    @Deprecated
-    public OutputStream getOutputStream(URI ui, long size) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
    
 
-    /** temporary hack - not encouraged to use this */
+    /** Access the underlying file manager client - used within Myspace VFS */
      FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException ;
             
     
@@ -85,6 +34,9 @@ public interface MyspaceInternal extends Myspace {
 
 /* 
 $Log: MyspaceInternal.java,v $
+Revision 1.10  2008/12/22 18:19:05  nw
+removed unused methods.
+
 Revision 1.9  2008/11/04 14:35:47  nw
 javadoc polishing
 
