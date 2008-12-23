@@ -31,8 +31,8 @@ ANNOTATION SERVICE
                 <service>annotateIO</service>                    
 			</construct>
 		</invoke-factory>
-	</service-point>	
-    
+    </service-point>
+
     <service-point id="annotateIO" visibility="private" 
         interface="org.astrogrid.desktop.modules.votech.AnnotationIO">
         Supporting component that takes care of persisting and reading anotations.
@@ -47,7 +47,7 @@ ANNOTATION SERVICE
         </invoke-factory>
     </service-point>
 	
-	<contribution configuration-id="ivoa.caches">
+	<contribution configuration-id="ivoa.caches" if="not(property skua)">
 		cache of annotations.
 		'unlimited' disk storage, lasts whole session, but is discarded at end of session.
 		practically infinite storage - necessary because we're using this for real data.
@@ -70,7 +70,7 @@ ANNOTATION SERVICE
 		<load service-id="annotate"/><!--  loads and processes the annotation files -->
 	</contribution>
 
-     <contribution configuration-id="util.selftest" >
+     <contribution configuration-id="util.selftest" if="not (property skua)" >
         <object>service-property:annotate:selftest</object>
     </contribution>	
 	
@@ -111,7 +111,7 @@ ANNOTATION SERVICE
 	</object>
 </contribution>
 
-    <contribution configuration-id="framework.preferences">
+    <contribution configuration-id="framework.preferences" if="not(property skua)">
         <preference name="experimental.suggestions.services" 
             advanced="true"
             default-value="false" >
@@ -119,9 +119,6 @@ ANNOTATION SERVICE
             <description>Enable experimental features</description>
             <units>boolean</units>
         </preference>
-    </contribution> 
-	
-	<contribution configuration-id="framework.preferences">
 		<preference name="votech.jackdaw.endpoint" 
 			requires-restart="true" advanced="true"
 			default-value="http://thor.roe.ac.uk/jackdaw/like" >
@@ -131,7 +128,35 @@ ANNOTATION SERVICE
 		</preference>
 	</contribution>	
 
-
+    
+    <!--
+    ===========================================================
+      Alternate implementation of annotation service, using SKUA
+      
+      to enable, set property 'skua'
+       -->    
+    <implementation service-id='annotate' if="property skua">
+          Annotation Service, using SKUA
+          <invoke-factory>
+            <construct class='org.astrogrid.desktop.modules.votech.SkuaAnnotationService'>
+              <object>preference:skua.endpoint</object>
+              <service>system.ui</service>
+            </construct>
+          </invoke-factory>
+     </implementation>
+     
+   <contribution configuration-id="framework.preferences" if="property skua">
+        <preference name='skua.endpoint'
+                            advanced="true"
+                            requires-restart='false'
+                            default-value='http://localhost:8080'>
+                  <ui-name>SKUA endpoint</ui-name>
+                  <description>The URL of a SKUA service which you can read and write to.
+                  This is the URL of a particular SAC, and so might have to be set up beforehand
+                  by the user.</description>
+                  <units>url</units>
+        </preference>
+   </contribution>   
 	
 <!-- 
 =============================================

@@ -1124,8 +1124,21 @@
                 <strip>true</strip>
                 <part-of>xfire -1.0.2+</part-of>                
             </properties>
-        </dependency>              
-     <!-- ========================
+        </dependency>
+        <!-- ========================
+         ! SKUA
+         !-->
+        <dependency>
+          <groupId>skua</groupId>
+          <artifactId>skua-sac-client</artifactId>
+          <version>0.2</version>
+          <type>jar</type>
+          <url>http://skua.googlecode.com</url>
+          <properties>
+            <version-checked>2008-10-23</version-checked>
+          </properties>
+        </dependency>
+        <!-- ========================
      SECURITY -->
         <dependency>
             <groupId>globus</groupId>
