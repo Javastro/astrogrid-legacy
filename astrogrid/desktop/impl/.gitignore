@@ -9,3 +9,4 @@ cobertura.ser
 bin-groovy
 .externalToolBuilders
 .fbprefs
+*.pydevproject
