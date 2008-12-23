@@ -133,15 +133,19 @@
             match="\{@stickyWarning\s([^\}]+)\}" 
             replace="&amp;lt;blockquote&amp;gt;&amp;lt;b&amp;gt;Warning: &amp;lt;/b&amp;gt;\1&amp;lt;/blockquote&amp;gt;" 
             flags="g"/>                      
-            <!--  todo: find a way for source, example to ignore nested } -->
         <replaceregexp file="${basedir}/target/jel/jel.xml" 
-            match="\{@(textdiagram|source)\s([^\}]+)\}" 
-            replace="&amp;lt;pre&amp;gt;\2&amp;lt;/pre&amp;gt;" 
-            flags="g"/>            
+            match="\{@textdiagram\s([^\}]+)\}" 
+            replace="&amp;lt;pre&amp;gt;\1&amp;lt;/pre&amp;gt;" 
+            flags="g"/>    
+            <!--  scan for complete @source and @example blocks. not perfect - can get mangled with nested } - but does sufficiently well.  -->
         <replaceregexp file="${basedir}/target/jel/jel.xml" 
-            match="\{@example\s([^\}]+)\}" 
-            replace="&amp;lt;pre&amp;gt;&amp;lt;b&amp;gt;Example: &amp;lt;/b&amp;gt;\1&amp;lt;/pre&amp;gt;" 
-            flags="g"/>
+            match="\{@source(.*?)\}" 
+            replace="&amp;lt;pre&amp;gt;\1&amp;lt;/pre&amp;gt;" 
+            flags="gms"/>            
+        <replaceregexp file="${basedir}/target/jel/jel.xml" 
+            match="\{@example(?:\s+['&quot;]([^'&quot;]+)['&quot;])?(.*?)\}" 
+            replace="&amp;lt;pre&amp;gt;&amp;lt;b&amp;gt;Example: \1&amp;lt;/b&amp;gt;\2&amp;lt;/pre&amp;gt;" 
+            flags="gms"/>
             
     </goal>
 
