@@ -76,8 +76,8 @@ public interface Registry {
 	
 	
 	/** Perform a keyword  search.
-<p/>
-{@example "Python Example"
+    * <p/>
+    * {@example "Python Example"
 # connect to the AR
 from xmlrpc import Server
 from os.path import expanduser
@@ -89,27 +89,29 @@ print len(rs)
 #list first 10 identifiers
 for r in rs[:10]
     print r['id']:
-}
-The output is
-<pre>
-150
-ivo://CDS.VizieR/J/A+A/486/755
-ivo://uk.ac.le.star.tmpledas/ledas/ledas/abell
-ivo://nasa.heasarc/wblgalaxy
-ivo://nasa.heasarc/wbl
-ivo://nasa.heasarc/twosigma
-ivo://nasa.heasarc/rassebcs
-ivo://nasa.heasarc/noras
-ivo://nasa.heasarc/eingalclus
-ivo://nasa.heasarc/abell
-ivo://CDS.VizieR/VII/96 
-</pre>	 
-     * @param keywords space separated list of keywords to search for
-     * @param orValues - true to 'OR' together matches. false to 'AND' together matches
-     * @return list of matching resources.
-     * 
-     * @throws ServiceException if an error occurs talking to the service     
-     * */
+    * }
+    * 
+    * The output is
+    * <pre>
+    * 150
+    * ivo://CDS.VizieR/J/A+A/486/755
+    * ivo://uk.ac.le.star.tmpledas/ledas/ledas/abell
+    * ivo://nasa.heasarc/wblgalaxy
+    * ivo://nasa.heasarc/wbl
+    * ivo://nasa.heasarc/twosigma
+    * ivo://nasa.heasarc/rassebcs
+    * ivo://nasa.heasarc/noras
+    * ivo://nasa.heasarc/eingalclus
+    * ivo://nasa.heasarc/abell
+    * ivo://CDS.VizieR/VII/96 
+    * </pre>	 
+    * @param keywords space separated list of keywords to search for
+    * @param orValues - true to 'OR' together matches. false to 'AND' together matches
+    * @return list of matching resources.
+    * 
+    * @throws ServiceException if an error occurs talking to the service     
+    * 
+    */
     Resource[] keywordSearch(String keywords, boolean orValues)  throws ServiceException;
 	
     

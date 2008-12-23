@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.15 2008/12/22 18:13:43 nw Exp $
+/*$Id: Myspace.java,v 1.16 2008/12/23 17:24:49 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -212,7 +212,7 @@ public interface Myspace {
     */
    NodeInformation[] listNodeInformation(URI ivorn) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
    /** refresh the metadata held about  a myspace resource with the server.
-    * {stickyNote 
+    * {@stickyNote 
     * For performance, metadata about myspace resources is used in a LRU cache. This method forces the ACR to re-query the myspace server
     * about this resource.} 
  * @param ivorn resource to refresh
@@ -483,6 +483,10 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.16  2008/12/23 17:24:49  nw
+ Complete - task Improve formatting of function help in apihelp
+ Documentation fix.
+
  Revision 1.15  2008/12/22 18:13:43  nw
  doc fix
 
