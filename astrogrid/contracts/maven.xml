@@ -5,16 +5,6 @@
 <property name="generated.src" location="${basedir}/src/java" />
 <property name="generated.dir" location="${basedir}/src" />
 
-<!-- goals for nightly build -->
-<goal name="astrogrid-clean" prereqs="clean"/>
-<goal name="astrogrid-build-site"  prereqs="site" />        
-<goal name="astrogrid-deploy-site" prereqs="site,site:deploy" />
-<goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
-<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy" />
-<goal name="astrogrid-install-artifact" prereqs="jar:install" />
-<goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot"/>
-
-
 
 <!-- hooks into existing goals -->
   <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
@@ -25,6 +15,7 @@
   
   <postGoal name="site">
     <attainGoal name="schema-doc"/>
+    <attainGoal name="make-schemaLocation-absolute"/>
   </postGoal>
 
 <!-- new goals -->
@@ -585,6 +576,37 @@
   <goal name="xmlbeans-declare-tasks">
   	<taskdef name="xmlbean" classname="org.apache.xmlbeans.impl.tool.XMLBean" classpath="/usr/local/lib/xbean.jar"/>
   </goal>
+  
+  <!-- These goals transfered from the astrogrid-software-site project -->
+          <!-- Extract the XML schemata from jars specified in the POM and add them to the web site. -->
+        <goal name="unpack-schema">
+                <j:forEach var="item" items="${pom.artifacts}">
+                        <j:if test="${item.dependency.getProperty('jar-with-schema')=='true'}">
+                                <unjar src="${item.path}" dest="${maven.docs.dest}">
+                                        <patternset>
+                                                <include name="schema"/>
+                                                <include name="schema/*"/>
+                                                <include name="schema/**/*"/>
+                                        </patternset>
+                                </unjar>
+                        </j:if>
+                </j:forEach>
+        </goal>
+	
+	<!-- Go through the tree of schemata changing all the relative
+		hyperlinks (import elements etc.) to be absolute and pointing
+		into the site being built. -->
+	<goal name="make-schemaLocation-absolute">
+		<xslt style="${basedir}/src/xsl/absolute-location.xsl" basedir="${maven.docs.dest}/schema" 
+			  includes="**/*.xsd" extension=".xsd" destdir="${maven.docs.dest}/absolute-schema">
+		</xslt>
+		<xslt style="${basedir}/src/xsl/absolute-location.xsl" basedir="${maven.docs.dest}/schema" 
+			includes="**/*.wsdl" extension=".wsdl" destdir="${maven.docs.dest}/absolute-schema">
+		</xslt>
+		<move todir="${maven.docs.dest}/schema" overwrite="true">
+			<fileset dir="${maven.docs.dest}/absolute-schema"/>
+		</move>
+	</goal>
 
 
 
