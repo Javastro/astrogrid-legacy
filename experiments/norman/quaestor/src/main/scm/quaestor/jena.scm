@@ -110,88 +110,91 @@
 ;; The CONFIG model must include a resource which has a string-valued
 ;; property quaestor:persistenceDirectory.  This names a directory
 ;; which will be used to hold persistent models, and which will be created 
-;; if it does not already exist.
+;; if it does not already exist.  As well as this directory, this procedure
+;; will create a file with the same name as the directory, and an ".rdf" suffix,
+;; which is the TDB assembly file required for the persistent model.
 ;;
 ;; The resulting procedure has the contract
-;;   ((uri (or (jstring? uri)
-;;             (string? uri)
-;;             (is-java-type? uri '|java.net.URI|)))
-;;    -> jena-model?)
-;; Given a URI which names the model to be constructed or retrieved,
-;; it returns a persistent model.
+;;   jena-model? -> jena-model?
+;; The input model must declare that some resource is a quaestor:PersistentModel,
+;; and this is used to name the model.
+;; If no resource is so declared, that is an error; if more than one is declared,
+;; it is unspecified which one is used.
 ;;
-;; If persistent models cannot be created (because the TDBFactory support is
-;; not available), return #f
+;; On success, the procedure returns a persistent model which includes any
+;; triples previously in the model, and the metadata passed as input.
+;;
+;; If persistent models cannot be created, because the TDBFactory support is
+;; not available, return #f; if they cannot be created because of a configuration error,
+;; throw an error (FIXME: is this consistent?)
 (define/contract (rdf:create-persistent-model-factory (config jena-model?)
                                                       -> (lambda (x) (or (not x) (procedure? x))))
   (define-java-classes <java.io.file>)
   (define-generic-java-methods exists mkdirs to-string)
-  (if (java-class-present '|com.hp.hpl.jena.tdb.TDBFactory|)
-      (let ((persistence-directory
-             (cond ((as-jstring
-                     (rdf:select-object/string config #f (rdf:make-quaestor-resource "persistenceDirectory")))
-                    => (lambda (dirname) (java-new <java.io.file> dirname)))
-                   (else #f))))
-        ;; (attempt to) make the persistence-directory if it doesn't already exist
-        (if (and persistence-directory
-                 (not (->boolean (exists persistence-directory))))
-            (mkdirs persistence-directory))
+  (and (java-class-present '|com.hp.hpl.jena.tdb.TDBFactory|)
+       (let ((persistence-directory
+              (cond ((as-jstring
+                      (rdf:select-object/string config #f (rdf:make-quaestor-resource "persistenceDirectory")))
+                     => (lambda (dirname) (java-new <java.io.file> dirname)))
+                    (else #f))))
+         ;; (attempt to) make the persistence-directory if it doesn't already exist
+         (if (and persistence-directory
+                  (not (->boolean (exists persistence-directory))))
+             (mkdirs persistence-directory))
 
-        (cond ((and persistence-directory
-                    (->boolean (exists persistence-directory)))
-               (lambda/contract ((uri (or (jstring? uri)
-                                          (string? uri)
-                                          (is-java-type? uri '|java.net.URI|)))
-                                 -> jena-model?)
-                 (define-java-classes (<tdb-factory> |com.hp.hpl.jena.tdb.TDBFactory|) <java.io.file>)
-                 (define-generic-java-methods assemble-model replace-all)
+         (cond ((and persistence-directory
+                     (->boolean (exists persistence-directory)))
+                (lambda/contract ((metadata-model jena-model?) -> jena-model?)
+                  (define-java-classes (<tdb-factory> |com.hp.hpl.jena.tdb.TDBFactory|) <java.io.file>)
+                  (define-generic-java-methods assemble-model replace-all hash-code to-string)
 
-                 (define (make-persistence-file directory key)
-                   ;; <java.io.File> jstring? -> <java.io.File>
-                   (define-java-classes <java.io.file-output-stream>)
-                   (define-generic-java-methods
-                     write concat close delete-on-exit
-                     create-temp-file create-resource create-property add add-literal)
-                   (let ((m (rdf:new-empty-model))
-                         (tfile (create-temp-file (java-null <java.io.file>) key (->jstring ".rdf")))
-                         (ja-ns  (lambda (x) (->jstring (string-append "http://jena.hpl.hp.com/2005/11/Assembler#" x))))
-                         (tdb-ns (lambda (x) (->jstring (string-append "http://jena.hpl.hp.com/2008/tdb#" x))))
-                         (rdf-ns (lambda (x) (->jstring (string-append "http://www.w3.org/1999/02/22-rdf-syntax-ns#" x))))
-                         (null-string (->jstring "")))
-                     (delete-on-exit tfile)
-                     (chatter "make-persistence-file: directory=~a  key=~a  tfile=~a"
-                              directory key (to-string tfile))
-                     (let ((r (create-resource m))
-                           (graphspec (create-resource m))
-                           (type-property (create-property m (rdf-ns "type") null-string)))
-                       (add-literal m r
-                                    (create-property m (ja-ns "loadClass") null-string)
-                                    (->jstring "com.hp.hpl.jena.tdb.TDB"))
-                       (add m r
-                            type-property
-                            (create-resource m (ja-ns "RDFDataset")))
-                       (add m r (create-property m (ja-ns "defaultGraph") null-string) graphspec)
-                       (add m graphspec type-property (create-resource m (tdb-ns "GraphTDB")))
-                       (add-literal m graphspec
-                                    (create-property m (tdb-ns "location") null-string)
-                                    (to-string (java-new <java.io.file> directory key)))
-                       (let ((fos (java-new <java.io.file-output-stream> tfile)))
-                         (write m fos)
-                         (close fos))
-                       tfile)))
+                  (define (make-persistence-file directory key)
+                    ;; <java.io.File> jstring? -> <java.io.File>
+                    (define-java-classes <java.io.file-output-stream>)
+                    (define-generic-java-methods write concat close
+                      create-resource create-property add add-literal)
+                    (let ((m (rdf:new-empty-model))
+                          (tfile (java-new <java.io.file> directory (concat key (->jstring ".rdf"))))
+                          (ja-ns  (lambda (x) (->jstring (string-append "http://jena.hpl.hp.com/2005/11/Assembler#" x))))
+                          (tdb-ns (lambda (x) (->jstring (string-append "http://jena.hpl.hp.com/2008/tdb#" x))))
+                          (rdf-ns (lambda (x) (->jstring (string-append "http://www.w3.org/1999/02/22-rdf-syntax-ns#" x))))
+                          (null-string (->jstring "")))
+                      (chatter "make-persistence-file: directory=~a  key=~a  tfile=~a"
+                               directory key (to-string tfile))
+                      (let ((r (create-resource m))
+                            (graphspec (create-resource m))
+                            (type-property (create-property m (rdf-ns "type") null-string)))
+                        (add-literal m r
+                                     (create-property m (ja-ns "loadClass") null-string)
+                                     (->jstring "com.hp.hpl.jena.tdb.TDB"))
+                        (add m r
+                             type-property
+                             (create-resource m (ja-ns "RDFDataset")))
+                        (add m r (create-property m (ja-ns "defaultGraph") null-string) graphspec)
+                        (add m graphspec type-property (create-resource m (tdb-ns "GraphTDB")))
+                        (add-literal m graphspec
+                                     (create-property m (tdb-ns "location") null-string)
+                                     (to-string (java-new <java.io.file> directory key)))
+                        (add m metadata-model) ;add all the metadata to the saved model
+                        (let ((fos (java-new <java.io.file-output-stream> tfile)))
+                          (write m fos)
+                          (close fos))
+                        tfile)))
 
-                 (assemble-model (java-null <tdb-factory>)
-                                 (to-string (make-persistence-file persistence-directory
-                                                                   (replace-all (cond ((jstring? uri) uri)
-                                                                                      ((string? uri) (->jstring uri))
-                                                                                      (else (to-string uri)))
-                                                                                (->jstring "[^A-Za-z0-9]")
-                                                                                (->jstring "-")))))))
-              (persistence-directory
-               (error "Can't make persistent model handler: the persistence-directory ~s does not exist and cannot be created" (->string (to-string persistence-directory))))
-              (else
-               (error "Can't make persistent model handler: the persistence info does not indicate a quaestor:persistenceDirectory"))))
-      #f))                              ;no TDBFactory present
+                  (let ((persistent-model-names
+                         (rdf:select-statements metadata-model #f "a" (rdf:make-quaestor-resource "PersistentModel"))))
+                    (cond ((null? persistent-model-names)
+                           (error "Can't make persistent model: there is no quaestor:PersistentModel resource in the metadata"))
+                          (else
+                           (assemble-model (java-null <tdb-factory>)
+                                           (to-string (make-persistence-file persistence-directory
+                                                                             (replace-all (to-string (car persistent-model-names))
+                                                                                          (->jstring "[^A-Za-z0-9]")
+                                                                                          (->jstring "-"))))))))))
+               (persistence-directory
+                (error "Can't make persistent model handler: the persistence-directory ~s does not exist and cannot be created" (->string (to-string persistence-directory))))
+               (else
+                (error "Can't make persistent model handler: the persistence info does not indicate a quaestor:persistenceDirectory"))))))
 
 ;; rdf:ingest-from-uri : string -> model
 ;; Given a URI, this reads in the RDF within it, and returns the

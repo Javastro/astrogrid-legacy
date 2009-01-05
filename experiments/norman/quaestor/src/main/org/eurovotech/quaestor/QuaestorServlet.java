@@ -15,7 +15,7 @@ public interface QuaestorServlet {
      * @param key the parameter name
      * @return the parameter value, or null if there is no such parameter
      */
-public String getInitParameter(String key);
+    public String getInitParameter(String key);
 
     /** 
      * Register a Scheme handler procedure with this servlet.

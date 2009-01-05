@@ -21,16 +21,15 @@ import sisc.data.Procedure;
 /**
  * Implement a standalone scheme server within Jetty.
  *
- * <p>This is all pretty cruddy.  The various properties are all
- * built-in, rather than being read from a config file; all the
+ * <p>This implementation could probably be improved.  The
  * classes below are in-line in this file rather than being broken
- * out; the logging is primitive; and it's probably too low-level,
+ * out; and it's possibly too low-level,
  * since I'm following a pattern I worked out quickly some while ago,
  * which uses the Handler.handle interface, rather than the
  * higher-level one using servlets.  The whole thing should be largely
- * rewritten once I get a chance.  On top of all that, the layout
+ * rewritten once I get a chance.  As well, the layout
  * which is managed by the build.xml is more customised for the Tomcat
- * version of this, and feels a bit weird for this version (as well,
+ * version of this, and feels a bit weird for this version.  As well as that,
  * there's no security, so that there's nothing stopping you
  * retrieving the WEB-INF/web.xml file).
  */
@@ -39,8 +38,8 @@ public class JettySchemeServer {
     static String versionString = "???";
 
     public static void main(String[] args) {
-        int portNumber = 8080;   // default - can be overridden in properties or at command line
-        boolean chatter = false; // default - can be overridden in properties or at command line
+        int portNumber = 8080;   // default - can be overridden in properties or on command line
+        boolean chatter = false; // default - can be overridden in properties or on command line
 
         Pattern opts = Pattern.compile("^--([a-z]+)(=(.*))?");
 
@@ -93,6 +92,15 @@ public class JettySchemeServer {
 
                 } else if (opt.equals("help")) {
                     Usage();
+
+                } else if (configProperties.getProperty(opt) != null) {
+                    // This option is the same as a property name,
+                    // so replace that property's value with the option value
+                    String val = m.group(3);
+                    if (val == null)
+                        Usage();
+                    else
+                        configProperties.setProperty(opt, val);
 
                 } else {
                     System.err.println("Unrecognised option --" + opt);
@@ -227,6 +235,8 @@ public class JettySchemeServer {
             System.exit(exitStatus);
         }
 
+        // The following implement the QuaestorServlet interface
+
         /** 
          * Register a Scheme handler procedure with this servlet.
          *
@@ -246,7 +256,9 @@ public class JettySchemeServer {
             kbHandler.registerHandler(method, context, proc);
         }
 
-        // implement getInitParameter from QuaestorServlet
+        /**
+         * Retrieve an initialisation parameter.
+         */
         public String getInitParameter(String key) {
             return servletProperties.getProperty(key);
         }

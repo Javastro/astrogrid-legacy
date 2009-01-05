@@ -44,7 +44,7 @@
     (sdb.version . ,(get-sdb-version))
     (tdb.version . ,(get-tdb-version))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.62 $ $Date: 2008/10/27 21:14:10 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.63 $ $Date: 2009/01/05 22:07:24 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -531,11 +531,11 @@
                                     (not (null? (rdf:select-statements m submodel-uri "a"
                                                                        (rdf:make-quaestor-resource "PersistentModel")))))
                                (if persistence-factory
-                                   (let ((persistent-model (persistence-factory submodel-uri)))
+                                   (let ((persistent-model (persistence-factory m)))
                                      (chatter "Created persistent submodel with URI ~a" submodel-uri)
                                      (kb 'add-abox! submodel-name persistent-model)
                                      (kb 'set-metadata! submodel-name m)
-                                     (list '|SC_NO_CONTENT|))
+                                     '(|SC_NO_CONTENT|))
                                    (no-can-do request '|SC_NOT_IMPLEMENTED| "No persistence configured in Quaestor")))
                               (metadata?
                                (kb 'set-metadata! submodel-name m)

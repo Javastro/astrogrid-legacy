@@ -397,45 +397,36 @@
             (rdf:create-persistent-model-factory
              (turtle->model (format #f "[] <~a> \"~a\"."
                                     (rdf:make-quaestor-resource "persistenceDirectory")
-                                    (->string persistence-dir)))))
-;;            (persistence-metadata
-;;             (turtle->model (format #f "@prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
-;; @base <http://example.org/>.
-;; <persistent> quaestor:XXXpersistenceDirectory \"~a\";
-;;   quaestor:persistentSubmodel <persistent/p1>, <persistent/p2>.
-;; " (->string persistence-dir))))
-           )
+                                    (->string persistence-dir))))))
       (define-generic-java-methods create-resource create-property add-literal get-string close)
       (dynamic-wind
           (lambda () (chatter "Test persistence directory ~s" persistence-dir))
           (lambda ()
-            (let ((m (persistence-factory "http://example.org/persistent/p1")))
-              (add-literal m
-                           (create-resource m (->jstring "http://example.org/persistent/p1"))
-                           (create-property m (->jstring "http://purl.org/dc/elements/1.1/") (->jstring "description"))
-                           (->jstring "A persistent model"))
-              (close m))
-            ;; now open a different instance of the same model,
-            ;; which should have this information already in it
-            (let ((m2 (persistence-factory "http://example.org/persistent/p1")))
-              (add-literal m2
-                           (create-resource m2 (->jstring "http://example.org/persistent/p1"))
-                           (create-property m2 (->jstring "http://purl.org/dc/elements/1.1/") (->jstring "description"))
-                           (->jstring "Another persistent model"))
-              (expect persistent-persistence
-                      '("A persistent model" "Another persistent model")
-                      (map (lambda (node) (->string (get-string node)))
-                           (rdf:select-statements m2
-                                                  "http://example.org/persistent/p1"
-                                                  "http://purl.org/dc/elements/1.1/description"
-                                                  #f)))
-              (close m2)
-;;               (expect persistent-persistence
-;;                       "A persistent model^^http://www.w3.org/2001/XMLSchema#string"
-;;                       (rdf:select-object/string m2
-;;                                                 "http://example.org/persistent/p1"
-;;                                                 "http://purl.org/dc/elements/1.1/description"))
-              ))
+            (let* ((p1-model-name "http://example.org/persistent/p1")
+                   (p1-model (rdf:ingest-from-string/turtle (format #f "<~a> a <~a>."
+                                                                    p1-model-name
+                                                                    (rdf:make-quaestor-resource "PersistentModel")))))
+              (let ((m (persistence-factory p1-model)))
+                (add-literal m
+                             (create-resource m (->jstring p1-model-name))
+                             (create-property m (->jstring "http://purl.org/dc/elements/1.1/") (->jstring "description"))
+                             (->jstring "A persistent model"))
+                (close m))
+              ;; now open a different instance of the same model,
+              ;; which should have this information already in it
+              (let ((m2 (persistence-factory p1-model)))
+                (add-literal m2
+                             (create-resource m2 (->jstring p1-model-name))
+                             (create-property m2 (->jstring "http://purl.org/dc/elements/1.1/") (->jstring "description"))
+                             (->jstring "Another persistent model"))
+                (expect persistent-persistence
+                        '("A persistent model" "Another persistent model")
+                        (map (lambda (node) (->string (get-string node)))
+                             (rdf:select-statements m2
+                                                    p1-model-name
+                                                    "http://purl.org/dc/elements/1.1/description"
+                                                    #f)))
+                (close m2))))
           (lambda ()
             (delete-file-or-directory-tree persistence-dir))))
     (format #t "TDBFactory not found -- persistence tests skipped~%"))
