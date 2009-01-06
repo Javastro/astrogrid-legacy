@@ -572,3 +572,34 @@
                 '("(urn:example#x http://purl.org/dc/elements/1.1/title 'Title3')")
                 (print-model-statements model2)))))
   )
+
+
+;; Other functions
+(let ((dummy-model (turtle->model "<http://nxg.me.uk/norman/> a <urn:example#Person>.")))
+  (define-java-classes <java.io.file> <com.hp.hpl.jena.rdf.model.resource>)
+  (define-generic-java-methods create-resource create-property create-literal to-string
+    get-absolute-file)
+  (let ((this-file (get-absolute-file (java-new <java.io.file> (->jstring "jena.scm")))))
+    (expect mappings-to-uri
+          `("urn:example#foo1"
+            ,(string-append "file:" (->string (to-string this-file)))
+            "urn:example#foo2"
+            "urn:example#property"
+            #f
+            "urn:example#foo3"
+            "urn:example#foo4")
+          (map (lambda (u)
+                 (and (is-java-type? u <uri>)
+                      (->string (to-string u))))
+               (map rdf:->uri
+                    (list (java-new <uri> (->jstring "urn:example#foo1"))
+                          this-file
+                          (create-resource dummy-model (->jstring "urn:example#foo2"))
+                          (create-property dummy-model
+                                           (->jstring "urn:example#")
+                                           (->jstring "property"))
+                          (create-literal dummy-model
+                                          (->jstring "wibble")
+                                          (->jboolean #f))
+                          (->jstring "urn:example#foo3")
+                          "urn:example#foo4"))))))
