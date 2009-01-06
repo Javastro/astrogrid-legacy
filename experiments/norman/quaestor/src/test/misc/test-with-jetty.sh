@@ -26,8 +26,6 @@ WORK=`mktemp -d -t jetty` || exit 1
 echo "Work directory $WORK, jarfile=$jarfile, jarname=$jarname"
 
 cd $WORK
-#unzip $zipfile
-#sh $zipname/quaestor-standalone.sh --port=$PORT >jetty.log 2>&1 &
 java -jar $jarfile --port=$PORT >jetty.log 2>&1 &
 jettypid=$!
 
@@ -46,7 +44,7 @@ while ! curl $URL >page.html 2>page.stderr; do
 done
 
 if test $jetty_status -eq 0; then
-    echo "Vroom..."
+    echo "Showtime..."
     ant -buildfile $buildfile -Dquaestor.url=$URL protocol-tests
     ant_status=$?
 else
@@ -55,7 +53,7 @@ else
 fi
 
 if test $ant_status -eq 0; then
-    echo "tidying up..."
+    echo "Killing server and tidying up..."
     kill $jettypid
     rm -Rf $WORK
     echo "Done!"
