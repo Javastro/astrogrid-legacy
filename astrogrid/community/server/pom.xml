@@ -202,7 +202,7 @@
       <version>1.2</version>
     </dependency>
     <dependency>
-      <groupId>castor</groupId>
+      <groupId>org.codehaus.castor</groupId>
       <artifactId>castor</artifactId>
       <version>1.2</version>
     </dependency>
