@@ -2,10 +2,6 @@ package org.astrogrid.community.server.ca;
 
 import junit.framework.*;
 import java.io.File;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 /**
  * JUnit tests for org.astrogrid.community.server.ca.CertificateAuthority.
@@ -13,26 +9,6 @@ import java.io.OutputStream;
  * @author Guy Rixon
  */
 public class CertificateAuthorityTest extends TestCase {
-  
-  public CertificateAuthorityTest(String testName) {
-    super(testName);
-  }
-
-  protected void setUp() throws Exception {
-  }
-
-  protected void tearDown() throws Exception {
-  }
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite(CertificateAuthorityTest.class);
-    
-    return suite;
-  }
-
-  public void testCreateCa() throws Exception {
-  }
-  
   
   /**
    * Test of generateKeyPair method, of class ca.CertificateAuthority.

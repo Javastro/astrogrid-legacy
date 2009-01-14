@@ -8,11 +8,10 @@ import org.apache.commons.logging.LogFactory ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunityPolicyException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
-import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.community.common.ivorn.CommunityIvornParser;
 import org.astrogrid.community.common.policy.data.AccountData;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.store.Ivorn;
 
 /**
@@ -30,12 +29,12 @@ public class AccountManagerImplTestCase extends TestCase {
      * Creates a new AccountManagerImpl to test.
      *
      */
+    @Override
     public void setUp() throws Exception {
       URL u = this.getClass().getResource("/test-database-001.xml");
       this.config = new DatabaseConfiguration("test-database-001", u);
       this.config.resetDatabaseTables();
-      SimpleConfig.getSingleton().setProperty(AccountManagerImpl.DEFAULT_VOSPACE_PROPERTY,
-                                              "ivo://foo/bar");
+      new CommunityConfiguration().setVoSpaceIvorn("ivo://foo/bar");
     }
     
     /**
@@ -229,8 +228,7 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testGetValid()") ;
         
-        SimpleConfig.getSingleton().setProperty(CommunityIvornParser.LOCAL_COMMUNITY_PROPERTY,
-                                                "org.astrogrid.local.community/community");
+        new CommunityConfiguration().setPublishingAuthority("org.astrogrid.local.community/community");
         
         AccountManagerImpl sut = new AccountManagerImpl(this.config);
         sut.useMockNodeDelegate();

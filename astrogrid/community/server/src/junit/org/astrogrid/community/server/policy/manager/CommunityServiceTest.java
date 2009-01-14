@@ -2,21 +2,11 @@ package org.astrogrid.community.server.policy.manager ;
 
 import java.net.URL;
 import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
-
+import org.apache.commons.logging.LogFactory;
 import junit.framework.TestCase ;
-
-import java.io.IOException ;
-
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.DatabaseNotFoundException ;
 import org.exolab.castor.jdo.PersistenceException ;
-
-import org.exolab.castor.mapping.MappingException ;
-
-import org.astrogrid.community.common.service.CommunityService ;
-import org.astrogrid.community.common.service.data.ServiceStatusData ;
-
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
 
 /**

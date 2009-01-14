@@ -9,7 +9,7 @@ import java.io.Reader;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.DatabaseNotFoundException;
 import org.exolab.castor.jdo.JDOManager;
@@ -48,11 +48,6 @@ import org.exolab.castor.mapping.MappingException;
 public class DatabaseConfiguration {
   
   private static Log log = LogFactory.getLog(DatabaseConfiguration.class);
-    
-  /**
-   * The configuration key leading to the database-configuration.
-   */
-  public final static String DB_CONFIG_PROPERTY = "org.astrogrid.community.dbconfigurl";
  
   /**
    * The name of the default script-file for creating the database schema.
@@ -63,18 +58,15 @@ public class DatabaseConfiguration {
 
   /**
    * Constucts a DataBaseConfiguration with the database configuration
-   * named in the general configuration. I.e., the property named
-   * {@link #DB_CONFIG_PROPERTY} in the general configuration must contain
-   * the URL from which the database-configuration is read. The database
-   * configuration must, in turn, contain detailed of the database with the
-   * name given as a method argument.
+   * named in the general configuration. The database configuration must,
+   * in turn, contain detailed of the database with the name given as a method
+   * argument.
    *
    * @param name The name of the database.
-   * @see #DB_CONFIG_PROPERTY
    */
   public DatabaseConfiguration(String name) throws IOException, MappingException {
     this(name,
-         SimpleConfig.getSingleton().getUrl(DB_CONFIG_PROPERTY));
+         new CommunityConfiguration().getDatabaseConfigurationUrl());
   }
   
   /**

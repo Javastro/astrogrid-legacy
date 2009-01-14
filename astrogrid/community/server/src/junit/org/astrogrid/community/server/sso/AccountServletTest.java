@@ -8,37 +8,10 @@
 package org.astrogrid.community.server.sso;
 
 import java.io.StringWriter;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import junit.framework.*;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.security.AccessControlException;
-import java.security.GeneralSecurityException;
-import java.security.PublicKey;
-import java.security.Security;
-import java.security.cert.CertPath;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.common.ivorn.CommunityIvornParser;
-import org.astrogrid.community.common.policy.data.AccountData;
-import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
-import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
-import org.astrogrid.community.server.sso.CredentialStore;
-import org.astrogrid.config.SimpleConfig;
-import org.bouncycastle.openssl.PEMReader;
+import junit.framework.TestCase;
 import org.bouncycastle.openssl.PEMWriter;
 import org.mortbay.jetty.testing.HttpTester;
 import org.mortbay.jetty.testing.ServletTester;
@@ -53,6 +26,7 @@ public class AccountServletTest extends TestCase {
   
   private ServletTester tester;
 
+  @Override
   protected void setUp() throws Exception {
     PondLifeDb pond = new PondLifeDb();
     pond.initialize();
@@ -61,7 +35,7 @@ public class AccountServletTest extends TestCase {
     // The servlet is bound to the path /community/accounts/*.
     tester = new ServletTester();
     tester.setContextPath("/community");
-    tester.addServlet(AccountServlet.class, "/accounts/*");;
+    tester.addServlet(AccountServlet.class, "/accounts/*");
     tester.start();
   }
   

@@ -1,15 +1,12 @@
 package org.astrogrid.community.server.database.configuration;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.jdo.Database;
-import org.exolab.castor.jdo.DatabaseNotFoundException;
 import org.exolab.castor.jdo.OQLQuery;
-import org.exolab.castor.mapping.MappingException;
 
 /**
  * Test cases for our DatabaseConfiguration.
@@ -26,7 +23,7 @@ public class DatabaseConfigurationTest extends TestCase {
     log.debug("DatabaseConfigurationTest:testCreateUnknownConfig()") ;
     try {
       URL u = new URL("file:/missing.xml");
-      DatabaseConfiguration config = new DatabaseConfiguration("unknown-database", u);
+      new DatabaseConfiguration("unknown-database", u);
       fail("FAIL : Should have thrown an exception") ;
     }
     catch (IOException ouch) {

@@ -1,13 +1,12 @@
 package org.astrogrid.community.server.policy.manager ;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector ;
 import java.util.Collection ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.community.common.exception.CommunityPolicyException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
@@ -15,6 +14,7 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.ivorn.CommunityIvornParser;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.common.policy.manager.AccountManager;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
 import org.astrogrid.community.server.service.CommunityServiceImpl;
 import org.astrogrid.filemanager.common.NodeIvorn;
@@ -44,12 +44,6 @@ public class AccountManagerImpl
      *
      */
     private static Log log = LogFactory.getLog(AccountManagerImpl.class);
-
-    /**
-     * Our AstroGrid configuration.
-     *
-     */
-    protected static Config config = SimpleConfig.getSingleton() ;
 
     protected boolean useMockNodeDelegate = false;
 
@@ -582,7 +576,8 @@ public class AccountManagerImpl
    */
   public Ivorn getDefaultVoSpace() throws CommunityServiceException {
     try {
-      return new Ivorn((String)config.getProperty(DEFAULT_VOSPACE_PROPERTY));
+      URI u = new CommunityConfiguration().getVoSpaceIvorn();
+      return new Ivorn(u.toString());
     }
     catch (PropertyNotFoundException ouch) {
       throw new CommunityServiceException("Default VOSpace is not configured");

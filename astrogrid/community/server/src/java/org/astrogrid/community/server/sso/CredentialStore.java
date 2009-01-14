@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
 import org.astrogrid.community.server.security.data.PasswordData;
 import org.astrogrid.community.server.service.CommunityServiceImpl;
-import org.astrogrid.config.SimpleConfig;
+//import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.security.rfc3820.ProxyCertificateFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
@@ -40,10 +41,12 @@ import org.exolab.castor.jdo.ObjectNotFoundException;
 public class CredentialStore extends CommunityServiceImpl {
   static private Log log = LogFactory.getLog(CredentialStore.class);
   
-  private String storeLocation;
+  private File storeLocation;
   
   private ProxyCertificateFactory proxyFactory;
   private CertificateFactory certificateFactory;
+
+  private String publishingAuthority;
   
   /**
    * Constructs a CredentialStore with the dfault, configured user-database and
@@ -80,10 +83,15 @@ public class CredentialStore extends CommunityServiceImpl {
     this.proxyFactory = new ProxyCertificateFactory();
     this.certificateFactory = CertificateFactory.getInstance("X509");
     //this.securityService = new SecurityServiceImpl();
+
+    CommunityConfiguration c = new CommunityConfiguration();
     
     // The location of the credential store is set in the general configuration.
-    this.storeLocation =
-        SimpleConfig.getSingleton().getString("org.astrogrid.community.myproxy");
+    this.storeLocation = c.getCredentialDirectory();
+
+    // The pblishing authority, used to construct database keys, is set
+    // in the general configuration.
+    this.publishingAuthority = c.getPublishingAuthority();
   }
   
   /**
@@ -134,10 +142,11 @@ public class CredentialStore extends CommunityServiceImpl {
       throws AccessControlException {
     
     // Find the credentials on disc.
-    File file = new File(this.storeLocation + "/" + userName + "/key.pem");
+    File f1 = new File(this.storeLocation, userName);
+    File f2 = new File(f1, "key.pem");
     FileInputStream fis = null;
     try {
-      fis = new FileInputStream(file);
+      fis = new FileInputStream(f2);
     }
     catch (FileNotFoundException e) {
       log.info(e);
@@ -165,10 +174,11 @@ public class CredentialStore extends CommunityServiceImpl {
       throws AccessControlException {
     
     // Find the credentials on disc.
-    File file = new File(this.storeLocation + "/" + userName + "/certificate.pem");
+    File f1 = new File(this.storeLocation, userName);
+    File f2 = new File(f1, "certificate.pem");
     FileInputStream fis = null;
     try {
-      fis = new FileInputStream(file);
+      fis = new FileInputStream(f2);
     }
     catch (FileNotFoundException e) {
       log.info(userName + " has no certificate chain stored in this community");
@@ -358,10 +368,11 @@ public class CredentialStore extends CommunityServiceImpl {
                                 String newPassword) throws AccessControlException {
     
     // Find the key on disc.
-    String keyFileName = this.storeLocation + "/" + userName + "/key.pem";
+    File f1 = new File(this.storeLocation, userName);
+    File f2 = new File(f1, "key.pem");
     FileInputStream fis = null;
     try {
-      fis = new FileInputStream(keyFileName);
+      fis = new FileInputStream(f2);
     }
     catch (FileNotFoundException e) {
       log.info(e);
@@ -382,7 +393,7 @@ public class CredentialStore extends CommunityServiceImpl {
     
     // Write out the key, protecting it with the new password.
     try {
-      FileWriter fos = new FileWriter(keyFileName);
+      FileWriter fos = new FileWriter(f2);
       PEMWriter pw = new PEMWriter(fos);
       pw.writeObject(keys.getPrivate(), "DESede", newPassword.toCharArray(), new SecureRandom());
       pw.close();
@@ -397,11 +408,7 @@ public class CredentialStore extends CommunityServiceImpl {
    * configured community name.
    */
   protected String primaryKey(String userName) {
-    String community = 
-        SimpleConfig.getSingleton().getString("org.astrogrid.community.ident");
-    int slash = community.indexOf("/");
-    String authority = (slash == -1)? community : community.substring(0, slash);
-    return "ivo://" + authority + "/" + userName;
+    return "ivo://" + this.publishingAuthority + "/" + userName;
   }
   
   /**

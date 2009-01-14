@@ -2,8 +2,8 @@ package org.astrogrid.community.server.backup;
 
 import java.io.File;
 import junit.framework.TestCase;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.sso.PondLifeDb;
-import org.astrogrid.config.SimpleConfig;
 import org.mortbay.jetty.testing.HttpTester;
 import org.mortbay.jetty.testing.ServletTester;
 
@@ -15,14 +15,14 @@ import org.mortbay.jetty.testing.ServletTester;
 public class BackUpServletTest extends TestCase {
   
   private ServletTester tester;
-  
+
+  @Override
   protected void setUp() throws Exception {
     PondLifeDb pond = new PondLifeDb();
     pond.initialize();
     
     File here = new File(".");
-    SimpleConfig.getSingleton().setProperty("org.astrogrid.community.myproxy",
-                                            here.getCanonicalPath());
+    new CommunityConfiguration().setCredentialDirectory(here);
     
     // Start the embedded Jetty server with the SUT in its context.
     // The servlet is bound to the path /community/accounts/*.

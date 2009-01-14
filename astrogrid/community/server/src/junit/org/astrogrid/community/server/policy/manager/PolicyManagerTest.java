@@ -4,8 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.common.policy.manager.PolicyManager;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * Test cases for our PolicyManager.
@@ -26,12 +26,11 @@ public class PolicyManagerTest
      */
     private PolicyManager manager = null ;
     
-    
+    @Override
     public void setUp() throws Exception {
-      SimpleConfig.getSingleton().setProperty("org.astrogrid.community.default.vospace",
-                                              "ivo://foo.bar/vospace");
-      SimpleConfig.getSingleton().setProperty("org.astrogrid.community.dbconfigurl",
-                                              this.getClass().getResource("/test-database-001.xml"));
+      CommunityConfiguration c = new CommunityConfiguration();
+      c.setVoSpaceIvorn("ivo://foo.bar/vospace");
+      c.setDatabaseConfigurationUrl(this.getClass().getResource("/test-database-001.xml"));
     }
 
     /**

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
 import org.astrogrid.config.SimpleConfig;
 import org.exolab.castor.jdo.DatabaseNotFoundException;
@@ -28,6 +29,8 @@ public class PondLifeDb {
                                   IOException, 
                                   DatabaseNotFoundException, 
                                   PersistenceException {
+
+    CommunityConfiguration config = new CommunityConfiguration();
     
     // Specify the community identity. Other software will use this to
     // generate the database keys; i.e. user frog is keyed in the database
@@ -43,7 +46,7 @@ public class PondLifeDb {
     copyResourceToFile("/account-servlet-test.xml", ".", "account-servlet-test.xml");
     File f1 = new File(".", "account-servlet-test.xml");
     URL u2 = f1.toURL();
-    SimpleConfig.getSingleton().setProperty(DatabaseConfiguration.DB_CONFIG_PROPERTY, u2.toExternalForm());
+    config.setDatabaseConfigurationUrl(u2);
     copyResourceToFile("/astrogrid-community-mapping.xml", ".", "astrogrid-community-mapping.xml");
     
     // Initialize the database with the account frog.

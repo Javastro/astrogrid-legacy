@@ -3,9 +3,7 @@ package org.astrogrid.community.server.backup;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -18,7 +16,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.xml.sax.InputSource;
 
 /**
@@ -37,6 +35,7 @@ public class BackUpServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
   throws ServletException, IOException {
     response.setContentType("application/zip");
@@ -59,9 +58,7 @@ public class BackUpServlet extends HttpServlet {
   protected void zipUserCredentials(ZipOutputStream zip) throws IOException {
     assert zip != null;
     log.info("Zipping up the user credentials...");
-    String credentialsDirectoryName = 
-        SimpleConfig.getSingleton().getString("org.astrogrid.community.myproxy");
-    File credentialsDirectory = new File(credentialsDirectoryName);
+    File credentialsDirectory = new CommunityConfiguration().getCredentialDirectory();
     copyDirectoryToZip(zip, credentialsDirectory);
   }
   
@@ -72,8 +69,7 @@ public class BackUpServlet extends HttpServlet {
    */
   protected void zipDatabase(ZipOutputStream zip) throws IOException {
     assert zip != null;
-    URL dbConfigurationUrl =
-        SimpleConfig.getSingleton().getUrl("org.astrogrid.community.dbconfigurl");
+    URL dbConfigurationUrl = new CommunityConfiguration().getDatabaseConfigurationUrl();
     log.info("Zipping up the database defined by " + dbConfigurationUrl);
     InputSource is = new InputSource(dbConfigurationUrl.openStream());
     XPath xp = XPathFactory.newInstance().newXPath();

@@ -3,39 +3,15 @@ package org.astrogrid.community.server.sso;
 import java.io.OutputStream;
 import java.net.URL;
 import java.security.KeyPairGenerator;
-import java.security.Provider;
-import java.security.spec.KeySpec;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.security.AccessControlException;
-import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.security.cert.CertPath;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import junit.framework.TestCase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
-import org.astrogrid.config.SimpleConfig;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * JUnit tests for CredentialStore.
@@ -51,15 +27,14 @@ public class CredentialStoreTest extends TestCase {
   /**
    * Emplaces test credentials for a hypothetical user called frog.
    */
+  @Override
   public void setUp() throws Exception {
-    SimpleConfig.getSingleton().setProperty("org.astrogrid.community.ident",
-                                            "pond/community");
+    CommunityConfiguration config = new CommunityConfiguration();
+
+    config.setPublishingAuthority("pond/community");
     
     File testCredentialStore = new File(".");
-    SimpleConfig.getSingleton().setProperty(
-        "org.astrogrid.community.myproxy",
-        testCredentialStore.getAbsolutePath()
-    );
+    config.setCredentialDirectory(testCredentialStore);
     this.testUserCredentialDir = new File(testCredentialStore, "frog");
     this.testUserCredentialDir.mkdir();
     assertTrue(this.testUserCredentialDir.isDirectory());
