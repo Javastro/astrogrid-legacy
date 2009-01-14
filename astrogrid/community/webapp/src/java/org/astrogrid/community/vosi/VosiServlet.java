@@ -1,7 +1,6 @@
 package org.astrogrid.community.vosi;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
