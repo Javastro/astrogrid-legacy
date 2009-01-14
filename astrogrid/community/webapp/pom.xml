@@ -5,7 +5,7 @@
   <artifactId>astrogrid-community</artifactId>
   <packaging>war</packaging>
   <name>Community Web Application</name>
-  <version>2008.2.01</version>
+  <version>2009.1.a01</version>
 
   <description>Community is a AstroGrid web-application to manage user accounts.</description>
   <inceptionYear>2003</inceptionYear>
@@ -135,12 +135,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-server</artifactId>
-      <version>2008.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-security</artifactId>
-      <version>2008.2.03</version>
+      <version>2009.1.a01</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -166,9 +161,10 @@
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.4</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>junitee</groupId>
+      <groupId>net.sourceforge.junitee</groupId>
       <artifactId>junitee</artifactId>
       <version>1.11</version>
     </dependency>
