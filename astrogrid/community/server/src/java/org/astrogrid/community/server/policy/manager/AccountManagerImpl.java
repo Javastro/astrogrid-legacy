@@ -48,11 +48,18 @@ public class AccountManagerImpl
     protected boolean useMockNodeDelegate = false;
 
     /**
+     * The community's publishing authority. This is used to construct
+     * the database keys from the user-names.
+     */
+    protected String authority;
+
+    /**
      * Public constructor, using default database configuration.
      *
      */
     public AccountManagerImpl() {
       super();
+      this.authority = new CommunityConfiguration().getPublishingAuthority();
     }
 
     /**
@@ -60,10 +67,10 @@ public class AccountManagerImpl
      * @param config A specific DatabaseConfiguration.
      *
      */
-    public AccountManagerImpl(DatabaseConfiguration config)
-        {
-        super(config) ;
-        }
+    public AccountManagerImpl(DatabaseConfiguration config) {
+      super(config);
+      this.authority = new CommunityConfiguration().getPublishingAuthority();
+    }
 
     /**
      * Add a new Account, given the Account ident.
@@ -139,6 +146,22 @@ public class AccountManagerImpl
       }
             
       return externalAccount(account);
+    }
+
+    /**
+     * Obtains account details for a given user-name.
+     *
+     * @param userName The userName, unqualified by the community IVORN.
+     * @return The account details.
+     */
+    public AccountData getAccountByUserName(String userName) throws CommunityServiceException,
+                                                                    CommunityIdentifierException,
+                                                                    CommunityPolicyException {
+      StringBuilder account = new StringBuilder("ivo://");
+      account.append(authority);
+      account.append('/');
+      account.append(userName);
+      return getAccount(account.toString());
     }
 
     /**
