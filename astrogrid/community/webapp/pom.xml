@@ -119,17 +119,7 @@
   <dependencies>
     <dependency>
       <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-common</artifactId>
-      <version>2007.2.01</version>
-    </dependency>
-    <dependency>
-      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-common</artifactId>
-      <version>2008.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-community-client</artifactId>
       <version>2008.0</version>
     </dependency>
     <dependency>
@@ -141,11 +131,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
-    </dependency>
-    <dependency>
-      <groupId>xmlunit</groupId>
-      <artifactId>xmlunit</artifactId>
-      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -168,8 +153,6 @@
       <artifactId>junitee</artifactId>
       <version>1.11</version>
     </dependency>
-    
-    
   </dependencies>
   <reporting>
     <plugins>
