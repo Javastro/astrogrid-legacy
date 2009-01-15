@@ -6,10 +6,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.community.common.policy.data.AccountData;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
 import org.astrogrid.community.server.sso.CredentialStore;
-import org.astrogrid.config.SimpleConfig;
-
 /**
  * A servlet to update or delete user-accounts.
  *
@@ -21,6 +20,7 @@ public class AccountAdminServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
+  @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
   throws ServletException, IOException {
     String userName = request.getParameter("userName");
@@ -127,13 +127,8 @@ public class AccountAdminServlet extends HttpServlet {
    * If this fails, most of the fields of the result will be null.
    */
   protected AccountData getBasicAccount(String userName) {
-    String community = 
-        SimpleConfig.getSingleton().getString("org.astrogrid.community.ident");
-    int slash = community.indexOf('/');
-    if (slash != -1) {
-      community = community.substring(0, slash);
-    }
-    String accountIvorn = "ivo://" + community + "/" + userName;
+    String authority = new CommunityConfiguration().getPublishingAuthority();
+    String accountIvorn = "ivo://" + authority + "/" + userName;
     
     AccountManagerImpl ami = new AccountManagerImpl();
     try {

@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.community.common.policy.data.AccountData;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
 import org.astrogrid.community.server.sso.CredentialStore;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * A servlet to add a basic account to the user database.
@@ -19,6 +19,7 @@ public class NewAccountServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
+  @Override
   protected void doPost(HttpServletRequest request, 
                         HttpServletResponse response) throws IOException {
     String userName = request.getParameter("userName");
@@ -33,13 +34,8 @@ public class NewAccountServlet extends HttpServlet {
     String homeSpace   = request.getParameter("homeSpace");
     String password    = request.getParameter("password");
     
-    String community = 
-        SimpleConfig.getSingleton().getString("org.astrogrid.community.ident");
-    int slash = community.indexOf('/');
-    if (slash != -1) {
-      community = community.substring(0, slash);
-    }
-    String accountIvorn = "ivo://" + community + "/" + userName;
+    String authority = new CommunityConfiguration().getPublishingAuthority();
+    String accountIvorn = "ivo://" + authority + "/" + userName;
     AccountData ad = new AccountData(accountIvorn);
     ad.setDescription(description);
     ad.setDisplayName(commonName);

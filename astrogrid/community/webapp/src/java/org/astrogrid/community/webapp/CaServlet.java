@@ -6,10 +6,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.ca.CertificateAuthority;
 import org.astrogrid.community.server.ca.UserFiles;
 import org.astrogrid.community.server.sso.CredentialStore;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * A servlet to operate the certificate authority (CA).
@@ -99,11 +99,12 @@ public class CaServlet extends HttpServlet {
       response.sendError(response.SC_BAD_REQUEST, "No passphrase was given.");
       return;
     }
+
+    CommunityConfiguration config = new CommunityConfiguration();
     
-    String keyFile = null;
+    File  keyFile = null;
     try {
-      keyFile = 
-          SimpleConfig.getSingleton().getString("org.astrogrid.community.cakey");
+      keyFile = config.getCaKeyFile();
     }
     catch (Exception e) {
       response.sendError(response.SC_INTERNAL_SERVER_ERROR, 
@@ -111,10 +112,9 @@ public class CaServlet extends HttpServlet {
       return;
     }
     
-    String certificateFile = null;
+    File certificateFile = null;
     try {
-      certificateFile = 
-          SimpleConfig.getSingleton().getString("org.astrogrid.community.cacert");
+      certificateFile = config.getCaCertificateFile();
     }
     catch (Exception e) {
       response.sendError(response.SC_INTERNAL_SERVER_ERROR, 
@@ -122,11 +122,9 @@ public class CaServlet extends HttpServlet {
       return;
     }
  
-    String serialFile = null;
+    File serialFile = null;
     try {
-      
-      serialFile = 
-          SimpleConfig.getSingleton().getString("org.astrogrid.community.caserial");
+      serialFile = config.getCaSerialNumberFile();
     }
     catch (Exception e) {
       response.sendError(response.SC_INTERNAL_SERVER_ERROR, 
@@ -138,9 +136,9 @@ public class CaServlet extends HttpServlet {
     try {
       CertificateAuthority ca = 
           new CertificateAuthority(passphrase,
-                                   new File(keyFile),
-                                   new File(certificateFile),
-                                   new File(serialFile),
+                                   keyFile,
+                                   certificateFile,
+                                   serialFile,
                                    new File("."));
       request.getSession().setAttribute(CA_ATTRIBUTE, ca);
     }
@@ -171,13 +169,14 @@ public class CaServlet extends HttpServlet {
     // Its configuration key refers to MyProxy, even though the community
     // may not be providing a Myproxy service; the community REST service
     // for SSO uses the same directory lay-out.
-    String credentialDirectoryName =
-        SimpleConfig.getSingleton().getString("org.astrogrid.community.myproxy", null);
-    if (credentialDirectoryName == null) {
+    File credentialDirectory = null;
+    try {
+      credentialDirectory = new CommunityConfiguration().getCredentialDirectory();
+    }
+    catch (Exception e) {
       response.sendError(response.SC_INTERNAL_SERVER_ERROR,
                          "The directory for writing user credentials is not configured.");
     }
-    File credentialDirectory = new File(credentialDirectoryName);
     if (!credentialDirectory.exists()) {
       response.sendError(response.SC_INTERNAL_SERVER_ERROR,
                          "The configured directory for writing user credentials does not exist.");

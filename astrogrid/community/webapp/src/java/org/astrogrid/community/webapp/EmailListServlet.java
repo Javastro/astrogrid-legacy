@@ -6,9 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * A servlet to generate an email-address list of all members of the community.
@@ -30,50 +30,36 @@ public class EmailListServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
+  @Override
   protected void doGet(HttpServletRequest request, 
                        HttpServletResponse response) throws ServletException, 
                                                             IOException {
     response.setContentType("text/plain");
     PrintWriter out = response.getWriter();
-    
-    String[] userNames = new AccountManagerImpl().getUserNames();
+
+    // Iterate over user-names, print the email addresses where available.
+    // Names for which the account records are unavailable are logged and
+    // skipped; the client does not learn of these.
+    AccountManagerImpl ami = new AccountManagerImpl();
+    String[] userNames = ami.getUserNames();
     for(int i = 0;i < userNames.length; i++) {
-      AccountData account = getBasicAccount(userNames[i]);
-      String email = account.getEmailAddress();
-      String name = account.getDisplayName();
-      if (email != null && email.trim().length() > 0) {
-        if (name != null && name.trim().length() > 0) {
-          out.println(name + " <" + email + ">");
+      try {
+        AccountData account = ami.getAccountByUserName(userNames[i]);
+        String email = account.getEmailAddress();
+        String name = account.getDisplayName();
+        if (email != null && email.trim().length() > 0) {
+          if (name != null && name.trim().length() > 0) {
+            out.println(name + " <" + email + ">");
+          }
+          else {
+            out.println(email);
+          }
         }
-        else {
-          out.println(email);
-        }
+      } catch (Exception ex) {
+        LogFactory.getLog(EmailListServlet.class.getName()).warn(ex);
       }
+      
     }
   }
   
-  /**
-   * Raises the basic account data from the community database.
-   * If this fails, most of the fields of the result will be null.
-   *
-   * @param userName The userName, unqualified (fred rather than ivo://fred@foo).
-   * @return The account object (never null; empty on DB error).
-   */
-  protected AccountData getBasicAccount(String userName) {
-    String community = 
-        SimpleConfig.getSingleton().getString("org.astrogrid.community.ident");
-    int slash = community.indexOf('/');
-    if (slash != -1) {
-      community = community.substring(0, slash);
-    }
-    String accountIvorn = "ivo://" + community + "/" + userName;
-    
-    AccountManagerImpl ami = new AccountManagerImpl();
-    try {
-      return ami.getAccount(accountIvorn);
-    }
-    catch (Exception e) {
-      return new AccountData(accountIvorn);
-    }
-  }
 }

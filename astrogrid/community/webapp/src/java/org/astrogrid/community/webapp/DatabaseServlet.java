@@ -1,19 +1,14 @@
 package org.astrogrid.community.webapp;
 
-import java.io.*;
-import java.net.*;
-
+import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
-import org.exolab.castor.jdo.DatabaseNotFoundException;
-import org.exolab.castor.jdo.PersistenceException;
-import org.exolab.castor.mapping.MappingException;
 
 /**
  * A servlet to report on the health of the community database.
+ * 
  * @author Guy Rixon
- * @version
  */
 public class DatabaseServlet extends HttpServlet {
 
@@ -23,6 +18,7 @@ public class DatabaseServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     response.setContentType("text/plain");

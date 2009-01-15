@@ -3,16 +3,10 @@ package org.astrogrid.community.webapp;
 import java.util.List;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
-import org.astrogrid.community.common.exception.CommunityIdentifierException;
-import org.astrogrid.community.common.exception.CommunityPolicyException;
-import org.astrogrid.community.common.exception.CommunitySecurityException;
-import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.policy.data.AccountData;
-import org.astrogrid.community.server.ca.CertificateAuthority;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
 import org.astrogrid.community.server.sso.CredentialStore;
-import org.astrogrid.config.SimpleConfig;
-import org.bouncycastle.asn1.smime.SMIMEAttributes;
 
 /**
  * A Java bean to give acccess to account details.
@@ -45,12 +39,7 @@ public class AccountBean {
     
     // Get the authority under which the community is published.
     // This determines the account names in the database.
-    this.community = 
-        SimpleConfig.getSingleton().getString("org.astrogrid.community.ident");
-    int slash = this.community.indexOf('/');
-    if (slash != -1) {
-      this.community = this.community.substring(0, slash);
-    }
+    this.community = new CommunityConfiguration().getPublishingAuthority();
   }
   
   /**

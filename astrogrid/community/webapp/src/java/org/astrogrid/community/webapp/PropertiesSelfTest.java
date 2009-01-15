@@ -32,7 +32,8 @@ public class PropertiesSelfTest extends TestCase {
     System.out.println(vosi);
     
     // Check that it's HTTP.
-    assertEquals("http", vosi.getProtocol());
+    assertEquals("URL scheme for org.astrogrid.vosi.baseurl should be http",
+                 "http", vosi.getProtocol());
     
     // Check that something responds
     vosi.getContent();

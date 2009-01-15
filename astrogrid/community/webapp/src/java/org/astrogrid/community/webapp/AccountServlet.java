@@ -1,7 +1,6 @@
 package org.astrogrid.community.webapp;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.security.AccessControlException;
 import java.security.GeneralSecurityException;
@@ -10,8 +9,6 @@ import java.security.Security;
 import java.security.cert.CertPath;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +22,6 @@ import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
 import org.astrogrid.community.server.sso.CredentialStore;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
-import org.bouncycastle.openssl.PEMWriter;
 
 /**
  * A servlet to handle requests for account details. It implements v2 of the
