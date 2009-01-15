@@ -35,6 +35,7 @@ public class AccountManagerImplTestCase extends TestCase {
       this.config = new DatabaseConfiguration("test-database-001", u);
       this.config.resetDatabaseTables();
       new CommunityConfiguration().setVoSpaceIvorn("ivo://foo/bar");
+      new CommunityConfiguration().setPublishingAuthority("org.astrogrid.local.community/community");
     }
     
     /**
@@ -227,8 +228,6 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("") ;
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testGetValid()") ;
-        
-        new CommunityConfiguration().setPublishingAuthority("org.astrogrid.local.community/community");
         
         AccountManagerImpl sut = new AccountManagerImpl(this.config);
         sut.useMockNodeDelegate();
