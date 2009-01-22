@@ -74,7 +74,7 @@ extends TestBase
      * The direct VOSpace location to write to.
      *
      */
-    public static final String DIRECT_VOSPACE_LOCATION = "vos://org.astrogrid.test!vospace-service/kona-000/.auto" ;
+    public static final String DIRECT_VOSPACE_LOCATION = "vos://org.astrogrid.test!vospace-service-02/.auto" ;
 
     /**
      * Setup the test.

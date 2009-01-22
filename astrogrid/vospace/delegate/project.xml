@@ -437,8 +437,8 @@
                 +-->
             <includes>
                 <!--include>**/AGVOSpaceDelegateTestCase.java</include-->
-                <include>**/DSAQueryTestCase.java</include>
-                <!--include>**/*TestCase.java</include-->
+                <!--include>**/DSAQueryTestCase.java</include-->
+                <include>**/*TestCase.java</include>
 
             </includes>
             <!--+
