@@ -118,18 +118,21 @@ public class ARTask implements ProcessorTaskWorker {
 			resources = new Resource[ivorns.length];
 			for(int k = 0;k < ivorns.length;k++) {
 				Resource res = reg.getResource(new URI(ivorns[k]));
+				resources[k] = res;
+				/*
 				if(serviceType.equals("CONE") && res.getType().indexOf("Cone") != -1) {
 					logger.warn("yes cone");
 					resources[k] = res;				
 				}else if(serviceType.equals("SIAP") && res.getType().indexOf("SimpleImage") != -1) {
 					logger.warn("yes siap");
 					resources[k] = res;				
-				}else if(serviceType.equals("STAP") && res.getType().indexOf("SimmpleTimeAccess") != -1) {
-					logger.warn("yes siap");
+				}else if(serviceType.equals("STAP") && res.getType().indexOf("SimpleTimeAccess") != -1) {
+					logger.warn("yes stap");
 					resources[k] = res;				
 				}else {
 					resources[k] = null;
 				}
+				*/
 			}
 		}else {
 			logger.warn("doing a keyword search");
@@ -164,11 +167,11 @@ public class ARTask implements ProcessorTaskWorker {
 	}
 	
 	private URL getStapURL(Stap stap,Resource res, Calendar start, Calendar end) throws InvalidArgumentException, NotFoundException, ServiceException, TransformerException, java.net.MalformedURLException, TransformerConfigurationException {
-		logger.warn("getSiapURL");
+		logger.warn("getStapURL");
 		URI resURI = getResourceAccessURI(res);
 
 		logger.warn("processingstap for " + res.getId() + " and uri = " + resURI);
-		URL stapURL = stap.constructQuery(resURI,start, end);
+		URL stapURL = stap.constructQuery(resURI,start.getTime(), end.getTime());
 		logger.warn("url for stapURL to call  = " + stapURL);
 		urlMap.put(res.getId().toString(), stapURL.toString());		
 		return stapURL;
@@ -324,15 +327,15 @@ public class ARTask implements ProcessorTaskWorker {
 		    	dec = Double.parseDouble(((String)((DataThing)arg0.get("DEC")).getDataObject()).trim());
 		    if(arg0.containsKey("SIZE"))
 		    	size = Double.parseDouble(((String)((DataThing)arg0.get("SIZE")).getDataObject()).trim());
-		    if(arg0.containsKey("START")) {
-		    	start.setTime(dateFormat.parse( ((String)((DataThing)arg0.get("START")).getDataObject()).trim()   ));
+		    if(arg0.containsKey("Start")) {
+		    	start.setTime(dateFormat.parse( ((String)((DataThing)arg0.get("Start")).getDataObject()).trim()   ));
 		    }
-		    if(arg0.containsKey("END")) {
-		    	end.setTime(dateFormat.parse( ((String)((DataThing)arg0.get("END")).getDataObject()).trim()));
+		    if(arg0.containsKey("End")) {
+		    	end.setTime(dateFormat.parse( ((String)((DataThing)arg0.get("End")).getDataObject()).trim()));
 		    }
 		    
     		String saveURLS = ((String)((DataThing)arg0.get("Only URLS Needed")).getDataObject()).trim();
-    		logger.warn("ok process things ra = " + ra + " dec = " + dec + " size = " + size);
+    		logger.warn("ok process things ra = " + ra + " dec = " + dec + " size = " + size + " start = " + start.toString() + " end = " + end.toString());
     		//outputLoc = (String)((DataThing)arg0.get("OutputLocation")).getDataObject();
     		String result;
 		    for(int j = 0;j < res.length;j++) {
@@ -395,7 +398,7 @@ public class ARTask implements ProcessorTaskWorker {
 			    		    }					    		
 			    		}
 			    	}else if(name.equals("STAP")) {
-			    		if(ssap == null) {
+			    		if(stap == null) {
 			    			stap = (Stap)acr.getService(Stap.class);
 			    		}
 			    		if(saveURLS != null && saveURLS.equals("true") ) {

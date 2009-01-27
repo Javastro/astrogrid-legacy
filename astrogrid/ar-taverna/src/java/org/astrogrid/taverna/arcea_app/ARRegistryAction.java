@@ -35,7 +35,7 @@ public class ARRegistryAction implements ProcessorActionSPI
 		try {
 			ACR acr = SingletonACR.getACR();
 			RegistryGoogle reg = (RegistryGoogle)acr.getService(RegistryGoogle.class);
-			Resource []res = reg.selectResourcesXQueryFilter("Find CeaApplication To Add (Will Show on next Restart of Taverna)", true, " near(@xsi:type,'*CeaApplicationType')");
+			Resource []res = reg.selectResourcesXQueryFilter("Find CeaApplication To Add (Will Show on next Restart of Taverna)", true, " //vor:Resource[(@xsi:type &= '*CeaApplication') and ( not ( @status = 'inactive' or @status='deleted'))]");
 			
 			if(res.length > 0) {
 				String []ivorns = new String[res.length];

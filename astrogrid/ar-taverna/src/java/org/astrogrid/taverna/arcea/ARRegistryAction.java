@@ -35,7 +35,7 @@ public class ARRegistryAction implements ProcessorActionSPI
 		try {
 			ACR acr = SingletonACR.getACR();
 			RegistryGoogle reg = (RegistryGoogle)acr.getService(RegistryGoogle.class);
-			Resource []res = reg.selectResourcesXQueryFilter("Find DSA-CeaApplication", false, " cea:ApplicationDefinition/cea:Parameters/cea:ParameterDefinition/@name='Query'");
+			Resource []res = reg.selectResourcesXQueryFilter("Find DSA-CeaApplication", false, " //vor:Resource[applicationDefinition/parameters/parameterDefinition/@id='Query']");
 			if(res.length > 0) {
 				processor.setRegId(res[0].getId().toString());
 			}

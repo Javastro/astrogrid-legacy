@@ -37,13 +37,13 @@ public class ARRegistryAction implements ProcessorActionSPI
 			RegistryGoogle reg = (RegistryGoogle)acr.getService(RegistryGoogle.class);
 			Resource []res = null;
 			if(processor.getCommonName().equals("SIAP")) {
-				res = reg.selectResourcesXQueryFilter("Find SIAP Resources", true, " near(@xsi:type,'*SimpleImageAccess')");
+				res = reg.selectResourcesXQueryFilter("Find SIAP Resources", true, " //vor:Resource[((capability/@xsi:type &= '*SimpleImageAccess') or (capability/@standardID = 'ivo://ivoa.net/std/SIA' )) and ( not ( @status = 'inactive' or @status='deleted'))]");
 			}else if(processor.getCommonName().equals("CONE")) {
-				res = reg.selectResourcesXQueryFilter("Find Cone Resources", true, " near(@xsi:type,'*ConeSearch')");
+				res = reg.selectResourcesXQueryFilter("Find Cone Resources", true, "//vor:Resource[((capability/@xsi:type &= '*ConeSearch')  or (capability/@standardID = 'ivo://ivoa.net/std/ConeSearch')) and ( not ( @status = 'inactive' or @status='deleted'))]");
 			}else if(processor.getCommonName().equals("STAP")) {
-				res = reg.selectResourcesXQueryFilter("Find Stap Resources", true, " near(@xsi:type,'*SimpleTimeAccess')");
+				res = reg.selectResourcesXQueryFilter("Find Stap Resources", true, "//vor:Resource[((capability/@xsi:type &= '*SimpleTimeAccess') or  (capability/@standardID = 'ivo://org.astrogrid/std/STAP/v1.0')) and ( not ( @status = 'inactive' or @status='deleted'))]");
 			}else if(processor.getCommonName().equals("SSAP")) {
-				res = reg.selectResourcesXQueryFilter("Find Spectral Resoruces", true, " near(@xsi:type,'*SimpleSpectralAccess')");	
+				res = reg.selectResourcesXQueryFilter("Find Spectral Resoruces", true, "//vor:Resource[((capability/@xsi:type &= '*SimpleSpectralAccess') or  (capability/@standardID = 'ivo://ivoa.net/std/SSA' ) ) and ( not ( @status = 'inactive' or @status='deleted'))]");	
 			}else {
 				return;
 			}

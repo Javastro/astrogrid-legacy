@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
 
 public class MyspaceWriter {
 	
-	private static Logger logger = Logger.getLogger(MyspaceWriter.class);
+	private static Logger logger  = Logger.getLogger(MyspaceWriter.class);
 	private Object origObject;
 	private URI origParentDirecortyURI;
 	private Myspace myspace;
@@ -56,6 +56,7 @@ public class MyspaceWriter {
 	public Vector writeObject(Object resultValue, URI parentDirectoryURI, String resultName) 
 	 throws NotFoundException, InvalidArgumentException, 
      ServiceException, SecurityException, NotApplicableException, IOException {
+	  logger.warn("writeObject");
 	  processObjectToWrite(resultValue,parentDirectoryURI,resultName);
 	  Vector uriVector = new Vector();
 	  uriVector.add(savedURIs);	  
@@ -74,7 +75,6 @@ public class MyspaceWriter {
 	Object []collArray;
 	StarTable starTable;
 	TableInfo []tabInfo;
-	
 	logger.warn("Inside processObjectToWrite parentdirectoryURI = " + parentDirectoryURI.toString() + " and resultName = " + resultName); 
 	//SemanticMarkup markup = resultValue.getMetadataForObject(resultValue, false);
 	if(resultValue instanceof String) {
@@ -85,7 +85,6 @@ public class MyspaceWriter {
 			fileURI = myspace.createChildFile(parentDirectoryURI, resultName + "_" + String.valueOf(System.currentTimeMillis()));
 			logger.warn("url to copy = " + checkURL.toString() + " to URI in myspace = " + fileURI.toString());
 			myspace.copyURLToContent(checkURL, fileURI);
-			logger.warn("checking processvotables = " + processVOTables);
 			if(processVOTables) {
 				savedVOTableURIs.add(fileURI);
 				starTable = getStarTable(checkURL);
@@ -93,6 +92,7 @@ public class MyspaceWriter {
 				processVOTables = false;
 				for(int k = 0;k < tabInfo.length;k++) {
 					for(int j = 0;j < tabInfo[k].getURLS().length;j++) {
+						logger.warn("in for loop of tabInfo");
 						processObjectToWrite(tabInfo[k].getURLS()[j],parentDirectoryURI,resultName + "_" + tabInfo[k].getRowUniqueName());
 					}//for
 				}//for
@@ -108,7 +108,23 @@ public class MyspaceWriter {
 		logger.warn("its a string so write it to myspace");
 		fileURI = myspace.createChildFile(parentDirectoryURI, resultName + "_" + String.valueOf(System.currentTimeMillis()));
 		logger.warn("writing to myspace uri = " + fileURI.toString() + " contents = " + (String)resultValue);
-		myspace.write(fileURI, (String)resultValue);				
+		myspace.write(fileURI, (String)resultValue);
+		logger.warn("processvo table bool2 = " + processVOTables);
+		if(processVOTables) {
+			savedVOTableURIs.add(fileURI);
+			starTable = getStarTable((String)resultValue);
+			tabInfo = getData(starTable);
+			processVOTables = false;
+			for(int k = 0;k < tabInfo.length;k++) {
+				for(int j = 0;j < tabInfo[k].getURLS().length;j++) {
+					logger.warn("in for loop of tabInfo");
+					processObjectToWrite(tabInfo[k].getURLS()[j],parentDirectoryURI,resultName + "_" + tabInfo[k].getRowUniqueName());
+				}//for
+			}//for
+		}else {
+			logger.warn("adding to vector savedURI the uri = " + fileURI.toString());
+			savedURIs.add(fileURI.toString());
+		}		
 	}else if(resultValue instanceof URL) {
 		logger.warn("seems to be a URL");
 
@@ -237,10 +253,11 @@ public class MyspaceWriter {
     	int j = 0;
     	int []nameColSeq = new int[nameCols.length];
     	int []urlColSeq = new int[urlCols.length];    	
+
     	for(int k = 0;k < nameCols.length;k++) {
 	    	for(int i = 0;i < table.getColumnCount();i++) {
-	    		if(table.getColumnInfo(i).getUCD().equals(nameCols[k]) ||
-	    		   table.getColumnInfo(i).getName().equals(nameCols[k])) {
+	    		if((table.getColumnInfo(i).getUCD() != null && table.getColumnInfo(i).getUCD().equals(nameCols[k])) ||
+	    		   (table.getColumnInfo(i).getName() != null && table.getColumnInfo(i).getName().equals(nameCols[k]))) {
 	    			nameColSeq[j] = i;
 	    		    j++;
 	    		    i = table.getColumnCount();
@@ -250,8 +267,8 @@ public class MyspaceWriter {
     	j = 0;
     	for(int k = 0;k < urlCols.length;k++) {
 	    	for(int i = 0;i < table.getColumnCount();i++) {
-	    		if(table.getColumnInfo(i).getUCD().equals(urlCols[k]) ||
-	    		   table.getColumnInfo(i).getName().equals(urlCols[k])) {
+	    		if((table.getColumnInfo(i).getUCD() != null && table.getColumnInfo(i).getUCD().equals(urlCols[k])) ||
+	    		   (table.getColumnInfo(i).getName() != null && table.getColumnInfo(i).getName().equals(urlCols[k]))) {
 	    			urlColSeq[j] = i;
 	    		    j++;
 	    		    i = table.getColumnCount();
@@ -288,7 +305,7 @@ public class MyspaceWriter {
 	         }//while
 	     }finally {
 	         rseq.close();
-	     }//finally    	
+	     }//finally  
 	     return tableInfo;
     }
 	

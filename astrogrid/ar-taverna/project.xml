@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.8 2007/12/05 15:56:30 KevinBenson Exp $ -->
+<!-- $Id: project.xml,v 1.9 2009/01/27 12:16:29 KevinBenson Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
   <artifactId>ar-taverna</artifactId>
@@ -118,7 +118,7 @@
                     <dependency>
                            <groupId>org.astrogrid</groupId>
                            <artifactId>astrogrid-workflow-objects</artifactId>
-                           <version>2007.1wo</version>
+                           <version>2007.2wo</version>
                         <url>http://www.astrogrid.org/</url>
                 </dependency>  
                 
@@ -137,7 +137,7 @@
   <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>2007.1c</version>
+      <version>2007.2c</version>
       <url>http://www.astrogrid.org/</url>
     </dependency>  
     
@@ -189,7 +189,7 @@
       <url>http://xml.apache.org/</url>
       <properties>
 	      <dist.bundle>true</dist.bundle>
-	</properties>      
+	</properties>
     </dependency>
-  </dependencies>  
+  </dependencies>
 </project>

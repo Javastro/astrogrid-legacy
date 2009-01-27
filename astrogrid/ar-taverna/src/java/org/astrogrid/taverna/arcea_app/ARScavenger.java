@@ -99,7 +99,7 @@ public class ARScavenger extends Scavenger {
 					ceaProp.setProperty("my.cea_app.3", "ivo://org.astrogrid/HyperZ");
 					ceaProp.setProperty("my.cea_app.4", "ivo://org.astrogrid/CrossMatcher");
 					ceaProp.setProperty("my.cea_app.5", "ivo://org.astrogrid/MERLINImager");
-					ceaProp.setProperty("my.cea_app.6", "ivo://starlink.ac.uk/stilts");					
+					ceaProp.setProperty("my.cea_app.6", "ivo://uk.ac.starlink/stilts");					
 				}
 				logger.warn("ceaProp size = " + ceaProp.size());
 				ACR acr = SingletonACR.getACR();

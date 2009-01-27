@@ -77,14 +77,14 @@ public class ARTask implements ProcessorTaskWorker {
 	 */
 	public Map execute(Map arg0, IProcessorTask arg1) throws TaskExecutionException {
 		// unpackage inputs.
-		logger.warn("start execute in ARTask");
+		logger.warn("start execute in ARTask for Myspace");
 
 		//String name = processor.getName();
 		String name = processor.getCommonName();
 	    Map outputMap = new HashMap();
 	    Map resultMap;
 	    URI resURI;
-		logger.warn("Name = " + name);
+		logger.warn("NameCommon = " + name);
 		Vector savedOutput;
 		List uriVector;
 		List votableURIVector;
@@ -106,10 +106,14 @@ public class ARTask implements ProcessorTaskWorker {
 				logger.warn("urivector size = " + uriVector.size());
 				outputMap.put("Myspace URI List",DataThingFactory.bake(uriVector));				
 		    }else if(name.equals("Save_For_VOTables")) {
+		    	logger.warn("it is save for votables");
 			    mainInputObj = ((DataThing)arg0.get("Object or List")).getDataObject();		    	
-		    	Object urlList = ((DataThing)arg0.get("Get Column/UCD Values for URLS to Save in Myspace")).getDataObject();
-		    	Object nameList = ((DataThing)arg0.get("Get Column/UCD Values for Saved Myspace Names")).getDataObject();
-				MyspaceWriter mw = new MyspaceWriter(myspace,true,(String [])urlList,(String [])nameList);
+		    	List urlList = (List)((DataThing)arg0.get("Get Column/UCD Values for URLS to Save in Myspace")).getDataObject();
+		    	List nameList = (List)((DataThing)arg0.get("Get Column/UCD Values for Saved Myspace Names")).getDataObject();
+		    	logger.warn("We have all the inputs try to write4");
+				MyspaceWriter mw = new MyspaceWriter(myspace,true,
+						(String [])urlList.toArray(new String[urlList.size()]),
+						(String [])nameList.toArray(new String[nameList.size()]));
 				savedOutput = mw.writeObject(mainInputObj,new URI(myspaceDirectory),"FromTaverna");
 				uriVector = (List)savedOutput.get(0);
 				votableURIVector = (List)savedOutput.get(1);
