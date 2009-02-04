@@ -114,7 +114,7 @@ public class UpdateChecker implements Runnable {
                 protected void doFinished(final Object result) {
 					// check we've got something new.
 				    if (StringUtils.isEmpty(latestVersion)
-				            || comparator.compare(currentVersion,latestVersion) <= 0) {
+				            || comparator.compare(currentVersion,latestVersion) >= 0) {
 				        return; // nothing more.
 				    }
 				    logger.info("A new version of VODesktop is available: " + latestVersion + ", " + date + ", " + description);

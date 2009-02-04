@@ -61,6 +61,21 @@ public class VersionComparatorUnitTest extends TestCase {
                 c.compare("2008.1.rc1","2008.1") < 0); // sneaky - 2008.1 is more modern than 2008.1.rc1  
       }
     
+    /**
+     *  I've updated the VODesktop version info file:
+
+http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/vodesktopReleaseInfo.xml
+
+so that VODesktop 1.2.2 is the latest version. I now don't get a prompt to upgrade when running VODesktop 1.2.0 or 1.2.1
+
+However, running the earlier versions 2008.1, 2008.1.1, 2008.1.2 and 2008.2.rc1 _do_ give me the prompt.
+     * @throws Exception
+     */
+    public void testGarysProblem() throws Exception {
+        assertTrue(c.compare("1.2.2","1.2.1" ) > 0); // he's not seeing a prompt here
+        assertTrue(c.compare("1.2.2","1.2.0" ) > 0); // not seeing a prompt here either.     
+
+    }
     
 
     
