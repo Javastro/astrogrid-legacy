@@ -324,15 +324,15 @@ public class ARTask implements ProcessorTaskWorker {
 		    	dec = Double.parseDouble(((String)((DataThing)arg0.get("DEC")).getDataObject()).trim());
 		    if(arg0.containsKey("SIZE"))
 		    	size = Double.parseDouble(((String)((DataThing)arg0.get("SIZE")).getDataObject()).trim());
-		    if(arg0.containsKey("START")) {
-		    	start.setTime(dateFormat.parse( ((String)((DataThing)arg0.get("START")).getDataObject()).trim()   ));
+		    if(arg0.containsKey("Start")) {
+		    	start.setTime(dateFormat.parse( ((String)((DataThing)arg0.get("Start")).getDataObject()).trim()   ));
 		    }
-		    if(arg0.containsKey("END")) {
-		    	end.setTime(dateFormat.parse( ((String)((DataThing)arg0.get("END")).getDataObject()).trim()));
+		    if(arg0.containsKey("End")) {
+		    	end.setTime(dateFormat.parse( ((String)((DataThing)arg0.get("End")).getDataObject()).trim()));
 		    }
 		    
     		String saveURLS = ((String)((DataThing)arg0.get("Only URLS Needed")).getDataObject()).trim();
-    		logger.warn("ok process things ra = " + ra + " dec = " + dec + " size = " + size);
+    		logger.warn("ok process things ra = " + ra + " dec = " + dec + " size = " + size + " start = " + start.toString() + " end = " + end.toString());
     		//outputLoc = (String)((DataThing)arg0.get("OutputLocation")).getDataObject();
     		String result;
 		    for(int j = 0;j < res.length;j++) {
