@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.21 2008/11/04 14:35:48 nw Exp $
+/*$Id: DalProtocol.java,v 1.22 2009/02/09 12:53:53 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,12 +12,14 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Image;
 import java.net.URI;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
@@ -111,13 +113,25 @@ public abstract class DalProtocol {
 	 *  this method obeys the calling contract for resourceConsumer
 	 */
 	public final void processSuitableServicesInList(final List<? extends Resource> resourceList,final ResourceConsumer p) {
-        p.estimatedSize(resourceList.size());
-        for (final Iterator<? extends Resource> i = resourceList.iterator(); i.hasNext();) {
-            final Resource r =i.next();
-            if (isSuitable(r)) { 
-                p.process(r);
+//        p.estimatedSize(resourceList.size());
+//        for (final Iterator<? extends Resource> i = resourceList.iterator(); i.hasNext();) {
+//            final Resource r =i.next();
+//            if (isSuitable(r)) { 
+//                p.process(r);
+//            }
+//        }	  
+	    //BZ 2884 - incorrect number is reported - we estimeate size based on input, not filter.
+	    // corrected version below - filter, then count, then process.
+	    final List<? extends Resource> filtered = new ArrayList();
+	    CollectionUtils.select(resourceList,new Predicate() {
+            public boolean evaluate(final Object arg0) {
+                return isSuitable((Resource)arg0);
             }
-        }	    
+	    },filtered);
+        p.estimatedSize(filtered.size());
+        for (final Resource r : filtered) {
+            p.process(r);
+        }  
 	}
 	
 	/** abstract test to be implemented by subclasses, used within <tt>processSuitableServicesInLIst()</tt>*/
@@ -235,6 +249,10 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.22  2009/02/09 12:53:53  nw
+RESOLVED - bug 2884: User experience - misleading messages
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2884
+
 Revision 1.21  2008/11/04 14:35:48  nw
 javadoc polishing
 

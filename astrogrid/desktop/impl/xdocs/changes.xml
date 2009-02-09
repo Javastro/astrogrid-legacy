@@ -15,7 +15,14 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+
 <release version="1.2.3" date="unreleased">
+    <action dev="nw" type="fix" issue="2884">
+        Astroscope: Fixed incorrect counting of services.
+    </action>
+    <action dev="nw" type="add">
+        AR: implemented VFS api - uniform access to all filesystems.
+    </action>
     <action dev="nw" type="fix">
         AR: made applications api more forgiving or user input
     </action>
