@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.votech;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -102,16 +103,20 @@ public class AnnotationIOImpl implements AnnotationIO {
 	
 // management of annotations
 	public Collection load(final AnnotationSource source) {
+	    // record that we've read (or at least attempted to) the user annotations
+        if (source.equals(userSource)) {
+            userAnnotationIds.clear();      
+        }
+	    
 	    InputStream is = null;
+
 	    try {
 	        is = source.getSource().toURL().openStream();
-	        final Collection anns = (Collection)xml.fromXml(is);
+	        final Collection<? extends Object> anns = (Collection<? extends Object>)xml.fromXml(is);
+               
 	        if (anns != null) {
-	            if (source.equals(userSource)) {
-	                userAnnotationIds.clear();		
-	            }
 	            // clean up the loaded list.
-	            for(final Iterator i = anns.iterator(); i.hasNext(); ) {
+	            for(final Iterator<? extends Object> i = anns.iterator(); i.hasNext(); ) {
 	                final Object  a = i.next();
 	                if (!( a instanceof Annotation)) {
 	                    i.remove(); // remove it - utter rubbish.
@@ -130,18 +135,21 @@ public class AnnotationIOImpl implements AnnotationIO {
 	            return anns;
 	        } else {
 	            logger.info("Empty Source " + source);
+	            return java.util.Collections.EMPTY_SET;
 	        }
 	    } catch (final MalformedURLException x1) {
-	        logger.warn(x1.getMessage());
-	    } catch (final IOException x1) {
-	        logger.warn(x1.getMessage());					
-	    } catch (final ServiceException x) {
-	        logger.warn(x.getMessage());
-	    } finally {
-	      IOUtils.closeQuietly(is);	
-	    }
-	    // something's gone wrong - so just return an empty array.
-	    return Collections.EMPTY_LIST;
+            logger.warn(x1.getMessage());
+        } catch (final FileNotFoundException x) {
+            logger.info("No User Annotations file: " + x.getMessage());
+        } catch (final IOException x1) {
+            logger.warn(x1.getMessage());                   
+        } catch (final ServiceException x) {
+            logger.warn(x.getMessage());
+        } finally {
+          IOUtils.closeQuietly(is); 
+        } 
+        // we threw - oh well.
+        return Collections.EMPTY_SET;
 	}
 
 	// user annotations.

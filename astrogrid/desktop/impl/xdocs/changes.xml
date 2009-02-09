@@ -17,6 +17,9 @@
 <body>
 
 <release version="1.2.3" date="unreleased">
+    <action dev="nw" type="fix" issue="2883">
+        VOExplorer: new installation wasn't creating user-annotations.xml file
+    </action>
     <action dev="nw" type="fix" issue="2884">
         Astroscope: Fixed incorrect counting of services.
     </action>
