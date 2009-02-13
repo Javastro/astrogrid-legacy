@@ -7,8 +7,13 @@ import sys
 import os
 import optparse
 
+#verify we're running a suitable version of python
+if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
+    print """This script runs best on python 2.5 or above. 
+    You're running """ + sys.version
+
 parser = optparse.OptionParser(usage="usage: %prog [options] <myspace ivorn or path>"
-                      ,description="Make myspace directories")
+                      ,description="Create myspace directories")
 parser.add_option('-d','--directory',action='store_true', default=False,
                   help='allow removal of directories')
 parser.add_option('-e','--examples', action='store_true', default=False
@@ -18,11 +23,10 @@ parser.add_option('-e','--examples', action='store_true', default=False
 # check correctness of options.
 
 if options.examples:
-      print """
+      parser.exit(0,"""
 vomkdir.py dir/subdir/subsubdir
       : create subsubdir, and it's parent directories if required
-      """
-      sys.exit()
+""")
 
 #connect to acr
 fname = os.path.expanduser("~/.astrogrid-desktop")
@@ -31,6 +35,10 @@ prefix = file(fname).next().rstrip()
 ar = xmlrpclib.Server(prefix + "xmlrpc")
 myspace = ar.astrogrid.myspace
 
+if len(args) == 0:
+    parser.print_help()
+    parser.error("No directory provided")
+    
 path = args[0]
 if not (path.startswith("ivo://") or path.startswith('#')) :
         #assume it's a path - add the required hash to indicate this.

@@ -13,7 +13,11 @@ import os
 import optparse
 import time
 import urllib2
-
+#verify we're running a suitable version of python
+if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
+    print """This script runs best on python 2.5 or above. 
+    You're running """ + sys.version
+    
 #connect to acr
 fname = os.path.expanduser("~/.astrogrid-desktop")
 assert os.path.exists(fname),  'No AR running: Please start your AR and rerun this script'
@@ -35,6 +39,10 @@ defaultFormat = "csv"
 formatDict = {'vot':'VOTABLE','votbin':'VOTABLE-BINARY','csv':'COMMA-SEPARATED','plastic':'VOTABLE'}
 # default query
 query = "select * from Filter"
+# xquery to list all suitable in registry.
+browseQuery = """//vor:Resource[not (@status='inactive' or @status='deleted')
+   and @xsi:type &= '*CatalogService' 
+   and capability/@standardID="ivo://org.astrogrid/std/CEA/v1.0"]"""
 
 #build an option parser.
 parser = optparse.OptionParser(usage="%prog [options] <adql-query> | <query-file>",
@@ -42,15 +50,17 @@ parser = optparse.OptionParser(usage="%prog [options] <adql-query> | <query-file
 Query a database service. (DSA) Results can be returned in a range of formats.
 ''')
 parser.add_option('-f','--format', default=defaultFormat, choices=['vot','votbin','csv','plastic']
-                  ,help='format to return results in: vot, votbin, csv, plastic (default: %s)' % defaultFormat)
+                  ,help='format to return results in: vot, votbin, csv, plastic (default: %default)')
 parser.add_option('-s','--service',metavar="ID", default=defaultService
-                  ,help='RegistryID of the DSA to query (default: %s)' % defaultService)
+                  ,help='RegistryID of the DSA to query (default: %default)' )
 parser.add_option('-i','--inputfile',action='store_true', dest='fromFile', default=False
                   , help='read query from a file')
 parser.add_option('-q','--query',action='store_false',dest='fromFile'
                   ,help='read query from commandline (default)')
 parser.add_option('-m','--myspace',metavar='MYSPACE_LOCATION'
                 , help='use a myspace file to stage the result (useful for large queries)')
+parser.add_option('-b','--browse', action='store_true',default=False
+                  , help='browse all known queryable databases in a GUI, and exit')
 parser.add_option('-l','--list',action='store_true',default=False
                   ,help='list all known queryable database services, and exit')
 parser.add_option('-e','--examples', action='store_true', default=False
@@ -61,7 +71,7 @@ parser.add_option('-e','--examples', action='store_true', default=False
 (opts,args) = parser.parse_args()
 
 if opts.examples:
-    print """
+    parser.exit(0,"""
 adql.py "select * from Filter"
    : run a query against default database, return results as CSV
 
@@ -83,21 +93,18 @@ adql.py --service=ivo://wfau.roe.ac.uk/twomass-dsa/wsa "select top 10 * from two
 adql.py -myspace=/results/temp/adql1.vot -i query.adql
    : stage results at '/results/temp/adql1.vot' within the user's myspace
        
-"""    
-    sys.exit()
+""")
 elif opts.list:
     #query to produce index of catalog services which provide a cea capability
     xq = """
 <ul>
 {
-for $r in //vor:Resource[not (@status='inactive' or @status='deleted')
-   and @xsi:type &= '*CatalogService' 
-   and capability/@standardID="ivo://org.astrogrid/std/CEA/v1.0"]
+for $r in %s
 order by $r/title
 return <li>{$r/title/text()} : {$r/identifier/text()}</li>
 }
 </ul>
-    """
+    """ % browseQuery
     # do the query
     s = registry.xquerySearchXML(xq)
     #extract info from xml
@@ -105,10 +112,19 @@ return <li>{$r/title/text()} : {$r/identifier/text()}</li>
     for l in re.finditer('<li>(.*)</li>',s):
         print l.group(1)
     sys.exit()    
+elif opts.browse:
+    rs = ar.dialogs.registryGoogle.selectResourcesXQueryFilter(
+                "All Queryable Database Services",True,browseQuery)
+    if len(rs) > 0:
+        print "You selected"
+        for r in rs:
+            print r['title']
+            print " ", r['id']
+    sys.exit()
     
 #on with the show. check we've got enough args left.
 if len(args) == 0:
-    sys.stderr.write( "No query provided - using default query - %s\n" % duery )
+    sys.stderr.write( "No query provided - using default query - '%s'\n" % query )
 elif opts.fromFile:
     sys.stderr.write('Reading query from ' + args[0] + '\n')
     query = open(args[0]).read()
@@ -168,7 +184,7 @@ while progress['status'] not in ['ERROR','COMPLETED','UNKNOWN'] :
 #query finished
 if progress['status'] == "ERROR":
     results = apps.getResults(execId)
-    sys.exit(results['cea-error'])
+    parser.error(-1,results['cea-error'])
 
 
 #lovely. lets do something with the results

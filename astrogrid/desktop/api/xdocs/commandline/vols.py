@@ -10,6 +10,11 @@ import os
 from optparse import OptionParser
 import textwrap
 
+#verify we're running a suitable version of python
+if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
+    print """This script runs best on python 2.5 or above. 
+    You're running """ + sys.version
+
 
 parser = OptionParser(usage="usage: %prog [options] <node-ivorn or path>"
                       ,description="list contents of myspace directories")
@@ -36,7 +41,7 @@ parser.add_option('-e','--examples', action='store_true', default=False
 # check correctness of options.
 
 if options.examples:
-      print """
+      parser.exit(0,"""
 vols.py
         : list contents of user's home myspace directory
         
@@ -48,9 +53,7 @@ vols -l foo/bar
         
 vols -F foo
         : list directory, indicating subdirectories
-
-      """
-      sys.exit()
+""")
         
 if options.quote and options.classify :
         parser.error("options -F and -Q are mutually exclusive")
@@ -76,7 +79,7 @@ ni = None
 try:
         ni = myspace.getNodeInformation(n)
 except:
-        sys.exit(n + ": No such file or directory")
+        parser.error(n + ": No such file or directory")
         
 if ni['folder'] and not options.directory :
         r = myspace.listIvorns(n)

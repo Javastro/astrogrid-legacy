@@ -7,6 +7,12 @@ import sys
 import os
 import optparse
 
+#verify we're running a suitable version of python
+if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
+    print """This script runs best on python 2.5 or above. 
+    You're running """ + sys.version
+
+
 parser = optparse.OptionParser(usage="usage: %prog [options] <myspace ivorn or path>"
                       ,description="Delete a myspace file or directory")
 parser.add_option('-d','--directory',action='store_true', default=False,
@@ -18,13 +24,12 @@ parser.add_option('-e','--examples', action='store_true', default=False
 # check correctness of options.
 
 if options.examples:
-      print """
+      parser.exit(0,"""
 vorm.py  dir/file.txt
         : delete file.txt from myspace.
 vorm.py -d dir/subdir
         : delete the directory 'subdir' and all it's contents.
-      """
-      sys.exit()
+""")
 
 #connect to acr
 fname = os.path.expanduser("~/.astrogrid-desktop")
@@ -32,6 +37,10 @@ assert os.path.exists(fname),  'No AR running: Please start your AR and rerun th
 prefix = file(fname).next().rstrip()
 ar = xmlrpclib.Server(prefix + "xmlrpc")
 myspace = ar.astrogrid.myspace
+
+if len(args) != 1:
+    parser.print_help()
+    parser.error("Incorrect number of parameters.") 
 
 path = args[0]
 if not (path.startswith("ivo://") or path.startswith('#')) :

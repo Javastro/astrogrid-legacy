@@ -6,6 +6,10 @@ import xmlrpclib
 import sys
 import os
 import optparse
+#verify we're running a suitable version of python
+if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
+    print """This script runs best on python 2.5 or above. 
+    You're running """ + sys.version
 
 #connect to acr
 fname = os.path.expanduser("~/.astrogrid-desktop")
@@ -29,16 +33,16 @@ parser = optparse.OptionParser(usage='%prog [options] <radius> {<ra> <dec>| <obj
                                description='Perform a cone search and return results')
 parser.disable_interspersed_args()
 parser.add_option('-f','--format', default=defaultFormat, choices=['votable','csv','plastic','browser']
-                  ,help='format to return results in: votable, csv, plastic, browser (default: %s)' % defaultFormat)
+                  ,help='format to return results in: votable, csv, plastic, browser (default: %default)' )
 parser.add_option('-s','--service',metavar="ID", default=defaultService
-                  ,help='RegistryID or URL endpoint of the Cone Service to query (default: %s)' % defaultService)
+                  ,help='RegistryID or URL endpoint of the Cone Service to query (default: %default)' )
 parser.add_option('-e','--examples', action='store_true', default=False
                   , help='display some examples of use and exit.')
 #parse the options
 (opts,args) = parser.parse_args()
 
 if opts.examples:
-    print """
+    parser.exit(0,  """
 examples:
 cone.py 0.1 m32 
         : search of radius 0.1 decimal degree around m32, display results as csv
@@ -60,13 +64,16 @@ cone.py --format=plastic 0.1 83.822083 -5.391111
 
 cone.py -fbrowser 0.1 83.822083 -5.391111
         : do a search, display result in the system webbrowser       
-"""
-    sys.exit()
+""")
 #work out the position to search at
 ra = 0.0
 dec = 0.0
 sz = 0.0
-if len(args) < 2:
+if len(args) == 0:
+    parser.print_help()
+    parser.error("No parameters provided")
+elif len(args) < 2:
+    parser.print_help()
     parser.error("Not enough parameters provided")
 elif len(args) == 2: #an object name had been given - try to resolve using sesame
     sz = args[0]

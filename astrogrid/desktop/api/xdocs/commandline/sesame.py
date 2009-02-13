@@ -6,7 +6,11 @@ import xmlrpclib
 import sys
 import os
 import optparse
-
+#verify we're running a suitable version of python
+if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
+    print """This script runs best on python 2.5 or above. 
+    You're running """ + sys.version
+    
 #connect to acr
 fname = os.path.expanduser("~/.astrogrid-desktop")
 assert os.path.exists(fname),  'No AR running: Please start your AR and rerun this script'
@@ -26,7 +30,7 @@ parser.add_option('-e','--examples', action='store_true', default=False
 
 (opts,args) = parser.parse_args()
 if opts.examples:
-    print """
+    parser.exit(0, """
 examples:
 sesame.py m32
     : resolve position of m32 in decimal degrees
@@ -34,13 +38,13 @@ sesame.py --sexa m54
     : resolve position of m54 in sexagesimal
 sesame.py --all crab
     : display full information about object 'crab'
-"""
-    sys.exit()
+""")
 #default object name                  
 object = "m1"
 #find object name
 if len(args) == 0:
-    sys.stderr.write("No objectname provided - using default object %s\n" % object)
+     parser.print_help()
+     parser.error("no objectname provided")
 else:
     object = args[0]
 

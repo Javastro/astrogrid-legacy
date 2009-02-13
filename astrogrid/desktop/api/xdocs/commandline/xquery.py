@@ -7,7 +7,10 @@ import sys
 import os
 import os.path
 import optparse
-
+#verify we're running a suitable version of python
+if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
+    print """This script runs best on python 2.5 or above. 
+    You're running """ + sys.version
 
 #connect to acr
 fname = os.path.expanduser("~/.astrogrid-desktop")
@@ -28,7 +31,7 @@ parser.add_option('-e','--examples',action='store_true',default=False
 (opts,args) = parser.parse_args()
 
 if opts.examples:
-    print """
+    parser.exit(0,"""
 xquery.py query.xq
     : run a query stored in file 'query.xq'
 
@@ -42,29 +45,25 @@ Sample XQueries
 //vor:Resource[@xsi:type &= '*DataCollection']
     : list details of all DataCollection resources
     
-<ul>
+<dl>
 {
 for $r in //vor:Resource[@xsi:type &= '*DataCollection']
 order by $r/title
-return <li>{$r/title/text()} : {$r/identifier/text()}</li>
+return <dt>{$r/title/text()}</dt><dd> : {$r/identifier/text()}</dd>
 }
-</ul>
-    : produce a list of titles and identifers of all DataCollection resources
-    """
-    sys.exit()
+</dl>
+    : produce a HTML description list of the titles and identifiers of
+    : all registered DataCollections.
+""")
 
 #a default xquery
 xq="""
-<contacts>
-{
-//vor:Resource[matches(vr:identifier,'ivo://uk.ac.le.star/.*')]/vr:curation/vr:contact
-
-}
-</contacts>
+<size>{count(//vor:Resource)}</size>
 """
 #find the query to run
 if len(args) == 0:
-    sys.stderr.write("No query provided - using default")
+    sys.stderr.write("No query provided - using default:")
+    sys.stderr.write(xq)
 elif opts.fromFile:
     xq = open(args[0]).read()
 else:

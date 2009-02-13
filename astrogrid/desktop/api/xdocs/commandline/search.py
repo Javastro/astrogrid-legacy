@@ -8,7 +8,11 @@ import os
 import os.path
 import optparse
 import re
-
+#verify we're running a suitable version of python
+if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
+    print """This script runs best on python 2.5 or above. 
+    You're running """ + sys.version
+    
 def mkQuery(kws):
     """ build an xquery out of one or more keyword terms"""
     xq = "//vor:Resource[not (@status='inactive' or @status='deleted') "
@@ -53,20 +57,20 @@ parser.add_option('-e','--examples',action='store_true',default=False
 (opts,args) = parser.parse_args()
 
 if opts.examples:
-    print """
-search.py "abell"
+    parser.exit(0,"""
+search.py abell
     : display summary for resources matching 'abell'
 
-search.py "abell cluster" "noras"
+search.py "abell cluster" noras
     : display summary for resources matching 'abell cluster' and 'noras'
 
-search.py --format==identifier "abell"
+search.py --format==identifier abell
     : list identifiers of all resources matching 'abell'
 
-search.py --format==plastic 'abell'
+search.py --format==plastic abell
     : display resources matching 'abell' in a PLASTIC viewer (e.g. VOExplorer)
     
-search.py --format==xml "abell cluster" "noras"
+search.py --format==xml "abell cluster" noras
     : display xml of all resources matching 'abell cluster' and 'noras'
     
 search.py -i "ivo://nasa.heasarc/skyview/first"
@@ -74,14 +78,14 @@ search.py -i "ivo://nasa.heasarc/skyview/first"
 
 search.py --format=xml -i "ivo://nasa.heasarc/skyview/first" 
     : display xml of the resource 'ivo://nasa.heasarc/skyview/first'
-    """
-    sys.exit()
+""")
     
 registry = ar.ivoa.registry
 
 #take action
 if len(args) == 0:
-    sys.exit("no search terms provided")
+    parser.print_help()
+    parser.error("no search terms provided")
 
 if opts.format == 'identifier' or opts.format == 'plastic':
     if opts.identifier: #degenerate really

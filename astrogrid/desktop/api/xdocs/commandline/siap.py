@@ -8,7 +8,10 @@ import os
 import urlparse
 import os.path
 import optparse
-
+#verify we're running a suitable version of python
+if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
+    print """This script runs best on python 2.5 or above. 
+    You're running """ + sys.version
 
 #connect to acr
 fname = os.path.expanduser("~/.astrogrid-desktop")
@@ -31,23 +34,23 @@ defaultFormat = "csv"
 download = 0
 
 parser = optparse.OptionParser(usage='%prog [options] <radius> {<ra> <dec>| <object-name>}',
-                               description="""
- Perform an image search and display results in a  variety of ways, download images to local directoy.                            
-""")
+                               description="Perform an image search and display results, optionally download images")
 parser.disable_interspersed_args()
 parser.add_option('-f','--format', default=defaultFormat, choices=['votable','csv','plastic','browser']
-                  ,help='format to return results in:  votable, csv, plastic, browser (default: %s)' % defaultFormat)
+                  ,help='format to return results in:  votable, csv, plastic, browser (default: %default)')
 parser.add_option('-s','--service',metavar="ID", default=defaultService
-                  ,help='RegistryID or URL the Image Service to query (default: %s)' % defaultService)
+                  ,help='RegistryID or URL the Image Service to query (default: %default)')
 parser.add_option('-d','--download',metavar="n|ALL"
-                  ,help="number of images to download (default: %d)" % download)
+                  ,help="number of images to download (default: %default)")
+parser.add_option('-b','--browse', action='store_true',default=False
+                  , help='browse all known SIAP services in a GUI, and exit')
 parser.add_option('-e','--examples', action='store_true', default=False
                   , help='display some examples of use and exit.')
 #parse the options
 (opts,args) = parser.parse_args()
 
 if opts.examples:
-    print """siap.py 0.1 m32 
+    parser.exit(0, """siap.py 0.1 m32 
         : search of radius 0.1 decimal degree around m32, display results as csv
         
 siap.py --download=all 0.1 m32 
@@ -69,12 +72,26 @@ siap.py --format=plastic 0.1 ngc123
         : send results to a running plastic application (e.g. Topcat)
     
 siap.py --format=browser 0.1 83.822083 -5.391111
-        : do a search, display result in the system webbrowser"""
-    sys.exit()
+        : do a search, display result in the system webbrowser
+""")
+elif opts.browse:
+    rs = ar.dialogs.registryGoogle.selectResourcesXQueryFilter(
+                "All SIAP Services",True,siap.getRegistryXQuery())
+    if len(rs) > 0:
+        print "You selected"
+        for r in rs:
+            print r['title']
+            print " ", r['id']
+    sys.exit()    
 #work out the position to search at
 ra = 0.0
 dec = 0.0
 sz = 0.0
+if len(args) == 0:
+    parser.print_help()
+    parser.error("No parameters provided")
+elif len(args) < 2:
+    parser.print_help()
 if len(args) < 2:
     parser.error("Not enough parameters provided")
 elif len(args) == 2: #an object name had been given - try to resolve using sesame

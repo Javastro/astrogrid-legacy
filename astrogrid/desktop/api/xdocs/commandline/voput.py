@@ -8,9 +8,13 @@ import os
 import os.path
 import urlparse
 import optparse
+#verify we're running a suitable version of python
+if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
+    print """This script runs best on python 2.5 or above. 
+    You're running """ + sys.version
 
-parser = optparse.OptionParser(usage="usage: %prog [options] <local file> <myspace ivorn or path>"
-                      ,description="Write contents of a myspace file")
+parser = optparse.OptionParser(usage="usage: %prog [options] <source: local file> <dest: myspace ivorn or path>"
+                      ,description="Write to a myspace file")
 parser.add_option('-e','--examples', action='store_true', default=False
                   , help='display some examples of use and exit.')
 #pare the options
@@ -18,12 +22,15 @@ parser.add_option('-e','--examples', action='store_true', default=False
 # check correctness of options.
 
 if options.examples:
-      print """
+      parser.exit(0,"""
 voput.py localdir/localfile.txt myspacedir/subdir/myspacefile.txt
 	: copy localfile.txt from localdisk to myspace as myspacefile.txt
 	: creating myspacedir and subdir if necessary
-      """
-      sys.exit()
+""")
+      
+if len(args) != 2:
+    parser.print_help()
+    parser.error("Incorrect number of parameters.")      
 
 #connect to acr
 fname = os.path.expanduser("~/.astrogrid-desktop")

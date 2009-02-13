@@ -77,6 +77,8 @@ cone.py -fbrowser 0.1 83.822083 -5.391111
      <source><![CDATA[ 
 Usage: siap.py [options] <radius> {<ra> <dec>| <object-name>}
 
+Perform an image search and display results, optionally download images
+
 Options:
   -h, --help            show this help message and exit
   -f FORMAT, --format=FORMAT
@@ -85,7 +87,8 @@ Options:
   -s ID, --service=ID   RegistryID or URL the Image Service to query (default:
                         ivo://nasa.heasarc/skyview/rass)
   -d n|ALL, --download=n|ALL
-                        number of images to download (default: 0)
+                        number of images to download (default: none)
+  -b, --browse          browse all known SIAP services in a GUI, and exit
   -e, --examples        display some examples of use and exit.     
      ]]></source>
      <source>
@@ -168,6 +171,8 @@ Options:
   -m MYSPACE_LOCATION, --myspace=MYSPACE_LOCATION
                         use a myspace file to stage the result (useful for
                         large queries)
+  -b, --browse          browse all known queryable databases in a GUI, and
+                        exit
   -l, --list            list all known queryable database services, and exit
   -e, --examples        display some examples of use and exit.
     ]]></source>
@@ -195,18 +200,89 @@ adql.py -myspace=/results/temp/adql1.vot -i query.adql
 </source>    
     </subsection>
 
-<!--  fill this in  later    
+  
      <subsection name="app.py">
      <p>
-    run remote tasks using commandline args
+    Execute remote applications, and return results to local disk or myspace.
     </p>
     <p><b><a href="app.py">Download app.py</a></b></p>
-    <source>
-    </source>
-    <source>
-    </source>
+    <source><![CDATA[  
+Usage: app.py <application-id> [interface-name] <parameter options>
+
+ Execute a remote application, and return results to local disk or myspace.
+Use '--browse' or '--list' to select an application.  Re-run this script with
+the selected application's ID  plus '--help'  to receive application-specific
+help.
+
+Options:
+  -h, --help      show this help message and exit
+  -b, --browse    browse all known remote applications in a GUI, and exit
+  -l, --list      list all known remote applications, and exit
+  -e, --examples  display some examples of use and exit.
+    ]]></source>
+    <source><![CDATA[  
+examples:
+app.py --list
+        : list all known applications
+
+app.py ivo://org.astrogrid/HDFImager --help
+        : display help about the Merlin HDFImage application
+        
+app.py ivo://org.astrogrid/SExtractor  simple --help
+        : display help on how to execute the 'simple' interface of SExtractor 
+
+app.py ivo://wfau.roe.ac.uk/first-dsa/wsa/ceaApplication ConeSearch --help
+        : display help for the 'ConeSearch' interface to 'First Survey Catalogue'
+
+app.py ivo://wfau.roe.ac.uk/first-dsa/wsa/ceaApplication ConeSearch  \
+    --format=HTML --ra=120.0 --dec=35.0 --radius=0.3
+        : run a 'ConeSearch' on the First Survey Catalogue, return results as HTML    
+    ]]></source>    
+    <p>
+    For example, the help produced for the 'MERLIN HDF Image' application
+    is as follows:
+    </p>
+    <source><![CDATA[  
+% ./app.py ivo://org.astrogrid/HDFImager --help
+Usage: app.py ivo://org.astrogrid/HDFImager <parameter options>
+
+Execute Cut out HDF(N) (GOODS) MERLIN+VLA radio images -- This tool extracts
+cutouts of chosen size and resolution from the MERLIN+VLA 1.4 GHz Hubble Deep
+Field (N) (GOODS) 8-arcmin field
+
+Options:
+  -h, --help            show this help message and exit
+  --imagesize=real      Image Size: Image size (arcsec) in range 8 to 128
+                        arcsec. (default: 12.0)
+  --dec=DEC             Dec. in sexagesimal (colon-separated) or in decimal
+                        degrees. Must be in format and range (+62:08:42.6 to
+                        +62:17:13.3) or (+62.145167 to +62.287028) (J2000,
+                        number of decimal places optional). If blank, Name
+                        will be used. (default: +62.27472)
+  --name=NAME           HDF name: HDF source name like J123613.97+620852.6
+                        (decimal places optional) Only give either (RA and
+                        Dec) or Name! (default: J123646.4+621629)
+  --resolution=real     Resolution (arcsec), one of 0.2, 0.3, 0.4, 0.5 arcsec.
+                        [0.2|0.3|0.4|0.5]  (default: 0.4)
+  --ra=RA               RA in sexagesimal (colon-separated) or in decimal
+                        degrees. Must be in format and range (12:36:12.97 to
+                        12:37:24.95) or (189.054042 to 189.353958) (J2000,
+                        number of decimal places optional). If blank, Name
+                        will be used. (default: 189.19333)
+  --hdfradioimages=VOTable
+                        MERLIN+VLA HDF Images List: Name for VOTable which
+                        will contain image URLs and metadata (output param -
+                        only needed to write to myspace)
+  -b, --browse          browse all known remote applications in a GUI, and
+                        exit
+  -l, --list            list all known remote applications, and exit
+  -e, --examples        display some examples of use and exit.
+    
+    ]]></source>
+
+
     </subsection>
--->
+
 
     <subsection name="plastic.py">
     <p>
@@ -257,19 +333,19 @@ Options:
   -e, --examples        display some examples of use and exit  
     ]]></source>
     <source>
-search.py "abell"
+search.py abell
     : display summary for resources matching 'abell'
 
-search.py "abell cluster" "noras"
+search.py "abell cluster" noras
     : display summary for resources matching 'abell cluster' and 'noras'
 
-search.py --format==identifier "abell"
+search.py --format==identifier abell
     : list identifiers of all resources matching 'abell'
 
-search.py --format==plastic 'abell'
+search.py --format==plastic abell
     : display resources matching 'abell' in a PLASTIC viewer (e.g. VOExplorer)
     
-search.py --format==xml "abell cluster" "noras"
+search.py --format==xml "abell cluster" noras
     : display xml of all resources matching 'abell cluster' and 'noras'
     
 search.py -i "ivo://nasa.heasarc/skyview/first"
@@ -277,7 +353,7 @@ search.py -i "ivo://nasa.heasarc/skyview/first"
 
 search.py --format=xml -i "ivo://nasa.heasarc/skyview/first" 
     : display xml of the resource 'ivo://nasa.heasarc/skyview/first'
-    
+
     </source>            
         </subsection>
         
@@ -310,14 +386,16 @@ Sample XQueries
 //vor:Resource[@xsi:type &= '*DataCollection']
     : list details of all DataCollection resources
     
-<ul>
+<dl>
 {
 for $r in //vor:Resource[@xsi:type &= '*DataCollection']
 order by $r/title
-return <li>{$r/title/text()} : {$r/identifier/text()}</li>
+return <dt>{$r/title/text()}</dt><dd> : {$r/identifier/text()}</dd>
 }
-</ul>
-    : produce a list of titles and identifers of all DataCollection resources
+</dl>
+    : produce a HTML description list of the titles and identifiers of
+    : all registered DataCollections.
+
     ]]></source>           
     </subsection>
     </section>
