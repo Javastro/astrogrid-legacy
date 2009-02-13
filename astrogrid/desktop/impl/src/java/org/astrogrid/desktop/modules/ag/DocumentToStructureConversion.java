@@ -102,6 +102,12 @@ private static  ParameterValue[] convertParams(final Map<String,Object> inputHas
             for(final Map<String,Object> param : (List<Map<String,Object>>)valObj) {
                 pvs.add(convertHashToParameter(e.getKey(),param));                           
             }
+        } else if (valObj instanceof Object[]) {
+            for (final Object o : (Object[])valObj) {
+                if (o instanceof Map) {
+                    pvs.add(convertHashToParameter(e.getKey(),(Map)o));
+                }
+            }
         } else if (valObj instanceof Map) {
             pvs.add(convertHashToParameter(e.getKey(),(Map<String,Object>)e.getValue()));                        
         } else {
