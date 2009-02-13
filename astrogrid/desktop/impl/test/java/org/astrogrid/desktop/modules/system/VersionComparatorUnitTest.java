@@ -75,6 +75,9 @@ However, running the earlier versions 2008.1, 2008.1.1, 2008.1.2 and 2008.2.rc1 
         assertTrue(c.compare("1.2.2","1.2.1" ) > 0); // he's not seeing a prompt here
         assertTrue(c.compare("1.2.2","1.2.0" ) > 0); // not seeing a prompt here either.     
 
+        assertTrue(c.compare("1.2.2.1","1.2.0" ) > 0);  
+        assertTrue(c.compare("1.2.2.1","1.2.2" ) > 0);  
+        assertTrue(c.compare("1.2.3","1.2.2.1" ) > 0);         
     }
     
 

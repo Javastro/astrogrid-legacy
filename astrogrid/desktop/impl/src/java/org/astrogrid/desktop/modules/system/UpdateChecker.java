@@ -41,9 +41,15 @@ import com.l2fprod.common.swing.BaseDialog;
  * contains a single <release> block, containing latest version.
  * compare version ids. if no match, display to the user.
  * 
+ * Note: there was a bug in this in 1.2.0 - 1.2.2. These versions
+ * do not update correctly. Pity - but it's hard to work out how to
+ * trigger the upgrade on these broken versions and get a corrected version to work
+ * so will leave these, and hope a news item suffices.
+ * 
  * @author Noel Winstanley
  * @since Jun 27, 20067:35:22 PM
- * @TEST unit test for parser and reasoning logic.
+ * 
+ * 
  */
 public class UpdateChecker implements Runnable {
 	/**
@@ -113,8 +119,7 @@ public class UpdateChecker implements Runnable {
 				@Override
                 protected void doFinished(final Object result) {
 					// check we've got something new.
-				    if (StringUtils.isEmpty(latestVersion)
-				            || comparator.compare(currentVersion,latestVersion) >= 0) {
+				    if (! isNewer(latestVersion)) {
 				        return; // nothing more.
 				    }
 				    logger.info("A new version of VODesktop is available: " + latestVersion + ", " + date + ", " + description);
@@ -146,7 +151,14 @@ public class UpdateChecker implements Runnable {
 			}).start();
 		}
 	}
-	/** comparator for version strings */
+	/** Test whether latest version is newer than what we've got.
+     * @return
+     */
+    public boolean isNewer(final String grabbedVersion) {
+        return StringUtils.isNotEmpty(grabbedVersion)
+                && comparator.compare(currentVersion,grabbedVersion) < 0;
+    }
+    /** comparator for version strings */
 	public static class VersionComparator implements Comparator<String> {
 
         public int compare(final String left, final String right) {
