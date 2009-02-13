@@ -21,6 +21,7 @@ public class AllSystemUnitTests {
         suite.addTestSuite(VersionComparatorUnitTest.class);
         suite.addTestSuite(ApiHelpImplUnitTest.class);
         suite.addTestSuite(HtmlServletUnitTest.class);
+        suite.addTestSuite(UpdateCheckerUnitTest.class);
         //$JUnit-END$
         return suite;
     }
