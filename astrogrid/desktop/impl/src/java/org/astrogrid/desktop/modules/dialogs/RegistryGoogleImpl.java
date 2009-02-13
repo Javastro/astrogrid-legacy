@@ -6,9 +6,13 @@ package org.astrogrid.desktop.modules.dialogs;
 import java.awt.Component;
 import java.net.URI;
 
+import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
 
 /** Implementation of the RegistryGoogle component.
  * @author Noel Winstanley
@@ -23,15 +27,11 @@ public class RegistryGoogleImpl implements RegistryGoogleInternal {
     private final RegistryGoogleDialog dialog;
 
 	/** not implemented */
-	public Resource[] selectResources(final String arg0, final boolean arg1) {
-	       return new Resource[]{};
-//        dialog.setPrompt(arg0);
-//        dialog.setMultipleResources(arg1);
-//        dialog.setShowPlaylists(true);        
-//        dialog.setVisible(true);
-//        dialog.toFront();
-//        dialog.requestFocus();        
-//        return dialog.getSelectedResources();
+	public Resource[] selectResources(final String arg0, final boolean arg1, final String ssrql)
+	    throws InvalidArgumentException {
+	    final SRQL srql = new SRQLParser(ssrql).parse();
+	    final String xq = new HeadClauseSRQLVisitor().build(srql,null);
+	    return selectResourcesXQueryFilter(arg0,arg1,xq);
 	}
 
 	/** not implemented */

@@ -16,34 +16,48 @@
 	</head>
 <body>
 
-<release version="1.2.3" date="unreleased">
+<release version="1.2.3.beta1" date="2009-2-13">
+    <action dev="nw" type="add">
+        Commandline: Added 'browse' option to adql.py, siap.py. Implemented app.py for executing remote applications (CEA).
+        Improved search.py to accept simple query language.
+    </action>
+    <action dev="nw" type="add">
+    AR: Registry service can now be queried using the simple query language used in VOExplorer smart lists.
+    This is more usable than xquery.
+    </action>
     <action dev="nw" type="fix" issue="2883">
-        VOExplorer: new installation wasn't creating user-annotations.xml file
+        VOExplorer: new installation now creates user-annotations.xml file
     </action>
     <action dev="nw" type="fix" issue="2884">
-        Astroscope: Fixed incorrect counting of services.
+        Astroscope: Fixed incorrect reporting of number-of-services
     </action>
+
+    <!-- 
     <action dev="nw" type="add">
         AR: implemented VFS api - uniform access to all filesystems.
     </action>
+     -->
     <action dev="nw" type="fix">
-        AR: made applications api more forgiving or user input
+        AR: Applications API more forgiving to user input - accepts IVORN of CEA server in place of 
+        expected IVORN of CEA application, for cases where CEA server only provides one application. This 
+        commonly occurs in DSA servers.
     </action>
     <action dev="nw" type="fix">
-        AR: util.tables was unavailable in previous release. Added integration tests
+        AR: util.tables component was unavailable in previous release. Added integration tests
         to verify availability of all components.
     </action>
     <action dev="nw" type="fix" issue="2856">
-        Astroscope: work-around for NED quirks.
+        Astroscope: work-around for quirks in NED service. Now only uses 'VERB' parameter in query if 
+        registration says it is supported.
     </action>
     <action dev="nw" type="fix" issue="2870">
-        VoExplorer: 'any field' smartlist query now works.
+        VoExplorer: 'any field' smartlist query now works correctly.
     </action>
     <action dev="nw" type="update">
-        AR: Updated to work with latest Sesame schema from CDS
+        AR: Updated to work with changed response schema from CDS's Sesame name resolver.
     </action>
     <action dev="nw" type="fix">
-        AR: Improved parsing of DAL responses, and reporting of metadata inadequacies.
+        AR: Improved parsing of DAL (Cone, Siap, Ssap) responses, with more detailed reporting of lack of metadata.
     </action>
     <action dev="nw" type="fix">
         File Explorer: Improved drag-n-drop behaviour of file table.
@@ -52,24 +66,23 @@
         File Explorer: Improved behaviour of popup menus in file table.
     </action>
     <action dev="nw" type="update">
-        AR: improved presentation of in-program help.
+        AR: Improved formatting of in-program API documentation (as seen from component system.apihelp, and via browser interface) 
     </action>
 </release>
 <release version="1.2.2" date="2008-11-10">
     <action dev="nw" type="fix">
-    AR: Fixed to work with new CEA registrations
+    TaskRunner: Fixed a bug in the XML parsing of registry resources as defined in the latest Common Execution Architecture standard.
 	</action>
 </release>
 <release version="1.2.1" date="2008-10-24">
     <action dev="nw" type="add">
-    TaskRunner: Experimental support for TAP
+    TaskRunner: Experimental support for IVOA Table Access Protocol (TAP).
+     A simplified query-builder window is presented when a TAP service is selected in VOExplorer.
     </action>
     <action dev="nw" type="add">
-    AR: Implemented support for 0.4 of Vosi Availability Standard (as well as existing 0.3), 
-    exposed as an API.
-    </action>
-    <action dev="nw" type="add">
-    VoExplorer: Exposed VOSI availability as a side-box.
+    AR: Updated to latest version (0.4) of the IVOA Standard 'Virtual Observatory Support Interfaces' (VOSI). 
+    VOSI is used within VOExplorer and TaskRunner to check that services are operable and to query for their expected availability. 
+    VOSI queries can now be made by scripts & programs using the AstroRuntime library.
     </action>
 </release>
 <release version="2008.1.2" date="2008-9-15">

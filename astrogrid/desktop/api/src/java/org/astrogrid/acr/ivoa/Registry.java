@@ -116,6 +116,27 @@ for r in rs[:10]
 	
     
     
+    /** Perform a search using the query language used by VOExplorer SmartLists (SRQL)
+     * @param srql  the simple registry query to perform
+     * @return list of matching resources
+     * @throws ServiceException if registry cannot be queried.
+     * @throws InvalidArgumentException if query passed in cannot be parsed as SRQL
+     * @see <a href='http://eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage'>SRQL Language Description</a> 
+     * @equivalence xquerySearch(toXQuery(srql)) 
+     */
+     Resource[] search(String srql) throws ServiceException, InvalidArgumentException;
+    
+     
+     /** Translate a SRQL query (as used by VOExplorer SmartLists) into an equivalent XQuery 
+     * @param srql  the query to translate 
+     * @return the equivalent XQuery 
+     * @throws InvalidArgumentException if the query cannot be parsed as SRQL. 
+     * @see <a href='http://eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage'>SRQL Language Description</a> 
+ 
+      * 
+      * */
+     String toXQuery(String srql) throws InvalidArgumentException;
+     
     /** Retrieve a named resource from the registry.
    * @param id identifier of the registry resource to retrieve. e.g.{@code ivo://uk.ac.cam.ast/IPHAS/images/SIAP}
      * @return a  datastructure representing the registry entry - will be a {@link Resource} or one of it's 

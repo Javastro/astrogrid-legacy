@@ -6,10 +6,6 @@ package org.astrogrid.desktop.modules.ui.voexplorer.srql;
 import junit.framework.TestCase;
 
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.BasicRegistrySRQLVisitor;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.KeywordSRQLVisitor;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
 
 /** Exercise the various visitors.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -20,7 +16,8 @@ public class VisitorsUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		k = new KeywordSRQLVisitor();
-		s = new BasicRegistrySRQLVisitor();
+	//	s = new BasicRegistrySRQLVisitor();
+		s = new HeadClauseSRQLVisitor();
 	}
 
 	KeywordSRQLVisitor k;
@@ -34,17 +31,17 @@ public class VisitorsUnitTest extends TestCase {
 
 	
 	public void testSimpleKeywords() throws Exception {
-		SRQL q = mkQuery("foo");
-		Object  keywords = q.accept(k);
+		final SRQL q = mkQuery("foo");
+		final Object  keywords = q.accept(k);
 		assertNotNull(keywords);
 		assertEquals("foo",keywords);
 	}
 
 	public void testSimpleXQuery() throws Exception {
-		SRQL q = mkQuery("foo");
-		Object summary = q.accept(s);
+		final SRQL q = mkQuery("foo");
+		final Object summary = q.accept(s);
 		assertNotNull(summary);
-		String query = s.build(q, "fred");
+		final String query = s.build(q, "fred");
 		assertTrue(query.indexOf("(fred") != -1);
 		assertTrue(query.indexOf(summary.toString()) != -1);
 		assertEquals(-1,query.indexOf("Query")); // 'Query' indicates somewhere toString() is being called, instead of accept().		
@@ -52,22 +49,22 @@ public class VisitorsUnitTest extends TestCase {
 	
 	
 	public void testComplexKeywords() throws Exception {
-		SRQL q = mkQuery("\"fred bloggs\" and (foo or not shortname=Bar) and `/foo/nar/choo`");
-		Object  keywords = q.accept(k);
+		final SRQL q = mkQuery("\"fred bloggs\" and (foo or not shortname=Bar) and `/foo/nar/choo`");
+		final Object  keywords = q.accept(k);
 		assertNotNull(keywords);
 		assertEquals("('fred bloggs') AND (((foo) OR (NOT (shortname = bar))) AND (`/foo/nar/choo`))",keywords);
 	}
 
 	public void testComplexXQuery() throws Exception {
-		SRQL q = mkQuery("\"fred bloggs\" and (foo or not shortname=bar) and `/foo/nar/choo`");
-		String xq = (String)q.accept(s);
+		final SRQL q = mkQuery("\"fred bloggs\" and (foo or not shortname=bar) and `/foo/nar/choo`");
+		final String xq = (String)q.accept(s);
 		assertNotNull(xq);
 		assertEquals(-1,xq.indexOf("Query")); // 'Query' indicates somewhere toString() is being called, instead of accept().
 	}
 	
 	public void testComplexXQuery1() throws Exception {
-		SRQL q = mkQuery("galaxy and type=skyservice and not type=tabularskyservice");
-		String xq = (String)q.accept(s);
+		final SRQL q = mkQuery("galaxy and type=skyservice and not type=tabularskyservice");
+		final String xq = (String)q.accept(s);
 		assertNotNull(xq);
 		assertEquals(-1,xq.indexOf("Query")); // 'Query' indicates somewhere toString() is being called, instead of accept().
 	}
@@ -77,9 +74,9 @@ public class VisitorsUnitTest extends TestCase {
 	 * @throws InvalidArgumentException
 	 */
 	// convienent way to build a query
-	private SRQL  mkQuery(String arg) throws InvalidArgumentException {
-		SRQLParser qp = new SRQLParser(arg);
-		SRQL q = qp.parse();
+	private SRQL  mkQuery(final String arg) throws InvalidArgumentException {
+		final SRQLParser qp = new SRQLParser(arg);
+		final SRQL q = qp.parse();
 		assertNotNull(q);
 		return q;
 	}

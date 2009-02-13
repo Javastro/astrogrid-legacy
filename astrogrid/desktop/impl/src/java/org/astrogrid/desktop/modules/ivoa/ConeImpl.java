@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.16 2008/11/04 14:35:51 nw Exp $
+/*$Id: ConeImpl.java,v 1.17 2009/02/13 17:46:20 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -88,11 +88,8 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
     }
 
 
-    /* 
-     * @see org.astrogrid.acr.nvo.Cone#getRegistryQueryToListCone()
-     */
     public String getRegistryQuery() {
-       return getRegistryAdqlQuery();
+       return "type = Cone";
     }
 
 	public String getRegistryAdqlQuery() {
@@ -132,6 +129,9 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.17  2009/02/13 17:46:20  nw
+Complete - taskUse SRQL in AR
+
 Revision 1.16  2008/11/04 14:35:51  nw
 javadoc polishing
 

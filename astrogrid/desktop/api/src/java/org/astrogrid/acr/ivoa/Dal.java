@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
  *  The class provides the functionality common to Catalog, Image, Spectra and Time access services. It addresses:
  * <dl>
  * <dt>Locating DAL services</dt>
- *  <dd>Use {@link #getRegistryXQuery()} to query for suitable services in the {@link Registry}</dd>
+ *  <dd>Use {@link #getRegistryQuery()} or {@link #getRegistryXQuery()} to query for suitable services in the {@link Registry}</dd>
  * <dt>Performing a query</dt>
  *  <dd>{@link #execute(URL)}, {@link #executeVotable(URL)}, {@link #executeAndSave(URL, URI)}</dd>  
  * <dt>Saving any referenced data</dt>
@@ -236,7 +236,7 @@ ar.util.tables.convertFiles(q, "votable",dir + "/resp.txt","ascii")
 
 <h2>Querying resources with multiple similar capabilities</h2>
 In some cases, a registry resource may possess more than one cone-search capability. If the identifier for that resource is passed to {@code constructQuery}
-than it is the <b>first suitable<b/> capability in the resource that will be used. If you wish to query against one of the other cone-search capabilities, 
+than it is the <b>first suitable</b> capability in the resource that will be used. If you wish to query against one of the other cone-search capabilities, 
 the service endpoint URL for that capability must be manually extracted and passed to {@code constructQuery}. This can be done by using the {@link Registry} component.
 
 {@example "Extracting the endpoint for a capability"
@@ -361,15 +361,12 @@ public interface Dal {
 	 */
 	int saveDatasetsSubset(URL query, URI saveLocation, List rows) throws SecurityException, ServiceException, InvalidArgumentException;
 	
-	   /** helper method - returns an ADQL/s query that should be passed to a registry to list all 
-	    * available DAL services of this type. 
+	   /** Returns a SRQL query that, when passed to the registry, will return all know services of that type. 
 	    * <br/>
 	    * can be used as a starting point for filters, etc.
-	    * @return an adql query string
-	    * @exclude 
-	    * @deprecated use getRegistryAdqlQuery
+	    * @return a SRQL query string
+
 	    */
-	   @Deprecated
     String getRegistryQuery();
 	   
 	   /** helper method - returns an ADQL/s query that should be passed to a registry to list all 

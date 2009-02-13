@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.21 2008/12/03 19:40:56 nw Exp $
+/*$Id: SiapImpl.java,v 1.22 2009/02/13 17:46:20 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -88,7 +88,7 @@ public class SiapImpl extends DALImpl implements Siap {
 
 
     public String getRegistryQuery() {
-    	return getRegistryAdqlQuery();
+    	return "type = Image";
     }
 
 	public String getRegistryAdqlQuery() {
@@ -166,6 +166,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.22  2009/02/13 17:46:20  nw
+Complete - taskUse SRQL in AR
+
 Revision 1.21  2008/12/03 19:40:56  nw
 Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
 

@@ -10,10 +10,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /** Generate an XQuery from SRQL, using the {@code for - where} form.
+ * made abstract, to prevent accidental instantiation. I've determined that the subclass 'HeadClauseSRQL' is a more efficient implementation.
  * @author Noel Winstanley
  * @since Aug 9, 20066:36:57 PM
  */
-public class BasicRegistrySRQLVisitor implements Builder{
+public abstract class BasicRegistrySRQLVisitor implements Builder{
     /**
      * 
      */

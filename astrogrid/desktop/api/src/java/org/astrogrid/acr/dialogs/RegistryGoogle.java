@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogle.java,v 1.6 2008/09/25 16:02:02 nw Exp $
+/*$Id: RegistryGoogle.java,v 1.7 2009/02/13 17:42:19 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.acr.dialogs;
 
 import java.net.URI;
 
+import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 
@@ -24,16 +25,18 @@ import org.astrogrid.acr.ivoa.resource.Resource;
  */
 public interface RegistryGoogle {
   
-    /** display the resource chooser dialogue - full dialogue, including folders, and ability for user to run new searches
-     * The user may select any kind of resource - consider using one of the more constrained selection functions instead.
-     * @param prompt message to prompt user for input.
-     * @param multiple if true, allow multiple selections.
-     * @return 0 or more selected resources. never null.
-     * @exclude 
-     * @deprecated unimplemented
+    /** Display the resource chooser dialogue, populated with
+     * resources described by a SRQL query - the little language used
+     * in VOExplorer SmartLists. 
+     * @param prompt the prompt to show the user
+     * @param multiple if true, allow multiple selections
+     * @param srql The query used to populate the dialogue.
+     * @return 0 or more selected resources, never null.
+     * @throws InvalidArgumentException  if srql cannot be parsed
+   * @see <a href='http://eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage'>SRQL Language Description</a> 
+       
      */
-    @Deprecated
-    Resource[] selectResources(String prompt, boolean multiple);
+    Resource[] selectResources(String prompt, boolean multiple,String srql) throws InvalidArgumentException;
 
     
     /** display the resource chooser dialogue, enabling only resources which match a filter.
@@ -108,6 +111,9 @@ public interface RegistryGoogle {
 
 /* 
 $Log: RegistryGoogle.java,v $
+Revision 1.7  2009/02/13 17:42:19  nw
+Complete - taskUse SRQL in AR
+
 Revision 1.6  2008/09/25 16:02:02  nw
 documentation overhaul
 

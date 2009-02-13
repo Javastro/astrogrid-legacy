@@ -46,6 +46,10 @@ import org.astrogrid.desktop.modules.system.ScheduledTask;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
 import org.astrogrid.desktop.modules.ui.voexplorer.QuerySizerImpl;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.Builder;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
 import org.astrogrid.util.DomHelper;
 import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
@@ -376,6 +380,21 @@ public class IndexCachingRegistryImpl implements RegistryInternal{
         }
     }
 
+    public Resource[] search(final String ssrql) throws ServiceException, InvalidArgumentException {
+        final String xq = toXQuery(ssrql);
+        logger.info("Translated srql '" + ssrql + "'to xquery " + xq);
+        return xquerySearch(xq);
+        
+    }
+    
+
+    public String toXQuery(final String ssrql) throws InvalidArgumentException {
+        final SRQL srql = new SRQLParser(ssrql).parse(); 
+        final Builder b = new HeadClauseSRQLVisitor();
+        final String xq = b.build(srql,null);
+        return xq;
+    }
+    
 public Resource[] xquerySearch(final String arg0) throws ServiceException {
     final ResourceAccumulator rc = new ResourceAccumulator();
     consumeXQuery(arg0,rc);
@@ -766,5 +785,6 @@ public void xquerySearchSave(final String xquery, final File saveLocation) throw
             }                   
         }
     }
+
     
 }

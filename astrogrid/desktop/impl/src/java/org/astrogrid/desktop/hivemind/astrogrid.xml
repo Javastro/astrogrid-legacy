@@ -225,7 +225,6 @@ APPLICATIONS
 		Run remote applications.
 		<interceptor service-id="system.deprecation">
 			<include method="getQueryToListApplications" />
-			<include method="getRegistryQuery" />
 			<include method="getApplicationInformation" />
 			<include method="listProvidersOf" />
 			<exclude method="*" />

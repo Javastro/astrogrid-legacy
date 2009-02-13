@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.17 2008/12/03 19:40:56 nw Exp $
+/*$Id: SsapImpl.java,v 1.18 2009/02/13 17:46:20 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,7 +51,7 @@ public class SsapImpl extends DALImpl implements Ssap {
 //@issue        " and ( not (@status = 'inactive' or @status='deleted') )";
     }
     public String getRegistryQuery() {
-    	return getRegistryAdqlQuery();
+    	return "type = Spectral";
     }
     
     public String getRegistryXQuery() {
@@ -177,6 +177,9 @@ public class SsapImpl extends DALImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.18  2009/02/13 17:46:20  nw
+Complete - taskUse SRQL in AR
+
 Revision 1.17  2008/12/03 19:40:56  nw
 Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
 
