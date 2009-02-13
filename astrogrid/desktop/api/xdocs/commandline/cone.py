@@ -22,6 +22,8 @@ plastic = ar.plastic.hub
 browser = ar.system.browser
 tables = ar.util.tables
 sesame = ar.cds.sesame
+cone = ar.ivoa.cone
+registry = ar.ivoa.registry
 
 #default cone search service to query
 defaultService = 'ivo://fs.usno/cat/usnob'
@@ -36,6 +38,12 @@ parser.add_option('-f','--format', default=defaultFormat, choices=['votable','cs
                   ,help='format to return results in: votable, csv, plastic, browser (default: %default)' )
 parser.add_option('-s','--service',metavar="ID", default=defaultService
                   ,help='RegistryID or URL endpoint of the Cone Service to query (default: %default)' )
+
+parser.add_option('-b','--browse', action='store',metavar="FILTER"
+                  , help='browse cone services that match a FILTER in a GUI, and exit')
+parser.add_option('-l','--list',action='store',metavar="FILTER"
+                  ,help='list cone services that match a FILTER, and exit')
+
 parser.add_option('-e','--examples', action='store_true', default=False
                   , help='display some examples of use and exit.')
 #parse the options
@@ -44,6 +52,9 @@ parser.add_option('-e','--examples', action='store_true', default=False
 if opts.examples:
     parser.exit(0,  """
 examples:
+cone.py -b abell
+        : browse all cone services that match 'abell'
+        
 cone.py 0.1 m32 
         : search of radius 0.1 decimal degree around m32, display results as csv
 
@@ -65,6 +76,23 @@ cone.py --format=plastic 0.1 83.822083 -5.391111
 cone.py -fbrowser 0.1 83.822083 -5.391111
         : do a search, display result in the system webbrowser       
 """)
+elif opts.list:
+    for i in registry.search(cone.getRegistryQuery() + ' and ' + opts.list):
+        print i['title'], ":", i['id'] 
+    #    for l in textwrap.wrap(i['content']['description'],80):
+    #        print l
+    #    print "-" * 80
+    sys.exit()
+elif opts.browse:
+    rs = ar.dialogs.registryGoogle.selectResources(
+                "All Remote Applications",True
+                ,cone.getRegistryQuery() + ' and ' + opts.browse)
+    if len(rs) > 0:
+        print "You selected"
+        for r in rs:
+            print r['title']
+            print " ", r['id']
+    sys.exit()        
 #work out the position to search at
 ra = 0.0
 dec = 0.0
@@ -90,7 +118,7 @@ else: # assume position has been provided on commandlne
 
 
 # use AR to buuild the query URL       
-query = ar.ivoa.cone.constructQuery(opts.service,ra,dec,sz)
+query = cone.constructQuery(opts.service,ra,dec,sz)
 
 #decide what we're going to do with this query
 if opts.format == 'plastic':

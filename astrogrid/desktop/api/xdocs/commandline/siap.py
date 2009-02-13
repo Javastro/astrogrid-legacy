@@ -75,8 +75,8 @@ siap.py --format=browser 0.1 83.822083 -5.391111
         : do a search, display result in the system webbrowser
 """)
 elif opts.browse:
-    rs = ar.dialogs.registryGoogle.selectResourcesXQueryFilter(
-                "All SIAP Services",True,siap.getRegistryXQuery())
+    rs = ar.dialogs.registryGoogle.selectResourcesQueryFilter(
+                "All SIAP Services",True,siap.getRegistryQuery())
     if len(rs) > 0:
         print "You selected"
         for r in rs:

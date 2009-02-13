@@ -38,10 +38,20 @@ Options:
                         browser (default: csv)
   -s ID, --service=ID   RegistryID or URL endpoint of the Cone Service to
                         query (default: ivo://fs.usno/cat/usnob)
-  -e, --examples        display some examples of use and exit.     
+  -b FILTER, --browse=FILTER
+                        browse cone services that match a FILTER in a GUI, and
+                        exit
+  -l FILTER, --list=FILTER
+                        list cone services that match a FILTER, and exit
+  -e, --examples        display some examples of use and exit.
+
      ]]></source>    
      <source>
 examples:
+
+cone.py -b abell
+        : browse all cone services that match 'abell'
+
 cone.py 0.1 m32 
         : search of radius 0.1 decimal degree around m32, display results as csv
 
@@ -317,49 +327,56 @@ plastic.py -i http://someServer/foo/images.fits
     <p>Utilities to query a VO Registry</p>
         <subsection name="search.py">
         <p>
-       Search the registry by keyword or ID, and display results in various ways.
+       Search the registry by simple query or ID, and display results in various ways.
+       The query language accepted as the same as is used in VOExplorer smartlists - 
+       <a href='http://eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage'>SRQL</a>.
         </p>
    <p><b><a href="search.py">Download search.py</a></b></p>
     <source><![CDATA[   
-Usage: search.py [options] <keywords> | <identifier>
+Usage: search.py [options] <srql> | <identifier>
 
 Options:
   -h, --help            show this help message and exit
-  -i, --id              treat search term as a full registry identifier
-  -k, --keyword         treat search term as keywords (default)
+  -i, --id              treat arguments as a match against a full registry
+                        identifier
+  -q, --srql            treat arguments as SRQL (default)
   -f FORMAT, --format=FORMAT
-                        format to return results as: identifier, summary, xml,
-                        plastic (default: summary)
-  -e, --examples        display some examples of use and exit  
+                        format to return results as: [identifier | summary |
+                        xml | browse | plastic] (default: summary)
+  -e, --examples        display some examples of use and exit
+
     ]]></source>
     <source>
 search.py abell
     : display summary for resources matching 'abell'
 
-search.py "abell cluster" noras
-    : display summary for resources matching 'abell cluster' and 'noras'
+search.py abell and noras
+    : display summary for resources matching 'abell' and 'noras'
 
-search.py --format==identifier abell
-    : list identifiers of all resources matching 'abell'
+search.py --format==identifier waveband = radio and type = image
+    : list identifiers of all image services providing radio images
 
-search.py --format==plastic abell
-    : display resources matching 'abell' in a PLASTIC viewer (e.g. VOExplorer)
+search.py --format==plastic publisher = vizier and subject = agn
+    : display resources with subject 'AGN' from Vizier in a PLASTIC viewer (e.g. VOExplorer)
     
-search.py --format==xml "abell cluster" noras
-    : display xml of all resources matching 'abell cluster' and 'noras'
+search.py --format=browse ucd = redshift AND waveband = infrared
+    : browse all IR Redshift resources
     
+search.py --format=xml abell and not type = cone
+    : display xml of resources that match 'abell' but are not cone services.
+
 search.py -i "ivo://nasa.heasarc/skyview/first"
     : display summary of the resource 'ivo://nasa.heasarc/skyview/first'
 
 search.py --format=xml -i "ivo://nasa.heasarc/skyview/first" 
     : display xml of the resource 'ivo://nasa.heasarc/skyview/first'
-
+    
     </source>            
         </subsection>
         
         <subsection name="xquery.py">        
         <p>
-        Perform an XQuery against the Registry Service
+        Search the registry using an XQuery.
         </p>
    <p><b><a href="xquery.py">Download xquery.py</a></b></p>
     <source><![CDATA[  

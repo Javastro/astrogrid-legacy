@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.14 2008/12/11 14:43:44 nw Exp $
+/*$Id: Applications.java,v 1.15 2009/02/13 17:42:11 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,16 +71,15 @@ public interface Applications {
     @Deprecated
     String getQueryToListApplications(); 
     
-    /** helper method - returns the ADQL/s query that should be passed to the registry to
+    /** helper method - returns the SRQL query that should be passed to the registry to
      * list all available applications.
      * 
      * can be used as a starting point to build up filters, etc.
-     * @return an adql query string.
-     * @see Registry
-     * @exclude 
-     * @deprecated use getRegistryAdqlQuery
+     * @return a SRQL query string.
+     * @see Registry#search(String)
+     * @see <a href='http://eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage'>SRQL Language Description</a>      
      */ 
-    @Deprecated
+ 
     String getRegistryQuery();
     
     
@@ -319,6 +318,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.15  2009/02/13 17:42:11  nw
+ Complete - taskUse SRQL in AR
+
  Revision 1.14  2008/12/11 14:43:44  nw
  Incomplete - taskar: cea functions more input tolerant
 

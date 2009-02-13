@@ -194,16 +194,15 @@ app.py ivo://wfau.roe.ac.uk/first-dsa/wsa/ceaApplication ConeSearch  \\
 
 ''')
 elif opts.list:
-    xq = apps.getRegistryXQuery()
-    for i in registry.xquerySearch(xq):
+    for i in registry.search(apps.getRegistryQuery()):
         print i['title'], ":", i['id'] 
     #    for l in textwrap.wrap(i['content']['description'],80):
     #        print l
     #    print "-" * 80
     sys.exit()
 elif opts.browse:
-    rs = ar.dialogs.registryGoogle.selectResourcesXQueryFilter(
-                "All Remote Applications",True,apps.getRegistryXQuery())
+    rs = ar.dialogs.registryGoogle.selectResources(
+                "All Remote Applications",True,apps.getRegistryQuery())
     if len(rs) > 0:
         print "You selected"
         for r in rs:

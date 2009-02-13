@@ -13,16 +13,11 @@ if not (sys.version_info[0] > 2 or sys.version_info[1] >= 5):
     print """This script runs best on python 2.5 or above. 
     You're running """ + sys.version
     
-def mkQuery(kws):
-    """ build an xquery out of one or more keyword terms"""
-    xq = "//vor:Resource[not (@status='inactive' or @status='deleted') "
-    for kw in kws:
-        clause = """title &= '*%s*' or identifier &= '*%s*' or shortName &= '*%s*'
-            or content/subject &= '*%s*' or content/description &= '*%s*'
-            """ % (kw,kw,kw,kw,kw)
-        
-        xq += " and ( " + clause + ")"    
-    return xq + "]"
+def mkQuery(args):
+    """ build an xquery out of commandline"""
+    s = ' '.join(args)
+    return registry.toXQuery(s)
+
 
 def sendPlasticMessage(idList):
     """ send a plastic message to display a list of resouces"""
@@ -39,17 +34,20 @@ fname = os.path.expanduser("~/.astrogrid-desktop")
 assert os.path.exists(fname),  'No AR running: Please start your AR and rerun this script'
 prefix = file(fname).next().rstrip()
 ar = xmlrpclib.Server(prefix + "xmlrpc")
+registry = ar.ivoa.registry
 
-defaultFormat="summary"
 #parse options
-parser = optparse.OptionParser(usage='%prog [options] <keywords> | <identifier>',
-     description="Search the Registry by keyword or ID, and display results in various ways.")
+parser = optparse.OptionParser(usage='%prog [options] <srql> | <identifier>',
+     description="""
+Search the Registry using simple queries or ID, and display results in various ways.
+The query language accepted is SRQL - See http://eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage
+     """)
 parser.add_option('-i','--id',action='store_true',dest='identifier', default=False
-                      , help='treat search term as a full registry identifier')
-parser.add_option('-k','--keyword',action='store_false',dest='identifier'
-                   , help='treat search term as keywords (default)')
-parser.add_option('-f','--format', default=defaultFormat, choices=['identifier','summary','xml','plastic']
-                  ,help='format to return results as: identifier, summary, xml, plastic (default: %s)' % defaultFormat)
+                      , help='treat arguments as a match against a full registry identifier')
+parser.add_option('-q','--srql',action='store_false',dest='identifier'
+                   , help='treat arguments as SRQL (default)')
+parser.add_option('-f','--format', default='summary', choices=['identifier','summary','xml','browse','plastic']
+                  ,help='format to return results as: [identifier | summary | xml | browse | plastic] (default: %default)')
 
 parser.add_option('-e','--examples',action='store_true',default=False
                   ,help='display some examples of use and exit')
@@ -61,18 +59,21 @@ if opts.examples:
 search.py abell
     : display summary for resources matching 'abell'
 
-search.py "abell cluster" noras
-    : display summary for resources matching 'abell cluster' and 'noras'
+search.py abell and noras
+    : display summary for resources matching 'abell' and 'noras'
 
-search.py --format==identifier abell
-    : list identifiers of all resources matching 'abell'
+search.py --format==identifier waveband = radio and type = image
+    : list identifiers of all image services providing radio images
 
-search.py --format==plastic abell
-    : display resources matching 'abell' in a PLASTIC viewer (e.g. VOExplorer)
+search.py --format==plastic publisher = vizier and subject = agn
+    : display resources with subject 'AGN' from Vizier in a PLASTIC viewer (e.g. VOExplorer)
     
-search.py --format==xml "abell cluster" noras
-    : display xml of all resources matching 'abell cluster' and 'noras'
+search.py --format=browse ucd = redshift AND waveband = infrared
+    : browse all IR Redshift resources
     
+search.py --format=xml abell and not type = cone
+    : display xml of resources that match 'abell' but are not cone services.
+
 search.py -i "ivo://nasa.heasarc/skyview/first"
     : display summary of the resource 'ivo://nasa.heasarc/skyview/first'
 
@@ -80,7 +81,6 @@ search.py --format=xml -i "ivo://nasa.heasarc/skyview/first"
     : display xml of the resource 'ivo://nasa.heasarc/skyview/first'
 """)
     
-registry = ar.ivoa.registry
 
 #take action
 if len(args) == 0:
@@ -110,7 +110,16 @@ return <li>{$r/identifier/text()}</li>
         else:
             rs = re.findall("<li>(.*)</li>",result)
             sendPlasticMessage(rs)
-        
+            
+elif opts.format == 'browse':
+        rs = ar.dialogs.registryGoogle.selectResources(
+                "All Remote Applications",True,' '.join(args))
+        if len(rs) > 0:
+            print "You selected"
+            for r in rs:
+                print r['title']
+                print " ", r['id']
+            
 elif opts.format == 'summary':  
     if opts.identifier: 
         r = registry.getResource(args[0])
@@ -140,9 +149,9 @@ elif opts.format == 'xml' :
         xq = "//vor:Resource[not (@status='inactive' or @status='deleted') and identifier='%s']" % args[0]
     else:
         xq = mkQuery(args)
-    print registry.xquerySearchXML(xq)
+    print registry.xquerySearchXML('<resources>{' + xq + '}</resources>')
     
-    
+
 
 
 
