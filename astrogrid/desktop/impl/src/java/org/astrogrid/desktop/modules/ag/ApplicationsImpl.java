@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.39 2008/12/11 14:46:33 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.40 2009/02/16 16:54:38 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -103,9 +103,9 @@ public class ApplicationsImpl implements ApplicationsInternal {
         return getRegistryQuery();
     }
     
-    @Deprecated
+    
     public String getRegistryQuery() {
-    	return getRegistryAdqlQuery();
+    	return "type = ceaapplication";
     }
    
 	@Deprecated
@@ -462,6 +462,9 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.40  2009/02/16 16:54:38  nw
+Complete - taskUse SRQL in AR
+
 Revision 1.39  2008/12/11 14:46:33  nw
 Complete - taskar: cea functions more input tolerant
 

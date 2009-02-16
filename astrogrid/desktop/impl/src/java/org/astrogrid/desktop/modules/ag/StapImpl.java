@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.17 2008/12/03 19:40:56 nw Exp $
+/*$Id: StapImpl.java,v 1.18 2009/02/16 16:54:39 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.astrogrid.Stap;
@@ -142,7 +141,7 @@ public class StapImpl extends DALImpl implements Stap {
 	}
 
 	public String getRegistryQuery() {
-		throw new NotImplementedException("not avalable in stap");
+		return "type = Time";
 	}
 
     protected URL findAccessURL(final Service s) throws InvalidArgumentException {
@@ -185,6 +184,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.18  2009/02/16 16:54:39  nw
+Complete - taskUse SRQL in AR
+
 Revision 1.17  2008/12/03 19:40:56  nw
 Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
 
