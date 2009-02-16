@@ -44,7 +44,7 @@ public class DalProtocolException extends SAXException {
          * @param message
          */
         public InsufficientMetadata(final String message) {
-            super("Service response table lacks metadata: " + message);
+            super("Response from service lacks metadata: " + message);
         }
 
     }
