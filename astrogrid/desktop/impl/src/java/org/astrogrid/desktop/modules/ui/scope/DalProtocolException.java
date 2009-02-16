@@ -44,7 +44,7 @@ public class DalProtocolException extends SAXException {
          * @param message
          */
         public InsufficientMetadata(final String message) {
-            super("Insufficient metadata provided by response table: " + message);
+            super("Service response table lacks metadata: " + message);
         }
 
     }
@@ -55,7 +55,7 @@ public class DalProtocolException extends SAXException {
          * @param message
          */
         public RA_UNDETECTED() {
-            super("unable to detect RA column");
+            super("unable to detect RA column - no column is marked with UCD POS_EQ_RA_MAIN");
         }
     }
     
@@ -66,7 +66,7 @@ public class DalProtocolException extends SAXException {
          * @param message
          */
         public Dec_UNDETECTED() {
-            super("unable to detected Dec column");
+            super("unable to detected Dec column  - no column is marked with UCD POS_EQ_DEC_MAIN");
         }
     }
     
