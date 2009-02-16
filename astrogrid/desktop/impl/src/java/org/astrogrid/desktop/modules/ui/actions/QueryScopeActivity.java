@@ -49,7 +49,7 @@ private final AstroScopeInternal ai;
 public void actionPerformed(final ActionEvent e) {
 	final List l = computeInvokable();
 	final int sz = l.size();
-	confirmWhenOverThreshold(sz,"Query all " + sz + " files?",new Runnable() {
+	confirmWhenOverThreshold(sz,"Query all " + sz + " services?",new Runnable() {
 
         public void run() {
             ai.runSubset(l);
