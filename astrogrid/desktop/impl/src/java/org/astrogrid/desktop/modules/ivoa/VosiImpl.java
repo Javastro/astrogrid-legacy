@@ -35,6 +35,10 @@ import org.joda.time.Period;
  * <p/>
  * very loose parsing - first of identifying the correct capability, and thn
  * of parsing the response - hopefully this will give us forward-compatability when the standard changes.
+ * 
+ * visually checked with Vosi 1.0 - pretty confident it should work
+ *  - only possible gotcha is the loose parsing of vosi capabilities - anything # capability - but this should be ok.
+ *  - there's still legacy AG availability services around that have an old availabvility type here. 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 20085:15:03 PM
  */
