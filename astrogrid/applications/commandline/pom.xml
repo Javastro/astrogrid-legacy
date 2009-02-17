@@ -141,13 +141,13 @@
      <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-cea-server</artifactId>
-        <version>2008.3-SNAPSHOT</version>
+        <version>2009.1-SNAPSHOT</version>
      </dependency>
  
      <dependency><!-- these are the test classes - needed for the self tests -->
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-cea-server</artifactId>
-        <version>2008.3-SNAPSHOT</version>
+        <version>2009.1-SNAPSHOT</version>
         <classifier>tests</classifier>
      </dependency>
      
