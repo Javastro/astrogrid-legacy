@@ -1,4 +1,4 @@
-/*$Id: HtmlTransportIntegrationTest.java,v 1.7 2008/12/30 22:01:42 nw Exp $
+/*$Id: HtmlTransportIntegrationTest.java,v 1.8 2009/02/17 13:46:33 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -138,7 +138,7 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
         assertTextPresent("OK"); 
     }
     
-    /** fails - need to find way to get jetty to report exceptioins in error page */
+
     public void testCheckedException() {
         beginAt("/test/transporttest/"); // need to jump straight here, as test methods are hidden from navigation.
         
@@ -152,25 +152,21 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
         assertEquals(500,wc.getCurrentPage().getResponseCode());
         assertTextPresent("NotFoundException"); 
     }
-/*    seems to be a bug in jwebtest - can't invoke the right service. don't care.
+    
     public void testUncheckedException() throws IOException {
-    	beginAt("/");
-    	assertLinkPresentWithText("test");
-    	clickLinkWithText("test");
-        assertLinkPresentWithText("transporttest");
-        clickLinkWithText("transporttest");
+        beginAt("/test/transporttest/"); // need to jump straight here, as test methods are hidden from navigation.
         assertLinkPresentWithText("throwUncheckedException");
         clickLinkWithText("throwUncheckedException");
         assertFormPresent("call");
         // expecting to cause an error now - so need to dive down to lower level api, and disable exceptions on http error.
-        WebClient wc =  getDialog().getWebClient();
+        final WebClient wc =  getDialog().getWebClient();
         wc.setExceptionsThrownOnErrorStatus(false);
         submit();
         assertEquals(500,wc.getCurrentPage().getResponseCode());
         assertTextPresent("NullPointerException");  
         
     }
- */   
+
     public void testUncheckedExceptionOfUnknownType() throws IOException {
     	beginAt("/test/transporttest/"); // need to jump straight here, as test methods are hidden from navigation.
         assertLinkPresentWithText("throwUncheckedExceptionOfUnknownType");
@@ -184,22 +180,17 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
         assertTextPresent("AnUnknownRuntimeException");  
         
     }
-    /* @fixme fix this test
+    
     public void testByteArrayTransport() { 
-    	beginAt("/");
-    	assertLinkPresentWithText("test");
-    	clickLinkWithText("test");
-        assertLinkPresentWithText("transporttest");
-        clickLinkWithText("transporttest");
+        beginAt("/test/transporttest/"); // need to jump straight here, as test methods are hidden from navigation.
+
         assertLinkPresentWithText("echoByteArray");
         clickLinkWithText("echoByteArray");
         assertFormPresent("call");
         setFormElement("arr","fred"); //can't pass in a byte array - has to be as string.
         submit();
-        // lets me peek at the text.
-        //        this.tester.dumpResponse();
-        assertTextPresent("fred");  //@todo at moment, we're seing [B@ - need to work out where and how to fix this.
-    }*/
+        assertTextPresent("fred"); 
+    }
     
     
     public static Test suite() {
@@ -210,6 +201,9 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
 
 /* 
 $Log: HtmlTransportIntegrationTest.java,v $
+Revision 1.8  2009/02/17 13:46:33  nw
+Complete - taskfix http input of binary parameters.
+
 Revision 1.7  2008/12/30 22:01:42  nw
 improved in-program API help.
 

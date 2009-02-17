@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.16 2008/12/22 18:18:00 nw Exp $
+/*$Id: HtmlServlet.java,v 1.17 2009/02/17 13:45:18 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -325,20 +326,32 @@ public class HtmlServlet extends AbstractReflectionServlet {
         }
 
         final Object result = MethodUtils.invokeMethod(component,md.getName(),args);
-        response.setContentType("text/" + resultType.trim().toLowerCase());
-        final PrintWriter out = response.getWriter();
-        // fix for bz #1647
-        if (m.getReturnType().equals(Void.TYPE)) {
-        	out.println("OK");
-        }  else if (result == null) {
-            out.println("null");
-        } else if (resultType.equalsIgnoreCase("html")) {
-            out.println(html.transform(result));
-        } else if (resultType.equalsIgnoreCase("plain")) {
-            out.println( plain.transform(result));
+        if (result instanceof byte[]) {
+            // not working. Need to read up why .
+            final byte[] data = (byte[])result;
+            response.setContentType("application/octet-stream");
+            final ServletOutputStream outputStream = response.getOutputStream();
+            outputStream.write(data); 
+           
+                    //Base64.encodeBase64((byte[])result));
+           // outputStream.close();
+           
         } else {
-        	// fall back to plain.
-        	out.println(plain.transform(result));
+            response.setContentType("text/" + resultType.trim().toLowerCase());
+            final PrintWriter out = response.getWriter();
+            // fix for bz #1647
+            if (m.getReturnType().equals(Void.TYPE)) {
+                out.println("OK");
+            }  else if (result == null) {
+                out.println("null");
+            } else if (resultType.equalsIgnoreCase("html")) {
+                out.println(html.transform(result));
+            } else if (resultType.equalsIgnoreCase("plain")) {
+                out.println( plain.transform(result));
+            } else {
+                // fall back to plain.
+                out.println(plain.transform(result));
+            }
         }
         } catch (final Exception e) {
         	reportError("Exception thrown when calling method " + md.getName(),e,request,response);
@@ -374,6 +387,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.17  2009/02/17 13:45:18  nw
+Complete - taskfix http input of binary parameters.
+
 Revision 1.16  2008/12/22 18:18:00  nw
 improved in-program API help.
 

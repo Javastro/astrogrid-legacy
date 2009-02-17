@@ -1,4 +1,4 @@
-/*$Id: XmlRpcTransportIntegrationTest.java,v 1.10 2008/12/22 18:18:18 nw Exp $
+/*$Id: XmlRpcTransportIntegrationTest.java,v 1.11 2009/02/17 13:46:33 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -140,7 +140,15 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         assertNotSame(bytes,o);
         assertTrue(Arrays.equals(bytes,(byte[])o));
     }
-    
+
+    /** same as previous, but passing a string parameter where a binary parameter is expected */
+    public void testByteArrayTransportStringInput() throws XmlRpcException, IOException {       
+        v.add("fred");
+        final Object o = client.execute("test.transporttest.echoByteArray",v);
+        assertNotNull(o);
+        assertThat(o,is(byte[].class));
+        assertTrue(Arrays.equals("fred".getBytes(),(byte[])o));
+    }
 
 
     public void testCallUnknownMethod() throws  IOException {
@@ -187,6 +195,9 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: XmlRpcTransportIntegrationTest.java,v $
+Revision 1.11  2009/02/17 13:46:33  nw
+Complete - taskfix http input of binary parameters.
+
 Revision 1.10  2008/12/22 18:18:18  nw
 improved in-program API help.
 

@@ -323,6 +323,7 @@ DATA CONVERTORS - string -> object
 		<register output="java.util.List" converter="instance:org.astrogrid.desktop.modules.system.converters.CollectionConvertor" />
 		<register output="[Ljava.lang.Object;"  converter="instance:org.astrogrid.desktop.modules.system.converters.ArrayConvertor"/>
         <register output="[Ljava.net.URI;"  converter="instance:org.astrogrid.desktop.modules.system.converters.URIArrayConvertor"/>
+        <register output="[B" converter="instance:org.astrogrid.desktop.modules.system.converters.ByteArrayConvertor" />
     </contribution>	
 	
 
