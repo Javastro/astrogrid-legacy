@@ -144,7 +144,7 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
 	Interface uws = new UWSPA();
 	uws.setVersion("0.9");
 	AccessURL uwsURL = new AccessURL();
-	uwsURL.setValue(this.configuration.getServiceEndpoint().toString());
+	uwsURL.setValue(this.configuration.getServiceEndpoint().toString()+"uws/jobs");
 	uws.getAccessURL().add(uwsURL);
 	ceaCap.getInterface().add(uws);
 	
