@@ -82,7 +82,7 @@
     <action dev="nw" type="add">
     AR: Updated to latest version (0.4) of the IVOA Standard 'Virtual Observatory Support Interfaces' (VOSI). 
     VOSI is used within VOExplorer and TaskRunner to check that services are operable and to query for their expected availability. 
-    VOSI queries can now be made by scripts & programs using the AstroRuntime library.
+    VOSI queries can now be made by scripts and programs using the AstroRuntime library.
     </action>
 </release>
 <release version="2008.1.2" date="2008-9-15">
