@@ -19,6 +19,10 @@ import org.w3c.dom.Document;
  * AstroRuntime uses an IVOA-compliant registry to retrieve details of available resources
  *  - servers, applications, catalogues, etc.
  *  <p/>
+ *  This component provides a range of different methods to search the registry. The
+ *  most convenient is to use the {@link #search(String)} method, which accepts a simple
+ *  query in the form used by VOExplorer's smart-lists.
+ *  <p/>
  *  The endpoint of this registry service can be inspected by calling {@link #getSystemRegistryEndpoint()}.
  *  In cases where this service is unavailable, registry queries will automatically fall-back to the
  *  backup registry service, whose endpoint is defined by {@link #getFallbackSystemRegistryEndpoint()}.
@@ -39,6 +43,46 @@ import org.w3c.dom.Document;
  */
 public interface Registry {
  
+    
+    /** Perform a search using the query language used by VOExplorer SmartLists (SRQL)
+    * <p/>
+    * {@example "Search for IR Redshift resources (Python)"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+#call this function
+rs = ar.ivoa.registry.search("ucd = redshift AND waveband = infrared")
+#see what we've got  
+print len(rs)
+#list first 10 identifiers
+for r in rs[:10]:
+    print r['id']
+    * }
+    * 
+    * The output is
+    * <pre>
+    * 109
+    * ivo://CDS.VizieR/J/ApJ/655/51
+    * ivo://CDS.VizieR/J/ApJ/653/1004
+    * ivo://CDS.VizieR/J/ApJ/649/63
+    * ivo://CDS.VizieR/J/ApJ/634/128
+    * ivo://CDS.VizieR/J/AJ/117/102
+    * ivo://CDS.VizieR/J/AN/329/418
+    * ivo://CDS.VizieR/J/ApJS/166/470
+    * ivo://CDS.VizieR/VII/173
+    * ivo://CDS.VizieR/VII/157
+    * ivo://CDS.VizieR/J/other/PBeiO/18.7
+    * </pre>         
+     * @param srql   query to perform
+     * @return list of matching resources
+     * @throws ServiceException if registry cannot be queried.
+     * @throws InvalidArgumentException if query passed in cannot be parsed as SRQL
+     * @see <a href='http://eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage'>SRQL Language Description</a> 
+     * @equivalence xquerySearch(toXQuery(srql)) 
+     */
+     Resource[] search(String srql) throws ServiceException, InvalidArgumentException;
+    
     
     /** Perform an ADQL/x registry search, return a list of matching resources
      * @exclude adql/x doesnt exist anymore
@@ -115,17 +159,7 @@ for r in rs[:10]
     Resource[] keywordSearch(String keywords, boolean orValues)  throws ServiceException;
 	
     
-    
-    /** Perform a search using the query language used by VOExplorer SmartLists (SRQL)
-     * @param srql  the simple registry query to perform
-     * @return list of matching resources
-     * @throws ServiceException if registry cannot be queried.
-     * @throws InvalidArgumentException if query passed in cannot be parsed as SRQL
-     * @see <a href='http://eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage'>SRQL Language Description</a> 
-     * @equivalence xquerySearch(toXQuery(srql)) 
-     */
-     Resource[] search(String srql) throws ServiceException, InvalidArgumentException;
-    
+
      
      /** Translate a SRQL query (as used by VOExplorer SmartLists) into an equivalent XQuery 
      * @param srql  the query to translate 
