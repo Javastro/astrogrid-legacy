@@ -134,7 +134,37 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 		
 	}
 	
+	/** Find the URL endpoint to enable download for a CDS Resource
+	 * 
+	 * @param r
+	 * @return
+	 */
 	public static URI findDownloadLinkForCDSResource(final CatalogService r) {
+	    /*
+	     * This used to work fine by finding the ParamHTTP capability.
+	     * However, this broke when the Vizier service changed sometime in Feb 2009.
+	     * The capability URL found is something like
+	     * http://vizier.u-strasbg.fr/viz-bin/votable/-dtd/-A?-source=J/ApJ/613/682
+	     * 
+	     * But now, to just download the file, I must omit the /-dtd/-A part. I.e. the correct 
+	     * download URL is
+	     * http://vizier.u-strasbg.fr/viz-bin/votable?-source=J/ApJ/613/682
+	     * 
+	     * However, then Sebastien mentions
+	     * 
+" The clean way to do it : I should change all the ParamHttp in all the
+VizieR resources. There are a few other improvements to do in the
+resource descriptions, so this will come soon. But I'll send warnings
+beforehand to all harvesters so they are aware that a few thousands
+of resources will get updated, and therefore need to be downloaded
+and updated in their service."
+	     * 
+	     * So I want to add a work-around which will adapt the current broken URL, but then will
+	     * work fine if he changes the endpoint...
+	     * 
+	     * Therefore, am adding a hack to match exactly against the current form of the capability URL, 
+	     * amd remove the /-dtd/-A if seen. If the URL returned doesn't match, it passes through.
+	     */
 	    final Capability[] caps = r.getCapabilities();
 	    for (int i = 0; i < caps.length; i++) {
 	        final Interface[] interfaces = caps[i].getInterfaces();
@@ -143,12 +173,22 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
                 
             if (StringUtils.contains(iface.getType(),"ParamHTTP")) {
                 // assume a single accessURL
-                return iface.getAccessUrls()[0].getValueURI();
+                 final URI uri = iface.getAccessUrls()[0].getValueURI();
+                 // wrangle if it's the same as expected
+                 if (uri.toString().startsWith(URL_NEEDS_MANGLING)) {
+                     final String remainder = StringUtils.substringAfter(uri.toString(),URL_NEEDS_MANGLING);
+                     return URI.create("http://vizier.u-strasbg.fr/viz-bin/votable?-source=" + remainder);
+                 } else {
+                     return uri;
+                 }
             }
 	        }
         }
 	    return null;
 	}
+	
+	/** Vizier URL prefix that indicates it needs mangling */
+	private static final String URL_NEEDS_MANGLING = "http://vizier.u-strasbg.fr/viz-bin/votable/-dtd/-A?-source=";
 
 
 
