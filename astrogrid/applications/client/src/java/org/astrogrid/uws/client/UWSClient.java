@@ -1,5 +1,5 @@
 /*
- * $Id: UWSClient.java,v 1.2 2008/09/25 00:16:27 pah Exp $
+ * $Id: UWSClient.java,v 1.3 2009/02/26 11:29:09 pah Exp $
  * 
  * Created on 21 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -25,15 +25,25 @@ import net.ivoa.uws.ResultList;
 import net.ivoa.uws.ShortJobDescription;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRedirectHandler;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
@@ -55,7 +65,25 @@ public class UWSClient implements UWS {
 
     public UWSClient(URI uwsroot) {
         this.UWSRoot = uwsroot;
-        httpClient = new DefaultHttpClient();
+        // Create and initialize HTTP parameters
+        HttpParams params = new BasicHttpParams();
+        ConnManagerParams.setMaxTotalConnections(params, 100);
+        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+        
+        // Create and initialize scheme registry 
+        SchemeRegistry schemeRegistry = new SchemeRegistry();
+        schemeRegistry.register(
+                new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+        schemeRegistry.register(
+                new Scheme("https", org.apache.http.conn.ssl.SSLSocketFactory.getSocketFactory(), 443));
+        
+        // Create an HttpClient with the ThreadSafeClientConnManager.
+        // This connection manager must be used if more than one thread will
+        // be using the HttpClient.
+        ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+
+        httpClient = new DefaultHttpClient(cm, params);
+        
 
     }
 
@@ -68,7 +96,7 @@ public class UWSClient implements UWS {
             post.setEntity(ent);
             post.setHeader("Accept", "application/xml");
             httpClient.setRedirectHandler(new DefaultRedirectHandler());
-            // IMPL really should have a specialized response handler
+             // IMPL really should have a specialized response handler
             JobSummary retval = httpClient.execute(post, new UWSObjectResponseHandler<JobSummary>(JobSummary.class));
             return retval;
         } catch (Exception e) {
@@ -228,6 +256,9 @@ public class UWSClient implements UWS {
 
 /*
  * $Log: UWSClient.java,v $
+ * Revision 1.3  2009/02/26 11:29:09  pah
+ * adjusted to make httpclient do multithreaded
+ *
  * Revision 1.2  2008/09/25 00:16:27  pah
  * change termination time to execution duration
  *
