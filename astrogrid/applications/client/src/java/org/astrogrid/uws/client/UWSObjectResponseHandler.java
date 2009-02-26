@@ -1,5 +1,5 @@
 /*
- * $Id: UWSObjectResponseHandler.java,v 1.1 2008/09/24 13:47:18 pah Exp $
+ * $Id: UWSObjectResponseHandler.java,v 1.2 2009/02/26 11:30:21 pah Exp $
  * 
  * Created on 23 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -38,6 +38,9 @@ import org.xml.sax.SAXException;
 public class UWSObjectResponseHandler<T> implements ResponseHandler<T> {
     
     
+    /** logger for this class */
+    private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
+            .getLog(UWSObjectResponseHandler.class);
     
     private final Class<T> clazz;
  
@@ -56,8 +59,11 @@ public class UWSObjectResponseHandler<T> implements ResponseHandler<T> {
         if(entity != null){
             InputStream instream = null ;
             try {
+                 logger.debug("unmarshalling UWS response");
                  instream = entity.getContent();
-                 T retval = CEAJAXBUtils.unmarshall(instream, clazz);
+                 logger.debug("got stream");
+                 T retval = CEAJAXBUtils.unmarshall(instream, clazz, false);
+                 logger.debug("UWS response unmarshalled");
                  return retval;
             } catch (MetadataException e) {
                 throw new ClientProtocolException("cannot create IVOA object ="+clazz.getSimpleName(),e);
@@ -85,6 +91,9 @@ public class UWSObjectResponseHandler<T> implements ResponseHandler<T> {
 
 /*
  * $Log: UWSObjectResponseHandler.java,v $
+ * Revision 1.2  2009/02/26 11:30:21  pah
+ * add some debugging info
+ *
  * Revision 1.1  2008/09/24 13:47:18  pah
  * added generic UWS client code
  *
