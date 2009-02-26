@@ -90,12 +90,12 @@
       <dependency>
          <groupId>org.apache.httpcomponents</groupId>
          <artifactId>httpclient</artifactId>
-         <version>4.0-beta1</version>
+         <version>4.0-beta2</version>
       </dependency>
       <dependency>
          <groupId>org.astrogrid</groupId>
          <artifactId>astrogrid-cea-common</artifactId>
-         <version>2008.3-SNAPSHOT</version>
+         <version>2009.1-SNAPSHOT</version>
       </dependency>
    </dependencies>
    <developers>
