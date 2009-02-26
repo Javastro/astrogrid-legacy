@@ -13,7 +13,7 @@
       <version>2009.1-SNAPSHOT</version>  
     </parent>
   <name>CEA CEC web server</name>
-  <version>2008.3-SNAPSHOT</version>
+  <version>2009.1-SNAPSHOT</version>
   <description>A CEA application-server for running applications. The service provides
     CEA's standard SOAP interface, "CommonExecutionController" and a UWS interface.</description>
   <properties>
@@ -265,11 +265,6 @@
         <artifactId>spring-test</artifactId>
         <version>2.5.2</version>
         <!-- <scope>test</scope> seem to need in the javadoc -->
-     </dependency>
-     <dependency>
-     	<groupId>org.astrogrid</groupId>
-     	<artifactId>astrogrid-cea-common</artifactId>
-     	<version>2008.3-SNAPSHOT</version>
      </dependency>
   </dependencies>
   <profiles><profile><id>chibaprof</id> <!-- need to switch this profile on to activate the repositories for initial download -->
