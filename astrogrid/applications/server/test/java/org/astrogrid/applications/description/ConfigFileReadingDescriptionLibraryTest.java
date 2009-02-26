@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFileReadingDescriptionLibraryTest.java,v 1.5 2008/10/09 11:48:18 pah Exp $
+ * $Id: ConfigFileReadingDescriptionLibraryTest.java,v 1.6 2009/02/26 12:47:04 pah Exp $
  * 
  * Created on 26 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -58,7 +58,7 @@ public class ConfigFileReadingDescriptionLibraryTest {
         CEAConfiguration conf = new MockNonSpringConfiguredConfig();
         lib = new ConfigFileReadingDescriptionLibrary(conf);
  	lib.loadApplications(ConfigFileReadingDescriptionLibraryTest.class.getResource("/TestSingleApplicationConfig.xml"));
-	ApplicationDescription desc = lib.getDescription("ivo://org.testit/testappsingle");
+	ApplicationDefinition desc = lib.getDescription("ivo://org.testit/testappsingle");
 	assertNotNull("Should have found the singly defined application", desc);
     }
     
@@ -89,6 +89,9 @@ public class ConfigFileReadingDescriptionLibraryTest {
 
 /*
  * $Log: ConfigFileReadingDescriptionLibraryTest.java,v $
+ * Revision 1.6  2009/02/26 12:47:04  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.5  2008/10/09 11:48:18  pah
  * add dynamic app description library & refactor more funtionality to base class
  *

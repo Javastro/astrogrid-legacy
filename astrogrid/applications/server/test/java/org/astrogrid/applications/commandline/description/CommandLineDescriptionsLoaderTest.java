@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.4 2008/09/13 09:51:05 pah Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.5 2009/02/26 12:47:04 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,7 +20,7 @@ import org.astrogrid.applications.commandline.AbstractCmdLineAppTestCase;
 import org.astrogrid.applications.commandline.CommandLineApplication;
 import org.astrogrid.applications.commandline.CommandLineApplicationDescription;
 import org.astrogrid.applications.commandline.Toolbuilder;
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.Cardinality;
@@ -70,7 +70,7 @@ public class CommandLineDescriptionsLoaderTest extends AbstractCmdLineAppTestCas
             assertEquals("Wrong numbr of apps defined", 14 , dl
                     .getApplicationNames().length);
             System.out.println("Test application is called " + TESTAPPNAME);
-            ApplicationDescription x = dl.getDescription(TESTAPPNAME);
+            ApplicationDefinition x = dl.getDescription(TESTAPPNAME);
             assertTrue(x instanceof CommandLineApplicationDescription);
             CommandLineApplicationDescription ad = (CommandLineApplicationDescription)x;
             assertEquals("instance class", ad.getInstanceClass(), null);

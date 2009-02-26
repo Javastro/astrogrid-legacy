@@ -1,4 +1,4 @@
-/*$Id: TestApplicationDescriptionLibrary.java,v 1.9 2008/12/16 19:29:04 pah Exp $
+/*$Id: TestApplicationDescriptionLibrary.java,v 1.10 2009/02/26 12:47:04 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import net.ivoa.resource.ResourceName;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.MockCeaConfiguration;
+import org.astrogrid.applications.description.AbstractApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
@@ -131,6 +132,9 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: TestApplicationDescriptionLibrary.java,v $
+Revision 1.10  2009/02/26 12:47:04  pah
+separate more out into cea-common for both client and server
+
 Revision 1.9  2008/12/16 19:29:04  pah
 RESOLVED - bug 2875: Application registration lacks schemaLocation
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2875

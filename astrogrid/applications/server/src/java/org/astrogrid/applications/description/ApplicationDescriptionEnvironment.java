@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionEnvironment.java,v 1.1 2008/10/06 12:16:15 pah Exp $
+/*$Id: ApplicationDescriptionEnvironment.java,v 1.2 2009/02/26 12:45:54 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.component.descriptor.ComponentDescriptor;
 
 import junit.framework.Test;
 
-/** A container for some components generally used within {@link org.astrogrid.applications.description.ApplicationDescription} implementations.
+/** A container for some components generally used within {@link org.astrogrid.applications.description.ApplicationDefinition} implementations.
  * <p>
  * The components are bundled into this container to make it simpler to add further ones later
  * <p />
@@ -98,6 +98,9 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
 
 /* 
 $Log: ApplicationDescriptionEnvironment.java,v $
+Revision 1.2  2009/02/26 12:45:54  pah
+separate more out into cea-common for both client and server
+
 Revision 1.1  2008/10/06 12:16:15  pah
 factor out classes common to server and client
 

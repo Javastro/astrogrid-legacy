@@ -1,4 +1,4 @@
-/*$Id: FileStoreExecutionHistory.java,v 1.9 2008/09/13 09:51:02 pah Exp $
+/*$Id: FileStoreExecutionHistory.java,v 1.10 2009/02/26 12:45:56 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -114,7 +114,7 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
             FileReader fr = new FileReader(f);
             try {
         	
-                return CEAJAXBUtils.unmarshall(fr, ExecutionSummaryType.class);
+                return CEAJAXBUtils.unmarshall(fr, ExecutionSummaryType.class, false);
             } catch (Exception e) {
 		logger.error("problem unmarshalling for "+key, e);
 		ExecutionSummaryType es = new ExecutionSummaryType();
@@ -206,6 +206,9 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
 
 /* 
 $Log: FileStoreExecutionHistory.java,v $
+Revision 1.10  2009/02/26 12:45:56  pah
+separate more out into cea-common for both client and server
+
 Revision 1.9  2008/09/13 09:51:02  pah
 code cleanup
 

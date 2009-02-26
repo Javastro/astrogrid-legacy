@@ -1,4 +1,4 @@
-/*$Id: InMemoryExecutionHistory.java,v 1.6 2008/09/18 09:13:39 pah Exp $
+/*$Id: InMemoryExecutionHistory.java,v 1.7 2009/02/26 12:45:56 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,7 +61,7 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
 	}
 	dataFactory = dataF;
     }
-    protected  Map currentSet;
+    protected  Map<String, Application> currentSet;
     protected  SimpleMap archive;
     private final DatatypeFactory dataFactory;
     /**
@@ -74,7 +74,7 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
      * @see org.astrogrid.applications.manager.persist.ExecutionHistory#getApplicationFromCurrentSet(java.lang.String)
      */
     public Application getApplicationFromCurrentSet(String execID) throws ExecutionIDNotFoundException {
-        final Application app = (Application)currentSet.get(execID);
+        final Application app = currentSet.get(execID);
         if (app == null) {
             throw new ExecutionIDNotFoundException(execID);
         }
@@ -243,6 +243,9 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
 
 /* 
 $Log: InMemoryExecutionHistory.java,v $
+Revision 1.7  2009/02/26 12:45:56  pah
+separate more out into cea-common for both client and server
+
 Revision 1.6  2008/09/18 09:13:39  pah
 improved javadoc
 

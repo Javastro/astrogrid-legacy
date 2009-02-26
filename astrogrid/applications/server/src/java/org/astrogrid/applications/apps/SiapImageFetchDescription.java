@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchDescription.java,v 1.9 2008/10/06 12:16:14 pah Exp $
+/*$Id: SiapImageFetchDescription.java,v 1.10 2009/02/26 12:45:55 pah Exp $
  * Created on 15-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,7 +86,7 @@ public class SiapImageFetchDescription extends InternallyConfiguredApplicationDe
     }
 
     /**
-     * @see org.astrogrid.applications.description.ApplicationDescription#initializeApplication(java.lang.String, SecurityGuard, org.astrogrid.workflow.beans.v1.Tool)
+     * @see org.astrogrid.applications.description.ApplicationDefinition#initializeApplication(java.lang.String, SecurityGuard, org.astrogrid.workflow.beans.v1.Tool)
      */
     public Application initializeApplication(String callerAssignedID,
             SecurityGuard secGuard, Tool tool) throws Exception {
@@ -117,6 +117,9 @@ public class SiapImageFetchDescription extends InternallyConfiguredApplicationDe
 
 /* 
 $Log: SiapImageFetchDescription.java,v $
+Revision 1.10  2009/02/26 12:45:55  pah
+separate more out into cea-common for both client and server
+
 Revision 1.9  2008/10/06 12:16:14  pah
 factor out classes common to server and client
 

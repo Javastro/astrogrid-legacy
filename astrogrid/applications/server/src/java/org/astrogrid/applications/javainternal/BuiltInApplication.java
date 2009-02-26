@@ -72,7 +72,7 @@ public class BuiltInApplication extends JavaInternalApplication implements Runna
     try {
    for(i = 0;i < 1000; i++)
     {
-	System.out.println(i);
+//	System.out.println(i);
 	if(Thread.currentThread().isInterrupted())
 	{
 	    throw new InterruptedException("Built-in app killed during tight loop");

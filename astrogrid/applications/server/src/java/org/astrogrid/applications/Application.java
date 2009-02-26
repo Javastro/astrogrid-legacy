@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Observer;
 import java.util.concurrent.FutureTask;
 
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
@@ -28,7 +28,7 @@ import org.astrogrid.security.SecurityGuard;
  * A single execution of an application.
  * <p />
  * This interface represents the application of a {@link org.astrogrid.workflow.beans.v1.Tool} 
- * to an {@link org.astrogrid.applications.description.ApplicationDescription} - 
+ * to an {@link org.astrogrid.applications.description.ApplicationDefinition} - 
  * and models a single application execution / invocation / call.
  * <p />
  * This is the core interface to be implemented by CEA provider back-ends.
@@ -113,7 +113,7 @@ public interface Application  {
     * @return an interface object belonging to {@link #getApplicationDescription()} */
    public ApplicationInterface getApplicationInterface() ;
    /** @return the description of this application */
-   public ApplicationDescription getApplicationDescription() ;
+   public ApplicationDefinition getApplicationDescription() ;
    /** @return the user-assigned if for this application */
    public String getJobStepID();
    /** @return the current status of the application 

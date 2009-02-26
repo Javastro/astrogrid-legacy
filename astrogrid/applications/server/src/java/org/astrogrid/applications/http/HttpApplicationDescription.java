@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescription.java,v 1.1 2008/09/10 23:27:17 pah Exp $
+/*$Id: HttpApplicationDescription.java,v 1.2 2009/02/26 12:45:56 pah Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.AbstractApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.MetadataAdapter;
-import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
@@ -56,7 +56,7 @@ public class HttpApplicationDescription extends AbstractApplicationDescription {
     private List<InterfaceDefinition> interfaces;
 
     /**
-     * @see org.astrogrid.applications.description.ApplicationDescription#initializeApplication(java.lang.String,
+     * @see org.astrogrid.applications.description.ApplicationDefinition#initializeApplication(java.lang.String,
      *      SecurityGuard, org.astrogrid.workflow.beans.v1.Tool)
      */
     public Application initializeApplication(String jobStepID, SecurityGuard secGuard, Tool tool) throws Exception {
@@ -95,6 +95,9 @@ public class HttpApplicationDescription extends AbstractApplicationDescription {
 
 /*
  * $Log: HttpApplicationDescription.java,v $
+ * Revision 1.2  2009/02/26 12:45:56  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.1  2008/09/10 23:27:17  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleApplicationDescriptionLibrary.java,v 1.3 2008/09/13 09:51:05 pah Exp $
+ * $Id: SimpleApplicationDescriptionLibrary.java,v 1.4 2009/02/26 12:45:54 pah Exp $
  * 
  * Created on 16 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -45,8 +45,8 @@ public class SimpleApplicationDescriptionLibrary extends
      */
     public void setApplications(List<ApplicationDescription> apps)
     {
-	for (ApplicationDescription applicationDescription : apps) {
-	    this.addApplicationDescription(applicationDescription);
+	for (ApplicationDescription applicationDefinition : apps) {
+	    this.addApplicationDescription(applicationDefinition);
 	}
     }
 
@@ -55,6 +55,9 @@ public class SimpleApplicationDescriptionLibrary extends
 
 /*
  * $Log: SimpleApplicationDescriptionLibrary.java,v $
+ * Revision 1.4  2009/02/26 12:45:54  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.3  2008/09/13 09:51:05  pah
  * code cleanup
  *

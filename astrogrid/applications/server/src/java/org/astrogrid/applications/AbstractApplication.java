@@ -8,7 +8,7 @@
 
 package org.astrogrid.applications;
 
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.Cardinality;
 import org.astrogrid.applications.description.Identify;
@@ -82,7 +82,7 @@ import java.util.concurrent.FutureTask;
  * @since iteration4.1
  * @see org.astrogrid.applications.javaclass.JavaClassApplication as an example extension
  * @see org.astrogrid.applications.Application
- * @see org.astrogrid.applications.description.ApplicationDescription
+ * @see org.astrogrid.applications.description.ApplicationDefinition
  * @see org.astrogrid.applications.parameter.ParameterAdapter
  */
 public abstract class AbstractApplication extends Observable implements Application, Identify {
@@ -478,7 +478,7 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
   }
 
   /** access the description associated with this application */
-   public final ApplicationDescription getApplicationDescription() {
+   public final ApplicationDefinition getApplicationDescription() {
       return applicationInterface.getApplicationDescription();
    }
  

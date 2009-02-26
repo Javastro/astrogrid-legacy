@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationDescription.java,v 1.10 2008/09/24 13:40:49 pah Exp $
+ * $Id: AbstractApplicationDescription.java,v 1.1 2009/02/26 12:45:54 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,19 +11,20 @@
  *
  */ 
 
-package org.astrogrid.applications.description.base;
+package org.astrogrid.applications.description;
 
 import net.ivoa.resource.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.ApplicationFactory;
 import org.astrogrid.applications.component.InternalCEAComponents;
 import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.ApplicationDescription;
-import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.MetadataAdapter;
-import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.description.base.ApplicationBase;
+import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
@@ -31,9 +32,9 @@ import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.security.SecurityGuard;
 
 /**
- * Abstract base implementation of {@link org.astrogrid.applications.description.ApplicationDescription}.
+ * Abstract base implementation of {@link org.astrogrid.applications.description.ApplicationDefinition}.
  * <p />
- * Implements all methods in the <tt>ApplicationDescription</tt> interface apart from {@link org.astrogrid.applications.description.ApplicationDescription#initializeApplication(String, SecurityGuard, Tool)},
+ * Implements all methods in the <tt>ApplicationDescription</tt> interface apart from {@link org.astrogrid.applications.description.ApplicationDefinition#initializeApplication(String, SecurityGuard, Tool)},
  * which is left abstract
  * <p />
  * Implementation is an adapter for {@link CeaApplication} with extra methods for adding/retrieving interfaces and parameters. In addition to the methods of the <tt>ApplicationDescription</tt> interface, this class
@@ -44,7 +45,7 @@ import org.astrogrid.security.SecurityGuard;
  * @version $Name:  $
  * @since iteration4
  */
-public abstract class AbstractApplicationDescription implements ApplicationDescription{
+public abstract class AbstractApplicationDescription implements ApplicationDescription {
     /**
      * Logger for this class
      */
@@ -79,7 +80,7 @@ protected final Configuration conf;
 
       assert appBase.isValid() : "ApplicationDescriptions should be passed  CeaApplications with valid BaseApplicationDescriptions";
       //make sure that the back reference to the application definition is set 
-      for (InterfaceDefinition intf : appBase.interfaces.interfaceDefinition) {
+      for (InterfaceDefinition intf : appBase.getInterfaces().getInterfaceDefinition()) {
 	      //make sure that the back reference to the application definition is set 
 	intf.setApplicationDescription(this); //IMPL would be better to do this at creation time...
 	
@@ -126,7 +127,7 @@ public String getReferenceURL() {
    public ParameterDescription[] getParameterDescriptions()
    {
 
-       return appBase.getParameters().parameterDefinition.toArray(new ParameterDescription[0]);       
+       return appBase.getParameters().getParameterDefinition().toArray(new ParameterDescription[0]);       
    }
 
    public ParameterDescription getParameterDescription(String parameterName) throws ParameterDescriptionNotFoundException

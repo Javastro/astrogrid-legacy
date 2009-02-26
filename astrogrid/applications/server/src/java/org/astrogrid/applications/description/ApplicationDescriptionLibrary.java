@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionLibrary.java,v 1.5 2008/09/03 14:18:43 pah Exp $
+/*$Id: ApplicationDescriptionLibrary.java,v 1.6 2009/02/26 12:45:54 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.applications.description;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
-/** A container for {@link org.astrogrid.applications.description.ApplicationDescription} instances
+/** A container for {@link org.astrogrid.applications.description.ApplicationDefinition} instances
  * <p>
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
@@ -30,6 +30,9 @@ public interface ApplicationDescriptionLibrary {
 }
 /* 
 $Log: ApplicationDescriptionLibrary.java,v $
+Revision 1.6  2009/02/26 12:45:54  pah
+separate more out into cea-common for both client and server
+
 Revision 1.5  2008/09/03 14:18:43  pah
 result of merge of pah_cea_1611 branch
 

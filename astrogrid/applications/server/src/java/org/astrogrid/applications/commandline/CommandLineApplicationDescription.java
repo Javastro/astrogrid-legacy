@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationDescription.java,v 1.5 2008/09/18 09:13:39 pah Exp $
+ * $Id: CommandLineApplicationDescription.java,v 1.6 2009/02/26 12:45:56 pah Exp $
  *
  * Created on 25 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -22,9 +22,9 @@ import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.AbstractApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.MetadataAdapter;
-import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.impl.CeaCmdLineApplicationDefinition;
 import org.astrogrid.security.SecurityGuard;
@@ -55,7 +55,7 @@ public class CommandLineApplicationDescription extends AbstractApplicationDescri
      */
     private static final Log logger = LogFactory.getLog(CommandLineApplicationDescription.class);
     /**
- * @see org.astrogrid.applications.description.base.AbstractApplicationDescription#initializeApplication(java.lang.String, SecurityGuard, org.astrogrid.applications.ParameterValues)
+ * @see org.astrogrid.applications.description.AbstractApplicationDescription#initializeApplication(java.lang.String, SecurityGuard, org.astrogrid.applications.ParameterValues)
  */
 public Application initializeApplication(String jobStepID, SecurityGuard secGuard,Tool tool) throws CeaException {
     ApplicationInterface appInterface = this.getInterface(tool.getInterface());

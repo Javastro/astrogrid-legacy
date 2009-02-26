@@ -131,7 +131,7 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
 public String toString() {     
         StringBuffer appList = new StringBuffer();
         for (Iterator i = descMap.values().iterator(); i.hasNext(); ) {
-            ApplicationDescription desc = (ApplicationDescription)i.next();
+            ApplicationDefinition desc = (ApplicationDefinition)i.next();
             appList.append("\n");
             appList.append(desc.toString());
             appList.append("\n");

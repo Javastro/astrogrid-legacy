@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.15 2008/09/13 09:51:05 pah Exp $
+/*$Id: SystemTest.java,v 1.16 2009/02/26 12:47:04 pah Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import java.net.URI;
 import net.ivoa.uws.ExecutionPhase;
 
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.MessageType;
@@ -50,7 +50,7 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
         querier = new DefaultQueryService(history, executionRetriever);
         
         // construct the tool object
-        ApplicationDescription sum = lib.getDescription("ivo://org.astrogrid.unregistered/default");
+        ApplicationDefinition sum = lib.getDescription("ivo://org.astrogrid.unregistered/default");
            assertNotNull(sum);
            ApplicationInterface iface = sum.getInterfaces()[0];
            assertNotNull(iface);
@@ -135,6 +135,9 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.16  2009/02/26 12:47:04  pah
+separate more out into cea-common for both client and server
+
 Revision 1.15  2008/09/13 09:51:05  pah
 code cleanup
 

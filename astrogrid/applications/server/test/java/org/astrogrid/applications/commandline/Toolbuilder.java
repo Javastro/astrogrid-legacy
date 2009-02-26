@@ -1,5 +1,5 @@
 /*
- * $Id: Toolbuilder.java,v 1.5 2008/09/15 19:27:22 pah Exp $
+ * $Id: Toolbuilder.java,v 1.6 2009/02/26 12:47:04 pah Exp $
  * 
  * Created on 03-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.astrogrid.applications.description.AbstractApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.execution.ListOfParameterValues;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.Tool;
@@ -150,6 +150,9 @@ public abstract class Toolbuilder  {
 
 /*
  * $Log: Toolbuilder.java,v $
+ * Revision 1.6  2009/02/26 12:47:04  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.5  2008/09/15 19:27:22  pah
  * comment on need to make this work in jar
  *

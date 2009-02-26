@@ -12,6 +12,7 @@ package org.astrogrid.applications.manager;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;

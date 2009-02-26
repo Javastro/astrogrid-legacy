@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFileReadingDescriptionLibrary.java,v 1.7 2008/10/09 11:47:27 pah Exp $
+ * $Id: ConfigFileReadingDescriptionLibrary.java,v 1.8 2009/02/26 12:45:54 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.impl.CeaCmdLineApplicationDefinition;
 
 /**
- * {@link ApplicationDescription} library that can load and contain
+ * {@link ApplicationDefinition} library that can load and contain
  * {@link CeaCmdLineApplicationDefinition}s. Acts as a factory for applications
  * read from a file.
  * 
@@ -99,6 +99,9 @@ public class ConfigFileReadingDescriptionLibrary extends
 
 /*
  * $Log: ConfigFileReadingDescriptionLibrary.java,v $
+ * Revision 1.8  2009/02/26 12:45:54  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.7  2008/10/09 11:47:27  pah
  * add dynamic app description library & refactor more funtionality to base class
  *

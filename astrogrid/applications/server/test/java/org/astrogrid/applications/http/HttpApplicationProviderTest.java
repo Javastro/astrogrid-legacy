@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.1 2008/09/10 23:27:17 pah Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.2 2009/02/26 12:47:04 pah Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
@@ -378,6 +379,9 @@ public class HttpApplicationProviderTest {
 
 /*
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.2  2009/02/26 12:47:04  pah
+separate more out into cea-common for both client and server
+
 Revision 1.1  2008/09/10 23:27:17  pah
 moved all of http CEC and most of javaclass CEC code here into common library
 

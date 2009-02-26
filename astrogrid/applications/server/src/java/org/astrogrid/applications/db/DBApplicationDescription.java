@@ -1,5 +1,5 @@
 /*
- * $Id: DBApplicationDescription.java,v 1.5 2008/09/13 09:51:06 pah Exp $
+ * $Id: DBApplicationDescription.java,v 1.6 2009/02/26 12:45:56 pah Exp $
  * 
  * Created on 13 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -16,8 +16,8 @@ import javax.sql.DataSource;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.AbstractApplicationDescription;
 import org.astrogrid.applications.description.MetadataAdapter;
-import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.security.SecurityGuard;
@@ -46,6 +46,9 @@ public class DBApplicationDescription extends AbstractApplicationDescription {
 
 /*
  * $Log: DBApplicationDescription.java,v $
+ * Revision 1.6  2009/02/26 12:45:56  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.5  2008/09/13 09:51:06  pah
  * code cleanup
  *

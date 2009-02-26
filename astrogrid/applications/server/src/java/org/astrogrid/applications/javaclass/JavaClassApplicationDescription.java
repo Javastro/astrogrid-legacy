@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescription.java,v 1.9 2008/09/24 13:40:49 pah Exp $
+/*$Id: JavaClassApplicationDescription.java,v 1.10 2009/02/26 12:45:56 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,9 +15,9 @@ import java.lang.reflect.Method;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.AbstractApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.AppMetadataAdapter;
-import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
@@ -25,7 +25,7 @@ import org.astrogrid.security.SecurityGuard;
 
 /** A description for an application that is implemented as a static java method.
  * <p>
- * For a method foo(), this class will create an {@link org.astrogrid.applications.description.ApplicationDescription} for <tt><i>authorityName</i>/foo</tt>,
+ * For a method foo(), this class will create an {@link org.astrogrid.applications.description.ApplicationDefinition} for <tt><i>authorityName</i>/foo</tt>,
  * where the authority name is specified in the constructor.
  * <p>
  * Constructs all the metadata for the application via reflection on the static method.
@@ -50,7 +50,7 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
      }
     protected final Method method;
     /**
-     * @see org.astrogrid.applications.description.ApplicationDescription#initializeApplication(java.lang.String, SecurityGuard, org.astrogrid.workflow.beans.v1.Tool)
+     * @see org.astrogrid.applications.description.ApplicationDefinition#initializeApplication(java.lang.String, SecurityGuard, org.astrogrid.workflow.beans.v1.Tool)
      */
     public Application initializeApplication(String jobStepID, SecurityGuard secGuard, Tool tool) throws Exception {
         // we know there's only one interface supported for each application
@@ -63,6 +63,9 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
 
 /* 
 $Log: JavaClassApplicationDescription.java,v $
+Revision 1.10  2009/02/26 12:45:56  pah
+separate more out into cea-common for both client and server
+
 Revision 1.9  2008/09/24 13:40:49  pah
 package naming changes
 

@@ -114,7 +114,7 @@ public int hashCode() {
    
    static {
        phaseMap.put(Status.NEW,         ExecutionPhase.PENDING);
-       phaseMap.put(Status.QUEUED,      ExecutionPhase.PENDING);
+       phaseMap.put(Status.QUEUED,      ExecutionPhase.QUEUED);
        phaseMap.put(Status.INITIALIZED, ExecutionPhase.PENDING);
        phaseMap.put(Status.READINGPARAMETERS, ExecutionPhase.EXECUTING);
        phaseMap.put(Status.RUNNING,     ExecutionPhase.EXECUTING);

@@ -1,5 +1,5 @@
 /*
- * $Id: InternallyConfiguredApplicationDescription.java,v 1.1 2008/10/06 12:16:15 pah Exp $
+ * $Id: InternallyConfiguredApplicationDescription.java,v 1.2 2009/02/26 12:45:56 pah Exp $
  * 
  * Created on 13 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -14,8 +14,8 @@ package org.astrogrid.applications.description.intnl;
 
 
 import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.AbstractApplicationDescription;
 import org.astrogrid.applications.description.AppMetadataAdapter;
-import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.base.BaseParameterDefinition;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.base.ParameterTypes;
@@ -60,6 +60,9 @@ public abstract class InternallyConfiguredApplicationDescription extends
 
 /*
  * $Log: InternallyConfiguredApplicationDescription.java,v $
+ * Revision 1.2  2009/02/26 12:45:56  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.1  2008/10/06 12:16:15  pah
  * factor out classes common to server and client
  *

@@ -1,4 +1,4 @@
-/*$Id: AbstractApplicationTest.java,v 1.11 2008/10/06 12:16:16 pah Exp $
+/*$Id: AbstractApplicationTest.java,v 1.12 2009/02/26 12:47:04 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import java.util.Observer;
 
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.BaseParameterDefinition;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
@@ -163,7 +163,7 @@ public class AbstractApplicationTest  {
 
     @Test
     public void testGetApplicationDescription() {
-	ApplicationDescription descr = app.getApplicationDescription();
+	ApplicationDefinition descr = app.getApplicationDescription();
 	assertSame(description, descr);
     }
 
@@ -339,6 +339,9 @@ public class AbstractApplicationTest  {
 
 /*
  * $Log: AbstractApplicationTest.java,v $
+ * Revision 1.12  2009/02/26 12:47:04  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.11  2008/10/06 12:16:16  pah
  * factor out classes common to server and client
  *

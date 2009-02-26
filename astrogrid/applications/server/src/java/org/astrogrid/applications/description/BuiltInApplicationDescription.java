@@ -18,7 +18,7 @@ import org.astrogrid.applications.javainternal.BuiltInApplication;
 import org.astrogrid.security.SecurityGuard;
 
 /**
- * An {@link ApplicationDescription} whose details are known at compile time. The application is known as
+ * An {@link ApplicationDefinition} whose details are known at compile time. The application is known as
  * ivo://org.astrogrid.unregistered/default
  *
  * @author Guy Rixon
