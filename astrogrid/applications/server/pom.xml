@@ -68,7 +68,7 @@
            <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-common</artifactId>
-            <version>2008.3-SNAPSHOT</version>
+            <version>2009.1-SNAPSHOT</version>
           </dependency>
   
     <dependency>
