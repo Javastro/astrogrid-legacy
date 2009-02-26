@@ -10,6 +10,7 @@ import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.framework.AllFrameworkIntegrationTests;
 import org.astrogrid.desktop.modules.cds.AllCdsIntegrationTests;
 import org.astrogrid.desktop.modules.dialogs.AllDialogIntegrationTests;
+import org.astrogrid.desktop.modules.file.AllFileIntegrationTests;
 import org.astrogrid.desktop.modules.ivoa.AllIvoaIntegrationTests;
 import org.astrogrid.desktop.modules.system.pref.AllPreferenceIntegrationTests;
 import org.astrogrid.desktop.modules.ui.AllUiIntegrationTests;
@@ -37,6 +38,7 @@ public class AbsolutelyAllIntegrationTests {
         inar.addTest(AllDialogIntegrationTests.suite());
         inar.addTest(AllUiIntegrationTests.suite());
         inar.addTest(AllUtilIntegrationtests.suite());
+        inar.addTest(AllFileIntegrationTests.suite());
 		return new ARTestSetup(inar);
 		
 	}

@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE module  [
+	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/file-descriptors.xml">
+	]>
+<module id="file" version="1.0.0" package="org.astrogrid.acr.file">
+Access to filesystems
+	
+	<!-- contributions -->
+	<contribution configuration-id="framework.acrServices">
+            <acrService id="manager" interface="Manager" />
+            <acrService id="systems" interface="Systems" />
+            <acrService id="info" interface="Info" />
+            <acrService id="name" interface="Name" />
+            <!-- 
+            <acrService id="bulk" interface="Bulk" />
+             -->
+	</contribution>
+		
+	<contribution configuration-id="framework.descriptors">
+		<acr-module name="file" description="Access to Filesystems">
+		&descriptors;
+		</acr-module>
+	</contribution>
+	
+    <service-point id="manager" interface="Manager">
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.file.ManagerImpl">
+                <service>system.vfs</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+    <service-point id="systems" interface="Systems">
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.file.SystemsImpl">
+                <service>system.vfs</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
+    
+    <service-point id="info" interface="Info">
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.file.InfoImpl">
+                <service>system.vfs</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
+    
+    <service-point id="name" interface="Name">
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.file.NameImpl">
+                <service>system.vfs</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+	
+ </module>
+ 

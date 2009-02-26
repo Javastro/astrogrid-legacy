@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.16 2008/12/23 17:24:49 nw Exp $
+/*$Id: Myspace.java,v 1.17 2009/02/26 15:54:02 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.dialogs.ResourceChooser;
+import org.astrogrid.acr.file.Manager;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ui.MyspaceBrowser;
 
@@ -26,12 +27,10 @@ import org.astrogrid.acr.ui.MyspaceBrowser;
  * 
  * <p/> Myspace is Astrogrid's prototype implementation of VOSpace.
  * 
- * {@stickyWarning At present this interface doesn't contain suficient functionality to work with myspace in a truly efficient manner.
- *  Also, myspace is being replaced by an implementation of the VOSpace standard.
- *  Expect a cleaner, more efficient interface
- * to VOSpace to be added later. However this interface and it's current methods will remain available, and won't be deprecated if at all possible.
- * } 
-
+ * {@stickyWarning This component just provides access to Myspace files. The {@link Manager} component
+ * provides access to a wider range of filesystems - VOSpace, Myspace, plus FTP and some others.
+ * }   
+ * 
  * 
  * @note All resources in myspace are uniquely identified by a myspace resource identifier - which is an URI of form<br />
  * <tt>ivo://<i>Community-Id</i>/<i>User-Id</i>#<i>File-Path</i></tt>. 
@@ -42,6 +41,7 @@ import org.astrogrid.acr.ui.MyspaceBrowser;
 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Mar-2005
   * @service astrogrid.myspace
+  * @deprecated use {@link Manager}
   * @see #createFile Example of creating a file
   * @see #getReadContentURL Example of reading from a file
   * @see #getWriteContentURL Example of writing to a file
@@ -49,6 +49,7 @@ import org.astrogrid.acr.ui.MyspaceBrowser;
   * @see MyspaceBrowser  Myspace file browser component
   * @see ResourceChooser Dialogue for selecting myspace files
  */
+@Deprecated
 public interface Myspace {
 /* divide myspace into separate interface into 2-3 levels - trivial, advanced, optimized, depending on use case.
   maybe one interface could be stateful - passing in a 'current position' object as first arg.
@@ -483,6 +484,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.17  2009/02/26 15:54:02  nw
+ Complete - taskVFS AR interface.
+
  Revision 1.16  2008/12/23 17:24:49  nw
  Complete - task Improve formatting of function help in apihelp
  Documentation fix.

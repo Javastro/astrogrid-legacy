@@ -44,6 +44,7 @@ public class VODesktop1 {
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
+    	l.addModuleByName("file");
         l.addModuleByName("util");    	
         l.addModuleByName("network");
 	}

@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ag.vfs.myspace;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -22,6 +23,7 @@ import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeIterator;
+import org.astrogrid.filemanager.common.TransferInfo;
 import org.astrogrid.store.Ivorn;
 
 /** VFS FileObject for Myspace.
@@ -172,10 +174,17 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 		node = null;
 	}
 
-
+	// modified to get the readContentURL too - as there's no other way to 
+	// get to this in the VFS api.
 	protected Map doGetAttributes() throws Exception {
 		logger.debug("getAttributes " + getName());
-		return node.getMetadata().getAttributes();
+		final TransferInfo info = node.getNodeDelegate().readContent(node.getMetadata().getNodeIvorn());
+		final Map attr =  node.getMetadata().getAttributes();
+		final HashMap hm = new HashMap(attr);
+		hm.put("ContentURL",info.getUri().toString());
+		hm.put("ContentMethod",info.getMethod());
+		return hm;
+		
 
 	}
 
@@ -213,7 +222,9 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 
 	protected void onChildrenChanged(final FileName child, final FileType newType) throws Exception {
 		logger.debug("childChanged " + getName());
-		node.refresh(); // ? fair guess.
+		if (node != null) {
+		    node.refresh(); // ? fair guess.
+		}
 	}
 
 	//overridden to return the accessURL

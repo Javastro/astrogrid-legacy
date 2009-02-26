@@ -1,4 +1,4 @@
-/*$Id: URIConverter.java,v 1.7 2008/12/10 21:02:09 nw Exp $
+/*$Id: URIConverter.java,v 1.8 2009/02/26 15:58:44 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.Converter;
+import org.apache.commons.lang.StringUtils;
 
 /** convets strings to URI
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Mar-2005
@@ -36,7 +37,7 @@ public class URIConverter implements Converter {
         	throw new ConversionException("Null argument");
         }
         try {
-            return new URI(arg1.toString().trim());
+            return new URI(StringUtils.replace(arg1.toString().trim()," ","%20"));
         } catch (final URISyntaxException e) {
             throw new ConversionException("Cannot convert " + arg1 + " to URI");
         }
@@ -48,6 +49,9 @@ public class URIConverter implements Converter {
 
 /* 
 $Log: URIConverter.java,v $
+Revision 1.8  2009/02/26 15:58:44  nw
+Complete - taskVFS AR interface.
+
 Revision 1.7  2008/12/10 21:02:09  nw
 Complete - taskadd input convertor to produce Date
 altered other input convertors to throw correct exception.

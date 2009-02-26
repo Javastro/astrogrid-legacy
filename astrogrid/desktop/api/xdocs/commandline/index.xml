@@ -207,7 +207,22 @@ adql.py --service=ivo://wfau.roe.ac.uk/twomass-dsa/wsa "select top 10 * from two
 
 adql.py -myspace=/results/temp/adql1.vot -i query.adql
    : stage results at '/results/temp/adql1.vot' within the user's myspace            
-</source>    
+</source>  
+<!-- 
+Richer example I could work in.
+gives a 58M result however..
+Try running this
+python adql.py - -service=ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa/ceaApplication  -mtempscriptresults.vot 'Select * From PhotoObjAll as a where a.ra between 180.0 and 180.5 and a."dec" between 1.0 and 1.5'
+
+which uses a file 'tempscriptresults.vot' in vospace to spool results into, which prevents the memory error. (this one will prompt you to login).
+The results are still displayed in the terminal afterwards - and a copy is left in myspace.
+
+Finally, start up topcat (with it's disk flags), make sure it's connected to the hub, then try this
+python adql.py - -service=ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa/ceaApplication  -mnewresults.vot -fplastic 'Select * From PhotoObjAll as a where a.ra between 180.0 and 180.5 and a."dec" between 1.0 and 1.5'
+
+Which will spool the results to myspace, but then display the table in topcat when the query completes. (memory and network permitting).
+
+ -->  
     </subsection>
 
   

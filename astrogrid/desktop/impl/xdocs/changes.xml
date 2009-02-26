@@ -16,6 +16,12 @@
 	</head>
 <body>
 
+<release version="1.2.3" date="unreleased">
+    <action dev="nw" type="add">
+    AR: Added File API - uniform access to different kinds of 
+    file system - local disk, ftp, sftp, myspace, http, vospace (upcoming)
+    </action>
+</release>
 <release version="1.2.3.beta1" date="2009-2-13">
     <action dev="nw" type="add">
         Commandline: Added 'browse' option to adql.py, siap.py. Implemented app.py for executing remote applications (CEA).

@@ -17,7 +17,7 @@
     </packageGroup>         
     <packageGroup>
     	<title>Access to Virtual Observatory services</title>
-    	<packages>org.astrogrid.acr.ivoa*:org.astrogrid.acr.astrogrid:org.astrogrid.acr.cds:org.votech</packages>
+    	<packages>org.astrogrid.acr.ivoa*:org.astrogrid.acr.astrogrid:org.astrogrid.acr.cds:org.astrogrid.acr.file:org.votech</packages>
     </packageGroup>    
     <packageGroup>
     	<title>User Interface and Desktop Integration</title>

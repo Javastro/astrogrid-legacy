@@ -25,6 +25,7 @@ import ConstrainingQuery
 import XQueryTrials
 import Plastic
 import Vosi
+import filetests
 
 def setupAR():
     """connect to the ar, initialize a global variable"""
@@ -56,6 +57,7 @@ if __name__ == '__main__':
         ,Plastic.suite()
         ,Vosi.suite()
         ,XQueryTrials.suite()
+        ,filetests.suite()
         
                                    ])
     #run the tests.

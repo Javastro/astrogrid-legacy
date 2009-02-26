@@ -1,0 +1,51 @@
+<html>
+<head>
+    <title>Access to remote filesystems</title>
+</head>
+<body>
+    <h1>Access to remote filesystems</h1>
+    <p>
+    This module provides uniform access to the following types of file system:
+    </p>
+    <table rules='rows' frame='box' cellpadding='2'>
+    <tr><th>Filesystem</th><th>Example</th><th>Read Files</th><th>Write Files</th><th>List Directories</th><th>Notes</th></tr>
+    <tr><td>Local Disk</td><td><tt>file:///Users/frog/Documents</tt></td>
+        <td align='center'>Y</td><td align='center'>Y</td><td align='center'>Y</td>
+        <td></td></tr>
+    <tr><td>VOSpace</td><td><tt>vos://</tt></td>
+        <td align='center'>Y</td><td align='center'>Y</td><td align='center'>Y</td>
+        <td></td></tr>    
+    <tr><td>Myspace</td><td><tt>ivo://uk.ac.le.star/frog#/dir/results.vot</tt></td>
+        <td align='center'>Y</td><td align='center'>Y</td><td align='center'>Y</td>
+        <td></td></tr>    
+    <tr><td>User's workspace</td><td><tt>workspace:/dir/results.vot</tt></td>
+        <td align='center'>Y</td><td align='center'>Y</td><td align='center'>Y</td>    
+        <td>Redirects to user's Myspace or VOSpace as appropriate</tr>
+    <tr><td>FTP</td><td><tt>ftp://user:pass@server.com/dir/file.txt</tt></td>
+        <td align='center'>Y</td><td align='center'>Y</td><td align='center'>Y</td>    
+        <td>To authenticate, supply username and password in URL</td></tr>   
+    <tr><td>Secure FTP</td><td><tt>sftp://user:pass@server.com/dir/file.txt</tt></td>
+        <td align='center'>Y</td><td align='center'>Y</td><td align='center'>Y</td>    
+        <td>To authenticate, supply username and password in URL</td></tr>    
+    <tr><td>HTTP</td><td><tt>http://www.server.org/path/file.vot</tt></td>
+        <td align='center'>Y</td><td align='center'>N</td><td align='center'>N</td>
+        <td>Accepts query parameters after <tt>?</tt></td></tr>   
+    <tr><td>Temporary</td><td><tt>tmp://dir/file.txt</tt></td>
+        <td align='center'>Y</td><td align='center'>Y</td><td align='center'>Y</td>
+        <td>All temporary files are deleted when AR terminates.</td></tr>                     
+    </table>
+    <p>
+    The full list of supported filesystems is available from the {@link org.astrogrid.acr.file.Systems} component.
+    The other components in this module are
+    </p>
+    <dl>
+    <dt>{@link org.astrogrid.acr.file.Manager}</dt>    
+    <dd>Operations on files and folders: list, read, write, create, delete, move, copy </dd>
+    <dt>{@link org.astrogrid.acr.file.Info}</dt>
+    <dd>Access metadata about files and folders: size, content-type, modification date.</dd>
+    <dt>{@link org.astrogrid.acr.file.Name}</dt>
+    <dd>Construct, decompose and manipulate URI filenames</dd>    
+    </dl>
+
+</body>
+</html>

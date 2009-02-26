@@ -12,6 +12,7 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Stap;
+import org.astrogrid.acr.file.Systems;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.util.Tables;
 import org.w3c.dom.Document;
@@ -225,9 +226,8 @@ me = ar.plastic.hub.registerNoCallBack("script") #register with PLASTIC
 m = 'ivo://votech.org/votable/loadFromURL'  # message to emit 
 ar.plastic.hub.requestAsynch(me,m,[q]) #sends the message
 
-# Save images selected by the query to myspace  
-home = ar.astrogrid.myspace.getHome() #path to user's myspace home (causes login)
-dir = ar.astrogrid.myspace.createChildFolder(home,p['posStr'])  #create a new directory
+# Save images selected by the query to user's workspace (that is, vospace or myspace)
+dir = 'workspace:/dalexample'
 ar.ivoa.siap.saveDatasets(q,dir) #save the images
 
 # Save an ascii version of the SIAP query response 
@@ -316,10 +316,10 @@ public interface Dal {
 	    * 
 	    * @note in the case of saving to myspace, the myspace server performs the query - the data does not pass through the user's computer.
 	 * @param query query url to execute
-	 * @param saveLocation location to save result document - May be {@code file:/}, {@code ivo://} (myspace), {@code ftp://} location
+	 * @param saveLocation location to save result document - For example a {@code file:/}, {@code ivo://} (myspace), {@code ftp://} location
 	 * @throws SecurityException if the user is not permitted to write to the save location
-        * @throws ServiceException if an error occurs while communicating with the  service, or if the service is unable to process the request	 * @throws InvalidArgumentException if the save location cannot be written to
-
+     * @throws ServiceException if an error occurs while communicating with the  service, or if the service is unable to process the request	 * @throws InvalidArgumentException if the save location cannot be written to
+     * @see Systems#listSchemes() List of supported URI schemes for {@code saveLocation}
 	 */
 	void executeAndSave(URL query, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
 	/** @exclude
@@ -334,12 +334,13 @@ public interface Dal {
 	 * @note In the case of saving to myspace, the myspace server performs the query and dataset download - the data does not pass through the
 	 * user's computer.
 	 * @param query query url to execute
-	 * @param saveLocation location of a directory in which to save the datasets. May be a {@code file:/}, {@code ivo://}(myspace) or {@code ftp://} location.
+	 * @param saveLocation location of a directory in which to save the datasets. May be any of the filesystems listed in {@link Systems#listSchemes()}.
 	 * @throws SecurityException if the user is not permitted to write to the save location
 	 * @throws ServiceException if either the query service or data service are unavailable
 	 * @throws InvalidArgumentException if the save location cannot be written to.
 	 * @return number of datasets saved.
 	 * @see Siap Example of Use
+     * @see Systems#listSchemes() List of supported URI schemes for {@code saveLocation}	 
 	 */
 	int saveDatasets(URL query, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
 	
@@ -351,21 +352,44 @@ public interface Dal {
      * @note in the case of saving to myspace, the myspace server performs the query and dataset download - the data does not pass through the
      * user's computer.	 
 	 * @param query the DAL query
-	 * @param saveLocation location of a directory in which to save the datasets. May be a {@code file:/}, {@code ivo://}(myspace) or {@code ftp://} location.
+     * @param saveLocation location of a directory in which to save the datasets. May be any of the filesystems listed in {@link Systems#listSchemes()}.
 	 * @param rows list of Integers - indexes of the rows in the query response for which to save the dataset. (0= first row) 
 	 * @throws SecurityException if the user is not permitted to write to the save location
 	 * @throws ServiceException if either the query service or data service are unavailable
 	 * @throws InvalidArgumentException if the save location cannot be written to, or the <tt>rows</tt>
 	 * refers to invalid row indexes.
 	 * @return number of datasets saved.
+     * @see Systems#listSchemes() List of supported URI schemes for {@code saveLocation}	 
 	 */
 	int saveDatasetsSubset(URL query, URI saveLocation, List rows) throws SecurityException, ServiceException, InvalidArgumentException;
 	
 	   /** Returns a SRQL query that, when passed to the registry, will return all know services of that type. 
 	    * <br/>
 	    * can be used as a starting point for filters, etc.
-	    * @return a SRQL query string
+        * 
+        * {@stickyWarning In the case of {@link Cone} the registry query will return far too many to be useful - it is necessary to use this xquery as a starting point
+        * for building a more tightly-constrained query.}
+        * {@example "Example of querying for cone services related to 'dwarf'"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')   
+#call this method to get a query to list all Cone-search services.   
+coneQuery = ar.ivoa.cone.getRegistryQuery()
 
+#combine it into a more tightly contrained query
+myQuery = coneQuery + ' and subject=dwarf'
+
+# perform the query
+rs = ar.ivoa.registry.searcg(myQuery)
+#inspect the results
+print len(rs)
+for r in rs:
+    print r['id']       
+        * }   
+	    * @return a SRQL query string
+	    * @see <a href='http://eurovotech.org/twiki/bin/view/VOTech/SimpleRegistryQueryLanguage'>SRQL Language Description</a> 	    
+        * @see #getRegistryXQuery() alternative that returns an XQuery
 	    */
     String getRegistryQuery();
 	   
@@ -395,14 +419,14 @@ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
 coneQuery = ar.ivoa.cone.getRegistryXQuery()
 
 #combine it into a more tightly contrained query
-abellConeQuery = "let $cq := " + coneQuery + """
+myQuery = "let $cq := " + coneQuery + """
 for $r in $cq
 where contains($r/content/subject,'dwarf')
 return $r
 """
 
 # perform the query
-rs = ar.ivoa.registry.xquerySearch(abellConeQuery)
+rs = ar.ivoa.registry.xquerySearch(myQuery)
 #inspect the results
 print len(rs)
 for r in rs:
@@ -415,7 +439,7 @@ ivo://nasa.heasarc/rasswd
 ivo://nasa.heasarc/mcksion
 </pre>	    
 	    * @return an xquery string
-
+        * @see #getRegistryQuery() alternative that returns a SRQL query.
 	    * @see <a href="http://www.w3schools.com/xquery/default.asp">XQuery Language Tutorial</a>  
 	    */
 	   String getRegistryXQuery();
