@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractAccessProtocolController.java,v 1.5 2008/10/20 10:35:40 pah Exp $
+ * $Id: AbstractAccessProtocolController.java,v 1.6 2009/02/26 12:22:54 pah Exp $
  * 
  * Created on 14 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.component.CEAComponents;
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.base.ParameterTypes;
@@ -95,7 +95,7 @@ public class AbstractAccessProtocolController {
             IOException {
             String appShortname = parsAppName(request);
             if(appShortname != null){
-                ApplicationDescription appdesc;    
+                ApplicationDefinition appdesc;    
             appdesc = manager.getApplicationDescriptionLibrary()
                     .getDescriptionByShortName(appShortname);
             ApplicationInterface intf = appdesc.getInterfaces()[0];
@@ -136,7 +136,7 @@ public class AbstractAccessProtocolController {
         }
     }
 
-    protected void sendMetadata(ApplicationDescription appdesc, PrintWriter pw) {
+    protected void sendMetadata(ApplicationDefinition appdesc, PrintWriter pw) {
         pw.println("<?xml version='1.0'?>");
         pw.println("<VOTABLE version='1.1' xmlns='http://www.ivoa.net/xml/VOTable/v1.1'>");
         pw.println("<DESCRIPTION>Metadata response for "+appdesc.getId()+"</DESCRIPTION>");
@@ -203,6 +203,9 @@ public class AbstractAccessProtocolController {
 
 /*
  * $Log: AbstractAccessProtocolController.java,v $
+ * Revision 1.6  2009/02/26 12:22:54  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.5  2008/10/20 10:35:40  pah
  * pull functioality up
  *

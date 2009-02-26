@@ -1,5 +1,5 @@
 /*
- * $Id: AppDefinitionController.java,v 1.1 2008/10/09 11:40:10 pah Exp $
+ * $Id: AppDefinitionController.java,v 1.2 2009/02/26 12:22:54 pah Exp $
  * 
  * Created on 8 Oct 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -30,7 +30,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.astrogrid.applications.component.CEAComponents;
 import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.DynamicApplicationDescriptionLibrary;
@@ -102,7 +102,7 @@ public class AppDefinitionController {
     public ModelAndView showApp(HttpServletRequest request, HttpServletResponse response) throws ApplicationDescriptionNotFoundException
     {
         ModelAndView retval = new ModelAndView("dynapp");
-        ApplicationDescription desc = dynLib.getDescription(dynLib.getApplicationNames()[0]);
+        ApplicationDefinition desc = dynLib.getDescription(dynLib.getApplicationNames()[0]);
         retval.addObject("app", desc);
         return retval;
         
@@ -121,6 +121,9 @@ public class AppDefinitionController {
 
 /*
  * $Log: AppDefinitionController.java,v $
+ * Revision 1.2  2009/02/26 12:22:54  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.1  2008/10/09 11:40:10  pah
  * NEW - bug 2847: simple xform application definition
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2847

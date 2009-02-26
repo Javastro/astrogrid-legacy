@@ -1,5 +1,5 @@
 /*
- * $Id: CEAJAXBUtils.java,v 1.1 2008/10/06 12:12:37 pah Exp $
+ * $Id: CEAJAXBUtils.java,v 1.2 2009/02/26 12:25:48 pah Exp $
  * 
  * Created on 13 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,6 +13,7 @@
 package org.astrogrid.applications.description.jaxb;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,6 +21,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URL;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -48,6 +50,7 @@ import net.ivoa.resource.Resource;
 import net.ivoa.resource.registry.iface.VOResources;
 
 import org.astrogrid.applications.description.MetadataException;
+import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.contracts.Namespaces;
 import org.astrogrid.contracts.SchemaMap;
@@ -67,6 +70,7 @@ public class CEAJAXBUtils {
     /** logger for this class */
     private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
 	    .getLog(CEAJAXBUtils.class);
+    private static JAXBContext contextFactory; 
 
     static {
 	InputStream xslFileStream;
@@ -82,6 +86,11 @@ public class CEAJAXBUtils {
 	} catch (TransformerConfigurationException e) {
 	    logger.fatal("problem setting up default registry stylesheet", e);
 	}
+	try {
+        contextFactory = CEAJAXBContextFactory.newInstance();
+    } catch (JAXBException e) {
+        logger.fatal("problem setting up the JAXB context", e);
+    }
 
     }
 
@@ -176,26 +185,44 @@ public class CEAJAXBUtils {
 
     public static <T> T unmarshall(InputStream is, Class<T> clazz) throws JAXBException, IOException, SAXException, MetadataException {
       StreamSource s = new StreamSource(is);
-      T umObj = unmarshall(s, clazz);
+      T umObj = unmarshall(s, clazz, true);
       return umObj;
     }
+
+    public static <T> T unmarshall(InputStream is, Class<T> clazz, boolean validate) throws JAXBException, IOException, SAXException, MetadataException {
+        StreamSource s = new StreamSource(is);
+        T umObj = unmarshall(s, clazz, validate);
+        return umObj;
+      }
+
     
     public static <T> T unmarshall(Document doc, Class<T> clazz) throws JAXBException, IOException, SAXException, MetadataException {
-	       return unmarshall(new DOMSource(doc), clazz);
+	       return unmarshall(new DOMSource(doc), clazz, true);
 	    }
    
     public static <T> T unmarshall(Reader rd, Class<T> clazz) throws JAXBException, IOException, SAXException, MetadataException {
-	       return unmarshall(new StreamSource(rd), clazz);
-	    }
+        return unmarshall(new StreamSource(rd), clazz, true);
+     }
+    public static <T> T unmarshall(Reader rd, Class<T> clazz, boolean validate) throws JAXBException, IOException, SAXException, MetadataException {
+        return unmarshall(new StreamSource(rd), clazz, validate);
+     }
 
     
-    private static <T> T unmarshall(Source s,Class<T> clazz) throws JAXBException, IOException, SAXException, MetadataException
+    private static <T> T unmarshall(Source s,Class<T> clazz, boolean validate) throws JAXBException, IOException, SAXException, MetadataException
     {
 	T retval;
-	Unmarshaller um = CEAJAXBContextFactory.newInstance()
+	logger.debug("unmarshalling to "+clazz.getSimpleName());
+	Unmarshaller um = contextFactory
 		.createUnmarshaller();
+	if(validate){
+	    logger.debug("finding schema to validate");
 	Schema schema = findSchema(clazz);
 	um.setSchema(schema);
+	}
+	else
+	{
+	    um.setSchema(null);
+	}
 	javax.xml.bind.util.ValidationEventCollector validationEventCollector = new javax.xml.bind.util.ValidationEventCollector();
 	um.setEventHandler(validationEventCollector);
 
@@ -260,10 +287,14 @@ public class CEAJAXBUtils {
 	         }
     }
 
+ 
 }
 
 /*
  * $Log: CEAJAXBUtils.java,v $
+ * Revision 1.2  2009/02/26 12:25:48  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.1  2008/10/06 12:12:37  pah
  * factor out classes common to server and client
  *

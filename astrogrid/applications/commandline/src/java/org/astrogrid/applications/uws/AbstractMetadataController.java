@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractMetadataController.java,v 1.3 2008/09/18 08:46:45 pah Exp $
+ * $Id: AbstractMetadataController.java,v 1.4 2009/02/26 12:22:54 pah Exp $
  * 
  * Created on 12 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -28,7 +28,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.astrogrid.applications.component.CEAComponents;
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.springframework.web.servlet.ModelAndView;
@@ -89,7 +89,7 @@ public class AbstractMetadataController {
 	        List<ResInfo> resources = new ArrayList<ResInfo>();
 	        String[] apps = manager.getApplicationDescriptionLibrary().getApplicationNames();
 	        for (int i = 0; i < apps.length; i++) {
-	            ApplicationDescription appDesc = manager.getApplicationDescriptionLibrary().getDescription(apps[i]);
+	            ApplicationDefinition appDesc = manager.getApplicationDescriptionLibrary().getDescription(apps[i]);
 	            ApplicationInterface[] intfs = appDesc.getInterfaces();
 	            String[] ifaces = new String[intfs.length];
 	            for (int j = 0; j < ifaces.length; j++) {
@@ -134,7 +134,7 @@ public class AbstractMetadataController {
 	        {
 	            
 	            try {
-	        	ApplicationDescription appd = manager.getApplicationDescriptionLibrary().getDescriptionByShortName(name);
+	        	ApplicationDefinition appd = manager.getApplicationDescriptionLibrary().getDescriptionByShortName(name);
 	        	Document doc = manager.getMetadataService().getApplicationDescription(appd.getId());
 	        	sendXML(response, doc, theTransformer);
 	        	return;
@@ -165,6 +165,9 @@ public class AbstractMetadataController {
 
 /*
  * $Log: AbstractMetadataController.java,v $
+ * Revision 1.4  2009/02/26 12:22:54  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.3  2008/09/18 08:46:45  pah
  * improved javadoc
  *

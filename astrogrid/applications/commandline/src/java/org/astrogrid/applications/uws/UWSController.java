@@ -1,5 +1,5 @@
 /*
- * $Id: UWSController.java,v 1.6 2008/09/25 23:14:45 pah Exp $
+ * $Id: UWSController.java,v 1.7 2009/02/26 12:22:54 pah Exp $
  * 
  * Created on 8 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.component.CEAComponents;
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.base.ParameterTypes;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
@@ -145,19 +145,13 @@ public class UWSController  {
 	ExecutionPhase currentPhase = manager.getQueryService().queryExecutionStatus(jobId).getPhase();
 
 	if(newPhaseStr != null && newPhaseStr.equalsIgnoreCase("run")) {
+	    logger.debug("setting phase to RUN for JobId="+jobId);
 
 	    if(currentPhase.equals(ExecutionPhase.PENDING))
 	    {
 		manager.getExecutionController().execute(jobId);
 		//wait a little for the phase to change
-		while (manager.getQueryService().queryExecutionStatus(jobId).getPhase().equals(ExecutionPhase.PENDING)) {
-		    try {
-			Thread.sleep(300);
-			logger.trace("waiting for phase to change for "+jobId);
-		    } catch (InterruptedException e) {
-			// just continue
-		    }
-		}
+		currentPhase = manager.getQueryService().queryExecutionStatus(jobId).getPhase();
 		UWSUtils.redirectToJobSummary(request, response, jobId);
 		return;
 	    }
@@ -276,7 +270,7 @@ public class UWSController  {
 	}else
 	{
 	    ExecutionSummaryType summary = eh.getApplicationFromArchive(jobId);
-	    ApplicationDescription appdesc =  manager.getApplicationDescriptionLibrary().getDescription(summary.getApplicationName());
+	    ApplicationDefinition appdesc =  manager.getApplicationDescriptionLibrary().getDescription(summary.getApplicationName());
 	    List<ParameterValue> resultList = summary.getResultList().getResult();
 	    for (ParameterValue parameterValue : resultList) {
 		ResultInfo rinfo = new ResultInfo(parameterValue);
@@ -346,8 +340,10 @@ public class UWSController  {
 	}	   
 	ExecutionHistory eh = manager.getExecutionHistoryService();
 	QueryService qs = manager.getQueryService();
+	logger.debug("getting job summar for "+ jobId);
 	ExecutionSummaryType jobSummary = qs.getSummary(jobId);
 	modelAndView.addObject("theJob", jobSummary);
+	logger.debug("returning model for "+jobId);
 	return modelAndView;
     }
 
@@ -550,6 +546,9 @@ public class UWSController  {
 
 /*
  * $Log: UWSController.java,v $
+ * Revision 1.7  2009/02/26 12:22:54  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.6  2008/09/25 23:14:45  pah
  * new redirect functions
  *

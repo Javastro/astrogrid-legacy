@@ -1,5 +1,5 @@
 /*
- * $Id: MetaDataController.java,v 1.2 2008/09/03 14:18:34 pah Exp $
+ * $Id: MetaDataController.java,v 1.3 2009/02/26 12:22:54 pah Exp $
  * 
  * Created on 9 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -25,7 +25,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.CEAComponents;
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.ParameterDescription;
@@ -127,7 +127,7 @@ public class MetaDataController extends AbstractMetadataController {
 	    String intf = request.getParameter("intf");
 	    if(intf == null) // if not specified just use the first
 	    {
-		ApplicationDescription desc = manager.getApplicationDescriptionLibrary().getDescriptionByShortName(name);
+		ApplicationDefinition desc = manager.getApplicationDescriptionLibrary().getDescriptionByShortName(name);
 		intf = desc.getInterfaces()[0].getId();
 	    }
 	    Tool tool = makeTool(name, intf);
@@ -143,7 +143,7 @@ public class MetaDataController extends AbstractMetadataController {
     
    private Tool makeTool(String name, String intf) throws ApplicationDescriptionNotFoundException, InterfaceDescriptionNotFoundException, ParameterDescriptionNotFoundException
     {
-	ApplicationDescription descr = manager.getApplicationDescriptionLibrary().getDescriptionByShortName(name);
+	ApplicationDefinition descr = manager.getApplicationDescriptionLibrary().getDescriptionByShortName(name);
 	ApplicationInterface iface = descr.getInterface(intf);
 	Tool t = new Tool();
 	t.setId(descr.getId());
@@ -184,6 +184,9 @@ public class MetaDataController extends AbstractMetadataController {
 
 /*
  * $Log: MetaDataController.java,v $
+ * Revision 1.3  2009/02/26 12:22:54  pah
+ * separate more out into cea-common for both client and server
+ *
  * Revision 1.2  2008/09/03 14:18:34  pah
  * result of merge of pah_cea_1611 branch
  *
