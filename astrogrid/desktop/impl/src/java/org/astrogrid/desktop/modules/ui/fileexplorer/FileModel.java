@@ -79,7 +79,7 @@ public class Filemodel implements ListSelectionListener{
          * to be triggered anyhow.
          */
         public void updateActivities() {
-            if (activities.getPopupMenu().isVisible()) {
+            if (activities.getPopupMenu() != null && activities.getPopupMenu().isVisible()) {
                 // if the popup menu is showing, then whatever click caused a change of the selection should really be directed at the popup menu
                 // so we should ignore it here.
                 return;
