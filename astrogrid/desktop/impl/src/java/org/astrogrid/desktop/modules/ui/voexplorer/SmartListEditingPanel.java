@@ -60,7 +60,7 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 		qb = new SrqlQueryBuilderPanel();
 		qb.getClauses().addListEventListener(this);
 		flip.add(qb,QB);
-		JLabel l = new JLabel("<html>The query entered is either too complex to be edited in the form"
+		JLabel l = new JLabel("<html>The query is too complex to be edited in the form"
 				+ "<br>Use the text-entry box below instead");
 		flip.add(l,COMPLEX);
 		l = new JLabel("<html>The query is either empty or cannot be parsed.<br> Provide a correct query using the text-entry box below");
