@@ -8,7 +8,6 @@ import java.util.Iterator;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.modules.ivoa.DALImpl;
 import org.astrogrid.desktop.modules.ivoa.DALImpl.BasicErrorChecker;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl.ListServicesRegistryQuerier;
@@ -150,9 +150,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
      * @throws SAXException
      * @throws IOException*/
     protected final void parseTable(final InputSource source, final VotableHandler tableHandler) throws ParserConfigurationException, FactoryConfigurationError, IOException, SAXException {
-        final SAXParserFactory newInstance = SAXParserFactory.newInstance();
-        newInstance.setValidating(false);
-        final XMLReader parser = newInstance.newSAXParser().getXMLReader();
+        final XMLReader parser = DALImpl.createParser();
         final VotableContentHandler votHandler = new VotableContentHandler(false);
         votHandler.setReadHrefTables(true);
         votHandler.setVotableHandler(tableHandler);

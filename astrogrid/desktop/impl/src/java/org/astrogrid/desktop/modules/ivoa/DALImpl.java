@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.24 2008/12/03 19:40:56 nw Exp $
+/*$Id: DALImpl.java,v 1.25 2009/02/27 17:16:58 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -48,6 +49,8 @@ import org.astrogrid.desktop.modules.ui.scope.DalProtocolException;
 import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler;
 import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler.VotableHandler;
 import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
@@ -178,6 +181,7 @@ public abstract class DALImpl implements Dal{
     
     public final Map[] execute(final URL arg0) throws ServiceException {
         try {
+            System.err.println(arg0);
             final XMLReader parser = createParser();
             final VotableContentHandler votHandler = new VotableContentHandler(false);
             votHandler.setReadHrefTables(true);
@@ -187,20 +191,31 @@ public abstract class DALImpl implements Dal{
             parser.parse(	arg0.toString());
             return sb.getResult();
         } catch (final Exception x) {
+            x.printStackTrace();
             throw new ServiceException(new ExceptionFormatter().format(x));
         }
     }
 
-    /** Simply create a parser.
+    /** Create a simple parser suitable for slurping up votables.
      * @return
      * @throws SAXException
      * @throws ParserConfigurationException
      */
-    private XMLReader createParser() throws SAXException,
+    public static XMLReader createParser() throws SAXException,
             ParserConfigurationException {
         final SAXParserFactory newInstance = SAXParserFactory.newInstance();
         newInstance.setValidating(false);
         final XMLReader parser = newInstance.newSAXParser().getXMLReader();
+        // setup an entity resolve to ignore system dtd references,
+        // as we know we're getting votable, and referring to off votable dtd's that are off and away somewhere is a
+        // cause of odd exceptions.
+        parser.setEntityResolver(new EntityResolver() {
+
+            public InputSource resolveEntity(final String publicId,
+                    final String systemId) throws SAXException, IOException {
+                return new InputSource(new StringReader(""));
+            }
+        });        
         return parser;
     }
 
@@ -496,6 +511,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.25  2009/02/27 17:16:58  nw
+found source of spurious votable dtd errors.
+
 Revision 1.24  2008/12/03 19:40:56  nw
 Complete - taskDAL: add error detections and parsing improvements as used in astroscope retrievers.
 
