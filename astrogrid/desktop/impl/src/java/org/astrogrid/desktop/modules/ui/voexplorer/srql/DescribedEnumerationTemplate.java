@@ -53,8 +53,14 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 		final TargettedSRQL t = new TargettedSRQL();
 		t.setTarget(target);
 		final TermSRQL ts = new TermSRQL();
-		final DescribedValue field = (DescribedValue)((JComboBox)valueField).getSelectedItem();
-		ts.setTerm(field.value);
+		final Object selectedItem = ((JComboBox)valueField).getSelectedItem();
+		if (selectedItem instanceof DescribedValue) {
+		    ts.setTerm(((DescribedValue)selectedItem).value);
+		} else if (selectedItem instanceof String) {
+		    ts.setTerm((String)selectedItem);
+		} else { // toString it
+		    ts.setTerm(selectedItem == null ? "" : selectedItem.toString());
+		}
 		final JComboBox predicate = (JComboBox)predicateField;
 		switch (predicate.getSelectedIndex()) {
 			case IS:
