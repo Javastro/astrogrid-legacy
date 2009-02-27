@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.27 2008/11/04 14:35:48 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.28 2009/02/27 11:34:25 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -60,6 +60,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.actions.ContactActivity;
 import org.astrogrid.desktop.modules.ui.actions.FurtherInfoActivity;
+import org.astrogrid.desktop.modules.ui.actions.GetPaperActivity;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
 import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
 import org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity;
@@ -120,6 +121,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		       ,SimpleDownloadActivity.class
 		       ,InfoActivity.class
 		       ,FurtherInfoActivity.class
+		       ,GetPaperActivity.class
 		       ,ContactActivity.class
 		       ,SaveXoXoListActivity.class
 		       ,SaveResourceActivity.class
@@ -197,6 +199,7 @@ public class VOExplorerImpl extends UIComponentImpl
                     rmb.windowOperation(acts.getActivity(SimpleDownloadActivity.class))
                     .separator()
                     .windowOperation(acts.getActivity(FurtherInfoActivity.class))
+                    .windowOperation(acts.getActivity(GetPaperActivity.class))
                     .windowOperation(acts.getActivity(ContactActivity.class))
                     .separator()
                     .windowOperation(acts.getActivity(SaveXoXoListActivity.class))

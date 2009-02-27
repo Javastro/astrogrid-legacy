@@ -633,6 +633,9 @@ ACTIONS
 		<object name="info" class="org.astrogrid.desktop.modules.ui.actions.FurtherInfoActivity">
 			<inject object="service:system.browser"/>			
 		</object>
+        <object name="paper" class="org.astrogrid.desktop.modules.ui.actions.GetPaperActivity">
+            <inject object="service:system.browser"/>           
+        </object>        
 		<object name="contact" class="org.astrogrid.desktop.modules.ui.actions.ContactActivity">
 			<inject object="service:system.browser"/>	
 		</object>	

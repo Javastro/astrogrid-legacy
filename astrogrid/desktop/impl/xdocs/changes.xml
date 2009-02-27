@@ -18,6 +18,12 @@
 
 <release version="1.2.3" date="unreleased">
     <action dev="nw" type="add">
+    VOExplorer: Added 'Publication' action to left pane and menu - displays info about associated bibcode.
+    </action>
+    <action dev="nw" type="update">
+    VOExplorer: Updated 'Download Tables' and 'Send Tables via PLASTIC' to work with new version of Vizier service.
+    </action>
+    <action dev="nw" type="add">
     AR: Added File API - uniform access to different kinds of 
     file system - local disk, ftp, sftp, myspace, http, vospace (upcoming)
     </action>

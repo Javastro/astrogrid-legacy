@@ -908,8 +908,9 @@ public final class PrettierResourceFormatter {
 		}
 	}
 
-	/** url that bibcodes can be retreived from */
-	private static final String BIBCODE_URL = "http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=";
+	/** url that bibcodes can be retreived from
+	 * - should this be a preference? */
+	public static final String BIBCODE_URL = "http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=";
 
 
 }
