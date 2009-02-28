@@ -442,6 +442,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	public void xquerySearchStream(final URI endpoint, final String xquery, final StreamProcessor processor)
 	throws ServiceException {
 			final Client c = createClient(endpoint);
+			final String fullQ =  prependProlog(xquery);
 			c.addInHandler(new StreamProcessorHandler(processor));
 			try {
 				final Document doc = DomHelper.newDocument();
@@ -449,13 +450,17 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 				doc.appendChild(rootE);
 				final Element xq = doc.createElementNS(REG_NS,"s:xquery"); 
 				rootE.appendChild(xq);
-				xq.appendChild(doc.createTextNode(prependProlog(xquery)));
+                xq.appendChild(doc.createTextNode(fullQ));
 				final XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
 						new DOMSource(doc));
 				c.invoke("XQuerySearch",new Object[]{inStream});
-			} catch (final XFireFault f) {
-				logger.error("Error",f);
-				throw new ServiceException("Unable to query the registry service at " + endpoint,f);
+			} catch (final XFireFault f) { // special treatment -make sure error message gets back to client.
+				//logger.error("Error",f);
+				throw new ServiceException("Unable to query the registry service at " + endpoint 
+				        + "\n" + f.toString()
+				        + "\nXQuery sent to server:\n" 
+				        + fullQ 
+				        ,f);
 			} catch (final ParserConfigurationException x) {
 			    throw new RuntimeException(x);				
 			} catch (final Exception x) {

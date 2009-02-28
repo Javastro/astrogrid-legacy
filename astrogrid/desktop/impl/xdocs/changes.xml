@@ -17,6 +17,9 @@
 <body>
 
 <release version="1.2.3" date="unreleased">
+    <action dev="nw" type="fix">
+    AR: Improved error reporting for faulty XQuery.
+    </action>
     <action dev="nw" type="add">
     VOExplorer: Added 'Publication' action to left pane and menu - displays info about associated bibcode.
     </action>
