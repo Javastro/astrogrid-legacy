@@ -15,7 +15,7 @@
 ,,http://www.ivoa.net/xml/CEA/base/v1.0,??,,,
 ,,http://www.ivoa.net/xml/CEA/base/v1.1,http://software.astrogrid.org/schema/cea/CEABase/v1.1/CEABase.xsd,CEABase-v1.1.xsd,,
 ,,http://www.ivoa.net/xml/CEA/types/v1.1,http://software.astrogrid.org/schema/cea/CEATypes/v1.1/CEATypes.xsd,CEATypes-v1.1.xsd,,
-,,http://www.ivoa.net/xml/CEA/v1.0,http://software.astrogrid.org/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd,,,
+,,http://www.ivoa.net/xml/CEA/v1.0,http://software.astrogrid.org/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd,CEA-v1.0.xsd,,
 ,,http://www.ivoa.net/xml/CEA/v1.0rc1,??,,,
 .,.,http://www.ivoa.net/xml/ConeSearch/v0.3,http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.3.xsd,ConeSearch-v0.3.xsd,,
 5?,2,http://www.ivoa.net/xml/ConeSearch/v1.0,http://www.ivoa.net/xml/ConeSearch/ConeSearch-v1.0.xsd,ConeSearch-v1.0.xsd,,
