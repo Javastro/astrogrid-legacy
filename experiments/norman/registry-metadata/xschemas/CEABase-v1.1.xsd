@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- $Id: CEABase-v1.1.xsd,v 1.1 2009/03/01 11:20:08 norman Exp $ --><!-- This schema represents the first ivoa level release of the CEA defintion schema that was previously internal to Astrogrid.
+<?xml version="1.0" encoding="UTF-8"?><!-- $Id: CEABase-v1.1.xsd,v 1.2 2009/03/01 20:09:21 norman Exp $ --><!-- This schema represents the first ivoa level release of the CEA defintion schema that was previously internal to Astrogrid.
 This is refactored from the AGParameterDefinition.xsd and CEABase.xsd schema files, to conform to the Registry v1.0 standards and styles.
 In addition there are extensions to the original Astrogrid schema
 
@@ -8,7 +8,16 @@ In addition there are extensions to the original Astrogrid schema
 * parameter ranges
 
 Paul Harrison (ESO) - May 2007
---><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1" targetNamespace="http://www.ivoa.net/xml/CEA/base/v1.1" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0 RC$Revision: 1.1 $">
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+           xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
+           targetNamespace="http://www.ivoa.net/xml/CEA/base/v1.1"
+           elementFormDefault="unqualified"
+           attributeFormDefault="unqualified"
+           version="1.0 RC$Revision: 1.2 $">
    <xs:import namespace="http://www.ivoa.net/xml/VOResource/v1.0" schemaLocation="http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd"/>
    <xs:import namespace="http://www.ivoa.net/xml/VODataService/v1.1" schemaLocation="http://software.astrogrid.org/schema/vo-resource-types/VODataService/v1.1/VODataService-v1.1-tables-proposal-2.xsd"/>
    <xs:annotation>
@@ -97,12 +106,14 @@ Paul Harrison (ESO) - May 2007
             <xs:documentation>
                the identifier for the interface
             </xs:documentation>
+            <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
          </xs:annotation></xs:attribute>
       <xs:attribute name="name" type="xs:string" use="optional">
          <xs:annotation>
             <xs:documentation>
                a name for the interface to displace in UI
             </xs:documentation>
+            <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
          </xs:annotation></xs:attribute>
    </xs:complexType>
    <xs:complexType name="InterfaceDefinitionList">
@@ -215,6 +226,9 @@ Paul Harrison (ESO) - May 2007
                   the element can define an interface dependent default
                   for the parameter?
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
       </xs:sequence>
@@ -244,6 +258,7 @@ Paul Harrison (ESO) - May 2007
                   the value that the control parameter has for this
                   grouping
                </xs:documentation>
+               <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
             </xs:annotation>
          </xs:element>
          <xs:group ref="ceab:ParameterReferenceGroup" maxOccurs="unbounded"/>
@@ -254,6 +269,7 @@ Paul Harrison (ESO) - May 2007
                name for the particular ConditionalPgroup option - can be
                used in user interface to label the parameter group.
             </xs:documentation>
+            <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
          </xs:annotation></xs:attribute>
    </xs:complexType>
    <xs:complexType name="ConditionalPgroup">
@@ -301,6 +317,7 @@ Paul Harrison (ESO) - May 2007
            <xs:documentation>
               A list of parameter definitions
            </xs:documentation>
+            <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
         </xs:annotation>
         <xs:sequence>
          <xs:element name="parameterDefinition" type="ceab:BaseParameterDefinition" minOccurs="0" maxOccurs="unbounded"/>
@@ -319,9 +336,17 @@ Paul Harrison (ESO) - May 2007
            <xs:element name="pval" maxOccurs="unbounded" minOccurs="1">
               <xs:complexType>
                  <xs:sequence>
-                    <xs:element name="value" type="xs:string"/>
+                    <xs:element name="value" type="xs:string">
+                      <xs:annotation>
+                        <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
+                      </xs:annotation>
+                    </xs:element>
                  </xs:sequence>
-                 <xs:attribute name="id" type="xs:string"/>
+                 <xs:attribute name="id" type="xs:string">
+                   <xs:annotation>          
+                     <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
+                   </xs:annotation>
+                 </xs:attribute>
                  <xs:attribute name="indirect" type="xs:boolean"/>
               </xs:complexType>
            </xs:element>
@@ -354,6 +379,7 @@ Paul Harrison (ESO) - May 2007
                this is a name for the pgroup that can be used by UI
                software
             </xs:documentation>
+            <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
          </xs:annotation>
       </xs:attribute>
    </xs:complexType>
@@ -381,6 +407,7 @@ Paul Harrison (ESO) - May 2007
                this is a name for the pgroup that can be used by UI
                software
             </xs:documentation>
+            <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
          </xs:annotation>
       </xs:attribute>
    </xs:complexType>
@@ -629,6 +656,7 @@ Paul Harrison (ESO) - May 2007
                   <xs:documentation>
                      the identifier for the parameter
                   </xs:documentation>
+                  <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
                </xs:annotation></xs:attribute>
             <xs:attribute name="type" type="ceab:ParameterTypes" use="required">
                <xs:annotation>
@@ -753,6 +781,9 @@ Paul Harrison (ESO) - May 2007
                   the element can define an interface dependent default
                   for the parameter?
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
          <xs:element name="pgroup" type="ceab:PGroup" maxOccurs="unbounded">

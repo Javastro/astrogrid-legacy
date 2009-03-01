@@ -10,7 +10,9 @@ DISTDIR=XXX
 # xschema2rdfs.lx.
 AUTOCONVERTIBLE=SIA-v1.0 VODataService-v1.0 \
 	VORegistry-v1.0 \
-	TabularDB-v0.3 ConeSearch-v1.0 stc-v1.30 SSA-v0.4
+	TabularDB-v0.3 ConeSearch-v1.0 stc-v1.30 SSA-v0.4 \
+	CEA-v1.0 CEABase-v1.1 CEAImplementation-v2.0 CEATypes-v1.1 \
+	VOApplication-v1.0rc1 
 # The XSchemas SIA-0.7, VODataService-v0.5 and VORegistry-v0.3 also work, but
 # I'm no longer working with those, so they're unverified, and untweaked.
 # TabularDB-v0.3 appears to be the most recent version of that series --

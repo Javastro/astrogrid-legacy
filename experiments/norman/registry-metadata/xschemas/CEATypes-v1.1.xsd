@@ -1,4 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- $id: $ --><!-- these are types that are used only in the CEA interface definitions --><!-- note that the type naming in this file is not really in line with the latest style --><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9.2" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" targetNamespace="http://www.ivoa.net/xml/CEA/types/v1.1" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0 $Revision: 1.1 $">
+<?xml version="1.0" encoding="UTF-8"?><!-- $id: $ --><!-- these are types that are used only in the CEA interface definitions --><!-- note that the type naming in this file is not really in line with the latest style -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9.2"
+           xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
+           targetNamespace="http://www.ivoa.net/xml/CEA/types/v1.1"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           version="1.0 $Revision: 1.2 $">
    <xs:import namespace="http://www.ivoa.net/xml/CEA/base/v1.1" schemaLocation="http://software.astrogrid.org/schema/CEABase/v1.1/CEABase.xsd">
    </xs:import>
    <xs:import namespace="http://www.ivoa.net/xml/UWS/v0.9.2" schemaLocation="http://software.astrogrid.org/schema/UWS/v0.9/UWS.xsd">
@@ -117,7 +128,13 @@
       
         <xs:sequence>
          
-            <xs:element name="parameter" type="ceat:ParameterValue" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="parameter" type="ceat:ParameterValue" minOccurs="0" maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:appinfo>
+                  <x2s:multipleDomains/>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
    <xs:complexType name="execution-summary-type">
@@ -194,6 +211,9 @@
                <xs:documentation>
                   ivoa resource identifier of the application to call
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
         </xs:attribute>
         
@@ -226,6 +246,9 @@
                   of string, though the 'real' type is encoded in the
                   parameter definition
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
          <xs:element name="array" type="ceat:ParameterValueArray">
@@ -238,13 +261,16 @@
          </xs:element>
       </xs:choice>
       <xs:attribute name="id" type="xs:string" use="required">
-         <xs:annotation>
-            <xs:documentation>
-               The id is a reference to the id of the parameter as
-               defined in the parameters section - used to be called
-               "name"
-            </xs:documentation>
-         </xs:annotation>
+        <xs:annotation>
+          <xs:documentation>
+            The id is a reference to the id of the parameter as
+            defined in the parameters section - used to be called
+            "name"
+          </xs:documentation>
+          <xs:appinfo>
+            <x2s:multipleDomains/>
+          </xs:appinfo>
+        </xs:annotation>
       </xs:attribute>
       <xs:attribute name="encoding" type="ceab:BinaryEncodings" use="optional">
          <xs:annotation>
@@ -283,7 +309,13 @@
            </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-         <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+         <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+           <xs:annotation>
+             <xs:appinfo>
+               <x2s:multipleDomains/>
+             </xs:appinfo>
+           </xs:annotation>
+         </xs:element>
       </xs:sequence>
       <xs:attribute name="arrayShape" type="ceab:arrayDEF">
          <xs:annotation>
@@ -304,7 +336,13 @@
            </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-         <xs:element name="parameter" type="ceat:ParameterValue" maxOccurs="unbounded" minOccurs="1"/>
+          <xs:element name="parameter" type="ceat:ParameterValue" maxOccurs="unbounded" minOccurs="1">
+            <xs:annotation>
+              <xs:appinfo>
+                <x2s:multipleDomains/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
       </xs:sequence>
       <xs:attribute name="ncol" type="xs:int"/>
    </xs:complexType>
@@ -317,7 +355,13 @@
         </xs:annotation>
         <xs:choice maxOccurs="unbounded" minOccurs="0">
            <!-- perhaps it would be nice to be able to put in the parameter grouping here - especially for the case where the pgroup is a table like structure. -->
-           <xs:element name="parameter" type="ceat:ParameterValue" minOccurs="1" maxOccurs="1"/>
+           <xs:element name="parameter" type="ceat:ParameterValue" minOccurs="1" maxOccurs="1">
+             <xs:annotation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
+             </xs:annotation>
+           </xs:element>
            <xs:element name="parameterGroup" type="ceat:ParameterValueGroup"/>
         </xs:choice>
    </xs:complexType>

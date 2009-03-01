@@ -4,6 +4,7 @@
            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
            xmlns:ssa="http://www.ivoa.net/xml/SSA/v0.4"
            xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
            targetNamespace="http://www.ivoa.net/xml/SSA/v0.4"
            elementFormDefault="unqualified" attributeFormDefault="unqualified"
            version="0.4wd">
@@ -71,6 +72,7 @@
         <vm:schemaName>SSA</vm:schemaName>
         <vm:schemaPrefix>xs</vm:schemaPrefix>
         <vm:targetPrefix>ssa</vm:targetPrefix>
+        <x2s:multipleDomains all='all'/> <!-- allow all properties to have multiple domains -->
       </xs:appinfo>
       <xs:documentation>
         XML Schema used to describe the capabilities of a service instance

@@ -120,16 +120,23 @@
                 ;; which appear in a type attribute (for the benefit of the
                 ;; call-template elements generated for element|attribute
                 ;; declarations below.
-                (if "contains(.,':')"
-                    (variable name: p
-                              (value-of "substring-before(.,':')"))
-                    (copy-of select: "/*/namespace::*[name()=$p]")))
+                (choose
+                 (when "contains(.,':')"
+                   (variable name: p
+                             (value-of "substring-before(.,':')"))
+                   (copy-of select: "/*/namespace::*[name()=$p]"))
+                 (otherwise
+                  (copy-of select: "/*/namespace::*[name()='']"))))
       ;; Copy over the namespace declaration for the target RDFS namespace
       ;; (see the discussion about namespaces above).
       (copy-of select: "document('namespace-nodes.xml')/namespace-nodes/namespace::*[.=$targetnamespaceo]")
       ;; ...and ensure that the targetNamespace namespace node is copied
       ;; from the declaration in this XSD file
       (copy-of select: "namespace::*[.=/xs:schema/@targetNamespace]")
+      ;; ...and an explicit copy of the declaration for the prefix declared
+      ;; in namespace-nodes.xml (which may not have been included already,
+      ;; for rather opaque reasons depending on whether it is the default namespace)
+      (copy-of select: "document('namespace-nodes.xml')/namespace-nodes/namespace::*[.=/xs:schema/@targetNamespace]")
       ;; ...and the targetNamespace declaration, if we don't have
       ;; elementFormDefault=unqualified
       (if "$matchprefix != ''"
@@ -146,8 +153,10 @@
                  version: 1.0
                  indent: yes)
 
-      (apply-templates select: xs:simpleType)
-      (apply-templates select: xs:complexType)
+      ;; Generate templates for all the types in the XSchema, both at the
+      ;; top-level and (usually anonymous) types within elements.
+      (apply-templates select: .//xs:simpleType)
+      (apply-templates select: .//xs:complexType)
 
       ;; process global elements (only in STC)
       (apply-templates select: xs:element)
@@ -169,23 +178,28 @@
 
   ;; [complextype]
   (template xs:complexType
+    (variable name: typename
+              (choose (when @name
+                        (value-of @name))
+                      (otherwise
+                       (value-of "generate-id()"))))
     (copy-of select: "namespace::*[name()=$targetprefix]") ;ensure NS decl copied over
     (choose
      ;; Following was in an STC experiment -- don't use for now
 ;;      (when "xs:annotation/xs:appinfo/x2s:generate[@transformer = 'no']"
 ;;        (comment "complexType " (value-of @name)
 ;;                 " does not have a standard transformation generated here, and it must be supplied by hand"))
-     (when descendant::xs:complexType
-       (x2s:ERROR "complexType " (value-of @name)
-                  " contains anonymous complexType"))
+;;      (when descendant::xs:complexType
+;;        (x2s:ERROR "complexType " (value-of @name)
+;;                   " contains anonymous complexType"))
      (when xs:simpleContent ; [simplecontent]
-       (xt:template name: "{$targetprefix}:{@name}"
+       (xt:template name: "{$targetprefix}:{$typename}"
                     (call-template name: handle-element-attributes)
-                    (xt:element name: "{$targetprefixo}:{@name}Value"
+                    (xt:element name: "{$targetprefixo}:{$typename}Value"
                                 (xt:apply-templates))))
-     (when "xs:complexContent or xs:sequence"
-      (xt:template name: "{$targetprefix}:{@name}"
-                   (rdf:type rdf:resource: "{$targetnamespaceo}{@name}")
+     (when "xs:complexContent or xs:sequence or xs:choice or xs:all"
+      (xt:template name: "{$targetprefix}:{$typename}"
+                   (rdf:type rdf:resource: "{$targetnamespaceo}{$typename}")
                    ;; There's no need to handle xs:annotation here.
                    ;; The handling of that in xschema2rdfs.lx just passes
                    ;; documentation into the RDFSchema.
@@ -195,7 +209,7 @@
                       (call-template name: handle-element-attributes)
 
                       ;; Don't insert a (xt:apply-templates) here.
-                      ;; ComplexContent must include wither restriction or extension,
+                      ;; ComplexContent must include either restriction or extension,
                       ;; and these must have a base class.
                       ;; Ignore the content for the moment, and call the
                       ;; template for the base class: that will either call
@@ -203,10 +217,10 @@
                       ;; next case and) call apply-templates.
                       (apply-templates select: "xs:complexContent/xs:extension|xs:complexContent/xs:restriction"
                                        mode: complex-content))
-                    (when xs:sequence   ;sequence content
-                     (xt:apply-templates))
+                    (when "xs:sequence or xs:choice or xs:all"   ;sequence content
+                      (xt:apply-templates))
                     (otherwise
-                     (x2s:ERROR "complexType " (value-of @name)
+                     (x2s:ERROR "complexType " (value-of $typename)
                                 " has unexpected content"))))
       (apply-templates select: .//xs:element))
      (when "xs:attribute or xs:attributeGroup or @abstract='true'"
@@ -226,8 +240,8 @@
        ;;
        ;; We do need to call xt:apply-templates, since there is
        ;; no base class to do this for us.
-       (xt:template name: "{$targetprefix}:{@name}"
-                    (rdf:type rdf:resource: "{$targetnamespaceo}{@name}")
+       (xt:template name: "{$targetprefix}:{$typename}"
+                    (rdf:type rdf:resource: "{$targetnamespaceo}{$typename}")
                     (call-template name: handle-element-attributes)
                     (xt:apply-templates)))
 ;;      (when "@abstract='true'" ; [abstracttype]
@@ -254,6 +268,9 @@
   (template xs:simpleType
     (variable name: avt "{$type}") ;cunning trick to get AVT into the output
     (choose
+     (when "not(@name)"
+       ;; do nothing
+       )
      (when .//xs:enumeration            ;[simpleenum]
        ;; Create a named template to handle this (much like a complexType).
        ;; The template takes a parameter VAL which identifies the value
@@ -373,7 +390,7 @@
   (template xs:element
     (choose
 
-     (when "@name and @type"            ;[elementtype]
+     (when @name                        ;[elementtype]
        ;; We don't do anything about x2s:multipleDomains, here (apart from the
        ;; check below).  The element template that we emit will shadow,
        ;; or be shadowed by, another same-named template elsewhere, but this
@@ -406,10 +423,14 @@
           ;; That is, we do not emit any (RDF) property element.
           (variable name: propnameprefix
                     (value-of "substring-before(.//x2s:propertyName,':')"))
-          (xt:template match: "{$matchprefix}{@name}"
-            (if "$propnameprefix != ''"
-                (copy-of select: ".//x2s:propertyName/namespace::*[name()=$propnameprefix]"))
-                       (xt:call-template name: {$matchprefix}{@type})))
+          (choose
+           (when @type
+             (xt:template match: "{$matchprefix}{@name}"
+                          (if "$propnameprefix != ''"
+                              (copy-of select: ".//x2s:propertyName/namespace::*[name()=$propnameprefix]"))
+                          (xt:call-template name: {$matchprefix}{@type})))
+           (otherwise
+            (x2s:ERROR "Element " (value-of @name) " has no @type (propertyName)"))))
 
         (when "xs:annotation/xs:appinfo/x2s:propertyRange"
           ;; This is a special case.  If the forced property range is in the XSchema namespace
@@ -435,17 +456,28 @@
                 (choose
                  (when "$range-ns = $xschema-ns"
                    (xt:apply-templates))
-                 (otherwise
+                 (when @type
                   (call-template name: handle-type
                                  (with-param type
-                                             (value-of @type))))))))
+                                             (value-of @type))))
+                 (otherwise
+                  (x2s:ERROR "Element " (value-of @name) " has no @type (propertyrange)"))))))
 
-        (otherwise ;; we just have a @name and @type
+        (otherwise ;; we just have a @name and possibly @type
          ;; this is the most common case
           (xt:template match: "{$matchprefix}{@name}"
              (xt:element name: "{concat($targetprefixo,':',@name)}" ;"{$propname}"
-                (call-template name: handle-type
-                               (with-param type (value-of @type))))))))
+                (choose
+                 (when @type
+                   (call-template name: handle-type
+                                  (with-param type (value-of @type))))
+                 (when xs:complexType
+                  (call-template name: handle-type
+                                 (with-param type (value-of "generate-id(xs:complexType)")))
+;;                   (apply-templates select: xs:complexType)
+                  )
+                 (otherwise
+                  (x2s:ERROR "Element " (value-of @name) " has neither @type nor xs:complexType"))))))))
 
      (when @ref                         ;[elementref]
        ;; We don't need to do anything with @ref elements.  Since we generate
@@ -544,20 +576,19 @@
        (when "self::xs:attribute"
          ;; Ooops: this type isn't one of the special cases above,
          ;; and it's not a simpleType in this XSchema, but it's on an attribute.
-         ;; It therefore appears to be a simpleType in some other XSchema,
-         ;; which we can't handle right now.  I don't think we have to, however.
-         ;; If we do, then we'll either have to start being able to grub
-         ;; around in other XSchema files, or else we could just leave it
-         ;; to the otherwise clause, and go ahead and generate a named
-         ;; template for simpleTypes as well.
-         (x2s:ERROR "Attribute " (value-of @name)
+         ;; It therefore appears to be a simpleType in some other XSchema.
+         ;; We can't handle this, as such.  However, since it's on an attribute it can
+         ;; only be a simpleType, so we can generate an output element which simply
+         ;; copies the value of the content.
+         (comment "Attribute " (value-of @name)
                     " with type {"
                     (value-of $type-ns)
                     "}"
                     (value-of $type-ln)
                     " within "
                     (value-of ancestor::xs:*/@name)
-                    " appears to have a simple type in an external XSchema: not handled!!!"))
+                    " appears to have a simple type in an external XSchema: simply copied")
+         (xt:value-of select: "normalize-space(@{@name})"))
 
        ;; This is complexContent, within either simpleType or complexType.
        ;; The following are the simplest, and most common, cases
@@ -566,7 +597,7 @@
        (when "key('classes',$type-ln)/self::node() = xs:simpleType or key('classes',$type-ln)//xs:simpleContent"
          ;; If this is simpleContent, then call the template which handles
          ;; this type.
-         (comment "Type " (value-of $type-ln) " is a simpleType")
+         (comment "Type " (value-of $type-ln) " is a simpleType or has simpleContent")
          (xt:attribute name: rdf:parseType Resource)
          (xt:call-template name: "{$otype}"))
 

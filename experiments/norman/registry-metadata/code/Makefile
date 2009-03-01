@@ -23,7 +23,9 @@ SCHEMAS=../xschemas
 # able to convert _from_.
 AUTOCONVERTIBLE=SIA-v1.0 VODataService-v1.0 \
 	VORegistry-v0.3 VORegistry-v1.0 \
-	TabularDB-v0.3 ConeSearch-v1.0 stc-v1.30 SSA-v0.4\
+	TabularDB-v0.3 ConeSearch-v1.0 stc-v1.30 SSA-v0.4 \
+	CEA-v1.0 CEABase-v1.1 CEAImplementation-v2.0 CEATypes-v1.1 \
+	VOApplication-v1.0rc1 \
 	test-schema
 
 PRODUCTS=ExtractNamespaces.jar convert-root.xslt

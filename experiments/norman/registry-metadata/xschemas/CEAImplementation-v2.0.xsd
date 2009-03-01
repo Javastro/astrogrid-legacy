@@ -1,4 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- $Id: CEAImplementation-v2.0.xsd,v 1.1 2009/03/01 11:20:08 norman Exp $ --><!-- This schema specifies the CEC specific parts of the CEC configuration --><!-- todo - would perhaps be nice to include all of the registry information here also... --><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1" xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" xmlns:stc="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1" targetNamespace="http://www.astrogrid.org/schema/CEAImplementation/v2.0" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0rc1">
+<?xml version="1.0" encoding="UTF-8"?><!-- $Id: CEAImplementation-v2.0.xsd,v 1.2 2009/03/01 20:09:21 norman Exp $ --><!-- This schema specifies the CEC specific parts of the CEC configuration --><!-- todo - would perhaps be nice to include all of the registry information here also... -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+           xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+           xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+           xmlns:stc="http://www.ivoa.net/xml/STC/stc-v1.30.xsd"
+           xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
+           targetNamespace="http://www.astrogrid.org/schema/CEAImplementation/v2.0" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0rc1">
     <xs:import schemaLocation="http://software.astrogrid.org/schema/vo-resource-types/VODataService/v1.1/VODataService-v1.1-tables-proposal-2.xsd" namespace="http://www.ivoa.net/xml/VODataService/v1.1"/>
     <xs:import namespace="http://www.ivoa.net/xml/CEA/base/v1.1" schemaLocation="http://software.astrogrid.org/schema/CEABase/v1.1/CEABase.xsd"/>
    <xs:import namespace="http://www.ivoa.net/xml/VOResource/v1.0" schemaLocation="http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd"/>
@@ -194,6 +203,7 @@
                      A direct reference to a url of the underlying
                      service
                   </xs:documentation>
+                  <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
                </xs:annotation>
             </xs:element>
             <xs:element name="ResourceReferenceQuery" type="xs:string">
@@ -226,6 +236,9 @@
                         the application defintion will usually be a
                         one-to-one mapping.
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:propertyName>preProcessScript</x2s:propertyName>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
                <xs:element name="PostProcessScript" type="ceaimp:PostProcessScript" minOccurs="0">
@@ -235,6 +248,9 @@
                         result returned by the http application. e.g. to
                         perform a 'screen-scrape'
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:propertyName>postProcessScript</x2s:propertyName>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
             </xs:sequence>
@@ -250,7 +266,11 @@
          </xs:documentation>
       </xs:annotation>
       <xs:sequence>
-         <xs:element name="URL" type="ceaimp:HttpURLType"/>
+         <xs:element name="URL" type="ceaimp:HttpURLType">
+           <xs:annotation>
+             <xs:appinfo><x2s:multipleDomains/></xs:appinfo>
+           </xs:annotation>
+         </xs:element>
          <xs:element name="SimpleParameter" minOccurs="0" maxOccurs="unbounded">
             <xs:complexType>
            <xs:attribute name="name" type="xs:string" use="required"/>
@@ -351,7 +371,13 @@
         </xs:annotation>
         <xs:complexType>
         <xs:sequence>
-           <xs:element name="schema" type="vs:RelationalSchema"/>
+           <xs:element name="schema" type="vs:RelationalSchema">
+             <xs:annotation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
+             </xs:annotation>
+           </xs:element>
         </xs:sequence>
      </xs:complexType>
   </xs:element>
@@ -363,7 +389,13 @@
            metadata
         </xs:documentation>
      </xs:annotation>
-     <xs:attribute name="schema" type="xs:string" use="optional"/>
+     <xs:attribute name="schema" type="xs:string" use="optional">
+       <xs:annotation>
+         <xs:appinfo>
+           <x2s:multipleDomains/>
+         </xs:appinfo>
+       </xs:annotation>
+     </xs:attribute>
      <xs:attribute name="table" type="xs:string" use="optional"/>
      <xs:attribute name="column" type="xs:string" use="required"/>
   </xs:complexType>
