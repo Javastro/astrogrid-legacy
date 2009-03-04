@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.17 2009/02/13 17:46:20 nw Exp $
+/*$Id: ConeImpl.java,v 1.18 2009/03/04 18:43:10 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -25,7 +26,7 @@ import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.contracts.StandardIds;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 /** IVOA Cone search client.
  * Complies with Cone spec v1.03 
@@ -35,10 +36,11 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Cone {
 
     /** Construct a new ConeImpl
+     * @param c 
      * 
      */
-    public ConeImpl(final Registry reg, final MyspaceInternal ms) {
-        super(reg,ms);
+    public ConeImpl(final Registry reg, final FileSystemManager vfs, final UIContext c) {
+        super(reg,vfs, c);
     }
 
     /**
@@ -129,6 +131,9 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.18  2009/03/04 18:43:10  nw
+Complete - taskMove DAL over to VFS
+
 Revision 1.17  2009/02/13 17:46:20  nw
 Complete - taskUse SRQL in AR
 

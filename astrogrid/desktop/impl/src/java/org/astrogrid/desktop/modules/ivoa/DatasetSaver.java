@@ -1,14 +1,13 @@
 package org.astrogrid.desktop.modules.ivoa;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.ivoa.DALImpl.BasicErrorChecker;
+import org.astrogrid.desktop.modules.ui.actions.CopyAsCommand;
 import org.astrogrid.desktop.modules.ui.scope.SiapRetrieval;
 import org.astrogrid.desktop.modules.ui.scope.SsapRetrieval;
 import org.astrogrid.desktop.modules.ui.scope.StapRetrieval;
@@ -29,19 +28,11 @@ public class DatasetSaver extends BasicErrorChecker {
 		subset = true;
 		this.rows = rows;
 	}
-	/** sets the root URI to save files at */
-	public void setRoot(final URI root)  {
-		if (! root.toString().endsWith("/")) {
-			this.root = URI.create(root.toString() + "/");
-		} else {
-			this.root = root;
-		}
-	}
+
 	private  boolean subset;
 	private List<Integer> rows;
-	private URI root;
 	private int currentRow;
-	private final Map<URL, URI> result = new LinkedHashMap<URL, URI>();
+	private final List<CopyAsCommand> result = new ArrayList<CopyAsCommand>();
 	boolean skipNextTable = false;
 	boolean resultsTableParsed = false;		
 	private int urlIx = -1;
@@ -49,11 +40,12 @@ public class DatasetSaver extends BasicErrorChecker {
 	int colCount;
     private boolean onlyParseResultTable = true;
 	
-	/** after the parse, this returns the map of required
-	 * urls to from and destinations to copy to.
-	 * @return map of source url to destination uri.
+	/** after the parse, this returns the list of commands that will
+	 * copy  required
+	 * urls to and destinations to copy to.
+	 * 
 	 */
-	public Map<URL, URI> getResult() {
+	public List<CopyAsCommand> getResult() {
 		return result;
 	}
 	
@@ -129,9 +121,12 @@ public class DatasetSaver extends BasicErrorChecker {
 				    }
 				}
 				try {
-				result.put(new URL(cells[urlIx].toString()),
-						URI.create(root.toString() + "data-" + currentRow + (format == null ? "" : format) )
-						);
+				    final CopyAsCommand c = new CopyAsCommand(
+				            new URL(cells[urlIx].toString())
+				            ,"data-" + currentRow + (format == null ? "" : format)
+				            );
+				    result.add(c);
+
 				} catch (final MalformedURLException e) {
 					DALImpl.logger.warn("Failed to construct url",e); // @todo find a way to report this to client..
 				}

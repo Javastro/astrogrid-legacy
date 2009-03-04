@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.18 2009/02/16 16:54:39 nw Exp $
+/*$Id: StapImpl.java,v 1.19 2009/03/04 18:43:10 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.astrogrid.Stap;
@@ -26,6 +27,7 @@ import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ivoa.DALImpl;
 import org.astrogrid.desktop.modules.ivoa.DatasetSaver;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 /** Client for Simple Time Access Protocol.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
@@ -37,10 +39,12 @@ public class StapImpl extends DALImpl implements Stap {
     private final SimpleDateFormat dateFormat;
 
 	/** Construct a new SiapImpl
+	 * @param v 
+	 * @param cx 
      * 
      */
-    public StapImpl(final Registry reg, final MyspaceInternal ms) {
-        super(reg,ms);
+    public StapImpl(final Registry reg, final FileSystemManager v, final UIContext cx) {
+        super(reg,v, cx);
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // why has this format got '-' in it? 
         
     }
@@ -184,6 +188,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.19  2009/03/04 18:43:10  nw
+Complete - taskMove DAL over to VFS
+
 Revision 1.18  2009/02/16 16:54:39  nw
 Complete - taskUse SRQL in AR
 

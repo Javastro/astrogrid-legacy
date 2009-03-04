@@ -3,14 +3,16 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
+import static org.easymock.EasyMock.*;
+
 import java.net.URL;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.desktop.modules.ivoa.SiapUnitTest;
-import static org.easymock.EasyMock.*;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 /** 
  * @author Noel Winstanley
@@ -25,22 +27,24 @@ public class StapUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		mockReg =createMock(Registry.class);
-		mockMs = createMock(MyspaceInternal.class);
-		replay(mockReg,mockMs);
-		stap = new StapImpl(mockReg,mockMs);
+        mockVFS = createMock(FileSystemManager.class);      
+        mockCxt = createMock(UIContext.class);
+		replay(mockReg,mockVFS,mockCxt);
+		stap = new StapImpl(mockReg,mockVFS,mockCxt);
 		url = new URL("http://www.astrogrid.org/cone");		
 	}
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		mockReg = null;
-		mockMs = null;
 		stap = null;
 		url = null;
+		mockVFS = null;
+		mockCxt = null;
 	}
-	
+    protected FileSystemManager mockVFS;	
+    protected UIContext mockCxt;
 	protected Registry mockReg;
-	protected MyspaceInternal mockMs;
 	protected Stap stap;
 	protected URL url;
 

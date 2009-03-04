@@ -1,35 +1,27 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.UIManager;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.Selectors;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
-import org.apache.commons.vfs.provider.url.UrlFileObject;
-import org.apache.commons.vfs.provider.url.UrlFileSystem;
 import org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceFileObject;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
@@ -63,7 +55,7 @@ public class BulkCopyWorker extends BackgroundWorker {
      * @param saveDir directory to copy data to.
      * @param l list of files to copy. 
      */
-    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,File saveDir, CopyCommand[] l) {
+    public BulkCopyWorker(final FileSystemManager vfs,final UIComponent parent,final File saveDir, final CopyCommand[] l) {
         super(parent,  "Copying to " + saveDir,BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveDir = saveDir;
@@ -72,7 +64,7 @@ public class BulkCopyWorker extends BackgroundWorker {
         this.cmds = l;
     }
     
-    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,FileObject saveObject, CopyCommand[] l) {
+    public BulkCopyWorker(final FileSystemManager vfs,final UIComponent parent,final FileObject saveObject, final CopyCommand[] l) {
         super(parent,  "Copying to " + saveObject.getName().getPath(),BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveObject = saveObject;
@@ -81,7 +73,7 @@ public class BulkCopyWorker extends BackgroundWorker {
         this.cmds = l;
     }
     
-    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,URI saveLoc, CopyCommand[] l) {
+    public BulkCopyWorker(final FileSystemManager vfs,final UIComponent parent,final URI saveLoc, final CopyCommand[] l) {
         super(parent,  "Copying to " + saveLoc,BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveLoc = saveLoc;
@@ -89,6 +81,16 @@ public class BulkCopyWorker extends BackgroundWorker {
         this.saveDir = null;
         this.cmds = l;
     }
+    
+    public BulkCopyWorker(final FileSystemManager vfs,final UIContext context,final URI saveLoc, final CopyCommand[] l) {
+        super(context,  "Copying to " + saveLoc,BackgroundWorker.VERY_LONG_TIMEOUT);
+        this.vfs = vfs;
+        this.saveLoc = saveLoc;
+        this.saveObject = null;
+        this.saveDir = null;
+        this.cmds = l;
+    }    
+    
     {
         setWouldLikeIndividualMonitor(true);
     }
@@ -123,7 +125,7 @@ public class BulkCopyWorker extends BackgroundWorker {
             saveTarget = vfs.resolveFile(saveLoc.toString());
         }
           
-        boolean saveToMyspace = saveTarget instanceof MyspaceFileObject; 
+        final boolean saveToMyspace = saveTarget instanceof MyspaceFileObject; 
             
         if (! saveTarget.exists()) {
             reportProgress("Creating save location");
@@ -136,16 +138,16 @@ public class BulkCopyWorker extends BackgroundWorker {
         reportProgress((saveToMyspace ? "VOSpace " : "" ) + "Save location validated");
         setProgress(++progress,tasksCount);
         // go through each file in turn.
-        List destList = new ArrayList();
+        final List destList = new ArrayList();
         for (int i  = 0; i < this.cmds.length; i++ ) {
-                CopyCommand cmd = cmds[i];
-                FileObject src =cmd.resolveSourceFileObject(vfs);
+                final CopyCommand cmd = cmds[i];
+                final FileObject src =cmd.resolveSourceFileObject(vfs);
                 reportProgress("Processing " + src.getName());
                 String name;
                 String ext;
                 if (cmd instanceof CopyAsCommand) {
                     // already specifies a name
-                    CopyAsCommand ccmd = (CopyAsCommand)cmd;
+                    final CopyAsCommand ccmd = (CopyAsCommand)cmd;
                     name = StringUtils.substringBeforeLast(ccmd.getTargetFilename(),".");
                     ext = StringUtils.substringAfterLast(ccmd.getTargetFilename(),".");
                 } else {
@@ -169,7 +171,7 @@ public class BulkCopyWorker extends BackgroundWorker {
                     dest.copyFrom(src, Selectors.SELECT_ALL); // creates and copies from src. handles folders and files. nice!
                     cmd.recordSuccess(dest.getName());
                     destList.add(dest);
-                } catch (FileSystemException x) {
+                } catch (final FileSystemException x) {
                     cmd.recordError(x);
                     reportProgress("Copy from " + src.getName().getBaseName() + " failed");
                     reportProgress("Cause: " + exFormatter.format(x,ExceptionFormatter.INNERMOST));
@@ -180,20 +182,20 @@ public class BulkCopyWorker extends BackgroundWorker {
         }
         // notify the parent object that we've made changes - cause a refresh.
     //    if (saveTarget != null) {
-            FileSystem fs = saveTarget.getFileSystem();
+            final FileSystem fs = saveTarget.getFileSystem();
             if (fs instanceof AbstractFileSystem) {
-                AbstractFileSystem afs = (AbstractFileSystem) fs;
+                final AbstractFileSystem afs = (AbstractFileSystem) fs;
                 afs.fireFileChanged(saveTarget);
-                for (Iterator it = destList.iterator(); it.hasNext();) {
+                for (final Iterator it = destList.iterator(); it.hasNext();) {
                     ((FileObject) it.next()).refresh();
                 }
             }
       //  }
         return cmds; // results have been recorded in here.
     }
-    private ExceptionFormatter exFormatter = new ExceptionFormatter();
+    private final ExceptionFormatter exFormatter = new ExceptionFormatter();
 
-    protected void doFinished(Object ignored) {
+    protected void doFinished(final Object ignored) {
         // check if we've seen any errors.
         boolean seenErrs = false;
         for (int i = 0; i < cmds.length; i++) {
@@ -209,26 +211,28 @@ public class BulkCopyWorker extends BackgroundWorker {
                         : cmds.length + " files copied to " + saveTarget.getName().getURI());            
             return;
         }
-        HtmlBuilder msgBuilder = new HtmlBuilder();			    
+        final HtmlBuilder msgBuilder = new HtmlBuilder();			    
         for (int i = 0; i < cmds.length; i++) {
-            CopyCommand cmd = cmds[i];
+            final CopyCommand cmd = cmds[i];
             if (! cmd.failed()) {
                 continue;
             }
-            String string = cmd.formatResult();
+            final String string = cmd.formatResult();
             logger.warn(string);
             msgBuilder.append(string);
             msgBuilder.append("<p>");
         }
         
         if (!GraphicsEnvironment.isHeadless() && ! Boolean.getBoolean("unit.testing")) {           
-            ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
+            final ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
             rd.getBanner().setVisible(true);
             rd.getBanner().setTitle("Errors encountered while copying files");
             rd.getBanner().setSubtitleVisible(false);
             rd.getBanner().setIcon(UIManager.getIcon("OptionPane.warningIcon"));
             rd.pack();
             rd.show();
+        } else {
+            logger.warn(msgBuilder);
         }
     }
 }

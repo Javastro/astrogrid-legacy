@@ -17,17 +17,25 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.vfs.FileName;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.Selectors;
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
+import org.astrogrid.desktop.alternatives.InThreadExecutor;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.util.TablesImplUnitTest;
 import org.easymock.IArgumentMatcher;
 import org.w3c.dom.Document;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 
 /**
  * @author Noel Winstanley
@@ -35,14 +43,30 @@ import org.w3c.dom.Document;
  */
 public class DalUnitTest extends TestCase {
 
-	/*
+
+    /*
 	 * @see TestCase#setUp()
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		mockMs =createMock(MyspaceInternal.class);
 		mockReg = createMock(Registry.class);
-		dal = new TestDAL(mockReg,mockMs);
+        mockCxt = createMock(UIContext.class);
+        // set up the context as a stub.
+        final HeadlessUIComponent comp = new HeadlessUIComponent("test",mockCxt);
+        expect(mockCxt.findMainWindow())
+            .andStubReturn(comp);
+        final InThreadExecutor exec = new InThreadExecutor();
+        expect(mockCxt.getExecutor())
+            .andStubReturn(exec);
+        final Configuration conf = createNiceMock(Configuration.class);
+        replay(conf);
+        expect(mockCxt.getConfiguration())
+            .andStubReturn(conf);
+        final EventList el = new BasicEventList();
+        expect(mockCxt.getTasksList()).andStubReturn(el);
+        
+        mockVFS = createMock(FileSystemManager.class);		
+		dal = new TestDAL(mockReg,mockVFS,mockCxt);
 		u = new URL("http://www.slashdot.org/foo/");	
 		localSiapURL = TablesImplUnitTest.class.getResource("siap.vot");
 		nonCompliantSiapService = new URL("http://www.slashdot.org");		
@@ -50,22 +74,24 @@ public class DalUnitTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		mockMs = null;
 		mockReg = null;
+		mockVFS = null;
+		mockCxt = null;
 		dal = null;
 		u = null;
 		localSiapURL = null;
 		nonCompliantSiapService = null;
 	}
-	private MyspaceInternal mockMs;
+	protected FileSystemManager mockVFS;
 	private Registry mockReg;
+    protected UIContext mockCxt;	
 	private DALImpl dal;
 	private URL u;
 	private URL localSiapURL;
 	private URL nonCompliantSiapService;
 
 	public void testResolveEndpointURL() throws InvalidArgumentException, NotFoundException, URISyntaxException {
-	    replay(mockMs,mockReg);
+	    replay(mockVFS,mockReg);
 		final URL resolved = dal.resolveEndpoint(new URI(u.toString()));
 		assertEquals(resolved,u);
 	}
@@ -85,17 +111,18 @@ public class DalUnitTest extends TestCase {
 	public void testResolveEndpointIVOUnknown() throws NotFoundException, ServiceException, URISyntaxException, InvalidArgumentException {
 		final URI uri = new URI("ivo://wibble");
 		expect(mockReg.getResource(uri)).andThrow(new NotFoundException());
-		replay(mockMs,mockReg);
+        replay(mockVFS,mockReg);
 		try {
 			final URL resolved = dal.resolveEndpoint(uri);
 			fail("expected to fail");
 		} catch (final NotFoundException e) {
 			// ok
 		}
+		verify(mockVFS,mockReg);
 	}
 	
 	public void testResolveEndpointUnknownScheme() throws NotFoundException, URISyntaxException {
-        replay(mockMs,mockReg);
+        replay(mockVFS,mockReg);
 		try {
 			dal.resolveEndpoint(new URI("isbn:1023456"));
 			fail("expected to fail");
@@ -111,8 +138,6 @@ public class DalUnitTest extends TestCase {
 	 * Test method for 'org.astrogrid.desktop.modules.ivoa.DALImpl.addOption(URL, String, String)'
 	 */
 	public void testAddOption() throws InvalidArgumentException{
-		// expect no calls on myspace or reg.
-        replay(mockMs,mockReg);
 
 		final URL u1 = dal.addOption(u,"page","foo 32");
 		assertNotNull(u1);
@@ -124,8 +149,7 @@ public class DalUnitTest extends TestCase {
 	}
 	
 	public void testAddOptionToExistingOptions() throws InvalidArgumentException {
-		// expect no calls on myspace or reg.
-        replay(mockMs,mockReg);
+
 		final URL url1 = dal.addOption(u,"page","foo 32");
 		final URL url2 = dal.addOption(url1,"length","32");
 		assertNotNull(url2);
@@ -133,8 +157,7 @@ public class DalUnitTest extends TestCase {
 	}
 	
 	public void testAddOptionThatIsAlreadyPresent() throws InvalidArgumentException {
-		// expect no calls on myspace or reg.
-        replay(mockMs,mockReg);
+
 		final URL url1 = dal.addOption(u,"page","foo 32");
 		final URL url2 = dal.addOption(url1,"page","foo 32");
 		assertNotNull(url2);
@@ -142,8 +165,7 @@ public class DalUnitTest extends TestCase {
 	}
 
 	public void testAddOptionNulls() {
-		// expect no calls on myspace or reg.
-        replay(mockMs,mockReg);	
+
 		try {
 			dal.addOption(null,"foo","bar");
 			fail("expected to fail");
@@ -160,8 +182,7 @@ public class DalUnitTest extends TestCase {
 
 
 	public void testAddNullOptionValue() throws InvalidArgumentException {
-		// expect no calls on myspace or reg.
-        replay(mockMs,mockReg);	
+
 		final URL u1 = dal.addOption(u,"page",null);
 		assertNotNull(u1);
 		assertEquals(u.getHost(),u1.getHost());
@@ -172,8 +193,7 @@ public class DalUnitTest extends TestCase {
 	}
 
 	public void testAddEmptyOptionValue() throws InvalidArgumentException {
-		// expect no calls on myspace or reg.
-        replay(mockMs,mockReg);
+
 		final URL u1 = dal.addOption(u,"page","");
 		assertNotNull(u1);
 		assertEquals(u.getHost(),u1.getHost());
@@ -187,8 +207,7 @@ public class DalUnitTest extends TestCase {
 	 * @throws MalformedURLException 
 	 * @throws InvalidArgumentException */
 	public void testAddOptionTrailingQuestionMark() throws MalformedURLException, InvalidArgumentException {
-		// expect no calls on myspace or reg.
-        replay(mockMs,mockReg);
+
 		// constrcut an odd url
 		u = new URL(u.toString() + "?");
 		// url class reports that it does have a query.
@@ -205,8 +224,7 @@ public class DalUnitTest extends TestCase {
 	}
 	
 	public void testAddOptionTrailingAmpersand() throws MalformedURLException, InvalidArgumentException {
-		// expect no calls on myspace or reg.
-        replay(mockMs,mockReg);
+
 		// constrcut an odd url
 		u = new URL(u.toString() + "?foo=bar&");
 		// url class reports that it does have a query.
@@ -224,7 +242,6 @@ public class DalUnitTest extends TestCase {
 	
 	public void testExecute() throws Exception {
 		assertNotNull(localSiapURL);
-        replay(mockMs,mockReg);
 		final Map[] r = dal.execute(localSiapURL);
 		assertNotNull(r);
 		assertTrue(r.length > 0);
@@ -252,7 +269,6 @@ public class DalUnitTest extends TestCase {
 	
 	public void testExecuteVotable() throws ServiceException {
 		assertNotNull(localSiapURL);
-        replay(mockMs,mockReg);
 		final Document d = dal.executeVotable(localSiapURL);
 		assertNotNull(d);
 	}
@@ -269,12 +285,23 @@ public class DalUnitTest extends TestCase {
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.ivoa.DALImpl.saveResults(URL, URI)'
 	 */
-	public void testExecuteAndSaveIvo() throws URISyntaxException, NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException {
+	public void testExecuteAndSaveIvo() throws Exception {
 		final URI location = new URI("ivo://org.astrogrid/test#storage/foo/result.vot");
-		mockMs.copyURLToContent((URL)anyObject(),eq(location));
-        replay(mockMs,mockReg);
+		final FileObject src = createMock(FileObject.class);
+		final FileObject dest = createMock(FileObject.class);
+		final FileName fn = createMock(FileName.class);
+		expect(dest.getName()).andReturn(fn);
+		expect(fn.getScheme()).andReturn("ivo");
+
+		expect(	mockVFS.resolveFile(localSiapURL.toString()))
+		    .andReturn(src);
+		expect(mockVFS.resolveFile(location.toString()))
+		    .andReturn(dest);
+		dest.copyFrom(src,Selectors.SELECT_SELF);
+		
+        replay(mockVFS,src,dest,fn,mockReg,mockCxt);
 		dal.executeAndSave(localSiapURL,location);
-        verify(mockMs,mockReg);
+        verify(mockVFS,src,dest,fn,mockReg,mockCxt);
 	}
 	
 	/** not easy to test - and any point??
@@ -284,26 +311,52 @@ public class DalUnitTest extends TestCase {
 	
 	public void testSaveDatasetsIvo() throws Exception {
 		final URI location = new URI("ivo://org.astrogrid/test#storage/foo");
-		mockMs.copyURLToContent(
-		        (URL)anyObject()
-		        ,saveLocation(location)
-		        ); // expected values are ignored in this case - just need to tbe the correct type.
-	
+		final FileName fn = createNiceMock(FileName.class);
+		final FileObject f = createNiceMock(FileObject.class);
+		expect(mockVFS.resolveFile(location.toString()))
+		    .andReturn(f);
+		expect(f.getName()).andStubReturn(fn);
+		expect(f.exists()).andStubReturn(true);		
+		expect(f.isWriteable()).andStubReturn(true);
+		
+		final FileObject dest = createNiceMock(FileObject.class);
+		expect(f.resolveFile((String)anyObject()))
+		    .andStubReturn(dest);		
+		expect(dest.exists()).andStubReturn(false);
+		expect(dest.getName()).andStubReturn(fn);
+
+		
 		// find size of the dataset.
 		final int resultSize = dal.execute(localSiapURL).length;
-		// call this method as many times as the dataset size.
-		expectLastCall().times(resultSize);
-        replay(mockMs,mockReg);
+		final FileObject src = createNiceMock(FileObject.class);
+		expect(mockVFS.resolveFile((String)anyObject()))
+		    .andReturn(src)
+		    .times(resultSize);
+       
+        replay(mockVFS,mockReg,mockCxt,f,src,dest,fn);
 		dal.saveDatasets(localSiapURL,location);
-        verify(mockMs,mockReg);
+        verify(mockVFS,mockReg,mockCxt);
 
 	}
 	
 	public void testSaveSubsetDatasetsIvo() throws Exception {
 		final URI location = new URI("ivo://org.astrogrid/test#storage/foo");
-		mockMs.copyURLToContent((URL)anyObject(),
-		        saveLocation(location)); // expected values are ignored in this case - just need to tbe the correct type.
-				
+        final FileName fn = createNiceMock(FileName.class);
+        final FileObject f = createNiceMock(FileObject.class);
+        expect(mockVFS.resolveFile(location.toString()))
+            .andReturn(f);
+        expect(f.getName()).andStubReturn(fn);
+        expect(f.exists()).andStubReturn(true);     
+        expect(f.isWriteable()).andStubReturn(true);
+        
+        final FileObject dest = createNiceMock(FileObject.class);
+        expect(f.resolveFile((String)anyObject()))
+            .andStubReturn(dest);       
+        expect(dest.exists()).andStubReturn(false);
+        expect(dest.getName()).andStubReturn(fn);
+
+        	
+
 		// find size of the dataset.
 		final int resultSize = dal.execute(localSiapURL).length;
 		final List subset = new ArrayList();
@@ -311,11 +364,16 @@ public class DalUnitTest extends TestCase {
 		subset.add(new Integer(resultSize -1));
 		subset.add(new Integer(resultSize / 2));
 		subset.add(new Integer( 1));
-		// call this method as many times as the dataset size.
-        expectLastCall().times(subset.size());
-        replay(mockMs,mockReg);
+		// call this method as many times as the subset to download
+	      final FileObject src = createNiceMock(FileObject.class);
+	      expect(mockVFS.resolveFile((String)anyObject()))
+          .andReturn(src)
+          .times(subset.size());
+     
+      replay(mockVFS,mockReg,mockCxt,f,src,dest,fn);
+
 		dal.saveDatasetsSubset(localSiapURL,location,subset);
-        verify(mockMs,mockReg);
+        verify(mockVFS,mockReg,mockCxt);
 
 	}
 	public static URI saveLocation(final URI in) {
@@ -351,9 +409,11 @@ public static class TestDAL extends DALImpl {
 	/**
 	 * @param reg
 	 * @param ms
+	 * @param vf 
+	 * @param cxt 
 	 */
-	public TestDAL(final Registry reg, final MyspaceInternal ms) {
-		super(reg, ms);
+	public TestDAL(final Registry reg, final FileSystemManager vf, final UIContext cxt) {
+		super(reg,  vf, cxt);
 	}
 
 	public String getRegistryAdqlQuery() {

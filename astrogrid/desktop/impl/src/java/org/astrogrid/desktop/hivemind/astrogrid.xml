@@ -209,7 +209,8 @@ STAP
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ag.StapImpl" >
 				<service>ivoa.registry</service>
-				<service>astrogrid.myspace</service>
+                <service>system.vfs</service>  
+                <service>system.ui</service>                              
 			</construct>			
 		</invoke-factory>	
 	</service-point>

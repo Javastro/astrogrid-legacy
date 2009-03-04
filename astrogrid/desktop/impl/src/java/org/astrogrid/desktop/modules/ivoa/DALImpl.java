@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.25 2009/02/27 17:16:58 nw Exp $
+/*$Id: DALImpl.java,v 1.26 2009/03/04 18:43:09 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,9 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -30,12 +30,14 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.Selectors;
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
@@ -43,7 +45,10 @@ import org.astrogrid.acr.ivoa.Dal;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
+import org.astrogrid.desktop.modules.ui.actions.CopyAsCommand;
+import org.astrogrid.desktop.modules.ui.actions.CopyCommand;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolException;
 import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler;
@@ -69,16 +74,19 @@ public abstract class DALImpl implements Dal{
     protected static final Log logger = LogFactory.getLog(DALImpl.class);
 
     /** Construct a new DALImpl
+     * @param context @todo
+     * @param context 
      * 
      */
-    public DALImpl(final Registry reg, final MyspaceInternal ms) {
+    public DALImpl(final Registry reg, final FileSystemManager vfs, final UIContext context) {
         super();
         this.reg = reg;
-        this.ms = ms;
-
+        this.vfs = vfs;
+        this.context=context;
     }
   	protected final Registry reg;
-    protected final MyspaceInternal ms;
+    protected final FileSystemManager vfs;
+    protected  UIContext context;
 
 
     /** utility method for subclasses to use to resolve an abstract service id to url endpoint
@@ -181,7 +189,6 @@ public abstract class DALImpl implements Dal{
     
     public final Map[] execute(final URL arg0) throws ServiceException {
         try {
-            System.err.println(arg0);
             final XMLReader parser = createParser();
             final VotableContentHandler votHandler = new VotableContentHandler(false);
             votHandler.setReadHrefTables(true);
@@ -191,7 +198,6 @@ public abstract class DALImpl implements Dal{
             parser.parse(	arg0.toString());
             return sb.getResult();
         } catch (final Exception x) {
-            x.printStackTrace();
             throw new ServiceException(new ExceptionFormatter().format(x));
         }
     }
@@ -268,33 +274,47 @@ public abstract class DALImpl implements Dal{
     }
 
     public final void executeAndSave(final URL arg0, final URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
-        final File f = downloadAndValidate(arg0);
-        if (arg1.getScheme().equals("ivo")) { // save to myspace - can optimize this
-            try {
-                ms.copyURLToContent(f.toURL(),arg1);
-            } catch (final NotFoundException e) {
-                throw new InvalidArgumentException(e);
-            } catch (final NotApplicableException e) {
-                throw new InvalidArgumentException(e);
-            } catch (final MalformedURLException x) {
-                throw new ServiceException(x);
+        final File f = downloadAndValidate(arg0); // even though I can short-cut to myspace, still check the data is valid first.
+        try {
+            final FileObject target = vfs.resolveFile(arg1.toString());
+            FileObject source;
+            if(target.getName().getScheme().equals("ivo")) { // optimzation for myspace.
+                source = vfs.resolveFile(arg0.toString());            
+            } else {
+                source = vfs.resolveFile(f.toString());
             }
-        } else {
-            OutputStream os = null;
-            try {
-                os = getOutputStream(arg1);
-                final InputStream is = FileUtils.openInputStream(f);
-                IOUtils.copy(is,os);
-            } catch (final FileNotFoundException e) {
-            	throw new InvalidArgumentException(e);
-            } catch (final MalformedURLException e) {
-            	throw new InvalidArgumentException(e);            	
-            } catch (final IOException e) {
-                throw new ServiceException(e);
-            } finally {
-                IOUtils.closeQuietly(os);               
-            }
+            target.copyFrom(source,Selectors.SELECT_SELF);
+        } catch (final FileSystemException e) {
+            throw new ServiceException(e);
         }
+
+        
+//        if (arg1.getScheme().equals("ivo")) { // save to myspace - can optimize this
+//            try {
+//                ms.copyURLToContent(f.toURL(),arg1);
+//            } catch (final NotFoundException e) {
+//                throw new InvalidArgumentException(e);
+//            } catch (final NotApplicableException e) {
+//                throw new InvalidArgumentException(e);
+//            } catch (final MalformedURLException x) {
+//                throw new ServiceException(x);
+//            }
+//        } else {
+//            OutputStream os = null;
+//            try {
+//                os = getOutputStream(arg1);
+//                final InputStream is = FileUtils.openInputStream(f);
+//                IOUtils.copy(is,os);
+//            } catch (final FileNotFoundException e) {
+//            	throw new InvalidArgumentException(e);
+//            } catch (final MalformedURLException e) {
+//            	throw new InvalidArgumentException(e);            	
+//            } catch (final IOException e) {
+//                throw new ServiceException(e);
+//            } finally {
+//                IOUtils.closeQuietly(os);               
+//            }
+//        }
     }
     
     public int saveDatasets(final URL query, final URI root) throws SecurityException, ServiceException, InvalidArgumentException {
@@ -303,11 +323,10 @@ public abstract class DALImpl implements Dal{
             final VotableContentHandler votHandler = new VotableContentHandler(false);
             votHandler.setReadHrefTables(true);
             final DatasetSaver saver = newDatasetSaver();
-            saver.setRoot(root);
             votHandler.setVotableHandler(saver);
             parser.setContentHandler(votHandler);
             parser.parse(query.toString());
-            return doSaveDatasets(saver);
+            return doSaveDatasets(saver.getResult(),root);
         } catch (final SAXException x) {
             throw new ServiceException(new ExceptionFormatter().format(x));
         } catch (final ParserConfigurationException x) {
@@ -324,47 +343,70 @@ public abstract class DALImpl implements Dal{
         return new DatasetSaver();
     }
 
-    /**
-	 * @param saver
-	 * @throws InvalidArgumentException
-	 * @throws ServiceException
-	 * @throws SecurityException
+    /** Actually performs the download / save of the require datasets.
+     * @param cmds list of commands - copy source and destination filename
+     * @param destDir  directory to save results to
+    
 	 */
-    private int doSaveDatasets(final DatasetSaver saver) throws InvalidArgumentException, ServiceException, SecurityException {
-        int saved = 0;
-        for (final Map.Entry<URL,URI> entry : saver.getResult().entrySet()) {
-            saved++;
-            final URL u = entry.getKey();
-            final URI location = entry.getValue();
-
-            if (location.getScheme().equals("ivo")) {
-                try {
-                    ms.copyURLToContent(u,location);
-                } catch (final NotFoundException e) {
-                    throw new InvalidArgumentException(e);
-                } catch (final NotApplicableException e) {
-                    throw new InvalidArgumentException(e);
-                }        		
-            } else {
-                OutputStream os = null;
-                InputStream is = null;
-                try {
-                    os = getOutputStream(location);
-                    is = u.openStream();
-                    IOUtils.copy(is,os);
-                } catch (final FileNotFoundException x) {
-                    throw new InvalidArgumentException(x);
-                } catch (final MalformedURLException x) {
-                    throw new InvalidArgumentException(x);
-                }  catch (final IOException e) {
-                    throw new ServiceException(e);
-                } finally {
-                    IOUtils.closeQuietly(os);
-                    IOUtils.closeQuietly(is);
-                }        		
+    private int doSaveDatasets(final List<CopyAsCommand> cmds, final URI destDir) throws InvalidArgumentException, ServiceException, SecurityException {
+        final BulkCopyWorker copier = new BulkCopyWorker(vfs,context,destDir,cmds.toArray(new CopyCommand[cmds.size()]));
+        // usually you just start() a coopier and forget about it.
+        // however, here we want to block on it (I think), 
+        // yet still have it display to UI, appear in tasklist, etc.
+        //copier.
+        // do I need to do this?? 
+        //copier.getControl().setPrincipal()
+        copier.start();
+        // block for 'construct()' to complete..
+        try {
+            final CopyCommand[] results = (CopyCommand[])copier.get(); //blocks
+            int count = 0;
+            for (final CopyCommand c : results) {
+                if (!c.failed()) {
+                    count++;
+                }
             }
+            return count;
+        } catch (final InterruptedException x) {
+            throw new ServiceException(x);
+        } catch (final InvocationTargetException x) {
+          throw new ServiceException(x.getCause());
         }
-        return saved;
+        
+//        int saved = 0;
+//        for (final Map.Entry<URL,URI> entry : saver.getResult().entrySet()) {
+//            saved++;
+//            final URL u = entry.getKey();
+//            final URI location = entry.getValue();
+//
+//            if (location.getScheme().equals("ivo")) {
+//                try {
+//                    ms.copyURLToContent(u,location);
+//                } catch (final NotFoundException e) {
+//                    throw new InvalidArgumentException(e);
+//                } catch (final NotApplicableException e) {
+//                    throw new InvalidArgumentException(e);
+//                }        		
+//            } else {
+//                OutputStream os = null;
+//                InputStream is = null;
+//                try {
+//                    os = getOutputStream(location);
+//                    is = u.openStream();
+//                    IOUtils.copy(is,os);
+//                } catch (final FileNotFoundException x) {
+//                    throw new InvalidArgumentException(x);
+//                } catch (final MalformedURLException x) {
+//                    throw new InvalidArgumentException(x);
+//                }  catch (final IOException e) {
+//                    throw new ServiceException(e);
+//                } finally {
+//                    IOUtils.closeQuietly(os);
+//                    IOUtils.closeQuietly(is);
+//                }        		
+//            }
+//        }
+//        return saved;
     }
 
 	/** returns a stream for any non-myspace URI.
@@ -390,12 +432,11 @@ public abstract class DALImpl implements Dal{
             final VotableContentHandler votHandler = new VotableContentHandler(false);
             votHandler.setReadHrefTables(true);
             final DatasetSaver saver = newDatasetSaver();
-            saver.setRoot(root);
             saver.setSubset(rows);
             votHandler.setVotableHandler(saver);
             parser.setContentHandler(votHandler);
             parser.parse(   query.toString());
-            return doSaveDatasets(saver);
+            return doSaveDatasets(saver.getResult(),root);
         } catch (final SAXException x) {
             throw new ServiceException(new ExceptionFormatter().format(x));
         } catch (final ParserConfigurationException x) {
@@ -511,6 +552,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.26  2009/03/04 18:43:09  nw
+Complete - taskMove DAL over to VFS
+
 Revision 1.25  2009/02/27 17:16:58  nw
 found source of spurious votable dtd errors.
 

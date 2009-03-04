@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.18 2009/02/13 17:46:20 nw Exp $
+/*$Id: SsapImpl.java,v 1.19 2009/03/04 18:43:09 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.net.URI;
 import java.net.URL;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ivoa.Registry;
@@ -22,7 +23,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.contracts.StandardIds;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.StarTable;
@@ -36,9 +37,11 @@ public class SsapImpl extends DALImpl implements Ssap {
     /** Construct a new SsapImpl
      * @param reg
      * @param ms
+     * @param v 
+     * @param cx 
      */
-    public SsapImpl(final Registry reg, final MyspaceInternal ms) {
-        super(reg, ms);
+    public SsapImpl(final Registry reg, final FileSystemManager v, final UIContext cx) {
+        super(reg, v, cx);
     }
 
     /**
@@ -48,7 +51,7 @@ public class SsapImpl extends DALImpl implements Ssap {
         return "Select * from Registry r where ( " +
         " r.capability/@xsi:type like '%SimpleSpectralAccess'  " 
         +" or r.capability/@standardID = '" + StandardIds.SSAP_1_0 + "' )";
-//@issue        " and ( not (@status = 'inactive' or @status='deleted') )";
+//       " and ( not (@status = 'inactive' or @status='deleted') )";
     }
     public String getRegistryQuery() {
     	return "type = Spectral";
@@ -177,6 +180,9 @@ public class SsapImpl extends DALImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.19  2009/03/04 18:43:09  nw
+Complete - taskMove DAL over to VFS
+
 Revision 1.18  2009/02/13 17:46:20  nw
 Complete - taskUse SRQL in AR
 

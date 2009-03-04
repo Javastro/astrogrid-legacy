@@ -82,7 +82,7 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         this.worker = backgroundWorker;
         init();
         setLocationRelativeTo(f);
-        
+        toFront();
         
     }
     private ProgressDialogue(final Dialog f,final BackgroundWorker backgroundWorker) {
@@ -90,7 +90,7 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         this.worker = backgroundWorker;
         init();
         setLocationRelativeTo(f);
-        
+        toFront();
     }
    /**
      * 
@@ -121,6 +121,7 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         pb.add(new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED)
             ,cc.xy(3,3));       
         hide = new JCheckBox("Close this dialogue when task completes");
+        hide.setSelected(true); // set it up 'checked'
         pb.add(hide,cc.xy(3,5));
         pack();
       
@@ -129,11 +130,15 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         this.worker = backgroundWorker;
         init();
         centerOnScreen();
+        toFront();
         
     }    
     
     public static ProgressDialogue newProgressDialogue(final BackgroundWorker worker) {
         final Component pc = worker.getParent().getComponent();
+        if (pc == null) {
+            return new ProgressDialogue(worker);
+        }
         final Window window = pc instanceof Window
                       ? (Window) pc
                       : SwingUtilities.getWindowAncestor(pc);

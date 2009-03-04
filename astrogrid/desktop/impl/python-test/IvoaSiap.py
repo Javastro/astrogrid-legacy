@@ -38,6 +38,9 @@ class Siap(unittest.TestCase):
         self.reg = ar.ivoa.registry
         self.siap = ar.ivoa.siap
         self.vosi = ar.ivoa.vosi
+        self.info = ar.file.info
+        self.manager = ar.file.manager
+        
     def testApplicationExists(self):
         try:
             self.reg.getResource(service)
@@ -117,7 +120,22 @@ class Siap(unittest.TestCase):
             for name in files:
                 os.remove(os.path.join(root, name))
         os.rmdir(tmpDir)
-               
+        
+    def testSaveDatasetsSubsetMyspace(self):
+        query = self.constructQuery()
+        tmpURL = 'workspace://python/ivoasiap/datasets'
+        if self.info.exists(tmpURL):
+            self.manager.delete(tmpURL)     
+        count = self.siap.saveDatasetsSubset(query,tmpURL,[1])
+        # check how many rows we should have got.
+        self.assertEquals(1,count,"didn't download all instructed files")
+        self.assertTrue(self.info.isFolder(tmpURL))
+        children = self.manager.listChildUris(tmpURL)
+        self.assertEquals(1,len(children),'not all files downloaded')
+        #clean up
+        for c in children:
+            self.manager.delete(c)      
+        self.manager.delete(tmpURL)
       
 
 def suite():

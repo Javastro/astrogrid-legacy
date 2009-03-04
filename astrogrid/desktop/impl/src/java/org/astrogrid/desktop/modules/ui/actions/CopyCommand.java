@@ -60,7 +60,7 @@ public class CopyCommand {
      * but is a private method only used in reporting - so no worry */
     private String srcToString() {
         if (src instanceof FileObject) {
-            return ((FileObject)src).getName().getURI();
+            return ((FileObject)src).getName().getBaseName();
         } else {
             return src.toString();
         }

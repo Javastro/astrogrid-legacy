@@ -65,18 +65,17 @@ public interface Manager {
 	 */
 	String[] listChildren(URI uri) throws ACRException;
 	
-//	Not useful - can acheive same thing using listChildren + Name.resolve
-//    /**
-//     * List the URI of the children of a folder.
-//     * @param uri the folder to list
-//     * @return An array containing the URIs of the children of this folder. 
-//     * The array is unordered. 
-//     * If the file does not have any children, a zero-length array is returned. This method never returns null.
-//     * @throws ACRException If this file does not exist, or is not a folder, 
-//     * or on error listing this file's children.
-//     */
-//	URI[] listChildUris(URI uri) throws ACRException;
-//	
+    /**
+     * List the URI of the children of a folder.
+     * @param uri the folder to list
+     * @return An array containing the URIs of the children of this folder. 
+     * The array is unordered. 
+     * If the file does not have any children, a zero-length array is returned. This method never returns null.
+     * @throws ACRException If this file does not exist, or is not a folder, 
+     * or on error listing this file's children.
+     */
+	URI[] listChildUris(URI uri) throws ACRException;
+	
 
 	// Further navigation / search methods:	
 	//boolean hasChild(URI uri, String s); // maybe it returns a URI?
