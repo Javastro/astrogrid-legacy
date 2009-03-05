@@ -7,18 +7,20 @@
    <groupId>org.astrogrid</groupId>
    <artifactId>astrogrid-contracts</artifactId>
    <packaging>jar</packaging>
-   <parent>
-      <artifactId>astrogrid-base</artifactId>
-      <groupId>org.astrogrid</groupId>
-      <version>2008.2</version>
-   </parent>
    <name>Astrogrid sub-system contracts</name>
-   <version>2009.1-SNAPSHOT</version>
+   <version>2009.2.01</version>
+
    <description>
       Contracts for interfaces to major components of AstroGrid. The
       contracts contain the XML schemata for the interfaces plus textual
       descriptions of the semantics.
    </description>
+
+   <organization>
+     <name>AstroGrid</name>
+     <url>http://www.astrogrid.org</url>
+   </organization>
+   
    <properties>
       <astrogrid.name>contracts</astrogrid.name>
    </properties>
@@ -54,7 +56,16 @@
          <organization>Jodrell</organization>
       </developer>
    </developers>
-      <scm>
+
+  <licenses>
+    <license>
+      <name>Academic Free License v2.1</name>
+      <url>http://opensource-definition.org/licenses/afl-2.1.html</url>
+      <distribution>manual</distribution>
+    </license>
+  </licenses>
+
+   <scm>
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/${astrogrid.name}</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</developerConnection>
       <url>http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}</url>
@@ -94,8 +105,33 @@
                <!-- The name of your generated source package -->
             </configuration>
          </plugin>
-      </plugins>
-   </build>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site/schema</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/schema</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
    <dependencies>
       <dependency>
          <artifactId>servlet-api</artifactId>
@@ -115,5 +151,29 @@
          <version>2.1.8</version>
          <scope>runtime</scope><!-- make sure that this dependency is not transitive -->
       </dependency>
+     <dependency>
+       <groupId>junit</groupId>
+       <artifactId>junit</artifactId>
+       <version>3.8.1</version>
+       <scope>test</scope>
+     </dependency>
    </dependencies>
+
+   <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+
 </project>
