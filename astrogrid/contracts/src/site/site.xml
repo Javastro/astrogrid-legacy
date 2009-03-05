@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <title>AstroGrid sub-system contracts</title>
+  <body>
+    <menu name="Contracts">
+      <item name="XML schemata and WSDL" href="schema/index.html"/>
+    </menu>
+    <menu ref="reports"/>
+  </body>
+</project>
