@@ -39,16 +39,16 @@
 	      Application app = (Application)i.next();
 	%>
 	<tr>
-          <td><%=app.getId()%></td>
+          <td><a href="../uws/jobs/<%=app.getId()%>"><%=app.getId()%></a></td>
           <td><%=app.getApplicationDescription().getName()%></td>
 	      <td><%=app.getStatus()%></td>
           <td><%=app.getStartInstant()%></td>
           <td><%=app.getEndInstant()%></td>
           <td><%=app.getDeadline()%></td>
           <td>
-            <form action="./uws/jobs/<%=app.getId()%>/phase" method="post">
-              <input type="hidden" name="phase" value="aborted"/>
-              <input type="submit" value="Aborted"/>
+            <form action="../uws/jobs/<%=app.getId()%>/phase" method="post">
+              <input type="hidden" name="phase" value="abort"/>
+              <input type="submit" value="Abort"/>
             </form>
           </td>
         </tr>
