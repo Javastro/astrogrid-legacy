@@ -1,4 +1,4 @@
-/*$Id: SummaryHelper.java,v 1.7 2008/10/06 12:16:15 pah Exp $
+/*$Id: SummaryHelper.java,v 1.8 2009/03/06 17:34:35 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
+import org.astrogrid.applications.description.execution.BinaryEncodings;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.InputListType;
 import org.astrogrid.applications.description.execution.ParameterValue;
@@ -85,7 +86,29 @@ public class SummaryHelper {
         //IMPL the summary contains only the list of input and results - not taking into account any of the grouping - note the jaxb style of assigning...
         List<ParameterValue>  inpars = summary.getInputList().getParameter();
         for (int i = 0; i < app.getInputParameters().length; i++) {
-	    ParameterValue par = app.getInputParameters()[i];
+	    ParameterValue par = new ParameterValue();
+	    ParameterValue inpar = app.getInputParameters()[i];
+	    par.setId(inpar.getId());
+	    par.setMime(inpar.getMime());
+	    par.setEncoding(inpar.getEncoding());
+	    par.setIndirect(inpar.isIndirect());
+	    if (inpar.isIndirect()) {
+                par.setValue(inpar.getValue());
+            }
+	    else {
+	        if(inpar.getEncoding() != null && inpar.getEncoding().equals(BinaryEncodings.BASE_64)){
+	            par.setValue(inpar.getValue());
+	        }
+	        else {
+	            //IMPL this is a kludge - just in case a direct binary parameter gets here
+	            if(inpar.getValue().length() < 2048){
+	                par.setValue(inpar.getValue());
+	            }
+	            else {
+	                par.setValue("*** input value too large to store ***");
+	            }
+	        }
+	    }
 	    inpars.add(par);
 	}
         
@@ -96,6 +119,9 @@ public class SummaryHelper {
 
 /* 
 $Log: SummaryHelper.java,v $
+Revision 1.8  2009/03/06 17:34:35  pah
+put in kludge that attempts to stop binary direct values getting into the summary
+
 Revision 1.7  2008/10/06 12:16:15  pah
 factor out classes common to server and client
 
