@@ -1,5 +1,5 @@
 /*
- * $Id: ExerciseUWS.java,v 1.1 2009/02/26 11:17:41 pah Exp $
+ * $Id: ExerciseUWS.java,v 1.2 2009/03/07 08:55:27 pah Exp $
  * 
  * Created on 23 Feb 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -67,7 +67,7 @@ public class ExerciseUWS implements Runnable {
     }
     public ExerciseUWS()  {
         try {
-            uwsroot = new URI("http://localhost:8888/astrogrid-cea-cec/uws/jobs");
+            uwsroot = new URI("http://localhost:5797/astrogrid-cea-cec/uws/jobs");
         } catch (URISyntaxException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -81,6 +81,9 @@ public class ExerciseUWS implements Runnable {
 
 /*
  * $Log: ExerciseUWS.java,v $
+ * Revision 1.2  2009/03/07 08:55:27  pah
+ * stress testing code first checkin funny
+ *
  * Revision 1.1  2009/02/26 11:17:41  pah
  * first attempt at a stress test
  *

@@ -1,0 +1,1 @@
+curl -w "time %{time_total}\n\r"   --data-binary @testTool.xml   -H "Accept:text/xml"  http://localhost:8888/astrogrid-cea-cec/uws/jobs>>ajob.xml
