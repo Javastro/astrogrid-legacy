@@ -1,5 +1,5 @@
 /*
- * $Id: UWSController.java,v 1.7 2009/02/26 12:22:54 pah Exp $
+ * $Id: UWSController.java,v 1.8 2009/03/07 09:40:14 pah Exp $
  * 
  * Created on 8 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -340,7 +340,7 @@ public class UWSController  {
 	}	   
 	ExecutionHistory eh = manager.getExecutionHistoryService();
 	QueryService qs = manager.getQueryService();
-	logger.debug("getting job summar for "+ jobId);
+	logger.debug("getting job summary for "+ jobId);
 	ExecutionSummaryType jobSummary = qs.getSummary(jobId);
 	modelAndView.addObject("theJob", jobSummary);
 	logger.debug("returning model for "+jobId);
@@ -546,6 +546,10 @@ public class UWSController  {
 
 /*
  * $Log: UWSController.java,v $
+ * Revision 1.8  2009/03/07 09:40:14  pah
+ * RESOLVED - bug 2891: upgrade performance of record keeping
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2891
+ *
  * Revision 1.7  2009/02/26 12:22:54  pah
  * separate more out into cea-common for both client and server
  *

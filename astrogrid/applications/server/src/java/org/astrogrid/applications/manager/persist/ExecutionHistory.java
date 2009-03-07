@@ -1,4 +1,4 @@
-/*$Id: ExecutionHistory.java,v 1.5 2008/09/13 09:51:02 pah Exp $
+/*$Id: ExecutionHistory.java,v 1.6 2009/03/07 09:42:05 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,6 +65,8 @@ public interface ExecutionHistory {
     
     boolean delete(String execId) throws ExecutionIDNotFoundException;
     
+    boolean isCached(String execId) throws ExecutionIDNotFoundException;
+    
     List<String> getExecutionIdDestructionBefore(Date time);
     
 }
@@ -72,6 +74,10 @@ public interface ExecutionHistory {
 
 /* 
 $Log: ExecutionHistory.java,v $
+Revision 1.6  2009/03/07 09:42:05  pah
+RESOLVED - bug 2891: upgrade performance of record keeping
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2891
+
 Revision 1.5  2008/09/13 09:51:02  pah
 code cleanup
 

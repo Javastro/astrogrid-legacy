@@ -1,4 +1,4 @@
-/*$Id: FileStoreExecutionHistory.java,v 1.10 2009/02/26 12:45:56 pah Exp $
+/*$Id: FileStoreExecutionHistory.java,v 1.11 2009/03/07 09:42:05 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,10 @@ import javax.xml.namespace.QName;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.contracts.Configuration;
@@ -38,6 +42,7 @@ import org.astrogrid.contracts.Namespaces;
 
 /** Execution history that persists archives as xml documents to disk.
  * Current Set of executing applications still only kept in memory.
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Apr 2008 changed to be jaxb
  *
@@ -51,6 +56,13 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
     /** Construct a new FileStoreExecutionHistory
      * 
      */
+    
+    private static final CacheManager manager;
+    static {
+        manager = new CacheManager(); //TODO cache manager needs to be better configured
+        manager.addCache("executionSummary");
+   }
+    
     public FileStoreExecutionHistory(Configuration configuration) {
         super();
         this.baseDir = configuration.getRecordsDirectory();
@@ -61,15 +73,16 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
     /** implementation of the map interface over a directory of xml documents 
      * 
      * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 6 Mar 2009 - added ehcache facility.
      *
      */
     class XMLFileMap implements SimpleMap {
-        /**
-         * Commons Logger for this class
-         */
-
+     
+        private Cache cache;
         public XMLFileMap() {
             logger.info("BaseDir set to " + baseDir.getAbsolutePath());
+            cache = manager.getCache("executionSummary");
+            
         }
         /**
          * @throws ValidationException 
@@ -84,6 +97,7 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
                  Marshaller m = jc.createMarshaller();
                  m.marshal(new JAXBElement(new QName(Namespaces.CEAT
           		.getNamespace(), "executionSummary"), ExecutionSummaryType.class, value), fw);
+                 cache.put(new Element(key, value));
                  
             } catch (JAXBException e) {
 		logger.error("problem writing execution history for "+key, e);
@@ -111,24 +125,37 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
             if (!f.exists()) {
                 return null;
             }
-            FileReader fr = new FileReader(f);
-            try {
-        	
-                return CEAJAXBUtils.unmarshall(fr, ExecutionSummaryType.class, false);
-            } catch (Exception e) {
-		logger.error("problem unmarshalling for "+key, e);
-		ExecutionSummaryType es = new ExecutionSummaryType();
-		es.setApplicationName("failed to retrieve execution summary");
-		return es;
-	    } finally {
+            //
+            Element cacheval;
+            if ((cacheval = cache.get(key)) != null) {
+                return (ExecutionSummaryType) cacheval.getObjectValue();//IMPL should execution history be serializable or not - what are the implications for ehcache?
+            }
+            else {
+                // otherwise read from file
+                FileReader fr = new FileReader(f);
                 try {
-                    fr.close();
-                } catch (IOException e){
-                    logger.debug("failed to close file" );
+
+                    ExecutionSummaryType es = CEAJAXBUtils.unmarshall(fr,
+                            ExecutionSummaryType.class, false);
+                    cache.put(new Element(key, es));
+                    return es;
+                } catch (Exception e) {
+                    logger.error("problem unmarshalling for " + key, e);
+                    ExecutionSummaryType es = new ExecutionSummaryType();
+                    es
+                            .setApplicationName("failed to retrieve execution summary");
+                    return es;
+                } finally {
+                    try {
+                        fr.close();
+                    } catch (IOException e) {
+                        logger.debug("failed to close file");
+                    }
                 }
             }
         }
 	public Set<String> keys() {
+	    // note that this simply lists the files it does not attempt to get content for speed.
 	    Set<String> set = new HashSet<String>();
 	    
 	    File[] files = baseDir.listFiles();
@@ -142,11 +169,16 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
 	public boolean delete(String key) {
 	          File f = mkFile(key);
 	            if (f.exists()) {
+	                cache.remove(key);
 	                return f.delete();
+	                
 	            }
 	            return true; // file already not there...
 	 
 	}
+    public boolean isCached(String key) throws ExecutionIDNotFoundException {
+        return cache.isKeyInCache(key);
+    }
 
     }// end inner class
     
@@ -206,6 +238,10 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
 
 /* 
 $Log: FileStoreExecutionHistory.java,v $
+Revision 1.11  2009/03/07 09:42:05  pah
+RESOLVED - bug 2891: upgrade performance of record keeping
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2891
+
 Revision 1.10  2009/02/26 12:45:56  pah
 separate more out into cea-common for both client and server
 

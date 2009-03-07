@@ -1,4 +1,4 @@
-/*$Id: InMemoryExecutionHistory.java,v 1.7 2009/02/26 12:45:56 pah Exp $
+/*$Id: InMemoryExecutionHistory.java,v 1.8 2009/03/07 09:42:05 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,7 +51,7 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
      */
     public InMemoryExecutionHistory() {
         super();
-        currentSet = new HashMap();
+        currentSet = new HashMap<String, Application>();
         archive= new SimpleHashMap();
         DatatypeFactory dataF = null;
 	try {
@@ -147,6 +147,7 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
         public ExecutionSummaryType get(String key) throws Exception;
         public Set<String> keys();
         public boolean delete(String key);
+        public boolean isCached(String key) throws ExecutionIDNotFoundException;
     }
     
     /** implementation of the SimpleMap interface backed by a {@link java.util.HashMap}
@@ -183,6 +184,14 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
 	public boolean delete(String key) {
 	   return (super.remove(key) != null);
 	}
+
+    public boolean isCached(String key) throws ExecutionIDNotFoundException {
+       if(super.containsKey(key)){
+           return true;
+       } else {
+           throw new ExecutionIDNotFoundException(key);
+       }
+    }
         
         
 
@@ -238,11 +247,22 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
 	
 	return retval;
    }
+    public boolean isCached(String execId) throws ExecutionIDNotFoundException {
+        if(isApplicationInCurrentSet(execId)){
+            return true;
+        }else {
+            return archive.isCached(execId);
+        }
+    }
 }
 
 
 /* 
 $Log: InMemoryExecutionHistory.java,v $
+Revision 1.8  2009/03/07 09:42:05  pah
+RESOLVED - bug 2891: upgrade performance of record keeping
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2891
+
 Revision 1.7  2009/02/26 12:45:56  pah
 separate more out into cea-common for both client and server
 

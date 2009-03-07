@@ -1,5 +1,5 @@
 /*
- * $Id: JobCreationController.java,v 1.5 2008/09/25 23:14:18 pah Exp $
+ * $Id: JobCreationController.java,v 1.6 2009/03/07 09:40:14 pah Exp $
  * 
  * Created on 9 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -114,14 +114,42 @@ public class JobCreationController {
             modelAndView = new ModelAndView("listjobs");
         }
 	 
-	List<ExecutionSummaryType> jobs = new ArrayList<ExecutionSummaryType>();
+	List<JobOverview> jobs = new ArrayList<JobOverview>();
 	String[] jobids = eh.getExecutionIDs();
 	for (int i = 0; i < jobids.length; i++) {
-	    ExecutionSummaryType job = qs.getSummary(jobids[i]);
-	    jobs.add(job);
+	    if (eh.isCached(jobids[i])) {
+	           ExecutionSummaryType job = qs.getSummary(jobids[i]);
+	           jobs.add(new JobOverview(job.getJobId(), job.getPhase().toString()));
+               
+            } else {
+                   jobs.add(new JobOverview(jobids[i], "Archived"));
+           
+            }
 	}
 	modelAndView.addObject("jobs", jobs);
 	return modelAndView;
+    }
+    
+    /**
+     * Bean to allow brief job details to be displayed.
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 7 Mar 2009
+     * @version $Name:  $
+     * @since VOTech Stage 8
+     */
+    public static class JobOverview {
+        private String jobId;
+        private String phase;
+        public JobOverview(String id, String phase) {
+            this.jobId = id;
+            this.phase = phase;
+        }
+        public String getJobId() {
+            return jobId;
+        }
+        public String getPhase() {
+            return phase;
+        }
+        
     }
     
 
@@ -130,6 +158,10 @@ public class JobCreationController {
 
 /*
  * $Log: JobCreationController.java,v $
+ * Revision 1.6  2009/03/07 09:40:14  pah
+ * RESOLVED - bug 2891: upgrade performance of record keeping
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2891
+ *
  * Revision 1.5  2008/09/25 23:14:18  pah
  * new redirect functions
  *
