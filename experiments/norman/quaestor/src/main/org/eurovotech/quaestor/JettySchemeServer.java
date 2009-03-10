@@ -136,6 +136,7 @@ public class JettySchemeServer {
         System.err.println("  --<propertyname>=value   set property value");
         System.err.println("Allowed propertynames:");
         configProperties.list(System.err);
+        System.err.println("  (--persistence-directory=null turns off persistence)");
         System.exit(1);
     }
 
