@@ -76,8 +76,8 @@
 
   <property name="app.name"      value="quaestor"/>
   <property name="app.path"      value="/${app.name}"/>
-  <property name="app.version"   value="0.5.5"/>
-  <property name='release.date'  value='2009 March 10'/>
+  <property name="app.version"   value="0.5.5+"/>
+  <property name='release.date'  value='2009 XX XX'/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.war"     value="${build.home}/war"/>
   <property name="build.client"  value="${build.home}/client"/>
