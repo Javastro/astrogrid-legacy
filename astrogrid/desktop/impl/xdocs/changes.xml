@@ -46,12 +46,6 @@
     <action dev="nw" type="fix" issue="2884">
         Astroscope: Fixed incorrect reporting of number-of-services
     </action>
-
-    <!-- 
-    <action dev="nw" type="add">
-        AR: implemented VFS api - uniform access to all filesystems.
-    </action>
-     -->
     <action dev="nw" type="fix">
         AR: Applications API more forgiving to user input - accepts IVORN of CEA server in place of 
         expected IVORN of CEA application, for cases where CEA server only provides one application. This 
