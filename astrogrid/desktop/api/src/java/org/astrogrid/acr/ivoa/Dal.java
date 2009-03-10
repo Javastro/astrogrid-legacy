@@ -331,10 +331,10 @@ public interface Dal {
 	 * <p />
 	 * Applies to those DAL protocols ({@link Siap}, {@link Ssap}, {@link Stap}) where the response points to external data files.
 	 * 
-	 * @note In the case of saving to myspace, the myspace server performs the query and dataset download - the data does not pass through the
+	 * @note In the case of saving to myspace or vospace, the myspace server performs the query and dataset download - the data does not pass through the
 	 * user's computer.
 	 * @param query query url to execute
-	 * @param saveLocation location of a directory in which to save the datasets. May be any of the filesystems listed in {@link Systems#listSchemes()}.
+	 * @param saveLocation location of a directory in which to save the datasets. May be any of the filesystem types listed in {@link Systems#listSchemes()}.
 	 * @throws SecurityException if the user is not permitted to write to the save location
 	 * @throws ServiceException if either the query service or data service are unavailable
 	 * @throws InvalidArgumentException if the save location cannot be written to.
@@ -349,10 +349,10 @@ public interface Dal {
      * <p />
      * Applies to those DAL protocols ({@link Siap}, {@link Ssap}, {@link Stap}) where the response points to external data files.
      * 	 
-     * @note in the case of saving to myspace, the myspace server performs the query and dataset download - the data does not pass through the
+     * @note in the case of saving to myspace or vospace, the myspace server performs the query and dataset download - the data does not pass through the
      * user's computer.	 
 	 * @param query the DAL query
-     * @param saveLocation location of a directory in which to save the datasets. May be any of the filesystems listed in {@link Systems#listSchemes()}.
+     * @param saveLocation location of a directory in which to save the datasets. May be any of the filesystem types listed in {@link Systems#listSchemes()}.
 	 * @param rows list of Integers - indexes of the rows in the query response for which to save the dataset. (0= first row) 
 	 * @throws SecurityException if the user is not permitted to write to the save location
 	 * @throws ServiceException if either the query service or data service are unavailable
