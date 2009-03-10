@@ -37,13 +37,17 @@ public class JettySchemeServer {
 
     static String versionString = "???";
 
+    static Properties configProperties;
+    static {
+        configProperties = new Properties();
+    }
+
     public static void main(String[] args) {
         int portNumber = 8080;   // default - can be overridden in properties or on command line
         boolean chatter = false; // default - can be overridden in properties or on command line
 
-        Pattern opts = Pattern.compile("^--([a-z]+)(=(.*))?");
+        Pattern opts = Pattern.compile("^--([A-Za-z.-]+)(=(.*))?");
 
-        Properties configProperties = new Properties();
         java.io.InputStream propStream = ClassLoader.getSystemResourceAsStream("JettySchemeServer.properties");
         if (propStream != null) {
             Log.info("Found JettySchemeServer.properties");
@@ -125,10 +129,13 @@ public class JettySchemeServer {
         System.err.println("Usage:");
         System.err.println("  JettySchemeServer [--verbose] [--port=int] [--help]");
         System.err.println("Starts a server on the nominated port");
-        System.err.println("  --verbose   chatter on stderr");
-        System.err.println("  --quiet     ...or not");
-        System.err.println("  --port=n    start the service on port n (default 8080)");
-        System.err.println("  --help      display this help");
+        System.err.println("  --verbose                chatter on stderr");
+        System.err.println("  --quiet                  ...or not");
+        System.err.println("  --port=n                 start the service on port n (default 8080)");
+        System.err.println("  --help                   display this help");
+        System.err.println("  --<propertyname>=value   set property value");
+        System.err.println("Allowed propertynames:");
+        configProperties.list(System.err);
         System.exit(1);
     }
 

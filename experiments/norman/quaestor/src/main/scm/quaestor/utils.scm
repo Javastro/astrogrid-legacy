@@ -832,6 +832,9 @@
 ;; Called with one argument, verify that the "Content-*" headers are
 ;; all in the allowed set, returning #t if so.  Otherwise, return #f.
 ;; Called with no arguments, return the set of allowed headers.
+;;
+;; This function is here because RFC 2616 section 9.6 says that a recipient
+;; must not ignore content-* headers it does not recognise
 (define (content-headers-ok? . request)
   (define ok-headers '("content-type"
                        "content-length"))
