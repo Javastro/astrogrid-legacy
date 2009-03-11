@@ -180,7 +180,7 @@ public class SchemaIndexer {
     );
     Transformer t = TransformerFactory.newInstance().newTransformer(transform);
     StreamResult result = new StreamResult(out);
-    String href = prefix.getName() + "/" + schemaFile.getName();
+    String href = prefix.toString() + "/" + schemaFile.getName();
     t.setParameter("filename", href);
     t.transform(schema, result);
   }
