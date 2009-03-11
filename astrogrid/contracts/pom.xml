@@ -172,4 +172,12 @@
     </plugins>
   </reporting>
 
+  <distributionManagement>
+    <site>
+      <id>ag.deployer.contracts</id>
+      <name>Contracts on deployer, version ${pom.version}</name>
+      <url>scp://terror.star.le.ac.uk//software_docs/contracts-${pom.version}</url>
+    </site>
+  </distributionManagement>
+
 </project>
