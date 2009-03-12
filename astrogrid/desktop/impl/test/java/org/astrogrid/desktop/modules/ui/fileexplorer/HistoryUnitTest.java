@@ -3,14 +3,14 @@
  */
 package org.astrogrid.desktop.modules.ui.fileexplorer;
 
+import static org.easymock.EasyMock.*;
+
 import java.util.EmptyStackException;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.desktop.modules.ui.fileexplorer.History;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.BoundedUniqueEventStack;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryListener;
-import static org.easymock.EasyMock.*;
 
 import ca.odell.glazedlists.EventList;
 
@@ -22,11 +22,11 @@ public class HistoryUnitTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		h = new History();
-		s = new History.BoundedUniqueEventStack(3);
+		h = new History<Object>();
+		s = new History.BoundedUniqueEventStack<Object>(3);
 	}
-	History h;
-	BoundedUniqueEventStack s;
+	History<Object> h;
+	BoundedUniqueEventStack<Object> s;
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
@@ -36,7 +36,7 @@ public class HistoryUnitTest extends TestCase {
 		try {
 			s.pop();
 			fail("expected to chuck");
-		} catch (EmptyStackException e) {
+		} catch (final EmptyStackException e) {
 			// expected
 		}	
 	}
@@ -45,7 +45,7 @@ public class HistoryUnitTest extends TestCase {
 		try {
 			s.peek();
 			fail("expected to chuck");
-		} catch (EmptyStackException e) {
+		} catch (final EmptyStackException e) {
 			// expected
 		}			
 	}
@@ -53,12 +53,12 @@ public class HistoryUnitTest extends TestCase {
 	public void testStack() throws Exception {
 		assertTrue(s.isEmpty());
 		
-		Object o = new Object();
+		final Object o = new Object();
 		s.push(o);
 		assertFalse(s.isEmpty());
 		assertEquals(o,s.peek());
 		
-		Object o2 = new Object();
+		final Object o2 = new Object();
 		s.push(o2);
 		assertFalse(s.isEmpty());
 		assertEquals(o2,s.peek());
@@ -73,10 +73,10 @@ public class HistoryUnitTest extends TestCase {
 	
 	public void testStackBounds() throws Exception {
 		assertEquals(3,s.getMaxSize());
-		EventList l = s.getEventList();
+		final EventList l = s.getEventList();
 		assertTrue(l.isEmpty());
 		// list of test data.
-		Object[] os = new Object[]{
+		final Object[] os = new Object[]{
 				new Object()
 				,new Object()
 				,new Object()
@@ -101,10 +101,10 @@ public class HistoryUnitTest extends TestCase {
 	}
 	
 	public void testStackUnique() throws Exception {
-		EventList l = s.getEventList();
-		Object o = new Object();
+		final EventList l = s.getEventList();
+		final Object o = new Object();
 		s.push(o);
-		Object o1 = new Object();
+		final Object o1 = new Object();
 		s.push(o1);
 		assertEquals(2,l.size());
 		assertEquals(o,l.get(0));
@@ -132,7 +132,7 @@ public class HistoryUnitTest extends TestCase {
 		try {
 			h.movePrevious();
 			fail("expected to chuck");
-		} catch (IllegalStateException e) {
+		} catch (final IllegalStateException e) {
 			// ok
 		}
 	}
@@ -141,20 +141,20 @@ public class HistoryUnitTest extends TestCase {
 		try {
 			h.moveNext();
 			fail("expected to chuck");
-		} catch (IllegalStateException e) {
+		} catch (final IllegalStateException e) {
 			// ok
 		}
 	}	
 	
 	public void testMovement() throws Exception {
 		
-		Object o = "a";
+		final Object o = "a";
 		h.move(o);
 		assertEquals(o,h.current());
 		assertEquals(0,h.getNextList().size());
 		assertEquals(1,h.getPreviousList().size());
 		
-		Object o1 = "b";
+		final Object o1 = "b";
 		h.move(o1);
 		assertEquals(o1,h.current());
 		assertEquals(0,h.getNextList().size());
@@ -169,7 +169,7 @@ public class HistoryUnitTest extends TestCase {
 		assertEquals(o1,h.current());
 		
 		h.movePrevious();
-		Object o3 = new Object();
+		final Object o3 = new Object();
 		h.move(o3);
 		// verify we've lost all future history.
 		assertTrue(h.getNextList().isEmpty());
@@ -177,13 +177,13 @@ public class HistoryUnitTest extends TestCase {
 
 	public void testMoreMovement() throws Exception {
 		
-		Object o = "a";
+		final Object o = "a";
 		h.move(o);
 		assertEquals(o,h.current());
 		assertEquals(0,h.getNextList().size());
 		assertEquals(1,h.getPreviousList().size());
 		
-		Object o1 = "b";
+		final Object o1 = "b";
 		h.move(o1);
 		assertEquals(o1,h.current());
 		assertEquals(0,h.getNextList().size());
@@ -206,20 +206,20 @@ public class HistoryUnitTest extends TestCase {
 	
 	public void testMoveKnownInHistory() throws Exception {
 		
-		Object o = "a";
+		final Object o = "a";
 		h.move(o);
 		assertEquals(o,h.current());
 		assertEquals(0,h.getNextList().size());
 		assertEquals(1,h.getPreviousList().size());
 		
-		Object o1 = "b";
+		final Object o1 = "b";
 		h.move(o1);
 		assertEquals(o1,h.current());
 		assertEquals(0,h.getNextList().size());
 		assertEquals(2,h.getPreviousList().size());
 
 		
-		Object o2 = "c";
+		final Object o2 = "c";
 		h.move(o2);
 		assertEquals(o2,h.current());
 		assertEquals(0,h.getNextList().size());
@@ -241,20 +241,25 @@ public class HistoryUnitTest extends TestCase {
 	}
 
 	public void testEvents() throws Exception {
-		HistoryListener l =createMock(HistoryListener.class);
-		Object o = "a";
-		l.currentChanged(new History.HistoryEvent(h,o));
+		final HistoryListener l =createStrictMock(HistoryListener.class); // order is important.
+		final Object a = "a";
+		final Object b = "b";
+		l.currentChanged(new History.HistoryEvent(h,a,null)); // prev will be null the first time
+        l.currentChanged(new History.HistoryEvent(h,b,a));
 		replay(l);
-		h.addHistoryListener(l);
 		
-		h.move(o);
-		assertEquals(o,h.current());
+		
+		
+		h.addHistoryListener(l);
+		h.move(a);
+		h.move(b);
+		assertEquals(b,h.current());
 		
 		
 		// now unregister the listener, and chek we get no more messages.
 		h.removeHistoryListener(l);
-		Object o1 = "b";
-		h.move(o1);
+		final Object c = "c";
+		h.move(c);
 		
 		verify(l); // verifies that the listener was only called once.
 	}

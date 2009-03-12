@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -52,7 +51,7 @@ import ca.odell.glazedlists.matchers.MatcherEditor;
  * @since Aug 10, 20074:45:27 PM
  * @TEST this model
  */
-public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current, FileListener{
+public class FileNavigator implements HistoryListener<FileNavigator.Location>, VFSOperationsImpl.Current, FileListener{
     
     /** event listener interface for navigation events */
     public static interface NavigationListener extends EventListener {
@@ -133,9 +132,9 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     private static final Log logger = LogFactory.getLog(FileNavigator.class);
 
     private final Filemodel model;
-    private final History history;
+    private final History<Location> history;
     private final UIComponent parent;
-    private final EventList upList;
+    private final EventList<UpMenuItem> upList;
 
     private final FileSystemManager vfs;
 
@@ -146,9 +145,9 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         this.vfs = vfs;
         this.icons = icons;
         this.model = Filemodel.newInstance(ed,activities,icons,new VFSOperationsImpl(parent,this,vfs));
-        this.history = new History();
+        this.history = new History<Location>();
         history.addHistoryListener(this);
-        this.upList = new BasicEventList();
+        this.upList = new BasicEventList<UpMenuItem>();
     }
 
     public Filemodel getModel() {
@@ -171,22 +170,22 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         return this.history.getMaxHistorySize();
     }
 
-    public EventList getNextList() {
+    public EventList<Location> getNextList() {
         return this.history.getNextList();
     }
 
-    public EventList getPreviousList() {
+    public EventList<Location> getPreviousList() {
         return this.history.getPreviousList();
     }
     
-    public EventList getUpList() {
+    public EventList<UpMenuItem> getUpList() {
         return upList;
     }
 
 // current state
     /** access the current fiile - will throw an illeage state exception if not yet resolved */
     public FileObject current()  {
-        final Location loc = (Location) history.current();
+        final Location loc = history.current();
         if (loc == null) {
             return null;
         }
@@ -235,8 +234,8 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     }
 
     // history event listener interface - whenever we hear a position change in history, we reload.
-    public void currentChanged(final HistoryEvent current) {
-        (new OpenDirectoryWorker()).start();                
+    public void currentChanged(final HistoryEvent<Location> e) {        
+        (new OpenDirectoryWorker(e.current(),e.previous())).start();                
     }
     
     // UI component used to  represent an item in the 'up' menu
@@ -258,7 +257,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     // data structure used to manage the different ways we might provide a location to navigate to.
     // also extends JMenu item, which means it can be displayed ina  menu, and if clicked
     // knows how to navigate to this location.
-    private class Location extends JMenuItem implements ActionListener{
+    public class Location extends JMenuItem implements ActionListener{
 
         /**
          * create a location from a uri string
@@ -358,7 +357,9 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     
     /** backgound worker that performs a refresh */
     private class RefreshWorker extends OpenDirectoryWorker {
-
+        public RefreshWorker() {           
+            super(history.current(),history.current());            
+        }
         protected Object construct() throws Exception {
             // refresh the object first, then just list the directory.
             current().refresh();
@@ -370,8 +371,10 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     /** background worker that opens a directory */
     private class OpenDirectoryWorker extends BackgroundWorker {
 
-        public OpenDirectoryWorker() {
+        public OpenDirectoryWorker(final Location current, final Location previous) {
             super(FileNavigator.this.parent,"Listing contents",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY);
+            this.loc = current;
+            this.previous = previous;
             if (SwingUtilities.isEventDispatchThread()) {
                 fireMoving();
             } else {
@@ -384,19 +387,17 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         }
         protected FileObject requested;
         protected FileObject shown;
-        protected Location loc;
+        protected final Location loc;
+        private final Location previous;
         protected boolean isRoot;
         protected Object construct() throws Exception {
             // stop listening to whatever was previously displayed.
-            if (history.hasPrevious()) {
-                final Location loc = (Location)history.peekPrevious();
-                if (loc.hasResolved()) {
-                    final FileObject prev = loc.getFileObject();
-                    prev.getFileSystem().removeListener(prev,FileNavigator.this);
-                }
+            if (previous != null && previous.hasResolved()) {
+                final FileObject prev = previous.getFileObject();
+                prev.getFileSystem().removeListener(prev,FileNavigator.this);                
             }
+
             // now load the new one.
-                loc = (Location)history.current();
                 reportProgress("Resolving directory");
                 loc.resolveFileObject();                                
                 requested = loc.getFileObject();
@@ -438,17 +439,24 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                 // listen for changes.
                 final FileSystem fileSystem = shown.getFileSystem();
                 isRoot = shown == fileSystem.getRoot();
+                // Dave points out a bug in default impl of FileSystem
+                // adding a listener twice means you receive two notifications.
+                // so would like to check whether we're already listening to this,
+                // but can't - no api method for this.
+                // instead, remove the listener, and then add back again.
+                // only occurs on 'refresh' - when navigating to same dir.
+                // and when clicking the 'back' button.
+               // fileSystem.removeListener(shown,FileNavigator.this);
                 fileSystem.addListener(shown,FileNavigator.this);
                 reportProgress("Completed");
                 return parents;
         }
         // update the ui.
         protected void doFinished(final Object result) {
-            final List parents = (java.util.List) result;
+            final List<FileName> parents = (java.util.List<FileName>) result;
             upList.clear();
-            for (final Iterator i = parents.iterator(); i.hasNext();) {
-                final FileName name = (FileName) i.next();
-                upList.add(new UpMenuItem(name));
+            for (final FileName name : parents) {
+                upList.add(new UpMenuItem(name));                
             }
             upAction.setEnabled(!upList.isEmpty());
             backAction.setEnabled(history.hasPrevious());

@@ -4,7 +4,6 @@ import java.util.EmptyStackException;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -15,21 +14,26 @@ import ca.odell.glazedlists.EventList;
 
 /** The file browsing history 
 */
-public class History  {
+public class History<T>  {
 	
 	/** an event fired when current location changes. */
-	public static class HistoryEvent extends EventObject {
+	public static class HistoryEvent<T> extends EventObject {
 
-		/**
+        /**
 		 * @param source
 		 */
-		public HistoryEvent(final Object source, final Object current) {
+		public HistoryEvent(final Object source, final T current, final T previous) {
 			super(source);
 			this.current = current;
+            this.previous = previous;
 		}
-		private final Object current;
-		public Object current() {
+		private final T current;
+		private final T previous;
+		public T current() {
 			return current;
+		}
+		public T previous() {
+		    return previous;
 		}
 		public int hashCode() {
 			final int PRIME = 31;
@@ -60,25 +64,24 @@ public class History  {
 
 	}
 	/** interface to listen to location changes */
-	public static interface HistoryListener extends EventListener {
-		public void currentChanged(HistoryEvent current);
+	public static interface HistoryListener<T> extends EventListener {
+		public void currentChanged(HistoryEvent<T> current);
 	}
 	
-	private final Set listeners = new HashSet();
-	public void addHistoryListener(final HistoryListener l) {
+	private final Set<HistoryListener<T>> listeners = new HashSet();
+	public void addHistoryListener(final HistoryListener<T> l) {
 		listeners.add(l);
 	}
-	public void removeHistoryListener(final HistoryListener l) {
+	public void removeHistoryListener(final HistoryListener<T> l) {
 		listeners.remove(l);
 	}
 	
-	protected void fireCurrentChanged() {
+	protected void fireCurrentChanged(final T current, final T previous) {
 		if (listeners.size() > 0) {
-			final HistoryEvent he = new HistoryEvent(this,current());
-			for (final Iterator i = listeners.iterator(); i.hasNext();) {
-				final HistoryListener l = (HistoryListener) i.next();
-				l.currentChanged(he);
-			}
+			final HistoryEvent<T> he = new HistoryEvent<T>(this,current,previous);
+			for (final HistoryListener<T> l : listeners) {
+                l.currentChanged(he);
+            }
 		}
 	}
 	
@@ -94,7 +97,7 @@ public class History  {
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Mar 29, 200712:09:01 AM
 	 */
-	public static class BoundedUniqueEventStack {
+	public static class BoundedUniqueEventStack<E> {
 
 		public BoundedUniqueEventStack(final int maxSize) {
 			this.sz = maxSize;
@@ -103,29 +106,29 @@ public class History  {
 		public int getMaxSize() {
 			return sz;
 		}
-		private final EventList l = new BasicEventList();
+		private final EventList<E> l = new BasicEventList();
 		/** useful for providing views over the data */
-		public EventList getEventList() {
+		public EventList<E> getEventList() {
 			return l;
 		}
 		
 	
 		
-		public Object peek() throws EmptyStackException {
+		public E peek() throws EmptyStackException {
 			if (l.isEmpty()) {
 				throw new EmptyStackException();
 			}
 			return l.get(l.size()-1);
 		}
 
-		public Object pop() throws EmptyStackException {
+		public E pop() throws EmptyStackException {
 			if (l.isEmpty()) {
 				throw new EmptyStackException();
 			}			
 			return l.remove(l.size()-1);
 		}
 
-		public void push(final Object arg0) {
+		public void push(final E arg0) {
 			final int i = l.size();
 			if (i > 0 && l.get(i-1).equals(arg0)) {
 				// do nothing. already at the top of the stack.
@@ -153,8 +156,8 @@ public class History  {
 	}
 	
 	public History(final int sz) {
-		previousStack = new BoundedUniqueEventStack(sz);
-		nextStack = new BoundedUniqueEventStack(sz);
+		previousStack = new BoundedUniqueEventStack<T>(sz);
+		nextStack = new BoundedUniqueEventStack<T>(sz);
 	}
 	
 	/** return how many items may be stored in the previous history before 
@@ -166,22 +169,22 @@ public class History  {
 	
 	/** default number of items to keep in the previous and the next stack. */
 	public static final int DEFAULT_HISTORY_LENGTH = 30;
-	private final  History.BoundedUniqueEventStack previousStack;
-	private final History.BoundedUniqueEventStack nextStack;
+	private final  History.BoundedUniqueEventStack<T> previousStack;
+	private final History.BoundedUniqueEventStack<T> nextStack;
 	
 	/** acceess the event list used to store the previous locations
 	 * can be used for event listening, and also for listing options.
 	 * last item of this list will be the current location.
 	 * Shouldn't be used to manipulate the history.
 	 */
-	public EventList getPreviousList() {
+	public EventList<T> getPreviousList() {
 		return previousStack.getEventList();
 	}
 	/** access the event list used to store the next locations.
 	 * can be used for event listening, and also for displaying values.
 	 * Shooudn't be used to manipulate the history.
 	 */
-	public EventList getNextList() {	
+	public EventList<T> getNextList() {	
 		return nextStack.getEventList();
 	}
 	/** returns true if there's a previousl location in the hisotry */
@@ -190,8 +193,8 @@ public class History  {
 	}
 	
 	/** take a peek at the previous entry */
-	public Object peekPrevious() {
-	    final EventList list = previousStack.getEventList();
+	public T peekPrevious() {
+	    final EventList<T> list = previousStack.getEventList();
 	    return list.get(list.size()-2);
 	}
 	
@@ -201,32 +204,36 @@ public class History  {
 	}
 	
 	/** move to the prevous location in history */
-	public Object movePrevious() throws IllegalStateException{
+	public T movePrevious() throws IllegalStateException{
 		if (logger.isDebugEnabled()) {
 			logger.debug("Previous:" + previousStack.getEventList() + "\n" + nextStack.getEventList());
 		}
 		if (! hasPrevious()) {
 			throw new IllegalStateException("No previous in history");
 		}
-		nextStack.push(previousStack.pop());
-		fireCurrentChanged();
-		return previousStack.peek();
+		final T previous = previousStack.pop();
+		nextStack.push(previous);		
+		final T current =  previousStack.peek();
+		fireCurrentChanged(current,previous);
+		return current;
 	}
 	
 	/** move to the next item in the list */
-	public Object moveNext() throws IllegalStateException{
+	public T moveNext() throws IllegalStateException{
 		if (logger.isDebugEnabled()) {
 			logger.debug("Next:" + previousStack.getEventList() + "\n" + nextStack.getEventList());
 		}			
 		if (! hasNext()) {
 			throw new IllegalStateException("No next in history");
 		}
-		previousStack.push(nextStack.pop());
-		fireCurrentChanged();
-		return previousStack.peek(); 
+		final T previous = previousStack.peek();
+		final T current = nextStack.pop();
+		previousStack.push(current);
+		fireCurrentChanged(current,previous);
+		return current; 
 	}	
 	
-	public Object current() {		
+	public T current() {		
 		if (previousStack.isEmpty()) {
 			return null;
 		}
@@ -238,14 +245,19 @@ public class History  {
 	    previousStack.clear();
 	}
 	
-	public void move(final Object location) {
+	public void move(final T location) {
 		if (location.equals(current())) {
 			return; // ignore
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("Move:" + previousStack.getEventList() + "\n" + nextStack.getEventList());
 		}	
-	
+		final T previous;
+		if (previousStack.isEmpty()) {
+		    previous = null;
+		} else {
+		    previous = previousStack.peek();
+		}
 		if (previousStack.getEventList().indexOf(location) !=-1) {
 			// naieve implementaiton, but good enough for now. maximum of 30 iterations.
 			while(! current().equals(location)) {
@@ -260,13 +272,13 @@ public class History  {
 			nextStack.clear();
 			previousStack.push(location);
 		}
-		fireCurrentChanged();
+		fireCurrentChanged(location,previous);
 	}
     /** replace the current location with a new location, without firing any event updates
      * use to resolve a location to a more concrete equivalent, replace a child with it's parent, etc.
      * @param location
      */
-    public void replace(final Object location) {
+    public void replace(final T location) {
         if (location.equals(current())) {
             return; // ignore
         }
