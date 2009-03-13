@@ -20,16 +20,19 @@ import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.security.SecurityGuard;
 
-import org.astrogrid.vospace.v11.client.service.ServiceDelegateResolver;
+import org.astrogrid.vospace.v11.client.system.SystemDelegate;
+import org.astrogrid.vospace.v11.client.system.SystemDelegateImpl;
 
-import org.astrogrid.vospace.v11.client.streaming.StreamingDelegateImpl;
+import org.astrogrid.vospace.v11.client.service.ServiceDelegateResolver;
+import org.astrogrid.vospace.v11.client.service.ServiceDelegateResolverImpl;
 
 /**
  * AstroGrid VOSpace delegate implementation.
+ * @deprecated Please use VOSpace SystemDelegateImpl instead.
  *
  */
 public class AGVOSpaceDelegateImpl
-extends StreamingDelegateImpl
+extends SystemDelegateImpl
 implements AGVOSpaceDelegate
     {
 
@@ -56,6 +59,5 @@ implements AGVOSpaceDelegate
         {
         super(resolver, guard);
         }
-
 
     }

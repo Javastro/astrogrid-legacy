@@ -16,14 +16,14 @@
 package org.astrogrid.vospace.client.delegate ;
 
 import org.astrogrid.vospace.v11.client.system.SystemDelegate;
-import org.astrogrid.vospace.v11.client.streaming.StreamingDelegate;
 
 /**
  * Interface for an AstroGrid VOSpace delegate.
+ * @deprecated Please use VOSpace SystemDelegate instead.
  *
  */
 public interface AGVOSpaceDelegate
-extends SystemDelegate, StreamingDelegate
+extends SystemDelegate
     {
 
     }

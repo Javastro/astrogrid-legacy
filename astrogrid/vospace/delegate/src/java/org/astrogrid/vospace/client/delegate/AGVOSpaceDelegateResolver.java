@@ -17,14 +17,15 @@ package org.astrogrid.vospace.client.delegate ;
 
 import org.astrogrid.security.SecurityGuard;
 
-import org.astrogrid.vospace.v11.client.streaming.StreamingDelegateResolver;
+import org.astrogrid.vospace.v11.client.system.SystemDelegateResolver;
 
 /**
  * Interface for an AstroGrid AGVOSpaceDelegate resolver.
+ * @deprecated Please use VOSpace SystemDelegateResolver instead.
  *
  */
 public interface AGVOSpaceDelegateResolver
-extends StreamingDelegateResolver
+extends SystemDelegateResolver
     {
 
     /**

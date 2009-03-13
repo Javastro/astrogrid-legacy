@@ -17,9 +17,6 @@ package org.astrogrid.vospace.client.delegate ;
 
 import java.net.URL;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
@@ -29,18 +26,16 @@ import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import org.astrogrid.vospace.v11.client.transfer.inport.InportHandler ;
 import org.astrogrid.vospace.v11.client.transfer.export.ExportHandler ;
 
-import org.astrogrid.vospace.v11.client.transfer.inport.http.HttpPutInportHandlerImpl ;
-import org.astrogrid.vospace.v11.client.transfer.export.http.HttpGetExportHandlerImpl ;
-
-import org.astrogrid.vospace.v11.client.streaming.StreamingDelegateResolver;
-import org.astrogrid.vospace.v11.client.streaming.StreamingDelegateResolverImpl;
+import org.astrogrid.vospace.v11.client.system.SystemDelegateResolver;
+import org.astrogrid.vospace.v11.client.system.SystemDelegateResolverImpl;
 
 /**
  * AstroGrid VOSpaceDelegateResolver implementation.
+ * @deprecated Please use VOSpace SystemDelegateResolverImpl instead.
  *
  */
 public class AGVOSpaceDelegateResolverImpl
-extends StreamingDelegateResolverImpl
+extends SystemDelegateResolverImpl
 implements AGVOSpaceDelegateResolver
     {
 
@@ -51,37 +46,12 @@ implements AGVOSpaceDelegateResolver
     protected static Log log = LogFactory.getLog(AGVOSpaceDelegateResolverImpl.class);
 
     /**
-     * The default set of InportHandlers.
-     *
-     */
-    private static List<InportHandler> inporters = new ArrayList<InportHandler>();
-    static {
-        inporters.add(
-            new HttpPutInportHandlerImpl()
-            );
-        };
-
-    /**
-     * The default set of InportHandlers.
-     *
-     */
-    private static List<ExportHandler> exporters = new ArrayList<ExportHandler>();
-    static {
-        exporters.add(
-            new HttpGetExportHandlerImpl()
-            );
-        };
-
-    /**
      * Public constructor, using the default RegistryService (from local AstroGrid config).
      *
      */
     public AGVOSpaceDelegateResolverImpl()
         {
-        this(
-            inporters,
-            exporters
-            );
+        super();
         }
 
     /**
@@ -105,10 +75,8 @@ implements AGVOSpaceDelegateResolver
      */
     public AGVOSpaceDelegateResolverImpl(URL registry)
         {
-        this(
-            registry,
-            inporters,
-            exporters
+        super(
+            registry
             );
         }
 
@@ -119,10 +87,8 @@ implements AGVOSpaceDelegateResolver
      */
     public AGVOSpaceDelegateResolverImpl(RegistryService registry)
         {
-        this(
-            registry,
-            inporters,
-            exporters
+        super(
+            registry
             );
         }
 
