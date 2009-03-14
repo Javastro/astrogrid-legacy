@@ -509,6 +509,38 @@
             </properties>
         </dependency>                
 
+
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-vospace-util</artifactId>
+            <version>${astrogrid.vospace.version}</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>                
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-vospace-1.1-schema</artifactId>
+            <version>${astrogrid.vospace.version}</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>                
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-vospace-1.1-client</artifactId>
+            <version>${astrogrid.vospace.version}</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>                
+
     <!--  ADQL -->
         <dependency>
             <!-- This is the Adql/s to Adql/x compiler  -->
