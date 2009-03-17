@@ -23,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** Implemnentation of {@link AnnotationService}.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -128,7 +127,10 @@ private void saveSourceList() {
 				return null; // done.
 			}
 			protected void doError(final Throwable ex) {
-                parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));                
+			    // silently swallow exceptions.
+                //parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));                
+                 logger.warn("Failed to load annotations from " + source.getName());
+                
 			}
 		}).start();
 	}
@@ -266,7 +268,10 @@ private void saveSourceList() {
 						}
 					}
 					protected void doError(final Throwable ex) {
-					    parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));
+					    // silently swallow exceptions.
+					    //parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));
+	                    logger.warn("Failed to load annotations from " + source.getName());
+					    
 					}
 				}).start();
 			}
