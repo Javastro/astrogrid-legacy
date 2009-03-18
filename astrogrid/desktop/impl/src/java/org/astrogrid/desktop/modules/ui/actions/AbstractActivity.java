@@ -158,25 +158,24 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	
 	// helper methods for subclasses.
 	/** show a confirmation popup, to check before proceeding
+	 * NB: although {@link BackgroundWorker} implements {@link Runnable}, it should not be used as the value for {@code continuation}
+	 *  - a background worker must be executed using {@code start()}, not {@code run()}.
+	 * @param message mesage to display in confimation
+	 * @param continuation - continuation to run <b>on EDT</b> if user confirms the dialogue.
 	 */
 	protected void confirm(final String message,final Runnable continuation) {
+	   
 	    ConfirmDialog.newConfirmDialog(uiParent.get().getComponent(),"Confirm",message,continuation).setVisible(true);
 	}
 
-	protected void confirm(final String message,final BackgroundWorker continuation) {
-	    ConfirmDialog.newConfirmDialog(uiParent.get().getComponent(),"Confirm",message,new Runnable() {
 
-	        public void run() {
-	            continuation.start();
-	        }
-	    }).setVisible(true);
-	}
-	
 	/** show a confirm dialogue if sz > LargeSelectionThreshold,
 	 * else just run the action 
-	 * @param sz
-	 * @param message
-	 * @param continuation
+     * NB: although {@link BackgroundWorker} implements {@link Runnable}, it should not be used as the value for {@code continuation}
+     *  - a background worker must be executed using {@code start()}, not {@code run()}.	 
+	 * @param sz the thrwshold
+	 * @param message the message to dusplay in confirmation dialogue
+	 * @param continuation action to run <b>on EDT if user confirms the dialogue.
 	 */
 	protected void confirmWhenOverThreshold(final int sz,final String message,final Runnable continuation) {
 	    if (sz > UIConstants.LARGE_SELECTION_THRESHOLD) {

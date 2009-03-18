@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,13 +32,11 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
  * @since May 10, 20071:03:46 PM
  * @TEST unit test where possibl.
  */
+@SuppressWarnings("serial")
 public class DeleteFilesActivity extends AbstractFileActivity {
 
-    private final FileSystemManager vfs;
-	
-	
-    // applies to all non-local files and folders.
-	protected boolean invokable(final FileObject f) { 
+    @Override
+    protected boolean invokable(final FileObject f) { 
 	    try {
             return f.isWriteable();
         } catch (final FileSystemException x) {
@@ -52,8 +49,7 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 	public DeleteFilesActivity(final FileSystemManager vfs) {
 		super();
 		setHelpID("activity.delete");
-        this.vfs = vfs;
-		setText("Delete");
+        setText("Delete");
 		setIcon(IconHelper.loadIcon("editdelete16.png"));		
 		setToolTipText("Delete this files");
 		setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,UIComponentMenuBar.MENU_KEYMASK));
@@ -61,27 +57,27 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 
 
 	public void actionPerformed(final ActionEvent e) {
-		final List l = computeInvokable(); 
+		final List<FileObject> l = computeInvokable(); 
 		logger.debug(l);
 
 
-		final BackgroundWorker act = new BackgroundWorker(uiParent.get(),"Deleting files",BackgroundWorker.LONG_TIMEOUT) {
+		final BackgroundWorker<Map<FileObject,FileSystemException>> act = new BackgroundWorker<Map<FileObject,FileSystemException>>(uiParent.get(),"Deleting files",BackgroundWorker.LONG_TIMEOUT) {
 		    {
 		        setWouldLikeIndividualMonitor(true);
 		    }
-            protected Object construct() throws Exception {
+            @Override
+            protected Map<FileObject,FileSystemException> construct() throws Exception {
                 int count = 0;
                 final int max = l.size();
                 setProgress(count,max);
-                final Set parents = new HashSet();
-                final Map errors = new HashMap();
-                for (final Iterator i = l.iterator(); i.hasNext();) {
-                    final FileObject f = (FileObject) i.next();
+                final Set<FileObject> parents = new HashSet<FileObject>();
+                final Map<FileObject,FileSystemException> errors = new HashMap<FileObject,FileSystemException>();
+                for (final FileObject f : l) {
                     reportProgress("Deleting " + f.getName().getBaseName());
                     try {
-                        final FileObject parent = f.getParent();
+                        final FileObject parentFile = f.getParent();
                         if (parent != null) {
-                            parents.add(parent);
+                            parents.add(parentFile);
                         }
                         f.delete(Selectors.SELECT_ALL);
                     } catch(final FileSystemException x) {
@@ -91,8 +87,7 @@ public class DeleteFilesActivity extends AbstractFileActivity {
                         setProgress(++count,max);
                     }
                 }
-                for (final Iterator i = parents.iterator(); i.hasNext();) {
-                    final FileObject p = (FileObject) i.next();
+                for (final FileObject p : parents) {
                     final FileSystem fs = p.getFileSystem();
                     if (fs instanceof AbstractFileSystem) {
                         ((AbstractFileSystem)fs).fireFileChanged(p);
@@ -101,19 +96,18 @@ public class DeleteFilesActivity extends AbstractFileActivity {
                 return errors;
             }
             
-            protected void doFinished(final Object result) {
-                final Map errors = (Map)result;
+            @Override
+            protected void doFinished(final Map<FileObject,FileSystemException> errors) {               
                 if (errors.size() ==0) {
                     parent.showTransientMessage("Deleted files","");
                     return;
                 }
-                final HtmlBuilder msgBuilder = new HtmlBuilder();             
-                for (final Iterator i = errors.entrySet().iterator(); i.hasNext();) {
-                    final Map.Entry err = (Map.Entry) i.next();
-                    final FileObject f = (FileObject)err.getKey();
-                    final Throwable e = (Throwable)err.getValue();
+                final HtmlBuilder msgBuilder = new HtmlBuilder();
+                for(final Map.Entry<FileObject,FileSystemException> err : errors.entrySet()) {
+                    final FileObject f = err.getKey();
+                    final Throwable ex = err.getValue();
                     msgBuilder.append(f.getName().getPath()).append("<br>");
-                    msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
+                    msgBuilder.append(ExceptionFormatter.formatException(ex,ExceptionFormatter.ALL));
                     msgBuilder.append("<p>");                    
                 }
                 final ResultDialog rd =ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
@@ -125,7 +119,12 @@ public class DeleteFilesActivity extends AbstractFileActivity {
                 rd.show();
             }            
 		};
-		confirm("Delete these " + l.size() + " files?",act);
+		confirm("Delete these " + l.size() + " files?",new Runnable() {
+
+            public void run() {
+                act.start();
+            }
+		});
 		
 	}
 	
