@@ -1,27 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
-  xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0">
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+    xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" 
+    exclude-result-prefixes="vr ri">
   
-  <xsl:output method="html"/>
+  <!-- This assumes that the servlet or JSP emitting the result of this script
+       will not add a DOCTYPE element to the output. --> 
+  <xsl:output 
+      method="html" 
+      version="4.0" 
+      indent="yes" 
+      doctype-public="-//W3C//DTD HTML 4.01//EN"
+      doctype-system="http://www.w3.org/TR/html4/strict.dtd"/>
   
   <xsl:param name="vosiURL"/> 
   
-  <xsl:template match="//vr:Resource|//ri:Resource">
-    <html>
+    <xsl:template match="//vr:Resource|//ri:Resource">  
+    <xsl:element name="html">
       <head>
         <title>Core metadata: editor</title>
-        <link rel="stylesheet" type="text/css" href="style/astrogrid.css"/>
+        <link rel="stylesheet" type="text/css" href="style/astrogrid.css"></link>
       </head>
       <body>
         <h1>Core metadata: editor</h1>
-              <div id='bodyColumn'>
-        <p>You may wish to open the Resource Help page in a seperate window that has help for all core and coverage information.  Right click and open in a new tab/window <a href='../resourceHelp.jsp'>here</a></p> 
+        <div id='bodyColumn'> 
         <form action="DublinCore" method="post">
-          <input type="hidden" name="IVORN">
-            <xsl:attribute name="value"><xsl:value-of select="identifier"/></xsl:attribute>
-          </input>
+          <div>
+            <input type="hidden" name="IVORN">
+              <xsl:attribute name="value"><xsl:value-of select="identifier"/></xsl:attribute>
+            </input>
+          </div>
           <table>
             <tr>
               <td><strong>IVO identifier</strong></td>
@@ -468,13 +477,14 @@
           </p>
         </form>
         <hr/>
+        <p>You may wish to open the <a href='../resourceHelp.jsp'>Resource Help page</a> in a separate window. It has help for all core and coverage information.</p>
         <p>
           Items in bold must have entries; others may be left blank and
           will not then appear in the registry entry.
         </p>
         </div>
       </body>
-    </html>
+    </xsl:element>
   </xsl:template>
   
   <xsl:template match="text()|@*">
