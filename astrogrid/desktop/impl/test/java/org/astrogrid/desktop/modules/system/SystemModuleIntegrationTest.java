@@ -19,6 +19,7 @@ import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
+import org.astrogrid.desktop.modules.system.messaging.Messaging;
 import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
 
 /**
@@ -38,21 +39,21 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 	}
 	
 	public void testApiHelp() throws Exception {
-		final ApiHelp a = (ApiHelp)assertServiceExists(ApiHelp.class, "system.apihelp");
+		final ApiHelp a = assertServiceExists(ApiHelp.class, "system.apihelp");
 		assertNotNull(a.listMethods());
 	}
 	
 	public void testBrowser() throws Exception {
-		final BrowserControl b = (BrowserControl) assertServiceExists(BrowserControl.class, "system.browser");
+		final BrowserControl b = assertServiceExists(BrowserControl.class, "system.browser");
 		b.openRelative("");
 	}
 	public void testConfiguration() throws Exception {
-		final Configuration c  = (Configuration)assertServiceExists(Configuration.class,"system.configuration");
+		final Configuration c  = assertServiceExists(Configuration.class,"system.configuration");
 		c.list();
 	}
 	
 	public void testDeprecation() throws Exception {
-		final ServiceInterceptorFactory dep = (ServiceInterceptorFactory)assertComponentExists(ServiceInterceptorFactory.class, "system.deprecation");
+		final ServiceInterceptorFactory dep = assertComponentExists(ServiceInterceptorFactory.class, "system.deprecation");
 		try {
 		dep.createInterceptor(null, null, null);
 		} catch (final Throwable e) {
@@ -60,7 +61,7 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 	}
 	
 	public void testExecutor() throws Exception {
-		final BackgroundExecutor e = (BackgroundExecutor)assertComponentExists(BackgroundExecutor.class, "system.executor");
+		final BackgroundExecutor e = assertComponentExists(BackgroundExecutor.class, "system.executor");
 		e.execute(new Runnable() {
 
 			public void run() {
@@ -70,16 +71,16 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 	}
 	// 
 	public void testHelp() throws Exception {
-		final HelpServerInternal hsi = (HelpServerInternal) assertComponentExists(HelpServerInternal.class, "system.help");
+		final HelpServerInternal hsi = assertComponentExists(HelpServerInternal.class, "system.help");
 		hsi.createContextSensitiveHelpListener();
 	}
 	public void testRmi() throws Exception {
-		final RmiServer s = (RmiServer)assertServiceExists(RmiServer.class, "system.rmi");
+		final RmiServer s = assertServiceExists(RmiServer.class, "system.rmi");
 		s.getPort();
 	}
 	
 	public void testScheduler() throws Exception {
-		final SchedulerInternal s = (SchedulerInternal)assertComponentExists(SchedulerInternal.class, "system.scheduler");
+		final SchedulerInternal s = assertComponentExists(SchedulerInternal.class, "system.scheduler");
 		s.schedule(new ScheduledTask() {
 
 			public void execute(final WorkerProgressReporter worker) {
@@ -100,18 +101,18 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 	}
 	
 	public void testSnitch() throws Exception {
-		final SnitchInternal s = (SnitchInternal)assertComponentExists(SnitchInternal.class,"system.snitch");
+		final SnitchInternal s = assertComponentExists(SnitchInternal.class,"system.snitch");
 		s.snitch("hi");
 		 
 	}
 	
 	public void testVFS() throws Exception {
-		final FileSystemManager vfs = (FileSystemManager)assertComponentExists(FileSystemManager.class,"system.vfs");
+		final FileSystemManager vfs = assertComponentExists(FileSystemManager.class,"system.vfs");
 		vfs.getSchemes();
 	}
 	
 	public void testSnitchInterceptor() throws Exception {
-		final ServiceInterceptorFactory dep = (ServiceInterceptorFactory)assertComponentExists(ServiceInterceptorFactory.class, "system.snitchInterceptor");
+		final ServiceInterceptorFactory dep = assertComponentExists(ServiceInterceptorFactory.class, "system.snitchInterceptor");
 		try {
 		dep.createInterceptor(null, null, null);
 		} catch (final Throwable e) {
@@ -120,29 +121,31 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 	}
 
  public void testSystray() throws Exception {
-	 final SystemTray t = (SystemTray)assertComponentExists(SystemTray.class, "system.systray");
+	 final SystemTray t = assertComponentExists(SystemTray.class, "system.systray");
 	 t.displayInfoMessage("hi", "testing");
 }
 	public void testThrobberInterceptor() throws Exception {
-		final ServiceInterceptorFactory dep = (ServiceInterceptorFactory)assertComponentExists(ServiceInterceptorFactory.class, "system.throbber");
+		final ServiceInterceptorFactory dep = assertComponentExists(ServiceInterceptorFactory.class, "system.throbber");
 		try {
 		dep.createInterceptor(null, null, null);
 		} catch (final Throwable e) {
 			//don't care
 		}
 	}
-public void testTupperware() throws Exception {
-	final TupperwareInternal tupp = (TupperwareInternal)assertComponentExists(TupperwareInternal.class, "system.tupperware");
-	tupp.connectAction();
-}	
+
+
+public void testMessaging() throws Exception {
+    final Messaging m = assertComponentExists(Messaging.class,"system.messaging");
+    assertNotNull(m.getTargetList());
+}
 
 public void testUI() throws Exception {
-	final UI ui = (UI)assertComponentExists(UI.class, "system.ui");
+	final UI ui = assertComponentExists(UI.class, "system.ui");
 	ui.hide();
 }
 
 public void testWebserver() throws Exception {
-	final WebServer ws = (WebServer)assertServiceExists(WebServer.class, "system.webserver");
+	final WebServer ws = assertServiceExists(WebServer.class, "system.webserver");
 	assertNotNull(ws.getKey());
 	
 }

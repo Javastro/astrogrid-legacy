@@ -21,6 +21,7 @@ import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.messaging.Messaging;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.util.SelfTester;
 
@@ -40,6 +41,7 @@ public class UIContextImplUnitTest extends TestCase {
 		exec = createNiceMock(BackgroundExecutor.class);
 		help =createNiceMock(HelpServerInternal.class);
 		browser = createNiceMock(BrowserControl.class);
+		messaging = createNiceMock(Messaging.class);
 		
 		monitor = createNiceMock(BackgroundWorkersMonitor.class);
         config = createNiceMock(Runnable.class); // expect these in test.
@@ -55,10 +57,11 @@ public class UIContextImplUnitTest extends TestCase {
 		        ,about
 		        ,windowFactories
 		        ,"test"
-		        ,null
+		        ,messaging
 		);
 	}
 
+	private Messaging messaging;
 	private Configuration conf;
 	private BackgroundExecutor exec;
 	private HelpServerInternal help;
@@ -73,6 +76,7 @@ public class UIContextImplUnitTest extends TestCase {
 	@Override
     protected void tearDown() throws Exception {
 		super.tearDown();
+		messaging = null;
 		cxt = null;
 		conf = null;
 		exec = null;
@@ -108,7 +112,12 @@ public class UIContextImplUnitTest extends TestCase {
     }
 	
     public void testGetPlasticList() throws Exception {
-        assertSame(plasticList,cxt.getPlasticList());
+        // test that plastic list is coming from messaging.
+        final EventList l = new BasicEventList();
+        expect(messaging.getTargetList()).andReturn(l);
+        replay(messaging);
+        assertSame(l,cxt.getPlasticList());
+        verify(messaging);
     }
     
     
