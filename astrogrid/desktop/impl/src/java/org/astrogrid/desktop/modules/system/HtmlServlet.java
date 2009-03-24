@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.17 2009/02/17 13:45:18 nw Exp $
+/*$Id: HtmlServlet.java,v 1.18 2009/03/24 17:45:49 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,6 +85,8 @@ public class HtmlServlet extends AbstractReflectionServlet {
         out.println("<h2>Configuration Editor</h2>");
         out.println("<a id='Preferences' href='./preferences'>View and edit the configuration settings</a> for this Astro Runtime<p/>");
         out.println("or <a href='./system/configuration/reset'>reset the configuration to factory settings</a>.");
+        out.println("<h2>Registry XML Access</h2>");
+        out.println("<a href='./resource'>Access XML of registry resources</a>");
         out.println("<h2>XML-RPC interface</h2>");
         out.println("<a href='./xmlrpc'>Endpoint for the XML-RPC</a> interface to this Astro Runtime.");
         footer(out);
@@ -387,6 +389,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.18  2009/03/24 17:45:49  nw
+Complete - tasksimple http-get interface to registry.
+
 Revision 1.17  2009/02/17 13:45:18  nw
 Complete - taskfix http input of binary parameters.
 

@@ -15,6 +15,9 @@
 <body>
 
 <release version="1.2.3" date="unreleased">
+    <action dev="nw" type="add">
+    AR: added simple XML access to registry resources. Used when exchanging resources in SAMP messages.
+    </action>
     <action dev="nw" type="fix" due-to="Dave Morris">
     File Explorer: Fixed multiple-listeners bug
     </action>

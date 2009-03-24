@@ -184,6 +184,16 @@
 	<contribution configuration-id="hivemind.FactoryDefaults">
 		<default symbol="ivoa.registry.of.registries.endpoint" value="http://FILL.ME.IN" />	
 	</contribution>	
+    -->
+    
+    <!-- registry resource access servlet
+    -->
+        <contribution configuration-id="system.servlets" if="not (property ivoa.resource.servlet.disabled)">
+        <servlet name="resource" path="/resource" 
+            servletClass="org.astrogrid.desktop.modules.ivoa.ResourceServlet" />
+    </contribution>
+ 
+ <!-- 
 =========================
 SSAP
  -->
