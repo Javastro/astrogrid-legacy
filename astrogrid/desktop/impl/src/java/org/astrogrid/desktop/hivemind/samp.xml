@@ -3,7 +3,7 @@
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/plastic-descriptors.xml">
 	]>
 <module id="plastic" version="1.0.0" package="org.votech.plastic">
-	PLASTIC - PLatform for AStronomical Tools Inter Connection
+	SAMP - Simple Application Messaging
 	<dependency module-id="system"/>
 	
 	<contribution configuration-id="framework.acrServices">
@@ -18,8 +18,7 @@
 	
 
     <service-point id="hub"  interface="org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal">
-        Plastic hub. It's just the service - it shouldn't be accessed from other components that wish to send 
-        plastic messages - use system.messaging for this instead.
+        Samp Hub.
         <interceptor service-id="system.throbber" />        
         <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.plastic.PlaskitPlasticHub"  >               
@@ -34,16 +33,11 @@
         </invoke-factory>
     </service-point>
 
-	<implementation service-id="hub" if="property plastic.hub.disabled">
+	<implementation service-id="hub" if="property samp.hub.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
 			
-	<contribution configuration-id="system.rmiListenerInterfaces">
-		<service id="hub">
-			<listener interface="org.votech.plastic.PlasticListener" />
-		</service>
-	</contribution>
-	
+<!-- add preferences to enable / disable samp, control bridging, etc.
 	<contribution configuration-id="framework.preferences">
 		<preference name="org.votech.plastic.notificationsenabled"
 			default-value="true">
@@ -52,6 +46,7 @@
 			<units>boolean</units>
 		</preference>
 	</contribution>
+ -->
 	
  </module>
  

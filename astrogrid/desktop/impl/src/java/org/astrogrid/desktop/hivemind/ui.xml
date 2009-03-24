@@ -395,20 +395,18 @@ Query Builder
         VOExplorer factory
 			<interceptor service-id="system.snitchInterceptor" >
                 <!--  including things seems to mean we get 'all'. excluding what we dont' want seems to work. -->
-                <exclude method="appendHandler" />
-                <exclude method="getHandledMessages" />
-                <exclude method="perform" />
-                <exclude method="setNextHandler" />
+                <exclude method="acceptedMessageTypes" />
+                <exclude method="accepts" />
+                <exclude method="createMessageSender" />               
             </interceptor>
             <interceptor service-id="system.edtInvoke"> 
-                 <exclude method="appendHandler" />
-                <exclude method="getHandledMessages" />
-                <exclude method="perform" />
-                <exclude method="setNextHandler" />
+                <exclude method="acceptedMessageTypes" />
+                <exclude method="accepts" />
+                <exclude method="createMessageSender" />   
              </interceptor>        
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl" >
-                <service>system.plasticList</service>
+                <object>service-property:system.messaging:targetList</object>
 				<service>UiBuilder</service>
 			</construct>
 		</invoke-factory>	
@@ -422,8 +420,8 @@ Query Builder
 	<contribution configuration-id="system.windowFactories">
 		<window name="VO Explorer">service:registryBrowser</window>
 	</contribution>
-	
-	<contribution configuration-id="system.plasticMessageHandlers" if="not(property java.awt.headless)">
+    
+	<contribution configuration-id="system.internalMessageTargets" if="not(property java.awt.headless)">
 		<object>service:registryBrowser</object>
 	</contribution>
 	
@@ -497,11 +495,7 @@ FILE EXPLORER
 	<contribution configuration-id="system.windowFactories">
 		<window name="File Explorer">service:fileManager</window>
 	</contribution>
-	<!-- doesn't handle any message at the moment - implement later
-	<contribution configuration-id="system.plasticMessageHandlers" if="not (property java.awt.headless)">
-		<object>service:fileManager</object>
-	</contribution>	
-     -->
+
 	
 	<contribution configuration-id="UiBuilderObjects">
 		Describes how to build a new fileexplorer window.
@@ -622,9 +616,8 @@ ACTIONS
 		<object name="web" class="org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity">
 			<inject object="service:system.browser" />		
 		</object>	
-		<object name="plastic" class="org.astrogrid.desktop.modules.ui.actions.PlasticScavenger">
-            <inject object="service:system.plasticList" />
-			<inject object="service:system.tupperware" />
+		<object name="plastic" class="org.astrogrid.desktop.modules.ui.actions.MessagingScavenger">
+			<inject object="service:system.messaging" />
             <inject object="service:system.systray" />
 		</object>
 

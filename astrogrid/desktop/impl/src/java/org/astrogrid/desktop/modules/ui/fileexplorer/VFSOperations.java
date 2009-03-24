@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.util.List;
 
+import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 
 /** interface to a component that performs VFS operations
@@ -23,9 +24,9 @@ public interface VFSOperations {
 	
     /** move this list of fileobjects (which might be subtrees of folders 
      * to the 'current location'
-     * @param objds a mixed list of fileObjects / uris / urls / string
+     * @param objds a list of fileObjects 
      */
-	public void moveToCurrent(List objs);
+	public void moveToCurrent(List<FileObject> objs);
 	
 	/** convenince function - provide access to the underlying vfs object */
 	public FileSystemManager getVFS();

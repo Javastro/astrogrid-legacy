@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.21 2008/11/04 14:35:51 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.22 2009/03/24 13:08:20 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
       * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Apr-2005
       *
       */
-    public abstract class BackgroundWorker  extends Observable implements Runnable, Comparable, WorkerProgressReporter{
+    public abstract class BackgroundWorker<T>  extends Observable implements Runnable, Comparable, WorkerProgressReporter{
         
 
 
@@ -307,7 +307,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
                 // finish off by updating ui.
                 public void run() {
                     try {
-                        final Object o = get();
+                        final T o = get();
                         doFinished(o);
                     } catch (final InterruptedException e) {
                         parent.setStatusMessage(workerTitle + " - Interrupted");
@@ -381,9 +381,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * @exception InvocationTargetException if the constructing thread
          * encountered an exception or was interrupted.
          */
-        public final Object get()
+        public final T get()
         throws InterruptedException, InvocationTargetException {
-            return result.get();
+            return (T)result.get();
         }
 
         /**
@@ -394,9 +394,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * @exception InvocationTargetException if the constructing thread
          * encountered an exception or was interrupted.
          */
-        public final Object timedGet(final long msecs) 
+        public final T timedGet(final long msecs) 
         throws TimeoutException, InterruptedException, InvocationTargetException {
-            return result.timedGet(msecs);
+            return (T)result.timedGet(msecs);
         }
 
         /**
@@ -423,14 +423,14 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         /** implement this method to define the computation to execute on the background thread. 
          * @return some result, which is then passed to {@link #doFinished(Object)}. To return multiple results, use member variables in the subclass.
          */
-        protected abstract Object construct() throws Exception;
+        protected abstract T construct() throws Exception;
         
         /** once the background operation in {@link #construct()} completes without an exception, this method is executed in the event-dispatch thread
          * <p>
          * null implementation - override this method to update the UI with the results of the background operation
          * @param result the result of the background computation in {@link #construct()}
          */
-        protected void doFinished(final Object result) {
+        protected void doFinished(final T result) {
         }
         /** this method is always exectued, last of all, in the event dispatch thread. - it's similar to a <tt>finally</tt> block.
          * <p>
@@ -530,6 +530,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.22  2009/03/24 13:08:20  nw
+reworking of messaging system to make it protocol neutral.
+
 Revision 1.21  2008/11/04 14:35:51  nw
 javadoc polishing
 

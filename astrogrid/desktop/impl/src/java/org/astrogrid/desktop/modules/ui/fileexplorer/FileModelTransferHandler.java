@@ -10,7 +10,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,7 +18,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -124,48 +122,51 @@ public class FileModelTransferHandler extends TransferHandler{
             
             if (canImport(dest,t.getTransferDataFlavors())) {
                 try {
-                    List objects = null;
+                    List<?> objects = null;
                     if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
                         logger.debug("local fileobject");
-                        objects = Collections.singletonList(t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT));
+                        objects = Collections.singletonList((FileObject)t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT));
                     } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY)) {
                         logger.debug("local fileobject array");
                          final FileObject[] arr = (FileObject[])t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY);
                          objects = Arrays.asList(arr);
                     } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URI)) {
                         logger.debug("local uri");
-                        objects = Collections.singletonList(t.getTransferData(VoDataFlavour.LOCAL_URI));
+                        objects = Collections.singletonList((URI)t.getTransferData(VoDataFlavour.LOCAL_URI));
                     } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URI_ARRAY)) {
                         logger.debug("local uri array");
                         final URI[] arr = (URI[])t.getTransferData(VoDataFlavour.LOCAL_URI_ARRAY);
                         objects = Arrays.asList(arr);                        
                     } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URL)) {
                         logger.debug("local url");
-                        objects = Collections.singletonList(t.getTransferData(VoDataFlavour.LOCAL_URL));                        
+                        objects = Collections.singletonList((URL)t.getTransferData(VoDataFlavour.LOCAL_URL));                        
                     } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST)) {
                         logger.debug("external uri list");
                         LineIterator it = null;
-                        objects = new ArrayList();
+                        final List<URL> urls = new ArrayList<URL>();
                         try {
                             final InputStream is = (InputStream)t.getTransferData(VoDataFlavour.URI_LIST);
                             it = IOUtils.lineIterator(new InputStreamReader(is));
                             while (it.hasNext()) {
                                 final String line = it.nextLine();
                                 final URL u = VoDataFlavour.mkJavanese(new URL(line.trim()));                                
-                                objects.add(u);
+                                urls.add(u);
                             }                        
                         } finally {
                             LineIterator.closeQuietly(it);
                         }     
+                        objects = urls;
                     } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST_STRING)) {
                         logger.debug("external uri list as string");
-                        objects = new ArrayList();
+                        final List<URL> urls = new ArrayList<URL>();
                         final StringTokenizer tok = new StringTokenizer((String)t.getTransferData(VoDataFlavour.URI_LIST_STRING));
+                        
                         while (tok.hasMoreElements()) {
                             final String s= tok.nextToken();
                             final URL u = VoDataFlavour.mkJavanese(new URL(s));
-                            objects.add(u);
+                            urls.add(u);
                         }
+                        objects = urls;
                     } else if (t.isDataFlavorSupported(VoDataFlavour.URL)) { // seems to be used for a multiple selection, but only returns first - so demote after uri-list
                         logger.debug("external url");
                         final URL u = (URL) t.getTransferData(VoDataFlavour.URL);                        
@@ -175,28 +176,27 @@ public class FileModelTransferHandler extends TransferHandler{
                         return false;
                     }
                     logger.debug(objects);
-                     if (objects != null && ! objects.isEmpty()) {
-                         // see if we've got anything that is read-only.
-                         boolean moveAllowed =true;
-                         for (final Iterator i = objects.iterator(); i
-                                .hasNext();) {
-                           final Object o = i.next();
-                           if (!( o instanceof FileObject)) {
-                               // something else, so best not to move it.
-                               moveAllowed = false;
-                               break;
-                           }
-                           final FileObject fo = (FileObject)o;
-                           
-                           // check whether it's a writable kind of file object
-                            if (AstroscopeFileObject.isDelegateOrAstroscopeFileObject(fo) || ! fo.isWriteable()) {
+                    if (objects != null && ! objects.isEmpty()) {
+                        // see if we've got anything that is read-only.
+                        boolean moveAllowed =true;
+                        for (final Object o : objects) {
+                            if (!( o instanceof FileObject)) {
+                                // something else, so best not to move it.
                                 moveAllowed = false;
                                 break;
                             }
-                        }
+                     final FileObject fo = (FileObject)o;
+                     
+                     // check whether it's a writable kind of file object
+                     if (AstroscopeFileObject.isDelegateOrAstroscopeFileObject(fo) || ! fo.isWriteable()) {
+                        moveAllowed = false;
+                        break;
+                     }
+                  }
                          logger.debug("can move: " + moveAllowed);
                          if (moveAllowed) {
-                             promptUserForSaveOrMove(dest,objects);
+                             // if move allowed, we know it's a list of fileobject only.
+                             promptUserForSaveOrMove(dest,(List<FileObject>)objects);
                          } else {
                              filemodel.ops.copyToCurrent(objects);
                          }
@@ -215,7 +215,7 @@ public class FileModelTransferHandler extends TransferHandler{
         /** show a popup to the user. 
          * and perform a save or a move according to his selection.
          */
-        private void promptUserForSaveOrMove(final JComponent comp, final List fileObjects) {
+        private void promptUserForSaveOrMove(final JComponent comp, final List<FileObject> fileObjects) {
             final JPopupMenu m = new JPopupMenu(); // create a fresh one each time, as the model might be shared
             final int sz = fileObjects.size();
             m.add("Copy " + sz + " items here").addActionListener(new ActionListener() {

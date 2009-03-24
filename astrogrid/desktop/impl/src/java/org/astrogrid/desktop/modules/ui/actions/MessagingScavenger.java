@@ -4,7 +4,6 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.Image;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,14 +11,18 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.SystemTrayInternal;
-import org.astrogrid.desktop.modules.system.TupperwareInternal;
-import org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl;
-import org.votech.plastic.CommonMessageConstants;
+import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageType;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
+import org.astrogrid.desktop.modules.system.messaging.FitsImageMessageType;
+import org.astrogrid.desktop.modules.system.messaging.Messaging;
+import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.SpectrumMessageType;
+import org.astrogrid.desktop.modules.system.messaging.VotableMessageType;
 
 import ca.odell.glazedlists.CollectionList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.CollectionList.Model;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 
@@ -28,73 +31,70 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
  * communicating with each application.
  *  @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20071:29:37 PM
- * @TEST this.
  */
-public final class PlasticScavenger extends AbstractActivityScavenger implements Model{
+public final class MessagingScavenger extends AbstractActivityScavenger 
+    implements Model<ExternalMessageTarget,Activity>{
 
 private final SystemTrayInternal systray;
+private final Messaging messaging;
+private final EventList<ExternalMessageTarget> targetList;
 
-public PlasticScavenger(final EventList apps,final TupperwareInternal tupp, final SystemTrayInternal systray) {
+public MessagingScavenger(final Messaging messaging, final SystemTrayInternal systray) {
 	super("Send to");
-	this.tupp = tupp;   
-	this.apps = apps;
+    this.messaging = messaging;
     this.systray = systray;
+    this.targetList = messaging.getTargetList();
 }
-private final EventList apps;
-private final TupperwareInternal tupp;
 
 /** we use a collection list - which maps one plastic app into one or more activities 
  * the plastic app list shrinks and grows automatically as new apps connect / disconnect
  * 
  * furthermore, we use a list that only fires update messages on the EDT.
  * */
-protected EventList createEventList() {
-	return new CollectionList(GlazedListsSwing.swingThreadProxyList(apps),this);
+protected EventList<Activity> createEventList() {
+	final TransformedList<ExternalMessageTarget, ExternalMessageTarget> proxy = GlazedListsSwing.swingThreadProxyList(targetList);
+    return new CollectionList(proxy,this);
 }
 
-public static final URI SPECTRA_LOAD_FROM_URL =  URI.create("ivo://votech.org/spectrum/loadFromURL");
 
 
 protected void loadChildren() {
 	 // no need to do anything. - eventlist is already populated.
 }
 // Model interface implementation- maps a single plastic app to 0 or more activities.
-public List getChildren(final Object sourceValue) {
-    final PlasticApplicationDescription plas= (PlasticApplicationDescription)sourceValue;
-    final List butts = new ArrayList();
-    if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)
-            || plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD)) {
-        AbstractActivity activity = new PlasticVotableActivity(plas,this);
+public List<Activity> getChildren(final ExternalMessageTarget target) {
+     final List<Activity> butts = new ArrayList<Activity>();
+     if (target.accepts(VotableMessageType.instance)) {
+        AbstractActivity activity = new PlasticVotableActivity(target);
         activity.setUIParent(uiParent.get());
         butts.add(activity);	
-        activity = new PlasticVotableActivity.Fallback(plas,this);
+        activity = new PlasticVotableActivity.Fallback(target);
         activity.setUIParent(uiParent.get());
         butts.add(activity);            
     } 
-    if (plas.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
-        AbstractActivity activity = new PlasticFitsActivity(plas,this);
+    if (target.accepts(FitsImageMessageType.instance)) {
+        AbstractActivity activity = new MessageFitsActivity(target);
         activity.setUIParent(uiParent.get());
         butts.add(activity);
-        activity = new PlasticFitsActivity.Fallback(plas,this);
+        activity = new MessageFitsActivity.Fallback(target);
         activity.setUIParent(uiParent.get());
         butts.add(activity);         
     }
-    if  (plas.understandsMessage(SPECTRA_LOAD_FROM_URL)) {
-        AbstractActivity activity = new PlasticSpectrumActivity(plas,this);
+    if (target.accepts(SpectrumMessageType.instance)) {
+        AbstractActivity activity = new MessageSpectrumActivity(target);
         activity.setUIParent(uiParent.get());
         butts.add(activity);		
-        activity = new PlasticSpectrumActivity.Fallback(plas,this);
+        activity = new MessageSpectrumActivity.Fallback(target);
         activity.setUIParent(uiParent.get());
         butts.add(activity);        
     }		
-    if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD)
-            || plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST)) {
-        final Activity activity = new PlasticRegistryActivity(plas,this);
+    if (target.accepts(ResourceSetMessageType.instance)) {
+        final Activity activity = new MessageRegistryActivity(target);
         activity.setUIParent(uiParent.get());
         butts.add(activity);
     }
-    if (plas.understandsMessage(VOExplorerFactoryImpl.BIBCODE_MESSAGE)) {
-        final Activity activity = new PlasticBibcodeActivity(plas,this);
+    if (target.accepts(BibcodeMessageType.instance)) {
+        final Activity activity = new MessageBibcodeActivity(target);
         activity.setUIParent(uiParent.get());
         butts.add(activity);
     }
@@ -102,7 +102,7 @@ public List getChildren(final Object sourceValue) {
 }
 
 /** configure the name and icon of an activity from a plastic description */
-	public static void configureActivity(final String type,final AbstractActivity act,final PlasticApplicationDescription plas) {
+	public static void configureActivity(final String type,final AbstractActivity act,final ExternalMessageTarget plas) {
 		if (plas.getIcon() != null) {
 	        final ImageIcon scaled = new ImageIcon((plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
 			act.setIcon(scaled);
@@ -124,12 +124,7 @@ public List getChildren(final Object sourceValue) {
 public final SystemTrayInternal getSystray() {
     return this.systray;
 }
-/**
- * @return the tupp
- */
-public final TupperwareInternal getTupp() {
-    return this.tupp;
-}
+
 
 
 

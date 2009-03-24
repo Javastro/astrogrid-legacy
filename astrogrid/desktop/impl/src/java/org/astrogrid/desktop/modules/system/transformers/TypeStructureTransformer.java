@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.15 2008/11/04 14:35:49 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.16 2009/03/24 13:08:21 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -128,7 +128,7 @@ public class TypeStructureTransformer implements Transformer {
             return h;
         }
         // convert an array to a collection.
-        if (arg0 instanceof Object[]) {
+        if (arg0 instanceof Object[]) {           
             arg0 = Arrays.asList((Object[])arg0); // then processed by Collection clause.
         }      
         
@@ -215,6 +215,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.16  2009/03/24 13:08:21  nw
+reworking of messaging system to make it protocol neutral.
+
 Revision 1.15  2008/11/04 14:35:49  nw
 javadoc polishing
 

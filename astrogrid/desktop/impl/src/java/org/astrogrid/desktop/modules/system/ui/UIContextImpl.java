@@ -27,7 +27,6 @@ import javax.swing.DefaultButtonModel;
 import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
@@ -44,7 +43,9 @@ import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.TupperwareInternal;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
+import org.astrogrid.desktop.modules.system.messaging.Messaging;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.ObservableConnector;
@@ -81,7 +82,7 @@ public class UIContextImpl implements UIContext{
     private final BackgroundWorkersMonitor monitor;
     private final Runnable configDialog;
     private final Runnable aboutDialog;
-    private final TupperwareInternal tupperware;
+    private final Messaging messaging;
 
     /** convenience method - access the configuraiton componoent
      * @todo hide this. - have it passed into components, if required.
@@ -107,7 +108,7 @@ public class UIContextImpl implements UIContext{
 	
 	//convenience constructor used while testing oter parts of system.
 	public UIContextImpl(final Configuration configuration,  final BackgroundExecutor executor,final HelpServerInternal help, final BrowserControl browser) {
-		this(configuration,executor,help,browser,null,null,null,null,null,null,null, new BasicEventList(),new HashMap(),null,null);
+		this(configuration,executor,help,browser,null,null,null,null,null,null,null, new HashMap(),null,null);
 	}
 	
 	public UIContextImpl(final Configuration configuration
@@ -121,13 +122,13 @@ public class UIContextImpl implements UIContext{
 	        ,final BackgroundWorkersMonitor monitor
 	        ,final Runnable configDialog
 	        ,final Runnable aboutDialog
-	        ,final EventList plastic, final Map windowFactories
+	        ,final Map<String, Factory>windowFactories
 	        ,final String launchAppName
-	        ,final TupperwareInternal tupperware
+	        ,final Messaging messaging
 	        ) {
 		super();
-        this.tupperware = tupperware;
 		SplashWindow.reportProgress("Starting User Interface...");
+		this.messaging = messaging;
 		this.configuration = configuration;
 		this.help = help;
 		this.executor = executor;
@@ -139,28 +140,27 @@ public class UIContextImpl implements UIContext{
         this.monitor = monitor;
         this.configDialog = configDialog;
         this.aboutDialog = aboutDialog;
-		this.plastic = plastic;
 	// just creates a map ordered by whatever order hivemind takes.	
 	//	this.windowFactories = new LinkedHashMap(windowFactories);
-		this.windowFactories = new TreeMap(
+		this.windowFactories = new TreeMap<String, Factory>(
 		        
-		        new Comparator() {
-                    public int compare(final Object arg0, final Object arg1) {
-                        return order.indexOf(arg0) - order.indexOf(arg1);
-                    }		        
+		        new Comparator<String>() {	        
 		        //WARNING - this is horribly fragile - string constants must match
 		        // the names of the window factories.
 		        //@todo re-implement sorting based on a value in the configuration.
-		     private final List order = Collections.unmodifiableList(Arrays.asList( new String[]{
+		     private final List<String> order = Collections.unmodifiableList(Arrays.asList( new String[]{
 		                "VO Explorer"
 		                ,"File Explorer"
 		                ,"Task Runner"
 		                ,"All-VO Astroscope"
 		                ,"All-VO Helioscope"
 		             }));
+            public int compare(final String o1, final String o2) {
+                return order.indexOf(o1) - order.indexOf(o2);
+            }
 		        });
 		this.windowFactories.putAll(windowFactories);
-		windows = new BasicEventList();
+		windows = new BasicEventList<UIComponent>();
 		windowsView = GlazedLists.readOnlyList(windows);
 		
 		loggedInState = new DefaultButtonModel();
@@ -174,8 +174,8 @@ public class UIContextImpl implements UIContext{
     	//create an event list that observes notifications emitted by items in the list.
 		// implementation note: all adds / deletes and in-place update notifications 
 		// must take place on the EDT.
-    	tasksList = new ObservableElementList(new BasicEventList(),
-    			new ObservableConnector());
+    	tasksList = new ObservableElementList<BackgroundWorker>(new BasicEventList<BackgroundWorker>(),
+    			new ObservableConnector<BackgroundWorker>());
 				
     	
     	// launch the preferred window.
@@ -191,27 +191,26 @@ public class UIContextImpl implements UIContext{
     	t.setRepeats(false);
     	t.start();
 	}
-	final Map windowFactories;
+	final Map<String, Factory> windowFactories;
 	private final BrowserControl browser;
 	private final BackgroundExecutor executor;
 	private final Configuration configuration;
 	private final HelpServerInternal help;
-	private final EventList plastic;
 	
 	private final ButtonModel loggedInState ;
 	private final ButtonModel throbbingState ;
 	private final ButtonModel visibleState ;
 	
 	// ui interface, 
-	private final EventList windows; // list of windows
-	private final EventList windowsView; // read-only view of this list.
+	private final EventList<UIComponent> windows; // list of windows
+	private final EventList<UIComponent> windowsView; // read-only view of this list.
 	
-	private final EventList tasksList; // list of running tasks
+	private final EventList<BackgroundWorker> tasksList; // list of running tasks
 	
 	// causes all windows to be hidden -  - hivemind ensures this is always on EDT
 	public void hide() {
-			for (final Iterator i = windows.iterator(); i.hasNext();) {
-            	final UIComponent c = (UIComponent) i.next();
+			for (final Iterator<UIComponent> i = windows.iterator(); i.hasNext();) {
+            	final UIComponent c = i.next();
             	c.setVisible(false);
             }		
             visibleState.setEnabled(false);
@@ -219,8 +218,8 @@ public class UIContextImpl implements UIContext{
 	}
 	// show all windows. - hivemind ensures this is always on EDT
 	public void show() {
-				for (final Iterator i = windows.iterator(); i.hasNext();) {
-                	final UIComponent c = (UIComponent) i.next();
+				for (final Iterator<UIComponent> i = windows.iterator(); i.hasNext();) {
+                	final UIComponent c = i.next();
                 	c.setVisible(true);
                 }		
                 visibleState.setEnabled(true);
@@ -268,21 +267,21 @@ public class UIContextImpl implements UIContext{
 		}
 	}
 	
-	public EventList getWindowList() {
+	public EventList<UIComponent> getWindowList() {
 		return windowsView;
 	}
 	public UIComponent findMainWindow() {
 		if (windows.size() == 0) {
 			return new HeadlessUIComponent("startup",this);
 		} else {
-			return (UIComponent)windows.get(0);
+			return windows.get(0);
 		}
 	}
-	public EventList getPlasticList() {
-		return plastic;
+	public EventList<ExternalMessageTarget> getPlasticList() {
+		return messaging.getTargetList();
 	}
 	// tasks list
-	public EventList getTasksList() {
+	public EventList<BackgroundWorker> getTasksList() {
 		return tasksList;
 	}	
 	
@@ -291,7 +290,7 @@ public class UIContextImpl implements UIContext{
 	}
 	
 	
-	public Map getWindowFactories() {
+	public Map<String, Factory> getWindowFactories() {
 		return windowFactories;
 	}
 	public void showPreferencesDialog() {
@@ -323,11 +322,11 @@ public class UIContextImpl implements UIContext{
         final JMenu interopMenu = new JMenu();
         interopMenu.setText("Interop");
         interopMenu.setMnemonic(KeyEvent.VK_I);
-        
-        interopMenu.add(tupperware.connectAction());
-        interopMenu.add(tupperware.disconnectAction());
-        interopMenu.add(new JSeparator());
-        interopMenu.add(tupperware.startInternalHubAction());
+//@FIXME - plug these operations back in again.        
+//        interopMenu.add(messaging.connectAction());
+//        interopMenu.add(messaging.disconnectAction());
+//        interopMenu.add(new JSeparator());
+//        interopMenu.add(messaging.startInternalHubAction());
         return interopMenu;
     }
     
@@ -350,10 +349,10 @@ public class UIContextImpl implements UIContext{
 		windowMenu.add(processes);
 		
 		windowMenu.addSeparator();
-		final EventList w = new FunctionList(this.getWindowList(),new FunctionList.Function() {
+		final EventList<JMenuItem> w = new FunctionList<UIComponent,JMenuItem>(this.getWindowList()
+		        ,new FunctionList.Function<UIComponent,JMenuItem>() {
 
-			public Object evaluate(final Object arg0) {
-				final UIComponent c = (UIComponent)arg0;
+			    public JMenuItem evaluate(final UIComponent c) {
 				final Window win = (Window)c.getComponent();
 				final JMenuItem mi = new JMenuItem(c.getTitle(),EMPTY_ICON);				
 				win.addPropertyChangeListener("title",new PropertyChangeListener() {
@@ -389,9 +388,9 @@ public class UIContextImpl implements UIContext{
      */
     private void addWindowFactories(final JMenu windowMenu) {
         int i = 0;
-		for (final Iterator facs = windowFactories.entrySet().iterator(); facs.hasNext(); i++) {
-			final Map.Entry entry = (Map.Entry) facs.next();
-			final String key = (String)entry.getKey();
+		for (final Map.Entry<String,Factory> entry : windowFactories.entrySet()){
+		    i++;		
+			final String key = entry.getKey();
             final JMenuItem mi = new JMenuItem("New " + key);
 			mi.setAccelerator(KeyStroke.getKeyStroke(FN_KEYS[i],Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 			mi.setActionCommand(key);
@@ -463,7 +462,7 @@ public class UIContextImpl implements UIContext{
                                
             } else {
                 // assume it's the name of a new window facotry.
-                final Factory fac = (Factory)getWindowFactories().get(cmd);
+                final Factory fac = getWindowFactories().get(cmd);
                 if (fac != null) {
                     fac.create();
                 }

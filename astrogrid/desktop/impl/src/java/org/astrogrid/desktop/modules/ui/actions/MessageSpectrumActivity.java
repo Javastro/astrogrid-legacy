@@ -5,17 +5,19 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JMenuItem;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
+import org.astrogrid.desktop.modules.system.messaging.SpectrumMessageSender;
+import org.astrogrid.desktop.modules.system.messaging.SpectrumMessageType;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
@@ -26,14 +28,13 @@ import com.l2fprod.common.swing.JLinkButton;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:56 PM
  */
-public class PlasticSpectrumActivity extends AbstractFileActivity {
+public class MessageSpectrumActivity extends AbstractFileActivity {
     /** variant which is invokable on any kind of file <b>not</b> acceptable to the {@code PlasticSpectrumActivity}.
      * only appears on the main menu */
-    public static class Fallback extends PlasticSpectrumActivity {
+    public static class Fallback extends MessageSpectrumActivity {
 
-        public Fallback(final PlasticApplicationDescription plas,
-                final PlasticScavenger scav) {
-            super(plas, scav);
+        public Fallback(final ExternalMessageTarget plas) {
+            super(plas);
             final String title = getText();
             setText("Attempt to " + Character.toLowerCase(title.charAt(0)) + title.substring(1));
         }
@@ -70,18 +71,16 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 
     }
 
-    private final PlasticApplicationDescription plas;
-    private final PlasticScavenger scav;
+    private final ExternalMessageTarget plas;
 	/**
 	 * @param plas
 	 * @param tupp
 	 */
-	public PlasticSpectrumActivity(final PlasticApplicationDescription plas,final PlasticScavenger scav) {
+	public MessageSpectrumActivity(final ExternalMessageTarget plas) {
 		super();
 		setHelpID("activity.plastic.spectrum");
 		this.plas = plas;
-        this.scav = scav;
-		PlasticScavenger.configureActivity("spectra",this,plas);
+		MessagingScavenger.configureActivity("spectra",this,plas);
 	}
 	
     /// use a hiding item - so that this and the 'fallback' implementation appear to 
@@ -123,23 +122,21 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 //		    }
 			@Override
             protected Object construct() throws Exception {
-				final List l = new ArrayList();
 				// see if an astroscopeFileObject is present - if so, use this as a source of richer metadata.
                 final AstroscopeFileObject astroscopeFileObject = AstroscopeFileObject.findAstroscopeFileObject(f);
                 final FileObject innermost = AstroscopeFileObject.findInnermostFileObject(f);
 				final URL url = innermost.getURL();
-				l.add(url.toString());// url
-				l.add(f.getName().getBaseName());
-				final Hashtable t;
+				final Map t;
 				if (astroscopeFileObject != null) {
 				    t = new Hashtable(astroscopeFileObject.getNode().getAttributes());
 				    t.remove("tooltip"); // load of noise.
 				} else {
 				    t = new Hashtable(f.getContent().getAttributes());
 				}
-				//MapUtils.verbosePrint(System.err,"params",t);
-				l.add(t);
-				scav.getTupp().singleTargetFireAndForgetMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());
+				final String name = f.getName().getBaseName();
+				final SpectrumMessageSender sender = plas.createMessageSender(SpectrumMessageType.instance);
+				//@todo consider adding a result listener here.
+				sender.sendSpectrum(url,t,name,name);
 				return null;
 			}
 			@Override

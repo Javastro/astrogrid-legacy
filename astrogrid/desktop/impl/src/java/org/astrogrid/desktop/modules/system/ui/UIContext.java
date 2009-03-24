@@ -9,11 +9,14 @@ import java.util.Map;
 import javax.swing.ButtonModel;
 import javax.swing.JMenu;
 
+import org.apache.commons.collections.Factory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import ca.odell.glazedlists.EventList;
@@ -74,7 +77,7 @@ public interface UIContext  extends UI, ActionListener{
 	/** control the system browser */
 	public BrowserControl getBrowser();
 	
-	public Map getWindowFactories();
+	public Map<String, Factory> getWindowFactories();
 	
 	  public void showAboutDialog();   
 
@@ -100,12 +103,12 @@ public interface UIContext  extends UI, ActionListener{
 	 *      * it's the caller's responsibility to use this in an EDT-sensitive manner.*/
 	public ButtonModel getVisibleModel() ;
 	/** a dynamic, event-firing list of window. unmodifiable. */
-	public EventList getWindowList();
+	public EventList<UIComponent> getWindowList();
 	/** a dynamic, event-firing list of connected plastic applications */
-	public EventList getPlasticList();
+	public EventList<ExternalMessageTarget> getPlasticList();
 	/** a dynamic, event-firing list of running tasks 
 	 * may be modified, but only on the EDT*/
-	public EventList getTasksList();
+	public EventList<BackgroundWorker> getTasksList();
 	/** register a window with the context - so that it appears in windowList */
 	public void registerWindow(UIComponent window);
 	/** unregister a window from the context - removes it from window list */

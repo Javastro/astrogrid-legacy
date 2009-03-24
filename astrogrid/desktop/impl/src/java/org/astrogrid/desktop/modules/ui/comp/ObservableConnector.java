@@ -10,23 +10,27 @@ import ca.odell.glazedlists.ObservableElementList;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 27, 200710:00:01 PM
  */
-public class ObservableConnector implements ObservableElementList.Connector, Observer, EventListener {
-	ObservableElementList list;
-	public EventListener installListener(final Object arg0) {
-		((Observable)arg0).addObserver(this);
+public class ObservableConnector<E extends Observable> implements ObservableElementList.Connector<E>, Observer, EventListener {
+	public ObservableConnector() {
+	}
+    
+    ObservableElementList<E> list;
+    
+	public EventListener installListener(final E arg0) {
+		arg0.addObserver(this);
 		return this;
 	}
-	public void setObservableElementList(final ObservableElementList arg0) {
+	public void setObservableElementList(final ObservableElementList<E> arg0) {
 		this.list = arg0;
 	}
 
-	public void uninstallListener(final Object arg0, final EventListener arg1) {
+	public void uninstallListener(final E arg0, final EventListener arg1) {
 		if (arg1 == this) {
-			((Observable)arg0).deleteObserver(this);
+			arg0.deleteObserver(this);
 		}
 	}
 	// update from the thing we're observing.
 	public void update(final Observable o, final Object arg) {
-		list.elementChanged(o);
+		list.elementChanged((E)o);
 	}
 }

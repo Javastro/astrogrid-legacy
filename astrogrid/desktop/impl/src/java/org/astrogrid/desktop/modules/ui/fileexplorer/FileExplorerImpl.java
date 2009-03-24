@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.16 2008/11/04 14:35:52 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.17 2009/03/24 13:08:19 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.actions.DeleteFilesActivity;
 import org.astrogrid.desktop.modules.ui.actions.DuplicateActivity;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
-import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
+import org.astrogrid.desktop.modules.ui.actions.MessagingScavenger;
 import org.astrogrid.desktop.modules.ui.actions.RenameActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity;
@@ -61,7 +61,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		            ,RenameActivity.class
 		            ,DuplicateActivity.class
 		            ,DeleteFilesActivity.class
-		            ,PlasticScavenger.class
+		            ,MessagingScavenger.class
 		            ,InfoActivity.class
 		    });
 		    view = uiBuilder.createStorageView(this,acts);
@@ -76,7 +76,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		                .windowOperation(acts.getActivity(TaskRunnerActivity.class))
 		                .windowOperation(acts.getActivity(SimpleDownloadActivity.class))
 		                .windowOperation(view.getUpload());
-		            acts.getActivity(PlasticScavenger.class).addTo(fmb.getMenu());
+		            acts.getActivity(MessagingScavenger.class).addTo(fmb.getMenu());
 		                fmb.closeWindow()
 		                .separator()
 		                .windowOperation(acts.getActivity(RenameActivity.class))

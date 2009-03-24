@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.astrogrid.desktop.modules.system;
+package org.astrogrid.desktop.modules.system.messaging;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -24,6 +24,8 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,7 +39,6 @@ import org.apache.xmlrpc.server.XmlRpcNoSuchHandlerException;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -46,6 +47,7 @@ import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.PlasticListener;
 import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
+import org.votech.plastic.incoming.handlers.LoggingHandler;
 import org.votech.plastic.incoming.handlers.MessageHandler;
 import org.votech.plastic.incoming.handlers.StandardHandler;
 import org.votech.plastic.incoming.messages.hub.HubListener;
@@ -71,6 +73,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
     private final URL xmlrpcClientEndpoint;
     private final String vodesktop_ivorn;
     private final HttpClient httpClient;
+    private final List<MessageType<?>> allKnownMessages;
 	/**
 	 * 
 	 * @param parent the ui context
@@ -88,7 +91,9 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
 	public TupperwareImpl(final UIContext parent
 	        ,  final String applicationName, final String description, final String icon,final String ivorn
 	        , final URL clientEndpoint
-	        , final List<AbstractMessageHandler> handlers, final EventList<PlasticApplicationDescription> model
+	        , final List<MessageTarget> internalTargets
+	        , final List<MessageType<?>> knownTypes
+	        , final EventList<ExternalMessageTarget> model
 	        ,final PlasticHubListenerInternal internalHub
 	        ,final HttpClient httpClient
 	        ) throws IOException {
@@ -97,54 +102,46 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
         this.parent = parent;
         this.applicationName = applicationName;
         this.vodesktop_ivorn = ivorn;
+        this.allKnownMessages = knownTypes;
         this.httpClient = httpClient;
         this.xmlrpcClientEndpoint = new URL(clientEndpoint.toString() + "xmlrpc");
 		this.model = model;
         this.internalHub = internalHub;
         
-		this.supportedMessages = new HashSet();
-		
-		// add default handlers to the contributed list.. - contribution list is immutable, so need to take a copy
-		final List<AbstractMessageHandler> allHandlers = new ArrayList<AbstractMessageHandler>(handlers);
-		allHandlers.add(new StandardHandler(applicationName,description,ivorn,icon,PlasticListener.CURRENT_VERSION,this,null));
+        // build the plastic handler chain.
+		this.plasticHandler = new LoggingHandler(logger);			
+		// handle the application registered message
 		applicationRegisteredMessageHandler = new ApplicationRegisteredMessageHandler();
-		allHandlers.add(applicationRegisteredMessageHandler);
+		plasticHandler.appendHandler(applicationRegisteredMessageHandler);
 		
-		// process handler contribution - extract list of handled messages, and chain all the handlers together.
-		MessageHandler firstHandler = null;
-		MessageHandler lastHandler = null;
-		for (final Iterator<AbstractMessageHandler> i = allHandlers.iterator(); i.hasNext(); ) {
-			final MessageHandler mh = i.next();
-			final List messages = mh.getHandledMessages();
-			logger.debug(messages);
-			if (messages == null || messages.size() ==0) {
-				logger.warn("Skipping - No messages registered for handler" + mh);
-				continue;
-			} 
-			supportedMessages.addAll(mh.getHandledMessages());
-			if (firstHandler == null) {
-				firstHandler = mh;
-			} else {
-				lastHandler.setNextHandler(mh);
-			}
-			lastHandler = mh; 
-		}
-		this.plasticHandler = firstHandler;
+		plasticHandler.appendHandler(new InternalMessageTargetMessageHandler(internalTargets));		
+		
+		plasticHandler.appendHandler(new StandardHandler(
+		        applicationName
+		        ,description
+		        ,ivorn
+		        ,icon
+		        ,PlasticListener.CURRENT_VERSION
+		        ,this
+		        ,null));
+		
+		this.supportedMessages = new HashSet(plasticHandler.getHandledMessages());
+		
 		logger.info("Will handle messages:" + supportedMessages);
 		
+		//@todo this auto-starts the hub. need to refactor this out.
 	    if (PlasticUtils.isHubRunning()) {
 	        connect.actionPerformed(null);
 	    } else {
 	        startInternal.actionPerformed(null);
-	    }
-	
+	    }	
 	}
 
 	private final ConnectAction connect = new ConnectAction();
 	private final DisconnectAction disconnect = new DisconnectAction();
 	/** reference to the hub we've connected to */
 	private ArXmlRpcHub hub;
-	private final EventList<PlasticApplicationDescription>  model;
+	private final EventList<ExternalMessageTarget>  model;
 	private URI myPlasticId;
 	private final UIContext parent;
 	private final MessageHandler plasticHandler;
@@ -216,12 +213,89 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
 public Object perform(final URI arg0, final URI arg1, final List arg2) {
 	return plasticHandler.perform(arg0,arg1,arg2);
 }
+/** plastic message handler for the application-level mesages that vodesktop 
+ * can consume
+ * @author Noel.Winstanley@manchester.ac.uk
+ * @since Mar 16, 20091:54:33 PM
+ */
+public class InternalMessageTargetMessageHandler extends AbstractMessageHandler {
+
+    private final List<URI> localMessages = new ArrayList<URI>();
+    private final List<MessageTarget> internalTargets;
+    /**
+     * work out what the local mesages are 
+     * @param internalTargets 
+     */
+    public InternalMessageTargetMessageHandler(final List<MessageTarget> internalTargets) {
+        this.internalTargets = internalTargets;
+        final Set<MessageType<?>> msgs = new HashSet<MessageType<?>>();
+       for (final MessageTarget messageTarget : internalTargets) {
+        msgs.addAll(messageTarget.acceptedMessageTypes());
+       }
+       // ok. msgs now contains union of all supported messages.
+       for(final MessageType<?> mt : msgs) {
+           localMessages.add(mt.getPlasticMessageType());
+       }
+    }
+    
+    @Override
+    protected List getLocalMessages() {
+        return localMessages;
+    }
+
+    public Object perform(final URI sender, final URI msgID, final List args) {
+        for (final MessageTarget m : internalTargets) {
+            for(final MessageType t : m.acceptedMessageTypes()) {
+                if (msgID.equals(t.getPlasticMessageType())) {
+                    // found the correct target, and correct type
+                    // this is what the message is destined for.
+                    // intentionally omitting the generic typing here, otherwise it won't work.
+                    // we know the definition is strongly typed anyhow, so this works.
+                     final MessageSender dispatch = m.createMessageSender(t);
+                     // create a handler (unmarshaller might be a better name)
+                     final MessageUnmarshaller<MessageSender> unmarshal = t.createPlasticUnmarshaller();
+                     // see if we can find the message sender in the list of currently known applications
+                     // not vital if we can't.
+                     ExternalMessageTarget source = null;
+                     if (sender != null) {
+                         final String senderID = sender.toString();
+                         for(final ExternalMessageTarget mt : model) {
+                             if (mt.getId().equals(senderID)) {
+                                 source = mt;
+                                 break;
+                             }
+                         }
+                     }
+                     try {
+                         return unmarshal.handle(source,args,dispatch);
+                     } catch (final Exception e) {
+                         //
+                         //@todo  dunno if it's possible to pass exception back to caller
+                         // need to read up on spec.
+                         throw new RuntimeException(e);
+                     }
+                }
+            }
+        } 
+        // no handler found
+        if (nextHandler != null) {
+            return nextHandler.perform(sender,msgID,args);
+        } else {
+            return CommonMessageConstants.RPCNULL;
+        }
+    }
+}
 
     
 
+/** plastic message handler that processes application registered / unregistered 
+ * messages
+ * @author Noel.Winstanley@manchester.ac.uk
+ * @since Mar 16, 20091:53:42 PM
+ */
 public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler {
 
-	private final List dynamicButtonMessages = new ArrayList() {
+	private final List<URI> dynamicButtonMessages = new ArrayList<URI>() {
 	    {// init
 	        this.add(HubMessageConstants.APPLICATION_REGISTERED_EVENT);
 	        this.add(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT);
@@ -255,19 +329,25 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 
 	/** called to handle messages */
     public Object perform(final URI sender, final URI message, final List args) {
-    	if (enabled) {
-        try {
-        if (message.equals(HubMessageConstants.APPLICATION_REGISTERED_EVENT)) {
-            interrogatePlasticApp(new URI(args.get(0).toString())); //redundant, but reliable.
+        if (enabled) {
+            try {
+                if (message.equals(HubMessageConstants.APPLICATION_REGISTERED_EVENT)) {
+                    interrogatePlasticApp(new URI(args.get(0).toString())); //redundant, but reliable.
+                    return CommonMessageConstants.RPCNULL;
+                }
+                if (message.equals(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT)) {            
+                    removePlasticApp(new URI(args.get(0).toString()));
+                    return CommonMessageConstants.RPCNULL;
+                }
+            } catch (final URISyntaxException e) { // don't care overmuch.
+                logger.warn(e);       
+            }
         }
-        if (message.equals(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT)) {            
-            removePlasticApp(new URI(args.get(0).toString()));
+        if (nextHandler != null) {
+            return nextHandler.perform(sender,message,args);
+        } else {
+            return CommonMessageConstants.RPCNULL;
         }
-        } catch (final URISyntaxException e) { // don't care overmuch.
-            logger.warn(e);       
-        }
-    	}
-        return null;
     }
 
 	/** remove a plastic application from the container.
@@ -278,8 +358,8 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
         try {
             model.getReadWriteLock().writeLock().lock();
             	for (int i = 0; i < model.size(); i++) {
-            		final PlasticApplicationDescription pad = model.get(i);
-            		if (pad.getId().equals(id)) {
+            		final ExternalMessageTarget pad = model.get(i);
+            		if (pad.getId().equals(id.toString())) {
             			model.remove(i);
             			return;
             		}
@@ -305,7 +385,7 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 	 * @author Noel Winstanley
 	 * @since Jun 27, 200612:43:43 AM
 	 */
-	private final class PlasticInterrogatorWorker extends BackgroundWorker {
+	private final class PlasticInterrogatorWorker extends BackgroundWorker<Void> {
 		/**
 		 * @param parent
 		 * @param msg
@@ -323,8 +403,8 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 		private final URI id;
 
 		@Override
-        protected Object construct() throws Exception {
-		    final int opCount = 7;
+        protected Void construct() throws Exception {
+		    final int opCount = 6;
 		    int progress = 0;
 		    setProgress(progress,opCount);
 		    final List noArgs = new ArrayList();
@@ -341,23 +421,38 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
             setProgress(++progress,opCount);		    
 		    final String description = safeStringCast(singleTargetRequestResponseMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,this.id));
             setProgress(++progress,opCount);
-		    final String version = safeStringCast(singleTargetRequestResponseMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id));
-            setProgress(++progress,opCount);		    
+//		    final String version = safeStringCast(singleTargetRequestResponseMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id));
+//            setProgress(++progress,opCount);		    
 		    final String iconURLString = safeStringCast(singleTargetRequestResponseMessage(CommonMessageConstants.GET_ICON,noArgs,this.id));
-		    URL iconUrl;
             ImageIcon icon;
             try {
-                iconUrl = new URL(iconURLString);
+                final URL iconUrl = new URL(iconURLString);
                 icon = IconHelper.loadIcon(iconUrl);
             } catch (final MalformedURLException e) {
-                //Cannot rely on the client returning a well-formed URL, or indeed any URL.
-                iconUrl = null;
+                //Cannot rely on the client returning a well-formed URL, or indeed any URL.             
                 icon = null; 
             }
             setProgress(++progress,opCount);
-		    final List appMsgList = hub.getUnderstoodMessages(this.id);
+		    final List<URI> appMsgList = hub.getUnderstoodMessages(this.id);
+		    // build up set of message types that this supports.
+		    final Set<MessageType<?>> supportedTypes = new HashSet<MessageType<?>>();
+		    CollectionUtils.select(allKnownMessages,new Predicate() {
+
+                public boolean evaluate(final Object arg0) {
+                    final MessageType mt = (MessageType)arg0;                    
+                    return appMsgList.contains(mt.getPlasticMessageType());
+                }
+		    }, supportedTypes);
+		    
             setProgress(++progress,opCount);		    
-		     final PlasticApplicationDescription result = new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,iconUrl,ivorn);
+		     final PlasticApplicationDescription result = new PlasticApplicationDescription(
+		             this.id
+		             ,name
+		             ,description
+		             ,supportedTypes
+		             ,icon
+		             ,TupperwareImpl.this
+		             );
 		     try {
 		    	 model.getReadWriteLock().writeLock().lock();
 			if (! model.contains(result)) {  // would be odd if it did already contain it.
@@ -385,12 +480,12 @@ private class ConnectAction extends AbstractAction {
     }
     public void actionPerformed(final ActionEvent e) {
         SplashWindow.reportProgress("Registering with PLASTIC..."); // only shown when called as part of the startup routines.
-        new BackgroundWorker(parent,"Registering with PLASTIC") {
+        new BackgroundWorker<Void>(parent,"Registering with PLASTIC") {
             {
                 setTransient(true);
             }
             @Override
-            protected Object construct() throws Exception {
+            protected Void construct() throws Exception {
                 // create an xmlrpc client.
                 final URL hubEndpoint = PlasticUtils.getXmlRpcUrl();
                 final XmlRpcClient client = new XmlRpcClient();
@@ -416,7 +511,7 @@ private class ConnectAction extends AbstractAction {
                 return null;
             }
             @Override
-            protected void doFinished(final Object result) {
+            protected void doFinished(final Void ignored) {
                 connect.setEnabled(false);
                 disconnect.setEnabled(true);
                 startInternal.setEnabled(false);
@@ -434,12 +529,12 @@ private class DisconnectAction extends AbstractAction {
     }
     public void actionPerformed(final ActionEvent e) {
         applicationRegisteredMessageHandler.disable();
-        new BackgroundWorker(parent,"Unregistering with PLASTIC") {
+        new BackgroundWorker<Void>(parent,"Unregistering with PLASTIC") {
             {
                 setTransient(true);
             }
             @Override
-            protected Object construct() throws Exception {               
+            protected Void construct() throws Exception {               
                 //bz 2814 - if the hub has already been shut down, this is noisy
                 // so disable error reporting at this point.
                 hub.setSilent(true);
@@ -449,7 +544,7 @@ private class DisconnectAction extends AbstractAction {
                 return null;
             }
             @Override
-            protected void doFinished(final Object result) {
+            protected void doFinished(final Void ignored) {
                 connect.setEnabled(true);
                 disconnect.setEnabled(false);
                 startInternal.setEnabled(! PlasticUtils.isHubRunning());
@@ -473,15 +568,15 @@ private class StartInternalHubAction extends AbstractAction {
         putValue(Action.SHORT_DESCRIPTION,"Start a PLASTIC Hub running in this JVM");
     }
     public void actionPerformed(final ActionEvent e) {
-        new BackgroundWorker(parent,"Starting internal PLASTIC Hub") {
+        new BackgroundWorker<Void>(parent,"Starting internal PLASTIC Hub") {
 
             @Override
-            protected Object construct() throws Exception {
+            protected Void construct() throws Exception {
                 internalHub.start();
                 return null;
             }
             @Override
-            protected void doFinished(final Object result) {
+            protected void doFinished(final Void ignored) {
                 connect.actionPerformed(null);
             }
         }.start();

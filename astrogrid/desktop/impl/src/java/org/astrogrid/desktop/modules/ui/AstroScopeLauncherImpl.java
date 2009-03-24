@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.94 2008/12/09 14:29:59 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.95 2009/03/24 13:08:20 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,7 +75,7 @@ import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
-import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
+import org.astrogrid.desktop.modules.ui.actions.MessagingScavenger;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
@@ -167,7 +167,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		acts = activityBuilder.create(this, new Class[]{
 		        ViewInBrowserActivity.class
 		        ,SimpleDownloadActivity.class
-		        ,PlasticScavenger.class
+		        ,MessagingScavenger.class
 		        ,InfoActivity.class
 		});
 		final JPopupMenu popup = acts.getPopupMenu();
@@ -502,7 +502,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                     .windowOperation(acts.getActivity(ViewInBrowserActivity.class))
                     .windowOperation(acts.getActivity(SimpleDownloadActivity.class))
                     ;
-               acts.getActivity(PlasticScavenger.class).addTo(rmb.getMenu());
+               acts.getActivity(MessagingScavenger.class).addTo(rmb.getMenu());
                add(rmb.create());
             }
 		};					
@@ -782,8 +782,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}
 	}
 	protected void haltQuery() {
-		for (final Iterator i = getContext().getTasksList().iterator(); i.hasNext(); ) {
-		    final BackgroundWorker w = (BackgroundWorker)i.next();
+		for (final BackgroundWorker w : getContext().getTasksList()) {
 		    // halts all retrievers and list-services queries for this window - leaving other tasks (e.g. downloads, plastic interactions) untouched.
 		   
 		    if (w.parent == this &&

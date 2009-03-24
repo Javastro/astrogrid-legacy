@@ -180,10 +180,9 @@ System module.
                 <service>workersMonitor</service>
                 <service>configDialogue</service>
                 <service>aboutDialogue</service>
-	 			<service>plasticList</service>
 	 			<configuration>windowFactories</configuration>
                 <string>${system.ui.launchApp}</string>
-                <service>tupperware</service>
+                <service>messaging</service>
 	 		</construct>
 	 	</invoke-factory>
 	 </service-point>
@@ -397,7 +396,7 @@ System module.
                 <service>framework.converter</service>
                 <service>apihelp</service>             
                 <service>plastic.hub</service>
-                <service>tupperware</service>
+                <service>tupperware</service> <!--  being used here as the xmlrpc client handler -->
             </construct>
         </invoke-factory>
     </service-point>        
@@ -885,7 +884,7 @@ MAC SETUP
 				<service>ui</service>
 				<string>${astrogrid.desktop.version}</string>
 				<string>${app.mode}</string>
-				<service>plasticList</service>
+				<object>service-property:system.messaging:targetList</object>
 				<object>preference:system.doSnitch</object>
 			</construct>
 		</invoke-factory>
@@ -945,14 +944,54 @@ MAC SETUP
     </service-point>
 
   
-<!--  ================================
+<!-- 
+ ================================
+ Messaging -->  
+
+    <service-point id="messaging"
+        interface="org.astrogrid.desktop.modules.system.messaging.Messaging">
+            <invoke-factory>
+                <construct class="org.astrogrid.desktop.modules.system.messaging.PlasticOnlyMessagingImpl">
+                </construct>
+            </invoke-factory>
+    </service-point>
+  
+    <!--  list of known message types -->
+    <configuration-point id="messageTypes" schema-id="objects">
+        set of known message types. each must be a subclass of MessageType.
+        A message type must be registered with this configuration point
+        to be recognized by the messaging system. This is a pre-requisite for
+        sending or receiving messages of this type.
+    </configuration-point>
+    
+    <contribution configuration-id="messageTypes">
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.BibcodeMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.FitsImageMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.FitsTableMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.HighlightRowMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.PointAtSkyMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.SelectRowListMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.SpectrumMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.VotableMessageType</object>
+    </contribution>
+    
+    <!--  list of internal message targets -->
+    <configuration-point id="internalMessageTargets" schema-id="objects">
+        set of message targets- internal components that will consume messages.
+        Each must be an instance of MessageTarget
+    </configuration-point>
+<!-- 
 	TUPPERWARE - Client side of PLASTIC
 	 -->
 	<service-point id="tupperware"
-		interface="org.astrogrid.desktop.modules.system.TupperwareInternal">
+		interface="org.apache.xmlrpc.XmlRpcHandler"
+        visibility="private"
+        >
 		Plastic wrapper that allows other components to send and handle plastic messages.
+        Only exposes the xmlrpc handler interface here.
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.system.TupperwareImpl">
+			<construct class="org.astrogrid.desktop.modules.system.messaging.TupperwareImpl">
                 <event-listener service-id="builtin.shutdown" /> 
 				<service>ui</service>
 				<string>${interop.app.name}</string>
@@ -960,8 +999,9 @@ MAC SETUP
                 <string>${interop.app.icon}</string>
                 <string>${interop.app.ivorn}</string>
                 <object>service-property:system.webserver:root</object>      
-				<configuration>plasticMessageHandlers</configuration>
-				<service>plasticList</service>
+				<configuration>internalMessageTargets</configuration>
+                <configuration>messageTypes</configuration>
+                <object>service-property:system.messaging:targetList</object>
                 <service>plastic.hub</service>
                 <service>httpclient</service>
 			</construct>
@@ -972,11 +1012,6 @@ MAC SETUP
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>
 	
-		<configuration-point id="plasticMessageHandlers" schema-id="objects">
-	List of handlers to register as processors of plastic messages.
-	Should all be instances of org.votech.plastic.incoming.handlers.MessageHandler
-	</configuration-point>
-        
     <contribution configuration-id="hivemind.FactoryDefaults">   
         <default symbol="interop.app.name" value="VO Desktop" />    
         <default symbol="interop.app.description" value="AstroGrid VO Desktop: see http://www.astrogrid.org" />
@@ -1070,15 +1105,6 @@ XML Persistence -->
         When running headless, replace ui with an empty placeholder.
         <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
     </implementation>    
-
-<!--  ======================
-PLASTIC LIST MODEL -->
-
-	<service-point id="plasticList"
-		interface="ca.odell.glazedlists.EventList">
-        List model that contains description of applications currently connected to plastic hub.
-		<create-instance class="ca.odell.glazedlists.BasicEventList" />
-	</service-point>
 
 <!-- 
 ================================

@@ -4,37 +4,51 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.messaging.AbstractMessageSender;
+import org.astrogrid.desktop.modules.system.messaging.AbstractMessageTarget;
+import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageSender;
+import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageType;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
+import org.astrogrid.desktop.modules.system.messaging.MessageSender;
+import org.astrogrid.desktop.modules.system.messaging.MessageType;
+import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageSender;
+import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageType;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
-import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
 
 /** Factory for voexplorers.
  *  - also handles some plastic messages. 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 20076:44:32 PM
  */
-public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VOExplorerFactoryInternal {
+public class VOExplorerFactoryImpl extends AbstractMessageTarget  implements VOExplorerFactoryInternal {
 	
 	public final TypesafeObjectBuilder builder;
 
 	private static final Log logger = LogFactory.getLog(VOExplorerFactoryImpl.class);
 
-    private final List plasticApps; // dynamic list model of currently registered applications.
+    private final List<ExternalMessageTarget> apps; // dynamic list model of currently registered applications.
 	
-	public VOExplorerFactoryImpl(final List plasticApps,final TypesafeObjectBuilder builder) {
-		this.plasticApps = plasticApps;
+    private final static Set<MessageType<?>> myMessages;
+    static {
+        final Set<MessageType<?>> m = new HashSet();
+        m.add(ResourceSetMessageType.instance);
+        m.add(BibcodeMessageType.instance);
+        myMessages = Collections.unmodifiableSet(m);
+    }
+    
+	public VOExplorerFactoryImpl(final List<ExternalMessageTarget> apps,final TypesafeObjectBuilder builder) {
+		super(myMessages);
+	    this.apps = apps;
         this.builder = builder;
 	}	
 	private VOExplorerImpl newWindow() {
@@ -68,116 +82,85 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 		impl.doQuery("Search",arg0);
 	}
 
-	// Message Handling Interface
-	public static final URI BIBCODE_MESSAGE = URI.create("ivo://votech.org/bibcode");
-
-	public static final List REGISTRY_MESSAGES = new ArrayList() {{
-			add(URI.create("ivo://votech.org/voresource/load"));
-			add(URI.create("ivo://votech.org/voresource/loadList"));
-	}};
-	
-	public static final List ALL_MESSAGES = new ArrayList() {{
-	    addAll(REGISTRY_MESSAGES);
-	    add(BIBCODE_MESSAGE);
-	}};
-	
-	public static final URI VORESOURCE_LOAD = (URI)REGISTRY_MESSAGES.get(0);
-	public static final URI VORESOURCE_LOADLIST= (URI)REGISTRY_MESSAGES.get(1);
-	
-	protected List getLocalMessages() {
-		return ALL_MESSAGES;
-	}
-	// handles both kinds of message - quite tolerant of different object types.
-	// however, at the moment will choke and fail on the first malformed uri.
-	public Object perform(final URI sender, final URI message, final List args) {
-		if (REGISTRY_MESSAGES.contains(message) && args.size() > 0) {
-			try { //handle a string, collection, or array...
-				final List resList = new ArrayList();
-				final Object o = args.get(0);
-				if (o == null) {
-					logger.warn("Null argument");
-					return Boolean.FALSE;
-				}
-				if (o instanceof Collection) {
-					final Collection c= (Collection)o;
-					for (final Iterator i = c.iterator(); i.hasNext();) {
-						final Object e =  i.next();
-						if (e != null) {
-							resList.add(new URI(e.toString()));
-						}
-					}
-				} else if (o.getClass().isArray()) {
-					final Object[] arr = (Object[])o;
-					for (int i = 0; i < arr.length; i++) {
-						if (arr[i] != null) {
-							resList.add(new URI(arr[i].toString()));
-						}
-					}
-				} else { // treat it as a single string
-					final URI resourceId = new URI(o.toString());
-					resList.add(resourceId);
-				}
-				final String finalAppName = findSenderName(sender);
-				// got all the info we need. display the ui on the EDT.
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						final VOExplorerImpl ve = newWindow();
-						ve.displayResources("Resources from " + finalAppName,resList);
-					}
-				});				
-				return Boolean.TRUE;
-			} catch (final URISyntaxException x) {
-				logger.error("URISyntaxException",x);
-				return Boolean.FALSE;
-			}
-		} else if (BIBCODE_MESSAGE.equals(message) && args.size() == 1) {
-		    final Object o = args.get(0);
-		    if (o == null) {
-                logger.warn("Null argument");
-                return Boolean.FALSE;
-		    } else {
-		        final String bibcode = o.toString();
-		        if (StringUtils.isEmpty(bibcode)) {
-                    logger.warn("Null argument");
-                    return Boolean.FALSE;		            
-		        }
-                //final String finalAppName = findSenderName(sender);
-                // got all the info we need. display the ui on the EDT.
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        final VOExplorerImpl ve = newWindow();
-                        ve.doQuery("Resources for " + bibcode,
-                                "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')] \n "+
-                                " where $r/vr:content/vr:source =  '" + StringEscapeUtils.escapeSql(bibcode) + "' \n" +
-                                " return $r" );
-                    }
-                }); 	
-                return Boolean.TRUE;
-		    }
-		} else {
-			// let other messages pass-thru to the next handler in the list.
-			if (nextHandler != null) {
-				return nextHandler.perform(sender,message,args);
-			} else {
-				return null;
-			}
-		}
-	}
     /**
      * @param sender
      * @return
      */
-    private String findSenderName(final URI sender) {
+    private String findSenderName(final URI senderId) {
         String appName = "unknown application";
-        for (final Iterator i = plasticApps.iterator(); i.hasNext();) {
-            final PlasticApplicationDescription desc = (PlasticApplicationDescription) i.next();
-            if (desc.getId().equals(sender)) {
-                appName = desc.getName();
+        for (final ExternalMessageTarget app : apps) {
+            if (app.getId().equals(senderId.toString())) {
+                appName = app.getName();
                 break;
             }
         }
         return appName;
     }
+    // messaging components.
 
-	
+    public <S extends MessageSender> S createMessageSender(final MessageType<S> type)
+            throws UnsupportedOperationException {
+        if (type instanceof ResourceSetMessageType) {
+            return (S) new MyResourceConsumer();
+        } else if (type instanceof BibcodeMessageType) {
+            return (S) new MyBibcodeConsumer();
+        
+        } else {
+            throw new UnsupportedOperationException(type.toString());
+        }
+    }
+
+
+    /** consumes a resourceset message */
+    private class MyResourceConsumer extends AbstractMessageSender implements ResourceSetMessageSender {
+
+        public MyResourceConsumer() {
+            super(VOExplorerFactoryImpl.this);
+        }
+
+        public void sendResourceSet(final List<URI> resList, final String setId,
+                final String setName) {
+          
+            final String title;
+            if (setName != null) {
+                title = "Resource Set : " + setName;
+            } else if (getSource() != null) {
+                title = "Resources from " + getSource().getName();
+            } else {
+                title = "Resource Set";
+            }
+                       
+            // got all the info we need. display the ui on the EDT.
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    final VOExplorerImpl ve = newWindow();
+                    ve.displayResources(title,resList);
+                }
+            });                        
+        }
+
+    }
+
+    
+    /** consumes a bibcode message */
+    private class MyBibcodeConsumer extends AbstractMessageSender implements BibcodeMessageSender {
+
+  
+        public MyBibcodeConsumer() {
+            super(VOExplorerFactoryImpl.this);
+        }
+
+        public void sendBibcode(final String bibcode) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        final VOExplorerImpl ve = newWindow();
+                        ve.doQuery("Resources for " + bibcode,
+                                "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')] \n "+
+                                " where $r/content/source =  '" + StringEscapeUtils.escapeSql(bibcode) + "' \n" +
+                                " return $r" );
+                    }
+                });                
+        }
+
+    }
 }

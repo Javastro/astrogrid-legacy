@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.28 2009/02/27 11:34:25 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.29 2009/03/24 13:08:21 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -62,7 +62,7 @@ import org.astrogrid.desktop.modules.ui.actions.ContactActivity;
 import org.astrogrid.desktop.modules.ui.actions.FurtherInfoActivity;
 import org.astrogrid.desktop.modules.ui.actions.GetPaperActivity;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
-import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
+import org.astrogrid.desktop.modules.ui.actions.MessagingScavenger;
 import org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity;
 import org.astrogrid.desktop.modules.ui.actions.SaveResourceActivity;
 import org.astrogrid.desktop.modules.ui.actions.SaveXoXoListActivity;
@@ -117,7 +117,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		       ,TapQueryActivity.class
 		       ,TaskRunnerActivity.class
 		       ,WebInterfaceActivity.class
-		       ,PlasticScavenger.class
+		       ,MessagingScavenger.class
 		       ,SimpleDownloadActivity.class
 		       ,InfoActivity.class
 		       ,FurtherInfoActivity.class
@@ -194,7 +194,7 @@ public class VOExplorerImpl extends UIComponentImpl
                     .windowOperation(acts.getActivity(TaskRunnerActivity.class))
                     .windowOperation(acts.getActivity(WebInterfaceActivity.class));
                     
-                acts.getActivity(PlasticScavenger.class).addTo(rmb.getMenu());
+                acts.getActivity(MessagingScavenger.class).addTo(rmb.getMenu());
                  
                     rmb.windowOperation(acts.getActivity(SimpleDownloadActivity.class))
                     .separator()

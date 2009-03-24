@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.apache.commons.collections.Factory;
 import org.astrogrid.acr.ui.RegistryBrowser;
-import org.votech.plastic.incoming.handlers.MessageHandler;
+import org.astrogrid.desktop.modules.system.messaging.MessageTarget;
 
 /** internal interface to the voexplorer factory.
  *  - just a conjunction of other interfaces.
@@ -13,6 +13,6 @@ import org.votech.plastic.incoming.handlers.MessageHandler;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 20076:47:57 PM
  */
-public interface VOExplorerFactoryInternal extends  Factory,MessageHandler, RegistryBrowser, Runnable {
+public interface VOExplorerFactoryInternal extends  Factory,RegistryBrowser, Runnable, MessageTarget {
 
 }

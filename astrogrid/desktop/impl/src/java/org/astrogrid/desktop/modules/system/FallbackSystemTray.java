@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.system;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -82,8 +81,7 @@ public class FallbackSystemTray  implements SystemTrayInternal{
         final JPopupMenu m = new JPopupMenu();
 
         //window factories.
-        for (final Iterator facs = context.getWindowFactories().keySet().iterator(); facs.hasNext(); ) {
-            final String key = (String) facs.next();
+        for (final String key : context.getWindowFactories().keySet()) {
             final JMenuItem f = new JMenuItem("New " + key);            
             f.setActionCommand(key);
             f.addActionListener(context);

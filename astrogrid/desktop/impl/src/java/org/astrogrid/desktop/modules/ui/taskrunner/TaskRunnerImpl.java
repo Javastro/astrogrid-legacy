@@ -74,7 +74,7 @@ import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
-import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
+import org.astrogrid.desktop.modules.ui.actions.MessagingScavenger;
 import org.astrogrid.desktop.modules.ui.actions.RevealFileActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
@@ -174,7 +174,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                     .windowOperation(tracker.getActs().getActivity(SimpleDownloadActivity.class))
                     .windowOperation(tracker.getActs().getActivity(RevealFileActivity.class))
                       ;
-                tracker.getActs().getActivity(PlasticScavenger.class).addTo(rmb.getMenu());
+                tracker.getActs().getActivity(MessagingScavenger.class).addTo(rmb.getMenu());
                 add(rmb.create());
             }
             @Override

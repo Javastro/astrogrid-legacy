@@ -5,16 +5,18 @@ package org.astrogrid.desktop.modules.system;
 
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
+import org.astrogrid.desktop.modules.system.messaging.MessageType;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -38,7 +40,7 @@ public class SnitchImpl implements SnitchInternal {
 	private final boolean snitchDisabled;
 
 	
-	public SnitchImpl( final UIContext ui,final String version, final String appMode, final EventList plasticList, final Preference doSnitch) {
+	public SnitchImpl( final UIContext ui,final String version, final String appMode, final EventList<ExternalMessageTarget> targetList, final Preference doSnitch) {
 		super();
     	logger.info("AstroRuntime version: " + version + ", " + appMode);
 		this.ui = ui;
@@ -47,16 +49,20 @@ public class SnitchImpl implements SnitchInternal {
 		// this key isn't availahble when running in eclipse - so won't snitch if we're in development mode - as will give meaningless results.
 
 		if (! snitchDisabled) {
-			plasticList.addListEventListener(new ListEventListener() {
-
-				public void listChanged(final ListEvent arg0) {
+			targetList.addListEventListener(new ListEventListener<ExternalMessageTarget>() {
+			       
+				public void listChanged(final ListEvent<ExternalMessageTarget> arg0) {
 					while(arg0.next()) {
 						if (arg0.getType() == ListEvent.INSERT) {
-							final PlasticApplicationDescription plas = (PlasticApplicationDescription)plasticList.get(arg0.getIndex());
+						    final ExternalMessageTarget target = targetList.get(arg0.getIndex());
 							final Map m = new HashMap();
-							m.put("name",plas.getName());
-							m.put("ops",Arrays.asList(plas.getUnderstoodMessages()));
-							m.put("description",plas.getDescription());
+							m.put("name",target.getName());
+							final List<String> messages = new ArrayList();
+							for(final MessageType<?> mt : target.acceptedMessageTypes()) {
+							    messages.add(mt.getClass().getName());
+							}
+							m.put("ops",messages);
+							m.put("description",target.getDescription());
 							snitch("PLASTIC",m);								
 						}
 					}

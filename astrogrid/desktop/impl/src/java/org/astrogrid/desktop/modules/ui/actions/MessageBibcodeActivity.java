@@ -1,22 +1,21 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Source;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageSender;
+import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageType;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl;
 
 /** Send a PLASTIC 'bibcode' message for a resource.
  *  */
-public class PlasticBibcodeActivity extends AbstractResourceActivity {
-	private final PlasticApplicationDescription plas;
+public class MessageBibcodeActivity extends AbstractResourceActivity {
+	private final ExternalMessageTarget target;
 
-    private final PlasticScavenger scav;
 	@Override
     protected boolean invokable(final Resource r) {
 	final Source source = r.getContent().getSource();
@@ -34,12 +33,11 @@ public class PlasticBibcodeActivity extends AbstractResourceActivity {
 	}
 	
 	
-	public PlasticBibcodeActivity(final PlasticApplicationDescription descr, final PlasticScavenger scav) {
+	public MessageBibcodeActivity(final ExternalMessageTarget descr) {
 		super();
 		setHelpID("activity.plastic.bibcode");
-		this.plas = descr;
-        this.scav = scav;
-		PlasticScavenger.configureActivity("bibcode",this,plas);
+		this.target = descr;
+		MessagingScavenger.configureActivity("bibcode",this,target);
 	}
 
 
@@ -59,18 +57,19 @@ public class PlasticBibcodeActivity extends AbstractResourceActivity {
         confirmWhenOverThreshold(sz,"Send all " + " resources?",act);	
 	}
 	private void sendBibcodeMessage(final Resource r) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {						
+		(new BackgroundWorker(uiParent.get(),"Sending to " + target.getName(),Thread.MAX_PRIORITY) {						
 			@Override
             protected Object construct() throws Exception {
-				final List l = new ArrayList();
-				l.add(r.getContent().getSource().getValue());
-				scav.getTupp().singleTargetFireAndForgetMessage(VOExplorerFactoryImpl.BIBCODE_MESSAGE,l,plas.getId());
+			    final BibcodeMessageSender sender = target.createMessageSender(BibcodeMessageType.instance);
+			    //@todo maybe add a response listener.
+			   
+				sender.sendBibcode(r.getContent().getSource().getValue());
 				return null;
 			}
 			// indicate when hand-off happended.
 			@Override
             protected void doFinished(final Object result) {
-			    parent.showTransientMessage("Message sent","Sent bibode to " + plas.getName());				
+			    parent.showTransientMessage("Message sent","Sent bibode to " + target.getName());				
 			}
 			
 		}).start();

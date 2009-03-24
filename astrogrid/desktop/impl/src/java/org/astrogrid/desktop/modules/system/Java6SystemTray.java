@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
@@ -96,8 +95,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         final PopupMenu m = new PopupMenu();
 
         //window factories.
-        for (final Iterator facs = context.getWindowFactories().keySet().iterator(); facs.hasNext(); ) {
-            final String key = (String) facs.next();
+        for (final String key : context.getWindowFactories().keySet()) {
             final MenuItem f = new MenuItem("New " + key);
             f.setActionCommand(key);
             f.addActionListener(context);
@@ -255,9 +253,9 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         final UIComponent win = context.findMainWindow();
         if (win == null || win instanceof HeadlessUIComponent) {
             final String factoryName = appToLaunch.getValue();
-            final Object o = context.getWindowFactories().get(factoryName);
-            if (o != null && o instanceof Factory) {
-                ((Factory)o).create();
+            final Factory o = context.getWindowFactories().get(factoryName);
+            if (o != null ) {
+                o.create();
             }
         } else {
             win.setVisible(true);

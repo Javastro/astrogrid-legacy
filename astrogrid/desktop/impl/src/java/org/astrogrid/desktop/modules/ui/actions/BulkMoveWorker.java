@@ -1,13 +1,9 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +11,8 @@ import java.util.Set;
 import javax.swing.UIManager;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
@@ -30,9 +28,8 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
  * @future upgrade this to use the CopyCommands instead.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 25, 20074:49:51 PM
- * @TEST unit test
  */
-public final class BulkMoveWorker extends BackgroundWorker {
+public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileSystemException>> {
     /**
      * Logger for this class
      */
@@ -45,7 +42,7 @@ public final class BulkMoveWorker extends BackgroundWorker {
     /**
      * 
      */
-    private final List l;
+    private final List<FileObject> l;
     private final FileSystemManager vfs;
     private final FileObject saveObject;
 
@@ -54,7 +51,7 @@ public final class BulkMoveWorker extends BackgroundWorker {
      * @param saveDir directory to copy data to.
      * @param l list of file objects to copy.
      */
-    public BulkMoveWorker(FileSystemManager vfs,UIComponent parent,File saveDir, List l) {
+    public BulkMoveWorker(final FileSystemManager vfs,final UIComponent parent,final File saveDir, final List<FileObject> l) {
         super(parent,  "Moving to " + saveDir,BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveDir = saveDir;
@@ -62,7 +59,7 @@ public final class BulkMoveWorker extends BackgroundWorker {
         this.l = l;
     }
     
-    public BulkMoveWorker(FileSystemManager vfs,UIComponent parent,FileObject saveObject, List l) {
+    public BulkMoveWorker(final FileSystemManager vfs,final UIComponent parent,final FileObject saveObject, final List<FileObject> l) {
         super(parent,  "Moving to " + saveObject.getName().getPath(),BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveObject = saveObject;
@@ -74,12 +71,12 @@ public final class BulkMoveWorker extends BackgroundWorker {
     }
 
     protected FileObject saveTarget;
-    protected Object construct() throws Exception {
+    protected Map<FileObject, FileSystemException> construct() throws Exception {
         final int tasksCount = l.size() + 1;
         int progress = 0;
         setProgress(progress,tasksCount);
         reportProgress("Validating save location");        
-        Set moveSourceDirs = new HashSet();
+        final Set<FileObject> moveSourceDirs = new HashSet<FileObject>();
         if (saveObject == null) {
             saveTarget = vfs.resolveFile(this.saveDir.toURI().toString());
         } else {
@@ -95,14 +92,13 @@ public final class BulkMoveWorker extends BackgroundWorker {
         reportProgress("Save location validated");
         setProgress(++progress,tasksCount);        
         // will records errors copy indivitual files, continue, and report at the end.
-        Map errors = new HashMap();
+        final Map<FileObject, FileSystemException> errors = new HashMap<FileObject, FileSystemException>();
         // go through each file in turn.
-        for (Iterator i = this.l.iterator(); i.hasNext(); ) {
-                FileObject src = (FileObject)i.next();
+        for (final FileObject src: l ) {
                 reportProgress("Processing " + src.getName().getBaseName());                
                 FileObject dest = null;
                 try {
-                String name = StringUtils.substringBeforeLast(src.getName().getBaseName(),".");
+                final String name = StringUtils.substringBeforeLast(src.getName().getBaseName(),".");
                 String ext = StringUtils.substringAfterLast(src.getName().getBaseName(),".");
                 if (StringUtils.isNotBlank(ext)) {
                     ext = "." + ext;
@@ -117,12 +113,12 @@ public final class BulkMoveWorker extends BackgroundWorker {
                 
                 
                 // cool. now got a non-existent destination file.
-                FileObject srcParent = src.getParent();
+                final FileObject srcParent = src.getParent();
                 if (srcParent != null) {
                     moveSourceDirs.add(srcParent);
                 }
                 src.moveTo(dest);
-            } catch (FileSystemException x) {
+            } catch (final FileSystemException x) {
                 errors.put(src,x);
                 reportProgress("Move from " + src.getName().getBaseName() + " failed");                
             }finally {
@@ -137,8 +133,7 @@ public final class BulkMoveWorker extends BackgroundWorker {
             }
      //   }
         // also need to notify old parents of the files we've moved.
-        for (Iterator i = moveSourceDirs.iterator(); i.hasNext();) {
-            FileObject p = (FileObject) i.next();
+        for (final FileObject p: moveSourceDirs) {           
             fs = p.getFileSystem();
             if (fs instanceof AbstractFileSystem) {
                 ((AbstractFileSystem)fs).fireFileChanged(p);
@@ -147,24 +142,22 @@ public final class BulkMoveWorker extends BackgroundWorker {
         return errors;
     }
 
-    protected void doFinished(Object result) {
-        Map errors = (Map)result;
+    protected void doFinished(final Map<FileObject, FileSystemException> errors) {       
         if (errors.size() ==0) {
             parent.showTransientMessage("Finished moving files","");
             return;
         }
-        HtmlBuilder msgBuilder = new HtmlBuilder();			    
-        for (Iterator i = errors.entrySet().iterator(); i.hasNext();) {
-            Map.Entry err = (Map.Entry) i.next();
-            FileObject f = (FileObject)err.getKey();
-            Throwable e = (Throwable)err.getValue();
+        final HtmlBuilder msgBuilder = new HtmlBuilder();			    
+        for (final Map.Entry<FileObject,FileSystemException> err : errors.entrySet()) {           
+            final FileObject f = err.getKey();
+            final Throwable e = err.getValue();
             logger.warn(f.getName().getPath(),e);
             msgBuilder.append(f.getName().getPath()).append("<br>");
             msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
             msgBuilder.append("<p>");
         }
         if (!GraphicsEnvironment.isHeadless()) {
-            ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
+            final ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
             rd.getBanner().setVisible(true);
             rd.getBanner().setTitle("Errors encountered while moving files");
             rd.getBanner().setSubtitleVisible(false);

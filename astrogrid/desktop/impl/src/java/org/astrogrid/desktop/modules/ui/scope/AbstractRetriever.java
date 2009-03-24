@@ -427,8 +427,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     
     /** returns true if there's no other query tasks but us for this window on the task queue */
     private final boolean isLastQueryWorker() {
-        for (final Iterator i =parent.getContext().getTasksList().iterator(); i.hasNext(); ) {
-            final BackgroundWorker w = (BackgroundWorker)i.next();
+        for (final BackgroundWorker w: parent.getContext().getTasksList() ) {            
             if (w.getParent() == parent // belongs to this scope 
                     && w != this // not this retriever
                     && 

@@ -31,8 +31,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.IndeterminateProgressIndicator;
 import org.astrogrid.desktop.modules.ui.comp.MessageTimerProgressBar;
@@ -249,7 +249,7 @@ public final class UIComponentAssist {
                     l.setFont(new Font("Dialog",Font.PLAIN,8));
                 }
                 public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
-                    final PlasticApplicationDescription plas = (PlasticApplicationDescription)value;
+                    final ExternalMessageTarget plas = (ExternalMessageTarget)value;
                     if (plas.getIcon() != null) {
                         final ImageIcon scaled = new ImageIcon((plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
                         l.setIcon(scaled);
@@ -287,10 +287,9 @@ public final class UIComponentAssist {
                 }
             });
             // filter down to this window's tasks.
-            final FilterList fl = new FilterList(parent.getContext().getTasksList(),new Matcher() {
+            final FilterList<BackgroundWorker> fl = new FilterList<BackgroundWorker>(parent.getContext().getTasksList(),new Matcher<BackgroundWorker>() {
 
-                public boolean matches(final Object arg0) {
-                    final BackgroundWorker backgroundWorker = ((BackgroundWorker)arg0);
+                public boolean matches(final BackgroundWorker backgroundWorker) {
                     return backgroundWorker.getParent() == parent && ! backgroundWorker.getInfo().isSystem();
                 }
             });

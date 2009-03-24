@@ -44,7 +44,7 @@ public class VFSOperationsImpl implements VFSOperations {
 
 	}
 
-	public void moveToCurrent(final List fileObjects) {
+	public void moveToCurrent(final List<FileObject> fileObjects) {
 		final FileObject target = current.get(); // take a ref before going into background. 
 		(new BulkMoveWorker(vfs,parent,target,fileObjects)).start();
 	}

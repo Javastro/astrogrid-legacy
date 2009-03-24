@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.astrogrid.desktop.modules.system;
+package org.astrogrid.desktop.modules.system.messaging;
 
 import java.net.URI;
 import java.util.List;

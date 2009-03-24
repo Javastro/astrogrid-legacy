@@ -55,10 +55,10 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 	 */
 	protected abstract boolean invokable(FileObject f);
 	
-	protected List computeInvokable() {
-		final List r = new ArrayList();
+	protected List<FileObject> computeInvokable() {
+		final List<FileObject> r = new ArrayList<FileObject>();
 		for (int i = 0; i < current.length; i++) {
-			if (evaluate(current[i])) {
+			if (invokable(current[i])) {
 				r.add(current[i]);
 			}
 		}

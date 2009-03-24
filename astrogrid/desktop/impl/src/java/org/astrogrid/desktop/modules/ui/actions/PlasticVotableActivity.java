@@ -3,10 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
-import static org.apache.commons.io.IOUtils.closeQuietly;
-
 import java.awt.event.ActionEvent;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -16,7 +13,6 @@ import java.util.List;
 
 import javax.swing.JMenuItem;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
@@ -24,13 +20,13 @@ import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
+import org.astrogrid.desktop.modules.system.messaging.VotableMessageSender;
+import org.astrogrid.desktop.modules.system.messaging.VotableMessageType;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
-import org.votech.plastic.CommonMessageConstants;
 
 import com.l2fprod.common.swing.JLinkButton;
 
@@ -44,8 +40,8 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
      * only appears on the main menu */
     public static class Fallback extends PlasticVotableActivity  {
 
-        public Fallback(final PlasticApplicationDescription plas, final PlasticScavenger scav) {
-            super(plas, scav);
+        public Fallback(final ExternalMessageTarget plas) {
+            super(plas);
             final String title = getText();
             setText("Attempt to " + Character.toLowerCase(title.charAt(0)) + title.substring(1));
         }
@@ -82,18 +78,16 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
         }
     }
     
-	private final PlasticApplicationDescription plas;
-    private final PlasticScavenger scav;
+	private final ExternalMessageTarget target;
 	/**
 	 * @param plas
 	 * @param tupp
 	 */
-	public PlasticVotableActivity(final PlasticApplicationDescription plas, final PlasticScavenger scav) {
+	public PlasticVotableActivity(final ExternalMessageTarget plas) {
 		super();
 		setHelpID("activity.plastic.votable");
-		this.plas = plas;
-        this.scav = scav;
-		PlasticScavenger.configureActivity("tables",this,plas);
+		this.target = plas;
+		MessagingScavenger.configureActivity("tables",this, target);
 	}
 	
     /// use a hiding item - so that this and the 'fallback' implementation appear to 
@@ -141,13 +135,12 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	public void doit(final List sources) {
 
 
-	    if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
-	        for (final Iterator i = sources.iterator(); i.hasNext();) {
+		        for (final Iterator i = sources.iterator(); i.hasNext();) {
 	            final Object o = i.next();
 	            if (o instanceof FileObject) {                    
 	                FileObject f = (FileObject) o;
 	                f = AstroscopeFileObject.findInnermostFileObject(f);
-	                (new LoadVotableWorker(f)).start();
+	                (new LoadVotableWorker(f,f.getName().getBaseName())).start();
 	                
 	            } else if (o instanceof CatalogService) {
 	                // very CDS specific
@@ -172,106 +165,33 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	                (new LoadVotableWorker(u,u.toString())).start();                  
 	            }						    
 	        }
-	    } else { // fallback
-	        for (final Iterator i = sources.iterator(); i.hasNext();) {			    
-	            final Object o = i.next();
-	            if (o instanceof FileObject) {
-	                (new LoadVotableInlineWorker((FileObject)o)).start();
-	                
-                } else if (o instanceof CatalogService) {
-                    final CatalogService vizCatalog = (CatalogService)o;
-                    final URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
-                    final TableBean[] tables = vizCatalog.getTables();
-                    if (tables == null || tables.length == 1) {
-                        (new LoadVotableInlineWorker(s,vizCatalog.getTitle())).start();
-                    } else { // more
-                        for (int t = 0; t < tables.length; t++) {
-                            final String tableName = StringUtils.substringAfterLast(tables[t].getName(),"/"); // get trailing part of tablename.
-                            try {
-                            final URI tURI = new URI(s.toString() + "/" + tableName); // download url is the main url plus the tablename.
-                            (new LoadVotableInlineWorker(tURI,vizCatalog.getTitle() + " - " + tableName)).start();                      
-                            } catch (final URISyntaxException e) {
-                                logger.warn("Failed to construct download link",e);
-                            }                           
-                        }
-                    }
-                    
-	            } else if (o instanceof URI) {
-	                final URI u = (URI)o;
-	                (new LoadVotableInlineWorker(u,u.toString())).start();				    
-	            }
-	        }			
-	    }
 
 	}
 
-	/** background process that sends an inline votable plastic message */
-    private class LoadVotableInlineWorker extends BackgroundWorker {
-        protected final FileObject fo;
-        protected final URI uri;
-        protected final String id;
-        /**
-         * 
-         */
-        public LoadVotableInlineWorker(final FileObject fo) {
-            super(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY);
-            this.fo = fo;
-            this.id = fo.getName().getBaseName();
-            this.uri = null;
-            //setTransient(true);
-        }
-        public LoadVotableInlineWorker(final URI uri, final String id) {
-            super(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY);
-            this.uri = uri;
-            this.id = id;
-            this.fo = null;
-            //setTransient(true);
-        }   	
-
-			@Override
-            protected Object construct() throws Exception {
-                logger.debug("Sending inline message");			    
-				InputStream is = null;
-				try {
-					final List l = new ArrayList();
-					if (fo != null) {
-					    is = MonitoringInputStream.create(this,fo,MonitoringInputStream.ONE_KB * 10);
-					} else { // must be auri then.
-					    is = MonitoringInputStream.create(this,uri.toURL(),MonitoringInputStream.ONE_KB * 10);
-					}
-					reportProgress("Opened file");
-					final String hopefullyNotVeryBig = IOUtils.toString(is);
-					reportProgress("Downloaded file");
-					// inline value.
-					l.add(hopefullyNotVeryBig);
-					//URL url = f.getURL();
-					l.add(id); // identifier.					
-					scav.getTupp().singleTargetFireAndForgetMessage(CommonMessageConstants.VOTABLE_LOAD,l,plas.getId());
-					reportProgress("Sent plastic message");
-					return null;
-				} finally {
-				    closeQuietly(is);
-				}
-			}
-			@Override
-            protected void doFinished(final Object result) {
-			    parent.showTransientMessage("Message sent","to " + plas.getName());		
-			}				
-	}
 
     /** background process that attempts to send a load-votable-bvy-reference message
      * , but will fallback to inlining if it's an odd scheme of url 
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Sep 11, 200711:08:12 AM
      */
-	private class LoadVotableWorker extends LoadVotableInlineWorker {
-
-        public LoadVotableWorker(final FileObject fo) {
-            super(fo);
+	private class LoadVotableWorker extends BackgroundWorker{
+        protected final FileObject fo;
+        protected final URI uri;
+        protected final String id;
+        public LoadVotableWorker(final FileObject fo, final String name) {
+            super(uiParent.get(),"Sending to " + target.getName(),Thread.MAX_PRIORITY);
+            this.fo = fo;
+            this.id = name;
+            this.uri = null;
+            //setTransient(true);
         }
         public LoadVotableWorker(final URI uri, final String id) {
-            super(uri,id);
-        }        
+            super(uiParent.get(),"Sending to " + target.getName(),Thread.MAX_PRIORITY);
+            this.uri = uri;
+            this.id = id;
+            this.fo = null;
+            //setTransient(true);
+        }             
 
 			@Override
             protected Object construct() throws Exception {
@@ -283,19 +203,16 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 			        url = uri.toURL();
 			    }
 			    reportProgress("Resolved URI");
-			    if (! supportedProtocols.contains(url.getProtocol())) {
-			        reportProgress("URI is an unsupported protocol - will copy and send");
-			        return super.construct(); // fallback.
-			    } else {
-                    reportProgress("Sending URL message");			        
-			        final List l = new ArrayList();
-			        l.add(url.toString());// url
-			        l.add(id);	
-			        scav.getTupp().singleTargetFireAndForgetMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,l,plas.getId());
-			        reportProgress("Plastic message sent");
+                    reportProgress("Sending URL message");	
+                    final VotableMessageSender sender = target.createMessageSender(VotableMessageType.instance);                    
+                    sender.sendVotable(url,null,id);
+                    reportProgress("Message sent");
 			        return null;
-			    }
-			}		
+			    
+			}
+            protected void doFinished(final Object result) {
+                parent.showTransientMessage("Message sent","to " + target.getName());     
+            }
 	}	
 	
 	

@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,11 +14,12 @@ import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
+import org.astrogrid.desktop.modules.system.messaging.FitsImageMessageSender;
+import org.astrogrid.desktop.modules.system.messaging.FitsImageMessageType;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
-import org.votech.plastic.CommonMessageConstants;
 
 import com.l2fprod.common.swing.JLinkButton;
 
@@ -27,13 +27,13 @@ import com.l2fprod.common.swing.JLinkButton;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:47 PM
  */
-public class PlasticFitsActivity extends AbstractFileActivity {
+public class MessageFitsActivity extends AbstractFileActivity {
     /** variant which is invokable on any kind of file <b>not</b> acceptable to {@code PlasticFitsActivity}.
      * only appears on the main menu */
-    public static class Fallback extends PlasticFitsActivity {
+    public static class Fallback extends MessageFitsActivity {
 
-    public Fallback(final PlasticApplicationDescription plas, final PlasticScavenger scav) {
-        super(plas, scav);
+    public Fallback(final ExternalMessageTarget plas) {
+        super(plas);
         final String title = getText();
         setText("Attempt to " + Character.toLowerCase(title.charAt(0)) + title.substring(1));
     }
@@ -69,19 +69,17 @@ public class PlasticFitsActivity extends AbstractFileActivity {
     }
     }
 
-private final PlasticApplicationDescription plas;
+private final ExternalMessageTarget plas;
 
-private final PlasticScavenger scav;
 	/**
 	 * @param plas
 	 * @param tupp
 	 */
-	public PlasticFitsActivity(final PlasticApplicationDescription plas, final PlasticScavenger scav) {
+	public MessageFitsActivity(final ExternalMessageTarget plas) {
 		super();
 		setHelpID("activity.plastic.fits");
 		this.plas = plas;
-        this.scav = scav;
-		PlasticScavenger.configureActivity("FITS",this,plas);
+		MessagingScavenger.configureActivity("FITS",this,plas);
 	}
 
     /// use a hiding item - so that this and the 'fallback' implementation appear to 
@@ -110,9 +108,9 @@ private final PlasticScavenger scav;
 
 	        public void run() {
 	            for (final Iterator i = l.iterator(); i.hasNext();) {
-	                FileObject f = (FileObject) i.next();
-	                f = AstroscopeFileObject.findInnermostFileObject(f);
-	                sendLoadImageMessage(f);
+	                final FileObject f = (FileObject) i.next();
+	                final FileObject inner = AstroscopeFileObject.findInnermostFileObject(f);
+	                sendLoadImageMessage(inner,f.getName().getBaseName());
 	            }
 	        }
 	    };
@@ -120,18 +118,17 @@ private final PlasticScavenger scav;
 	    confirmWhenOverThreshold(sz,"Sent all " + sz + " files?",r);
 	}
 
-	private void sendLoadImageMessage(final FileObject f) {
+	private void sendLoadImageMessage(final FileObject f,final String name) {
 		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 //		    {
 //		        setTransient(true);
 //		    }
 			@Override
             protected Object construct() throws Exception {
-				final List l = new ArrayList();
-				
 				final URL url = f.getURL();
-				l.add(url.toString());
-				scav.getTupp().singleTargetFireAndForgetMessage(CommonMessageConstants.FITS_LOAD_FROM_URL,l,plas.getId());
+				final FitsImageMessageSender sender = plas.createMessageSender(FitsImageMessageType.instance);
+				//@todo register a message response listener?
+				sender.sendFitsImage(url,null,name);
 				return null;
 			}
 			@Override

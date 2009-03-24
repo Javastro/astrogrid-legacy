@@ -57,7 +57,7 @@ import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
-import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
+import org.astrogrid.desktop.modules.ui.actions.MessagingScavenger;
 import org.astrogrid.desktop.modules.ui.actions.RevealFileActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
@@ -72,7 +72,6 @@ import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.ObservableElementList;
-import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.impl.ThreadSafeList;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.JEventListPanel;
@@ -116,26 +115,27 @@ public class ExecutionTracker implements ListSelectionListener{
         this.acts = actFact.create(parent,new Class[]{
                 ViewInBrowserActivity.class
                 ,SimpleDownloadActivity.class 
-                ,PlasticScavenger.class
+                ,MessagingScavenger.class
                 ,RevealFileActivity.class
                 ,InfoActivity.class                
         });
         logger.debug("created activities");
-		monitors = new ThreadSafeList(new BasicEventList()); // trying this instead of a basic event list, to provide a bit more thread-safety without all the hassle of locking myself.
+		monitors = new ThreadSafeList<ProcessMonitor>(new BasicEventList<ProcessMonitor>()); // trying this instead of a basic event list, to provide a bit more thread-safety without all the hassle of locking myself.
 		// wrap the monitors list with a proxy that fires all updates on the EDT
 		// means that monitors can be added to the list from any thread, and the 
 		// UI will update correctluy.
-		final TransformedList proxyList = GlazedListsSwing.swingThreadProxyList(monitors);
-		components = new FunctionList(proxyList, new FunctionList.Function() {
-			public Object evaluate(final Object sourceValue) {
-			        return new ProcessMonitorDisplay((ProcessMonitor)sourceValue);			    
-			}
+		final EventList<ProcessMonitor> proxyList = GlazedListsSwing.swingThreadProxyList(monitors);
+		components = new FunctionList<ProcessMonitor,ProcessMonitorDisplay>(proxyList
+		        , new FunctionList.Function<ProcessMonitor,ProcessMonitorDisplay>() {
+		    public ProcessMonitorDisplay evaluate(final ProcessMonitor arg0) {
+		        return new ProcessMonitorDisplay(arg0);			                   
+		    }
 		});
         // make this a self-observing list.
-		final EventList observing = new ObservableElementList(components,new ObservableConnector());
+		final EventList<ProcessMonitorDisplay> observing = new ObservableElementList<ProcessMonitorDisplay>(components,new ObservableConnector<ProcessMonitorDisplay>());
 
 		// layout this list of beans of components to a panel
-		panel = new JEventListPanel(observing, new TrackerFormat());
+		panel = new JEventListPanel<ProcessMonitorDisplay>(observing, new TrackerFormat());
 		CSH.setHelpIDString(panel,"task.executionTracker");
 		panel.setElementColumns(1);
 
@@ -143,13 +143,13 @@ public class ExecutionTracker implements ListSelectionListener{
 	}
     
     private final ActivitiesManager acts;
-    private final EventList components;
+    private final EventList<ProcessMonitorDisplay> components;
  
-    private final ArrayList listeners = new ArrayList();
-    private final EventList monitors;
+    private final ArrayList<ShowDetailsListener> listeners = new ArrayList<ShowDetailsListener>();
+    private final EventList<ProcessMonitor> monitors;
 
 
-	private final JEventListPanel panel;
+	private final JEventListPanel<ProcessMonitorDisplay> panel;
 
     final UIComponent uiParent;
 
@@ -214,8 +214,8 @@ public class ExecutionTracker implements ListSelectionListener{
             return;
         }
         // go through the other items of the the list, and if the selection is non-null, clear it.
-        for (final Iterator i = components.iterator(); i.hasNext();) {
-            final ProcessMonitorDisplay proc = (ProcessMonitorDisplay) i.next();
+       
+        for ( final ProcessMonitorDisplay proc: components) {                      
             final NavigableFilesList list = proc.results;
             if (list == src) { 
                 continue;
@@ -233,8 +233,8 @@ public class ExecutionTracker implements ListSelectionListener{
 
     private void fireShowDetails(final ProcessMonitor pm) {
         final ShowDetailsEvent e= new ShowDetailsEvent(this,pm);
-        for (final Iterator i = listeners.iterator(); i.hasNext();) {
-            final ShowDetailsListener l = (ShowDetailsListener) i.next();
+        for (final Iterator<ShowDetailsListener> i = listeners.iterator(); i.hasNext();) {
+            final ShowDetailsListener l = i.next();
             l.showDetails(e);
         }
     } 
@@ -674,7 +674,7 @@ public final ProcessMonitor getMoitor() {
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Jul 16, 20075:49:58 PM
 	 */
-	private static class TrackerFormat extends JEventListPanel.AbstractFormat {
+	private static class TrackerFormat extends JEventListPanel.AbstractFormat<ProcessMonitorDisplay> {
 
 		public TrackerFormat() {
 			super("pref"// rows
@@ -685,14 +685,13 @@ public final ProcessMonitor getMoitor() {
 			);
 		}
 
-
-		public JComponent getComponent(final Object element, final int component) {
-			return ((ProcessMonitorDisplay)element).getComponent(component);
-		}
-
 		public int getComponentsPerElement() {
 		    return 1;
 		}
+
+        public JComponent getComponent(final ProcessMonitorDisplay arg0, final int component) {
+            return arg0.getComponent(component);          
+        }
 
 
 	}
