@@ -44,8 +44,7 @@ public class UIContextImplUnitTest extends TestCase {
 		monitor = createNiceMock(BackgroundWorkersMonitor.class);
         config = createNiceMock(Runnable.class); // expect these in test.
         about = createNiceMock(Runnable.class);
-        windowFactories = new HashMap();        
-        plasticList = new BasicEventList();
+        windowFactories = new HashMap();       
         cxt = new UIContextImpl(conf,exec,help,browser
 		        , createNiceMock(CacheFactory.class)
 		        ,createNiceMock(CommunityInternal.class)
@@ -54,7 +53,6 @@ public class UIContextImplUnitTest extends TestCase {
 		        ,monitor
 		        ,config
 		        ,about
-		        ,plasticList
 		        ,windowFactories
 		        ,"test"
 		        ,null
