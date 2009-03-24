@@ -145,7 +145,18 @@
                 <version-held>2008-04-14</version-held>   
             </properties>
         </dependency>
-                <!--
+        <!--  SAMP -->
+        <dependency>
+            <groupId>jsamp</groupId>
+            <artifactId>jsamp</artifactId>
+            <version>0.3</version>
+            <url>http://deployer.astrogrid.org/software/jsamp</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+       <!--
         *******************************
          container system - hivemind     -->
         <!--  don't plan to strip these - too important - and all used.-->
