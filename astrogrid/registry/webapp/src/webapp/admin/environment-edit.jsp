@@ -1,4 +1,8 @@
-<%@page contentType="text/html"%>
+<%@ page import="org.astrogrid.config.SimpleConfig,
+      			 org.astrogrid.registry.server.http.servlets.helper.JSPHelper"
+   isThreadSafe="false"
+   session="false"
+%>
 <%@taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
 
 <html>
@@ -11,9 +15,29 @@
 <body>
 <%@ include file="/style/header.xml" %>
 <%@ include file="/style/navigation.xml" %>
+<jsp:useBean class="org.astrogrid.common.j2ee.environment.Environment" 
+    id="environment" scope="application"/>
 
 <div id='bodyColumn'>
 <h1>Editing environment entries</h1>
+<p>
+<font color='blue'>
+<%
+String contextFile = SimpleConfig.getSingleton().getString("reg.custom.contextFile", "");
+
+if(contextFile == null || contextFile.trim().length() == 0) {
+File confLocalhost = new File(System.getProperty("catalina.home"), "conf/Catalina/localhost");
+contextFile = new File(confLocalhost, environment.getTomcatContextFileName()).toString();
+out.write("Your contextFile is located here:" + contextFile + "if this is not right then " +
+"please go to WEB-INF/classes/astrogrid.properties and edit reg.custom.contextFile to " +
+"a full path including filename");
+}
+
+%>
+
+</font>
+
+</p>
 <p>
 These are the environment entries for the current web-application.
 </p>
@@ -35,8 +59,6 @@ and then follow the instructions on the next page.
 <dl>
 
 <c:set var="avoid" value="cea.component.manager.class"/>
-<jsp:useBean class="org.astrogrid.common.j2ee.environment.Environment" 
-    id="environment" scope="application"/>
 <%
 org.astrogrid.common.j2ee.environment.EnvEntry[] entries = environment.getEnvEntry();
 pageContext.setAttribute("entries", entries);

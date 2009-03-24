@@ -69,7 +69,7 @@
 		
 		out.write("Select Date (w. year scrl.):");
 		out.write("<input type=\'text\' name=\'input1\' value=''>");
-		out.write("<a href=\"javascript:cal1.popup();\"><img src=\"img/cal.gif\" width=\"16\" height=\"16\" border=\"0\" alt=\"Click Here to Pick up the date\"></a><br>");
+		out.write("<a href=\"javascript:cal1.popup();\"><img src=\"images/cal.gif\" width=\"16\" height=\"16\" border=\"0\" alt=\"Click Here to Pick up the date\"></a><br>");
 		
 		
       out.write("<table border=1>");
