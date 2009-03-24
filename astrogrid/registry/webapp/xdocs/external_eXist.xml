@@ -29,11 +29,11 @@
 			other info on installing such as on headless systems. <br />
 		    Once installed here are some things to be customized for the astrogrid registry:
 		    <ul>
-		    	<li>in the bin/startup.sh (or startup.bat) you will see a -Xmx128000k advise to change to a higher memorry setting if you are to hold
-		    	many entries such as -Xmx500M for 500mb.  Memory is not much of an issue as much with its now streaming api service, but advised to increase.</li>
-		    	<li>in EXIST_HOME/conf.xml you will find two attributes that need to change:  caseSensitive needs to go to "no" and match-tagging-elements goes to "no"</li>		    	
+		        <li>in the bin/functions.d/eXist-settings.sh set set_exist_options() to have a -Xmx400M for 400mb memory. Only neede for Full Registries
+		        *For windows change the 128000k to 400M in the startup.bat. Memory is not much of an issue as much with its now streaming api service, but advised to increase.
+		        </li>
 		    	<li>Finally remember much like the above instructions to change your xmldb.uri JNDI property to your eXist and by default eXist runs on port 8080 this can be changed
-		    	at EXIST_HOME/tools/jetty/etc/jetty.xml</li>
+		    	at EXIST_HOME/tools/jetty/etc/jetty.xml you can change the 8080 to 6080 for instance</li>
 		   </ul>
 <br />
 		</p>

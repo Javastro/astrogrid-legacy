@@ -15,7 +15,7 @@
     </p>    
       <p>
 		eXist is a native XML database used by the registry to store its metadata in a xml format and to peform XQuery operations to retrieve the metadata.
- You can find all the information about exist <a href="http://exist.sourceforge.net/">here</a>.  Below you will find sections about 
+ You can find all the information about exist <a href='http://exist.sourceforge.net/'>here</a>.  Below you will find sections about 
  information about eXist and how it works with the Registry.
       </p>
       <subsection name="eXist embedded (Moving your Data Out)">
@@ -39,12 +39,14 @@
 	  <subsection name="Making backups and upgrades">
 		<p>
 			I thought this deserved a special section to make attention to this small fact.  eXist stores all its information in a directory
-called "data".  In embed mode you will find it in the {context name}/WEB-INF/data (if you did not move the data directory out).  In external it is the same WEB-INF/data.  It can sometimes
+called "data".  In embed mode you will find it in the {context name}/WEB-INF/data (if you did not move the data directory out (see above)).  In external it is the same EXIST_HOME/webapp/WEB-INF/data.  It can sometimes
 be advisable to make a backup of this directory ever now and then.  No matter how badly something happens to eXist restoring this directory will put
 everything correct again.<br />
-			*It is still advisable via the client gui to make regular backups of the actual contents of the database (the xml files).  Espcially for
-			astrogrid registries with the bundled eXist because the database binaries "may" change in the future although rarely making it not 
-			accessible for your current database, in those situations a backup and restore of the content is required.
+            To make backups of the xml files which is also good you can do this in a number of ways.
+            1.) eXist provides a client GUI to allow you to do many things internally to your db including backups and restores.  You should be able to
+            click on the 'Launch' button located at <a href='http://exist.sourceforge.net/'>eXist</a>
+            2.) commandline.  You will find a backupandrestore.{sh/bat} scripts bundled for embedded eXist located in WEB-INF. Or found
+            here: <a href='http://exist.sourceforge.net/backup.html'>Info</a>  For embedded users the -ouri parameter will be xmldb:exist://{server}:{port}/{registry context}/xmlrpc
 		</p>
 	  </subsection>
     </section>
