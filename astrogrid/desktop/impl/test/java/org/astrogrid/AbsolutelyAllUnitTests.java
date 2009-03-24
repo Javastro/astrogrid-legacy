@@ -10,6 +10,7 @@ import junit.framework.TestSuite;
 import org.astrogrid.desktop.modules.ag.vfs.AllVfsUnitTests;
 import org.astrogrid.desktop.modules.auth.AllAuthUnitTests;
 import org.astrogrid.desktop.modules.system.AllSystemUnitTests;
+import org.astrogrid.desktop.modules.system.messaging.AllMessagingUnitTests;
 import org.astrogrid.desktop.modules.system.ui.AllSystemUiUnitTests;
 import org.astrogrid.desktop.modules.ui.AllUIUnitTests;
 import org.astrogrid.desktop.modules.ui.actions.AllActionsUnitTests;
@@ -66,6 +67,7 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(AllVoexplorerUnitTests.suite());
 		suite.addTest(AllScopeUnitTests.suite());
 		suite.addTest(AllActionsUnitTests.suite());
+		suite.addTest(AllMessagingUnitTests.suite());
 		return suite;
 	}
 
