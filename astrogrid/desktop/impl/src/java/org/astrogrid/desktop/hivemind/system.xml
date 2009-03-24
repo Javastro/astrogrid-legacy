@@ -59,7 +59,7 @@ System module.
 		<load service-id="snitch" />
 		<load service-id="executor" />
 		<load service-id="configuration" />
-		<load service-id="tupperware" />
+		<load service-id="messaging" />
 	</contribution>
 
 	
@@ -952,9 +952,15 @@ MAC SETUP
         interface="org.astrogrid.desktop.modules.system.messaging.Messaging">
             <invoke-factory>
                 <construct class="org.astrogrid.desktop.modules.system.messaging.PlasticOnlyMessagingImpl">
+                    <service>tupperware</service>
                 </construct>
             </invoke-factory>
     </service-point>
+  
+      <contribution configuration-id="scheduledTasks">
+        <object>service:messaging</object>
+        <!-- connects to hubs, etc. called as a scheduled task to remove cyclic deps. -->
+    </contribution>
   
     <!--  list of known message types -->
     <configuration-point id="messageTypes" schema-id="objects">
@@ -985,7 +991,7 @@ MAC SETUP
 	TUPPERWARE - Client side of PLASTIC
 	 -->
 	<service-point id="tupperware"
-		interface="org.apache.xmlrpc.XmlRpcHandler"
+		interface="org.astrogrid.desktop.modules.system.messaging.TupperwareInternal"
         visibility="private"
         >
 		Plastic wrapper that allows other components to send and handle plastic messages.

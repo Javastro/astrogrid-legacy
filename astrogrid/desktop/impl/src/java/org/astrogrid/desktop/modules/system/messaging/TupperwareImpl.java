@@ -125,16 +125,8 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
 		        ,this
 		        ,null));
 		
-		this.supportedMessages = new HashSet(plasticHandler.getHandledMessages());
-		
+		this.supportedMessages = new HashSet(plasticHandler.getHandledMessages());		
 		logger.info("Will handle messages:" + supportedMessages);
-		
-		//@todo this auto-starts the hub. need to refactor this out.
-	    if (PlasticUtils.isHubRunning()) {
-	        connect.actionPerformed(null);
-	    } else {
-	        startInternal.actionPerformed(null);
-	    }	
 	}
 
 	private final ConnectAction connect = new ConnectAction();

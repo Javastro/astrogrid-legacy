@@ -322,11 +322,7 @@ public class UIContextImpl implements UIContext{
         final JMenu interopMenu = new JMenu();
         interopMenu.setText("Interop");
         interopMenu.setMnemonic(KeyEvent.VK_I);
-//@FIXME - plug these operations back in again.        
-//        interopMenu.add(messaging.connectAction());
-//        interopMenu.add(messaging.disconnectAction());
-//        interopMenu.add(new JSeparator());
-//        interopMenu.add(messaging.startInternalHubAction());
+        messaging.populateInteropMenu(interopMenu);
         return interopMenu;
     }
     

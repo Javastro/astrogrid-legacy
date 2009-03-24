@@ -3,6 +3,10 @@
  */
 package org.astrogrid.desktop.modules.system.messaging;
 
+import javax.swing.JMenu;
+
+import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
+
 import ca.odell.glazedlists.EventList;
 
 
@@ -11,21 +15,19 @@ import ca.odell.glazedlists.EventList;
  *  - Plastic, SAMP, or a Plastic+SAMP hybrid
  *  All other VODesktop code should just use the facilities of this interface - not the underlying plastic, samp or tupperware classes.
  *  @todo factor out part of this into an abstract messaging API for AR. 
+ *  
+ *  delayed continuation used as a parent class - used for initialization / connect-to-hub code
+ *  
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 12, 200911:42:02 AM
  */
-public interface Messaging {
+public interface Messaging extends DelayedContinuation {
     
     /** event list of all known targets */
     EventList<ExternalMessageTarget> getTargetList();
    
-    // connect / disconnect internal and external hubs.
-    // maybe should just have a 'connect' and 'disconnect' action
-    // and let internal logic work out wha'ts the right thing to do.
-    
-    // finally - message handling.
-    // not that we handle many messages really.
-    // add strong-typed 'resource set received' interfaces later 
-    
+    /** adds appropriate connect / disconnect messages to the interop menu */
+    void populateInteropMenu(JMenu interopMenu);
+
     
 }
