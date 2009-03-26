@@ -38,7 +38,7 @@ public abstract class MessageType<S extends MessageSender> {
      * 
      * @return null if this message cannot be sent via SAMP
      */
-    protected abstract S createSampSender(Object somethingSamp);
+    protected abstract S createSampSender(SampMessageTarget somethingSamp);
     
     protected abstract MessageUnmarshaller<S> createPlasticUnmarshaller();
     

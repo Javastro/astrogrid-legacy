@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
  * @modified - made package-private, hid behind facade of MessageTarget
  * @since Jun 16, 20061:19:37 PM
  */
-class PlasticApplicationDescription extends AbstractMessageTarget implements ExternalMessageTarget {
+public class PlasticApplicationDescription implements ExternalMessageTarget {
     /**
      * Logger for this class
      */
@@ -30,7 +30,7 @@ class PlasticApplicationDescription extends AbstractMessageTarget implements Ext
     private final String name;
     private final ImageIcon icon;
     private final String description;
-
+    private final Set<MessageType<?>> mtypes;
     private final TupperwareInternal tupperware;
 
     
@@ -41,7 +41,7 @@ class PlasticApplicationDescription extends AbstractMessageTarget implements Ext
             , final Set<MessageType<?>> mtypes
             ,final ImageIcon icon
             ,final TupperwareInternal tupperware) {
-        super((Set<MessageType<?>>)SetUtils.unmodifiableSet(mtypes)); // never change for a plastic application.
+        this.mtypes = (Set<MessageType<?>>)SetUtils.unmodifiableSet(mtypes); // never change for a plastic application.
         this.id = id;
         this.name = name;       
         this.description = description;
@@ -79,7 +79,17 @@ public String toString() {
     public ImageIcon getIcon() {
         return icon;
     }
+    
+    public final Set<MessageType<?>> acceptedMessageTypes() {
+        return mtypes;
+    }
 
+    public final boolean accepts(final MessageType<?> type) {
+        return mtypes.contains(type);
+    }
+
+
+    @Override
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
@@ -88,6 +98,7 @@ public String toString() {
     }
 
     /** equality is defined on {@link #getId} */
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;

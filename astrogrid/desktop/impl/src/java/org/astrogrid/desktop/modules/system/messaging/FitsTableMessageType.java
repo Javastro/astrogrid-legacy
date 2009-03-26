@@ -11,6 +11,10 @@ import java.net.URI;
  */
 public final class FitsTableMessageType extends MessageType<FitsTableMessageSender> {
 
+    /**
+     * 
+     */
+    private static final String SAMP_MTYPE = "table.load.fits";
     private final static FitsTableMessageType instance = new FitsTableMessageType();
     
     @Override
@@ -25,7 +29,7 @@ public final class FitsTableMessageType extends MessageType<FitsTableMessageSend
     }
 
     @Override
-    protected FitsTableMessageSender createSampSender(final Object somethingSamp) {
+    protected FitsTableMessageSender createSampSender(final SampMessageTarget somethingSamp) {
         throw new UnsupportedOperationException();
     }
 
@@ -41,7 +45,7 @@ public final class FitsTableMessageType extends MessageType<FitsTableMessageSend
 
     @Override
     protected String getSampMType() {
-        return null; //@implement
+        return SAMP_MTYPE;
     }
 
 }

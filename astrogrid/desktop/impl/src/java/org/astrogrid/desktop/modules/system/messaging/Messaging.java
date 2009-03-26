@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
 
-import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.CompositeList;
 
 
 
@@ -24,7 +24,7 @@ import ca.odell.glazedlists.EventList;
 public interface Messaging extends DelayedContinuation {
     
     /** event list of all known targets */
-    EventList<ExternalMessageTarget> getTargetList();
+    CompositeList<ExternalMessageTarget> getTargetList();
    
     /** adds appropriate connect / disconnect messages to the interop menu */
     void populateInteropMenu(JMenu interopMenu);

@@ -12,8 +12,7 @@ import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuatio
 import org.joda.time.Duration;
 
 import uk.ac.starlink.plastic.PlasticUtils;
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.CompositeList;
 
 /** Implementation of messaging that only supports plastic.
  * Relies on tupperwareImpl being around to do the heavy lifting.
@@ -21,19 +20,18 @@ import ca.odell.glazedlists.EventList;
  * @since Mar 13, 20096:52:11 PM
  */
 public class PlasticOnlyMessagingImpl implements Messaging {
-    private final TupperwareInternal tupperware;
+    protected final TupperwareInternal tupperware;
 
     /**
-     * @param internalHub
      */
     public PlasticOnlyMessagingImpl(final TupperwareInternal tupp) {
         super();
         this.tupperware = tupp;
     }
 
-    private final EventList<ExternalMessageTarget> targetList = new BasicEventList<ExternalMessageTarget>();
+    private final CompositeList<ExternalMessageTarget> targetList = new CompositeList<ExternalMessageTarget>();
     
-    public EventList<ExternalMessageTarget> getTargetList() {
+    public CompositeList<ExternalMessageTarget> getTargetList() {
         return targetList;
     }
     

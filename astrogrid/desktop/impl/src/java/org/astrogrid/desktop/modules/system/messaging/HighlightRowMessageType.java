@@ -11,6 +11,10 @@ import java.net.URI;
  */
 public final class HighlightRowMessageType extends MessageType<HighlightRowMessageSender> {
 
+    /**
+     * 
+     */
+    private static final String SAMP_MTYPE = "table.highlight.row";
     private static final HighlightRowMessageType instance = new HighlightRowMessageType();
     private static final URI PLASTIC_MESSAGE = URI.create("ivo://votech.org/votable/highlightObject");
     @Override
@@ -25,7 +29,7 @@ public final class HighlightRowMessageType extends MessageType<HighlightRowMessa
     }
 
     @Override
-    protected HighlightRowMessageSender createSampSender(final Object somethingSamp) {
+    protected HighlightRowMessageSender createSampSender(final SampMessageTarget somethingSamp) {
         throw new UnsupportedOperationException();
     }
 
@@ -41,7 +45,7 @@ public final class HighlightRowMessageType extends MessageType<HighlightRowMessa
 
     @Override
     protected String getSampMType() {
-        return null; //@implement
+        return SAMP_MTYPE;
     }
 
 }

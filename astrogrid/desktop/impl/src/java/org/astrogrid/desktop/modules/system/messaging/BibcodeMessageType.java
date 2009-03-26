@@ -5,18 +5,24 @@ package org.astrogrid.desktop.modules.system.messaging;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.astrogrid.samp.Message;
+import org.astrogrid.samp.client.HubConnection;
+import org.astrogrid.samp.client.SampException;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 15, 20093:02:01 PM
- * @implement
  */
 public final class BibcodeMessageType extends MessageType<BibcodeMessageSender> {
     private static final URI PASTIC_BIBCODE_MESSAGE = URI.create("ivo://votech.org/bibcode");
 
+    private static final String SAMP_BIBCODE_MESSAGE = "bibcode.load";
+    
     public final static BibcodeMessageType instance = new BibcodeMessageType();
 
     
@@ -25,8 +31,8 @@ public final class BibcodeMessageType extends MessageType<BibcodeMessageSender> 
         return new PlasticSenderImpl(plas);
     }
     @Override
-    protected BibcodeMessageSender createSampSender(final Object somethingSamp) {
-        return null; //@implement
+    protected BibcodeMessageSender createSampSender(final SampMessageTarget somethingSamp) {
+        return new SampSender(somethingSamp);
     }
     
     @Override
@@ -36,7 +42,7 @@ public final class BibcodeMessageType extends MessageType<BibcodeMessageSender> 
 
     @Override
     protected String getSampMType() {
-        return null; //@implement
+        return SAMP_BIBCODE_MESSAGE;
     }
     
     @Override
@@ -55,7 +61,6 @@ public final class BibcodeMessageType extends MessageType<BibcodeMessageSender> 
                     }
                     handler.setSource(source);
                     handler.sendBibcode(bibcode);
-                    //@todo worrk out how to get return value.
                     return Boolean.TRUE;
                 }
             }
@@ -64,9 +69,46 @@ public final class BibcodeMessageType extends MessageType<BibcodeMessageSender> 
     
     @Override
     protected MessageUnmarshaller<BibcodeMessageSender> createSampUnmarshaller() {
-        return null; //@implement
+        return new MessageUnmarshaller<BibcodeMessageSender>() {
+
+            public Object handle(final ExternalMessageTarget source, final List rawInputs,
+                    final BibcodeMessageSender handler) throws Exception {
+                // look through inputs, one of which shuld be called 'bibcode'.
+                String bibcode = null;
+                for (final Map.Entry<?,?> e : (List<Map.Entry<?,?>>)rawInputs) {
+                    if ("bibcode".equals(e.getKey())) {
+                        bibcode = e.getValue().toString();
+                    }
+                }
+                if (bibcode == null) {
+                    throw new IllegalArgumentException("No 'bibcode' parameter provided");
+                }
+                handler.setSource(source);
+                handler.sendBibcode(bibcode);
+                return null;
+            }
+        };
     }    
     
+    private class SampSender extends AbstractMessageSender implements BibcodeMessageSender {
+
+        public SampSender(final SampMessageTarget t) {
+            super(t);
+        }
+
+        public void sendBibcode(final String bibcode) {
+            final SampMessageTarget t = (SampMessageTarget)getTarget();            
+            try {
+                final HubConnection connection = t.getHubConnector().getConnection();
+                final Map params = new HashMap();
+                params.put("bibcode",bibcode);              
+                final Message msg = new Message(SAMP_BIBCODE_MESSAGE,params);
+                connection.notify(t.getId(),msg);
+            } catch (final SampException x) {
+               throw new RuntimeException(x);
+            }            
+        }
+    }
 
     private class PlasticSenderImpl extends AbstractMessageSender implements BibcodeMessageSender {
 
@@ -89,10 +131,6 @@ public final class BibcodeMessageType extends MessageType<BibcodeMessageSender> 
         }
 
     }
-
-  
-
-
 
 
 }

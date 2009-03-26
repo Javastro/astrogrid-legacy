@@ -55,6 +55,7 @@ import org.votech.plastic.incoming.messages.hub.HubListener;
 import uk.ac.starlink.plastic.PlasticUtils;
 import uk.ac.starlink.plastic.XmlRpcAgent;
 import uk.ac.starlink.plastic.XmlRpcHub;
+import ca.odell.glazedlists.CompositeList;
 import ca.odell.glazedlists.EventList;
 
 /** Implementation of the tupperware container.
@@ -93,7 +94,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
 	        , final URL clientEndpoint
 	        , final List<MessageTarget> internalTargets
 	        , final List<MessageType<?>> knownTypes
-	        , final EventList<ExternalMessageTarget> model
+	        , final CompositeList<ExternalMessageTarget> allTargets
 	        ,final PlasticHubListenerInternal internalHub
 	        ,final HttpClient httpClient
 	        ) throws IOException {
@@ -105,7 +106,8 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
         this.allKnownMessages = knownTypes;
         this.httpClient = httpClient;
         this.xmlrpcClientEndpoint = new URL(clientEndpoint.toString() + "xmlrpc");
-		this.model = model;
+		this.plasticTargets = allTargets.createMemberList();
+		allTargets.addMemberList(this.plasticTargets);
         this.internalHub = internalHub;
         
         // build the plastic handler chain.
@@ -133,7 +135,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
 	private final DisconnectAction disconnect = new DisconnectAction();
 	/** reference to the hub we've connected to */
 	private ArXmlRpcHub hub;
-	private final EventList<ExternalMessageTarget>  model;
+	private final EventList<ExternalMessageTarget>  plasticTargets;
 	private URI myPlasticId;
 	private final UIContext parent;
 	private final MessageHandler plasticHandler;
@@ -210,7 +212,7 @@ public Object perform(final URI arg0, final URI arg1, final List arg2) {
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 16, 20091:54:33 PM
  */
-public class InternalMessageTargetMessageHandler extends AbstractMessageHandler {
+private class InternalMessageTargetMessageHandler extends AbstractMessageHandler {
 
     private final List<URI> localMessages = new ArrayList<URI>();
     private final List<MessageTarget> internalTargets;
@@ -226,7 +228,9 @@ public class InternalMessageTargetMessageHandler extends AbstractMessageHandler 
        }
        // ok. msgs now contains union of all supported messages.
        for(final MessageType<?> mt : msgs) {
-           localMessages.add(mt.getPlasticMessageType());
+           if (mt.getPlasticMessageType() != null) {
+               localMessages.add(mt.getPlasticMessageType());
+           }
        }
     }
     
@@ -251,7 +255,7 @@ public class InternalMessageTargetMessageHandler extends AbstractMessageHandler 
                      ExternalMessageTarget source = null;
                      if (sender != null) {
                          final String senderID = sender.toString();
-                         for(final ExternalMessageTarget mt : model) {
+                         for(final ExternalMessageTarget mt : plasticTargets) {
                              if (mt.getId().equals(senderID)) {
                                  source = mt;
                                  break;
@@ -285,7 +289,7 @@ public class InternalMessageTargetMessageHandler extends AbstractMessageHandler 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 16, 20091:53:42 PM
  */
-public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler {
+private class ApplicationRegisteredMessageHandler extends AbstractMessageHandler {
 
 	private final List<URI> dynamicButtonMessages = new ArrayList<URI>() {
 	    {// init
@@ -348,16 +352,16 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
      */
     public void removePlasticApp(final URI id) {      
         try {
-            model.getReadWriteLock().writeLock().lock();
-            	for (int i = 0; i < model.size(); i++) {
-            		final ExternalMessageTarget pad = model.get(i);
+            plasticTargets.getReadWriteLock().writeLock().lock();
+            	for (int i = 0; i < plasticTargets.size(); i++) {
+            		final ExternalMessageTarget pad = plasticTargets.get(i);
             		if (pad.getId().equals(id.toString())) {
-            			model.remove(i);
+            			plasticTargets.remove(i);
             			return;
             		}
             	}
         } finally {
-            model.getReadWriteLock().writeLock().unlock();
+            plasticTargets.getReadWriteLock().writeLock().unlock();
         }
     }
 
@@ -432,7 +436,8 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 
                 public boolean evaluate(final Object arg0) {
                     final MessageType mt = (MessageType)arg0;                    
-                    return appMsgList.contains(mt.getPlasticMessageType());
+                    return mt.getPlasticMessageType() != null
+                        && appMsgList.contains(mt.getPlasticMessageType());
                 }
 		    }, supportedTypes);
 		    
@@ -446,12 +451,12 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 		             ,TupperwareImpl.this
 		             );
 		     try {
-		    	 model.getReadWriteLock().writeLock().lock();
-			if (! model.contains(result)) {  // would be odd if it did already contain it.
-				model.add(result); // this should fire notifications, etc.
+		    	 plasticTargets.getReadWriteLock().writeLock().lock();
+			if (! plasticTargets.contains(result)) {  // would be odd if it did already contain it.
+				plasticTargets.add(result); // this should fire notifications, etc.
 			}          
 		     } finally {
-		    	 model.getReadWriteLock().writeLock().unlock();
+		    	 plasticTargets.getReadWriteLock().writeLock().unlock();
 		     }
 	            setProgress(++progress,opCount);
 			return null;
@@ -544,10 +549,10 @@ private class DisconnectAction extends AbstractAction {
             
         }.start();
         try {
-            model.getReadWriteLock().writeLock().lock();
-            model.clear();
+            plasticTargets.getReadWriteLock().writeLock().lock();
+            plasticTargets.clear();
         } finally {
-            model.getReadWriteLock().writeLock().unlock();
+            plasticTargets.getReadWriteLock().writeLock().unlock();
         }
     }
 }
@@ -581,7 +586,7 @@ private class StartInternalHubAction extends AbstractAction {
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 19, 20081:34:07 PM
  */
-final class ArXmlRpcHub extends XmlRpcHub {
+private final class ArXmlRpcHub extends XmlRpcHub {
     
     private boolean silent = false;
     /**
@@ -651,10 +656,10 @@ public void hubStopping() {
             myPlasticId = null;
             hub = null;
             try {
-                model.getReadWriteLock().writeLock().lock();
-                model.clear();
+                plasticTargets.getReadWriteLock().writeLock().lock();
+                plasticTargets.clear();
             } finally {
-                model.getReadWriteLock().writeLock().unlock();
+                plasticTargets.getReadWriteLock().writeLock().unlock();
             }            
         }
     });

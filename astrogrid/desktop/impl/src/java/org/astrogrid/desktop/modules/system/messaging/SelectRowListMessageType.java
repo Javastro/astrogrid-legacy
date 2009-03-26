@@ -13,6 +13,10 @@ import org.votech.plastic.CommonMessageConstants;
  */
 public final class SelectRowListMessageType extends MessageType<SelectRowListMessageSender> {
 
+    /**
+     * 
+     */
+    private static final String SAMP_MTYPE = "table.select.rowList";
     public static final SelectRowListMessageType instance = new SelectRowListMessageType();
     
     @Override
@@ -27,7 +31,7 @@ public final class SelectRowListMessageType extends MessageType<SelectRowListMes
     }
 
     @Override
-    protected SelectRowListMessageSender createSampSender(final Object somethingSamp) {
+    protected SelectRowListMessageSender createSampSender(final SampMessageTarget somethingSamp) {
         throw new UnsupportedOperationException();
     }
 
@@ -43,7 +47,7 @@ public final class SelectRowListMessageType extends MessageType<SelectRowListMes
 
     @Override
     protected String getSampMType() {
-        return null; //@implement
+        return SAMP_MTYPE;
     }
 
 }

@@ -11,6 +11,10 @@ import java.net.URI;
  */
 public final class PointAtSkyMessageType extends MessageType<PointAtSkyMessageSender> {
 
+    /**
+     * 
+     */
+    private static final String SAMP_MTYPE = "coord.pointAt.sky";
     private final static PointAtSkyMessageType instance = new PointAtSkyMessageType();
     private static final URI PLASTIC_MESSAGE = URI.create("ivo://votech.org/sky/pointAtCoords");
     @Override
@@ -25,7 +29,7 @@ public final class PointAtSkyMessageType extends MessageType<PointAtSkyMessageSe
     }
 
     @Override
-    protected PointAtSkyMessageSender createSampSender(final Object somethingSamp) {
+    protected PointAtSkyMessageSender createSampSender(final SampMessageTarget somethingSamp) {
         throw new UnsupportedOperationException();
     }
 
@@ -41,7 +45,7 @@ public final class PointAtSkyMessageType extends MessageType<PointAtSkyMessageSe
 
     @Override
     protected String getSampMType() {
-        return null; //@implement
+        return SAMP_MTYPE;
     }
 
 }
