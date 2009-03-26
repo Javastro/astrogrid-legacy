@@ -136,7 +136,8 @@ private final QueryBuilderInternal t;
 	            return null;
 	        }	   
 	
-	public void actionPerformed(final ActionEvent e) {
+	@Override
+    public void actionPerformed(final ActionEvent e) {
 	    final List resources = computeInvokableResources();
 	    switch(resources.size()) {
 	        case 0:
@@ -168,12 +169,14 @@ private final QueryBuilderInternal t;
 
 	 // can't operate on more than one file.
 	// ponder - should we open each selected adql file in a new viewer?
-	public void manySelected(final FileObject[] l) {
+	@Override
+    public void manySelected(final FileObject[] l) {
 		noneSelected();
 	}
 
 	// accept a single adql file.
-	public boolean invokable(final FileObject fo) {
+	@Override
+    public boolean invokable(final FileObject fo) {
 	    try {
 	        if (fo.getType().hasContent()) {
 	            final String mime = fo.getContent().getContentInfo().getContentType();
@@ -189,7 +192,8 @@ private final QueryBuilderInternal t;
 	}
 	
 	// accept a single database schema, or a single queriable service.
-	public boolean invokable(final Resource resource) {
+	@Override
+    public boolean invokable(final Resource resource) {
 		return
 		        (resource instanceof CatalogService && resource instanceof CeaService)
 		    ||
@@ -198,7 +202,8 @@ private final QueryBuilderInternal t;
 	}
 
 	// accept if any in selection are database schema.
-	public void someSelected(final Resource[] list) {
+	@Override
+    public void someSelected(final Resource[] list) {
 		noneSelected();
 		// later - support multi-query later
 

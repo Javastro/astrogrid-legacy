@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.19 2009/03/04 18:43:10 nw Exp $
+/*$Id: StapImpl.java,v 1.20 2009/03/26 18:04:13 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -148,6 +148,7 @@ public class StapImpl extends DALImpl implements Stap {
 		return "type = Time";
 	}
 
+    @Override
     protected URL findAccessURL(final Service s) throws InvalidArgumentException {
         if (s instanceof StapService) {
             final StapCapability cap = ((StapService)s).findStapCapability();
@@ -188,6 +189,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.20  2009/03/26 18:04:13  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.19  2009/03/04 18:43:10  nw
 Complete - taskMove DAL over to VFS
 

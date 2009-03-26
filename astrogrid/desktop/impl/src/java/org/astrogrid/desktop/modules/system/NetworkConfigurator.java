@@ -75,6 +75,7 @@ public class NetworkConfigurator implements Runnable {
         props.setProperty("proxyPort", port);
     }
 
+    @Override
     public String toString() {
         return new StringBuffer()
               .append("proxyHost: ")

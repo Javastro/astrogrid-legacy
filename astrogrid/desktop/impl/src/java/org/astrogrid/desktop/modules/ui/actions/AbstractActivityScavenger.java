@@ -62,7 +62,8 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 	 * this method will be called to populate the chldren list lazily.*/
     protected abstract void loadChildren();
 
-	public void addTo(final JTaskPaneGroup grp) {
+	@Override
+    public void addTo(final JTaskPaneGroup grp) {
 		if (! loaded) {
 			loadChildren();
 			loaded =true;
@@ -70,7 +71,8 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		new EventListTaskPaneGroupManager(grp,getChildren());
 	}
 
-	public void addTo(final JTaskPaneGroup grp,final int pos) {
+	@Override
+    public void addTo(final JTaskPaneGroup grp,final int pos) {
 		if (! loaded) {
 			loadChildren();
 			loaded =true;
@@ -78,7 +80,8 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		new EventListTaskPaneGroupManager(grp,getChildren(),pos);
 	}
 	
-	public void addTo(final JMenu menu) {
+	@Override
+    public void addTo(final JMenu menu) {
 		if (! loaded) {
 			loadChildren();
 			loaded = true;
@@ -86,7 +89,8 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
         new EventListMenuManager(createNewMenuItemList(false),menu,false); 		
 	}
 	
-	public void addTo(final JPopupMenu menu) {
+	@Override
+    public void addTo(final JPopupMenu menu) {
 		if (! loaded) {
 			loadChildren();
 			loaded = true;
@@ -110,7 +114,8 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 
 	private boolean loaded = false;
 	
-	public void noneSelected() {
+	@Override
+    public void noneSelected() {
 		latest= null;
 		for (final Iterator i = getChildren().iterator(); i.hasNext();) {
 			final Activity a = (Activity) i.next();
@@ -118,7 +123,8 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		}
 	}
 
-	public void selected(final Transferable t) {
+	@Override
+    public void selected(final Transferable t) {
 		latest = t;
 		for (final Iterator i = getChildren().iterator(); i.hasNext();) {
 			final Activity a = (Activity) i.next();

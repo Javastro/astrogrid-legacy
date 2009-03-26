@@ -59,7 +59,8 @@ public class Folder {
 		 * @return the String representation
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append(StringUtils.substringAfterLast(this.getClass().getName(),"."));
 			buffer.append("[");
@@ -69,6 +70,7 @@ public class Folder {
 			return buffer.toString();
 		}
 
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -79,6 +81,7 @@ public class Folder {
         return result;
     }
 
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;

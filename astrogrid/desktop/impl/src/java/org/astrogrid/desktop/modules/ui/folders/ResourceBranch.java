@@ -33,14 +33,17 @@ public class ResourceBranch extends ResourceFolder {
         this("New Container");
     }
 
+    @Override
     public void display(RegistryGooglePanel p) {
         p.clear();
     }
 
+    @Override
     public void edit(VOExplorerImpl voe) {
         // no action - best disabled
     }
 
+    @Override
     public void editAsNew(VOExplorerImpl voe) {
         voe.editNewResourceBranch(this);
     }

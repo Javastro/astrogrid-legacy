@@ -78,6 +78,7 @@ public class SearchField extends JTextField {
     private void initBorder() {
         new CancelBorder(){
 
+            @Override
             public void buttonActivated(MouseEvent e) {
                     cancel();
                 }                
@@ -87,6 +88,7 @@ public class SearchField extends JTextField {
     
     private void initKeyListener() {
         addKeyListener(new KeyAdapter() {
+            @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     cancel();
@@ -130,10 +132,12 @@ public class SearchField extends JTextField {
             this.image = IconHelper.loadIcon("search16.png").getImage();
         }
 
+        @Override
         public void paintBorder(Component c, Graphics g, int x, int y,
                 int width, int height) {
             g.drawImage(image,x,y,c);
         }
+        @Override
         public void buttonActivated(MouseEvent e) {
             // do nothing
         }

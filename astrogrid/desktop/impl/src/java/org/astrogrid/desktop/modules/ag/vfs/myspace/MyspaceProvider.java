@@ -83,11 +83,13 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 	}
 	
 	FileSystemConfigBuilder builder = new MyspaceConfigBuilder();
-	public FileSystemConfigBuilder getConfigBuilder() {
+	@Override
+    public FileSystemConfigBuilder getConfigBuilder() {
 		return builder;
 	}
 
-	protected FileSystem doCreateFileSystem(final FileName arg0,
+	@Override
+    protected FileSystem doCreateFileSystem(final FileName arg0,
 			final FileSystemOptions arg1) throws FileSystemException {
 		final MyspaceFileName fn = (MyspaceFileName)arg0;
 

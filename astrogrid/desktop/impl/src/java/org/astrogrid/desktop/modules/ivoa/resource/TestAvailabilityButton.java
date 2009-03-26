@@ -47,9 +47,11 @@ public class TestAvailabilityButton extends ResourceDisplayPaneEmbeddedButton im
         setIcon(IconHelper.loadIcon("loader.gif"));        
         (new BackgroundWorker(uiParent,"Checking availability of " + r.getTitle()) {
 
+            @Override
             protected Object construct() throws Exception {
                 return displayPane.getAvailabilityTester().checkAvailability(r.getId());                
             }
+            @Override
             protected void doFinished(final Object result) {
                 final VosiAvailabilityBean b = (VosiAvailabilityBean)result;
                 if (b.isAvailable()) {
@@ -83,6 +85,7 @@ public class TestAvailabilityButton extends ResourceDisplayPaneEmbeddedButton im
                 
                 setToolTipText(sb.toString());
             }
+            @Override
             protected void doError(final Throwable ex) {
                 setText("Check Failed");
                 setIcon(IconHelper.loadIcon("no16.png"));    

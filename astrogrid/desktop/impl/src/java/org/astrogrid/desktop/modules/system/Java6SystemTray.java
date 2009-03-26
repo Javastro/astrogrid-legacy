@@ -75,6 +75,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
     private volatile boolean java6Failed = true; // assume it's going to fail by default
     
 	// overridden to display as system tray.
+    @Override
     public void run() {
         if (java6Failed) {
             super.run();
@@ -160,7 +161,8 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         return m;
     }
 	
-	public void displayErrorMessage(final String arg0, final String arg1) {
+	@Override
+    public void displayErrorMessage(final String arg0, final String arg1) {
 	    if (java6Failed) {
 	        super.displayErrorMessage(arg0,arg1);
 	    } else {
@@ -175,7 +177,8 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
 	    }
 	}
 
-	public void displayInfoMessage(final String arg0, final String arg1) {
+	@Override
+    public void displayInfoMessage(final String arg0, final String arg1) {
 	    if (java6Failed) {
 	        super.displayInfoMessage(arg0,arg1);
 	    } else {
@@ -190,7 +193,8 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
 	    }
 	}
 
-	public void displayWarningMessage(final String arg0, final String arg1) {
+	@Override
+    public void displayWarningMessage(final String arg0, final String arg1) {
 	    if (java6Failed) {
 	        super.displayWarningMessage(arg0,arg1);
 	    } else {
@@ -213,7 +217,8 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
 			ReflectionHelper.call(trayIcon,"displayMessage",caption,text,o);	
 	}
 
-	public void startThrobbing() {
+	@Override
+    public void startThrobbing() {
 	    if (java6Failed) {
 	        super.startThrobbing();
 	    } else {
@@ -231,7 +236,8 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
 	    }
 	}
 
-	public void stopThrobbing() {
+	@Override
+    public void stopThrobbing() {
 	    if (java6Failed) {
 	        super.stopThrobbing();
 	    } else {

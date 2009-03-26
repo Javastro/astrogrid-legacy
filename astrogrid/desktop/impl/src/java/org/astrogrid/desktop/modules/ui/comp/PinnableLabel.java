@@ -1,7 +1,6 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Insets;
 
 import javax.swing.Icon;
@@ -39,6 +38,7 @@ public class PinnableLabel extends JToggleButton {
 
     
     // if a param is disabled, make sure it's not still selectd.
+    @Override
     public void setEnabled(boolean b) {
         super.setEnabled(b);
         if (! b && isSelected() ) {

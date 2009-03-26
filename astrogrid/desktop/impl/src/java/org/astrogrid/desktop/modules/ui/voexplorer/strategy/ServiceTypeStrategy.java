@@ -26,7 +26,8 @@ import ca.odell.glazedlists.matchers.Matcher;
  */
 public class ServiceTypeStrategy extends PipelineStrategy {
 
-	public Matcher createMatcher(final List selected) {
+	@Override
+    public Matcher createMatcher(final List selected) {
 		return new Matcher() {
 			public boolean matches(final Object arg0) {
 				final Resource r = (Resource)arg0;
@@ -45,7 +46,8 @@ public class ServiceTypeStrategy extends PipelineStrategy {
 		};
 	}
 
-	public TransformedList createView(final EventList base) {	
+	@Override
+    public TransformedList createView(final EventList base) {	
 		return new CollectionList(base,
 			new CollectionList.Model() {
 		public List getChildren(final Object arg0) {
@@ -66,7 +68,8 @@ public class ServiceTypeStrategy extends PipelineStrategy {
 });
 }
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return "Service - Type";
 	}
 

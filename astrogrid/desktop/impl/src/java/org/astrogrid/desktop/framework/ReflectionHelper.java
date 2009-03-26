@@ -1,4 +1,4 @@
-/*$Id: ReflectionHelper.java,v 1.7 2008/04/23 10:50:33 nw Exp $
+/*$Id: ReflectionHelper.java,v 1.8 2009/03/26 18:04:12 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,10 +13,6 @@ package org.astrogrid.desktop.framework;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
-
-import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.lang.ClassUtils;
 
 /** Helpler methods for working for working with java.lang.reflect;
  * @todo either add more here, or move this code elsewhere.
@@ -62,6 +58,9 @@ public class ReflectionHelper {
 
 /* 
 $Log: ReflectionHelper.java,v $
+Revision 1.8  2009/03/26 18:04:12  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.7  2008/04/23 10:50:33  nw
 1.5 improvements.
 

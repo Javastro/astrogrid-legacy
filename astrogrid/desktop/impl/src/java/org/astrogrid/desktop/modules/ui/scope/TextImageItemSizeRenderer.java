@@ -1,4 +1,4 @@
-/*$Id: TextImageItemSizeRenderer.java,v 1.9 2008/11/04 14:35:48 nw Exp $
+/*$Id: TextImageItemSizeRenderer.java,v 1.10 2009/03/26 18:04:10 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
     }
     private final NodeSizingMap nodeSizingMap;
     
+    @Override
     protected Shape getRawShape(final VisualItem item) {
         //System.out.println("getRawShape called and nodsizing size = " + nodeSizingMap.size());
         final String offset = item.getAttribute(AbstractRetriever.OFFSET_ATTRIBUTE);
@@ -71,7 +72,8 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
 		return this.sizeAttributeName;
 	}
 	
-	protected String getText(final VisualItem arg0) {
+	@Override
+    protected String getText(final VisualItem arg0) {
 		final String orig = super.getText(arg0);
 		if (sizeAttributeName == null) {
 			return orig;
@@ -87,6 +89,9 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
 
 /* 
 $Log: TextImageItemSizeRenderer.java,v $
+Revision 1.10  2009/03/26 18:04:10  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.9  2008/11/04 14:35:48  nw
 javadoc polishing
 

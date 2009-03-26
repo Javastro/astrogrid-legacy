@@ -23,6 +23,7 @@ public class DoubleClickMultiSelectFocusControl extends ControlAdapter {
     }
     private final VizualizationController viz;
     private final FocusSet set;
+    @Override
     public void itemClicked(final VisualItem item, final MouseEvent e) {            
         if ( e.getClickCount() ==2 && 
                 item instanceof NodeItem && 

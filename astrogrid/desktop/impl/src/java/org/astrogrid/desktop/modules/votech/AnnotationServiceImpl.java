@@ -68,7 +68,8 @@ public class AnnotationServiceImpl implements AnnotationService{
 private void saveSourceList() {
 	(new BackgroundWorker(ui,"Saving annotation source list") {
 
-		protected Object construct() throws Exception {
+		@Override
+        protected Object construct() throws Exception {
 			io.saveAnnotationSourceList(listSources());
 			return null;
 		}
@@ -107,7 +108,8 @@ private void saveSourceList() {
 		// do this on a background thread..
 		(new BackgroundWorker(ui,"Loading annotations from " + source.getName(),BackgroundWorker.LONG_TIMEOUT,Thread.MIN_PRIORITY) {
 
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
 				final Collection anns = io.load(source);
 				for (final Iterator i = anns.iterator(); i.hasNext();) {
 					final Annotation a = (Annotation) i.next();
@@ -126,7 +128,8 @@ private void saveSourceList() {
 				} // end for loop.
 				return null; // done.
 			}
-			protected void doError(final Throwable ex) {
+			@Override
+            protected void doError(final Throwable ex) {
 			    // silently swallow exceptions.
                 //parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));                
                  logger.warn("Failed to load annotations from " + source.getName());
@@ -247,7 +250,8 @@ private void saveSourceList() {
 			if (source instanceof DynamicAnnotationSource &&
 					! m.containsKey(source)) {
 				(new BackgroundWorker(ui,"Loading annotations from " + source.getName(),BackgroundWorker.SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
-					protected Object construct() throws Exception {
+					@Override
+                    protected Object construct() throws Exception {
 						final DynamicAnnotationSource dynSource = (DynamicAnnotationSource)source;
 						final Annotation ann = (dynSource).getAnnotationFor(r);
 						if (ann != null && dynSource.shouldCache()) {
@@ -257,7 +261,8 @@ private void saveSourceList() {
 						}
 						return ann;
 					}
-					protected void doFinished(final Object result) {
+					@Override
+                    protected void doFinished(final Object result) {
 						final Annotation ann = (Annotation)result;
 						if (ann != null) {
 							if (ann instanceof UserAnnotation) {
@@ -267,7 +272,8 @@ private void saveSourceList() {
 							}
 						}
 					}
-					protected void doError(final Throwable ex) {
+					@Override
+                    protected void doError(final Throwable ex) {
 					    // silently swallow exceptions.
 					    //parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));
 	                    logger.warn("Failed to load annotations from " + source.getName());
@@ -281,6 +287,7 @@ private void saveSourceList() {
     public Test getSelftest() {
         final TestSuite ts = new TestSuite("Annotations");
         ts.addTest(new TestCase("Annotations") {
+            @Override
             protected void runTest()  {
                 assertEquals("Problem with cache",Status.STATUS_ALIVE,cache.getStatus());
             }

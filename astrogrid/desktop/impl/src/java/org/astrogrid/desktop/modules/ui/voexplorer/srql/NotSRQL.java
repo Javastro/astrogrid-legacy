@@ -13,7 +13,8 @@ public class NotSRQL extends SRQL {
 	 */
 	private static final long serialVersionUID = -7785830546764343584L;
 	protected SRQL child;
-	public Object accept(final SRQLVisitor visitor) {
+	@Override
+    public Object accept(final SRQLVisitor visitor) {
 		return visitor.visit(this);
 }
 	public SRQL getChild() {
@@ -22,13 +23,15 @@ public class NotSRQL extends SRQL {
 	public void setChild(final SRQL child) {
 		this.child = child;
 	}
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.child == null) ? 0 : this.child.hashCode());
 		return result;
 	}
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -53,7 +56,8 @@ public class NotSRQL extends SRQL {
 		 * @return the String representation
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("NotQuery[");
 			buffer.append("child = ").append(child);

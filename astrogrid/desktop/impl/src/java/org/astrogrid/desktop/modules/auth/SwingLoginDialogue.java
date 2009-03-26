@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.19 2008/07/17 17:55:32 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.20 2009/03/26 18:04:12 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -120,6 +120,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     	        setTransient(true);
     	    }
     	        
+            @Override
             protected Object construct() throws Exception {
                 return reg.xquerySearch(
                     "//vor:Resource[capability/@standardID='" + 
@@ -127,6 +128,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
                     "' and not (@status='deleted' or @status='inactive')]"
                 );
             }
+            @Override
             protected void doFinished(Object knownCommunities) {
                 for (Resource r :(Resource[]) knownCommunities) {
                     communityList.add(r);
@@ -138,7 +140,8 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     	commField_ = new JComboBox(model);
     	   commField_.setEditable(false);
            commField_.setRenderer(new BasicComboBoxRenderer() {
-               public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+               @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                   super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
                    if (value != null) {
                        if (value instanceof Resource) {
@@ -179,6 +182,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         	public void actionPerformed(ActionEvent e) {
         	    new BackgroundWorker(SwingLoginDialogue.this,"Opening registration page") {
 
+                    @Override
                     protected Object construct() throws Exception {
                         getContext().getHelpServer().showHelpForTarget("dialog.login.register");
                         return null;
@@ -234,6 +238,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     }
 
     //overridden to save inputs as preferences.
+    @Override
     public void ok() {
         
         prefs.put(COMMUNITY_PREFERENCE_KEY,((Resource)commField_.getSelectedItem()).getId().toString());
@@ -242,13 +247,16 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         // user pressed ok - so try to login
         new BackgroundWorker(this,"Logging in",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
+            @Override
             protected Object construct() throws Exception {
                 comm.login(getUser(),getPassword(),getCommunity()); 
                 return null;
             }
+            @Override
             protected void doFinished(Object result) {
                 setVisible(false); // close the dialogue.
             }
+            @Override
             protected void doError(Throwable ex) {
                 showError("Unable to login: " + ExceptionFormatter.formatException(ex,ExceptionFormatter.INNERMOST));
             }
@@ -283,6 +291,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     }
 
   
+    @Override
     public void show() {
         super.show();
         passField_.setText("");
@@ -303,6 +312,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.20  2009/03/26 18:04:12  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.19  2008/07/17 17:55:32  nw
 Complete - task 432: prevent community list in login dialogue from reordering.
 

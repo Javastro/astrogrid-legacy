@@ -29,7 +29,8 @@ import org.w3c.dom.Document;
  */
 public class SaveResourceActivity extends AbstractResourceActivity implements Activity.NoContext, Activity.NoTask{
 
-	protected boolean invokable(final Resource r) {
+	@Override
+    protected boolean invokable(final Resource r) {
 		return true;
 	}
 
@@ -52,6 +53,7 @@ private final FileSystemManager vfs;
 private final RegistryInternal reg;
 private final UIContext cxt;
 
+@Override
 public void actionPerformed(final ActionEvent e) {
 	Component comp = null;
 	if (e.getSource() instanceof Component) {
@@ -61,7 +63,8 @@ public void actionPerformed(final ActionEvent e) {
 		final URI u = chooser.chooseResourceWithParent("Choose output file",true,true,true,comp);
 		(new BackgroundWorker(uiParent.get(),"Exporting XML",BackgroundWorker.LONG_TIMEOUT) {
 
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
 				OutputStream os = null;
                 FileObject fo = null;
 				final int max = l.size() + 2;
@@ -93,7 +96,8 @@ public void actionPerformed(final ActionEvent e) {
 				}
 				return null;
 			}
-			protected void doFinished(final Object result) {
+			@Override
+            protected void doFinished(final Object result) {
 			    parent.showTransientMessage("Export complete","");
 			}
 		}).start();

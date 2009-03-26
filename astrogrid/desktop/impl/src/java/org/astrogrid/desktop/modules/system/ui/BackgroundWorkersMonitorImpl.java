@@ -106,6 +106,7 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
         subsetCombo = new JComboBox(new EventComboBoxModel(comboList));
         subsetCombo.setEditable(false);
         subsetCombo.setRenderer(new DefaultListCellRenderer() {
+            @Override
             public Component getListCellRendererComponent(final JList list,
                     final Object value, final int index, final boolean isSelected,
                     final boolean cellHasFocus) {

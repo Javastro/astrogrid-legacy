@@ -22,7 +22,6 @@ import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.XmlString;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
@@ -429,6 +428,7 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
         return initializedStatusGood;
     }
        
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer(512) ;
         buffer

@@ -30,11 +30,13 @@ public class OutputFormElement extends AbstractTaskFormElement {
 	      CSH.setHelpIDString(getEditor(),"task.form.output");
 	}
 
-	protected JComponent createEditor() {
+	@Override
+    protected JComponent createEditor() {
 		return new JLabel("Store in cache"); 
 	}
 
-	protected String getStringValue() {
+	@Override
+    protected String getStringValue() {
 		return "";
 	}
 

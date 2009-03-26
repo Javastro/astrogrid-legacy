@@ -80,6 +80,7 @@ public class EditSingletonTextCommand extends AbstractCommand {
         setNewValue( value ) ;
     }
         
+    @Override
     public Result execute() {   
         Result result = _execute( newValue ) ;
         if( result != CommandExec.FAILED )
@@ -132,9 +133,11 @@ public class EditSingletonTextCommand extends AbstractCommand {
         return result ;    
     }
      
+    @Override
     public void die() {
         super.die();
     }
+    @Override
     public void redo() throws CannotRedoException {
         super.redo();
         if( _execute( newValue ) == CommandExec.FAILED ) {
@@ -143,6 +146,7 @@ public class EditSingletonTextCommand extends AbstractCommand {
             
     }
     
+    @Override
     public void undo() throws CannotUndoException {
         super.undo();
         if( _execute( oldValue ) == CommandExec.FAILED ) {
@@ -150,6 +154,7 @@ public class EditSingletonTextCommand extends AbstractCommand {
         }
     }
     
+    @Override
     public String getPresentationName() {
         return "Edit" ;
     }
@@ -175,6 +180,7 @@ public class EditSingletonTextCommand extends AbstractCommand {
         return newValue;
     }
     
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer(512) ;
         buffer.append( "\nEditSingletonTextCommand" ) ;

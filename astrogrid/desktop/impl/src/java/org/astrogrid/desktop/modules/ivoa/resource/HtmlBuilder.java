@@ -22,7 +22,8 @@ public class HtmlBuilder extends StrBuilder {
 		append("<html>");
 	}
 	// allocate more space at a time.
-	public StrBuilder ensureCapacity(final int capacity) {
+	@Override
+    public StrBuilder ensureCapacity(final int capacity) {
         if (capacity > buffer.length) {
             final char[] old = buffer;
             buffer = new char[(int) (capacity * 1.5)];

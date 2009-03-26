@@ -49,6 +49,7 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
     public RadiusTextField(final double radius) {
         this.radius = radius;
         setFormatterFactory(new AbstractFormatterFactory() {
+            @Override
             public AbstractFormatter getFormatter(final JFormattedTextField tf) {
                 return isDecimal ? degree : arcsec;
             }
@@ -75,6 +76,7 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
             this.nfd = nfd;
         }
 
+        @Override
         public Object stringToValue(final String str) throws ParseException {
             double val;
             try {
@@ -89,6 +91,7 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
             return new Double(val);
         }
 
+        @Override
         public String valueToString(final Object val) throws ParseException {
             if (val instanceof Number) {
                 return nfd.format(((Number) val).doubleValue() * factor);

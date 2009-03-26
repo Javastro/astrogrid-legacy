@@ -18,7 +18,8 @@ import java.net.URLStreamHandler;
  */
 public class Handler extends URLStreamHandler {
 
-	protected URLConnection openConnection(final URL arg0) throws IOException {
+	@Override
+    protected URLConnection openConnection(final URL arg0) throws IOException {
 		final URL u = Handler.class.getResource(arg0.getPath());
 		if (u == null) {
 			throw new FileNotFoundException(arg0.toString());

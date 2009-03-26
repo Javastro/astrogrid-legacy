@@ -38,7 +38,8 @@ public WebInterfaceActivity(final BrowserControl browser) {
 	setToolTipText("Open the providers's own web interface for this resource");
   //  setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_4,UIComponentMenuBar.MENU_KEYMASK));	
 }
-	protected boolean invokable(final Resource r) {
+	@Override
+    protected boolean invokable(final Resource r) {
 		return hasWebBrowserInterface(r);
 	}
 	public static boolean hasWebBrowserInterface(final Resource r) {
@@ -59,10 +60,12 @@ public WebInterfaceActivity(final BrowserControl browser) {
 		return false;
 	}
 	
-	public void someSelected(final Resource[] rs) {
+	@Override
+    public void someSelected(final Resource[] rs) {
 		noneSelected();
 	}
 	private final BrowserControl browser;
+@Override
 public void actionPerformed(final ActionEvent e) {
 	final List l = computeInvokable();
 	final Resource r = (Resource)l.get(0);

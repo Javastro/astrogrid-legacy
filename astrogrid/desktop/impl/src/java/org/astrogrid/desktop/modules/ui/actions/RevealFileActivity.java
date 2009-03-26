@@ -25,7 +25,8 @@ public class RevealFileActivity extends AbstractFileActivity {
 	
 	
     // applies to all non-local files and folders.
-	protected boolean invokable(final FileObject f) { 
+	@Override
+    protected boolean invokable(final FileObject f) { 
 	    final String innerScheme = AstroscopeFileObject.findInnermostFileObject(f).getName().getScheme();
             return AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
                     && 
@@ -45,11 +46,13 @@ public class RevealFileActivity extends AbstractFileActivity {
 	}
 
     // can only handle a single selection.
+    @Override
     public void manySelected(final FileObject[] list) {
         noneSelected();
     }
     
-	public void actionPerformed(final ActionEvent e) {
+	@Override
+    public void actionPerformed(final ActionEvent e) {
 		final List l = computeInvokable();
         mgr.show(AstroscopeFileObject.findInnermostFileObject((FileObject)l.get(0)));
 		

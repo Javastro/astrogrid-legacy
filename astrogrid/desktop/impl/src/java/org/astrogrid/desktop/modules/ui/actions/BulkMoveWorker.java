@@ -71,6 +71,7 @@ public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileS
     }
 
     protected FileObject saveTarget;
+    @Override
     protected Map<FileObject, FileSystemException> construct() throws Exception {
         final int tasksCount = l.size() + 1;
         int progress = 0;
@@ -142,6 +143,7 @@ public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileS
         return errors;
     }
 
+    @Override
     protected void doFinished(final Map<FileObject, FileSystemException> errors) {       
         if (errors.size() ==0) {
             parent.showTransientMessage("Finished moving files","");

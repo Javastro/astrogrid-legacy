@@ -28,13 +28,15 @@ public class HelpItemContribution {
 	public void setUrl(final String url) throws MalformedURLException {
 		this.url = new URL(url);
 	}
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.id == null) ? 0 : this.id.hashCode());
 		return result;
 	}
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -59,7 +61,8 @@ public class HelpItemContribution {
 		 * @return the String representation
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("HelpItemContribution[");
 			buffer.append("id = ").append(id);

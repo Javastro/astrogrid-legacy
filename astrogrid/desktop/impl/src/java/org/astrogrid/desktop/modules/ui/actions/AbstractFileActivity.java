@@ -19,11 +19,13 @@ import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
  */
 public abstract class AbstractFileActivity extends AbstractActivity implements Predicate {
 
-	public void noneSelected() {
+	@Override
+    public void noneSelected() {
 		setEnabled(false);
 		current = null;
 	}
-	public final void selected(final Transferable r) {
+	@Override
+    public final void selected(final Transferable r) {
 	    if (r == null) {
 	        return;
 	    }

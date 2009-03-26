@@ -1,4 +1,4 @@
-/*$Id: AbstractReflectionServlet.java,v 1.9 2007/06/18 17:00:13 nw Exp $
+/*$Id: AbstractReflectionServlet.java,v 1.10 2009/03/26 18:04:11 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,6 +38,7 @@ import org.astrogrid.desktop.framework.SessionManagerInternal;
 public abstract class AbstractReflectionServlet extends HttpServlet {
 
     /** retreive services from the servlet context */
+    @Override
     public void init(ServletConfig conf) throws ServletException {
         super.init(conf);
         reg = (ACRInternal)conf.getServletContext().getAttribute(WebServer.ACR_CONTEXT_KEY);
@@ -174,10 +175,12 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
     }
     
 
+    @Override
     protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
         navigate(arg0,arg1);
     }
 
+    @Override
     protected void doPost(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
         navigate(arg0,arg1);
     }
@@ -186,6 +189,9 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
 /*
  * $Log: AbstractReflectionServlet.java,v $
+ * Revision 1.10  2009/03/26 18:04:11  nw
+ * source code improvements - cleaned imports, @override, etc.
+ *
  * Revision 1.9  2007/06/18 17:00:13  nw
  * javadoc fixes.
  *

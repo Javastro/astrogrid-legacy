@@ -36,7 +36,8 @@ public class EventDispatchThreadObjectBuilder extends ObjectBuilderImpl {
 	private final Log logger;
 
 	
-	public Object create(final String name, final Object[] userArgs) {
+	@Override
+    public Object create(final String name, final Object[] userArgs) {
 		if (SwingUtilities.isEventDispatchThread()) {
 			return super.create(name, userArgs);
 		} else {

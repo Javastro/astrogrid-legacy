@@ -49,12 +49,14 @@ private final JTextArea typeField;
 
 private final Bag types = new TreeBag();
 
-	public void noneSelected() {
+	@Override
+    public void noneSelected() {
 		typeField.setVisible(false);
 		super.noneSelected();
 	}
 
-	public void manySelected(final FileObject[] l) {
+	@Override
+    public void manySelected(final FileObject[] l) {
 		typeField.setVisible(true);
 		types.clear();
 		for (int i = 0; i < l.length; i++) {
@@ -67,7 +69,8 @@ private final Bag types = new TreeBag();
 		fmtResult();		
 	}
 
-	public void someSelected(final Resource[] l) {
+	@Override
+    public void someSelected(final Resource[] l) {
 		typeField.setVisible(true);
 		types.clear();
 		for (int i = 0; i < l.length; i++) {
@@ -86,11 +89,13 @@ private final Bag types = new TreeBag();
 	}
 
 	
-	public void oneSelected(final Resource r) {
+	@Override
+    public void oneSelected(final Resource r) {
 		typeField.setText("Selection: " + PrettierResourceFormatter.formatType(r.getType()));
 		typeField.setVisible(true);
 	}
-	public void oneSelected(final FileObject fo) {
+	@Override
+    public void oneSelected(final FileObject fo) {
 		try {
 		    typeField.setText(StorageTableFormat.findBestContentType(fo));
 		    typeField.setVisible(true);
@@ -100,25 +105,30 @@ private final Bag types = new TreeBag();
 	}
 
 
-	public void addTo(final JTaskPaneGroup grp) {
+	@Override
+    public void addTo(final JTaskPaneGroup grp) {
 	    typeField.setBackground(grp.getBackground());
 		grp.add(typeField);
 	}
 
-	public void addTo(final JMenu menu) {
+	@Override
+    public void addTo(final JMenu menu) {
 		// do nothing
 	}
 
-	public void addTo(final JPopupMenu menu) {
+	@Override
+    public void addTo(final JPopupMenu menu) {
 		// do nothing
 	}
 
 	// not used in this subclass.
+    @Override
     protected boolean invokable(final FileObject f) {
         return false;
     }
 
     // not used in this subclass.
+    @Override
     protected boolean invokable(final Resource r) {
         return false;
     }

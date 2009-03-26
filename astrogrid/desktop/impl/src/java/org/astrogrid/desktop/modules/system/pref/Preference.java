@@ -194,16 +194,19 @@ public class Preference {
 	}
 	
 	/** returns the value of the preference, as a string */
-	public String toString() {
+	@Override
+    public String toString() {
 		return value == null ? defaultValue : value;
 	}
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.name == null) ? 0 : this.name.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)

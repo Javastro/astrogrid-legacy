@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.23 2009/03/04 18:43:09 nw Exp $
+/*$Id: SiapImpl.java,v 1.24 2009/03/26 18:04:12 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -111,7 +111,8 @@ public class SiapImpl extends DALImpl implements Siap {
 	}
 	
 	// override the table parser to use siap datamodel.
-	protected StructureBuilder newStructureBuilder() {
+	@Override
+    protected StructureBuilder newStructureBuilder() {
 		return new SiaStructureBuilder();
 	}
 	
@@ -121,7 +122,8 @@ public class SiapImpl extends DALImpl implements Siap {
 	 * @since Nov 26, 20083:12:37 PM
 	 */
 	protected static class SiaStructureBuilder extends SsapStructureBuilder {
-	    public void startTable(final StarTable t) throws SAXException {
+	    @Override
+        public void startTable(final StarTable t) throws SAXException {
 	        super.startTable(t);
 	        // now iterate over the keys, mapping them from ucds if recognized.
 	        if (keys != null) {
@@ -137,7 +139,8 @@ public class SiapImpl extends DALImpl implements Siap {
 	}
 	
 
-	protected URL findAccessURL(final Service s) throws InvalidArgumentException {
+	@Override
+    protected URL findAccessURL(final Service s) throws InvalidArgumentException {
 	    if (!(s instanceof SiapService)) {
 	        throw new InvalidArgumentException(s.getId() + " does not provide a SIAP capability");
 	    }
@@ -169,6 +172,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.24  2009/03/26 18:04:12  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.23  2009/03/04 18:43:09  nw
 Complete - taskMove DAL over to VFS
 

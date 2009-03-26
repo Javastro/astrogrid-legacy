@@ -19,7 +19,8 @@ import ca.odell.glazedlists.matchers.Matcher;
  * @since Feb 15, 20073:36:34 PM
  */
 public final class CreatorStrategy extends PipelineStrategy {
-	public Matcher createMatcher(final List selected) {
+	@Override
+    public Matcher createMatcher(final List selected) {
 		return new Matcher() {
 			public boolean matches(final Object arg0) {
 				final Resource r = (Resource)arg0;
@@ -38,7 +39,8 @@ public final class CreatorStrategy extends PipelineStrategy {
 		};
 	}
 
-	public TransformedList createView(final EventList base) {
+	@Override
+    public TransformedList createView(final EventList base) {
 		return new CollectionList(base,
 						new CollectionList.Model() {
 							public List getChildren(final Object arg0) {
@@ -59,7 +61,8 @@ public final class CreatorStrategy extends PipelineStrategy {
 				});
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return "Creator";
 	}
 }

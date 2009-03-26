@@ -64,6 +64,7 @@ public class MonitoringOutputStream extends ProxyOutputStream {
      * @throws IOException if an I/O error occurs
      * @see java.io.OutputStream#write(byte[])
      */
+    @Override
     public void write(final byte[] b) throws IOException {
         count += b.length;
         super.write(b);
@@ -84,6 +85,7 @@ public class MonitoringOutputStream extends ProxyOutputStream {
      * @throws IOException if an I/O error occurs
      * @see java.io.OutputStream#write(byte[], int, int)
      */
+    @Override
     public void write(final byte[] b, final int off, final int len) throws IOException {
         count += len;
         super.write(b, off, len);
@@ -102,6 +104,7 @@ public class MonitoringOutputStream extends ProxyOutputStream {
      * @throws IOException if an I/O error occurs
      * @see java.io.OutputStream#write(int)
      */
+    @Override
     public void write(final int b) throws IOException {
         count++;
         super.write(b);

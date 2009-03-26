@@ -30,10 +30,12 @@ public class AtomNode extends HidingNode {
         super( nodeFactory, parent, o, childNodeIndex ) ;
     }
     
+    @Override
     public boolean isBottomLeafEditable() {
         return true ;
     }
     
+    @Override
     public String toHtml( boolean expanded, boolean leaf, AdqlTree tree ) { 
         String displayInfo = null;
         try {

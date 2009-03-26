@@ -77,14 +77,16 @@ public class StorageFolder extends Folder {
 		this.file = file;
 	}
 
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
 		result = PRIME * result + ((this.uri == null) ? 0 : this.uri.hashCode());
 		return result;
 	}
 
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }

@@ -58,6 +58,7 @@ public class RadiusFormElement extends AbstractTaskFormElement implements Proper
     private final DecSexToggle toggle;
     private RadiusTextField radiusField;
 
+    @Override
     protected JComponent createEditor() {
         // setup default values.
         if (StringUtils.isEmpty(pval.getValue())) {
@@ -79,6 +80,7 @@ public class RadiusFormElement extends AbstractTaskFormElement implements Proper
         }
     }
 
+    @Override
     protected String getStringValue() {
         return Double.toString(radiusField.getRadius());
     }

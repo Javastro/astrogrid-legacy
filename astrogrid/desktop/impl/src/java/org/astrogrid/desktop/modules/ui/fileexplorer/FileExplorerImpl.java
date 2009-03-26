@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.17 2009/03/24 13:08:19 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.18 2009/03/26 18:04:11 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,7 +68,8 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 
 	// build the menus
 		    final UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
-		        protected void populateFileMenu(final FileMenuBuilder fmb) {
+		        @Override
+                protected void populateFileMenu(final FileMenuBuilder fmb) {
 		            fmb.windowOperation(view.getNewFolder())
 		                .windowOperation(view.getFoldersList().getCreate())
 		                .windowOperation(acts.getActivity(ViewInBrowserActivity.class))
@@ -86,7 +87,8 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		                .windowOperation(view.getFoldersList().getEdit())
 		                .windowOperation(view.getFoldersList().getDelete());
 		        }
-		        protected void populateEditMenu(final EditMenuBuilder emb) { 
+		        @Override
+                protected void populateEditMenu(final EditMenuBuilder emb) { 
 		            emb.cut()
 		                .copy()
 		                .paste()
@@ -94,7 +96,8 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		                .clearSelection();
 		               // .invertSelection();
 		        }
-		        protected void constructAdditionalMenus() {
+		        @Override
+                protected void constructAdditionalMenus() {
 		            final MenuBuilder vmb = new MenuBuilder("View",KeyEvent.VK_V)
 		                .windowOperation(view.getRefresh())
 		                .windowOperation(view.getStop())

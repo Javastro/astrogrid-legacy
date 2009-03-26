@@ -57,18 +57,23 @@ public abstract class HidingNode extends AdqlNode {
     
     protected void maintainNodeIndex( AdqlNode child ) {}
     
+    @Override
     public boolean isBottomLeafEditable() {
         return true ;
     }
     
+    @Override
     public abstract String toHtml( boolean expanded, boolean leaf, AdqlTree tree ) ;
         
+    @Override
     public AdqlNode insert(CommandInfo ci, XmlObject source, boolean before) {
         return null ;
     }
+    @Override
     public AdqlNode insert(CommandInfo ci, XmlObject source) {
         return null;
     }
+    @Override
     public AdqlNode insert(CommandInfo ci) {
        return null ;
     }

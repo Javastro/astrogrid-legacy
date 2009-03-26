@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.18 2009/03/24 17:45:49 nw Exp $
+/*$Id: HtmlServlet.java,v 1.19 2009/03/26 18:04:11 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,7 @@ import org.astrogrid.desktop.framework.ReflectionHelper;
  * 
  */
 public class HtmlServlet extends AbstractReflectionServlet {
+    @Override
     public void init(final ServletConfig conf) throws ServletException {
         super.init(conf);
         final ServletContext servletContext = conf.getServletContext();
@@ -54,6 +55,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
     /**
      * @see org.astrogrid.desktop.modules.system.AbstractReflectionServlet#processRoot(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     protected void processRoot(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         final PrintWriter out = response.getWriter();
         header(null,out);
@@ -95,6 +97,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
     /**
      * @throws IOException
      */
+    @Override
     protected void processModule(final ModuleDescriptor md, final HttpServletRequest request, final HttpServletResponse response) throws IOException {
         final PrintWriter out = response.getWriter();
         header(md.getName() + " Module",out);
@@ -114,6 +117,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 
 
+    @Override
     protected void processComponent(final ModuleDescriptor md,final ComponentDescriptor cd, final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         final PrintWriter out = response.getWriter();
         header(md.getName() + '.' + cd.getName() + " Component",out);
@@ -133,6 +137,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
     }
 
 
+    @Override
     protected void processMethod(final ModuleDescriptor md, final ComponentDescriptor cd,final MethodDescriptor methodDescriptor, final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {        
         final PrintWriter out = response.getWriter();
         header(md.getName() + '.' + cd.getName() + "." + methodDescriptor.getName() + "()",out);
@@ -310,6 +315,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
     
     //@todo merge ApiHelp.callFunction,  XMLRPCServlet.execute() and HtmlServlet.callMethod
 
+    @Override
     protected void callMethod(final MethodDescriptor md,final String resultType, final Object component, final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         if (resultType == null || ! resultTypes.contains(resultType.toLowerCase())) {
             throw new ServletException("Unknown result type " + resultType);
@@ -389,6 +395,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.19  2009/03/26 18:04:11  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.18  2009/03/24 17:45:49  nw
 Complete - tasksimple http-get interface to registry.
 

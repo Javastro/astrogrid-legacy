@@ -38,6 +38,7 @@ public class JPromptingTextField extends JFormattedTextField {
     protected abstract class MyFormatter extends
     JFormattedTextField.AbstractFormatter {
 
+        @Override
         public Object stringToValue(final String text) throws ParseException {
             if (text == null) {
                 return null;
@@ -57,6 +58,7 @@ public class JPromptingTextField extends JFormattedTextField {
      */
     protected final class DisplayFormatter extends MyFormatter {
 
+        @Override
         public String valueToString(final Object value) throws ParseException {
             if (value == null || ((String) value).trim().length() == 0) {
                 setForeground(getDisabledTextColor());
@@ -72,6 +74,7 @@ public class JPromptingTextField extends JFormattedTextField {
     /** formatter for editing the value */
     protected final class EditFormatter extends MyFormatter {
 
+        @Override
         public String valueToString(final Object value) throws ParseException {
             setForeground(Color.BLACK);
             return (String) value;
@@ -84,6 +87,7 @@ public class JPromptingTextField extends JFormattedTextField {
      */
     protected final class NullFormatter extends MyFormatter {
 
+        @Override
         public String valueToString(final Object value) throws ParseException {
             setForeground(getDisabledTextColor());
             return placeholder;
@@ -98,6 +102,7 @@ public class JPromptingTextField extends JFormattedTextField {
      * @since Oct 4, 20075:19:40 PM
      */
     private static final class MyFormatterFactory extends DefaultFormatterFactory {
+        @Override
         public JFormattedTextField.AbstractFormatter getFormatter(
                 final JFormattedTextField source) {
             JFormattedTextField.AbstractFormatter format = null;

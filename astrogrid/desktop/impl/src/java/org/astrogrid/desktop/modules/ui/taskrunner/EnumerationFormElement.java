@@ -29,7 +29,8 @@ public class EnumerationFormElement extends AbstractTaskFormElement {
         CSH.setHelpIDString(getEditor(),"task.form.enumeration");		
 	}
 
-	protected JComponent createEditor() {
+	@Override
+    protected JComponent createEditor() {
 	    cb = new JComboBox(pdesc.getOptions());
 	    cb.setEditable(false);
 	    if (! pval.getIndirect()) {
@@ -46,7 +47,8 @@ public class EnumerationFormElement extends AbstractTaskFormElement {
 	}
 	
 	protected JComboBox cb;
-	public void itemStateChanged(final ItemEvent e) {
+	@Override
+    public void itemStateChanged(final ItemEvent e) {
 		if (e.getSource() == cb) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				pval.setValue(getStringValue());
@@ -56,7 +58,8 @@ public class EnumerationFormElement extends AbstractTaskFormElement {
 		}
 	}
 
-	protected String getStringValue() {
+	@Override
+    protected String getStringValue() {
 		return (String)cb.getSelectedItem();
 	}
 

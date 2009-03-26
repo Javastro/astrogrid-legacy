@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.16 2008/11/04 14:35:48 nw Exp $
+/*$Id: SsapProtocol.java,v 1.17 2009/03/26 18:04:10 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,8 @@ public String getXQuery() {
     return ssap.getRegistryXQuery();
 }
 
-	public AbstractRetriever[] createRetrievers(final Service service, final double ra, final double dec, final double raSize, final double decSize) {
+	@Override
+    public AbstractRetriever[] createRetrievers(final Service service, final double ra, final double dec, final double raSize, final double decSize) {
         final Capability[] capabilities = service.getCapabilities();
         final List cList = new ArrayList();
         for (int i = 0; i < capabilities.length; i++) {
@@ -69,6 +70,7 @@ public String getXQuery() {
     }
     
     
+    @Override
     protected boolean isSuitable(final Resource r)  {
         return r instanceof SsapService;
     }	
@@ -78,6 +80,9 @@ public String getXQuery() {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.17  2009/03/26 18:04:10  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.16  2008/11/04 14:35:48  nw
 javadoc polishing
 

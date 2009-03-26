@@ -47,6 +47,7 @@ public class PasteOverCommand extends AbstractCommand {
     }
     
     
+    @Override
     public Result execute() {      
         Result result = _execute( source ) ;
         if( result != CommandExec.FAILED )
@@ -72,10 +73,12 @@ public class PasteOverCommand extends AbstractCommand {
     }
     
     
+    @Override
     public void die() {
         super.die();
     }
     
+    @Override
     public void redo() throws CannotRedoException {
         super.redo();
         if( _execute( source ) == CommandExec.FAILED ) {
@@ -83,6 +86,7 @@ public class PasteOverCommand extends AbstractCommand {
         }         
     }
     
+    @Override
     public void undo() throws CannotUndoException {
         super.undo();
         if( _execute( previous ) == CommandExec.FAILED ) {
@@ -90,10 +94,12 @@ public class PasteOverCommand extends AbstractCommand {
         }
     }
      
+    @Override
     public String getPresentationName() {
         return "Paste over" ;
     }
     
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer( 512 ) ;
         buffer.append( "\nPasteOverCommand" ) ;

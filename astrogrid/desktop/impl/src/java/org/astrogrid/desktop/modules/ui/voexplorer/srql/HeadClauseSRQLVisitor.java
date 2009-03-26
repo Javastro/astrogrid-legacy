@@ -31,6 +31,7 @@ public class HeadClauseSRQLVisitor extends BasicRegistrySRQLVisitor {
             }
         }
     }
+    @Override
     public String build(final SRQL q, final String filter) {
         final Object o = q.accept(this);
         final StringBuffer sb = new StringBuffer();
@@ -45,6 +46,7 @@ public class HeadClauseSRQLVisitor extends BasicRegistrySRQLVisitor {
     }
     
     // reject all incomplete queries.
+    @Override
     public Object visit(final TermSRQL q) {
         if (q.getTerm() == null || q.getTerm().trim().length() == 0) {
             throw new IllegalArgumentException("Not a complete query");

@@ -80,12 +80,14 @@ public class SubscriptionEditingPanel extends EditingPanel {
         builder.add(cancel, cc.xy(7, row));
     }
 
+    @Override
     public void setCurrentlyEditing(final ResourceFolder folder) {
         super.setCurrentlyEditing(folder);
         nameField.setText(folder.getName());
         urlField.setText(folder.getSubscription());
     }
 
+    @Override
     public void loadEdits() {
         super.loadEdits();
         final ResourceFolder folder = getCurrentlyEditing();
@@ -93,6 +95,7 @@ public class SubscriptionEditingPanel extends EditingPanel {
         folder.setSubscription(urlField.getText());
     }
 
+    @Override
     public boolean shouldOkBeEnabled() {
         if (!super.shouldOkBeEnabled()) {
             return false;

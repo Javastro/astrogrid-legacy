@@ -22,6 +22,7 @@ public class MessageRegistryActivity extends AbstractResourceActivity {
 
 	private final ExternalMessageTarget plas;
 	
+    @Override
     protected boolean invokable(final Resource r) {
 		return true;
 	}
@@ -76,7 +77,7 @@ public class MessageRegistryActivity extends AbstractResourceActivity {
                 }
 				final ResourceSetMessageSender sender = plas.createMessageSender(ResourceSetMessageType.instance);
 				//@todo register a listener?
-				sender.sendResourceSet(us,null,null);
+				sender.sendResourceSet(us,null);
 				return null;
 			}
 			@Override

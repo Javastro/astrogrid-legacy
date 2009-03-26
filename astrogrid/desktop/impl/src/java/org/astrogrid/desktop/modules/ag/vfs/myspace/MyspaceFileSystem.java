@@ -52,18 +52,21 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
 	}
 
 	
-	protected void doCloseCommunicationLink() {
+	@Override
+    protected void doCloseCommunicationLink() {
 	    // sadly nothing we can do here - as fileobjects have already attached, and so don't need the client any longer.
 	    // a proper close() would require keeping refereences to all fileobjects created for tis filesystem,
 	    // at least we can remove the cached entries.
 	}
 	
 	// add the capabiltiies of this file system.
-	protected void addCapabilities(final Collection caps) {
+	@Override
+    protected void addCapabilities(final Collection caps) {
 		caps.addAll(MyspaceProvider.CAPABILITIES);
 	}
 
-	protected FileObject createFile(final FileName name) throws Exception {
+	@Override
+    protected FileObject createFile(final FileName name) throws Exception {
 	    if (logger.isDebugEnabled()) {
 	        logger.debug("Creating file " + name);
 	    }
@@ -96,12 +99,14 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
 	    return file;	    
 	}
 
-	public double getLastModTimeAccuracy() {
+	@Override
+    public double getLastModTimeAccuracy() {
 		return 1000L; // gives us some leeway.
 	}
 
 	
-	public String toString() {
+	@Override
+    public String toString() {
 	    return super.toString() + "/" + getRootName();
 	}
 

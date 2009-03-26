@@ -39,7 +39,8 @@ public class LooselyFormattedFormElement extends AbstractTaskFormElement impleme
 		CSH.setHelpIDString(getEditor(),"task.form.formatted");
 	}
 
-	protected final JComponent createEditor() {
+	@Override
+    protected final JComponent createEditor() {
 	    text = new JTextField();
 	    this.original = text.getBorder();
 	    this.warn = BorderFactory.createLineBorder(Color.RED);
@@ -84,7 +85,8 @@ public class LooselyFormattedFormElement extends AbstractTaskFormElement impleme
 		update();
 	}
 
-	protected String getStringValue() {
+	@Override
+    protected String getStringValue() {
 		return text.getText();
 	}
 

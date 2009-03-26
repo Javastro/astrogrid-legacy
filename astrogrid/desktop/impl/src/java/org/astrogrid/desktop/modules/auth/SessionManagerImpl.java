@@ -52,7 +52,8 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 	private final SchedulerInternal scheduler;
 	private final CommunityInternal comm;
 	
-	public void attemptUpgrade(){	
+	@Override
+    public void attemptUpgrade(){	
 	    logger.debug("Attempting upgrade of " + ss.getCurrentUser());
 		comm.guiLogin();		
 		logger.debug("Called comm.guiLogin(), returning");
@@ -81,7 +82,8 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 
 // sessionManager interface
 
-	public String createNewSession(final long inactivityMinutes)  {
+	@Override
+    public String createNewSession(final long inactivityMinutes)  {
 		final String sid = generateSessionId();
 		final MutablePrincipal newSession = new MutablePrincipal();
 		sessionMap.put(sid,newSession);
@@ -158,7 +160,8 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
         }
 	}
 	
-	public void dispose(final String arg0)  {
+	@Override
+    public void dispose(final String arg0)  {
 		if (defaultSessionId.equals(arg0)) {
 			return; // ignore requests to dispose default session.
 		}
@@ -183,7 +186,8 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 
 	
 	//overridden to create new contexts on webserver if not already present.
-	public URL findHttpSession(final String arg0) throws InvalidArgumentException {
+	@Override
+    public URL findHttpSession(final String arg0) throws InvalidArgumentException {
 		if (! exists(arg0)) {
 			throw new InvalidArgumentException(arg0);
 		}
@@ -195,7 +199,8 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 	}
 
 
-	public URL findXmlRpcSession(final String arg0) throws InvalidArgumentException {
+	@Override
+    public URL findXmlRpcSession(final String arg0) throws InvalidArgumentException {
 		if (! exists(arg0)) {
 			throw new InvalidArgumentException(arg0);
 		}

@@ -45,7 +45,8 @@ public class InstallCertificates implements Runnable {
 	}
 	public void run() {
 		(new BackgroundWorker(ui,"Checking for new certificates",Thread.MIN_PRIORITY) {
-			protected Object construct() throws Exception  {
+			@Override
+            protected Object construct() throws Exception  {
 				if (! certDir.exists()) {
 					reportProgress("Certificate directory does not exist - creating " + certDir);
 					if (!certDir.mkdirs()) {

@@ -84,7 +84,8 @@ public class ResourceListTransferable implements Transferable {
 		 * @return the String representation
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("ResourceListTransferable[");
 			buffer.append("l = ").append(l);

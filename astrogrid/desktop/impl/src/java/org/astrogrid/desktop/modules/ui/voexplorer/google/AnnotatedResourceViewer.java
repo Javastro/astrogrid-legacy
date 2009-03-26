@@ -158,14 +158,16 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 				, scrollPane, "Information provided by the resource");			
 	}
 
-	public void clear() {
+	@Override
+    public void clear() {
 	    userAnnotationPanel.clear();
 		lingerTimer.stop();
 		annotations.clear();
 		super.clear();
 	}
 
-	public void display(final Resource res) {
+	@Override
+    public void display(final Resource res) {
 	    userAnnotationPanel.clear(); // clear this first, which causes any writes to be saved.
 		annotations.clear();
 		lingerTimer.restart();
@@ -231,7 +233,8 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 		public JComponent getComponent(final Object arg0, final int arg1) {
 			return (JComponent)arg0;
 		}
-		public int getComponentsPerElement() {
+		@Override
+        public int getComponentsPerElement() {
 			return 1;
 		}
 	}

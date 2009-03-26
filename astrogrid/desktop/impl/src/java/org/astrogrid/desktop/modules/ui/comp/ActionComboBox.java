@@ -33,7 +33,8 @@ public final class ActionComboBox extends JComboBox {
 
 		// renderer that displays Actions.
 		setRenderer(new BasicComboBoxRenderer() {
-			public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+			@Override
+            public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
 				if (isSelected) {
 					setBackground(list.getSelectionBackground());
 					setForeground(list.getSelectionForeground());

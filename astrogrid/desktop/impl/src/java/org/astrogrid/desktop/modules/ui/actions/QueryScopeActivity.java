@@ -37,7 +37,8 @@ private final AstroScopeInternal ai;
 	/** Test whether it's something we can invoke.
 	 * @param r
 	 */
-	protected boolean invokable(final Resource r) {
+	@Override
+    protected boolean invokable(final Resource r) {
 		final boolean b =  r instanceof SiapService 
 				|| r instanceof ConeService
 				|| r instanceof SsapService
@@ -46,6 +47,7 @@ private final AstroScopeInternal ai;
 					;
 		return b;
 	}
+@Override
 public void actionPerformed(final ActionEvent e) {
 	final List l = computeInvokable();
 	final int sz = l.size();

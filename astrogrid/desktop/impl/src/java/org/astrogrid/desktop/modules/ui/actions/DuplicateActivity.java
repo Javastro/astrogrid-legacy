@@ -22,6 +22,7 @@ import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
  */
 public class DuplicateActivity extends AbstractFileActivity {
 
+    @Override
     protected boolean invokable(final FileObject f) {
         try {
             return (! AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
@@ -42,6 +43,7 @@ public class DuplicateActivity extends AbstractFileActivity {
         setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D,UIComponentMenuBar.MENU_KEYMASK));
     }
     
+    @Override
     public void actionPerformed(final ActionEvent e) {
         final List l = computeInvokable();
         // each item in the list is going to be a file object. Construct a command array...

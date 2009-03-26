@@ -533,9 +533,11 @@ public class CSH {
             if (parents == null) {
                 // WeakHashMap of WeakReferences
                 parents = new WeakHashMap(4) {
+                    @Override
                     public Object put(final Object key, final Object value) {
                         return super.put(key, new WeakReference(value));
                     }
+                    @Override
                     public Object get(final Object key) {
                         final WeakReference wr = (WeakReference)super.get(key);
                         if (wr != null) {

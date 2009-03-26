@@ -29,6 +29,7 @@ public TapQueryActivity(final QueryBuilderInternal t) {
 // thing to invoke
 private final QueryBuilderInternal t;
 
+@Override
 public void actionPerformed(final ActionEvent e) {
     final List l = computeInvokable();
     final TapService r = (TapService)l.get(0);
@@ -40,13 +41,15 @@ public void actionPerformed(final ActionEvent e) {
 	
 	
 	// accept a single database schema, or a single queriable service.
-	public boolean invokable(final Resource resource) {
+	@Override
+    public boolean invokable(final Resource resource) {
 	    return resource instanceof TapService;
 		
 	}
 
 	// accept if any in selection are database schema.
-	public void someSelected(final Resource[] list) {
+	@Override
+    public void someSelected(final Resource[] list) {
 		noneSelected();
 		// later - support multi-query later
 

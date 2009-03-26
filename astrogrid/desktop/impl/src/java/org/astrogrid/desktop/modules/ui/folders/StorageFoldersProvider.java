@@ -26,7 +26,8 @@ public class StorageFoldersProvider extends AbstractListProvider implements User
 		logger.info("Reading/Writing storage folders to " + getStorageLocation());
 	}
 
-	protected void initializeFolderList() {
+	@Override
+    protected void initializeFolderList() {
 		
 		final URI homeUri = SystemUtils.getUserHome().toURI();
 		getList().add(new StorageFolder("Home","home16.png",homeUri));

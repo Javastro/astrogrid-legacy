@@ -18,6 +18,7 @@ public class ColorCellRenderer extends BasicComboBoxRenderer {
     }
     ColorSwatchIcon ico = new ColorSwatchIcon(Color.WHITE,preferredSize);
 
+    @Override
     public Component getListCellRendererComponent(final JList list, final Object value,
         final int index, final boolean isSelected, final boolean cellHasFocus) {
         if (isSelected) {

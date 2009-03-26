@@ -12,17 +12,20 @@ public class OrSRQL extends BinaryOperatorSRQL {
 	 * 
 	 */
 	private static final long serialVersionUID = 2532521864531858135L;
-	public Object accept(final SRQLVisitor visitor) {
+	@Override
+    public Object accept(final SRQLVisitor visitor) {
 		return visitor.visit(this);
 }
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.left == null) ? 0 : this.left.hashCode());
 		result = PRIME * result + ((this.right == null) ? 0 : this.right.hashCode());
 		return result;
 	}
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -54,7 +57,8 @@ public class OrSRQL extends BinaryOperatorSRQL {
 		 * @return the String representation
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("OrQuery[");
 			buffer.append("left = ").append(left);

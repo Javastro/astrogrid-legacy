@@ -26,12 +26,14 @@ public abstract class AbstractResourceActivity extends AbstractActivity implemen
 		}
 		return invokable((Resource) arg0);
 	}
-	public  void noneSelected() {
+	@Override
+    public  void noneSelected() {
 		setEnabled(false);
 		current = null;
 	}
 	
-	public final void selected(final Transferable r) {
+	@Override
+    public final void selected(final Transferable r) {
 	    if (r == null) {
 	        return; 
 	    }

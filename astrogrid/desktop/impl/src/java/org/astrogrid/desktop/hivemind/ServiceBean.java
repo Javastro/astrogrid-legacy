@@ -1,4 +1,4 @@
-/*$Id: ServiceBean.java,v 1.4 2008/11/04 14:35:49 nw Exp $
+/*$Id: ServiceBean.java,v 1.5 2009/03/26 18:04:10 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,6 +51,7 @@ public class ServiceBean {
         this.module = module;
     }
     
+    @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer();
         sb.append("ServiceBean[");
@@ -70,6 +71,9 @@ public class ServiceBean {
 
 /* 
 $Log: ServiceBean.java,v $
+Revision 1.5  2009/03/26 18:04:10  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.4  2008/11/04 14:35:49  nw
 javadoc polishing
 

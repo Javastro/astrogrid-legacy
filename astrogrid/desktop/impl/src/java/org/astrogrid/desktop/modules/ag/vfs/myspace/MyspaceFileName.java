@@ -26,7 +26,8 @@ public class MyspaceFileName extends AbstractFileName {
 	private final String community;
 	private final String user;
 	
-	protected void appendRootUri(final StringBuffer buffer, final boolean addPassword) {
+	@Override
+    protected void appendRootUri(final StringBuffer buffer, final boolean addPassword) {
 		buffer.append("ivo://");
 		buffer.append(community);
 		buffer.append("/");
@@ -34,7 +35,8 @@ public class MyspaceFileName extends AbstractFileName {
 		buffer.append("#");
 	}
 
-	public FileName createName(final String absPath, final FileType type) {
+	@Override
+    public FileName createName(final String absPath, final FileType type) {
 		return new MyspaceFileName(community, user,absPath,type);
 	}
 	
@@ -42,7 +44,8 @@ public class MyspaceFileName extends AbstractFileName {
 		return new Ivorn(getURI());
 	}
 	
-	public String getURI() {
+	@Override
+    public String getURI() {
 	    return StringUtils.replace(super.getURI()," ","%20"); // bugfix override.
 	}
 

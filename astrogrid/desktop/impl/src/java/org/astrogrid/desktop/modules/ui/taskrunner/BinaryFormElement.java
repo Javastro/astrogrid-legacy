@@ -31,12 +31,14 @@ public class BinaryFormElement extends AbstractTaskFormElement {
 		indirectToggle.setVisible(false);
 	}
 
-	protected JComponent createEditor() {
+	@Override
+    protected JComponent createEditor() {
 		return new JLabel("Choose a file"); // placeholder - shouldn't be displayed.
 	}
 
 	// not possible with a binary editor.
-	protected String getStringValue() {
+	@Override
+    protected String getStringValue() {
 		return "";
 	}
 

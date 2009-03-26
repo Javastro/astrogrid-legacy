@@ -31,15 +31,18 @@ public class XQueryList extends ResourceFolder {
 	public void setQuery(final String query) {
 		this.query = query;
 	}
-	public void display(final RegistryGooglePanel p) {
+	@Override
+    public void display(final RegistryGooglePanel p) {
 		logger.info("Displaying " + getName());
 		p.displayQuery("Contents of " + getName(),query);
 	}
 
-	public void edit(final VOExplorerImpl voe) {
+	@Override
+    public void edit(final VOExplorerImpl voe) {
 		voe.editExistingQueryList(this);
 	}
-	public void editAsNew(final VOExplorerImpl voe) {
+	@Override
+    public void editAsNew(final VOExplorerImpl voe) {
 		voe.editNewQueryList(this);
 	}
 }

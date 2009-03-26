@@ -9,13 +9,11 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.ArrayList;
@@ -38,7 +36,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -49,7 +46,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
 import org.apache.xmlbeans.SchemaType;
@@ -169,6 +165,7 @@ public final class AdqlTree extends JTree
        
     }
     
+    @Override
     public boolean isPathEditable( TreePath path ) {
         boolean result = false ;
         if( path != null && path.getPathCount() > 1) {
@@ -192,6 +189,7 @@ public final class AdqlTree extends JTree
     
     
     
+    @Override
     public String convertValueToText( Object value
                                     , boolean sel
                                     , boolean expanded
@@ -360,6 +358,7 @@ public final class AdqlTree extends JTree
         log.debug( tabulaData ) ;
         
         (new BackgroundWorker( parent, "Fetching Catalogue Data" ,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
+            @Override
             protected Object construct() throws Exception {
                 CatalogService cs = null ;
                 if( tabulaData != null ) {
@@ -368,6 +367,7 @@ public final class AdqlTree extends JTree
                 }
                 return cs ;                      
             }
+            @Override
             protected void doFinished( Object result ) {
                 catalogueService = (CatalogService)result ;
                 if( catalogueService != null ){
@@ -379,6 +379,7 @@ public final class AdqlTree extends JTree
                     fireStateChanged() ;
                 }
             }
+            @Override
             protected void doError(Throwable ex) {
                 parent.showTransientWarning("Failed to find catalogue data",ExceptionFormatter.formatException(ex));
                 if( log.isDebugEnabled() ) {
@@ -570,8 +571,10 @@ public final class AdqlTree extends JTree
             setBorder( BorderFactory.createEtchedBorder() ) ;
         }
         
+        @Override
         public void setIcon( javax.swing.Icon icon ) { }
                
+        @Override
         public Component getTreeCellRendererComponent( JTree tree
                                                      , Object value
                                                      , boolean sel
@@ -593,6 +596,7 @@ public final class AdqlTree extends JTree
             return super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus) ;
         }
             
+        @Override
         public Dimension getPreferredSize() {
             Dimension d = super.getPreferredSize() ;
             d.width = this.useableWidth ;
@@ -723,6 +727,7 @@ public final class AdqlTree extends JTree
                 super() ;
             }
             
+            @Override
             public void setComboValue() {              
                 ((DefaultComboBoxModel)getModel()).removeAllElements() ;
                 command = getCommandFactory().newEditEnumeratedAttributeCommand(AdqlTree.this, adqlNode ) ;
@@ -736,6 +741,7 @@ public final class AdqlTree extends JTree
                 }               
             }
             
+            @Override
             protected void setEnumeratedValue( String value ) {
                 command.setNewValue( value ) ;
                 Result result = command.execute();
@@ -782,10 +788,12 @@ public final class AdqlTree extends JTree
                 setText( command.getOldValue() ) ;
             }
             
+            @Override
             public void setBounds( Rectangle rectangle ) {
                 super.setBounds( AdqlTreeCellEditor.this.setBounds( rectangle ) ) ;
             }
             
+            @Override
             public void setBounds( int x, int y, int w, int h ) {
                 Rectangle r = AdqlTreeCellEditor.this.setBounds( x, y, w, h ) ;
                 super.setBounds( r.x, r.y, r.width, r.height ) ;

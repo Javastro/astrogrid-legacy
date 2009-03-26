@@ -1,4 +1,4 @@
-/*$Id: TextImageTreeNodeRenderer.java,v 1.1 2007/12/12 13:54:14 nw Exp $
+/*$Id: TextImageTreeNodeRenderer.java,v 1.2 2009/03/26 18:04:10 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,21 +12,15 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.MediaTracker;
-import java.awt.Shape;
 import java.awt.Transparency;
-import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
-import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
-
 import edu.berkeley.guir.prefuse.VisualItem;
-import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
 /** Duplication of TextImageItemSizeRenderer that also 
  * draws glpyhs for nodes with associated result files.
  * 
@@ -40,6 +34,7 @@ public class TextImageTreeNodeRenderer extends TextImageItemSizeRenderer {
     public TextImageTreeNodeRenderer(NodeSizingMap m) {
         super(m);
     }
+    @Override
     protected Image getImage(VisualItem item) {
         Image ico =  super.getImage(item);
         Image file = null;
@@ -117,6 +112,9 @@ public class TextImageTreeNodeRenderer extends TextImageItemSizeRenderer {
 
 /* 
 $Log: TextImageTreeNodeRenderer.java,v $
+Revision 1.2  2009/03/26 18:04:10  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.1  2007/12/12 13:54:14  nw
 astroscope upgrade, and minor changes for first beta release
 

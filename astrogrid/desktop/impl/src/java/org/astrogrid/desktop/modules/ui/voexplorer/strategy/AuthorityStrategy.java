@@ -15,7 +15,8 @@ import ca.odell.glazedlists.matchers.Matcher;
  * @since Feb 15, 20073:35:59 PM
  */
 public final class AuthorityStrategy extends PipelineStrategy {
-	public Matcher createMatcher(final List selected) {
+	@Override
+    public Matcher createMatcher(final List selected) {
 		return new Matcher() {
 			public boolean matches(Object arg0) {
 				Resource r = (Resource)arg0;
@@ -25,7 +26,8 @@ public final class AuthorityStrategy extends PipelineStrategy {
 		};
 	}
 
-	public TransformedList createView(EventList base) {
+	@Override
+    public TransformedList createView(EventList base) {
 		return new FunctionList(base,
 						new FunctionList.Function() {
 							public Object evaluate(Object arg0) {
@@ -35,7 +37,8 @@ public final class AuthorityStrategy extends PipelineStrategy {
 				});
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return "Authority";
 	}
 }

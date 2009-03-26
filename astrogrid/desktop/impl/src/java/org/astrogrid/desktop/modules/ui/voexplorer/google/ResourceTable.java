@@ -109,7 +109,8 @@ public class ResourceTable extends JTable {
 	}
 
 	/** construct a tool tip, based on vomon information */
-	public String getToolTipText(final MouseEvent e) {
+	@Override
+    public String getToolTipText(final MouseEvent e) {
 		final java.awt.Point p = e.getPoint();
 		final int rowIndex = rowAtPoint(p);
 		if (rowIndex > -1) { 
@@ -145,13 +146,16 @@ public class ResourceTable extends JTable {
 
 	
 	private class ResourceTableTransferHandler extends TransferHandler {
-		public int getSourceActions(final JComponent c) {
+		@Override
+        public int getSourceActions(final JComponent c) {
 			return COPY;
 		}
-		public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
+		@Override
+        public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
 			return false;
 		}
-		protected Transferable createTransferable(final JComponent c) {
+		@Override
+        protected Transferable createTransferable(final JComponent c) {
 			return getSelectionTransferable();
 		}
 	}
@@ -176,6 +180,7 @@ public class ResourceTable extends JTable {
      * nasty issue in OSX java 1.4 and 1.5 (popup gesture ctrl-click can
      * also deselect a selected item) - bugzilla 2610.
      */
+    @Override
     protected void processMouseEvent(final MouseEvent e) {
         final int mods = e.getModifiers();
 

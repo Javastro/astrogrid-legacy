@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.18 2008/11/04 14:35:48 nw Exp $
+/*$Id: StapProtocol.java,v 1.19 2009/03/26 18:04:10 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,8 @@ public class StapProtocol extends TemporalDalProtocol {
     }
 
 
-	public AbstractRetriever[] createRetrievers(final Service service, final Date start, final Date end, final double ra, final double dec, final double raSize, final double decSize) {
+	@Override
+    public AbstractRetriever[] createRetrievers(final Service service, final Date start, final Date end, final double ra, final double dec, final double raSize, final double decSize) {
         final Capability[] capabilities = service.getCapabilities();
         final List cList = new ArrayList();
         for (int i = 0; i < capabilities.length; i++) {
@@ -76,6 +77,7 @@ public class StapProtocol extends TemporalDalProtocol {
 
 	
 	   
+    @Override
     protected boolean isSuitable(final Resource r)  {
         return r instanceof StapService;
     }
@@ -85,6 +87,9 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.19  2009/03/26 18:04:10  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.18  2008/11/04 14:35:48  nw
 javadoc polishing
 

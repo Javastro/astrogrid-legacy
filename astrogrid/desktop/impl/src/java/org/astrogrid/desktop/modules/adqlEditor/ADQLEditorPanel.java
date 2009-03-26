@@ -235,6 +235,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             this.maxSize = maxSize;
         }
 
+        @Override
         public Object push(final Object item) {
             if (size() == maxSize) {
                 removeElementAt(0);
@@ -1033,12 +1034,14 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
         // to a Button-3 click.
         // complicated, eh?
         // http://developer.apple.com/documentation/Java/Conceptual/Java14Development/07-NativePlatformIntegration/NativePlatformIntegration.html
+        @Override
         public void mouseReleased(final MouseEvent event) {
             if (event.isPopupTrigger()) {
                 processPopupClick(event);
             }
         }
 
+        @Override
         public void mousePressed(final MouseEvent event) {
             if (event.isPopupTrigger()) {
                 processPopupClick(event);
@@ -1078,6 +1081,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             super("Cut");
         }
 
+        @Override
         public boolean isEnabled() {
             final TreePath path = adqlTree.getSelectionPath();
             return wouldBeEnabled(path);
@@ -1148,6 +1152,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
 
     private class CopyAction extends AbstractAction {
 
+        @Override
         public boolean isEnabled() {
             final TreePath path = adqlTree.getSelectionPath();
             return wouldBeEnabled(path);
@@ -1234,6 +1239,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             }
         }
 
+        @Override
         public boolean isEnabled() {
             final TreePath path = adqlTree.getSelectionPath();
             return wouldBeEnabled(path);
@@ -1800,6 +1806,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             final JScrollPane scrTree = new JScrollPane(adqlTree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);            
             scrTree.addComponentListener ( 
                     new ComponentAdapter() {
+                        @Override
                         public void componentResized( final ComponentEvent e ) {
                             adqlTree.setAvailableWidth( scrTree.getViewportBorderBounds().width ) ;
                         }
@@ -2123,6 +2130,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
 
     private Point[] elastic;
 
+    @Override
     protected void paintChildren(final Graphics g) {
         super.paintChildren(g);
         if (elastic != null && elastic.length == 2) {

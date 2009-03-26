@@ -86,14 +86,17 @@ public class StaticList extends ResourceFolder  {
 	public int getSize() {
 		return resouceUris.size();
 	}
-	public void display(final RegistryGooglePanel p) {
+	@Override
+    public void display(final RegistryGooglePanel p) {
 		logger.info("Displaying " + getName());
 		p.displayIdSet("Contents of " + getName(),resouceUris);
 	}
-	public void edit(final VOExplorerImpl voe) {
+	@Override
+    public void edit(final VOExplorerImpl voe) {
 		voe.editExistingStaticList(this);
 	}
-	public void editAsNew(final VOExplorerImpl voe) {
+	@Override
+    public void editAsNew(final VOExplorerImpl voe) {
 		voe.editNewStaticList(this);
 	}
 

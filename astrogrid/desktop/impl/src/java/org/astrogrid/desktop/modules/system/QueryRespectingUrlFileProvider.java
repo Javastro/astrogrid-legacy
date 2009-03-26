@@ -35,6 +35,7 @@ public class QueryRespectingUrlFileProvider extends UrlFileProvider {
         setFileNameParser(new QueryRespectingFileNameParser());
     }
     
+    @Override
     public synchronized FileObject findFile(final FileObject baseFile, final String uri,
             final FileSystemOptions fileSystemOptions) throws FileSystemException {
         {
@@ -87,6 +88,7 @@ public class QueryRespectingUrlFileProvider extends UrlFileProvider {
         private final URLFileNameParser url = new QueryRespectingURLFileNameParser(80);
         private final GenericFileNameParser generic = new GenericFileNameParser();
 
+        @Override
         public FileName parseUri(final VfsComponentContext context, final FileName base,
                 final String filename) throws FileSystemException {
             if (isUrlBased(base, filename))
@@ -106,6 +108,7 @@ public class QueryRespectingUrlFileProvider extends UrlFileProvider {
         public QueryRespectingURLFileNameParser(final int defaultPort) {
             super(defaultPort);
         }
+        @Override
         public FileName parseUri(final VfsComponentContext context, final FileName base, final String filename) throws FileSystemException
         {
             // FTP URI are generic URI (as per RFC 2396)
@@ -157,6 +160,7 @@ public class QueryRespectingUrlFileProvider extends UrlFileProvider {
             super(scheme, hostName, port, defaultPort, userName, password, path, type,
                     queryString);
         }
+        @Override
         public boolean equals(final Object obj) {
             if (!(obj instanceof QueryRespectingURLFileName))
             {

@@ -29,7 +29,8 @@ public class TextFormElement extends AbstractTaskFormElement implements Document
 	      CSH.setHelpIDString(getEditor(),"task.form.text");
 	}
 
-	protected final JComponent createEditor() {
+	@Override
+    protected final JComponent createEditor() {
 		text = new JTextField();
 		if (!pval.getIndirect()) {
 		    if (pdesc.getDefaultValue() != null) {
@@ -60,7 +61,8 @@ public class TextFormElement extends AbstractTaskFormElement implements Document
 	}
 
 
-	protected String getStringValue() {
+	@Override
+    protected String getStringValue() {
 		return text.getText();
 	}
 

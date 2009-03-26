@@ -30,7 +30,8 @@ public final class FallbackURLConnection extends URLConnection {
 		super(url);
 	}
 
-	public void connect() throws IOException {
+	@Override
+    public void connect() throws IOException {
 		final StringTokenizer tok = new StringTokenizer(getURL().toString().substring(FALLBACK_PROTOCOL.length()),",");
 		while (tok.hasMoreElements()) { 	// try each url in turn until something works..
 			final URL candidate = new URL(tok.nextToken());
@@ -50,21 +51,25 @@ public final class FallbackURLConnection extends URLConnection {
 	private static final Log logger = LogFactory.getLog(FallbackURLConnection.class);
 	private URLConnection actual;
 	// delegate methods..
-	public Object getContent() throws IOException {
+	@Override
+    public Object getContent() throws IOException {
 		return this.getActual().getContent();
 	}
 
-	public Object getContent(final Class[] classes) throws IOException {
+	@Override
+    public Object getContent(final Class[] classes) throws IOException {
 		return this.getActual().getContent(classes);
 	}
 
 
 
-	public InputStream getInputStream() throws IOException {
+	@Override
+    public InputStream getInputStream() throws IOException {
 		return this.getActual().getInputStream();
 	}
 
-	public OutputStream getOutputStream() throws IOException {
+	@Override
+    public OutputStream getOutputStream() throws IOException {
 		return this.getActual().getOutputStream();
 	}
 

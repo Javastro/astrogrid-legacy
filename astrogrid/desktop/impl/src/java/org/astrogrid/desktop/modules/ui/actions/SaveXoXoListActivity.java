@@ -30,7 +30,8 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 public class SaveXoXoListActivity extends AbstractResourceActivity 
     implements Activity.NoContext, Activity.NoTask{
 
-	protected boolean invokable(final Resource r) {
+	@Override
+    protected boolean invokable(final Resource r) {
 		return true;
 	}
 
@@ -49,7 +50,8 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 
 	private final ResourceChooserInternal chooser;
 	private final FileSystemManager vfs;
-	public void actionPerformed(final ActionEvent e) {
+	@Override
+    public void actionPerformed(final ActionEvent e) {
 		final List rs = computeInvokable();
 		Component comp = null;
 		if (e.getSource() instanceof Component) {
@@ -60,7 +62,8 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 			return;
 		}
 		(new BackgroundWorker(uiParent.get(),"Exporting summaries",BackgroundWorker.LONG_TIMEOUT) {
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
 				PrintWriter out = null;
                 FileObject fo = null;
 				final int max = rs.size() + 2;
@@ -129,6 +132,7 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 				}
 				return null;
 			}
+            @Override
             protected void doFinished(final Object result) {
                 parent.showTransientMessage("Export complete","");
             }			

@@ -35,7 +35,8 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 				.getLog(UcdClauseTemplate.class);
 	private static final String[] predicates = new String[]{"is","is not"};
 
-	protected void displayClause(SRQL clause, final JComponent valueField, final JComponent predicateField) {
+	@Override
+    protected void displayClause(SRQL clause, final JComponent valueField, final JComponent predicateField) {
 		final JComboBox pred = (JComboBox)predicateField;
 		final JComboBox val = (JComboBox)valueField;
 		if (clause instanceof NotSRQL) {
@@ -49,7 +50,8 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 		val.setSelectedItem(u); // works because equals test only works on value, not on description field.
 	}
 
-	SRQL constructClause(final JComponent valueField, final JComponent predicateField) {
+	@Override
+    SRQL constructClause(final JComponent valueField, final JComponent predicateField) {
 		final TargettedSRQL t = new TargettedSRQL();
 		t.setTarget(target);
 		final TermSRQL ts = new TermSRQL();
@@ -88,19 +90,22 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 		super(name);
 	}
 
-	protected JComponent createPredicateField() {
+	@Override
+    protected JComponent createPredicateField() {
 		final JComboBox c = new JComboBox(predicates);
 		c.setEditable(false);
 		c.setSelectedIndex(0);
 		return c;
 	}
 
-	protected JComponent createValueField() {
+	@Override
+    protected JComponent createValueField() {
 		final EventList vals= new BasicEventList();
 		populate(vals);
 		final JComboBox c = new JComboBox();
 		c.setRenderer(new BasicComboBoxRenderer() {
-		public Component getListCellRendererComponent(final JList list, Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+		@Override
+        public Component getListCellRendererComponent(final JList list, Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
 			final DescribedValue u = (DescribedValue)value;
 			value = u.toFullString();
 			return super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
@@ -125,7 +130,8 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 	public static final class DescribedValue {		
 		public final String value;
 		public final String fullString;
-		public String toString() {
+		@Override
+        public String toString() {
 			return value;
 		}
 		public String toFullString() {
@@ -136,13 +142,15 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 			this.value = v;
 			this.fullString =  v + " : " + description;
 		}
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			final int PRIME = 31;
 			int result = 1;
 			result = PRIME * result + ((this.value == null) ? 0 : this.value.hashCode());
 			return result;
 		}
-		public boolean equals(final Object obj) {
+		@Override
+        public boolean equals(final Object obj) {
 			if (this == obj) {
                 return true;
             }

@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.20 2008/11/04 14:35:49 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.21 2009/03/26 18:04:11 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -87,7 +87,8 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
         	public void run() {
         		final BackgroundWorker worker = new BackgroundWorker(context,task.getName(),BackgroundWorker.VERY_LONG_TIMEOUT,Thread.MIN_PRIORITY) {
 
-					protected Object construct() throws Exception {
+					@Override
+                    protected Object construct() throws Exception {
 						task.execute(this);
 						return null;
 					}
@@ -108,7 +109,8 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 			public void run() {// rund on scheduler thread. just submits a new backgroundWorker for execution.
 				final BackgroundWorker worker = new BackgroundWorker(context,task.getTitle(),BackgroundWorker.LONG_TIMEOUT) {
 
-					protected Object construct() throws Exception {
+					@Override
+                    protected Object construct() throws Exception {
 						final DelayedContinuation next =  task.execute();
 						if (next != null) {
 							schedule(next); // recursive call.
@@ -149,6 +151,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.21  2009/03/26 18:04:11  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.20  2008/11/04 14:35:49  nw
 javadoc polishing
 

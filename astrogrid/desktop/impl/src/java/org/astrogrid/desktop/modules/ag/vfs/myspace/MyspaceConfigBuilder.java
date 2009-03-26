@@ -13,7 +13,8 @@ import org.apache.commons.vfs.FileSystemConfigBuilder;
  */
 public class MyspaceConfigBuilder extends FileSystemConfigBuilder {
 
-	protected Class getConfigClass() {
+	@Override
+    protected Class getConfigClass() {
 		return MyspaceFileSystem.class;
 	}
 	

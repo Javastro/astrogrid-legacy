@@ -21,7 +21,8 @@ import ca.odell.glazedlists.matchers.Matcher;
  * @since Feb 15, 20073:36:34 PM
  */
 public final class UcdStrategy extends PipelineStrategy {
-	public Matcher createMatcher(final List selected) {
+	@Override
+    public Matcher createMatcher(final List selected) {
 		return new Matcher() {
 			public boolean matches(final Object r) {
 				if (r instanceof DataCollection) {
@@ -57,7 +58,8 @@ public final class UcdStrategy extends PipelineStrategy {
 	}
 	
 
-	public TransformedList createView(final EventList base) {
+	@Override
+    public TransformedList createView(final EventList base) {
 		return new CollectionList(base,
 				new CollectionList.Model() {
 			public List getChildren(final Object r) {
@@ -94,7 +96,8 @@ public final class UcdStrategy extends PipelineStrategy {
 		});
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return "UCD";
 	}
 }

@@ -14,7 +14,8 @@ public class PhraseSRQL extends SRQL {
 	 */
 	private static final long serialVersionUID = -74242873320481568L;
 	protected String phrase;
-	public Object accept(final SRQLVisitor visitor) {
+	@Override
+    public Object accept(final SRQLVisitor visitor) {
 		return visitor.visit(this);
 }
 	public String getPhrase() {
@@ -23,13 +24,15 @@ public class PhraseSRQL extends SRQL {
 	public void setPhrase(final String phrase) {
 		this.phrase = phrase;
 	}
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.phrase == null) ? 0 : this.phrase.hashCode());
 		return result;
 	}
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -54,7 +57,8 @@ public class PhraseSRQL extends SRQL {
 		 * @return the String representation
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("PhraseQuery[");
 			buffer.append("phrase = ").append(phrase);

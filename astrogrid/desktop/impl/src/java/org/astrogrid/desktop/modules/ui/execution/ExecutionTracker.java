@@ -542,6 +542,7 @@ public final ProcessMonitor getMoitor() {
                 super(uiParent, "Listing results", BackgroundWorker.VERY_LONG_TIMEOUT, Thread.MAX_PRIORITY);
             }
 
+            @Override
             protected Object construct() throws Exception {
                 if (! alreadyFoundRoot) {
                     final FileObject root = pm.getResultsFileSystem().getRoot();
@@ -553,6 +554,7 @@ public final ProcessMonitor getMoitor() {
                 return null;
             }
 
+            @Override
             protected void doFinished(final Object result) {
                 if (result != null) {
                     navigator.move((FileObject)result);		                
@@ -561,6 +563,7 @@ public final ProcessMonitor getMoitor() {
                 }
             }
 
+            @Override
             public BackgroundWorker createRetryWorker() {
                 return new LoadResultsWorker();
             }
@@ -591,6 +594,7 @@ public final ProcessMonitor getMoitor() {
                 // record these conditions now.. else they might change.
                 final boolean running = pm.started() && ! hasFinished();
                 (new BackgroundWorker(uiParent,"Cleaning up",Thread.MIN_PRIORITY) {                    
+                    @Override
                     protected Object construct() throws Exception {
                         if (running) {
                             pm.halt();
@@ -598,6 +602,7 @@ public final ProcessMonitor getMoitor() {
                         rpmi.delete(pm);
                         return null;
                     }
+                    @Override
                     protected void doError(final Throwable ex) {
                         logger.error("NotFoundException",ex);
                     }
@@ -655,11 +660,13 @@ public final ProcessMonitor getMoitor() {
                         // will be re-enabled by the populateStatusLabel method if appropriate.
                     }
 
+                    @Override
                     protected Object construct() throws Exception {
                         pm.refresh();
                         return null;
                     }
 
+                    @Override
                     protected void doAlways() {
                         populateStatusLabel();
                     }
@@ -685,7 +692,8 @@ public final ProcessMonitor getMoitor() {
 			);
 		}
 
-		public int getComponentsPerElement() {
+		@Override
+        public int getComponentsPerElement() {
 		    return 1;
 		}
 

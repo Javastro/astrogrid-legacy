@@ -134,6 +134,7 @@ public class AdjustableColumnModel extends DefaultTableColumnModel {
      * When a column is added to this TableColumnModel, add it to the
      * listModel and set it visible in the visibleModel
      */
+    @Override
     public void addColumn( TableColumn tcol ) {
         super.addColumn( tcol );
         if ( ! listModel.contains( tcol ) ) {
@@ -148,6 +149,7 @@ public class AdjustableColumnModel extends DefaultTableColumnModel {
      * When a column is removed from this TableColumnModel, set it 
      * invisible in the visibleModel.
      */
+    @Override
     public void removeColumn( TableColumn tcol ) {
         super.removeColumn( tcol );
         int ipos = listModel.indexOf( tcol );

@@ -301,6 +301,7 @@ public void reload() throws ServiceException {
     
     public Test getSelftest() {
         return new TestCase("Services monitor") {
+            @Override
             protected void runTest()  {
                 assertNotNull("Invalid endpoint",endpoint);
                 try {

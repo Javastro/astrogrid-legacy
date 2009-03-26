@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.19 2009/03/04 18:43:09 nw Exp $
+/*$Id: SsapImpl.java,v 1.20 2009/03/26 18:04:12 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,6 +65,7 @@ public class SsapImpl extends DALImpl implements Ssap {
 		+ " ) and ( not ( @status = 'inactive' or @status='deleted'))]";
     }
 
+    @Override
     protected URL findAccessURL(final Service s) throws InvalidArgumentException {
         if (!(s instanceof SsapService)) {
             throw new InvalidArgumentException(s.getId() + " does not provide a SSAP capability");
@@ -180,6 +181,9 @@ public class SsapImpl extends DALImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.20  2009/03/26 18:04:12  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.19  2009/03/04 18:43:09  nw
 Complete - taskMove DAL over to VFS
 

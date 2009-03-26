@@ -17,7 +17,6 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Label;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -111,6 +110,7 @@ public class SplashWindow extends Window {
         // clicking on its display area. This mouse listener
         // listens for mouse clicks and disposes the splash window.
         MouseAdapter disposeOnClick = new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent evt) {
                 // Note: To avoid that method splash hangs, we
                 // must set paintCalled to true and call notifyAll.
@@ -160,6 +160,7 @@ public class SplashWindow extends Window {
     /**
      * Updates the display area of the window.
      */
+    @Override
     public void update(Graphics g) {
         // Note: Since the paint method is going to draw an
         // image that covers the complete area of the component we
@@ -170,6 +171,7 @@ public class SplashWindow extends Window {
     /**
      * Paints the image on the window.
      */
+    @Override
     public void paint(Graphics g) {
         g.drawImage(image, 0, 0, this);
         drawLabel(g);

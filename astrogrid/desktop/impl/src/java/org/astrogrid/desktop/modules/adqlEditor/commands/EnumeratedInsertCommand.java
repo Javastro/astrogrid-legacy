@@ -70,6 +70,7 @@ public class EnumeratedInsertCommand extends StandardInsertCommand {
         this.attrValue = attributeValue ;
     }
     
+    @Override
     public void setSelectedValue( String value ) {
         setAttributeValue( value ) ;
     }
@@ -78,6 +79,7 @@ public class EnumeratedInsertCommand extends StandardInsertCommand {
         return AdqlUtils.getEnumValuesGivenDrivingType( attrType ) ;
     }
     
+    @Override
     protected Result _execute() {
         Result result = super._execute() ;
         if( result != CommandExec.FAILED ) {
@@ -98,11 +100,13 @@ public class EnumeratedInsertCommand extends StandardInsertCommand {
         return result ;
     }
     
+    @Override
     protected Result _unexecute() {
         Result result = super._unexecute() ;
         return result ;
     }
     
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer(512) ;
         buffer.append( "\nEnumeratedInsertCommand" ) ;

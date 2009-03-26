@@ -218,6 +218,7 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
 
     public Test getSelftest() {
         return new TestCase("Sesame object name resolver") {
+            @Override
             protected void runTest(){
                 try {
                     final SesamePositionBean pos = primResolve("m32");

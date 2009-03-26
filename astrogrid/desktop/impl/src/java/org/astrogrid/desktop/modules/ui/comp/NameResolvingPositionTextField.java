@@ -132,7 +132,8 @@ public class NameResolvingPositionTextField extends PositionTextField implements
     		this.orig = orig;
     	}
     	private final AbstractFormatter orig;
-		public Object stringToValue(final String arg0) throws ParseException {
+		@Override
+        public Object stringToValue(final String arg0) throws ParseException {
 			// try the coordinate parser first
 			objectName=null;
 			try {
@@ -148,7 +149,8 @@ public class NameResolvingPositionTextField extends PositionTextField implements
 			resolveNameToPosition(arg0);
 			return new Point2D.Double(Double.NaN,Double.NaN); // temporary value, while we're finding the correct one.
 		}
-		public String valueToString(final Object arg0) throws ParseException {
+		@Override
+        public String valueToString(final Object arg0) throws ParseException {
 			return orig.valueToString(arg0);
 		}
     }
@@ -179,16 +181,19 @@ public class NameResolvingPositionTextField extends PositionTextField implements
     	objectName = inputPos;
     	pos = new SesamePositionBean(); // temporary placehoder
     	latest = new BackgroundWorker(parent,"Resolving " + inputPos + " using Sesame",BackgroundWorker.SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
 				return ses.resolve(inputPos.trim());   
 			}
-			protected void doAlways() {
+			@Override
+            protected void doAlways() {
 				if (this == latest) {
 				    latest = null;
 				    setEnabled(true);				    
 				}
 			}
-			protected void doError(final Throwable ex) {
+			@Override
+            protected void doError(final Throwable ex) {
 			    if (this == latest) {
 			        setText(inputPos); // put things back as they were.
 			        if (ex instanceof NotFoundException ) {
@@ -201,7 +206,8 @@ public class NameResolvingPositionTextField extends PositionTextField implements
 			        fireResolveFailed();
 			    }
 			}
-			protected void doFinished(final Object result) {	
+			@Override
+            protected void doFinished(final Object result) {	
 			    if (this == latest) { // i.e. hasn't been superceded by a more recent task
 			        pos = (SesamePositionBean)result;
 			        setPosition(new Point2D.Double(pos.getRa(),pos.getDec()));

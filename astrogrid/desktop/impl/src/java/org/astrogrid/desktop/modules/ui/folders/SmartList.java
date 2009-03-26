@@ -46,19 +46,23 @@ public class SmartList extends ResourceFolder {
 		
 
 	
-	public void display(final RegistryGooglePanel p) {
+	@Override
+    public void display(final RegistryGooglePanel p) {
 		logger.info("Displaying " + getName());
 		p.displayQuery("Contents of " + getName(),query);
 	}
 
-	public void edit(final VOExplorerImpl voe) {
+	@Override
+    public void edit(final VOExplorerImpl voe) {
 		voe.editExistingSmartList(this);
 	}
 
-	public void editAsNew(final VOExplorerImpl voe) {
+	@Override
+    public void editAsNew(final VOExplorerImpl voe) {
 		voe.editNewSmartList(this);
 	}
 
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -67,6 +71,7 @@ public class SmartList extends ResourceFolder {
         return result;
     }
 
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;

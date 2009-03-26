@@ -210,6 +210,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 			        return null;
 			    
 			}
+            @Override
             protected void doFinished(final Object result) {
                 parent.showTransientMessage("Message sent","to " + target.getName());     
             }

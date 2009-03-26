@@ -35,7 +35,8 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	public DimensionTextField(final DoubleDimension dim) {
 		super();
 		setFormatterFactory(new AbstractFormatterFactory() {
-			public AbstractFormatter getFormatter(final JFormattedTextField tf) {
+			@Override
+            public AbstractFormatter getFormatter(final JFormattedTextField tf) {
 				return isDecimal ? decimal : sexa;
 			}
 		});
@@ -54,7 +55,8 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 			nfd.setMinimumFractionDigits(6);
 			nfd.setMaximumFractionDigits(6);
 		}
-		public Object stringToValue(final String arg0) throws ParseException {
+		@Override
+        public Object stringToValue(final String arg0) throws ParseException {
 			final String[] nums = StringUtils.split(arg0,',');
 			return new DoubleDimension(
 					nfd.parse(nums[0]).doubleValue()
@@ -62,7 +64,8 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 					);
 		}
 
-		public String valueToString(final Object arg0) throws ParseException {
+		@Override
+        public String valueToString(final Object arg0) throws ParseException {
 			final DoubleDimension dim = (DoubleDimension)arg0;
 			if (dim == null) {
 				return null;
@@ -77,7 +80,8 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	
 	protected class SexagesimalDimensionFormatter extends AbstractFormatter {
 
-		public Object stringToValue(final String arg0) throws ParseException {
+		@Override
+        public Object stringToValue(final String arg0) throws ParseException {
 			final String[] nums = StringUtils.split(arg0,',');
 			return new DoubleDimension (
 					PositionUtils.sexagesimalRaToDecimal(nums[0])
@@ -85,7 +89,8 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 							);
 		}
 
-		public String valueToString(final Object arg0) throws ParseException {
+		@Override
+        public String valueToString(final Object arg0) throws ParseException {
 			final DoubleDimension dim = (DoubleDimension)arg0;
 			if (dim == null) {
 				return null;

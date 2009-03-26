@@ -28,7 +28,8 @@ public class VomonAnnotationSource extends DynamicAnnotationSource {
 		setSortOrder(3);
 	}
 	private final VoMonInternal vomon;
-	public Annotation getAnnotationFor(final Resource r) {
+	@Override
+    public Annotation getAnnotationFor(final Resource r) {
 		final Annotation ann = new Annotation();
 		ann.setResourceId(r.getId());
 		ann.setSource(this);
@@ -71,7 +72,8 @@ public class VomonAnnotationSource extends DynamicAnnotationSource {
 		ann.setNote(sb.toString());
 		return ann;
 	}
-	public boolean shouldCache() {
+	@Override
+    public boolean shouldCache() {
 		return false; // no point, as this data is cached anyway.
 	}
 

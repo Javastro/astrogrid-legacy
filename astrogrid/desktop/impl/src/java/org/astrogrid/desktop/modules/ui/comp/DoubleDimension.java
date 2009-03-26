@@ -17,7 +17,8 @@ public class DoubleDimension extends Dimension2D {
 	private double height;
 	private double width;
 	
-	public double getHeight() {
+	@Override
+    public double getHeight() {
 		return height;
 	}
 	
@@ -28,7 +29,8 @@ public class DoubleDimension extends Dimension2D {
 		this.height = height;
 	}
 
-	public double getWidth() {
+	@Override
+    public double getWidth() {
 		return width;
 	}
 	
@@ -39,7 +41,8 @@ public class DoubleDimension extends Dimension2D {
 		this.width = width;
 	}
 
-	public void setSize(double width, double height) {
+	@Override
+    public void setSize(double width, double height) {
 		this.width = width;
 		this.height = height;
 	}
@@ -54,7 +57,8 @@ public class DoubleDimension extends Dimension2D {
 		this.width = width;
 	}
 
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		long temp;
@@ -65,7 +69,8 @@ public class DoubleDimension extends Dimension2D {
 		return result;
 	}
 
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -80,7 +85,8 @@ public class DoubleDimension extends Dimension2D {
 		return true;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		return width + ", " + height;
 	}
 }

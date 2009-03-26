@@ -101,7 +101,8 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 		setSelectedIndex(0);
 		addListSelectionListener(this);
 		setCellRenderer(new DefaultListCellRenderer() {
-			public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+			@Override
+            public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
 				final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
 						cellHasFocus);
 				final StorageFolder f = (StorageFolder)value;				
@@ -164,6 +165,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
                 super(f2);
             }
             
+            @Override
             protected void init() {
                 super.init();
                 setTitle("Create Bookmark");
@@ -173,6 +175,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
                 
             }
             
+            @Override
             protected void saveChanges(){
                 folderList.add(f);  // add the new folder to the dialog            
             }
@@ -244,6 +247,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
                 super(f2);
                 this.ix = ix2;
             }
+            @Override
             protected void init() {
                 super.init();
                 setTitle("Edit Bookmark");
@@ -252,6 +256,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
                 uri.setText(this.f.getUriString());            
             }
             
+            @Override
             protected void saveChanges() {
                 folderList.set(this.ix,this.f);
             }
@@ -317,10 +322,12 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	 * a storage folder */
 	private class StorageFoldersListTransferHandler extends TransferHandler {
 
-	    public int getSourceActions(final JComponent c) {
+	    @Override
+        public int getSourceActions(final JComponent c) {
 	        return COPY;
 	    }
-	    public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
+	    @Override
+        public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
 	        // don't want to import into self - how do I prevent that?
 	        // can't here - but can in thje 'import data' method
 	        for (int i = 0; i < transferFlavors.length; i++) {
@@ -331,7 +338,8 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	        return false;	        
 	    }
 	    
-	    public boolean importData(final JComponent comp, final Transferable t) {
+	    @Override
+        public boolean importData(final JComponent comp, final Transferable t) {
 	        if (t instanceof StorageFoldersListTransferable || ! canImport(comp,t.getTransferDataFlavors())) {
 	            return false; // don't import things that originate here
 	        }
@@ -421,7 +429,8 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             return null;
 	    }
 	    
-	    protected Transferable createTransferable(final JComponent c) {
+	    @Override
+        protected Transferable createTransferable(final JComponent c) {
 	        final StorageFolder s = (StorageFolder)getSelectedValue();
 	        
 	        return new StorageFoldersListTransferable(s);
@@ -519,6 +528,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             init();
         }
     
+        @Override
         public void ok() {
             if (StringUtils.isEmpty(name.getText()) || StringUtils.isEmpty(uri.getText())) {
                 return;

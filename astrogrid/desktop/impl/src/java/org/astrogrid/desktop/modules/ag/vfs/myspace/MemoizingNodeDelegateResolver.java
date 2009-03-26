@@ -52,6 +52,7 @@ public class MemoizingNodeDelegateResolver implements NodeDelegateResolver {
             //- will try to replace the caching delegate with a vanilla delegate, and see if that helps.
             return new VanillaNodeDelegate(port,pref){
                 // if I wanted to inject objects into the vfs cache, this would be the method to override.
+                @Override
                 protected FileManagerNode returnFirst(final Node[] ns) {
                     FileManagerNode first = null;
                     for (int i = 0; i < ns.length; i++) {

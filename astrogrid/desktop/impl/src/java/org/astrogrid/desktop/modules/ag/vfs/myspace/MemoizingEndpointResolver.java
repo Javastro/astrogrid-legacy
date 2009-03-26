@@ -32,7 +32,8 @@ public class MemoizingEndpointResolver extends FileManagerEndpointResolverImpl
 	private static final Log logger = LogFactory
 			.getLog(MemoizingEndpointResolver.class);
 
-	public URL resolve(final Ivorn arg0) throws FileManagerResolverException {
+	@Override
+    public URL resolve(final Ivorn arg0) throws FileManagerResolverException {
 		final String key = arg0.toString(); // equals isn't implemented on Ivorn - another black mark.
 		final Object o = results.get(key);
 		if (o != null) {

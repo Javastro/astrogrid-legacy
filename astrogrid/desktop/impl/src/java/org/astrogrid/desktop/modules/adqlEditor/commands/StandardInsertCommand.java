@@ -59,6 +59,7 @@ public class StandardInsertCommand extends AbstractCommand {
     
     public void setSelectedValue( String value ) {}
     
+    @Override
     public Result execute() {      
         Result result = _execute() ;
         if( result != CommandExec.FAILED ) {
@@ -111,10 +112,12 @@ public class StandardInsertCommand extends AbstractCommand {
     }
     
     
+    @Override
     public void die() {
         super.die();
     }
     
+    @Override
     public void redo() throws CannotRedoException {
         super.redo();
         if( _execute() == CommandExec.FAILED ) {
@@ -122,6 +125,7 @@ public class StandardInsertCommand extends AbstractCommand {
         }  
     }
     
+    @Override
     public void undo() throws CannotUndoException {
         super.undo();
         if( _unexecute() == CommandExec.FAILED ) {
@@ -129,10 +133,12 @@ public class StandardInsertCommand extends AbstractCommand {
         }
     }
      
+    @Override
     public String getPresentationName() {
         return "Insert into" ;
     }
     
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer( 512 ) ;
         buffer.append( "\nStandardInsertCommand" ) ;

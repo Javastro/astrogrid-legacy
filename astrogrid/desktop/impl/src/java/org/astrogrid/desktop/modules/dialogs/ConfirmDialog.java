@@ -8,12 +8,8 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
 
-import javax.swing.JEditorPane;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import com.l2fprod.common.swing.BaseDialog;
 
@@ -70,10 +66,12 @@ public class ConfirmDialog extends BaseDialog {
         this.pack();
         
     }
+    @Override
     public void ok() {
         super.ok();
         okAction2.run();
     }
+    @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
         if (b) {

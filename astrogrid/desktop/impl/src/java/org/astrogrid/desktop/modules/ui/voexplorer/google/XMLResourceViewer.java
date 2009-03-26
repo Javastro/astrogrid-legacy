@@ -59,12 +59,14 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 		    {
 		        setTransient(true);
 		    }
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
 				final Document doc = reg.getResourceXML(res.getId());
 				//return XMLUtils.DocumentToString(doc);
 				return DomHelper.DocumentToString(doc);
 			}
-			protected void doFinished(final Object o) {
+			@Override
+            protected void doFinished(final Object o) {
 				setText(o.toString());
 				setCaretPosition(0); 
 			}

@@ -19,8 +19,6 @@ import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
 import org.astrogrid.acr.astrogrid.TableBean;
-import org.astrogrid.acr.ivoa.resource.Catalog;
-import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
@@ -70,6 +68,7 @@ public class TableInsertCommand extends StandardInsertCommand {
         this.tableName = name ;
     }
     
+    @Override
     public void setSelectedValue( String value ) {
         setTableName( value ) ;
     }
@@ -95,11 +94,13 @@ public class TableInsertCommand extends StandardInsertCommand {
         this.allocatedAlias = alias ;
     }
     
+    @Override
     public Result execute() {
         removeDummyTable() ;
         return super.execute() ;
     }
     
+    @Override
     protected Result _execute() {
 //        removeDummyTable() ;
         Result result = super._execute() ;
@@ -141,6 +142,7 @@ public class TableInsertCommand extends StandardInsertCommand {
         return result ;
     }
     
+    @Override
     protected Result _unexecute() {
         Result result = super._unexecute() ;
 //        reinstateDummyTable() ;
@@ -197,6 +199,7 @@ public class TableInsertCommand extends StandardInsertCommand {
         }      
     }
     
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer() ;
         buffer.append( "\nTableInsertCommand" ) ;

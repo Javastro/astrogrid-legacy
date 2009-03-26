@@ -22,6 +22,7 @@ public class JunitCheckThreadViolationRepaintManager extends
         super(completeCheck);
     }
     
+    @Override
     protected void violationDetected(JComponent c,
             StackTraceElement[] stackTrace) {
         super.violationDetected(c, stackTrace);

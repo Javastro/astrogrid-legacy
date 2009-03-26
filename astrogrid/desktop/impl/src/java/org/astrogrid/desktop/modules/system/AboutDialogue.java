@@ -5,15 +5,10 @@ package org.astrogrid.desktop.modules.system;
 
 import java.awt.Dimension;
 
-import javax.swing.JEditorPane;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ui.comp.ExternalViewerHyperlinkListener;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 /** Show an about dialogue.
  * @author Noel.Winstanley@manchester.ac.uk

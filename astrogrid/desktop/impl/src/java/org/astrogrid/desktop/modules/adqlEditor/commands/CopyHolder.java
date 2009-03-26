@@ -1,4 +1,4 @@
-/*$Id: CopyHolder.java,v 1.4 2007/06/17 17:03:16 jl99 Exp $
+/*$Id: CopyHolder.java,v 1.5 2009/03/26 18:04:10 nw Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -44,16 +44,19 @@ public class CopyHolder {
             this.displacement = displacement ;
         }
          
+        @Override
         public boolean equals( Object obj ) {
             if( obj instanceof Position == false )
                 return false ;
             return toString().equals( obj ) ;
         }
 
+        @Override
         public int hashCode() {
            return toString().hashCode() ;
         }
 
+        @Override
         public String toString() {
            return level + ':' + displacement ;
         }
@@ -183,6 +186,7 @@ public class CopyHolder {
         }
     }
     
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer() ;
         buffer.append( "\nCopyHolder" ) ;
@@ -207,6 +211,9 @@ public class CopyHolder {
 
 /*
 $Log: CopyHolder.java,v $
+Revision 1.5  2009/03/26 18:04:10  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.4  2007/06/17 17:03:16  jl99
 Merge of branch workbench-jl-2152b.
 First Query Builder bug fix after VOExplorer development.

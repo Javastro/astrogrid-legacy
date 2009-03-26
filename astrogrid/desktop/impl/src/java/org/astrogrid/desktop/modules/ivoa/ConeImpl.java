@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.18 2009/03/04 18:43:10 nw Exp $
+/*$Id: ConeImpl.java,v 1.19 2009/03/26 18:04:12 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,6 +60,7 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
       
     }
 
+    @Override
     protected final URL findAccessURL(final Service s) throws InvalidArgumentException {
         if (s instanceof ConeService) {
             final ConeCapability cap = ((ConeService)s).findConeCapability();
@@ -131,6 +132,9 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.19  2009/03/26 18:04:12  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.18  2009/03/04 18:43:10  nw
 Complete - taskMove DAL over to VFS
 

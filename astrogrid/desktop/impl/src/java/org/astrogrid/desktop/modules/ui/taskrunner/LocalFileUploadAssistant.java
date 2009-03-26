@@ -110,12 +110,14 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
         final CopyCommand cmd = new CopyCommand(u);        
         parent.showTransientMessage("Uploading","Copying " + u);
         new BulkCopyWorker(vfs,parent,workingDir,new CopyCommand[]{cmd}){            
+            @Override
             protected void doFinished(final Object result) {
                 super.doFinished(result);
                 if (! cmd.failed()) {
                     resultField.setValue(StringUtils.replace(cmd.getDestination().getURI().trim()," ","%20"));
                 }            
             }
+            @Override
             protected void doAlways() {
                 super.doAlways();
                 resultField.setEnabled(true);

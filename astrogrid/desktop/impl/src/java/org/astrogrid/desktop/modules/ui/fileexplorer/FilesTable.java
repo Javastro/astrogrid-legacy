@@ -70,6 +70,7 @@ public class FilesTable extends JTable {
         setDefaultRenderer(Date.class,new DefaultTableCellRenderer.UIResource() {
             // doesn't give column alignment.DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
             DateFormat formatter = new SimpleDateFormat(" dd MMM yyyy, HH:mm");
+            @Override
             protected void setValue(final Object value) {
                 setText((value == null) ? "" : formatter.format(value));
             }
@@ -79,6 +80,7 @@ public class FilesTable extends JTable {
             {
                 setHorizontalAlignment(JLabel.RIGHT);
             }
+            @Override
             protected void setValue(final Object value) {
                 final long l =  value == null ? -1: ((Long)value).longValue();
                 switch((int)l) {

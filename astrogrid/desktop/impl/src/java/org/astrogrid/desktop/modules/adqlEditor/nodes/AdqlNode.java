@@ -149,6 +149,7 @@ public class AdqlNode extends DefaultMutableTreeNode {
      * 
      * @return The number of children.
      */
+    @Override
     public int getChildCount() {
         int result = 0 ;
         if( this.children != null ) 

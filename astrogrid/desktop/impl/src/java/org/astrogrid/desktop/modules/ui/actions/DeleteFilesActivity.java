@@ -56,7 +56,8 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 	}
 
 
-	public void actionPerformed(final ActionEvent e) {
+	@Override
+    public void actionPerformed(final ActionEvent e) {
 		final List<FileObject> l = computeInvokable(); 
 		logger.debug(l);
 

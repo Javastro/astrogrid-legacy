@@ -134,7 +134,8 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 	private final EventList ids;
 	private final EventSelectionModel selection;
 	
-	public void setCurrentlyEditing(final ResourceFolder currentlyEditing) {
+	@Override
+    public void setCurrentlyEditing(final ResourceFolder currentlyEditing) {
 		if (!(currentlyEditing instanceof StaticList)) {
 			throw new IllegalArgumentException("Not an instanceof StaticList");
 		}
@@ -144,7 +145,8 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 		ids.addAll(sl.getResourceSet());
 	}
 	
-	public void loadEdits() {
+	@Override
+    public void loadEdits() {
 		super.loadEdits();
 		final StaticList sl = (StaticList)getCurrentlyEditing();
 		sl.setResourceSet(ids);
@@ -176,7 +178,8 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 		}
 	}
 	// extended to guard against empty resource lists.
-	protected boolean shouldOkBeEnabled() {
+	@Override
+    protected boolean shouldOkBeEnabled() {
 		return super.shouldOkBeEnabled() && (ids != null ?  ids.size() > 0 : true);
 	}
 }

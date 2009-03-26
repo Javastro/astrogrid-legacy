@@ -74,6 +74,7 @@ public class WindowedRadialVizualization extends Vizualization {
         return false;
     }
     
+    @Override
     public Display getDisplay() {
             if (display == null) {
         final ItemRegistry registry = getItemRegistry();
@@ -163,11 +164,13 @@ public class WindowedRadialVizualization extends Vizualization {
     }
 
     // refresh display when new item added
+    @Override
     public void nodeAdded(final Graph arg0, final Node arg1) {
         graphLayout.runNow();
     }
     
     // refresh display when new item added
+    @Override
     public void reDraw() {
         graphLayout.runNow();
     }

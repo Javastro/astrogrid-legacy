@@ -68,7 +68,8 @@ public class ResourceTransferable implements Transferable {
 		 * @return the String representation
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("ResourceTransferable[");
 			buffer.append("r = ").append(r);

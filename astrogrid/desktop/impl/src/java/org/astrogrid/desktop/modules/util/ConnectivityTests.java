@@ -35,6 +35,7 @@ public class ConnectivityTests extends TestSuite{
      */
     public ConnectivityTests() {
         addTest(new TestCase("Network interfaces"){
+            @Override
             protected void runTest() throws Throwable {
                 final List ifaces = EnumerationUtils.toList(NetworkInterface.getNetworkInterfaces());
                 assertNotNull("No network interfaces found",ifaces);
@@ -59,6 +60,7 @@ public class ConnectivityTests extends TestSuite{
             }
         });
         addTest(new TestCase("DNS") {
+            @Override
             protected void runTest() {
                 try {
                     final InetAddress addr = InetAddress.getByName("www.google.com");
@@ -71,6 +73,7 @@ public class ConnectivityTests extends TestSuite{
             }
         });
         addTest(new TestCase("Access port 80") {
+            @Override
             protected void runTest()  throws Throwable{
                 final URL u = new URL("http://www.google.com:80");
                 assertNotNull(u);
@@ -83,6 +86,7 @@ public class ConnectivityTests extends TestSuite{
             }
         });
         addTest(new TestCase("Access port 8080") {
+            @Override
             protected void runTest()  throws Throwable{
                 final URL u = new URL("http://rofr.ivoa.net:8080/ ");
                 assertNotNull(u);

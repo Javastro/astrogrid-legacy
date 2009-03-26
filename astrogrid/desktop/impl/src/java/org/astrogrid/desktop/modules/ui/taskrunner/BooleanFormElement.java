@@ -31,7 +31,8 @@ public class BooleanFormElement extends AbstractTaskFormElement {
 	}
 
 	
-	protected JComponent createEditor() {
+	@Override
+    protected JComponent createEditor() {
 	    cb = new JCheckBox("true");
 	    if (! pval.getIndirect()) {
 	        if (pdesc.getDefaultValue() != null) {
@@ -49,7 +50,8 @@ public class BooleanFormElement extends AbstractTaskFormElement {
 	protected JCheckBox cb;
 	
 	// override parents item listener method.
-	public void itemStateChanged(final ItemEvent e) {
+	@Override
+    public void itemStateChanged(final ItemEvent e) {
 		if (e.getSource() == cb) {
 			pval.setValue(getStringValue());
 		} else {
@@ -58,7 +60,8 @@ public class BooleanFormElement extends AbstractTaskFormElement {
 	}
 
 
-	protected String getStringValue() {
+	@Override
+    protected String getStringValue() {
 		return Boolean.toString(cb.isSelected());
 	}
 

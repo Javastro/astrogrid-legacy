@@ -45,7 +45,8 @@ public class BrowserLauncherBrowserControl extends FallbackBrowserControl {
 	private final AbstractLogger browserLogger;
 
 
-	public void openURL(final URL url) throws ACRException {
+	@Override
+    public void openURL(final URL url) throws ACRException {
 		if (launcher == null) {
 			super.openURL(url);
 		}
@@ -62,7 +63,8 @@ public class BrowserLauncherBrowserControl extends FallbackBrowserControl {
 		{
 			setLevel(Level.ERROR);
 		}
-		protected void reallyLog(final int arg0, final String arg1, final Throwable arg2) throws Exception {
+		@Override
+        protected void reallyLog(final int arg0, final String arg1, final Throwable arg2) throws Exception {
 			ui.findMainWindow().showError(arg1,arg2);
 		}
 	}

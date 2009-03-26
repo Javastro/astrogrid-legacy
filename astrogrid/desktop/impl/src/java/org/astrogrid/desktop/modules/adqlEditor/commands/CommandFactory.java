@@ -12,7 +12,6 @@ package org.astrogrid.desktop.modules.adqlEditor.commands;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.io.StringReader;
@@ -22,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.Collections;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -31,7 +29,6 @@ import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.adql.AdqlStoX;
 import org.astrogrid.adql.AdqlCompiler ;
 import org.astrogrid.adql.metadata.MetadataQuery;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
@@ -42,8 +39,6 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.astrogrid.ColumnBean;
-import org.astrogrid.acr.ivoa.resource.Catalog;
-import org.astrogrid.acr.ivoa.resource.DataCollection;
 
 /**
  * @author jl99
@@ -316,10 +311,10 @@ public class CommandFactory {
         public AbstractCommand getCommandToBeRedone() {
             Object o = super.editToBeRedone() ;
             if( o instanceof MultipleColumnInsertCommand.MCIUndoManager ) {              
-                return (AbstractCommand)((MultipleColumnInsertCommand.MCIUndoManager)o).getOwner() ;
+                return ((MultipleColumnInsertCommand.MCIUndoManager)o).getOwner() ;
             }
             else if( o instanceof JoinInsertCommand.InternalUndoManager ) {
-                return (AbstractCommand)((JoinInsertCommand.InternalUndoManager)o).getOwner() ;
+                return ((JoinInsertCommand.InternalUndoManager)o).getOwner() ;
             }
             return (AbstractCommand)o;
         }
@@ -327,10 +322,10 @@ public class CommandFactory {
         public AbstractCommand getCommandToBeUndone() {
             Object o = super.editToBeUndone() ;
             if( o instanceof MultipleColumnInsertCommand.MCIUndoManager ) {              
-                return (AbstractCommand)((MultipleColumnInsertCommand.MCIUndoManager)o).getOwner() ;
+                return ((MultipleColumnInsertCommand.MCIUndoManager)o).getOwner() ;
             }
             else if( o instanceof JoinInsertCommand.InternalUndoManager ) {
-                return (AbstractCommand)((JoinInsertCommand.InternalUndoManager)o).getOwner() ;
+                return ((JoinInsertCommand.InternalUndoManager)o).getOwner() ;
             }
             return (AbstractCommand)o;
         }

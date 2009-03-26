@@ -59,6 +59,7 @@ public abstract class RetriableBackgroundWorker extends BackgroundWorker {
     public abstract BackgroundWorker createRetryWorker() ;
 
     
+    @Override
     protected final void doError(final Throwable ex) {
         final String t = "An error occurred while " + workerTitle.toLowerCase();
         if (GraphicsEnvironment.isHeadless()) {

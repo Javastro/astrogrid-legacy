@@ -70,6 +70,7 @@ public class AdqlEditorTabularMetadataViewer extends TabularMetadataViewer {
             adqlToolEditorPanel.updateDisplay() ;
         }
         
+        @Override
         public void mouseReleased( final MouseEvent event ) {
             
             if( event.isPopupTrigger()  && adqlTree.isShowing()
@@ -84,6 +85,7 @@ public class AdqlEditorTabularMetadataViewer extends TabularMetadataViewer {
         // onlny way to do it - as a mac CTRL-Cick gives a different event type to a Button-3 click.
         // complicated, eh?
         //http://developer.apple.com/documentation/Java/Conceptual/Java14Development/07-NativePlatformIntegration/NativePlatformIntegration.html
+        @Override
         public void mousePressed(final MouseEvent event) {
         	if (event.isPopupTrigger() && adqlTree.isShowing()) {
         		processPopupClick(event);

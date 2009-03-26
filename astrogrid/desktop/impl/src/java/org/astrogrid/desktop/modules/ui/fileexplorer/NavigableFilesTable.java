@@ -34,7 +34,8 @@ public class NavigableFilesTable extends OperableFilesTable implements MouseList
 	}
 	
 	/** traverse on a double-click */
-	public void mouseClicked(final MouseEvent e) {
+	@Override
+    public void mouseClicked(final MouseEvent e) {
 		 if(e.getClickCount() == 2){
 		     final int row = rowAtPoint(e.getPoint());
 		     final FileObject item = (FileObject)fileModel.getChildrenList().get(row);

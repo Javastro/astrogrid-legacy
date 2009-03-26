@@ -39,7 +39,8 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
             dNfd = new DecimalFormat("+0.000000;-0.000000", syms);
         }
 
-		public Object stringToValue(final String arg0) throws ParseException {
+		@Override
+        public Object stringToValue(final String arg0) throws ParseException {
 			final String[] nums = arg0.split(",");
 			if (nums.length != 2) {
 				throw new ParseException("Expected 2 numbers",0);
@@ -66,7 +67,8 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
             return new Point2D.Double(x,y);
 		}
 
-		public String valueToString(final Object arg0) throws ParseException {
+		@Override
+        public String valueToString(final Object arg0) throws ParseException {
 			final Point2D dim = (Point2D)arg0;
 			if (dim == null) {
 				return null;
@@ -77,7 +79,8 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
     
     protected class SexagesimalPositionFormatter extends AbstractFormatter {
 
-    	public Object stringToValue(final String arg0) throws ParseException {
+    	@Override
+        public Object stringToValue(final String arg0) throws ParseException {
 			final String[] nums = arg0.split(",");
 			if (nums.length != 2) {
 				throw new ParseException("Expected 2 numbers",0);
@@ -93,7 +96,8 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
             }
 		}
 
-		public String valueToString(final Object arg0) throws ParseException {
+		@Override
+        public String valueToString(final Object arg0) throws ParseException {
 			final Point2D dim = (Point2D)arg0;
 			if (dim == null) {
 				return null;
@@ -117,7 +121,8 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
         super();
         degreesSelected(null);
         setFormatterFactory(new AbstractFormatterFactory() {
-			public AbstractFormatter getFormatter(final JFormattedTextField tf) {
+			@Override
+            public AbstractFormatter getFormatter(final JFormattedTextField tf) {
 				return isDecimal ? decimal : sexa;
 			}
         });

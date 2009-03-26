@@ -87,7 +87,8 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 	/** Overridden - as default implementatio causes a StackOverflow - as it delegates back to the
 	 * system protocol handlers.
 	 */ 
-	public URLStreamHandlerFactory getURLStreamHandlerFactory() {
+	@Override
+    public URLStreamHandlerFactory getURLStreamHandlerFactory() {
 		return new StackOverflowAvoidingStreamHandlerFactory(super.getURLStreamHandlerFactory());
 	}
 	

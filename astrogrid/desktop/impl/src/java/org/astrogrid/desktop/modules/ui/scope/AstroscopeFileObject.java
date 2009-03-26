@@ -171,10 +171,12 @@ public class AstroscopeFileObject extends DelegateFileObject {
     
     // fixed methods.
     // public
+    @Override
     public FileType getType() throws FileSystemException {
         return doGetType();
     }
     
+    @Override
     public FileObject resolveFile(final String name, final NameScope scope)
             throws FileSystemException {
         if (name.equals(".")) {
@@ -184,23 +186,29 @@ public class AstroscopeFileObject extends DelegateFileObject {
         }
     }
 
+    @Override
     public boolean canRenameTo(final FileObject newfile) {
         return false;
     }
+    @Override
     public FileContent getContent() throws FileSystemException {
         return content;
     }
 
     // protected
+    @Override
     protected FileType doGetType() throws FileSystemException {
         return FileType.FILE;
     }
+    @Override
     protected boolean doIsReadable() throws FileSystemException {
         return true;
     }
+    @Override
     protected boolean doIsWriteable() throws FileSystemException {
         return false;
     }
+    @Override
     protected boolean doIsHidden() throws FileSystemException {
         return false;
     }

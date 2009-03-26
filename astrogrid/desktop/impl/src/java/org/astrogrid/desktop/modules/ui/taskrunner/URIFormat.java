@@ -15,13 +15,15 @@ import java.text.ParsePosition;
  */
 public class URIFormat extends Format {
 
-	public StringBuffer format(final Object obj, final StringBuffer toAppendTo,
+	@Override
+    public StringBuffer format(final Object obj, final StringBuffer toAppendTo,
 			final FieldPosition pos) {
 		// dunno what to do with fieldPosition - assume to leave this.
 		return toAppendTo.append(obj);
 	}
 
-	public Object parseObject(final String source, final ParsePosition pos) {
+	@Override
+    public Object parseObject(final String source, final ParsePosition pos) {
 		try {
 			return new URI(source.substring(pos.getIndex()));
 		} catch (final URISyntaxException x) {

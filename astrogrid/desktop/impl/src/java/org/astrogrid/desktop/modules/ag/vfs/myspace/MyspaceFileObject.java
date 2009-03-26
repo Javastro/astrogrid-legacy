@@ -41,6 +41,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
     private final MyspaceFileSystem msFilesystem;
 
     /** special-case optimization where the file object to copy from is http - can pass an call to myspace to do the copy directly, rather than the client reading the data. */
+    @Override
     public void copyFrom(FileObject file, final FileSelector selector)
             throws FileSystemException {
         file = AstroscopeFileObject.findInnermostFileObject(file);
@@ -62,6 +63,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
             super.copyFrom(file, selector);
         }
     }
+    @Override
     public FileObject resolveFile(final String path) throws FileSystemException {
         return super.resolveFile(path);
     }
@@ -84,7 +86,8 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 //	called before each 'do*' method - can be used to lazily initialize.
 	// this impl uses attach to fetch the Myspace file object.
 	private FileManagerNode node;
-	protected void doAttach() throws Exception {
+	@Override
+    protected void doAttach() throws Exception {
 		logger.debug("doAttach");
 		if (node == null) { //else  already attached. ignore
 			logger.debug("Attaching to " + getName());
@@ -95,7 +98,8 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 			} 
 		}
 	}
-	protected void doDetach() throws Exception {
+	@Override
+    protected void doDetach() throws Exception {
 	    logger.debug("Detatching " + getName());
 		node = null;
 		super.doDetach();
@@ -106,17 +110,20 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	}
 
 	//	file operations.
-	protected long doGetContentSize() throws Exception {
+	@Override
+    protected long doGetContentSize() throws Exception {
 		logger.debug("getContentSize " + getName());
 		return node.getMetadata().getSize().longValue();
 	}
 
-	protected InputStream doGetInputStream() throws Exception {
+	@Override
+    protected InputStream doGetInputStream() throws Exception {
 		logger.debug("getInputStream " + getName());
 		return node.readContent();
 	}
 
-	protected FileType doGetType() throws Exception {
+	@Override
+    protected FileType doGetType() throws Exception {
 		final FileType t =  mkType(node);
 		logger.debug("getType " + getName() + " : " + t);
 		return t;
@@ -132,7 +139,8 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 		}
 	}
 
-	protected String[] doListChildren() throws Exception {
+	@Override
+    protected String[] doListChildren() throws Exception {
 		logger.debug("listChildren " + getName());
 		final String[] result = new String[node.getChildCount()];
 		final NodeIterator i = node.iterator();
@@ -148,7 +156,8 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	}
 	// if this is implemented, it's called in preference to dListChildren
 	// as it's more efficient
-	protected FileObject[] doListChildrenResolved() throws Exception {
+	@Override
+    protected FileObject[] doListChildrenResolved() throws Exception {
 		logger.debug("listChildrenResolved " + getName());
 		doAttach();
 		final FileObject[] result = new FileObject[node.getChildCount()];
@@ -163,12 +172,14 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 		}
 		return result;		
 	}
-	protected void doCreateFolder() throws Exception {
+	@Override
+    protected void doCreateFolder() throws Exception {
 		logger.debug("createFolder " + getName());
 		msFilesystem.client().createFolder(getMsName().getIvorn());
 	}
 
-	protected void doDelete() throws Exception {
+	@Override
+    protected void doDelete() throws Exception {
 		logger.debug("delete " + getName());
 		node.delete();
 		node = null;
@@ -176,7 +187,8 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 
 	// modified to get the readContentURL too - as there's no other way to 
 	// get to this in the VFS api.
-	protected Map doGetAttributes() throws Exception {
+	@Override
+    protected Map doGetAttributes() throws Exception {
 		logger.debug("getAttributes " + getName());
 		final TransferInfo info = node.getNodeDelegate().readContent(node.getMetadata().getNodeIvorn());
 		final Map attr =  node.getMetadata().getAttributes();
@@ -188,12 +200,14 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 
 	}
 
-	protected long doGetLastModifiedTime() throws Exception {
+	@Override
+    protected long doGetLastModifiedTime() throws Exception {
 		logger.debug("getLastModifiedTime " + getName());
 		return node.getMetadata().getModifyDate().getTimeInMillis();
 	}
 
-	protected OutputStream doGetOutputStream(final boolean bAppend) throws Exception {
+	@Override
+    protected OutputStream doGetOutputStream(final boolean bAppend) throws Exception {
 	    logger.debug("getOutputStream " + getName());
 	    if (node == null) { // file doesn't yet exist - else we'd be attached by now.
 	        //@todo should I be doing this file creation elsewhere - doAttach for examp[le?
@@ -206,21 +220,24 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 		}
 	}
 
-	protected void doRename(final FileObject newfile) throws Exception {
+	@Override
+    protected void doRename(final FileObject newfile) throws Exception {
 		logger.debug("rename " + getName() + " to " + newfile);
 		final MyspaceFileObject p = (MyspaceFileObject)newfile.getParent();
 		node.move(newfile.getName().getBaseName(),p.node,null);
 	}
 
 
-	protected void onChange() throws Exception {
+	@Override
+    protected void onChange() throws Exception {
 	    if (node != null) {
 	        node.refresh();
 	    }
 	}
 	
 
-	protected void onChildrenChanged(final FileName child, final FileType newType) throws Exception {
+	@Override
+    protected void onChildrenChanged(final FileName child, final FileType newType) throws Exception {
 		logger.debug("childChanged " + getName());
 		if (node != null) {
 		    node.refresh(); // ? fair guess.
@@ -228,7 +245,8 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	}
 
 	//overridden to return the accessURL
-	public URL getURL() throws FileSystemException {
+	@Override
+    public URL getURL() throws FileSystemException {
 	    try {
 	    if (!isAttached()) {
 	        doAttach();

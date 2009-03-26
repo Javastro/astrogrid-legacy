@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PreferenceEditorServlet extends HttpServlet {
 
+@Override
 public void init(final ServletConfig conf) throws ServletException {
 	super.init(conf);
 	final List prefs = (List)conf.getServletContext().getAttribute(PREFERENCES_CONTEXT_KEY);
@@ -45,7 +46,8 @@ public void init(final ServletConfig conf) throws ServletException {
 	public final static String ARRANGER_CONTEXT_KEY = "arranger";
 
 	// displays a form.
-	protected void doGet(final HttpServletRequest arg0, final HttpServletResponse response) throws ServletException, IOException {
+	@Override
+    protected void doGet(final HttpServletRequest arg0, final HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter out = response.getWriter();
 		out.println("<html><head><title>Preferences</title></html>");
 		out.println("<body><a href='./.' >up</a><h1>Preferences</h1>");
@@ -129,6 +131,7 @@ public void init(final ServletConfig conf) throws ServletException {
 	}
 	
 	// processes updates to the form.
+@Override
 protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 	// process change.
 	// now the response.

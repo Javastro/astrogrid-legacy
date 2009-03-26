@@ -87,7 +87,8 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	
 	public JLinkButton createLinkButton() {
 		final JLinkButton l =  new JLinkButton(this) {
-			public void setEnabled(final boolean b) {
+			@Override
+            public void setEnabled(final boolean b) {
 				super.setEnabled(b);
 				setVisible(b);
 			}			
@@ -103,6 +104,7 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	}
     public JMenuItem createHidingMenuItem() {
         final JMenuItem m =  new JMenuItem(this) {
+            @Override
             public void setEnabled(final boolean b) {
                 super.setEnabled(b);
                 setVisible(b);

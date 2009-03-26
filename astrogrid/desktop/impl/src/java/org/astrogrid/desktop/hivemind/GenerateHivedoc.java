@@ -31,6 +31,7 @@ import org.w3c.dom.Document;
 public class GenerateHivedoc extends Launcher {
 	
 
+    @Override
     public void run() { 
     	spliceInDefaults();
     	// build registry

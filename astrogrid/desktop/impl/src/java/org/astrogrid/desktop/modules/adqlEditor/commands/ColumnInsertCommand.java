@@ -17,7 +17,6 @@ import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
 import org.astrogrid.acr.astrogrid.TableBean;
-import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
@@ -62,6 +61,7 @@ public class ColumnInsertCommand extends StandardInsertCommand {
         this.columnName = columnName ;
     }
     
+    @Override
     public void setSelectedValue( String value ) {
         setColumnName( value ) ;
     }
@@ -82,12 +82,14 @@ public class ColumnInsertCommand extends StandardInsertCommand {
         this.tableAlias = alias ;
     }
     
+    @Override
     public Result execute() {
         removeAllColumnsOption() ;
         return super.execute() ;
     }
     
     
+    @Override
     protected Result _execute() {
         Result result = super._execute() ;
         if( result != CommandExec.FAILED ) {
@@ -115,6 +117,7 @@ public class ColumnInsertCommand extends StandardInsertCommand {
         return result ;
     }
     
+    @Override
     protected Result _unexecute() {
         Result result = super._unexecute() ;
         return result ;
@@ -150,6 +153,7 @@ public class ColumnInsertCommand extends StandardInsertCommand {
         }
     }
    
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer() ;
         buffer.append( "\nColumnInsertCommand" ) ;

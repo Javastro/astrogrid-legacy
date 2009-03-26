@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
-
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.desktop.modules.system.XmlPersist;
@@ -62,6 +59,7 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
      * Note however that it means the user cannot delete the Examples node
      * persistently.  I claim this is a Feature.
      */
+    @Override
     public DefaultMutableTreeNode load() throws IOException, ServiceException {
         DefaultMutableTreeNode root = super.load();
         if (root != null && root.getAllowsChildren()) {
@@ -79,6 +77,7 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
         return root;
     }
 
+    @Override
     public DefaultMutableTreeNode getDefaultRoot() {
         DefaultMutableTreeNode root =
             new DefaultMutableTreeNode(new ResourceBranch("Resource Lists"), true);

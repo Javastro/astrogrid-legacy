@@ -316,6 +316,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
             return f;
         }
         
+        @Override
         public boolean equals(final Object obj) {
             if (obj == null) {
                 return false;
@@ -327,6 +328,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
 
             return getText().equals(other.getText());
         }      
+        @Override
         public int hashCode() {
             return getText().hashCode();
         }
@@ -343,6 +345,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
         public UpWorker() {
             super(FileNavigator.this.parent,"Finding Parent",Thread.MAX_PRIORITY);
         }
+        @Override
         protected Object construct() throws Exception {
             final FileObject p= current().getParent();
             if (p != null) {
@@ -360,6 +363,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
         public RefreshWorker() {           
             super(history.current(),history.current());            
         }
+        @Override
         protected Object construct() throws Exception {
             // refresh the object first, then just list the directory.
             current().refresh();
@@ -390,6 +394,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
         protected final Location loc;
         private final Location previous;
         protected boolean isRoot;
+        @Override
         protected Object construct() throws Exception {
             // stop listening to whatever was previously displayed.
             if (previous != null && previous.hasResolved()) {
@@ -452,6 +457,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
                 return parents;
         }
         // update the ui.
+        @Override
         protected void doFinished(final Object result) {
             final List<FileName> parents = (java.util.List<FileName>) result;
             upList.clear();

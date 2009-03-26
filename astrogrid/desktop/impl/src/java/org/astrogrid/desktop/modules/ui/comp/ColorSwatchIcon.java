@@ -33,6 +33,7 @@ public final class ColorSwatchIcon extends DrawnIcon {
         this.borderColor = (color != null) ? color.darker() : null;
     }
     
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         if (color == null) {
             return;

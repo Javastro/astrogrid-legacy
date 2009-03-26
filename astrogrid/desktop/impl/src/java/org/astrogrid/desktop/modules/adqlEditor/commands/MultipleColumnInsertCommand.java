@@ -23,11 +23,9 @@ import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
 import org.apache.xmlbeans.XmlCursor;
-import org.astrogrid.adql.SimpleNode;
 import org.astrogrid.adql.v1_0.beans.*;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
-import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
@@ -133,6 +131,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     }
    
     
+    @Override
     public Result execute() {
         Result result = _execute() ;
         internalUndoManager.end() ;
@@ -532,6 +531,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
             return MultipleColumnInsertCommand.this ;
         }
             
+        @Override
         public boolean addEdit( UndoableEdit anEdit ) {
             boolean added = super.addEdit( anEdit ) ;
             if( added == false )
@@ -576,6 +576,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         
     }
     
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer() ;
         buffer.append( "\nMultipleColumnInsertCommand" ) ;
@@ -594,6 +595,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     /* (non-Javadoc)
      * @see org.astrogrid.desktop.modules.adqlEditor.commands.AbstractCommand#isChildEnabled()
      */
+    @Override
     public boolean isChildEnabled() {
         boolean enabled = false ;       
         //

@@ -179,7 +179,8 @@ public class AnnotationIOImpl implements AnnotationIO {
 	            setTransient(true);
 	        }
 
-	        protected Object construct() throws Exception {
+	        @Override
+            protected Object construct() throws Exception {
 	            OutputStream fos = null;
 	            try {
 	                final List<UserAnnotation> persistList = new ArrayList<UserAnnotation>(userAnnotationIds.size());

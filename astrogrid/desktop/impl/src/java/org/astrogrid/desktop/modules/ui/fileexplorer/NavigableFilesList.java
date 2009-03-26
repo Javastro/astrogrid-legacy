@@ -32,7 +32,8 @@ public class NavigableFilesList extends OperableFilesList {
 
 	
 // override part of the mouse listener interface.
-	public void mouseClicked(final MouseEvent e) {
+	@Override
+    public void mouseClicked(final MouseEvent e) {
 		 if(e.getClickCount() == 2){
 		     final int index = locationToIndex(e.getPoint());
 		     final ListModel dlm = getModel();

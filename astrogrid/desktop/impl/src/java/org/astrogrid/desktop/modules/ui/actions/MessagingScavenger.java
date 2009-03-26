@@ -51,6 +51,7 @@ public MessagingScavenger(final Messaging messaging, final SystemTrayInternal sy
  * 
  * furthermore, we use a list that only fires update messages on the EDT.
  * */
+@Override
 protected EventList<Activity> createEventList() {
 	final TransformedList<ExternalMessageTarget, ExternalMessageTarget> proxy = GlazedListsSwing.swingThreadProxyList(targetList);
     return new CollectionList(proxy,this);
@@ -58,6 +59,7 @@ protected EventList<Activity> createEventList() {
 
 
 
+@Override
 protected void loadChildren() {
 	 // no need to do anything. - eventlist is already populated.
 }

@@ -45,6 +45,7 @@ public class ServiceListTreeFilter extends Filter {
     private Node m_root;
 
     // based on windowedTreefilter, but using an asstribute to halt recursion rather than doi.
+    @Override
     public void run(final ItemRegistry registry, final double frac) {
         final Graph graph = registry.getGraph();
         final Tree ftree = new DefaultTree();

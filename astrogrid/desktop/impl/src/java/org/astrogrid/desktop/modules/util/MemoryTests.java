@@ -18,6 +18,7 @@ public class MemoryTests extends TestSuite {
 
     public MemoryTests() {
         addTest(new TestCase("Available Memory") {
+            @Override
             protected void runTest() throws Throwable {
                 final long maxMemory = Runtime.getRuntime().maxMemory();
                 

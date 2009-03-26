@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
@@ -19,15 +18,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.AdqlCompiler;
-import org.astrogrid.adql.ParseException;
 import org.astrogrid.adql.AdqlException;
 import org.astrogrid.adql.SimpleNode;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
-
-import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 /**
  * @author jl99@star.le.ac.uk
  *
@@ -51,6 +47,7 @@ public class EditCommand extends AbstractCommand {
         this.compiler = compiler ;
     }
         
+    @Override
     public Result execute() {   
         if( log.isTraceEnabled() ) log.trace( "EditCommand.execute() entry" ) ;
         Result result = CommandExec.FAILED ;
@@ -143,9 +140,11 @@ public class EditCommand extends AbstractCommand {
         return result ;
     }
      
+    @Override
     public void die() {
         super.die();
     }
+    @Override
     public void redo() throws CannotRedoException {
         super.redo();
         if( _execute( newValue ) == CommandExec.FAILED ) {
@@ -157,6 +156,7 @@ public class EditCommand extends AbstractCommand {
             
     }
     
+    @Override
     public void undo() throws CannotUndoException {
         super.undo();
         if( _execute( preserved.getSource() ) == CommandExec.FAILED ) {
@@ -167,6 +167,7 @@ public class EditCommand extends AbstractCommand {
         }
     }
     
+    @Override
     public String getPresentationName() {
         return "Edit" ;
     }
@@ -175,6 +176,7 @@ public class EditCommand extends AbstractCommand {
         preserved.openBranchesOn( getParentEntry() ) ;
     }
     
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer( 512 ) ;
         buffer.append( "\nEditCommand" ) ;

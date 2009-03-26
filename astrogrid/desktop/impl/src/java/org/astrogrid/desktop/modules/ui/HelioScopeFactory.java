@@ -43,12 +43,14 @@ public class HelioScopeFactory implements HelioScopeInternal {
 
         new BackgroundWorker(context,"Listing Helioscope Services") {
 
+            @Override
             protected Object construct() throws Exception {
                 SRQL srql = new SRQLParser(QUERY).parse();
                 String xq = new HeadClauseSRQLVisitor().build(srql,null);
                 Resource[] resources = reg.xquerySearch(xq);
                 return Arrays.asList(resources);
             }
+            @Override
             protected void doFinished(Object result) {
                 helioscopeResources= (List)result;                
             }

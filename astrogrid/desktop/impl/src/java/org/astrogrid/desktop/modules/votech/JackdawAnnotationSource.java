@@ -38,7 +38,8 @@ public class JackdawAnnotationSource extends DynamicAnnotationSource {
 	}
 	private final XMLInputFactory fac;
 	
-	public Annotation getAnnotationFor(final Resource r) {
+	@Override
+    public Annotation getAnnotationFor(final Resource r) {
 	    if (! enabled.asBoolean()) {
 	        return null;
 	    }
@@ -102,7 +103,8 @@ public class JackdawAnnotationSource extends DynamicAnnotationSource {
 		
 	}
 
-	public boolean shouldCache() {
+	@Override
+    public boolean shouldCache() {
 		return true;
 	}
 

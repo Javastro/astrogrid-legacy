@@ -96,7 +96,8 @@ public class SnitchImpl implements SnitchInternal {
 		if (! snitchDisabled) {
 		(new BackgroundWorker(ui,"Reporting usage",BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
 
-		protected Object construct() throws Exception {
+		@Override
+        protected Object construct() throws Exception {
 			final StrBuilder sb = new StrBuilder(64);
 			sb.append(base);
 			sb.append(message).append('?');			
@@ -112,7 +113,8 @@ public class SnitchImpl implements SnitchInternal {
 			query.openConnection().getContent();
 			return null; // job done.
 		}
-		protected void doError(final Throwable ex) {
+		@Override
+        protected void doError(final Throwable ex) {
 			// expected.
 		}
 	 }).start();

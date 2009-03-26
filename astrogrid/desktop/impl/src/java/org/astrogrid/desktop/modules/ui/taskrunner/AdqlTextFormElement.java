@@ -47,6 +47,7 @@ public class AdqlTextFormElement extends AbstractTaskFormElement implements Mous
     
 
 
+    @Override
     protected JComponent createEditor() {
         final JScrollPane sp = new JScrollPane(adqls,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         //@todo do something with the default value.
@@ -54,12 +55,14 @@ public class AdqlTextFormElement extends AbstractTaskFormElement implements Mous
         return sp;
     }
 
+    @Override
     protected String getStringValue() {
         // will already be in the pval??
         return pval.getValue(); //@todo check this is correct.
     }
     
     // overriden to _not_ grey out parameter title.
+    @Override
     public void setEnabled(final boolean b) {
         indirectToggle.setVisible(b);
         getEditor().setVisible(b);

@@ -43,7 +43,8 @@ public class MemoizingCommunityAccountSpaceResolver extends
 		super(arg0);
 	}
 
-	public Ivorn resolve(final Ivorn arg0) throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException, CommunityResolverException, RegistryException {
+	@Override
+    public Ivorn resolve(final Ivorn arg0) throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException, CommunityResolverException, RegistryException {
 		final String key = arg0.toString(); // equals isn't implemented on Ivorn - another black mark.
 		final Object o = results.get(key);
 		if (o != null) {

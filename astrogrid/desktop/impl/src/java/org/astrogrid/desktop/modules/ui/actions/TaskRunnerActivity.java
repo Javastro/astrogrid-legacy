@@ -33,6 +33,7 @@ public TaskRunnerActivity(final TaskRunnerInternal t) {
 }
 private final TaskRunnerInternal t;
 
+@Override
 public void actionPerformed(final ActionEvent e) {
     final List resources = computeInvokableResources();
     switch(resources.size()) {
@@ -60,15 +61,18 @@ public void actionPerformed(final ActionEvent e) {
 
 
 	
-	public void manySelected(final FileObject[] l) {
+	@Override
+    public void manySelected(final FileObject[] l) {
 		noneSelected(); // can't operate on more than one file.
 	}
 
-	public void someSelected(final Resource[] l) {
+	@Override
+    public void someSelected(final Resource[] l) {
 		noneSelected(); // can't operate on more than one resource;
 	}
 
-	public boolean invokable(final FileObject fo) {
+	@Override
+    public boolean invokable(final FileObject fo) {
 	    try {
 	        if (fo.getType().hasContent()) { // must be a file, not a folder.
 	            final String mime = fo.getContent().getContentInfo().getContentType();
@@ -82,7 +86,8 @@ public void actionPerformed(final ActionEvent e) {
 	    return false;
 	}
 
-	public boolean invokable(final Resource resource) {
+	@Override
+    public boolean invokable(final Resource resource) {
 	    // invokable if there's a non-ADQL interface to this app
 	    return resource instanceof CeaApplication
 	        && BuildQueryActivity.whatKindOfInterfaces((CeaApplication)resource) < 1;

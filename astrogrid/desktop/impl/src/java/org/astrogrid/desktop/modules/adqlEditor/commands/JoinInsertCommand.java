@@ -1,4 +1,4 @@
-/*$Id: JoinInsertCommand.java,v 1.2 2008/04/22 13:40:26 jl99 Exp $
+/*$Id: JoinInsertCommand.java,v 1.3 2009/03/26 18:04:10 nw Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -25,7 +25,6 @@ import org.astrogrid.adql.v1_0.beans.FromType;
 import org.astrogrid.adql.v1_0.beans.*;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 /**
@@ -59,6 +58,7 @@ public class JoinInsertCommand extends EnumeratedElementInsertCommand {
     /* (non-Javadoc)
      * @see org.astrogrid.desktop.modules.adqlEditor.commands.StandardInsertCommand#execute()
      */
+    @Override
     public Result execute() {
         StandardInsertCommand tableArrayInsertCommand = null ;
         StandardInsertCommand comparisonInsertCommand = null ;
@@ -163,6 +163,9 @@ public class JoinInsertCommand extends EnumeratedElementInsertCommand {
 
 /*
 $Log: JoinInsertCommand.java,v $
+Revision 1.3  2009/03/26 18:04:10  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.2  2008/04/22 13:40:26  jl99
 Merge of branch vodesktop-jl-2733.
 Fixes for 2733, but also 2735 and 2736.

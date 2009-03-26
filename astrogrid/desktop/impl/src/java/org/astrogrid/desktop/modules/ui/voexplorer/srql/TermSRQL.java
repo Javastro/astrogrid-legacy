@@ -13,7 +13,8 @@ public class TermSRQL extends SRQL {
 	 */
 	private static final long serialVersionUID = 2972662206449731885L;
 	protected String term;
-	public Object accept(final SRQLVisitor visitor) {
+	@Override
+    public Object accept(final SRQLVisitor visitor) {
 		return visitor.visit(this);
 }
 	public String getTerm() {
@@ -22,13 +23,15 @@ public class TermSRQL extends SRQL {
 	public void setTerm(final String term) {
 		this.term = term;
 	}
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.term == null) ? 0 : this.term.hashCode());
 		return result;
 	}
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -53,7 +56,8 @@ public class TermSRQL extends SRQL {
 		 * @return the String representation
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("TermQuery[");
 			buffer.append("term = ").append(term);

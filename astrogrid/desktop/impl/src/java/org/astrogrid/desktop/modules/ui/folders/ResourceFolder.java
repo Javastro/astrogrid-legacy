@@ -45,7 +45,8 @@ public abstract class ResourceFolder extends Folder{
         voe.editNewSubscription(this);
     }
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return name;
 	}
 
@@ -77,6 +78,7 @@ public abstract class ResourceFolder extends Folder{
         return subscription;
     }
 
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -85,6 +87,7 @@ public abstract class ResourceFolder extends Folder{
         return result;
     }
 
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;

@@ -34,7 +34,8 @@ public class LargeTextFormElement extends AbstractTaskFormElement implements Doc
 	}
 
 
-	protected final JComponent createEditor() {
+	@Override
+    protected final JComponent createEditor() {
 		text = new JTextArea();
 		text.setRows(4);
 		text.setLineWrap(true);
@@ -70,7 +71,8 @@ public class LargeTextFormElement extends AbstractTaskFormElement implements Doc
 	}
 
 
-	protected String getStringValue() {
+	@Override
+    protected String getStringValue() {
 	    if (text == null) {
 	        return "";
 	    } else {

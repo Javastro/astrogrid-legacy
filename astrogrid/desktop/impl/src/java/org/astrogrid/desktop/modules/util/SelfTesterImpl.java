@@ -138,6 +138,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             }
             int count = 0;
             int max = suite.countTestCases();
+            @Override
             protected Object construct() throws Exception {
                 setProgress(count,max);
                 final TestResult result = new TestResult();
@@ -148,11 +149,13 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                 return result;
             }
 
+            @Override
             protected void doFinished(final Object result) {
                 final TestResult tr= (TestResult)result;
                 setStatusMessage( max + " tests run, " + (tr.failureCount() + tr.errorCount()) + " failed");
             }
 
+            @Override
             protected void doAlways() {
                 retest.setEnabled(true);              
             }
@@ -203,10 +206,12 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             table.getColumnModel().getColumn(2).setPreferredWidth(250);
             setJMenuBar(new UIComponentMenuBar(this,true) { // minimalistic menu
 
+                @Override
                 protected void populateEditMenu(final EditMenuBuilder emb) {
                     // ignored
                 }
 
+                @Override
                 protected void populateFileMenu(final FileMenuBuilder fmb) {
                     fmb.closeWindow();
                 }
@@ -236,6 +241,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
 
         }
 
+        @Override
         public void setVisible(final boolean b) {
             super.setVisible(b);
             if (b) {

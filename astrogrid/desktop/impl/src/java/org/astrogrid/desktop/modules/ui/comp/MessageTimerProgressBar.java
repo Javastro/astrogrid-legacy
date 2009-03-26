@@ -44,7 +44,8 @@ public class MessageTimerProgressBar extends JProgressBar implements ActionListe
 		super(orient);
 	}
 
-	public void setString(String s) {
+	@Override
+    public void setString(String s) {
 		super.setString(s);
 		if (timer != null) { // setString() gets called in parent constructor - at which point
 				// timer is not yet initialized.

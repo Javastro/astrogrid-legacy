@@ -177,6 +177,7 @@ public class ResourceTreeModel extends DefaultTreeModel {
                 assert isAttached();
             }
 
+            @Override
             protected Object construct() throws IOException, ServiceException {
 
                 // Load content from remote location.
@@ -193,6 +194,7 @@ public class ResourceTreeModel extends DefaultTreeModel {
                 }
             }
 
+            @Override
             protected void doFinished(final Object obj) {
 
                 // Node may have been removed from tree while we were working.
@@ -229,6 +231,7 @@ public class ResourceTreeModel extends DefaultTreeModel {
                 }
             }
 
+            @Override
             protected void doError(final Throwable e) {
 
                 // Node may have been removed from tree while we were working.

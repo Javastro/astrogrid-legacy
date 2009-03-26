@@ -65,14 +65,17 @@ public class HyperbolicVizualization extends Vizualization {
     private HyperbolicTranslation translation;   
     
     // refresh display when new item added to results.
+    @Override
     public void nodeAdded(final Graph arg0, final Node arg1) {
         actmap.runNow("filter");
     }
     
+    @Override
     public void reDraw() {
         actmap.runNow("filter");
     }
     
+    @Override
     public Display getDisplay() {
     
         if(display == null) {
@@ -85,7 +88,8 @@ public class HyperbolicVizualization extends Vizualization {
            final NullRenderer nodeRenderer2 = new NullRenderer();
            // create an edge renderer with custom curved edges
            final DefaultEdgeRenderer edgeRenderer = new DefaultEdgeRenderer() {
-               protected void getCurveControlPoints(final EdgeItem eitem, 
+               @Override
+            protected void getCurveControlPoints(final EdgeItem eitem, 
                    final Point2D[] cp, final double x1, final double y1, final double x2, final double y2) 
                {
                    final Point2D c = eitem.getLocation();      
@@ -158,6 +162,7 @@ public class HyperbolicVizualization extends Vizualization {
     
     public class TranslateControl extends MouseAdapter implements MouseMotionListener {
         boolean drag = false;
+        @Override
         public void mousePressed(final java.awt.event.MouseEvent e) {
             translation.setStartPoint(e.getX(), e.getY());
         } //
@@ -166,6 +171,7 @@ public class HyperbolicVizualization extends Vizualization {
             translation.setEndPoint(e.getX(), e.getY());
             actmap.runNow("translate");
         } //
+        @Override
         public void mouseReleased(final java.awt.event.MouseEvent e) {
             if ( drag ) {
                 actmap.runNow("endTranslate");
@@ -177,13 +183,16 @@ public class HyperbolicVizualization extends Vizualization {
     } // end of inner class TranslateControl
         
     public class DemoControl extends ControlAdapter {
+        @Override
         public void itemEntered(final VisualItem item, final java.awt.event.MouseEvent e) {
             e.getComponent().setCursor(
                     Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         } //
+        @Override
         public void itemExited(final VisualItem item, final java.awt.event.MouseEvent e) {
             e.getComponent().setCursor(Cursor.getDefaultCursor());
         } //        
+        @Override
         public void itemClicked(final VisualItem item, final java.awt.event.MouseEvent e) {
             if ( item instanceof NodeItem ) {
             // animate a translation when a node is clicked
@@ -271,6 +280,7 @@ public class HyperbolicVizualization extends Vizualization {
             }
         } //
        
+        @Override
         public Paint getFillColor(final VisualItem item) {
             if ( item instanceof NodeItem ) {
                 final String attr=  item.getAttribute("selected");                
@@ -288,6 +298,7 @@ public class HyperbolicVizualization extends Vizualization {
             }
         } //
        
+        @Override
         public Paint getColor(final VisualItem item) {
             if (item instanceof NodeItem) {
                  final int d = ((NodeItem)item).getDepth();

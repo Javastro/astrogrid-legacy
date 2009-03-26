@@ -8,11 +8,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import javax.xml.parsers.SAXParserFactory;
-
-import org.astrogrid.acr.ivoa.resource.Resource;
 
 /**
  * A Map of URIs to annotations of them, which are persisted in a
@@ -124,7 +120,8 @@ public class SkuaClaimMap
 	 * @param uri the URI being annotation
 	 * @param ua the annotation
 	 */
-	public UserAnnotation put(final URI uri, final UserAnnotation ua) {
+	@Override
+    public UserAnnotation put(final URI uri, final UserAnnotation ua) {
 		// first add the mapping to this current map
 		final UserAnnotation previous = super.put(uri, ua);
 
@@ -140,14 +137,16 @@ public class SkuaClaimMap
 	}
 
 	// Make the unsupported operations throw the correct Exception
-	public UserAnnotation remove(final Object key) {
+	@Override
+    public UserAnnotation remove(final Object key) {
 		// we will support this later
 		throw new java.lang.UnsupportedOperationException("SkuaClaimSet does not support that operation");
 	}
 	public void putAll(final Collection<?> c) {
 		throw new java.lang.UnsupportedOperationException("SkuaClaimSet does not support that operation");
 	}
-	public void clear() {
+	@Override
+    public void clear() {
 		throw new java.lang.UnsupportedOperationException("SkuaClaimSet does not support that operation");
 	}
 
@@ -389,12 +388,14 @@ public class SkuaClaimMap
 
 			// org.xml.sax implementation
 			// The handler isn't terribly paranoid, and could probably be made more robust
-			public void startDocument() {
+			@Override
+            public void startDocument() {
 				resultList = new java.util.ArrayList<Map<String,String>>();
 				snarfContent = false;
 			}
 
-			public void startElement(final String uri, final String localName, final String qName,
+			@Override
+            public void startElement(final String uri, final String localName, final String qName,
 									 final org.xml.sax.Attributes atts) {
 				if (uri.equals("http://www.w3.org/2005/sparql-results#")) {
 					if (localName.equals("result")) {
@@ -408,7 +409,8 @@ public class SkuaClaimMap
 				}
 			}
 
-			public void endElement(final String uri, final String localName, final String qName) {
+			@Override
+            public void endElement(final String uri, final String localName, final String qName) {
 				if (uri.equals("http://www.w3.org/2005/sparql-results#")) {
 					if (localName.equals("result")) {
 						// SAX being SAX, we can't have got here without first seeing a startElement
@@ -428,7 +430,8 @@ public class SkuaClaimMap
 				}
 			}
 
-			public void characters(final char[] ch, final int start, final int length) {
+			@Override
+            public void characters(final char[] ch, final int start, final int length) {
 				if (snarfContent) {
 					if (currentContent == null) {
                         currentContent = new String(ch, start, length);

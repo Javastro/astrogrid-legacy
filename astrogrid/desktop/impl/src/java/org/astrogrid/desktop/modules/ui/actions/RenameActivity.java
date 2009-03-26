@@ -95,9 +95,11 @@ public class RenameActivity extends AbstractFileActivity {
         }
 
         /** process input */
+        @Override
         public void ok() {
             (new BackgroundWorker(uiParent.get(),"Renaming " + originalName,Thread.MAX_PRIORITY) {
                 
+                @Override
                 protected Object construct() throws Exception {
                     final FileObject parent = original.getParent();
                     final String nuName = tf.getText();
@@ -122,6 +124,7 @@ public class RenameActivity extends AbstractFileActivity {
                     }
                     return null;
                 }
+                @Override
                 protected void doFinished(final Object result) {
                     if (result == null && isVisible()) {
                         RenameDialog.super.ok();
@@ -138,7 +141,8 @@ public class RenameActivity extends AbstractFileActivity {
     private final FileSystemManager vfs;
 	
 	
-	protected boolean invokable(final FileObject f) { 
+	@Override
+    protected boolean invokable(final FileObject f) { 
 		try {
             return (! AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
                     && f.isWriteable());
@@ -158,11 +162,13 @@ public class RenameActivity extends AbstractFileActivity {
 	}
 	
 	// can only handle a single selection.
-	public void manySelected(final FileObject[] list) {
+	@Override
+    public void manySelected(final FileObject[] list) {
 		noneSelected();
 	}
 	
-	public void actionPerformed(final ActionEvent e) {
+	@Override
+    public void actionPerformed(final ActionEvent e) {
 		final List l = computeInvokable();
 		logger.debug(l);
 		final FileObject original = (FileObject)l.get(0);

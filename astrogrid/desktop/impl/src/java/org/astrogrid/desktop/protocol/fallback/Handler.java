@@ -20,7 +20,8 @@ import java.util.StringTokenizer;
  * @since Jan 2, 20074:04:22 PM
  */
 public class Handler extends URLStreamHandler {
-	protected URLConnection openConnection(URL u) throws IOException {
+	@Override
+    protected URLConnection openConnection(URL u) throws IOException {
 		
 		// validate the url first.
 		StringTokenizer tok = new StringTokenizer(u.toString().substring(FallbackURLConnection.FALLBACK_PROTOCOL.length()),",");

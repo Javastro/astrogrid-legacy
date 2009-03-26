@@ -115,6 +115,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
             {
                 setTransient(true);
             }
+            @Override
             protected Object construct() throws Exception{
                 reportProgress("Saving list to " + file);
                 OutputStream fos = null;

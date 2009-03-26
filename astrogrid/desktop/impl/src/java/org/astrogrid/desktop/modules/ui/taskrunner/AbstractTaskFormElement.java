@@ -267,7 +267,8 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		associate(optionalButton);
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		return pval.getName() +":=" + pval.getValue();
 	}
 

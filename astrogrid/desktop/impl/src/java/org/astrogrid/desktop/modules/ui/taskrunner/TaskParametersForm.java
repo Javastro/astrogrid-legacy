@@ -253,7 +253,8 @@ private Dimension preservedPreferredSize = null ;
         
 		this.addComponentListener( new ComponentAdapter() {
 
-		    public void componentResized(final ComponentEvent e) {
+		    @Override
+            public void componentResized(final ComponentEvent e) {
 
 		        if( bottomPanel.getComponentCount() == 0 
 		                ||
@@ -298,12 +299,14 @@ private Dimension preservedPreferredSize = null ;
 		
         // hide info pane when bottom pane appears.
 		bottomPanel.addComponentListener(new ComponentAdapter() {
-		        public void componentShown(final ComponentEvent e) {
+		        @Override
+                public void componentShown(final ComponentEvent e) {
 		        infoScroll.setVisible(false);
 		        rightSplit.setDividerLocation(1.0);	
 		        rightSplit.setDividerSize(0);		        
 		    }
-		        public void componentHidden(final ComponentEvent e) {
+		        @Override
+                public void componentHidden(final ComponentEvent e) {
 		        infoScroll.setVisible(true);
 		        rightSplit.setDividerLocation(0.5);		 
 		        rightSplit.setDividerSize(7);		        
@@ -520,7 +523,8 @@ private Dimension preservedPreferredSize = null ;
 	            this.collapsed = ! getBottomPane().isVisible();
 	            this.tool = tool;
 	        }
-	        public String toString() {
+	        @Override
+            public String toString() {
 	            return "InterfaceState[" + tool.getName() + ", " + collapsed +"]";
 	        }
 	    }
@@ -561,17 +565,20 @@ private Dimension preservedPreferredSize = null ;
             if (logoURI != null) {
                 (new BackgroundWorker(parent,"Fetching creator logo",BackgroundWorker.SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
                     
+                    @Override
                     protected Object construct() throws Exception {
                         final Image currentResourceLogo = IconHelper.loadIcon(logoURI.toURL()).getImage();
                         return new ImageIcon(currentResourceLogo.getScaledInstance(-1,24,Image.SCALE_SMOOTH));
 
                     }
+                    @Override
                     protected void doFinished(final Object result) {
                         if (result != null) {
                             final Icon i = (Icon)result;
                             resourceLabel.setIcon(i);
                         }
                     }
+                    @Override
                     protected void doError(final Throwable ex) {
                         // ignore.
                     }
@@ -978,14 +985,17 @@ private Dimension preservedPreferredSize = null ;
             super(inputElements,el, ref);
         }
 
+        @Override
         protected void addParameter(final ParameterValue val) {
             model.tool().getInput().addParameter(val);
         }
 
+        @Override
         protected void removeParameter(final ParameterValue val) {
             model.tool().getInput().removeParameter(val);
         }
 
+        @Override
         protected AbstractTaskFormElement cloneFormElement(
                 final AbstractTaskFormElement el, final ParameterValue newValue) {
             return createInputFormElement(el.getDescription(),newValue);
@@ -999,14 +1009,17 @@ private Dimension preservedPreferredSize = null ;
             super(outputElements,el, ref);
         }
 
+        @Override
         protected void addParameter(final ParameterValue val) {
             model.tool().getOutput().addParameter(val);
         }
 
+        @Override
         protected void removeParameter(final ParameterValue val) {
             model.tool().getOutput().removeParameter(val);
         }
 
+        @Override
         protected AbstractTaskFormElement cloneFormElement(
                 final AbstractTaskFormElement el, final ParameterValue newValue) {
             return createOutputFormElement(el.getDescription(),newValue);            
@@ -1046,7 +1059,8 @@ private Dimension preservedPreferredSize = null ;
 				return new JLabel("unexpected component type");
 			}
 		}
-		public int getComponentsPerElement() {
+		@Override
+        public int getComponentsPerElement() {
 			return 6;
 		}
 	}

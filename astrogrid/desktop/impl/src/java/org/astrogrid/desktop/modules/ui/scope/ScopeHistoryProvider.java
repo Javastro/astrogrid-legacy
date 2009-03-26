@@ -35,7 +35,8 @@ public class ScopeHistoryProvider extends AbstractListProvider{
 		
 		super(parent,new File(new File(workDir.getValue()),"scopeHistory.xml"),xml);
 	}
-	protected EventList createList() {
+	@Override
+    protected EventList createList() {
 		// we use a range list to limit the number of history items stored.
 		// and a unique list to remove duplicates
 		//using a range list does mean that the in-memory history list
@@ -48,6 +49,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
 	}
 	
 
+    @Override
     protected void initializeFolderList() {
         // no init needed
     }
@@ -120,6 +122,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
             
            
 
+        @Override
         public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
@@ -162,6 +165,7 @@ public class ScopeHistoryProvider extends AbstractListProvider{
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;

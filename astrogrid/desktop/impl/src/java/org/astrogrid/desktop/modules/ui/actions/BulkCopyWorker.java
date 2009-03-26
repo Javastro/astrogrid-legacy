@@ -112,6 +112,7 @@ public class BulkCopyWorker extends BackgroundWorker {
 //        }
   
     protected FileObject saveTarget;
+    @Override
     protected Object construct() throws Exception {
         final int tasksCount = cmds.length + 1;
         int progress = 0;
@@ -195,6 +196,7 @@ public class BulkCopyWorker extends BackgroundWorker {
     }
     private final ExceptionFormatter exFormatter = new ExceptionFormatter();
 
+    @Override
     protected void doFinished(final Object ignored) {
         // check if we've seen any errors.
         boolean seenErrs = false;

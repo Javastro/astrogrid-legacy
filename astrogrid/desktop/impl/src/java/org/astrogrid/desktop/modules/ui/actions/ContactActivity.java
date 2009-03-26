@@ -23,14 +23,17 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
  */
 public class ContactActivity extends AbstractResourceActivity implements Activity.Info {
 
-	protected boolean invokable(final Resource r) {
+	@Override
+    protected boolean invokable(final Resource r) {
 		 final Contact[] contacts = r.getCuration().getContacts();
 		 return contacts != null && contacts.length > 0 && contacts[0].getEmail() != null;
 	}
-	public void someSelected(final Resource[] list) {
+	@Override
+    public void someSelected(final Resource[] list) {
 		noneSelected();
 	}
-	public void oneSelected(final Resource resource) {
+	@Override
+    public void oneSelected(final Resource resource) {
 		if (invokable(resource)) {
 			setEnabled(true);
 			current = new Resource[]{resource};
@@ -53,6 +56,7 @@ public ContactActivity(final BrowserControl browser) {
 	setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,UIComponentMenuBar.MENU_KEYMASK));
 }
 
+@Override
 public void actionPerformed(final ActionEvent e) {
 	final List l = computeInvokable();
 	final Resource r = (Resource)l.get(0);

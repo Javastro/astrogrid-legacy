@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.19 2008/06/06 13:44:52 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.20 2009/03/26 18:04:11 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,6 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
 import org.astrogrid.desktop.modules.system.contributions.HelpItemContribution;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.joda.time.Duration;
 
 /** Implementation of the help server.
@@ -279,6 +278,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.20  2009/03/26 18:04:11  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.19  2008/06/06 13:44:52  nw
 fix to threading implementation.
 

@@ -37,6 +37,7 @@ public class VospaceProvider extends AbstractFileProvider implements VfsFileProv
         this.registry = registry;
     }
 
+    @Override
     public FileObject createFileSystem(final String arg0, final FileObject arg1,
             final FileSystemOptions arg2) throws FileSystemException {
         return null;
@@ -51,18 +52,22 @@ public class VospaceProvider extends AbstractFileProvider implements VfsFileProv
         return null;
     }
 
+    @Override
     public FileSystemConfigBuilder getConfigBuilder() {
         return null;
     }
 
+    @Override
     public FileName parseUri(final FileName arg0, final String arg1)
             throws FileSystemException {
         return null;
     }
 
+    @Override
     public void close() {
     }
 
+    @Override
     public void init() throws FileSystemException {
     }
 

@@ -15,7 +15,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.system.messaging.AbstractMessageSender;
-import org.astrogrid.desktop.modules.system.messaging.AbstractMessageTarget;
 import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageSender;
 import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageType;
 import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
@@ -30,7 +29,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 20076:44:32 PM
  */
-public class VOExplorerFactoryImpl extends AbstractMessageTarget  implements VOExplorerFactoryInternal {
+public class VOExplorerFactoryImpl  implements VOExplorerFactoryInternal {
 	
 	public final TypesafeObjectBuilder builder;
 
@@ -46,8 +45,7 @@ public class VOExplorerFactoryImpl extends AbstractMessageTarget  implements VOE
         myMessages = Collections.unmodifiableSet(m);
     }
     
-	public VOExplorerFactoryImpl(final List<ExternalMessageTarget> apps,final TypesafeObjectBuilder builder) {
-		super(myMessages);
+	public VOExplorerFactoryImpl(final List<ExternalMessageTarget> apps,final TypesafeObjectBuilder builder) {		
 	    this.apps = apps;
         this.builder = builder;
 	}	
@@ -118,8 +116,7 @@ public class VOExplorerFactoryImpl extends AbstractMessageTarget  implements VOE
             super(VOExplorerFactoryImpl.this);
         }
 
-        public void sendResourceSet(final List<URI> resList, final String setId,
-                final String setName) {
+        public void sendResourceSet(final List<URI> resList, final String setName) {
           
             final String title;
             if (setName != null) {
@@ -162,5 +159,13 @@ public class VOExplorerFactoryImpl extends AbstractMessageTarget  implements VOE
                 });                
         }
 
+    }
+
+
+    public Set<MessageType<?>> acceptedMessageTypes() {
+        return myMessages;
+    }
+    public boolean accepts(final MessageType<?> type) {
+        return myMessages.contains(type);
     }
 }

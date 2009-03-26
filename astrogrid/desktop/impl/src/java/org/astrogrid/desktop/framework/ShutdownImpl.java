@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.10 2008/11/04 14:35:52 nw Exp $
+/*$Id: ShutdownImpl.java,v 1.11 2009/03/26 18:04:12 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -123,6 +123,7 @@ public class ShutdownImpl  extends Thread implements Shutdown{
     
     
     // entry point for the runtime shutdown hook.
+    @Override
     public void run() {
     	if (alreadyHalting.set(true)) { // atomic action - sets, and returns previous value. 		
     		return;
@@ -190,6 +191,9 @@ public class ShutdownImpl  extends Thread implements Shutdown{
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.11  2009/03/26 18:04:12  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.10  2008/11/04 14:35:52  nw
 javadoc polishing
 

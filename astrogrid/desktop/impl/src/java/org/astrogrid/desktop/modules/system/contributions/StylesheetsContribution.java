@@ -80,7 +80,8 @@ public class StylesheetsContribution {
 		return t;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 	if (this.pattern != null) {
 		return this.pattern.pattern();
 	} else {

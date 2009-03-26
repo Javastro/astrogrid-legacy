@@ -39,7 +39,8 @@ public class MutablePrincipal implements Principal {
 	private final Object identity = new Object();
 
 
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -60,7 +61,8 @@ public class MutablePrincipal implements Principal {
 		return true;
 	}
 
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
 		result = PRIME * result + ((this.identity == null) ? 0 : this.identity.hashCode());
@@ -68,7 +70,8 @@ public class MutablePrincipal implements Principal {
 	}
 
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		return this.p.toString();
 	}
 }

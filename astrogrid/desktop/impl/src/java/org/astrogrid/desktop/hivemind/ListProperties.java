@@ -24,7 +24,8 @@ import org.astrogrid.desktop.modules.system.pref.PreferencesArrangerImpl;
  * @since Jan 2, 20077:07:31 PM
  */
 public class ListProperties extends Launcher {
-	public void run() {
+	@Override
+    public void run() {
 		spliceInDefaults();
 		//ErrorHandler err = new DefaultErrorHandler();
 		final RegistryBuilder rb = new RegistryBuilder();

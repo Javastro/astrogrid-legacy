@@ -1,4 +1,4 @@
-/*$Id: WindowedRadialColorFunction.java,v 1.4 2008/11/04 14:35:48 nw Exp $
+/*$Id: WindowedRadialColorFunction.java,v 1.5 2009/03/26 18:04:10 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,6 +37,7 @@ public class WindowedRadialColorFunction extends ColorFunction {
             0, thresh);
     } //
            
+    @Override
     public Paint getFillColor(final VisualItem item) {
         if ( item instanceof NodeItem ) {
             //NodeItem n = (NodeItem)item;
@@ -55,6 +56,7 @@ public class WindowedRadialColorFunction extends ColorFunction {
         }
     } //
 
+    @Override
     public Paint getColor(final VisualItem item) {
         if ( item.isFocus() ) {
             return focusColor;
@@ -82,6 +84,9 @@ public class WindowedRadialColorFunction extends ColorFunction {
 
 /* 
 $Log: WindowedRadialColorFunction.java,v $
+Revision 1.5  2009/03/26 18:04:10  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.4  2008/11/04 14:35:48  nw
 javadoc polishing
 

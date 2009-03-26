@@ -237,10 +237,12 @@ public class XStreamXmlPersist implements XmlPersist {
     /** converter for java.net.URI */
     public static class URIConverter extends AbstractSingleValueConverter{
 
+        @Override
         public boolean canConvert(final Class arg0) {
             return arg0.equals(URI.class);
         }
 
+        @Override
         public Object fromString(final String arg0) {
             try {
                 return new URI(arg0);

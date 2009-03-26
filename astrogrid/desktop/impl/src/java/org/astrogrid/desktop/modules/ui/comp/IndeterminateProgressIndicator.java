@@ -71,6 +71,7 @@ public class IndeterminateProgressIndicator  extends JComponent{
             add(indicator);
         }
         private final IndeterminateProgressIndicator indicator;
+        @Override
         public void setEnabled(boolean b) {
             super.setEnabled(b);
             if (b) {
@@ -89,6 +90,7 @@ public class IndeterminateProgressIndicator  extends JComponent{
         setOpaque(false);
     }
     
+    @Override
     public void paintComponent(Graphics oldGraphics) {
         if (painted && (isDisplayedWhenStopped || timer.isRunning())) {
             Graphics2D g = (Graphics2D) oldGraphics;
@@ -215,12 +217,12 @@ public class IndeterminateProgressIndicator  extends JComponent{
         
         bars = new Area[BAR_COUNT];
         
-        final double fixedAngle = 2.0 * Math.PI / (double) bars.length;
+        final double fixedAngle = 2.0 * Math.PI / bars.length;
         for (int i = 0; i < bars.length; ++i) {
             Area primitive = makeBar();
             
             Point2D.Double center = new Point2D.Double((double) DIAMETER / 2, (double) DIAMETER / 2);
-            AffineTransform toCircle = AffineTransform.getRotateInstance(((double) -i) * fixedAngle, center.getX(), center.getY());
+            AffineTransform toCircle = AffineTransform.getRotateInstance((-i) * fixedAngle, center.getX(), center.getY());
             AffineTransform toBorder = AffineTransform.getTranslateInstance(45.0, -6.0);
             
             AffineTransform toScale = AffineTransform.getScaleInstance(0.1, 0.1);
@@ -244,6 +246,7 @@ public class IndeterminateProgressIndicator  extends JComponent{
         return tick;
     }
     
+    @Override
     public Dimension getPreferredSize() {
         return new Dimension(DIAMETER + 2, DIAMETER + 2);
     }

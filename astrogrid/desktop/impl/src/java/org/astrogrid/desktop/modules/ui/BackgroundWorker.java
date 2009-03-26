@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.22 2009/03/24 13:08:20 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.23 2009/03/26 18:04:11 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,6 +61,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
             private TimeoutEnum(final TimeoutEnum basis, final long factor) {
                 this.factor = basis.factor * factor;
             }
+            @Override
             public String toString() {
                 return "Timeout = " + factor + " * ${performance.TimoutFactor}";
             }
@@ -247,6 +248,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         }
         
         /** overridden to ensure calls on EDT */
+        @Override
         public final void notifyObservers() {
                 executor.executeLaterEDT(new Runnable() {
 
@@ -530,6 +532,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.23  2009/03/26 18:04:11  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.22  2009/03/24 13:08:20  nw
 reworking of messaging system to make it protocol neutral.
 

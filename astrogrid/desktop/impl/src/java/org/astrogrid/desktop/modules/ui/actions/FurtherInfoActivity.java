@@ -22,13 +22,16 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
  */
 public class FurtherInfoActivity extends AbstractResourceActivity implements Activity.Info {
 
-	protected boolean invokable(final Resource r) {
+	@Override
+    protected boolean invokable(final Resource r) {
 		return r.getContent() != null &&  r.getContent().getReferenceURI() != null;
 	}
-	public void someSelected(final Resource[] arr) {
+	@Override
+    public void someSelected(final Resource[] arr) {
 		noneSelected();
 	}
-	public void actionPerformed(final ActionEvent e) {
+	@Override
+    public void actionPerformed(final ActionEvent e) {
 		final List l = computeInvokable();
 		final Resource r = (Resource)l.get(0);		
 		final URI referenceURI = r.getContent().getReferenceURI() ;

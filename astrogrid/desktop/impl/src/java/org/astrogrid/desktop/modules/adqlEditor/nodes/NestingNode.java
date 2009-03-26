@@ -127,6 +127,7 @@ public class NestingNode extends AdqlNode {
 //            insert( childNode, index ) ;
     }
     
+    @Override
     protected void build( XmlObject o ) {
         Object[] obs = AdqlUtils.getArray( o, getElementName() ) ;
         SchemaType type = getXmlObject().schemaType() ;
@@ -142,6 +143,7 @@ public class NestingNode extends AdqlNode {
         }
     }
    
+    @Override
     public AdqlNode insert( CommandInfo ci, XmlObject source, boolean before ) {
         AdqlNode newInstance = null ;
         if( getChildCount() <= 1 ) {            
@@ -158,6 +160,7 @@ public class NestingNode extends AdqlNode {
         return newInstance ;
     }
     
+    @Override
     public AdqlNode insert( CommandInfo ci, XmlObject source, int index ) {
         AdqlNode newInstance = null ;
         if( getChildCount() <= 1 ) {            
@@ -179,6 +182,7 @@ public class NestingNode extends AdqlNode {
         return newInstance ;
     }
     
+    @Override
     public AdqlNode insert(CommandInfo ci, XmlObject source) {
         AdqlNode newInstance = null ;
         XmlObject lastNested = getLastNested() ;
@@ -191,6 +195,7 @@ public class NestingNode extends AdqlNode {
         return newInstance ;
     }
     
+    @Override
     public AdqlNode insert( CommandInfo ci ) {
         AdqlNode newInstance = null ;
         XmlObject lastNested = getLastNested() ;
@@ -204,6 +209,7 @@ public class NestingNode extends AdqlNode {
     }
     
 
+    @Override
     public void remove( CommandInfo ci ) {
         if( getLastNested() == getXmlObject() ) {
             super.remove( ci ) ;
@@ -628,6 +634,7 @@ public class NestingNode extends AdqlNode {
         return getElementProperty().getName().getLocalPart() ;
     }
     
+    @Override
     public String toHtml( boolean expanded, boolean leaf, AdqlTree tree ) { 
         String retValue = super.toHtml( expanded, leaf, tree ) ;
         return retValue ;

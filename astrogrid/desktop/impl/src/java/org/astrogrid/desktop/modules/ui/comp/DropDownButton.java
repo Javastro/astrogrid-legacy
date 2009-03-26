@@ -58,7 +58,8 @@ public class DropDownButton extends JToolBar implements ActionListener {
 		}
 	};
 	
-	public void setEnabled(final boolean b) {
+	@Override
+    public void setEnabled(final boolean b) {
 		super.setEnabled(b);
 		mainButton.setEnabled(b);
 		arrowButton.setEnabled(b);
@@ -93,7 +94,8 @@ public class DropDownButton extends JToolBar implements ActionListener {
 		setBorder(null);
 	}
 	
-	public void updateUI() {
+	@Override
+    public void updateUI() {
 		super.updateUI();
 		setBorder(null);
 	}
@@ -208,7 +210,8 @@ public class DropDownButton extends JToolBar implements ActionListener {
           arrowColor = new Color(140, 140, 140);
       }
 
-      public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
+      @Override
+    public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
           super.paintIcon(c, g, x, y);
           g.setColor(Color.white);
           g.drawLine(x+3, y+2, x+4, y+1);

@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.23 2008/11/04 14:35:51 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.24 2009/03/26 18:04:11 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,6 +68,7 @@ public class UIComponentImpl extends JFrame implements UIComponent {
         setContentPane(assist.getMainPanel());
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
+            @Override
             public void windowClosing(final WindowEvent e) {
             	getContext().unregisterWindow(UIComponentImpl.this);
             	setVisible(false);
@@ -234,6 +235,9 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.24  2009/03/26 18:04:11  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.23  2008/11/04 14:35:51  nw
 javadoc polishing
 

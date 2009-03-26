@@ -137,6 +137,7 @@ private class UpdateControls {
         setNewValues( values ) ;
     }
         
+    @Override
     public Result execute() {   
         Result result = _execute() ;
         if( result != CommandExec.FAILED )
@@ -209,11 +210,13 @@ private class UpdateControls {
         return updates ;
     }
     
+    @Override
     public void die() {
         super.die();
     }
     
     
+    @Override
     public void redo() throws CannotRedoException {
         super.redo();
         try {
@@ -307,6 +310,7 @@ private class UpdateControls {
         }
     }
     
+    @Override
     public void undo() throws CannotUndoException {
         super.undo();
         try {
@@ -357,6 +361,7 @@ private class UpdateControls {
         }
     }
     
+    @Override
     public String getPresentationName() {
         return "Edit" ;
     }
@@ -628,6 +633,7 @@ private class UpdateControls {
         }
     }
     
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer(512) ;
         buffer.append( "\nEditTupleTextCommand" ) ;

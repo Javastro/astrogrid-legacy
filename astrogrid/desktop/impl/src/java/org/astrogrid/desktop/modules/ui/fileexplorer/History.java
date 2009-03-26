@@ -35,13 +35,15 @@ public class History<T>  {
 		public T previous() {
 		    return previous;
 		}
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			final int PRIME = 31;
 			int result = 1;
 			result = PRIME * result + ((this.current == null) ? 0 : this.current.hashCode());
 			return result;
 		}
-		public boolean equals(final Object obj) {
+		@Override
+        public boolean equals(final Object obj) {
 			if (this == obj) {
                 return true;
             }

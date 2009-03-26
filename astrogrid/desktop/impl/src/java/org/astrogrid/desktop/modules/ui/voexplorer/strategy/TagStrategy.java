@@ -46,7 +46,8 @@ public class TagStrategy extends PipelineStrategy {
 		this.annServer = annServer;
 	}
 
-	public Matcher createMatcher(final List selected) {
+	@Override
+    public Matcher createMatcher(final List selected) {
 		return new Matcher() {
 
 			public boolean matches(final Object arg0) {
@@ -80,7 +81,8 @@ public class TagStrategy extends PipelineStrategy {
 		};
 	}
 
-	public TransformedList createView(final EventList base) {
+	@Override
+    public TransformedList createView(final EventList base) {
 		return new CollectionList(base,
 				new CollectionList.Model() {
 			public List getChildren(final Object arg0) {
@@ -120,7 +122,8 @@ public class TagStrategy extends PipelineStrategy {
 	});
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return "Annotations";
 	}
 

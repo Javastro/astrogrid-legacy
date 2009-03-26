@@ -56,6 +56,7 @@ public class FilesList extends JList {
         
         setCellRenderer(new DefaultListCellRenderer() {
             Dimension dim = new Dimension(100,50); //@todo calculate this more nicely.
+        @Override
         public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
             final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
                     cellHasFocus);
@@ -73,6 +74,7 @@ public class FilesList extends JList {
         });        
     }
     
+    @Override
     public String getToolTipText(final MouseEvent e) {
         final int index = locationToIndex(e.getPoint());
         if (index < 0) {

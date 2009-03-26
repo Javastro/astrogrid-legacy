@@ -85,6 +85,7 @@ public class MonitoringInputStream  extends ProxyInputStream {
      * @throws IOException if an I/O error occurs
      * @see java.io.InputStream#read(byte[]) 
      */
+    @Override
     public int read(final byte[] b) throws IOException {
         final int found = super.read(b);
         this.count += (found >= 0) ? found : 0;
@@ -107,6 +108,7 @@ public class MonitoringInputStream  extends ProxyInputStream {
      * @throws IOException if an I/O error occurs
      * @see java.io.InputStream#read(byte[], int, int)
      */
+    @Override
     public int read(final byte[] b, final int off, final int len) throws IOException {
         final int found = super.read(b, off, len);
         this.count += (found >= 0) ? found : 0;
@@ -126,6 +128,7 @@ public class MonitoringInputStream  extends ProxyInputStream {
      * @throws IOException if an I/O error occurs
      * @see java.io.InputStream#read()
      */
+    @Override
     public int read() throws IOException {
         final int found = super.read();
         this.count += (found >= 0) ? 1 : 0;
@@ -146,6 +149,7 @@ public class MonitoringInputStream  extends ProxyInputStream {
      * @throws IOException if an I/O error occurs
      * @see java.io.InputStream#skip(long)
      */
+    @Override
     public long skip(final long length) throws IOException {
         final long skip = super.skip(length);
         this.count += skip;

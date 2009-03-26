@@ -130,12 +130,14 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
 
 	
 	/** equivalent of none-selected */
-	public void noneSelected() {
+	@Override
+    public void noneSelected() {
 	    setEnabled(false);
 	    currentFiles = null;
 	    currentResources = null;
 	}
-	public final void selected(final Transferable r) {
+	@Override
+    public final void selected(final Transferable r) {
 	    if (r == null) {
 	        return;
 	    }

@@ -143,7 +143,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		        getContentPane().add(PreferenceEditorDialogue.this);  
 		        setTitle("VODesktop Preferences");
 		    }
-		    public void ok() {
+		    @Override
+            public void ok() {
 		        super.ok();
 	            // go through each of the input components, saving back to preferences those that
 	            // have been modified.
@@ -559,7 +560,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	 */
 	abstract class HighlightingInputVerifier extends InputVerifier {
 
-		public boolean shouldYieldFocus(final JComponent input) {
+		@Override
+        public boolean shouldYieldFocus(final JComponent input) {
 			final boolean ok = verify(input);
 			if (! ok) {
 				Toolkit.getDefaultToolkit().beep();
@@ -579,7 +581,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	
 	protected final InputVerifier urlVerifier = new HighlightingInputVerifier() {
 
-		public boolean verify(final JComponent input) {
+		@Override
+        public boolean verify(final JComponent input) {
 			final String v = ((ValueAccess)input).getValue();
 			try {
 				new URL(v);
@@ -592,7 +595,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	
 	protected final InputVerifier directoryVerifier = new HighlightingInputVerifier() {
 		
-		public boolean verify(final JComponent input) {
+		@Override
+        public boolean verify(final JComponent input) {
 			final String v = ((ValueAccess)input).getValue();
 			try {
 				final File f = new File(v);
@@ -609,7 +613,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	
 	protected final InputVerifier fileVerifier = new HighlightingInputVerifier() {
 		
-		public boolean verify(final JComponent input) {
+		@Override
+        public boolean verify(final JComponent input) {
 			final String v = ((ValueAccess)input).getValue();
 			try {
 				final File f = new File(v);
@@ -624,7 +629,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	
 	protected final InputVerifier numberVerifier = new HighlightingInputVerifier() {
 
-		public boolean verify(final JComponent input) {
+		@Override
+        public boolean verify(final JComponent input) {
 			final String v = ((ValueAccess)input).getValue();
 			try {
 				Integer.parseInt(v);
@@ -638,7 +644,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 
 	protected final InputVerifier secondsVerifier = new HighlightingInputVerifier() {
 
-		public boolean verify(final JComponent input) {
+		@Override
+        public boolean verify(final JComponent input) {
 			final String v = ((ValueAccess)input).getValue();
 			try {
 				final int i = Integer.parseInt(v);

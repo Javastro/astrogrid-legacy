@@ -22,6 +22,7 @@ public abstract class CancelBorder extends InteractiveBorder {
         setActivateOnPress(false);
     }
     
+    @Override
     public void paintBorder(final Component c, final Graphics oldGraphics, final int x, final int y, final int width, final int height) {
         if (c instanceof SearchField) {
             if (((SearchField) c).showingPlaceholderText ) {
@@ -53,5 +54,6 @@ public abstract class CancelBorder extends InteractiveBorder {
      * Handles a click on the cancel button by clearing the text and
      * notifying any ActionListeners.
      */
+    @Override
     public abstract void buttonActivated(MouseEvent e) ;
 }

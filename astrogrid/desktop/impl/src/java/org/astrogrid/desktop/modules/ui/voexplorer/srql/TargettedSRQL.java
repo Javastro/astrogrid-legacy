@@ -13,7 +13,8 @@ public class TargettedSRQL extends SRQL {
 	 * 
 	 */
 	private static final long serialVersionUID = 2393097896016240910L;
-	public Object accept(SRQLVisitor visitor) {
+	@Override
+    public Object accept(SRQLVisitor visitor) {
 		return visitor.visit(this);
 	}
 	protected String target;
@@ -35,7 +36,8 @@ public class TargettedSRQL extends SRQL {
 		 * @return the String representation
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("TargettedQuery[");
 			buffer.append("target = ").append(target);
@@ -43,14 +45,16 @@ public class TargettedSRQL extends SRQL {
 			buffer.append("]");
 			return buffer.toString();
 		}
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.child == null) ? 0 : this.child.hashCode());
 		result = PRIME * result + ((this.target == null) ? 0 : this.target.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)

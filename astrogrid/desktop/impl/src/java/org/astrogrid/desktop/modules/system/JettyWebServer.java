@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.23 2008/12/01 23:32:16 nw Exp $
+/*$Id: JettyWebServer.java,v 1.24 2009/03/26 18:04:11 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -468,9 +468,9 @@ public URL getContextBase(final String sessionId) {
                 } catch (final XmlRpcException x) {
                     logger.error("xmlrpc failure",x);
                     fail("xmlrpc failure");
-                } catch (final IOException x) {
-                    logger.error("IO Failure", x);
-                    fail("IO failure");
+//                } catch (final IOException x) {
+//                    logger.error("IO Failure", x);
+//                    fail("IO failure");
                 }
             }
         });
@@ -482,6 +482,9 @@ public URL getContextBase(final String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.24  2009/03/26 18:04:11  nw
+source code improvements - cleaned imports, @override, etc.
+
 Revision 1.23  2008/12/01 23:32:16  nw
 used commons.io utilities
 

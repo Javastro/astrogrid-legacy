@@ -53,11 +53,13 @@ public class TestQueryButton extends ResourceDisplayPaneEmbeddedButton implement
             setIcon(IconHelper.loadIcon("loader.gif"));
             (new BackgroundWorker(uiParent,"Testing " + r.getTitle(),BackgroundWorker.VERY_SHORT_TIMEOUT) {
 
+                @Override
                 protected Object construct() throws Exception {
                     final boolean b = displayPane.getCapabilityTester().testCapability(cap);
                     return Boolean.valueOf(b);
                     
                 }
+                @Override
                 protected void doFinished(final Object result) {
                     if (((Boolean)result).booleanValue()) {
                         setText("Tested OK");
@@ -67,6 +69,7 @@ public class TestQueryButton extends ResourceDisplayPaneEmbeddedButton implement
                         setIcon(IconHelper.loadIcon("no16.png"));                        
                     }
                 }
+                @Override
                 protected void doError(final Throwable ex) {
                     setText("Test Failed");
                     setIcon(IconHelper.loadIcon("no16.png"));

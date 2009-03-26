@@ -33,7 +33,8 @@ public  class UnauthenticatedPrincipal implements Principal {
 		return UNAUTHENTICATED_ROLES;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 	    return getName();
 	}
 }

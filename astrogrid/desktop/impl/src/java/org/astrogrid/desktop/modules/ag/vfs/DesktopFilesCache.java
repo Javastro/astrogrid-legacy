@@ -24,6 +24,7 @@ public class DesktopFilesCache extends SoftRefFilesCache implements FilesCache {
     private static final Log logger = LogFactory
             .getLog(DesktopFilesCache.class);
 
+    @Override
     public FileObject getFile(final FileSystem filesystem, final FileName name) {
         final FileObject fo = super.getFile(filesystem, name);
         if (fo == null && logger.isDebugEnabled()) {
@@ -33,11 +34,13 @@ public class DesktopFilesCache extends SoftRefFilesCache implements FilesCache {
         return fo;
     }
     
+    @Override
     public void clear(final FileSystem filesystem) {
         logger.debug("Clearing filesystem " + filesystem);
         super.clear(filesystem);
     }
 
+    @Override
     public void putFile(final FileObject file) {
         if (logger.isDebugEnabled()) {
             logger.debug("Caching " + file);
@@ -45,6 +48,7 @@ public class DesktopFilesCache extends SoftRefFilesCache implements FilesCache {
         super.putFile(file);
     }
 
+    @Override
     public void removeFile(final FileSystem filesystem, final FileName name) {
         if (logger.isDebugEnabled()) {
             logger.debug("Removing " + name + ", " + filesystem);
