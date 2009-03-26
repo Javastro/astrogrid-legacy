@@ -1,4 +1,4 @@
-/*$Id: WebServerRmiTransportTest.java,v 1.5 2007/04/18 15:47:04 nw Exp $
+/*$Id: WebServerRmiTransportTest.java,v 1.6 2009/03/26 18:01:21 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.desktop.TestingFinder;
  *
  */
 public class WebServerRmiTransportTest extends WebServerIntegrationTest {
+    @Override
     protected ACR getACR() throws Exception{
         return (new TestingFinder()).find();
     }
@@ -33,6 +34,9 @@ public class WebServerRmiTransportTest extends WebServerIntegrationTest {
 
 /* 
 $Log: WebServerRmiTransportTest.java,v $
+Revision 1.6  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.5  2007/04/18 15:47:04  nw
 tidied up voexplorer, removed front pane.
 

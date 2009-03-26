@@ -19,31 +19,33 @@ import org.astrogrid.desktop.InARTestCase;
  */
 public class CdsModuleIntegrationTest extends InARTestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 	public void testCoordinate() throws Exception {
-		Coordinate c = (Coordinate)assertServiceExists(Coordinate.class,"cds.coordinate");
+		Coordinate c = assertServiceExists(Coordinate.class,"cds.coordinate");
 	
 		
 	}
 	
 	
 	public void testSesame() throws Exception {
-		Sesame ses = (Sesame) assertServiceExists(Sesame.class, "cds.sesame");
+		Sesame ses = assertServiceExists(Sesame.class, "cds.sesame");
 		
 	}
 	
 	public void testUCD() throws Exception {
-		UCD ucd = (UCD) assertServiceExists(UCD.class, "cds.ucd");
+		UCD ucd = assertServiceExists(UCD.class, "cds.ucd");
 	}
 	
 	public void testVizier() throws Exception {
-		VizieR v = (VizieR)assertServiceExists(VizieR.class, "cds.vizier");
+		VizieR v = assertServiceExists(VizieR.class, "cds.vizier");
 	}
 	
     public static Test suite() {

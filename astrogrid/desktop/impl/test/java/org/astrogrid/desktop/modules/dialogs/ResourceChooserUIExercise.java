@@ -11,7 +11,6 @@ import junit.framework.TestSuite;
 import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.cds.CoordinateSystemTest;
 
 /** bring up a file explorer dialogue for interactive testing.
  * uses the Junit fixtures and stuff for bringing up the AR, but doesn't do any assertions itself.
@@ -22,11 +21,13 @@ import org.astrogrid.desktop.modules.cds.CoordinateSystemTest;
 public class ResourceChooserUIExercise extends InARTestCase {
     private ResourceChooser chooser;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        this.chooser = (ResourceChooser) assertServiceExists(ResourceChooser.class,"dialogs.resourceChooser");
+        this.chooser = assertServiceExists(ResourceChooser.class,"dialogs.resourceChooser");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         chooser = null;

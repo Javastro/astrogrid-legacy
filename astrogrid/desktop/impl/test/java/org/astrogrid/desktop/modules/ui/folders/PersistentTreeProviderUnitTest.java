@@ -23,6 +23,7 @@ public class PersistentTreeProviderUnitTest extends TestCase {
     private final DefaultMutableTreeNode testNode = 
          (DefaultMutableTreeNode) new JTree().getModel().getRoot();
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ui = new UIContextImpl(null, new InThreadExecutor(), null, null);
@@ -96,6 +97,7 @@ public class PersistentTreeProviderUnitTest extends TestCase {
             init(new DefaultTreeModel(new DefaultMutableTreeNode("root",true)));
         }
 
+        @Override
         public DefaultMutableTreeNode getDefaultRoot() {
 
             // Uses the noddy TreeModel provided by JTree.  If the JRE

@@ -13,14 +13,17 @@ import org.astrogrid.desktop.modules.ui.folders.XQueryList;
  */
 public class XQueryListUnitTest extends FolderUnitTest {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 	public static final String query = "query";
-	protected Folder createFolder() {
+	@Override
+    protected Folder createFolder() {
 		return new XQueryList(name,query);
 	}
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
@@ -35,7 +38,8 @@ public class XQueryListUnitTest extends FolderUnitTest {
 		assertEquals("bar",q.getQuery());
 	}
 	
-	public void testFolderStringString() {
+	@Override
+    public void testFolderStringString() {
 		assertEquals(name,f.getName());
 		assertEquals(SmartList.defaultIcon,f.getIconName());
 		assertNotNull(f.getIcon());

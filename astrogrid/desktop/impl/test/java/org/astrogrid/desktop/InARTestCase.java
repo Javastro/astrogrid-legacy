@@ -19,11 +19,13 @@ import org.astrogrid.desktop.framework.ACRInternal;
  */
 public class InARTestCase extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
     protected ACR getACR() throws Exception {

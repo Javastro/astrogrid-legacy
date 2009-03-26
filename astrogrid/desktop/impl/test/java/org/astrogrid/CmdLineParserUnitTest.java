@@ -18,7 +18,8 @@ import org.astrogrid.desktop.hivemind.ListProperties;
 public class CmdLineParserUnitTest extends TestCase {
 
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		System.setProperty("builtin.shutdown.exit", "false");		
 		//System.setProperty("asr.mode","true");
@@ -27,7 +28,8 @@ public class CmdLineParserUnitTest extends TestCase {
 	
 	protected CmdLineParser parser;
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		parser = null;
 	}

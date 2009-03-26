@@ -17,7 +17,7 @@ import org.votech.VoMon;
 public class VotechModuleIntegrationTest extends InARTestCase {
 
 	public void testVoMon() throws Exception {
-		VoMon vo = (VoMon)assertServiceExists(VoMon.class,"votech.vomon");
+		VoMon vo = assertServiceExists(VoMon.class,"votech.vomon");
 		vo.checkAvailability(null);
 	}
 	

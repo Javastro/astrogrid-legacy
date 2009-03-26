@@ -62,7 +62,8 @@ public class ExternalRegistryXQuerySystemTest extends InARTestCase {
 	/** causes a more subtle error - which causes problems elsewhere in the code */
 	private static final String INVALID_XPATH_XQUERY = "<result>{count(//vor:Resource) &lt;  0}</result>";
 	
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp() ;
 		ACR reg = getACR();
 		ex =(ExternalRegistry) reg.getService(ExternalRegistry.class);
@@ -76,7 +77,8 @@ public class ExternalRegistryXQuerySystemTest extends InARTestCase {
 	protected URI endpoint;
 	
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		ex = null;
 		endpoint = null;

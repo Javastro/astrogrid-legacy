@@ -18,7 +18,8 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
  */
 public class PreferencesIntegrationTest extends InARTestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		ci = (ConfigurationInternal)getHivemindRegistry().getService(ConfigurationInternal.class);
 		assertNotNull(ci);
@@ -26,7 +27,8 @@ public class PreferencesIntegrationTest extends InARTestCase {
 
 	ConfigurationInternal ci;
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		ci = null;
 	}

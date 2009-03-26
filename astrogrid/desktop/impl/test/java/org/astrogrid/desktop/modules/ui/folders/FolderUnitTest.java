@@ -13,7 +13,8 @@ import junit.framework.TestCase;
  */
 public class FolderUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		f = createFolder();
 	}
@@ -24,7 +25,8 @@ public class FolderUnitTest extends TestCase {
 	public static final String name = "Folder";
 	public static final String icon = "contents16.png";
 	Folder f;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 

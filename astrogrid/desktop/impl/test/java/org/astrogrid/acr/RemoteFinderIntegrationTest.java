@@ -1,4 +1,4 @@
-/*$Id: RemoteFinderIntegrationTest.java,v 1.4 2007/01/29 10:38:40 nw Exp $
+/*$Id: RemoteFinderIntegrationTest.java,v 1.5 2009/03/26 18:01:22 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ public class RemoteFinderIntegrationTest  extends InProcessFinderSeparateTest{
         super();
     }
     
+    @Override
     protected void tearDown() {
         // override superclass, and don't call it - fixtue takes care of tearing down.
     }
@@ -45,6 +46,9 @@ public class RemoteFinderIntegrationTest  extends InProcessFinderSeparateTest{
 
 /* 
 $Log: RemoteFinderIntegrationTest.java,v $
+Revision 1.5  2009/03/26 18:01:22  nw
+added override annotations
+
 Revision 1.4  2007/01/29 10:38:40  nw
 documentation fixes.
 

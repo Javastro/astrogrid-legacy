@@ -27,7 +27,8 @@ public class ConeUnitTest extends TestCase {
     /*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		mockReg = createMock(Registry.class);
 		mockVFS = createMock(FileSystemManager.class);
@@ -37,7 +38,8 @@ public class ConeUnitTest extends TestCase {
 		cone = new ConeImpl(mockReg,mockVFS,mockCxt);
 		url = new URL("http://www.astrogrid.org/cone");
 	}
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		mockReg = null;
 		cone = null;

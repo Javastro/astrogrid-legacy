@@ -1,4 +1,4 @@
-/*$Id: MyspaceRmiTransportTest.java,v 1.5 2007/03/08 17:44:01 nw Exp $
+/*$Id: MyspaceRmiTransportTest.java,v 1.6 2009/03/26 18:01:22 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.desktop.TestingFinder;
  *
  */
 public class MyspaceRmiTransportTest extends MyspaceSystemTest {
+    @Override
     protected ACR getACR() throws Exception{
         return (new TestingFinder()).find();
     }
@@ -34,6 +35,9 @@ public class MyspaceRmiTransportTest extends MyspaceSystemTest {
 
 /* 
 $Log: MyspaceRmiTransportTest.java,v $
+Revision 1.6  2009/03/26 18:01:22  nw
+added override annotations
+
 Revision 1.5  2007/03/08 17:44:01  nw
 first draft of voexplorer
 

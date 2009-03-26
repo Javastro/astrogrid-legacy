@@ -26,6 +26,7 @@ public class PlasticApplicationDescriptionUnitTest extends TestCase {
     private ImageIcon icon;
     private TupperwareInternal tupp;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         id = new URI("plastic://id");
@@ -46,6 +47,7 @@ public class PlasticApplicationDescriptionUnitTest extends TestCase {
                 );
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         id = null;

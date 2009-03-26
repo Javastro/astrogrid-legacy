@@ -5,7 +5,6 @@ package org.astrogrid.desktop.protocol.fallback;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -17,7 +16,8 @@ import junit.framework.TestCase;
  */
 public class HandlerUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		// necessary to find the correct handler. - otherwise can't create a url.
 		System.setProperty("java.protocol.handler.pkgs","org.astrogrid.desktop.protocol");
 				
@@ -44,7 +44,8 @@ public class HandlerUnitTest extends TestCase {
 	URL classpathNone1;
 	URL classpathNone2;
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		file = null;
 		classpath1 = null;

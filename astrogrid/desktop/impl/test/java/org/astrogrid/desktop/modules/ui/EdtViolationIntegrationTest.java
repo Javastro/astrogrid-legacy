@@ -4,23 +4,15 @@
 package org.astrogrid.desktop.modules.ui;
 
 import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
-
 import junit.framework.TestSuite;
 
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.dialogs.RegistryGoogle;
-import org.astrogrid.acr.dialogs.ResourceChooser;
-import org.astrogrid.acr.dialogs.ToolEditor;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.acr.ui.FileManager;
-import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.astrogrid.acr.ui.QueryBuilder;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.auth.LoginDialogue;
 import org.jdesktop.swinghelper.debug.JunitCheckThreadViolationRepaintManager;
 
 /** Integration test that exercises UI and checks for EDT violations.
@@ -46,10 +38,12 @@ import org.jdesktop.swinghelper.debug.JunitCheckThreadViolationRepaintManager;
  */
 public class EdtViolationIntegrationTest extends InARTestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         JunitCheckThreadViolationRepaintManager.checkAndClearFailure(); // actually does the verification
@@ -60,27 +54,27 @@ public class EdtViolationIntegrationTest extends InARTestCase {
     }
     
     public void testFileExplorer() throws Exception {
-        final FileManager fm = (FileManager)assertComponentExists(FileManager.class,"ui.fileManager");
+        final FileManager fm = assertComponentExists(FileManager.class,"ui.fileManager");
         fm.show();
     }
     
     public void testAstroscope() throws Exception {
-        final AstroScope as = (AstroScope)assertComponentExists(AstroScope.class,"ui.astroscope");
+        final AstroScope as = assertComponentExists(AstroScope.class,"ui.astroscope");
         as.show();
     }
     
     public void testTaskRunner() throws Exception {
-        final ApplicationLauncher al = (ApplicationLauncher)assertComponentExists(ApplicationLauncher.class,"ui.applicationLauncher");
+        final ApplicationLauncher al = assertComponentExists(ApplicationLauncher.class,"ui.applicationLauncher");
         al.show();
     }
     
     public void testVoExplorer() throws Exception {
-        final RegistryBrowser rb = (RegistryBrowser)assertComponentExists(RegistryBrowser.class,"ui.registryBrowser");
+        final RegistryBrowser rb = assertComponentExists(RegistryBrowser.class,"ui.registryBrowser");
         rb.show();
     }
     
     public void testQueryBuilder() throws Exception {
-        final QueryBuilder qb = (QueryBuilder)assertComponentExists(QueryBuilder.class,"ui.queryBuilder");
+        final QueryBuilder qb = assertComponentExists(QueryBuilder.class,"ui.queryBuilder");
         qb.show();
     }
     // test all the dialogues...no possible automatically, as the they're blocking - so can't progress the test without user input.
@@ -113,6 +107,7 @@ public class EdtViolationIntegrationTest extends InARTestCase {
 
     public static junit.framework.Test suite() {
         return new ARTestSetup(new TestSuite(EdtViolationIntegrationTest.class)){
+            @Override
             protected void setUp() throws Exception {
                 // install repaint manager.
                 if (fixture != null) {

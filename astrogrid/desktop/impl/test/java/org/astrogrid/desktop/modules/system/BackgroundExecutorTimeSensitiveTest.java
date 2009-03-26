@@ -10,7 +10,6 @@ import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import static org.easymock.EasyMock.*;
 
 /** test the basic functionality of background executor - that we can run, timeout and interrupt processes.
@@ -42,22 +41,26 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 		public Object result;
 		
 
-		protected Object construct() throws Exception {
+		@Override
+        protected Object construct() throws Exception {
 			construct++;
 			Thread.sleep(10000);
 			return null;
 		}
-		protected void doAlways() {
+		@Override
+        protected void doAlways() {
 			always++;
 			super.doAlways();
 		}
-		protected void doError(Throwable ex) {
+		@Override
+        protected void doError(Throwable ex) {
 			error++;
 			this.ex =ex;
 			
 			//super.doError(ex);
 		}
-		protected void doFinished(Object result) {
+		@Override
+        protected void doFinished(Object result) {
 			finished++;
 			this.result = result;
 			super.doFinished(result);
@@ -68,15 +71,17 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
-		exec = (BackgroundExecutor)assertComponentExists(BackgroundExecutor.class,"system.executor");
-		ui = (UIContext)assertComponentExists(UIContext.class,"system.ui");
+		exec = assertComponentExists(BackgroundExecutor.class,"system.executor");
+		ui = assertComponentExists(UIContext.class,"system.ui");
 		assertNotNull(ui);
 	}
 	protected BackgroundExecutor exec;
 	protected UIContext ui;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		exec = null;
 		ui = null;
@@ -87,7 +92,8 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 	public void testExecuteWorker() throws InterruptedException {
 		final Object expectedResult = new Object();
 		TestWorker tw = new TestWorker(ui,BackgroundWorker.VERY_SHORT_TIMEOUT) {
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
 				construct++;
 				return expectedResult;
 			}
@@ -104,7 +110,8 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 	public void testExecuteWorkerException() throws InterruptedException {
 		final Exception e = new Exception();
 		TestWorker tw = new TestWorker(ui,BackgroundWorker.VERY_SHORT_TIMEOUT) {
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
 				construct++;
 				throw e;
 			}

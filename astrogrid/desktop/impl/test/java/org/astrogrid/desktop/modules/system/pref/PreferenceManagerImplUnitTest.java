@@ -26,7 +26,8 @@ import static org.easymock.EasyMock.*;
  */
 public class PreferenceManagerImplUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		prefs = new HashMap();
 		pref1 = new Preference();
@@ -45,7 +46,8 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		prefs = null;
 		pref1 = null;

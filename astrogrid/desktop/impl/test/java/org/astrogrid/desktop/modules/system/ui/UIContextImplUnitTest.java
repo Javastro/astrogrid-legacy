@@ -26,6 +26,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.util.SelfTester;
 
 import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.CompositeList;
 import ca.odell.glazedlists.EventList;
 
 /**
@@ -113,7 +114,7 @@ public class UIContextImplUnitTest extends TestCase {
 	
     public void testGetPlasticList() throws Exception {
         // test that plastic list is coming from messaging.
-        final EventList l = new BasicEventList();
+        final CompositeList l = new CompositeList();
         expect(messaging.getTargetList()).andReturn(l);
         replay(messaging);
         assertSame(l,cxt.getPlasticList());

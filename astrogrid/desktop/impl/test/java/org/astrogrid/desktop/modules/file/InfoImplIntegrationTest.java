@@ -24,12 +24,14 @@ import org.astrogrid.desktop.InARTestCase;
  */
 public class InfoImplIntegrationTest extends InARTestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        m = (Manager)assertServiceExists(Manager.class,"file.manager");
-        i = (Info)assertServiceExists(Info.class,"file.info");
+        m = assertServiceExists(Manager.class,"file.manager");
+        i = assertServiceExists(Info.class,"file.info");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         m = null;

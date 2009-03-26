@@ -15,13 +15,15 @@ import org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceNameParser;
  */
 public class MyspaceNameParserUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		parser = new MyspaceNameParser();
 	}
 
 	MyspaceNameParser parser;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		parser = null; 
 	}

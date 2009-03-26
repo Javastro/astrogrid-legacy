@@ -26,7 +26,8 @@ public class SingleSessionManagerUnitTest extends TestCase {
 	protected SessionManagerInternal sm;
 	protected URL url;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		ss= createNiceMock("securityService",SecurityService.class);
 		
@@ -46,7 +47,8 @@ public class SingleSessionManagerUnitTest extends TestCase {
 		return new SingleSessionManager(ss,ws);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		sm = null;
 		ws = null;

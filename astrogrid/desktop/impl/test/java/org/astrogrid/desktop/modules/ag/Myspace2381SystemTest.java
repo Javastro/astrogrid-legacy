@@ -14,12 +14,9 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.astrogrid.Myspace;
-import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.io.Piper;
-
-import uk.ac.starlink.util.IOUtils;
 
 /** test suspected bug in copyURLToContent.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -35,12 +32,14 @@ public class Myspace2381SystemTest extends InARTestCase {
     private URL url;
     
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        myspace = (Myspace)assertServiceExists(Myspace.class,"astrogrid.myspace");
+        myspace = assertServiceExists(Myspace.class,"astrogrid.myspace");
         url = new URL("http://casjobs.sdss.org/vo/DR4SIAP/SIAP.asmx/getSiapInfo?BANDPASS=ugriz&POS=180.0%2C2.0&SIZE=1.0&FORMAT=ALL");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         myspace = null;

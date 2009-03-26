@@ -1,4 +1,4 @@
-/*$Id: AllSystemIntegrationTests.java,v 1.7 2007/06/18 16:15:26 nw Exp $
+/*$Id: AllSystemIntegrationTests.java,v 1.8 2009/03/26 18:01:21 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.desktop.modules.system.pref.PreferenceEditorServletIntegrationTest;
-import org.astrogrid.desktop.modules.system.pref.PreferencesIntegrationTest;
 
 /** Tests the system components.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
@@ -47,6 +45,9 @@ public class AllSystemIntegrationTests {
 
 /* 
 $Log: AllSystemIntegrationTests.java,v $
+Revision 1.8  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.7  2007/06/18 16:15:26  nw
 isolated a twitch time-sensitive test.
 

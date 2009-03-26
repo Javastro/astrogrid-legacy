@@ -24,40 +24,42 @@ import org.astrogrid.desktop.InARTestCase;
  */
 public class AstrogridModuleIntegrationTest extends InARTestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();		
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 	
 	public void testMyspace() throws Exception {
-		final Myspace m = (Myspace) assertServiceExists(Myspace.class,"astrogrid.myspace");
+		final Myspace m = assertServiceExists(Myspace.class,"astrogrid.myspace");
 //	// forces login - need to fix this first.
 //		m.listStores();
 	}
 	
 	public void testCommunity() throws Exception {
-		final Community c = (Community) assertServiceExists(Community.class,"astrogrid.community");
+		final Community c = assertServiceExists(Community.class,"astrogrid.community");
 		c.isLoggedIn();
 	}
 	
 	public void testApplications() throws Exception {
-		final Applications a = (Applications)assertServiceExists(Applications.class,"astrogrid.applications");
+		final Applications a = assertServiceExists(Applications.class,"astrogrid.applications");
 		a.getRegistryXQuery();
 	}
 
 	
 	//
 	public void testRemoteProcessManager() throws Exception {
-		final RemoteProcessManager rpm  = (RemoteProcessManager)assertServiceExists(RemoteProcessManager.class, "astrogrid.processManager");
+		final RemoteProcessManager rpm  = assertServiceExists(RemoteProcessManager.class, "astrogrid.processManager");
 		rpm.list();
 	}
 	
 	
 	public void testStap() throws Exception {
-		final Stap s = (Stap)assertServiceExists(Stap.class, "astrogrid.stap");
+		final Stap s = assertServiceExists(Stap.class, "astrogrid.stap");
 		s.getRegistryXQuery();
 	}
 	

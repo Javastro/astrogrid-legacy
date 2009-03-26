@@ -38,11 +38,11 @@ public class ConeSystemTest extends InARTestCase {
     protected void setUp() throws Exception {
 		super.setUp();
 
-		cone = (Cone)assertServiceExists(Cone.class,"ivoa.cone");
-		reg = (Registry)assertServiceExists(Registry.class,"ivoa.registry");
-		ses = (Sesame)assertServiceExists(Sesame.class,"cds.sesame");
-		info = (Info) assertServiceExists(Info.class,"file.info");
-		manager = (Manager) assertServiceExists(Manager.class,"file.manager");
+		cone = assertServiceExists(Cone.class,"ivoa.cone");
+		reg = assertServiceExists(Registry.class,"ivoa.registry");
+		ses = assertServiceExists(Sesame.class,"cds.sesame");
+		info = assertServiceExists(Info.class,"file.info");
+		manager = assertServiceExists(Manager.class,"file.manager");
         pos = ses.resolve("crab");  
 	}
 	@Override

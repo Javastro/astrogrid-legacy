@@ -4,28 +4,16 @@
 package org.astrogrid.desktop.thirdparty;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileType;
-import org.apache.commons.vfs.FileUtil;
 import org.apache.commons.vfs.provider.DelegateFileObject;
-import org.apache.commons.vfs.provider.URLFileName;
-import org.apache.commons.vfs.provider.URLFileNameParser;
-import org.apache.commons.vfs.provider.url.UrlFileObject;
-import org.apache.commons.vfs.provider.url.UrlFileSystem;
 import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorkerUnitTest;
-import org.astrogrid.io.Piper;
-
 import junit.framework.TestCase;
 import static org.astrogrid.Fixture.*;
 /** 
@@ -40,6 +28,7 @@ import static org.astrogrid.Fixture.*;
  */
 public class VfsVirtualUnitTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         vfs = createVFS();
@@ -54,6 +43,7 @@ public class VfsVirtualUnitTest extends TestCase {
     private FileSystemManager vfs;
     private FileObject existingFileObject;
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         vfs = null;

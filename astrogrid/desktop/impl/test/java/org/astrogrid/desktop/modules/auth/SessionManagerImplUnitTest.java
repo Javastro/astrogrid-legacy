@@ -17,7 +17,8 @@ public class SessionManagerImplUnitTest extends SingleSessionManagerUnitTest {
 	protected CommunityInternal comm;
 	protected SchedulerInternal sched;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		comm = createNiceMock(CommunityInternal.class);
 		
 		sched = createNiceMock(SchedulerInternal.class);
@@ -26,16 +27,19 @@ public class SessionManagerImplUnitTest extends SingleSessionManagerUnitTest {
 		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
-	protected SessionManagerInternal createSessionManager() {
+	@Override
+    protected SessionManagerInternal createSessionManager() {
 		return new SessionManagerImpl(ss,ws,comm,sched);
 	}
 	
 	// overridden, as this session manager does allow new sessions.
-	public void testNewSessionsAllowed() throws Exception {
+	@Override
+    public void testNewSessionsAllowed() throws Exception {
 		String id = sm.createNewSession(10);
 		assertNotNull(id);
 		assertTrue(sm.exists(id));

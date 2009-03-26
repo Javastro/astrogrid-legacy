@@ -35,17 +35,19 @@ public class StapSystemTest extends InARTestCase {
     protected Info info;
     protected Manager manager;  
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        reg = (Registry)assertServiceExists(Registry.class,"ivoa.registry");
-        stap = (Stap)assertServiceExists(Stap.class,"astrogrid.stap");
-        info = (Info) assertServiceExists(Info.class,"file.info");
-        manager = (Manager) assertServiceExists(Manager.class,"file.manager");      
+        reg = assertServiceExists(Registry.class,"ivoa.registry");
+        stap = assertServiceExists(Stap.class,"astrogrid.stap");
+        info = assertServiceExists(Info.class,"file.info");
+        manager = assertServiceExists(Manager.class,"file.manager");      
    
     }
     
  
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         reg = null;

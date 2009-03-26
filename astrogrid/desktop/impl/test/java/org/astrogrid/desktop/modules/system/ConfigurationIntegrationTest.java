@@ -1,4 +1,4 @@
-/*$Id: ConfigurationIntegrationTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
+/*$Id: ConfigurationIntegrationTest.java,v 1.5 2009/03/26 18:01:21 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ public class ConfigurationIntegrationTest extends InARTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ACR reg = getACR();
@@ -36,6 +37,7 @@ public class ConfigurationIntegrationTest extends InARTestCase {
         conf = (Configuration)reg.getService(Configuration.class);
         assertNotNull(conf);
     }
+    @Override
     protected void tearDown() throws Exception {
     	super.tearDown();
     	conf = null;
@@ -73,6 +75,9 @@ public class ConfigurationIntegrationTest extends InARTestCase {
 
 /* 
 $Log: ConfigurationIntegrationTest.java,v $
+Revision 1.5  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.4  2007/01/29 10:42:48  nw
 tidied.
 

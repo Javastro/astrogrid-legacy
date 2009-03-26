@@ -29,16 +29,18 @@ import org.astrogrid.desktop.InARTestCase;
  * @since Jun 13, 20062:24:01 PM
  */
 public class SsapSystemTest extends InARTestCase {
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
-		ssap = (Ssap)assertServiceExists(Ssap.class,"ivoa.ssap");
-		reg = (Registry)assertServiceExists(Registry.class,"ivoa.registry");
-		ses = (Sesame)assertServiceExists(Sesame.class,"cds.sesame");
-        info = (Info) assertServiceExists(Info.class,"file.info");
-        manager = (Manager) assertServiceExists(Manager.class,"file.manager");      
+		ssap = assertServiceExists(Ssap.class,"ivoa.ssap");
+		reg = assertServiceExists(Registry.class,"ivoa.registry");
+		ses = assertServiceExists(Sesame.class,"cds.sesame");
+        info = assertServiceExists(Info.class,"file.info");
+        manager = assertServiceExists(Manager.class,"file.manager");      
         pos = ses.resolve("crab");  		
 	}
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		ssap = null;
 		reg = null;

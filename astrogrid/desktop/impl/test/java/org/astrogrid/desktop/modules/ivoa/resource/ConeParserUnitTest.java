@@ -17,7 +17,6 @@ import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Coverage;
 import org.astrogrid.acr.ivoa.resource.Creator;
-import org.astrogrid.acr.ivoa.resource.DataService;
 import org.astrogrid.acr.ivoa.resource.Date;
 import org.astrogrid.acr.ivoa.resource.InputParam;
 import org.astrogrid.acr.ivoa.resource.Interface;

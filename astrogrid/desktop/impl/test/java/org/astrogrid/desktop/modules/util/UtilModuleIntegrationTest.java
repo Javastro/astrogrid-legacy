@@ -16,15 +16,17 @@ import org.astrogrid.desktop.InARTestCase;
  */
 public class UtilModuleIntegrationTest extends InARTestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 	public void testTables() throws Exception {
-		Tables t = (Tables)assertServiceExists(Tables.class, "util.tables");
+		Tables t = assertServiceExists(Tables.class, "util.tables");
 		assertNotNull(t.listInputFormats());
 	}
 public static Test suite() {

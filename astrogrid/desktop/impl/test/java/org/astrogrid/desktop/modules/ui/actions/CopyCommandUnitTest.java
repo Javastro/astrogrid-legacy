@@ -29,6 +29,7 @@ public class CopyCommandUnitTest extends TestCase {
     private FileObject homeObject;
     private FileSystemManager vfs;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         this.home = SystemUtils.getUserHome();
@@ -36,6 +37,7 @@ public class CopyCommandUnitTest extends TestCase {
         vfs = createVFS();
         this.homeObject = vfs.resolveFile(home,".");
     }
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

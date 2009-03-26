@@ -35,15 +35,17 @@ import org.astrogrid.desktop.InARTestCase;
  */
 public class VfsSystemTest extends InARTestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		ACR reg = getACR();
-		vfs = (FileSystemManager)assertComponentExists(FileSystemManager.class,"system.vfs");
+		vfs = assertComponentExists(FileSystemManager.class,"system.vfs");
 	}
 
 	protected FileSystemManager vfs;
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		vfs = null;
 	}

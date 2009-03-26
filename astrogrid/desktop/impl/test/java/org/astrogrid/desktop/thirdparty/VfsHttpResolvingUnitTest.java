@@ -26,6 +26,7 @@ import org.apache.commons.vfs.provider.url.UrlFileObject;
  */
 public class VfsHttpResolvingUnitTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         vfs = createVFS();
@@ -33,6 +34,7 @@ public class VfsHttpResolvingUnitTest extends TestCase {
     
     private FileSystemManager vfs;
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         vfs = null;

@@ -23,12 +23,14 @@ public class CoordinateSystemTest extends InARTestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
-		coord = (Coordinate)assertServiceExists(Coordinate.class,"cds.coordinate");
+		coord = assertServiceExists(Coordinate.class,"cds.coordinate");
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		coord = null;
 	}

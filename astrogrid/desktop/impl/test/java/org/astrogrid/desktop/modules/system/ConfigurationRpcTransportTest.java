@@ -1,4 +1,4 @@
-/*$Id: ConfigurationRpcTransportTest.java,v 1.6 2008/08/04 16:37:24 nw Exp $
+/*$Id: ConfigurationRpcTransportTest.java,v 1.7 2009/03/26 18:01:21 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ public class ConfigurationRpcTransportTest extends ConfigurationIntegrationTest 
         return new ARTestSetup(new TestSuite(ConfigurationRpcTransportTest.class));
     } 
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         super.conf = new ConfigurationXmlRpcClient(Fixture.createXmlRpcClient(getACR()));
@@ -111,6 +112,9 @@ public class ConfigurationRpcTransportTest extends ConfigurationIntegrationTest 
 
 /* 
 $Log: ConfigurationRpcTransportTest.java,v $
+Revision 1.7  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.6  2008/08/04 16:37:24  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

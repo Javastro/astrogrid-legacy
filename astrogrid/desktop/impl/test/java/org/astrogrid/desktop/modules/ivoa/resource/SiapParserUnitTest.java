@@ -3,14 +3,10 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
-import java.io.InputStream;
 import java.net.URI;
-
-import javax.xml.stream.XMLStreamReader;
 
 import net.sourceforge.jwebunit.WebTester;
 
-import org.apache.commons.collections.IteratorUtils;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.CatalogService;

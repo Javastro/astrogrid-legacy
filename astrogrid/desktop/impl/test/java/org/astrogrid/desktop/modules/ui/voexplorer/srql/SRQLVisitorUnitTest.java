@@ -22,14 +22,16 @@ import junit.framework.TestCase;
  */
 public class SRQLVisitorUnitTest extends TestCase implements SRQLVisitor {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		SRQLParser qp = new SRQLParser("fred and barney or 'wilma jones' or shortname=nigel or ` //*[@id='fred']`");
 		q = qp.parse();
 		assertNotNull(q);
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		q = null;
 	}

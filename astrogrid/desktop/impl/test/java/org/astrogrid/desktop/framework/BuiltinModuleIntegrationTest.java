@@ -17,26 +17,28 @@ import org.astrogrid.desktop.InARTestCase;
  */
 public class BuiltinModuleIntegrationTest extends InARTestCase implements ShutdownListener {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 	
 	public void testACR() throws Exception {
-		ACRInternal dep = (ACRInternal)assertComponentExists(ACRInternal.class, "builtin.acr");
+		ACRInternal dep = assertComponentExists(ACRInternal.class, "builtin.acr");
 		assertNotNull(dep.getDescriptors());
 	}
 	
 	public void testSessionManager() throws Exception {
-		SessionManagerInternal dep = (SessionManagerInternal)assertComponentExists(SessionManagerInternal.class, "builtin.sessionManager");
+		SessionManagerInternal dep = assertComponentExists(SessionManagerInternal.class, "builtin.sessionManager");
 		assertNotNull(dep.getDefaultSessionId());
 	}
 	
 	public void testShutdown() throws Exception {
-		Shutdown dep = (Shutdown)assertComponentExists(Shutdown.class, "builtin.shutdown");
+		Shutdown dep = assertComponentExists(Shutdown.class, "builtin.shutdown");
 		dep.addShutdownListener(this);
 	}
 	

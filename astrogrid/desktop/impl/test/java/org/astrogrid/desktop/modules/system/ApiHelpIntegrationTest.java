@@ -1,4 +1,4 @@
-/*$Id: ApiHelpIntegrationTest.java,v 1.6 2008/12/22 18:18:18 nw Exp $
+/*$Id: ApiHelpIntegrationTest.java,v 1.7 2009/03/26 18:01:21 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,6 +34,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         final ACR reg =getACR();
@@ -45,6 +46,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         help = null;
@@ -353,6 +355,9 @@ public class ApiHelpIntegrationTest extends InARTestCase {
 
 /* 
 $Log: ApiHelpIntegrationTest.java,v $
+Revision 1.7  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.6  2008/12/22 18:18:18  nw
 improved in-program API help.
 

@@ -1,4 +1,4 @@
-/*$Id: ApiHelpRmiTransportTest.java,v 1.6 2007/04/18 15:47:05 nw Exp $
+/*$Id: ApiHelpRmiTransportTest.java,v 1.7 2009/03/26 18:01:21 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.desktop.TestingFinder;
  *
  */
 public class ApiHelpRmiTransportTest extends ApiHelpIntegrationTest {
+    @Override
     protected ACR getACR() throws Exception{
        return (new TestingFinder()).find();
     //	return (new Finder()).find();
@@ -34,6 +35,9 @@ public class ApiHelpRmiTransportTest extends ApiHelpIntegrationTest {
 
 /* 
 $Log: ApiHelpRmiTransportTest.java,v $
+Revision 1.7  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.6  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

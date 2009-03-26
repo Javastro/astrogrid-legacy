@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ivoa;
 
 import java.net.URL;
 
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import org.astrogrid.util.DomHelper;
@@ -23,6 +22,7 @@ public class RegistryClientLiteLibraryTest extends TestCase {
 
     private RegistryService service;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     //    URL endpoint = new URL("http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0");
@@ -32,6 +32,7 @@ public class RegistryClientLiteLibraryTest extends TestCase {
         this.service = RegistryDelegateFactory.createQueryv1_0(endpoint);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         service = null;

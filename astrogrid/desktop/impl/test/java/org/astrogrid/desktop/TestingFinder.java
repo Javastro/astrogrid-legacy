@@ -28,13 +28,15 @@ public class TestingFinder extends Finder {
 public TestingFinder() {
 }
 	// default find action is to fail fast, without prompting.
-	public synchronized ACR find() throws ACRException {
+	@Override
+    public synchronized ACR find() throws ACRException {
 		return super.find(false,false); //
 	}
 
 	// try the conventional connection method first, then try to connect using
 	// the plastic properties file instead.
-	protected int parseConfigFile() throws IOException {
+	@Override
+    protected int parseConfigFile() throws IOException {
 		try {
 		return super.parseConfigFile();
 		} catch (IOException e) {

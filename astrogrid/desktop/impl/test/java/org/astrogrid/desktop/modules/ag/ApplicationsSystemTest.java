@@ -1,4 +1,4 @@
-/*$Id: ApplicationsSystemTest.java,v 1.11 2008/08/04 16:37:24 nw Exp $
+/*$Id: ApplicationsSystemTest.java,v 1.12 2009/03/26 18:01:22 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,11 +36,13 @@ public class ApplicationsSystemTest extends InARTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        apps = (Applications)assertServiceExists(Applications.class,"astrogrid.applications");
+        apps = assertServiceExists(Applications.class,"astrogrid.applications");
     }
     
+    @Override
     protected void tearDown() throws Exception {
     	super.tearDown();
     	apps = null;
@@ -209,6 +211,9 @@ public class ApplicationsSystemTest extends InARTestCase {
 
 /* 
 $Log: ApplicationsSystemTest.java,v $
+Revision 1.12  2009/03/26 18:01:22  nw
+added override annotations
+
 Revision 1.11  2008/08/04 16:37:24  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

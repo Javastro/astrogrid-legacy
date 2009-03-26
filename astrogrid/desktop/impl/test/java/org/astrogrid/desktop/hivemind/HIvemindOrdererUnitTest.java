@@ -1,4 +1,4 @@
-/*$Id: HIvemindOrdererUnitTest.java,v 1.4 2007/01/29 10:38:40 nw Exp $
+/*$Id: HIvemindOrdererUnitTest.java,v 1.5 2009/03/26 18:01:23 nw Exp $
  * Created on 29-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.apache.hivemind.order.Orderer;
  */
 public class HIvemindOrdererUnitTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
        super.setUp();
      //  err = new StrictErrorHandler();
@@ -38,6 +39,7 @@ public class HIvemindOrdererUnitTest extends TestCase {
      * @see junit.framework.TestCase#tearDown()
      */
     
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         orderer = null;
@@ -218,6 +220,9 @@ public class HIvemindOrdererUnitTest extends TestCase {
 
 /* 
 $Log: HIvemindOrdererUnitTest.java,v $
+Revision 1.5  2009/03/26 18:01:23  nw
+added override annotations
+
 Revision 1.4  2007/01/29 10:38:40  nw
 documentation fixes.
 

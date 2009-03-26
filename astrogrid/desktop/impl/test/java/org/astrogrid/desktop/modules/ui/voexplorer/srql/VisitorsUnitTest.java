@@ -13,7 +13,8 @@ import org.astrogrid.acr.InvalidArgumentException;
  */
 public class VisitorsUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		k = new KeywordSRQLVisitor();
 	//	s = new BasicRegistrySRQLVisitor();
@@ -23,7 +24,8 @@ public class VisitorsUnitTest extends TestCase {
 	KeywordSRQLVisitor k;
 	BasicRegistrySRQLVisitor s;
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		k = null;
 		s = null;

@@ -15,6 +15,7 @@ import org.astrogrid.desktop.TestingFinder;
  * @since Jun 9, 20067:34:43 PM
  */
 public class SesameRmiTransportTest extends SesameSystemTest {
+    @Override
     protected ACR getACR() throws Exception{
         return (new TestingFinder()).find();
     }

@@ -1,4 +1,4 @@
-/*$Id: ApiHelpRpcTransportTest.java,v 1.4 2008/08/04 16:37:24 nw Exp $
+/*$Id: ApiHelpRpcTransportTest.java,v 1.5 2009/03/26 18:01:21 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ import org.astrogrid.desktop.ARTestSetup;
  *
  */
 public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements ApiHelp {
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         client = Fixture.createXmlRpcClient(getACR());
@@ -37,6 +38,7 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
     }
     protected org.apache.xmlrpc.client.XmlRpcClient client;
     protected List v ;
+    @Override
     protected void tearDown() throws Exception {
     	super.tearDown();
     	client = null;
@@ -210,6 +212,9 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
 
 /* 
 $Log: ApiHelpRpcTransportTest.java,v $
+Revision 1.5  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.4  2008/08/04 16:37:24  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

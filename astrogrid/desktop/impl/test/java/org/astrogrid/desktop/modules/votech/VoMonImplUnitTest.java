@@ -12,12 +12,6 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
 
-import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
-import org.astrogrid.desktop.alternatives.InThreadExecutor;
-import org.astrogrid.desktop.modules.system.BackgroundExecutorImpl;
-import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
 
@@ -28,7 +22,8 @@ import org.votech.VoMonBean;
  */
 public class VoMonImplUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		endpoint = VoMonImplUnitTest.class.getResource("status.xml");
 		assertNotNull("status.xml not availebl",endpoint);
@@ -60,7 +55,8 @@ public class VoMonImplUnitTest extends TestCase {
 	CacheManager manager;
 	Ehcache cache;
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		endpoint = null;
 		manager.shutdown();

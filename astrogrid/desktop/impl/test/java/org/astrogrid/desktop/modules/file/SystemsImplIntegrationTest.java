@@ -19,11 +19,13 @@ public class SystemsImplIntegrationTest extends InARTestCase {
 
     private Systems s;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        s = (Systems)assertServiceExists(Systems.class,"file.systems");
+        s = assertServiceExists(Systems.class,"file.systems");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         s = null;

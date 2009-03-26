@@ -24,13 +24,15 @@ import org.astrogrid.desktop.InARTestCase;
  */
 public class MyspaceVFSSystemTest extends InARTestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
-		vfs=  (FileSystemManager)assertComponentExists(FileSystemManager.class, "system.vfs");
+		vfs=  assertComponentExists(FileSystemManager.class, "system.vfs");
 		home = vfs.resolveFile("ivo://" + getCommunity() + "/" + getUsername());
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		vfs = null;
 		home = null;

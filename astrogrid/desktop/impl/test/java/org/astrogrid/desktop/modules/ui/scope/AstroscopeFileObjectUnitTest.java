@@ -4,11 +4,6 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs.FileObject;
@@ -33,6 +28,7 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
     private FileSystemManager vfs;
     private File f;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         this.vfs = VFS.getManager();
@@ -41,6 +37,7 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
         assertTrue(f.exists());
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         vfs  = null;

@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ui.folders;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -19,15 +18,18 @@ import org.astrogrid.desktop.modules.ui.folders.Folder;
  */
 public class StaticListUnitTest extends FolderUnitTest {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 	
-	protected Folder createFolder() {
+	@Override
+    protected Folder createFolder() {
 		return new StaticList(name,icon);
 	}
 

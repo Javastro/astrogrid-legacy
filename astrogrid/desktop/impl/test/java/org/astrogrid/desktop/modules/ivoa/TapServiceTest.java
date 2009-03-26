@@ -26,6 +26,7 @@ public class TapServiceTest extends TestCase {
     private static final String QUERY = "Select Top 100 a.BF From bftohip as a";
     private static final String FORMAT =  "application/x-votable+xml;tabledata";
     
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         // endpoint from the registration.
@@ -33,6 +34,7 @@ public class TapServiceTest extends TestCase {
         client = new HttpClient();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         u = null;

@@ -30,14 +30,16 @@ import org.w3c.dom.Document;
  */
 public class IvoaModuleIntegrationTest extends InARTestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		reg = ARTestSetup.fixture.getACR();
 		assertNotNull(reg);		
 	}
 	ACR reg;
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		reg = null;
 	}
@@ -50,35 +52,35 @@ public class IvoaModuleIntegrationTest extends InARTestCase {
 	}
 	
 	public void testRegistry() throws Exception {
-		final Registry r = (Registry) assertServiceExists(Registry.class, "ivoa.registry");
+		final Registry r = assertServiceExists(Registry.class, "ivoa.registry");
 		assertNotNull(r.getFallbackSystemRegistryEndpoint());
 		assertNotNull(r.getSystemRegistryEndpoint());
 	}
 	
 
 	public void testCOne() throws Exception {
-		final Cone c = (Cone)assertServiceExists(Cone.class,"ivoa.cone");
+		final Cone c = assertServiceExists(Cone.class,"ivoa.cone");
 		c.getRegistryXQuery(); 
 	}
 	
 	public void testSiap() throws Exception {
-		final Siap c = (Siap)assertServiceExists(Siap.class,"ivoa.siap");
+		final Siap c = assertServiceExists(Siap.class,"ivoa.siap");
 		c.getRegistryXQuery(); 
 	}
 	
 	public void testSsap() throws Exception {
-		final Ssap c = (Ssap)assertServiceExists(Ssap.class,"ivoa.ssap");
+		final Ssap c = assertServiceExists(Ssap.class,"ivoa.ssap");
 		c.getRegistryXQuery(); 
 	}
 	
 	public void testCache() throws Exception {
-		final CacheFactory fac = (CacheFactory)assertComponentExists(CacheFactory.class, "ivoa.cache");
+		final CacheFactory fac = assertComponentExists(CacheFactory.class, "ivoa.cache");
 		//@todo find something non-descrutive to do here.
 	}
 	
 	
 	public void testAdql() throws Exception {
-		final Adql adql = (Adql)assertComponentExists(Adql.class,"ivoa.adql");
+		final Adql adql = assertComponentExists(Adql.class,"ivoa.adql");
 		final Document d= adql.s2x("select * from x as a");
 		assertNotNull(d);
 		final String string = DomHelper.DocumentToString(d);
@@ -86,7 +88,7 @@ public class IvoaModuleIntegrationTest extends InARTestCase {
 	}
 	
 	public void testVosi() throws Exception {
-	    final Vosi vosi = (Vosi)assertComponentExists(Vosi.class,"ivoa.vosi");
+	    final Vosi vosi = assertComponentExists(Vosi.class,"ivoa.vosi");
 	}
 
     public static Test suite() {

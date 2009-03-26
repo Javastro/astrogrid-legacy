@@ -37,17 +37,19 @@ public class SiapSystemTest extends InARTestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 
-		siap = (Siap)assertServiceExists(Siap.class,"ivoa.siap");
-		reg = (Registry)assertServiceExists(Registry.class,"ivoa.registry");
-		ses = (Sesame)assertServiceExists(Sesame.class,"cds.sesame");
-        info = (Info) assertServiceExists(Info.class,"file.info");
-        manager = (Manager) assertServiceExists(Manager.class,"file.manager");		
+		siap = assertServiceExists(Siap.class,"ivoa.siap");
+		reg = assertServiceExists(Registry.class,"ivoa.registry");
+		ses = assertServiceExists(Sesame.class,"cds.sesame");
+        info = assertServiceExists(Info.class,"file.info");
+        manager = assertServiceExists(Manager.class,"file.manager");		
         pos = ses.resolve("m32");  
 	}
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		siap = null;
 		reg = null;

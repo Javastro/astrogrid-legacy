@@ -1,4 +1,4 @@
-/*$Id: MyspaceSystemTest.java,v 1.11 2007/04/18 15:47:10 nw Exp $
+/*$Id: MyspaceSystemTest.java,v 1.12 2009/03/26 18:01:22 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,12 +49,14 @@ public class MyspaceSystemTest extends InARTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        myspace = (Myspace)assertServiceExists(Myspace.class,"astrogrid.myspace");
+        myspace = assertServiceExists(Myspace.class,"astrogrid.myspace");
         
 
     }
+    @Override
     protected void tearDown() throws Exception {
     	super.tearDown();
     	myspace = null;
@@ -332,6 +334,9 @@ public class MyspaceSystemTest extends InARTestCase {
 
 /* 
 $Log: MyspaceSystemTest.java,v $
+Revision 1.12  2009/03/26 18:01:22  nw
+added override annotations
+
 Revision 1.11  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 

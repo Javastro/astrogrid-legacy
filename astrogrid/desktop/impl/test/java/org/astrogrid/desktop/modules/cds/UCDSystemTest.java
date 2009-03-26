@@ -29,12 +29,14 @@ public class UCDSystemTest extends InARTestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
-		ucd = (UCD)assertServiceExists(UCD.class,"cds.ucd");
+		ucd = assertServiceExists(UCD.class,"cds.ucd");
 	
 	}
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		ucd = null;
 	}

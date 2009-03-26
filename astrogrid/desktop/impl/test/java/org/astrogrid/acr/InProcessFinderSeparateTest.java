@@ -1,4 +1,4 @@
-/*$Id: InProcessFinderSeparateTest.java,v 1.5 2008/04/23 11:32:43 nw Exp $
+/*$Id: InProcessFinderSeparateTest.java,v 1.6 2009/03/26 18:01:22 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ public class InProcessFinderSeparateTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         finder = new TestingFinder();
@@ -40,6 +41,7 @@ public class InProcessFinderSeparateTest extends TestCase {
     protected ACR acr;
     protected Finder finder;
     
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         Shutdown sh =(Shutdown) acr.getService(Shutdown.class);
@@ -117,6 +119,9 @@ public class InProcessFinderSeparateTest extends TestCase {
 
 /* 
 $Log: InProcessFinderSeparateTest.java,v $
+Revision 1.6  2009/03/26 18:01:22  nw
+added override annotations
+
 Revision 1.5  2008/04/23 11:32:43  nw
 marked as needing tests.
 

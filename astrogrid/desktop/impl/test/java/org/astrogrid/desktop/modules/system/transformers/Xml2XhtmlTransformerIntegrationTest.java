@@ -38,7 +38,8 @@ public class Xml2XhtmlTransformerIntegrationTest extends InARTestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		Registry reg = getHivemindRegistry();
 		trans = (Transformer)reg.getService("framework.stylesheetTransformer",Transformer.class);
@@ -49,7 +50,8 @@ public class Xml2XhtmlTransformerIntegrationTest extends InARTestCase {
 	protected Transformer trans;
 	protected BrowserControl browser;
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		trans = null;
 		browser = null;

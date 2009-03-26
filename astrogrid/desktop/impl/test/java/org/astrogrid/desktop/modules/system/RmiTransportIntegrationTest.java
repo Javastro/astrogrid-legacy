@@ -1,4 +1,4 @@
-/*$Id: RmiTransportIntegrationTest.java,v 1.8 2007/04/18 15:47:04 nw Exp $
+/*$Id: RmiTransportIntegrationTest.java,v 1.9 2009/03/26 18:01:21 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,6 +36,7 @@ public class RmiTransportIntegrationTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
             super.setUp();
             reg = (new TestingFinder()).find();
@@ -44,6 +45,7 @@ public class RmiTransportIntegrationTest extends TestCase {
             
         }
         protected ACR reg;
+        @Override
         protected void tearDown() throws Exception {
         	super.tearDown();
         	reg = null;
@@ -105,6 +107,9 @@ public class RmiTransportIntegrationTest extends TestCase {
 
 /* 
 $Log: RmiTransportIntegrationTest.java,v $
+Revision 1.9  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.8  2007/04/18 15:47:04  nw
 tidied up voexplorer, removed front pane.
 

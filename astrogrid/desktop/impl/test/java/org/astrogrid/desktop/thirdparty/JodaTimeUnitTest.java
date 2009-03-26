@@ -13,10 +13,12 @@ import junit.framework.TestCase;
  */
 public class JodaTimeUnitTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -40,9 +42,9 @@ public class JodaTimeUnitTest extends TestCase {
         } catch (IllegalArgumentException e) {
             // ok
         }  
-        Duration d = new Duration((long)21);        
+        Duration d = new Duration(21);        
         d = new Duration(((long)21) * 60 * 1000);              
         d = new Duration(21 * 60 * 1000);           
-        d = new Duration(((int)21) * 60L * 1000);         
+        d = new Duration((21) * 60L * 1000);         
     }
 }

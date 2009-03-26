@@ -24,7 +24,8 @@ public class HivemindMutableACRUnitTest extends TestCase {
 	 */
 	private static final String UNKNOWN_COMPONENT = "unknown";
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		services = new HashMap();
 		serviceBean = new ServiceBean();
@@ -38,14 +39,17 @@ public class HivemindMutableACRUnitTest extends TestCase {
 		};
 		
 		module = new ServiceBeanUnitTest.MockModule() {
-			public String getModuleId() {
+			@Override
+            public String getModuleId() {
 				return "module";
 			}
-			public Object getService(Class arg0) {
+			@Override
+            public Object getService(Class arg0) {
 				return service;
 			}
 			
-			public Object getService(String arg0, Class arg1) {
+			@Override
+            public Object getService(String arg0, Class arg1) {
 				return service;
 			}
 		};
@@ -80,7 +84,8 @@ public class HivemindMutableACRUnitTest extends TestCase {
 	protected ComponentDescriptor removed;
 	protected HivemindMutableACR acr;
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		removed = null;
 		serviceBean = null;

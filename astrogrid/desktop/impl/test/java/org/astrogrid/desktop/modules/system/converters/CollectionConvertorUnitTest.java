@@ -22,12 +22,14 @@ public class CollectionConvertorUnitTest extends TestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		this.conv  = new CollectionConvertor();
 	}
 	protected Converter conv;
 	protected final static String sequence = "1,2,3,4";
+@Override
 protected void tearDown() throws Exception {
 	super.tearDown();
 	conv = null;

@@ -37,6 +37,7 @@ import org.w3c.dom.Document;
  */
 public class DocumentToStructureConversionUnitTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         // although implemented in DocuemntToStructureConversion, we'll test the public exposure of this in applications.
@@ -48,6 +49,7 @@ public class DocumentToStructureConversionUnitTest extends TestCase {
                 );
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         app = null;

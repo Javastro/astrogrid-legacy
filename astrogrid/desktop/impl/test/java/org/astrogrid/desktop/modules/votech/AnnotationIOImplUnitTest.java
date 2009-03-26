@@ -21,9 +21,6 @@ import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.hamcrest.EasyMock2Matchers;
-import org.hamcrest.Matchers;
-
 import junit.framework.TestCase;
 import static org.astrogrid.Fixture.*;
 import static org.easymock.EasyMock.*;
@@ -48,6 +45,7 @@ public class AnnotationIOImplUnitTest extends TestCase {
     private ArrayList annotations;
     private Annotation annotation;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         this.workDir = new Preference();
@@ -80,6 +78,7 @@ public class AnnotationIOImplUnitTest extends TestCase {
         annotations.add(annotation);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         workDir = null;

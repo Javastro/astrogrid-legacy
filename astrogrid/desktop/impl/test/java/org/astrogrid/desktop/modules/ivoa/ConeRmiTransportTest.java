@@ -15,6 +15,7 @@ import org.astrogrid.desktop.TestingFinder;
  * @since Jun 10, 200610:30:21 AM
  */
 public class ConeRmiTransportTest extends ConeSystemTest {
+    @Override
     protected ACR getACR() throws Exception{
         return (new TestingFinder()).find();
     }

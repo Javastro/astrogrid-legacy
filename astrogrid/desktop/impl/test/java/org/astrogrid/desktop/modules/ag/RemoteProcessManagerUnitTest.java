@@ -32,7 +32,8 @@ public class RemoteProcessManagerUnitTest extends TestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		strats = new ArrayList();
 		strats.add(new TestRemoteProcessStrategy());
@@ -42,7 +43,8 @@ public class RemoteProcessManagerUnitTest extends TestCase {
 		mocdoc = createMock("document",Document.class);
 		replay(snitch,mocdoc);
 	}
- protected void tearDown() throws Exception {
+ @Override
+protected void tearDown() throws Exception {
 	super.tearDown();
 	strats = null;
 	rpm = null;

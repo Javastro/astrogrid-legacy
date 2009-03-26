@@ -3,9 +3,6 @@
  */
 package org.astrogrid.desktop.modules.system.messaging;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 /** Tests my implementtion of equality for message types (hashcode is important)
@@ -14,10 +11,12 @@ import junit.framework.TestCase;
  */
 public class MessageTypeUnitTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -39,20 +38,6 @@ public class MessageTypeUnitTest extends TestCase {
         assertEquals(c,SpectrumMessageType.instance);
     }
     
-    public void testAccepts() throws Exception {
-        final Set msgs = new HashSet();
-        msgs.add(a);
-        msgs.add(c);
-        final MessageTarget mt = new AbstractMessageTarget(msgs) {
-
-            public <S extends MessageSender> S createMessageSender(
-                    final MessageType<S> type) throws UnsupportedOperationException {
-                return null;
-            }
-        };
-        
-        assertTrue(mt.accepts(a));
-        assertTrue(mt.accepts(VotableMessageType.instance));
-    }
+  
 
 }

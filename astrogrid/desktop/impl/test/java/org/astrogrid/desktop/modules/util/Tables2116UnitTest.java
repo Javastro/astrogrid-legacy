@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.util;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,11 +21,13 @@ import org.astrogrid.acr.util.Tables;
  */
 public class Tables2116UnitTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         tables = new TablesImpl(VFS.getManager());
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         tables = null;

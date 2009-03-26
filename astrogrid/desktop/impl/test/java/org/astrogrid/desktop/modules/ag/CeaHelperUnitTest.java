@@ -34,6 +34,7 @@ import org.w3c.dom.Document;
 public class CeaHelperUnitTest extends TestCase {
 
 
+    @Override
     protected void setUp() throws Exception {
 		reg = createMock(Registry.class);
 		community = createMock(CommunityInternal.class);
@@ -50,7 +51,8 @@ public class CeaHelperUnitTest extends TestCase {
 	protected URI endpoint;
     private CeaService service;
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		reg = null;
 		cea = null;
@@ -135,12 +137,14 @@ public class CeaHelperUnitTest extends TestCase {
 	public void testCreateDelegate() throws Exception {
 	    // a guard that should fail.
 	    final SecurityGuard sec1 = new SecurityGuard() {
-	        public java.security.cert.X509Certificate[] getCertificateChain() {
+	        @Override
+            public java.security.cert.X509Certificate[] getCertificateChain() {
 	            throw new RuntimeException("e");
 	        }
 	    };
 	    // a guard that should succeed - returns anything.
         final SecurityGuard sec2 = new SecurityGuard() {
+            @Override
             public java.security.cert.X509Certificate[] getCertificateChain() {
                return null;
             }

@@ -14,12 +14,14 @@ public class ServletContextContributionUnitTest extends TestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		c = new ServletContextContribution();
 	}
 	protected ServletContextContribution c;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		c = null;
 	}

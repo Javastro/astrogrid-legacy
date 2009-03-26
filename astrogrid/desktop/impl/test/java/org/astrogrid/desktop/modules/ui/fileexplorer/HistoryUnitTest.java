@@ -20,14 +20,16 @@ import ca.odell.glazedlists.EventList;
  */
 public class HistoryUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		h = new History<Object>();
 		s = new History.BoundedUniqueEventStack<Object>(3);
 	}
 	History<Object> h;
 	BoundedUniqueEventStack<Object> s;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 	

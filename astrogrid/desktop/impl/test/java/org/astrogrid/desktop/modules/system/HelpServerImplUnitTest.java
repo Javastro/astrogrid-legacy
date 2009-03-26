@@ -8,8 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
-
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.modules.system.contributions.HelpItemContribution;
@@ -31,6 +29,7 @@ public class HelpServerImplUnitTest extends TestCase {
     private URL emptyHelpMap;
     private URL helpMap;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         this.browser = createMockBrowser();
@@ -41,6 +40,7 @@ public class HelpServerImplUnitTest extends TestCase {
         assertNotNull(helpMap);
     }           
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         browser = null;

@@ -15,7 +15,8 @@ import org.astrogrid.desktop.TestingFinder;
  * @since Oct 10, 20061:01:21 PM
  */
 public class SiapRmiTransportTest extends SiapSystemTest {
-	   protected ACR getACR() throws Exception{
+	   @Override
+    protected ACR getACR() throws Exception{
 	        return (new TestingFinder()).find();
 	    }
 	    public static Test suite() {

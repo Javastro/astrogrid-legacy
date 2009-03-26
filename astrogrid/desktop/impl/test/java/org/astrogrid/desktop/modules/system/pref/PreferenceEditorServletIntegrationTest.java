@@ -25,7 +25,8 @@ public class PreferenceEditorServletIntegrationTest	 extends WebTestCase {
 	 */
 	private static final String TEST_OPTION_PREFERENCE_KEY = "acr.advanced";
 	private static final String TEST_PREFERENCE_KEY = "system.webserver.port";
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		serv = (WebServer)ARTestSetup.fixture.getACR().getService(WebServer.class);
 		assertNotNull(serv);
@@ -44,7 +45,8 @@ public class PreferenceEditorServletIntegrationTest	 extends WebTestCase {
 	protected ConfigurationInternal conf;
 	protected Preference pref;
 	protected Preference optionPref;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		serv = null;
 		conf = null;

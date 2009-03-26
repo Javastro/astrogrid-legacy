@@ -23,7 +23,8 @@ import static org.easymock.EasyMock.*;
  */
 public class FileObjectListTransferableUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		
 		f1 = createNiceMock(FileObject.class);
@@ -61,7 +62,8 @@ public class FileObjectListTransferableUnitTest extends TestCase {
 	URI u2;
 	List l;
 	FileObjectListTransferable trans;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		f1 = null;
 		u1 = null;

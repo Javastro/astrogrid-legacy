@@ -14,14 +14,16 @@ import static org.easymock.EasyMock.*;
  */
 public class UIComponentBodyguardUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		ucb = new UIComponentBodyguard();
 		ui = createMock(UIComponent.class);
 	}
 UIComponentBodyguard ucb;
 UIComponent ui;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		ucb = null;
 		ui = null;

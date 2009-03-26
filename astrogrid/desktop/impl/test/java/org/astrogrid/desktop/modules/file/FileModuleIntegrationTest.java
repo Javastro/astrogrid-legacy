@@ -21,33 +21,35 @@ import org.astrogrid.desktop.InARTestCase;
  */
 public class FileModuleIntegrationTest extends InARTestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
     
     
     public void testManager() throws Exception {
-        final Manager m = (Manager)assertServiceExists(Manager.class,"file.manager");
+        final Manager m = assertServiceExists(Manager.class,"file.manager");
         m.listChildren(new URI("/"));
     }
     
     public void testSystems() throws Exception {
-        final Systems s = (Systems)assertServiceExists(Systems.class,"file.systems");
+        final Systems s = assertServiceExists(Systems.class,"file.systems");
         s.listSchemes();
         }
     
     public void testInfo() throws Exception {
-       final Info i = (Info)assertServiceExists(Info.class,"file.info");
+       final Info i = assertServiceExists(Info.class,"file.info");
        i.isFolder(new URI("/"));
         
     }
 
     public void testName() throws Exception {
-        final Name n = (Name)assertServiceExists(Name.class,"file.name");
+        final Name n = assertServiceExists(Name.class,"file.name");
         n.getScheme(URI.create("http://foo.bar.com"));
     }
 

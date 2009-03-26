@@ -22,8 +22,6 @@ import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.NullOutputStream;
-
 import junit.framework.TestCase;
 
 /**
@@ -33,6 +31,7 @@ import junit.framework.TestCase;
 public class MonitoringInputStreamUnitTest extends TestCase {
     private File input;
     private File dir;
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         this.dir = createTempDir(MonitoringOutputStreamUnitTest.class);        
@@ -42,6 +41,7 @@ public class MonitoringInputStreamUnitTest extends TestCase {
         assertNotNull("input resource url could not be converted to file ",input);        
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

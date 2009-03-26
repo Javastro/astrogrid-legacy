@@ -9,7 +9,6 @@ import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.ui.folders.Folder;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 import org.easymock.EasyMock;
-import org.easymock.MockControl;
 
 /** unit test for storage folder.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -18,15 +17,18 @@ import org.easymock.MockControl;
  */
 public class StorageFolderUnitTest extends FolderUnitTest {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		uri = new URI("http://www.astrogrid.org");
 		super.setUp();
 	}
 	URI uri;
-	protected Folder createFolder() {
+	@Override
+    protected Folder createFolder() {
 		return new StorageFolder(name,icon,uri);
 	}
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		uri = null;
 	}

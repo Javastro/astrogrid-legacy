@@ -16,19 +16,20 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.easymock.EasyMock.*;
-import static org.hamcrest.integration.EasyMock2Adapter.*;
 /**
  * @author Noel Winstanley
  * @since Jan 5, 200712:15:47 AM
  */
 public class PreferenceUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		pref = new Preference();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		pref = null;
 	}

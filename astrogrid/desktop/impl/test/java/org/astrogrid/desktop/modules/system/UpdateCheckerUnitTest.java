@@ -13,11 +13,13 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
  */
 public class UpdateCheckerUnitTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         p = new Preference();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         p = null;

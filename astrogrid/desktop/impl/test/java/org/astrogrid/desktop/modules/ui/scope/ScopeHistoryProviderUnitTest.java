@@ -4,7 +4,6 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +18,6 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
 import org.astrogrid.desktop.modules.ui.comp.DoubleDimension;
 import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.PositionHistoryItem;
-import org.astrogrid.io.Piper;
-
 import junit.framework.TestCase;
 
 /** test the persistence mechanism in scopeHistoryProvider.
@@ -34,6 +31,7 @@ public class ScopeHistoryProviderUnitTest extends TestCase {
     private Preference pref;
     private UIContext ui;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         xml = new XStreamXmlPersist();
@@ -48,6 +46,7 @@ public class ScopeHistoryProviderUnitTest extends TestCase {
       
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         xml = null;

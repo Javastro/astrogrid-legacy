@@ -20,9 +20,6 @@ import org.joda.time.Duration;
 import junit.framework.TestCase;
 import static org.astrogrid.Fixture.*;
 import static org.easymock.EasyMock.*;
-import static org.hamcrest.integration.EasyMock2Adapter.*;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -34,6 +31,7 @@ public class ClockDaemonSchedulerUnitTest extends TestCase {
     private SessionManagerInternal session;
     private Principal principal;
 
+    @Override
     protected void setUp() throws Exception {
         this.context = createMockContext();
         this.session = createMock(SessionManagerInternal.class);
@@ -43,6 +41,7 @@ public class ClockDaemonSchedulerUnitTest extends TestCase {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         context = null;

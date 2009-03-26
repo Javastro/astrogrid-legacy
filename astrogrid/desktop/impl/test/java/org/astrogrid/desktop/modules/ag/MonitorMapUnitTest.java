@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -28,7 +27,8 @@ import static org.astrogrid.Fixture.*;
  */
 public class MonitorMapUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		this.mm = new RemoteProcessManagerImpl.MonitorMap();
 		FileSystemManager vfs = createVFS();
@@ -38,7 +38,8 @@ public class MonitorMapUnitTest extends TestCase {
 		rpm2.start();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		mm = null;
 		rpm1 = null;
@@ -163,18 +164,21 @@ public class MonitorMapUnitTest extends TestCase {
         private static int count = 0;
 
 
-		public ExecutionInformation getExecutionInformation()
+		@Override
+        public ExecutionInformation getExecutionInformation()
 				throws NotFoundException, InvalidArgumentException,
 				ServiceException, SecurityException {
 			return new ExecutionInformation(null,null,null,null,null,null);
 		}
 
-		public ExecutionMessage[] getMessages() throws NotFoundException,
+		@Override
+        public ExecutionMessage[] getMessages() throws NotFoundException,
 				ServiceException {
 			return new ExecutionMessage[]{};
 		}
 
-		public Map getResults() throws ServiceException, SecurityException,
+		@Override
+        public Map getResults() throws ServiceException, SecurityException,
 				NotFoundException, InvalidArgumentException {
 			return new HashMap();
 		}

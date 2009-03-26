@@ -3,9 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 import net.sf.ehcache.Cache;
@@ -13,7 +11,6 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.Status;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.hivemind.Location;
 import org.apache.hivemind.impl.LocationImpl;
 import org.apache.hivemind.impl.ModuleImpl;
@@ -32,6 +29,7 @@ import static org.astrogrid.Fixture.*;
  */
 public class CacheFactoryUnitTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         a = new Preference();
@@ -47,6 +45,7 @@ public class CacheFactoryUnitTest extends TestCase {
     Module m = new ModuleImpl();
     Location l = new LocationImpl(null);
     
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         cf = null;

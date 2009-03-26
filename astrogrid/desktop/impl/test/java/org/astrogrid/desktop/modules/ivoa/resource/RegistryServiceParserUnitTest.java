@@ -5,16 +5,12 @@ package org.astrogrid.desktop.modules.ivoa.resource;
 
 import java.net.URI;
 
-import javax.xml.stream.XMLInputFactory;
-
 import net.sourceforge.jwebunit.WebTester;
 
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
-import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.HarvestCapability;
 import org.astrogrid.acr.ivoa.resource.Interface;
-import org.astrogrid.acr.ivoa.resource.RegistryCapability;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.SearchCapability;
@@ -22,8 +18,6 @@ import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.WebServiceInterface;
 import org.astrogrid.contracts.StandardIds;
-
-import junit.framework.TestCase;
 
 /** Tests parsing of  registry service resources.
  * implement:

@@ -3,8 +3,6 @@
  */
 package org.astrogrid.desktop.alternatives;
 
-import java.awt.Component;
-
 import junit.framework.TestCase;
 
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
@@ -20,7 +18,8 @@ public class HeadlessUIComponentUnitTest extends TestCase{
 
 	
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		be = new InThreadExecutor();
 		UIContext cxt = createNiceMock(UIContext.class);
 		expect(cxt.getExecutor()).andReturn(be);
@@ -42,7 +41,8 @@ public class HeadlessUIComponentUnitTest extends TestCase{
 		replay(r);		
 		BackgroundWorker bw = new BackgroundWorker(ui,"test") {
 
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
 				return null;
 			}
 		};

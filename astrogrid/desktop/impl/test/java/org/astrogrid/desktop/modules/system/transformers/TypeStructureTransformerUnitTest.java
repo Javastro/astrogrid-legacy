@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformerUnitTest.java,v 1.5 2007/10/07 10:41:17 nw Exp $
+/*$Id: TypeStructureTransformerUnitTest.java,v 1.6 2009/03/26 18:01:23 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,6 +37,7 @@ public class TypeStructureTransformerUnitTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         Transformer lazy = new Transformer() {
@@ -75,6 +76,7 @@ public class TypeStructureTransformerUnitTest extends TestCase {
     protected List l;
     protected Map m;
     
+    @Override
     protected void tearDown() throws Exception {
     	super.tearDown();
     	trans = null;
@@ -341,6 +343,9 @@ private int i;
 
 /* 
 $Log: TypeStructureTransformerUnitTest.java,v $
+Revision 1.6  2009/03/26 18:01:23  nw
+added override annotations
+
 Revision 1.5  2007/10/07 10:41:17  nw
 tested added serialization of classnames
 

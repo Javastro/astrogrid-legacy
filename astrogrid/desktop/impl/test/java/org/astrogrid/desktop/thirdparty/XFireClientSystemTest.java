@@ -29,7 +29,8 @@ import org.codehaus.xfire.util.STAXUtils;
  */
 public class XFireClientSystemTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 //	//has difficulties with relative links.

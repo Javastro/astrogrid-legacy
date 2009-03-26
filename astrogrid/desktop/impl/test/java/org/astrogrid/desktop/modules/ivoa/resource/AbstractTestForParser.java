@@ -45,12 +45,14 @@ import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
  */
 public class AbstractTestForParser extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		fac = XMLInputFactory.newInstance();
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		fac = null;
 	}

@@ -10,7 +10,6 @@ import net.sourceforge.jwebunit.WebTester;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Interface;
-import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;

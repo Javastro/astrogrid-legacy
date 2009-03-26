@@ -3,18 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
-import java.io.StringWriter;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import junit.framework.TestCase;
 
-import org.astrogrid.acr.ivoa.Adql;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -24,12 +14,14 @@ import org.w3c.dom.Document;
  */
 public class AdqlUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		adql = new AdqlImpl();
 	}
 	AdqlInternal adql;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		adql = null;
 	}

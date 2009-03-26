@@ -15,6 +15,7 @@ import org.astrogrid.desktop.TestingFinder;
  * @since Jun 9, 20067:35:10 PM
  */
 public class UCDRmiTransportTest extends UCDSystemTest {
+    @Override
     protected ACR getACR() throws Exception{
         return (new TestingFinder()).find();
     }

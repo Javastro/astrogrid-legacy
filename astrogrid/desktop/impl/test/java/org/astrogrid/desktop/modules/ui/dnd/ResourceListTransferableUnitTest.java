@@ -13,7 +13,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import static org.easymock.EasyMock.*;
 
@@ -22,7 +21,8 @@ import static org.easymock.EasyMock.*;
  * @since Mar 6, 20073:23:21 PM
  */
 public class ResourceListTransferableUnitTest extends TestCase {
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		u = new URI("ivo://wibble/pling");
 		u1 = new URI("ivo://wiblle/plong");
@@ -46,7 +46,8 @@ public class ResourceListTransferableUnitTest extends TestCase {
 	List l;
 	ResourceListTransferable t ;
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		u = null;
 		u1 = null;

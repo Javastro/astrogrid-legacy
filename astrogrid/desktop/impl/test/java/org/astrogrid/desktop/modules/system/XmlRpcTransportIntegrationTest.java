@@ -1,4 +1,4 @@
-/*$Id: XmlRpcTransportIntegrationTest.java,v 1.11 2009/02/17 13:46:33 nw Exp $
+/*$Id: XmlRpcTransportIntegrationTest.java,v 1.12 2009/03/26 18:01:21 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,6 +38,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
             super.setUp();
             reg = getACR();
@@ -47,6 +48,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         protected ACR reg;
         protected XmlRpcClient client;
         protected Vector v ;
+        @Override
         protected void tearDown() throws Exception {
         	super.tearDown();
         	reg = null;
@@ -195,6 +197,9 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: XmlRpcTransportIntegrationTest.java,v $
+Revision 1.12  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.11  2009/02/17 13:46:33  nw
 Complete - taskfix http input of binary parameters.
 

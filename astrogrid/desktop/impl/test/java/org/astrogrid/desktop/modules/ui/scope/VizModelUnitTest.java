@@ -29,6 +29,7 @@ public class VizModelUnitTest extends TestCase {
     private AstroscopeTableHandler handler;
     private IconFinder finder;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -46,6 +47,7 @@ public class VizModelUnitTest extends TestCase {
         finder = createMock(IconFinder.class);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
 

@@ -29,6 +29,7 @@ public class FiilenamesLibraryTest extends TestCase {
     private FileName fn;
     private File file;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         this.vfs = Fixture.createVFS();
@@ -39,6 +40,7 @@ public class FiilenamesLibraryTest extends TestCase {
         fn = vfs.resolveURI(uri.toString());
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         vfs = null;

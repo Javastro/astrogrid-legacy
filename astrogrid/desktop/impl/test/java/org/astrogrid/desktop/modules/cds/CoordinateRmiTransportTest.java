@@ -15,6 +15,7 @@ import org.astrogrid.desktop.TestingFinder;
  * @since Jun 9, 20067:33:25 PM
  */
 public class CoordinateRmiTransportTest extends CoordinateSystemTest {
+    @Override
     protected ACR getACR() throws Exception{
         return (new TestingFinder()).find();
     }

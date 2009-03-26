@@ -55,6 +55,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
     private UserAnnotation uan;
     private AnnotationSource otherSource;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         this.cache = createMock("cache",Ehcache.class);
@@ -79,6 +80,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         uan.setResourceId(uri);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         cache = null;
@@ -280,7 +282,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
 // test when there's an entry in the cache.        
         final Iterator it = asi.getLocalAnnotations(resource);
         assertTrue(it.hasNext());
-        assertThat((List<? extends Annotation>)IteratorUtils.toList(it),allOf(hasItem(uan),hasItem(otherAnn)));
+        assertThat(IteratorUtils.toList(it),allOf(hasItem(uan),hasItem(otherAnn)));
         
 // test for an erroneous inputs.        
         assertFalse(asi.getLocalAnnotations((Resource)null).hasNext());
@@ -532,7 +534,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         asi.processRemainingAnnotations(resource,proc);     
-        assertThat((Map<AnnotationSource,UserAnnotation>)m,hasEntry(dyn,dynAnn));
+        assertThat(m,hasEntry(dyn,dynAnn));
         assertThat(m.size(),is(3));
         verify(cache,context,io,proc);
     }

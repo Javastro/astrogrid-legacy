@@ -25,7 +25,8 @@ public class ExternalRegistryKeywordSystemTest extends InARTestCase {
 
 
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp() ;
 		ACR reg = getACR();
 		ex =(ExternalRegistry) reg.getService(ExternalRegistry.class);
@@ -39,7 +40,8 @@ public class ExternalRegistryKeywordSystemTest extends InARTestCase {
 	protected URI endpoint;
 	
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		ex = null;
 		endpoint = null;

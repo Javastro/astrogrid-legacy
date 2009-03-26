@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui.folders;
 
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;
 import org.astrogrid.desktop.modules.ui.folders.Folder;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.PhraseSRQL;
@@ -16,16 +15,19 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.TermSRQL;
  */
 public class SmartListUnitTest extends FolderUnitTest {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 
 	public static final SRQL q = new TermSRQL();
-	protected Folder createFolder() {
+	@Override
+    protected Folder createFolder() {
 		return new SmartList(name,q);
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
@@ -39,7 +41,8 @@ public class SmartListUnitTest extends FolderUnitTest {
 		
 	}
 	// overridden
-	public void testFolderStringString() {
+	@Override
+    public void testFolderStringString() {
 		assertEquals(name,f.getName());
 		assertEquals(SmartList.defaultIcon,f.getIconName());
 		assertNotNull(f.getIcon());

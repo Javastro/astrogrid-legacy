@@ -9,18 +9,14 @@ import javax.swing.SwingUtilities;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
 import org.astrogrid.desktop.alternatives.InThreadExecutor;
 import org.astrogrid.desktop.modules.system.XStreamXmlPersist;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
 import org.astrogrid.desktop.modules.ui.folders.AbstractListProvider;
-import org.astrogrid.desktop.modules.ui.folders.StaticList;
 import org.astrogrid.desktop.modules.ui.folders.Folder;
 import org.astrogrid.desktop.modules.ui.folders.ListProvider;
-import org.easymock.MockControl;
-
 import ca.odell.glazedlists.EventList;
 
 /** unit test for a general abstractFoldesprovider.
@@ -29,7 +25,8 @@ import ca.odell.glazedlists.EventList;
  */
 public class AbstractListProviderUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		folder = new Folder();
 		ui = new UIContextImpl(null,new InThreadExecutor(),null,null);
@@ -44,7 +41,8 @@ public class AbstractListProviderUnitTest extends TestCase {
 	protected UIContext ui;
     protected XmlPersist xml;	
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		folder = null;
 		prov = null;
@@ -119,7 +117,8 @@ public class AbstractListProviderUnitTest extends TestCase {
 			super(parent, storage, xml);
 		}
 
-		protected void initializeFolderList() {
+		@Override
+        protected void initializeFolderList() {
 			getList().add(folder);
 		}
 	}

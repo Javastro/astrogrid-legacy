@@ -1,4 +1,4 @@
-/*$Id: IvoaRmiTransportIntegrationTest.java,v 1.4 2008/04/23 11:32:43 nw Exp $
+/*$Id: IvoaRmiTransportIntegrationTest.java,v 1.5 2009/03/26 18:01:20 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,12 +17,10 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;
@@ -39,6 +37,7 @@ public class IvoaRmiTransportIntegrationTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
             super.setUp();
             reg = (new TestingFinder()).find();
@@ -47,6 +46,7 @@ public class IvoaRmiTransportIntegrationTest extends TestCase {
             
         }
         protected ACR reg;
+        @Override
         protected void tearDown() throws Exception {
         	super.tearDown();
         	reg = null;
@@ -79,6 +79,9 @@ public class IvoaRmiTransportIntegrationTest extends TestCase {
 
 /* 
 $Log: IvoaRmiTransportIntegrationTest.java,v $
+Revision 1.5  2009/03/26 18:01:20  nw
+added override annotations
+
 Revision 1.4  2008/04/23 11:32:43  nw
 marked as needing tests.
 

@@ -1,4 +1,4 @@
-/*$Id: IvoaXmlRpcTransportIntegrationTest.java,v 1.4 2008/08/04 16:37:21 nw Exp $
+/*$Id: IvoaXmlRpcTransportIntegrationTest.java,v 1.5 2009/03/26 18:01:21 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,11 +34,13 @@ public class IvoaXmlRpcTransportIntegrationTest extends InARTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
             super.setUp();
             client = Fixture.createXmlRpcClient(getACR());
         }
         protected XmlRpcClient client;
+        @Override
         protected void tearDown() throws Exception {
         	super.tearDown();
         	client = null;
@@ -70,6 +72,9 @@ public class IvoaXmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: IvoaXmlRpcTransportIntegrationTest.java,v $
+Revision 1.5  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.4  2008/08/04 16:37:21  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

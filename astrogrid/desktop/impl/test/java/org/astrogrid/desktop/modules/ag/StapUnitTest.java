@@ -24,7 +24,8 @@ public class StapUnitTest extends TestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		mockReg =createMock(Registry.class);
         mockVFS = createMock(FileSystemManager.class);      
@@ -34,7 +35,8 @@ public class StapUnitTest extends TestCase {
 		url = new URL("http://www.astrogrid.org/cone");		
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		mockReg = null;
 		stap = null;

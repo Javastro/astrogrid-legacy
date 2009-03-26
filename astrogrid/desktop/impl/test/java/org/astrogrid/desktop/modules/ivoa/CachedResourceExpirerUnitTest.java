@@ -13,18 +13,13 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.Statistics;
-import net.sf.ehcache.hibernate.EhCache;
-
-import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import junit.framework.TestCase;
-import static org.astrogrid.Fixture.*;
 import static org.easymock.EasyMock.*;
-import static org.hamcrest.integration.EasyMock2Adapter.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
@@ -34,6 +29,7 @@ import static org.hamcrest.MatcherAssert.*;
  */
 public class CachedResourceExpirerUnitTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         reg = createMock(ExternalRegistryInternal.class);
@@ -50,6 +46,7 @@ public class CachedResourceExpirerUnitTest extends TestCase {
     Ehcache cache;
     Ehcache mockCache;
     
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         cre = null;

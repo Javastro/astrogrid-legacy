@@ -20,6 +20,7 @@ public class QueryResultsUnitTest extends TestCase {
 
     private FileObject fileObject;
     private Retriever ret;
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         fileObject = createMock(FileObject.class);
@@ -27,6 +28,7 @@ public class QueryResultsUnitTest extends TestCase {
         
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

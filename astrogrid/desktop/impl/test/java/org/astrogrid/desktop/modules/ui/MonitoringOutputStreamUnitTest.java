@@ -33,6 +33,7 @@ public class MonitoringOutputStreamUnitTest extends TestCase {
     private File dir;
     private File input;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         this.dir = createTempDir(MonitoringOutputStreamUnitTest.class);
@@ -43,6 +44,7 @@ public class MonitoringOutputStreamUnitTest extends TestCase {
         
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         dir = null;

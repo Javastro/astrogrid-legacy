@@ -28,12 +28,14 @@ public class CastorUnitTest extends TestCase {
 
     private URL u;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         u = this.getClass().getResource("example-tool.xml");
         assertNotNull(u);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         u = null;

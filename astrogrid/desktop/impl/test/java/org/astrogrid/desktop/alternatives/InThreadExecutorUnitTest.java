@@ -6,7 +6,6 @@ package org.astrogrid.desktop.alternatives;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -41,6 +40,7 @@ public class InThreadExecutorUnitTest extends TestCase {
             super(parent, msg);
         }
 
+        @Override
         protected Object construct() throws Exception {
             
             this.constructThread = Thread.currentThread();
@@ -61,7 +61,8 @@ public class InThreadExecutorUnitTest extends TestCase {
     /*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		this.cxt = createMockContext();
 		r = createMock("runnable",Runnable.class);
@@ -79,7 +80,8 @@ public class InThreadExecutorUnitTest extends TestCase {
 		UIComponent parent = new HeadlessUIComponent("testing",cxt);
 		BackgroundWorker bw = new BackgroundWorker(parent,"test") {
 
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
 				r.run();
 				return null;
 			}
@@ -136,7 +138,8 @@ public class InThreadExecutorUnitTest extends TestCase {
 	        UIComponent parent = new HeadlessUIComponent("testing",cxt);
 	        BackgroundWorker bw = new BackgroundWorker(parent,"test") {
 
-	            protected Object construct() throws Exception {
+	            @Override
+                protected Object construct() throws Exception {
 	              throw new AssertionError("expected to propagage");
 	            }
 	        };
@@ -153,6 +156,7 @@ public class InThreadExecutorUnitTest extends TestCase {
             UIComponent parent = new HeadlessUIComponent("testing",cxt);
             BackgroundWorker bw = new BackgroundWorker(parent,"test") {
 
+                @Override
                 protected Object construct() throws Exception {
                     fail("expected");
                     return null;
@@ -171,6 +175,7 @@ public class InThreadExecutorUnitTest extends TestCase {
             UIComponent parent = new HeadlessUIComponent("testing",cxt);
             BackgroundWorker bw = new BackgroundWorker(parent,"test") {
 
+                @Override
                 protected Object construct() throws Exception {
                     return null;
                 }
@@ -192,6 +197,7 @@ public class InThreadExecutorUnitTest extends TestCase {
             UIComponent parent = new HeadlessUIComponent("testing",cxt);
             BackgroundWorker bw = new BackgroundWorker(parent,"test") {
 
+                @Override
                 protected Object construct() throws Exception {
                     return null;
                 }

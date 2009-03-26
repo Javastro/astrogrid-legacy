@@ -23,7 +23,8 @@ public class VizierSystemTest extends InARTestCase{
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		ACR reg = getACR();
 		assertNotNull(reg);	
 		viz = (VizieR)reg.getService(VizieR.class);
@@ -31,7 +32,8 @@ public class VizierSystemTest extends InARTestCase{
 	}
 	
 	protected VizieR viz;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		viz = null;
 	}

@@ -6,8 +6,6 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -37,7 +35,8 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 
 	
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp() ;
 		ACR reg = getACR();
 		ex =(ExternalRegistry) reg.getService(ExternalRegistry.class);
@@ -53,7 +52,8 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
     private Registry internal;
 	
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		ex = null;
 		endpoint = null;

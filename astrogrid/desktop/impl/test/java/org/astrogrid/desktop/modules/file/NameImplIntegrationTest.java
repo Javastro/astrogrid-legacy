@@ -21,12 +21,14 @@ import org.astrogrid.desktop.InARTestCase;
  */
 public class NameImplIntegrationTest extends InARTestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        m = (Manager)assertServiceExists(Manager.class,"file.manager");
-        n = (Name)assertServiceExists(Name.class,"file.name");
+        m = assertServiceExists(Manager.class,"file.manager");
+        n = assertServiceExists(Name.class,"file.name");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
          m = null;

@@ -1,4 +1,4 @@
-/*$Id: ConfigurationRmiTransportTest.java,v 1.5 2007/04/18 15:47:04 nw Exp $
+/*$Id: ConfigurationRmiTransportTest.java,v 1.6 2009/03/26 18:01:21 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ public class ConfigurationRmiTransportTest extends ConfigurationIntegrationTest 
 
    
     
+    @Override
     protected ACR getACR() throws Exception{
         return (new TestingFinder()).find();
     }
@@ -37,6 +38,9 @@ public class ConfigurationRmiTransportTest extends ConfigurationIntegrationTest 
 
 /* 
 $Log: ConfigurationRmiTransportTest.java,v $
+Revision 1.6  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.5  2007/04/18 15:47:04  nw
 tidied up voexplorer, removed front pane.
 

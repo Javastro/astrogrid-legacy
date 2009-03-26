@@ -6,15 +6,10 @@ package org.astrogrid.desktop.modules.ui.actions;
 import static org.astrogrid.Fixture.*;
 import static org.easymock.EasyMock.*;
 
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-
-import javax.swing.SwingUtilities;
-
 import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
@@ -45,6 +40,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
     private FileObject fileFO;
     private FileObject neFO;
 
+    @Override
     protected void setUp() throws Exception {
         System.setProperty("unit.testing","true"); // flag to prevent dialogue being displayed
         super.setUp();
@@ -83,6 +79,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
     }
     
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         FileUtils.forceDelete(saveDir);

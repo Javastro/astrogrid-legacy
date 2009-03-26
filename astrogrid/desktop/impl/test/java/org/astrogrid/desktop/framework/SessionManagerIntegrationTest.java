@@ -33,16 +33,18 @@ public class SessionManagerIntegrationTest extends InARTestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
-		sess = (SessionManagerInternal)assertComponentExists(SessionManagerInternal.class,"builtin.sessionManager");
-		ws = (WebServer)assertServiceExists(WebServer.class,"system.webserver");
+		sess = assertComponentExists(SessionManagerInternal.class,"builtin.sessionManager");
+		ws = assertServiceExists(WebServer.class,"system.webserver");
 	}
 	
 	protected SessionManagerInternal sess;
 	protected WebServer ws;
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		sess= null;
 		ws = null;

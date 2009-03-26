@@ -19,7 +19,8 @@ import static org.easymock.EasyMock.*;
  */
 public class ResourceTransferableUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		u = new URI("ivo://wibble/pling");
 		r = createNiceMock(Resource.class);
@@ -31,7 +32,8 @@ public class ResourceTransferableUnitTest extends TestCase {
 	Resource r;
 	ResourceTransferable t ;
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		r = null;
 		t= null;

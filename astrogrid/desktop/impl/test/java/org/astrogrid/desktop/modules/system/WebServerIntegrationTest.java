@@ -1,4 +1,4 @@
-/*$Id: WebServerIntegrationTest.java,v 1.5 2007/03/22 19:03:48 nw Exp $
+/*$Id: WebServerIntegrationTest.java,v 1.6 2009/03/26 18:01:21 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,12 +30,14 @@ public class WebServerIntegrationTest extends InARTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ACR reg = getACR();
         serv = (WebServer)reg.getService(WebServer.class);
         assertNotNull(serv);
     } 
+    @Override
     protected void tearDown() throws Exception {
     	super.tearDown();
     	serv = null;
@@ -73,6 +75,9 @@ public class WebServerIntegrationTest extends InARTestCase {
 
 /* 
 $Log: WebServerIntegrationTest.java,v $
+Revision 1.6  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.5  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 

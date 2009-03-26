@@ -21,7 +21,8 @@ public class ShutdownImplUnitTest extends TestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		coord = createMock("coordinator",ShutdownCoordinator.class);
 		shutdown = new ShutdownImpl(coord,false);		
@@ -29,7 +30,8 @@ public class ShutdownImplUnitTest extends TestCase {
 		listener = createMock("listener",ShutdownListener.class);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		coord = null;
 		listener = null;

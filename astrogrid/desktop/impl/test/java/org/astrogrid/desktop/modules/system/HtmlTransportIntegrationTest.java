@@ -1,4 +1,4 @@
-/*$Id: HtmlTransportIntegrationTest.java,v 1.8 2009/02/17 13:46:33 nw Exp $
+/*$Id: HtmlTransportIntegrationTest.java,v 1.9 2009/03/26 18:01:21 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         final ACR reg = getACR();
@@ -48,6 +49,7 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         serv = null;
@@ -201,6 +203,9 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
 
 /* 
 $Log: HtmlTransportIntegrationTest.java,v $
+Revision 1.9  2009/03/26 18:01:21  nw
+added override annotations
+
 Revision 1.8  2009/02/17 13:46:33  nw
 Complete - taskfix http input of binary parameters.
 

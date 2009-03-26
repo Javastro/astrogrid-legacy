@@ -22,11 +22,13 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.XPathSRQL;
  */
 public class SRQLParserUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
