@@ -35,8 +35,9 @@ It works with Jena 2.5.6 (it might work with 2.5.x).  See
 SDB is available at <http://jena.sourceforge.net/SDB/>; the system
 works with SDB-1.0.
 
-TDB is available from <http://jena.sourceforge.net/TDB/>; I've used
-TDB-0.5.  TDB requires Java 1.6.
+TDB is available from <http://jena.sourceforge.net/TDB/>; most versions
+should work, though the earliest one I've used is TDB-0.5, but I've also
+confirmed it works with TDB-0.7.3.  TDB requires Java 1.6.
 
 As noted in the build.properties.template file, you choose between
 these possibilities -- SDB, TDB or neither -- by configuring as the
