@@ -12,6 +12,7 @@ import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageSender;
 import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageType;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.samp.Response;
 
 import com.l2fprod.common.swing.JLinkButton;
 
@@ -65,24 +66,27 @@ public class MessageRegistryActivity extends AbstractResourceActivity {
 
 
 	private void sendLoadListMessage(final List<Resource> resources) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
+		(new BackgroundWorker<Response>(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 		    {
 		        setTransient(true);
 		    }
 			@Override
-            protected Object construct() throws Exception {
+            protected Response construct() throws Exception {
 				final List<URI> us = new ArrayList(resources.size());
 				for (final Resource resource : resources) {
                     us.add(resource.getId());
                 }
 				final ResourceSetMessageSender sender = plas.createMessageSender(ResourceSetMessageType.instance);
-				//@todo register a listener?
-				sender.sendResourceSet(us,null);
-				return null;
+				return sender.sendResourceSet(us,null);				
 			}
 			@Override
-            protected void doFinished(final Object result) {
-                parent.showTransientMessage("Message sent to " + plas.getName(),"");	
+            protected void doFinished(final Response response) {
+                if (response.isOK()) {    
+                    parent.showTransientMessage(plas.getIcon(),plas.getName() + " received resources", "");          
+            } else {
+                parent.showTransientWarning(plas.getName() + ": " + response.getStatus(),response.getErrInfo().getErrortxt());
+                logger.warn(response);
+            }  	
 			}			
 		}).start();					
 	}

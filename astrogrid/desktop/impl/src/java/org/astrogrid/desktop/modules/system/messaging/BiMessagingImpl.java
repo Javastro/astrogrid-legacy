@@ -8,6 +8,7 @@ import javax.swing.JSeparator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.samp.client.HubConnector;
@@ -49,6 +50,7 @@ public class BiMessagingImpl extends PlasticOnlyMessagingImpl {
     
     @Override
     public DelayedContinuation execute() {
+        SplashWindow.reportProgress("Starting messaging...");
         // try to connect.
         final HubConnector connector = samp.getConnector();
         try {

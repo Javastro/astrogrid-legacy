@@ -952,6 +952,8 @@ MAC SETUP
         interface="org.astrogrid.desktop.modules.system.messaging.Messaging">
             <invoke-factory>
                 <construct class="org.astrogrid.desktop.modules.system.messaging.BiMessagingImpl">
+                    <object>preference:messaging.start.samp</object>
+                    <object>preference:messaging.start.plastic</object>
                     <service>samp</service>
                     <service>tupperware</service>
                 </construct>

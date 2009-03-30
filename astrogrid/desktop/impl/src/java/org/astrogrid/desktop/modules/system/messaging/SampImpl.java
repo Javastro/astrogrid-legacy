@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
@@ -23,6 +24,7 @@ import org.astrogrid.samp.RegInfo;
 import org.astrogrid.samp.client.AbstractMessageHandler;
 import org.astrogrid.samp.client.ClientProfile;
 import org.astrogrid.samp.client.HubConnection;
+import org.astrogrid.samp.client.HubConnector;
 import org.astrogrid.samp.client.SampException;
 import org.astrogrid.samp.gui.GuiHubConnector;
 import org.astrogrid.samp.xmlrpc.HubMode;
@@ -47,7 +49,10 @@ public class SampImpl implements Samp, ShutdownListener{
     protected final GuiHubConnector hubConnector;
     protected final URL webserverRoot;
 
-
+    
+    public HubConnector getConnector() {
+        return hubConnector;
+    }
     
     /**
      * 
@@ -70,7 +75,8 @@ public class SampImpl implements Samp, ShutdownListener{
                 new FilterList<ExternalMessageTarget>(
                         this.sampTargets,new SelfAndHubFilter()));
         
-        final ClientProfile profile = StandardClientProfile.getInstance(); //@todo adjust xmlrpc engine
+        
+        final ClientProfile profile = StandardClientProfile.getInstance(); //@future adjust xmlrpc engine, to use same libs as everything else.
         this.hubConnector = new GuiHubConnector(profile);
         
         // provide the connector with metadata about this app.
@@ -91,7 +97,6 @@ public class SampImpl implements Samp, ShutdownListener{
             hubConnector.addMessageHandler(createMessageHandler(mt));
         }
         
-        // : then configure xmlrpc and webserver embedding.
         
         // ok. declare the set of mesages we're subscribing to.
         hubConnector.declareSubscriptions(hubConnector.computeSubscriptions());
@@ -100,10 +105,8 @@ public class SampImpl implements Samp, ShutdownListener{
         // a bit back to front, but can't behelped
         final ListModel listModel = hubConnector.getClientListModel();
         listModel.addListDataListener(new Bridge(listModel));
-                        
-        //declare autoconnect here?
-        hubConnector.setAutoconnect(10);
-       
+
+        // note the connctor isn't started here. look in Messaging.
     }
     
 
@@ -279,20 +282,27 @@ public class SampImpl implements Samp, ShutdownListener{
     
     public Action connectAction() {
         
-      return hubConnector.createRegisterAction();
+      final AbstractAction action = (AbstractAction)hubConnector.createRegisterAction();
+      action.putValue(Action.NAME,"Register with SAMP");
+      return action;
     }
 
     public Action disconnectAction() {
-        return hubConnector.createUnregisterAction();
-      
+        final AbstractAction action = (AbstractAction) hubConnector.createUnregisterAction();
+        action.putValue(Action.NAME,"Unregister with SAMP");
+        return action;
     }
 
     public Action startInternalHubAction() {
-     return hubConnector.createHubAction(false,HubMode.NO_GUI);
+        final AbstractAction action = (AbstractAction) hubConnector.createHubAction(false,HubMode.NO_GUI);
+        action.putValue(Action.NAME,"Start internal SAMP Hub");
+        return action;   
     }
     
     public Action showMonitorAction() {
-       return hubConnector.createShowMonitorAction();
+        final AbstractAction action = (AbstractAction) hubConnector.createShowMonitorAction();
+        action.putValue(Action.NAME,"Show SAMP Hub Status");
+        return action;          
     }
     
     // sutdown listener.

@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.system.messaging;
 import java.security.Principal;
 
 import javax.swing.JMenu;
-import javax.swing.JSeparator;
 
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
 import org.joda.time.Duration;
@@ -38,7 +37,7 @@ public class PlasticOnlyMessagingImpl implements Messaging {
     public void populateInteropMenu(final JMenu interopMenu) {
         interopMenu.add(tupperware.connectAction());
         interopMenu.add(tupperware.disconnectAction());
-        interopMenu.add(new JSeparator());
+   //     interopMenu.add(new JSeparator());
         interopMenu.add(tupperware.startInternalHubAction());
     }
 

@@ -21,6 +21,7 @@ import org.astrogrid.desktop.modules.system.messaging.SpectrumMessageType;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
+import org.astrogrid.samp.Response;
 
 import com.l2fprod.common.swing.JLinkButton;
 
@@ -116,12 +117,12 @@ public class MessageSpectrumActivity extends AbstractFileActivity {
 	}
 	/** extended verion, when additional metadata is available */
 	private void sendLoadSpectrumMessage(final FileObject f) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
+		(new BackgroundWorker<Response>(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 //		    {
 //		        setTransient(true);
 //		    }
 			@Override
-            protected Object construct() throws Exception {
+            protected Response construct() throws Exception {
 				// see if an astroscopeFileObject is present - if so, use this as a source of richer metadata.
                 final AstroscopeFileObject astroscopeFileObject = AstroscopeFileObject.findAstroscopeFileObject(f);
                 final FileObject innermost = AstroscopeFileObject.findInnermostFileObject(f);
@@ -135,13 +136,16 @@ public class MessageSpectrumActivity extends AbstractFileActivity {
 				}
 				final String name = f.getName().getBaseName();
 				final SpectrumMessageSender sender = plas.createMessageSender(SpectrumMessageType.instance);
-				//@todo consider adding a result listener here.
-				sender.sendSpectrum(url,t,name,name);
-				return null;
+				return sender.sendSpectrum(url,t,null,name);
 			}
 			@Override
-            protected void doFinished(final Object result) {
-                parent.showTransientMessage("Message sent to " + plas.getName(),"");	
+            protected void doFinished(final Response response) {
+                if (response.isOK()) {    
+                    parent.showTransientMessage(plas.getIcon(),plas.getName() + " received spectra", "");          
+            } else {
+                parent.showTransientWarning(plas.getName() + ": " + response.getStatus(),response.getErrInfo().getErrortxt());
+                logger.warn(response);
+            }       			    
 			}			
 		}).start();		
 	}

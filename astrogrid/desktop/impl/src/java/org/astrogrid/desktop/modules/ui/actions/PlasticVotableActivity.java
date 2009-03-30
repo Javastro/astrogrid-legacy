@@ -27,6 +27,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
+import org.astrogrid.samp.Response;
 
 import com.l2fprod.common.swing.JLinkButton;
 
@@ -149,12 +150,17 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	                final TableBean[] tables = vizCatalog.getTables();
 	                if (tables == null || tables.length == 1) {
 	                    (new LoadVotableWorker(s,vizCatalog.getTitle())).start();
-	                } else { // more
+	                } else { // more than 1 table.
 	                    for (int t = 0; t < tables.length; t++) {
 	                        final String tableName = StringUtils.substringAfterLast(tables[t].getName(),"/"); // get trailing part of tablename.
                             try {
                             final URI tURI = new URI(s.toString() + "/" + tableName); // download url is the main url plus the tablename.
-                            (new LoadVotableWorker(tURI,vizCatalog.getTitle() + " - " + tableName)).start();                      
+                            final LoadVotableWorker worker = new LoadVotableWorker(tURI,vizCatalog.getTitle() + " - " + tableName);
+                            if (t < tables.length -1) { // if thre's more than 1 table, only report success for the last one
+                                // otherwise we get a flood of popup messages.
+                                worker.setReportSuccess(false);
+                            }
+                            worker.start();                      
                             } catch (final URISyntaxException e) {
                                 logger.warn("Failed to construct download link",e);
                             }	                        
@@ -174,19 +180,26 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Sep 11, 200711:08:12 AM
      */
-	private class LoadVotableWorker extends BackgroundWorker{
+	private class LoadVotableWorker extends BackgroundWorker<Response>{
         protected final FileObject fo;
         protected final URI uri;
         protected final String id;
+        private boolean reportSuccess = true;
         public LoadVotableWorker(final FileObject fo, final String name) {
-            super(uiParent.get(),"Sending to " + target.getName(),Thread.MAX_PRIORITY);
+            super(uiParent.get(),"Sending table " + name +  " to " + target.getName(),Thread.MAX_PRIORITY);
             this.fo = fo;
             this.id = name;
             this.uri = null;
             //setTransient(true);
         }
+        /**
+         * @param b
+         */
+        public void setReportSuccess(final boolean b) {
+            reportSuccess = b;
+        }
         public LoadVotableWorker(final URI uri, final String id) {
-            super(uiParent.get(),"Sending to " + target.getName(),Thread.MAX_PRIORITY);
+            super(uiParent.get(),"Sending table to " + target.getName(),Thread.MAX_PRIORITY);
             this.uri = uri;
             this.id = id;
             this.fo = null;
@@ -194,7 +207,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
         }             
 
 			@Override
-            protected Object construct() throws Exception {
+            protected Response construct() throws Exception {
 			    // first check if it's applicable, and if not fallback.
 			    URL url;
 			    if (fo != null) {				        
@@ -202,17 +215,22 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 			    } else { // must be a uri then.
 			        url = uri.toURL();
 			    }
-			    reportProgress("Resolved URI");
-                    reportProgress("Sending URL message");	
+			    //reportProgress("Resolved URI");
+                    reportProgress("Sending message");	
                     final VotableMessageSender sender = target.createMessageSender(VotableMessageType.instance);                    
-                    sender.sendVotable(url,null,id);
-                    reportProgress("Message sent");
-			        return null;
+                    return sender.sendVotable(url,null,id);
 			    
 			}
             @Override
-            protected void doFinished(final Object result) {
-                parent.showTransientMessage("Message sent","to " + target.getName());     
+            protected void doFinished(final Response response) {
+                if (response.isOK()) {     
+                    if (reportSuccess) {
+                        parent.showTransientMessage(target.getIcon(),target.getName() + " received table", "");
+                    }
+                } else {
+                    parent.showTransientWarning(target.getName() + ": " + response.getStatus(),response.getErrInfo().getErrortxt());
+                    logger.warn(response);
+                }
             }
 	}	
 	

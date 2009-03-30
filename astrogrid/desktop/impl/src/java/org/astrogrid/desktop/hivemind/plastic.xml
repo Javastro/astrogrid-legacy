@@ -45,12 +45,27 @@
 	</contribution>
 	
 	<contribution configuration-id="framework.preferences">
+        <preference name="messaging.start.samp"
+            requires-restart="true" 
+            default-value="true">
+            <ui-name>Launch SAMP Hub at startup</ui-name>
+            <description>When the application starts, if no SAMP hub can be found, launch an internal hub</description>
+            <units>boolean</units>
+        </preference>
+        <preference name="messaging.start.plastic"
+            requires-restart="true" 
+            default-value="true">
+            <ui-name>Launch PLASTIC Hub at startup</ui-name>
+            <description>When the application starts, if no PLASTIC hub can be found, launch an internal hub</description>
+            <units>boolean</units>
+        </preference>
 		<preference name="org.votech.plastic.notificationsenabled"
 			default-value="true">
-			<ui-name>Display plastic events</ui-name>
-			<description>Show plastic event notifications in the system tray</description>
+			<ui-name>Display messaging events</ui-name>
+			<description>Show messaging event notifications in the system tray</description>
 			<units>boolean</units>
 		</preference>
+
 	</contribution>
 	
  </module>

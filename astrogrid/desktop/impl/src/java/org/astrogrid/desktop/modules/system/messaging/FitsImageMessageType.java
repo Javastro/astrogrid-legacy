@@ -10,8 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.astrogrid.samp.ErrInfo;
 import org.astrogrid.samp.Message;
-import org.astrogrid.samp.client.HubConnection;
+import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
 import org.votech.plastic.CommonMessageConstants;
 
@@ -43,7 +44,7 @@ public final class FitsImageMessageType extends MessageType<FitsImageMessageSend
             super(target);
         }
 
-        public void sendFitsImage(final URL fitsURL, final String imageId, final String imageName) {
+        public Response sendFitsImage(final URL fitsURL, final String imageId, final String imageName) {
             final PlasticApplicationDescription plasTarget = (PlasticApplicationDescription)getTarget();
                         
             final List l = new ArrayList();
@@ -51,7 +52,9 @@ public final class FitsImageMessageType extends MessageType<FitsImageMessageSend
             plasTarget.getTupperware().singleTargetFireAndForgetMessage(
                     CommonMessageConstants.FITS_LOAD_FROM_URL
                     ,l
-                    ,plasTarget.id);   
+                    ,plasTarget.id);
+            //mock up a response.
+            return new Response(Response.OK_STATUS,null,null);            
         }
     }
 
@@ -61,10 +64,9 @@ public final class FitsImageMessageType extends MessageType<FitsImageMessageSend
             super(t);
         }
 
-        public void sendFitsImage(final URL fitsURL, final String imageId, final String imageName) {
+        public Response sendFitsImage(final URL fitsURL, final String imageId, final String imageName) {
             final SampMessageTarget t = (SampMessageTarget)getTarget();            
             try {
-                final HubConnection connection = t.getHubConnector().getConnection();
                 final Map params = new HashMap();
                 params.put("url",fitsURL.toString());
                 if (imageId != null) {
@@ -74,9 +76,11 @@ public final class FitsImageMessageType extends MessageType<FitsImageMessageSend
                     params.put("name",imageName);
                 }
                 final Message msg = new Message(SAMP_MTYPE,params);
-                connection.notify(t.getId(),msg);
+                return t.getHubConnector().callAndWait(t.getId(),msg,DEFAULT_TIMEOUT);
             } catch (final SampException x) {
-                throw new RuntimeException(x);
+                final ErrInfo err = new ErrInfo(x);
+                err.setErrortxt("Failed to send message");
+                return new Response(Response.ERROR_STATUS,null,err);  
             }              
         }
     }

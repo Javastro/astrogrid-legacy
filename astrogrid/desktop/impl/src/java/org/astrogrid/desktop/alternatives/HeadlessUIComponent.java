@@ -2,6 +2,7 @@ package org.astrogrid.desktop.alternatives;
 
 import java.awt.Component;
 
+import javax.swing.Icon;
 import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
@@ -104,6 +105,10 @@ public class HeadlessUIComponent implements UIComponent {
 
         public JPanel getMainPanel() {
             return null;
+        }
+
+        public void showTransientMessage(final Icon icon, final String title, final String message) {
+            // do nothing.
         }
 }
 

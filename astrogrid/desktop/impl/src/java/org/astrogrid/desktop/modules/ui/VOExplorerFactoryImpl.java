@@ -23,6 +23,7 @@ import org.astrogrid.desktop.modules.system.messaging.MessageType;
 import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageSender;
 import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageType;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
+import org.astrogrid.samp.Response;
 
 /** Factory for voexplorers.
  *  - also handles some plastic messages. 
@@ -116,7 +117,7 @@ public class VOExplorerFactoryImpl  implements VOExplorerFactoryInternal {
             super(VOExplorerFactoryImpl.this);
         }
 
-        public void sendResourceSet(final List<URI> resList, final String setName) {
+        public Response sendResourceSet(final List<URI> resList, final String setName) {
           
             final String title;
             if (setName != null) {
@@ -133,7 +134,8 @@ public class VOExplorerFactoryImpl  implements VOExplorerFactoryInternal {
                     final VOExplorerImpl ve = newWindow();
                     ve.displayResources(title,resList);
                 }
-            });                        
+            });  
+            return Response.createSuccessResponse(null);
         }
 
     }
@@ -147,7 +149,7 @@ public class VOExplorerFactoryImpl  implements VOExplorerFactoryInternal {
             super(VOExplorerFactoryImpl.this);
         }
 
-        public void sendBibcode(final String bibcode) {
+        public Response sendBibcode(final String bibcode) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         final VOExplorerImpl ve = newWindow();
@@ -156,7 +158,8 @@ public class VOExplorerFactoryImpl  implements VOExplorerFactoryInternal {
                                 " where $r/content/source =  '" + StringEscapeUtils.escapeSql(bibcode) + "' \n" +
                                 " return $r" );
                     }
-                });                
+                });
+                return Response.createSuccessResponse(null);
         }
 
     }

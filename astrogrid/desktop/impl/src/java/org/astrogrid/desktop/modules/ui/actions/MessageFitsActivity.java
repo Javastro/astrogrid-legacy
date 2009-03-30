@@ -20,6 +20,7 @@ import org.astrogrid.desktop.modules.system.messaging.FitsImageMessageType;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
+import org.astrogrid.samp.Response;
 
 import com.l2fprod.common.swing.JLinkButton;
 
@@ -119,21 +120,24 @@ private final ExternalMessageTarget plas;
 	}
 
 	private void sendLoadImageMessage(final FileObject f,final String name) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
+		(new BackgroundWorker<Response>(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 //		    {
 //		        setTransient(true);
 //		    }
 			@Override
-            protected Object construct() throws Exception {
+            protected Response construct() throws Exception {
 				final URL url = f.getURL();
 				final FitsImageMessageSender sender = plas.createMessageSender(FitsImageMessageType.instance);
-				//@todo register a message response listener?
-				sender.sendFitsImage(url,null,name);
-				return null;
+				return sender.sendFitsImage(url,null,name);
 			}
 			@Override
-            protected void doFinished(final Object result) {
-			    parent.showTransientMessage("Message sent to " + plas.getName(),"");
+            protected void doFinished(final Response response) {
+                if (response.isOK()) {    
+                        parent.showTransientMessage(plas.getIcon(),plas.getName() + " received image", "");          
+                } else {
+                    parent.showTransientWarning(plas.getName() + ": " + response.getStatus(),response.getErrInfo().getErrortxt());
+                    logger.warn(response);
+                }			    
 			}			
 		}).start();		
 	}

@@ -6,6 +6,8 @@ package org.astrogrid.desktop.modules.system.messaging;
 import java.net.URL;
 import java.util.List;
 
+import org.astrogrid.samp.Response;
+
 /** send a sleect-rowlist message
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 15, 200911:25:52 AM
@@ -22,7 +24,7 @@ public interface SelectRowListMessageSender extends MessageSender {
      * @param indexes array of 0-origin rows to highlight
      * 
      */    
-    void selectRowlist(URL votableURL, String tableID, List<Integer> indexes);
+    Response selectRowlist(URL votableURL, String tableID, List<Integer> indexes);
 
 
 }

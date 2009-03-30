@@ -26,10 +26,5 @@ public interface MessageSender {
     /** access the target that this instance will send mesasages to */
     MessageTarget getTarget();
     
-    /** set a listener to be notified for message responses
-     * only one listener can be set. re-setting overrides the previous one.
-     * no need to provide a listener if we do not care about result.
-     *  */
-    void setMessageResponseListener(MessageResponseListener mrl);
 
 }

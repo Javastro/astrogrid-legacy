@@ -147,9 +147,9 @@
         </dependency>
         <!--  SAMP -->
         <dependency>
-            <groupId>jsamp</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>jsamp</artifactId>
-            <version>0.3</version>
+            <version>0.3-1</version>
             <url>http://deployer.astrogrid.org/software/jsamp</url>
             <properties>
                 <dist.bundle>true</dist.bundle>

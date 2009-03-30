@@ -37,7 +37,6 @@ import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
 import org.apache.xmlrpc.server.XmlRpcNoSuchHandlerException;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
@@ -476,7 +475,6 @@ private class ConnectAction extends AbstractAction {
         putValue(Action.SHORT_DESCRIPTION,"Accept interop requests from other tools");
     }
     public void actionPerformed(final ActionEvent e) {
-        SplashWindow.reportProgress("Registering with PLASTIC..."); // only shown when called as part of the startup routines.
         new BackgroundWorker<Void>(parent,"Registering with PLASTIC") {
             {
                 setTransient(true);

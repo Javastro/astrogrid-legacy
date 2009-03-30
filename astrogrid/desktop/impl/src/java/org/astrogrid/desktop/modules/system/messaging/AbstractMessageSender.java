@@ -19,7 +19,6 @@ public abstract class AbstractMessageSender implements MessageSender {
 
     private final MessageTarget target;
     private ExternalMessageTarget source;
-    private MessageResponseListener mrl; 
     
     
     public final void setSource(final ExternalMessageTarget source) {
@@ -35,12 +34,8 @@ public abstract class AbstractMessageSender implements MessageSender {
         return target;
     }
 
-    public final void setMessageResponseListener(final MessageResponseListener mrl) {
-        this.mrl = mrl;
-    }
     
-    protected final MessageResponseListener getListener() {
-        return this.mrl;
-    }
+    public final int DEFAULT_TIMEOUT = 60; // 1 minute timeout.
+ 
 
 }

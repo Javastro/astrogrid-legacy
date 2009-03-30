@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.astrogrid.samp.ErrInfo;
 import org.astrogrid.samp.Message;
-import org.astrogrid.samp.client.HubConnection;
+import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
 
 /** 
@@ -46,7 +47,7 @@ public final  class ResourceSetMessageType extends MessageType<ResourceSetMessag
             super(target);
         }
 
-        public void sendResourceSet(final List<URI> resources,  final String setName) {
+        public Response sendResourceSet(final List<URI> resources,  final String setName) {
             final List l = new ArrayList();
             // marshall the args..
             final List<String> us = new Vector(resources.size());
@@ -60,7 +61,8 @@ public final  class ResourceSetMessageType extends MessageType<ResourceSetMessag
                     getPlasticMessageType()
                     ,l
                     ,plasTarget.id);
-            //@todo handle response.
+            //mock up a response.
+            return new Response(Response.OK_STATUS,null,null);
         }
     }
     
@@ -73,10 +75,9 @@ public final  class ResourceSetMessageType extends MessageType<ResourceSetMessag
             super(t);
         }
 
-        public void sendResourceSet(final List<URI> resourceList,  final String setName) {
+        public Response sendResourceSet(final List<URI> resourceList,  final String setName) {
             final SampMessageTarget t = (SampMessageTarget)getTarget();            
             try {
-                final HubConnection connection = t.getHubConnector().getConnection();
                 final Map<String,Object> params = new HashMap<String,Object>();
                 final Map<String,String> ids = new HashMap<String,String>();
                 params.put("ids",ids);
@@ -89,9 +90,11 @@ public final  class ResourceSetMessageType extends MessageType<ResourceSetMessag
                     params.put("name",setName);
                 }
                 final Message msg = new Message(SAMP_MTYPE,params);
-                connection.notify(t.getId(),msg);
+                return t.getHubConnector().callAndWait(t.getId(),msg,DEFAULT_TIMEOUT);
             } catch (final SampException x) {
-                throw new RuntimeException(x);
+                final ErrInfo err = new ErrInfo(x);
+                err.setErrortxt("Failed to send message");
+                return new Response(Response.ERROR_STATUS,null,err);  
             }              
         }
     }
@@ -132,7 +135,6 @@ public final  class ResourceSetMessageType extends MessageType<ResourceSetMessag
                 }
                 handler.setSource(source);
                 handler.sendResourceSet(resList,null);
-                //@todo work out how to get return value out from handler
                 return Boolean.TRUE;   
             }
         };

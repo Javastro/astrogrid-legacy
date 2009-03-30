@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.astrogrid.samp.ErrInfo;
 import org.astrogrid.samp.Message;
-import org.astrogrid.samp.client.HubConnection;
+import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
 
 /**
@@ -96,16 +97,17 @@ public final class BibcodeMessageType extends MessageType<BibcodeMessageSender> 
             super(t);
         }
 
-        public void sendBibcode(final String bibcode) {
+        public Response sendBibcode(final String bibcode) {
             final SampMessageTarget t = (SampMessageTarget)getTarget();            
             try {
-                final HubConnection connection = t.getHubConnector().getConnection();
                 final Map params = new HashMap();
                 params.put("bibcode",bibcode);              
                 final Message msg = new Message(SAMP_BIBCODE_MESSAGE,params);
-                connection.notify(t.getId(),msg);
+                return t.getHubConnector().callAndWait(t.getId(),msg,DEFAULT_TIMEOUT);
             } catch (final SampException x) {
-               throw new RuntimeException(x);
+                final ErrInfo err = new ErrInfo(x);
+                err.setErrortxt("Failed to send message");
+                return new Response(Response.ERROR_STATUS,null,err);  
             }            
         }
     }
@@ -119,7 +121,7 @@ public final class BibcodeMessageType extends MessageType<BibcodeMessageSender> 
             super(target);
         }
         
-        public void sendBibcode(final String bibcode) {
+        public Response sendBibcode(final String bibcode) {
             final List l = new ArrayList();        
             l.add(bibcode);
             final PlasticApplicationDescription plasTarget = (PlasticApplicationDescription)getTarget();
@@ -128,6 +130,8 @@ public final class BibcodeMessageType extends MessageType<BibcodeMessageSender> 
                     getPlasticMessageType()
                     ,l
                     ,plasTarget.id);
+            //mock up a response.
+            return new Response(Response.OK_STATUS,null,null);            
         }
 
     }

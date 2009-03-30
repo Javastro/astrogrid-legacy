@@ -14,7 +14,7 @@
 	</head>
 <body>
 
-<release version="1.2.3" date="unreleased">
+<release version="1.2.3.beta2" date="2009-3-30">
     <action dev="nw" type="add">
     AR: added simple XML access to registry resources. Used when exchanging resources in SAMP messages.
     </action>

@@ -10,8 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.astrogrid.samp.ErrInfo;
 import org.astrogrid.samp.Message;
-import org.astrogrid.samp.client.HubConnection;
+import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
 import org.votech.plastic.CommonMessageConstants;
 
@@ -42,7 +43,7 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
             super(target);
         }
 
-        public void sendVotable(final URL votableURL, final String tableID, final String tableName) {
+        public Response sendVotable(final URL votableURL, final String tableID, final String tableName) {
             final PlasticApplicationDescription plasTarget = (PlasticApplicationDescription)getTarget();
                         
             final List l = new ArrayList();
@@ -52,6 +53,8 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
                     getPlasticMessageType()
                     ,l
                     ,plasTarget.id);
+            //mock up a response.
+            return new Response(Response.OK_STATUS,null,null);
         }
     }
 
@@ -75,11 +78,10 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
             super(target);
         }
 
-        public void sendVotable(final URL votableURL, final String tableID, final String tableName) {
+        public Response sendVotable(final URL votableURL, final String tableID, final String tableName) {
             final SampMessageTarget t = (SampMessageTarget)getTarget();
                     
             try {
-                final HubConnection connection = t.getHubConnector().getConnection();
                 final Map params = new HashMap();
                 params.put("url",votableURL.toString());
                 if (tableID != null) {
@@ -89,9 +91,11 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
                     params.put("name",tableName);
                 }
                 final Message msg = new Message(SAMP_MTYPE,params);
-                connection.notify(t.getId(),msg);
+                return t.getHubConnector().callAndWait(t.getId(),msg,DEFAULT_TIMEOUT);
             } catch (final SampException x) {
-                throw new RuntimeException(x);
+                final ErrInfo err = new ErrInfo(x);
+                err.setErrortxt("Failed to send message");
+                return new Response(Response.ERROR_STATUS,null,err);               
             }
             
         }

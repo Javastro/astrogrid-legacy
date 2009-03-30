@@ -10,6 +10,7 @@ import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageSender;
 import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageType;
 import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.samp.Response;
 
 /** Send a PLASTIC 'bibcode' message for a resource.
  *  */
@@ -57,20 +58,21 @@ public class MessageBibcodeActivity extends AbstractResourceActivity {
         confirmWhenOverThreshold(sz,"Send all " + " resources?",act);	
 	}
 	private void sendBibcodeMessage(final Resource r) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + target.getName(),Thread.MAX_PRIORITY) {						
+		(new BackgroundWorker<Response>(uiParent.get(),"Sending to " + target.getName(),Thread.MAX_PRIORITY) {						
 			@Override
-            protected Object construct() throws Exception {
+            protected Response construct() throws Exception {
 			    final BibcodeMessageSender sender = target.createMessageSender(BibcodeMessageType.instance);
-			    //@todo maybe add a response listener.
-			   
-				sender.sendBibcode(r.getContent().getSource().getValue());
-				return null;
+				return sender.sendBibcode(r.getContent().getSource().getValue());
 			}
 			// indicate when hand-off happended.
 			@Override
-            protected void doFinished(final Object result) {
-			    parent.showTransientMessage("Message sent","Sent bibode to " + target.getName());				
-			}
+            protected void doFinished(final Response response) {
+                if (response.isOK()) {    
+                    parent.showTransientMessage(target.getIcon(),target.getName() + " received bibcode", "");          
+            } else {
+                parent.showTransientWarning(target.getName() + ": " + response.getStatus(),response.getErrInfo().getErrortxt());
+                logger.warn(response);
+            }       			}
 			
 		}).start();
 	}
