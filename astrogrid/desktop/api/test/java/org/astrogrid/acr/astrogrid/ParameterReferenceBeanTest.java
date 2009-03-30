@@ -25,11 +25,13 @@ public class ParameterReferenceBeanTest extends TestCase {
     private static final String REF = "goo";
     private ParameterReferenceBean prb;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         prb = new ParameterReferenceBean(REF,MAX,MIN);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

@@ -37,7 +37,8 @@ public class Source implements Serializable {
 		this.value = reference;
 	}
     /** @exclude */	
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.format == null) ? 0 : this.format.hashCode());
@@ -45,7 +46,8 @@ public class Source implements Serializable {
 		return result;
 	}
     /** @exclude */	
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -73,7 +75,8 @@ public class Source implements Serializable {
 		return true;
 	}
     /** @exclude */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Source[");
 			buffer.append(", format = ").append(format);

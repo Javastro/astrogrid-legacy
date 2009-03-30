@@ -13,10 +13,12 @@ import junit.framework.TestCase;
  */
 public abstract class AbstractInformationTestAbstract extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

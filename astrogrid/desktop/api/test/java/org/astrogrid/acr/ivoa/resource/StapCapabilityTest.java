@@ -13,12 +13,14 @@ public class StapCapabilityTest extends CapabilityTest {
 
     private StapCapability sc;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         sc = new StapCapability();
         cap = sc;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

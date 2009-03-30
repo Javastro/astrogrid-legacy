@@ -15,12 +15,14 @@ public class SiapCapabilityTest extends CapabilityTest {
 
     private SiapCapability sc;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         sc = new SiapCapability();
         cap = sc;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         sc = null;

@@ -1,4 +1,4 @@
-/*$Id: Descriptor.java,v 1.4 2008/12/22 18:13:26 nw Exp $
+/*$Id: Descriptor.java,v 1.5 2009/03/30 15:02:54 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,6 +65,7 @@ public abstract class Descriptor implements Serializable {
         this.excluded = excluded;
     }
     /** @exclude */
+    @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer();
         buffer.append(" name: ");
@@ -83,6 +84,7 @@ public abstract class Descriptor implements Serializable {
      * @exclude
      * Returns true if other object is a descriptor of the same class, with the same name.
      */
+    @Override
     public boolean equals(final Object o) {
         if (this == o) {
             return true;
@@ -102,6 +104,9 @@ public abstract class Descriptor implements Serializable {
 
 /* 
 $Log: Descriptor.java,v $
+Revision 1.5  2009/03/30 15:02:54  nw
+Added override annotations.
+
 Revision 1.4  2008/12/22 18:13:26  nw
 added field to model exclusion
 

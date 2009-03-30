@@ -111,6 +111,7 @@ public class SsapCapability extends Capability {
             this.queryDataCmd = queryDataCmd;
         }
         /** @exclude */        
+        @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
@@ -126,6 +127,7 @@ public class SsapCapability extends Capability {
             return result;
         }
         /** @exclude */        
+        @Override
         public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
@@ -198,6 +200,7 @@ public class SsapCapability extends Capability {
             this.refframe = refframe;
         }
         /** @exclude */        
+        @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
@@ -211,6 +214,7 @@ public class SsapCapability extends Capability {
             return result;
         }
         /** @exclude */        
+        @Override
         public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
@@ -330,6 +334,7 @@ public class SsapCapability extends Capability {
         this.complianceLevel = complianceLevel;
     }
     /** @exclude */
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -353,6 +358,7 @@ public class SsapCapability extends Capability {
         return result;
     }
     /** @exclude */
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;

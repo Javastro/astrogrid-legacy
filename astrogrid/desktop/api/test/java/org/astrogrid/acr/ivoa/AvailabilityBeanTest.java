@@ -19,6 +19,7 @@ public class AvailabilityBeanTest extends TestCase {
     private String upTime;
     private String timeOnServer;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         serverName = "a server";
@@ -37,6 +38,7 @@ public class AvailabilityBeanTest extends TestCase {
                 );
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         serverName = null;

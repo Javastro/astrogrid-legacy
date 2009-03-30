@@ -36,7 +36,8 @@ public class ResourceName implements Serializable {
 		this.value = name;
 	}
 	   /** @exclude */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.id == null) ? 0 : this.id.hashCode());
@@ -44,7 +45,8 @@ public class ResourceName implements Serializable {
 		return result;
 	}
 	   /** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -72,7 +74,8 @@ public class ResourceName implements Serializable {
 		return true;
 	}
 	   /** @exclude */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("ResourceName[");
 			buffer.append(", value = ").append(value);

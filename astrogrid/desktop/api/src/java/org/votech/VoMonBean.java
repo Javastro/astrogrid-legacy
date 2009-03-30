@@ -21,7 +21,8 @@ public class VoMonBean implements Serializable{
 	long millis = -1;
 	String status = "unknown";
 	String timestamp = "1970-01-01 00:59:59.999";
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -85,7 +86,8 @@ public class VoMonBean implements Serializable{
 	public String getTimestamp() {
 		return this.timestamp;
 	}
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + this.code;
@@ -116,7 +118,8 @@ public class VoMonBean implements Serializable{
 		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("VoMonBean[");
 			buffer.append(" id = ").append(id);

@@ -1,4 +1,4 @@
-/*$Id: ModuleDescriptor.java,v 1.5 2008/09/25 16:02:04 nw Exp $
+/*$Id: ModuleDescriptor.java,v 1.6 2009/03/30 15:02:54 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,6 +60,7 @@ public class ModuleDescriptor  extends Descriptor {
     
 
    /** @exclude */
+    @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer();
         buffer.append("[ModuleDescriptor:");
@@ -75,6 +76,9 @@ public class ModuleDescriptor  extends Descriptor {
 
 /* 
 $Log: ModuleDescriptor.java,v $
+Revision 1.6  2009/03/30 15:02:54  nw
+Added override annotations.
+
 Revision 1.5  2008/09/25 16:02:04  nw
 documentation overhaul
 

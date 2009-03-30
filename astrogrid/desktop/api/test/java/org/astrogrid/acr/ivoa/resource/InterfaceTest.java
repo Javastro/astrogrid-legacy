@@ -13,11 +13,13 @@ public class InterfaceTest extends TestCase {
 
     protected Interface i;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         i = new Interface();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         i = null;

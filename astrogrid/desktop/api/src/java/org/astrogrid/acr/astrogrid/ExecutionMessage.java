@@ -1,4 +1,4 @@
-/*$Id: ExecutionMessage.java,v 1.7 2008/02/12 17:35:24 pah Exp $
+/*$Id: ExecutionMessage.java,v 1.8 2009/03/30 15:02:55 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,6 +63,7 @@ public class ExecutionMessage implements Serializable{
         return this.timestamp;
     }
     
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("ExecutionMessage[");
         sb.append(" content: ");
@@ -78,7 +79,8 @@ public class ExecutionMessage implements Serializable{
         sb.append("]");
         return sb.toString();
     }
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.content == null) ? 0 : this.content.hashCode());
@@ -88,7 +90,8 @@ public class ExecutionMessage implements Serializable{
 		result = PRIME * result + ((this.timestamp == null) ? 0 : this.timestamp.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -128,6 +131,9 @@ public class ExecutionMessage implements Serializable{
 
 /* 
 $Log: ExecutionMessage.java,v $
+Revision 1.8  2009/03/30 15:02:55  nw
+Added override annotations.
+
 Revision 1.7  2008/02/12 17:35:24  pah
 added bean annotation
 

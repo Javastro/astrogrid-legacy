@@ -95,7 +95,8 @@ public class Curation implements Serializable {
 		this.dates = dates;
 	}
     /** @exclude */	
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + Curation.hashCode(this.contacts);
@@ -107,7 +108,8 @@ public class Curation implements Serializable {
 		return result;
 	}
     /** @exclude */	
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -147,7 +149,8 @@ public class Curation implements Serializable {
 		return true;
 	}
     /** @exclude */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Curation[");
 			buffer.append(", publisher = ").append(publisher);

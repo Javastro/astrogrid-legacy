@@ -15,11 +15,13 @@ public class VoMonBeanTest extends TestCase {
 
     private VoMonBean v;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         v = new VoMonBean();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         v = null;

@@ -1,4 +1,4 @@
-/*$Id: ExecutionInformation.java,v 1.10 2008/09/25 16:02:04 nw Exp $
+/*$Id: ExecutionInformation.java,v 1.11 2009/03/30 15:02:54 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -81,6 +81,7 @@ public class ExecutionInformation extends AbstractInformation {
     public String getStatus() {
         return this.status;
     }
+    @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer();
         buffer.append("[ExecutionInformation:");
@@ -100,7 +101,8 @@ public class ExecutionInformation extends AbstractInformation {
         return buffer.toString();
     }
 
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
 		result = PRIME * result + ((this.description == null) ? 0 : this.description.hashCode());
@@ -110,7 +112,8 @@ public class ExecutionInformation extends AbstractInformation {
 		return result;
 	}
 
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -156,6 +159,9 @@ public class ExecutionInformation extends AbstractInformation {
 
 /* 
 $Log: ExecutionInformation.java,v $
+Revision 1.11  2009/03/30 15:02:54  nw
+Added override annotations.
+
 Revision 1.10  2008/09/25 16:02:04  nw
 documentation overhaul
 

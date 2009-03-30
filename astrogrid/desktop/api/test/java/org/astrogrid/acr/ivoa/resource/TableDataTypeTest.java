@@ -13,11 +13,13 @@ public class TableDataTypeTest extends TestCase {
 
     private TableDataType t;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         t = new TableDataType();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         t = null;

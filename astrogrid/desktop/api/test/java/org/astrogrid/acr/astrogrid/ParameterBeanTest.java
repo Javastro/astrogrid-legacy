@@ -11,6 +11,7 @@ import org.astrogrid.acr.ivoa.resource.BaseParamTest;
  */
 public class ParameterBeanTest extends BaseParamTest {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         pb = new ParameterBean();
@@ -19,6 +20,7 @@ public class ParameterBeanTest extends BaseParamTest {
     
     ParameterBean pb;
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         pb = null;

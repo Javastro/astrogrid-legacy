@@ -1,4 +1,4 @@
-/*$Id: TableBean.java,v 1.8 2008/09/25 16:02:04 nw Exp $
+/*$Id: TableBean.java,v 1.9 2009/03/30 15:02:54 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,8 @@ public class TableBean implements Serializable {
 		return result;
 	}
     /** @exclude */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + TableBean.hashCode(this.columns);
@@ -53,7 +54,8 @@ public class TableBean implements Serializable {
 		return result;
 	}
 	/** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -129,7 +131,8 @@ public class TableBean implements Serializable {
 		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("TableBean[");
 			buffer.append("role = ").append(role);
@@ -158,6 +161,9 @@ public class TableBean implements Serializable {
 
 /* 
 $Log: TableBean.java,v $
+Revision 1.9  2009/03/30 15:02:54  nw
+Added override annotations.
+
 Revision 1.8  2008/09/25 16:02:04  nw
 documentation overhaul
 

@@ -11,11 +11,13 @@ import junit.framework.TestCase;
  */
 public class BaseParamTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         bp = new BaseParam();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

@@ -17,11 +17,13 @@ public class StapQueryTest extends TestCase {
 
     private Query q;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         q = new StapCapability.Query();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         q = null;

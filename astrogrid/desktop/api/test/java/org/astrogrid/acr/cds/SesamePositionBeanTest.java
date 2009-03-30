@@ -11,12 +11,14 @@ import junit.framework.TestCase;
  */
 public class SesamePositionBeanTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         sb = new SesamePositionBean();
     }
     SesamePositionBean sb;
     
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

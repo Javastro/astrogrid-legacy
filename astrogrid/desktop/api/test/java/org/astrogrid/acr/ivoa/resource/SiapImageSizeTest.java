@@ -15,11 +15,13 @@ public class SiapImageSizeTest extends TestCase {
 
     private ImageSize is;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         is = new SiapCapability.ImageSize();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         is = null;

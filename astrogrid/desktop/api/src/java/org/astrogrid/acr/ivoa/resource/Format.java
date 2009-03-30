@@ -33,7 +33,8 @@ public class Format implements Serializable{
 		this.value = value;
 	}
 	   /** @exclude */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + (this.mimeType ? 1231 : 1237);
@@ -41,7 +42,8 @@ public class Format implements Serializable{
 		return result;
 	}
 	   /** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -65,7 +67,8 @@ public class Format implements Serializable{
 		return true;
 	}
     /** @exclude */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Format[");
 			buffer.append("value = ").append(value);

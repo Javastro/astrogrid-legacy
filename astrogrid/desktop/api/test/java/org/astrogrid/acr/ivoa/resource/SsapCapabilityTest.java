@@ -14,12 +14,14 @@ public class SsapCapabilityTest extends CapabilityTest {
 
     private SsapCapability sc;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         sc = new SsapCapability();
         cap = sc;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

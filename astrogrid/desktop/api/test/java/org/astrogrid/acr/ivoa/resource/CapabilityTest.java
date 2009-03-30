@@ -15,11 +15,13 @@ public class CapabilityTest extends TestCase {
 
     protected Capability cap;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         cap = new Capability();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         cap = null;

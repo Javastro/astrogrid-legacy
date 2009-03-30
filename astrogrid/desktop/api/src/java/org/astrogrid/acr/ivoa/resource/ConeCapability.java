@@ -132,7 +132,8 @@ public class ConeCapability extends Capability {
 			this.verb = verb;
 		}
 	    /** @exclude */		
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			final int PRIME = 31;
 			int result = 1;
 			result = PRIME * result + ((this.catalog == null) ? 0 : this.catalog.hashCode());
@@ -148,7 +149,8 @@ public class ConeCapability extends Capability {
 			return result;
 		}
 	    /** @exclude */		
-		public boolean equals(final Object obj) {
+		@Override
+        public boolean equals(final Object obj) {
 			if (this == obj) {
                 return true;
             }
@@ -194,7 +196,8 @@ public class ConeCapability extends Capability {
 			 * @author info.vancauwenberge.tostring plugin
 		
 			 */
-			public String toString() {
+			@Override
+            public String toString() {
 				final StringBuffer buffer = new StringBuffer();
 				buffer.append("Query[");
 				buffer.append("ra = ").append(ra);
@@ -217,7 +220,8 @@ public class ConeCapability extends Capability {
 		this.testQuery = testQuery;
 	}
     /** @exclude */	
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
 		result = PRIME * result + this.maxRecords;
@@ -227,7 +231,8 @@ public class ConeCapability extends Capability {
 		return result;
 	}
     /** @exclude */	
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -262,7 +267,8 @@ public class ConeCapability extends Capability {
 		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("ConeCapability[");
 			buffer.append("maxSR = ").append(maxSR);

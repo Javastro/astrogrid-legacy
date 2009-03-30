@@ -13,11 +13,13 @@ public class SimpleDataTypeTest extends TestCase {
 
     private SimpleDataType d;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         d = new SimpleDataType();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         d = null;

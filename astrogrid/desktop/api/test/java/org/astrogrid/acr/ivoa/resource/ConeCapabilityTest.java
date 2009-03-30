@@ -13,12 +13,14 @@ public class ConeCapabilityTest extends CapabilityTest {
 
     private ConeCapability cc;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         cc = new ConeCapability();
         cap = cc;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         cc = null;

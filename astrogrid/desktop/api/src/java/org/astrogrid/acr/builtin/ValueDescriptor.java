@@ -1,4 +1,4 @@
-/*$Id: ValueDescriptor.java,v 1.3 2008/09/25 16:02:04 nw Exp $
+/*$Id: ValueDescriptor.java,v 1.4 2009/03/30 15:02:54 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,6 +41,7 @@ public class ValueDescriptor extends Descriptor {
     }
 
     /** @exclude */
+    @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer();
         buffer.append("[ValueDescriptor:");
@@ -69,6 +70,9 @@ public class ValueDescriptor extends Descriptor {
 
 /* 
 $Log: ValueDescriptor.java,v $
+Revision 1.4  2009/03/30 15:02:54  nw
+Added override annotations.
+
 Revision 1.3  2008/09/25 16:02:04  nw
 documentation overhaul
 

@@ -123,6 +123,7 @@ public void setType(final String[] type) {
 	this.type = type;
 }
 /** @exclude */ 
+@Override
 public int hashCode() {
 	final int PRIME = 31;
 	int result = 1;
@@ -136,6 +137,7 @@ public int hashCode() {
 	return result;
 }
 /** @exclude */ 
+@Override
 public boolean equals(final Object obj) {
 	if (this == obj) {
         return true;
@@ -183,7 +185,8 @@ public boolean equals(final Object obj) {
 	return true;
 }
 /** @exclude */ 
-	public String toString() {
+	@Override
+    public String toString() {
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append("Content[");
 		buffer.append(", source = ").append(source);

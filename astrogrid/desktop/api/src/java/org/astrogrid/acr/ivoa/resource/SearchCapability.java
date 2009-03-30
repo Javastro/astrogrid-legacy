@@ -36,7 +36,8 @@ public class SearchCapability extends RegistryCapability {
 	private String extensionSearchSupport;
 	private String[] optionalProtocol = new String[0];
     /** @exclude */	
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
 		result = PRIME * result + ((this.extensionSearchSupport == null) ? 0 : this.extensionSearchSupport.hashCode());
@@ -45,7 +46,8 @@ public class SearchCapability extends RegistryCapability {
 		return result;
 	}
 	   /** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -98,7 +100,8 @@ public class SearchCapability extends RegistryCapability {
 		this.optionalProtocol = optionalProtocol;
 	}
     /** @exclude */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("SearchCapability[");
 			buffer.append("maxRecords = ").append(maxRecords);

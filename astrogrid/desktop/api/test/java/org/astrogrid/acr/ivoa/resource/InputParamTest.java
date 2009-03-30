@@ -11,12 +11,14 @@ package org.astrogrid.acr.ivoa.resource;
 public class InputParamTest extends BaseParamTest {
 
     private InputParam ip;
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ip = new InputParam();
         bp = ip;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         ip = null;

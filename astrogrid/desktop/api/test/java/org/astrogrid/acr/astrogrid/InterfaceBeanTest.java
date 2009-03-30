@@ -17,6 +17,7 @@ public class InterfaceBeanTest extends TestCase {
     private ParameterReferenceBean[] outputs;
     private InterfaceBean ib;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         name = "a name";
@@ -28,6 +29,7 @@ public class InterfaceBeanTest extends TestCase {
         ib=new InterfaceBean(name,description,inputs, outputs);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         name = null;

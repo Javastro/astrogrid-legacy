@@ -9,12 +9,14 @@ package org.astrogrid.acr.builtin;
  */
 public class ValueDescriptorTest extends DescriptorTestAbstract {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         vd = new ValueDescriptor();
         d = vd;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         vd= null;

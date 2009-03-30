@@ -86,6 +86,7 @@ public StapCapability() {
             this.size = size;
         }
         /** @exclude */        
+        @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
@@ -100,6 +101,7 @@ public StapCapability() {
             return result;
         }
         /** @exclude */        
+        @Override
         public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
@@ -182,6 +184,7 @@ public StapCapability() {
         this.testQuery = testQuery;
     }
     /** @exclude */
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -194,6 +197,7 @@ public StapCapability() {
         return result;
     }
     /** @exclude */
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;

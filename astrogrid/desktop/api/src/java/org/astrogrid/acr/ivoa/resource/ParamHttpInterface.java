@@ -67,6 +67,7 @@ public class ParamHttpInterface extends Interface {
         this.params = params;
     }
     /** @exclude */
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -78,6 +79,7 @@ public class ParamHttpInterface extends Interface {
         return result;
     }
     /** @exclude */
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;

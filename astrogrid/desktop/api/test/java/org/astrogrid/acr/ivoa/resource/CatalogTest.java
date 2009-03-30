@@ -15,11 +15,13 @@ public class CatalogTest extends TestCase {
 
     private Catalog c;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         c = new Catalog();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         c = null;

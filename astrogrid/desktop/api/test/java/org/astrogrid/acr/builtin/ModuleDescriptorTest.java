@@ -11,12 +11,14 @@ import java.util.Iterator;
  */
 public class ModuleDescriptorTest extends DescriptorTestAbstract {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         md = new ModuleDescriptor();
         d = md;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         md = null;

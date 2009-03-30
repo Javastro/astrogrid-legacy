@@ -21,6 +21,7 @@ public class ColumnBeanTest extends BaseParamTest {
     private boolean std;
     private ColumnBean cb;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         name = "a name";
@@ -39,6 +40,7 @@ public class ColumnBeanTest extends BaseParamTest {
                 
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         cb = null;

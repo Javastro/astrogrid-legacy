@@ -47,14 +47,16 @@ public class CeaServerCapability extends Capability {
 	private URI[] managedApplications = new URI[0];
 
 	/** @exclude */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
 		result = PRIME * result + CeaServerCapability.hashCode(this.managedApplications);
 		return result;
 	}
 	/** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -90,7 +92,8 @@ public class CeaServerCapability extends Capability {
 		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("CeaServerCapability[");
 			if (managedApplications == null) {

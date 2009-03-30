@@ -1,4 +1,4 @@
-/*$Id: ParameterReferenceBean.java,v 1.6 2008/09/25 16:02:04 nw Exp $
+/*$Id: ParameterReferenceBean.java,v 1.7 2009/03/30 15:02:55 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,6 +56,7 @@ public class ParameterReferenceBean implements Serializable {
         return this.ref;
     }
     /** @exclude */
+    @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer();
         buffer.append("[ParameterReferenceBean:");
@@ -69,7 +70,8 @@ public class ParameterReferenceBean implements Serializable {
         return buffer.toString();
     }
     /**@exclude */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + this.max;
@@ -78,7 +80,8 @@ public class ParameterReferenceBean implements Serializable {
 		return result;
 	}
 	/** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -109,6 +112,9 @@ public class ParameterReferenceBean implements Serializable {
 
 /* 
 $Log: ParameterReferenceBean.java,v $
+Revision 1.7  2009/03/30 15:02:55  nw
+Added override annotations.
+
 Revision 1.6  2008/09/25 16:02:04  nw
 documentation overhaul
 

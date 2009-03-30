@@ -17,6 +17,7 @@ public class TableBeanTest extends TestCase {
     private String role;
     private TableBean t;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         name = "a name";
@@ -28,6 +29,7 @@ public class TableBeanTest extends TestCase {
         
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         name = null;

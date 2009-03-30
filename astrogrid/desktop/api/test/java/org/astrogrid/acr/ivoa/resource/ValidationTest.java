@@ -15,11 +15,13 @@ public class ValidationTest extends TestCase {
 
     private Validation v;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         v = new Validation();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         v = null;

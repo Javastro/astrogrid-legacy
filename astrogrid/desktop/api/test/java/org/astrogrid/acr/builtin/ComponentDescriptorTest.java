@@ -13,12 +13,14 @@ public class ComponentDescriptorTest extends DescriptorTestAbstract {
 
     private ComponentDescriptor cd;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         cd = new ComponentDescriptor();
         d = cd;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         cd = null;

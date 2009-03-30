@@ -13,11 +13,13 @@ public class SourceTest extends TestCase {
 
     private Source s;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         s = new Source();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         s = null;

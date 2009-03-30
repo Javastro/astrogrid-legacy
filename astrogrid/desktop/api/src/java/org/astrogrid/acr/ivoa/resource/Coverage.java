@@ -70,7 +70,8 @@ public class Coverage implements Serializable {
 		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Coverage[");
 			if (wavebands == null) {
@@ -85,7 +86,8 @@ public class Coverage implements Serializable {
 			return buffer.toString();
 		}
 	    /** @exclude */		
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.footprint == null) ? 0 : this.footprint.hashCode());
@@ -93,7 +95,8 @@ public class Coverage implements Serializable {
 		return result;
 	}
     /** @exclude */	
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }

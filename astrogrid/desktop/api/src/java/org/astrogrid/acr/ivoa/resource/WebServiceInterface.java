@@ -41,6 +41,7 @@ public class WebServiceInterface extends Interface {
         this.wsdlURLs = wsdlURLs;
     }
     /** @exclude */
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -48,6 +49,7 @@ public class WebServiceInterface extends Interface {
         return result;
     }
     /** @exclude */
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;

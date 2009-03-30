@@ -15,11 +15,13 @@ public class SiapSkyPosTest extends TestCase {
 
     private SkyPos is;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         is = new SiapCapability.SkyPos();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

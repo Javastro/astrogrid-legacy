@@ -1,4 +1,4 @@
-/*$Id: AvailabilityBean.java,v 1.8 2008/10/07 10:00:53 nw Exp $
+/*$Id: AvailabilityBean.java,v 1.9 2009/03/30 15:02:54 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ public class AvailabilityBean implements Serializable {
     private final String validTo;
     private final String upTime;
     private final String timeOnServer;
+    @Override
     public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -39,7 +40,8 @@ public class AvailabilityBean implements Serializable {
 		result = PRIME * result + ((this.validTo == null) ? 0 : this.validTo.hashCode());
 		return result;
 	}
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -141,6 +143,7 @@ public class AvailabilityBean implements Serializable {
         return this.validTo;
     }
    
+    @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("AvailabilityBean[");
         sb.append("ServerName: ");
@@ -164,6 +167,9 @@ public class AvailabilityBean implements Serializable {
 
 /* 
 $Log: AvailabilityBean.java,v $
+Revision 1.9  2009/03/30 15:02:54  nw
+Added override annotations.
+
 Revision 1.8  2008/10/07 10:00:53  nw
 reformatting
 

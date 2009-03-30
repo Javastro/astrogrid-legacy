@@ -16,12 +16,14 @@ public class CeaServerCapabilityTest extends CapabilityTest {
 
     private CeaServerCapability cc;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         cc = new CeaServerCapability();
         cap = cc;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

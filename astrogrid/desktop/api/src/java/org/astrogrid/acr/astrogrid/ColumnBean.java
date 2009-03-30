@@ -1,4 +1,4 @@
-/*$Id: ColumnBean.java,v 1.9 2008/09/25 16:02:04 nw Exp $
+/*$Id: ColumnBean.java,v 1.10 2009/03/30 15:02:55 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,6 +89,7 @@ public class ColumnBean extends BaseParam implements Serializable{
         return this.std;
     }
     /**@exclude */
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -98,6 +99,7 @@ public class ColumnBean extends BaseParam implements Serializable{
         return result;
     }
     /** @exclude */
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -141,6 +143,9 @@ public class ColumnBean extends BaseParam implements Serializable{
 
 /* 
 $Log: ColumnBean.java,v $
+Revision 1.10  2009/03/30 15:02:55  nw
+Added override annotations.
+
 Revision 1.9  2008/09/25 16:02:04  nw
 documentation overhaul
 

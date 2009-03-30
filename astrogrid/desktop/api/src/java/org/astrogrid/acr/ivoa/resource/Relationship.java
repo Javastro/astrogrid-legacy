@@ -46,7 +46,8 @@ public class Relationship implements Serializable {
 		this.relationshipType = relationshipType;
 	}
     /** @exclude */	
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + Relationship.hashCode(this.relatedResources);
@@ -54,7 +55,8 @@ public class Relationship implements Serializable {
 		return result;
 	}
     /** @exclude */	
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -78,7 +80,8 @@ public class Relationship implements Serializable {
 		return true;
 	}
     /** @exclude */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Relationship[");
 			buffer.append(", relationshipType = ").append(relationshipType);

@@ -13,11 +13,13 @@ import junit.framework.TestCase;
  */
 public class ContentTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         cn = new Content();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

@@ -13,11 +13,13 @@ public class FormatTest extends TestCase {
 
     private Format f;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         f = new Format();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         f = null;

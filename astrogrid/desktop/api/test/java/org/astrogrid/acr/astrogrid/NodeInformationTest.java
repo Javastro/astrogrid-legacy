@@ -25,6 +25,7 @@ public class NodeInformationTest extends AbstractInformationTestAbstract {
     private Map attributs;
     private final long size = 20L;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         createDate = Calendar.getInstance();
@@ -40,6 +41,7 @@ public class NodeInformationTest extends AbstractInformationTestAbstract {
     
     NodeInformation ni;
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

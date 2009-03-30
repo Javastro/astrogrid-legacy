@@ -13,11 +13,13 @@ import junit.framework.TestCase;
  */
 public class ResourceNameTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         rn = new ResourceName();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

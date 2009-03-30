@@ -20,7 +20,8 @@ public class Date implements Serializable {
 	private String value;
 	private String role;
 	   /** @exclude */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.role == null) ? 0 : this.role.hashCode());
@@ -28,7 +29,8 @@ public class Date implements Serializable {
 		return result;
 	}
 	   /** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -72,7 +74,8 @@ public class Date implements Serializable {
 		this.value = value;
 	}
     /** @exclude */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Date[");
 			buffer.append("value = ").append(value);

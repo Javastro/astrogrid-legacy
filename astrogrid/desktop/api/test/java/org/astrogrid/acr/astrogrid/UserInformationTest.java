@@ -19,6 +19,7 @@ public class UserInformationTest extends AbstractInformationTestAbstract {
      */
     private static final String COMM = "comm";
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ui = new UserInformation(ID,NAME,PASS,COMM);
@@ -26,6 +27,7 @@ public class UserInformationTest extends AbstractInformationTestAbstract {
     }
     private UserInformation ui;
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

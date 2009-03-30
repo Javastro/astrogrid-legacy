@@ -13,12 +13,14 @@ public class MethodDescriptorTest extends DescriptorTestAbstract {
 
     private MethodDescriptor md;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         md = new MethodDescriptor();
         d = md;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         md = null;

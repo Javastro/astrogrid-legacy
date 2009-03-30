@@ -20,6 +20,7 @@ public class ExecutionInformationTest extends AbstractInformationTestAbstract {
      * 
      */
     private static final String DESCRIPTION = "a description";
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         start = new Date();
@@ -30,6 +31,7 @@ public class ExecutionInformationTest extends AbstractInformationTestAbstract {
     ExecutionInformation ei;
     Date start;
     Date end;
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

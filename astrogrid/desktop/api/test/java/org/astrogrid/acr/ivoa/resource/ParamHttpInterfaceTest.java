@@ -11,12 +11,14 @@ public class ParamHttpInterfaceTest extends InterfaceTest {
 
     private ParamHttpInterface pi;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         pi = new ParamHttpInterface();
         i = pi;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

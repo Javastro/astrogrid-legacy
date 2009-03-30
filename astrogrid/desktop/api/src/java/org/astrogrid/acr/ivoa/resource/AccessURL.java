@@ -53,7 +53,8 @@ public class AccessURL implements Serializable {
 		return this.use;
 	}
 	/** @exclude */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((this.value == null) ? 0 : this.value.hashCode());
@@ -61,7 +62,8 @@ public class AccessURL implements Serializable {
 		return result;
 	}
 	/** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -97,7 +99,8 @@ public class AccessURL implements Serializable {
 		this.use = use;
 	}
 /**@exclude */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("AccessURL[");
 			buffer.append(", value = ").append(value);

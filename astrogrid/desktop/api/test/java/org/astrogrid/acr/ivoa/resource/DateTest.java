@@ -13,11 +13,13 @@ public class DateTest extends TestCase {
 
     private Date d;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         d = new Date();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         d = null;        

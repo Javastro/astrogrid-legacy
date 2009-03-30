@@ -30,6 +30,7 @@ public class ExecutionMessageTest extends TestCase {
      */
     private static final String SOURCE = "a source";
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         now = new Date();
@@ -37,6 +38,7 @@ public class ExecutionMessageTest extends TestCase {
                     STATUS,now, CONTENT);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

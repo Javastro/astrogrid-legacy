@@ -1,4 +1,4 @@
-/*$Id: ParameterBean.java,v 1.8 2008/09/25 16:02:04 nw Exp $
+/*$Id: ParameterBean.java,v 1.9 2009/03/30 15:02:54 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -99,6 +99,7 @@ public ParameterBean() {
     /** the identifier for the parameter
      * @exclude 
      * @deprecated use {@link #getId()} */
+    @Override
     @Deprecated
     public String getName() {
         return this.getId();
@@ -145,6 +146,7 @@ public ParameterBean() {
 
     
     /** @exclude */
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -152,6 +154,7 @@ public ParameterBean() {
         return result;
     }
     /** @exclude */
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -233,6 +236,9 @@ public ParameterBean() {
 
 /* 
 $Log: ParameterBean.java,v $
+Revision 1.9  2009/03/30 15:02:54  nw
+Added override annotations.
+
 Revision 1.8  2008/09/25 16:02:04  nw
 documentation overhaul
 

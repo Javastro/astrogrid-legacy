@@ -13,11 +13,13 @@ public class CoverageTest extends TestCase {
 
     private Coverage c;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         c = new Coverage();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         c = null;

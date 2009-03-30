@@ -1,4 +1,4 @@
-/*$Id: InterfaceBean.java,v 1.8 2008/09/25 16:02:04 nw Exp $
+/*$Id: InterfaceBean.java,v 1.9 2009/03/30 15:02:55 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,6 +44,7 @@ public class InterfaceBean implements Serializable {
         return result;
     }
 /** @exclude */
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -57,6 +58,7 @@ public class InterfaceBean implements Serializable {
         return result;
     }
 /** @exclude */
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -132,6 +134,7 @@ public class InterfaceBean implements Serializable {
         return this.outputs;
     }
     /** @exclude */
+    @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer();
         buffer.append("[InterfaceBean:");
@@ -162,6 +165,9 @@ public class InterfaceBean implements Serializable {
 
 /* 
 $Log: InterfaceBean.java,v $
+Revision 1.9  2009/03/30 15:02:55  nw
+Added override annotations.
+
 Revision 1.8  2008/09/25 16:02:04  nw
 documentation overhaul
 

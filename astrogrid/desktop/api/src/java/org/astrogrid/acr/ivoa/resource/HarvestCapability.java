@@ -28,14 +28,16 @@ public class HarvestCapability extends RegistryCapability {
 		this.maxRecords = maxRecords;
 	}
     /** @exclude */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
 		result = PRIME * result + this.maxRecords;
 		return result;
 	}
     /** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -52,7 +54,8 @@ public class HarvestCapability extends RegistryCapability {
 		return true;
 	}
     /** @exclude */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("HarvestCapability[");
 			buffer.append("maxRecords = ").append(maxRecords);

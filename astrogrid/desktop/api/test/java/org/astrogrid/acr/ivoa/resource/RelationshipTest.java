@@ -11,11 +11,13 @@ import junit.framework.TestCase;
  */
 public class RelationshipTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         rel = new Relationship();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

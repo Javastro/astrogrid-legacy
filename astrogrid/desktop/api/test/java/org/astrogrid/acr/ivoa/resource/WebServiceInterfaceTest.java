@@ -13,12 +13,14 @@ public class WebServiceInterfaceTest extends InterfaceTest {
 
     private WebServiceInterface wi;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         wi = new WebServiceInterface();
         i = wi;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

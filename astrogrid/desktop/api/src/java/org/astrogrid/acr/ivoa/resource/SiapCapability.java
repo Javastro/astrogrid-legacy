@@ -52,13 +52,15 @@ public class SiapCapability extends Capability {
 			 * @author info.vancauwenberge.tostring plugin
 		
 			 */
-			public String toString() {
+			@Override
+            public String toString() {
 				final StringBuffer buffer = new StringBuffer();
 				buffer.append(getLong()).append(", ").append(getLat());
 				return buffer.toString();
 			}
 			 /** @exclude */
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			final int PRIME = 31;
 			int result = 1;
 			result = PRIME * result + Float.floatToIntBits(this._lat);
@@ -66,7 +68,8 @@ public class SiapCapability extends Capability {
 			return result;
 		}
 		  /** @exclude */
-		public boolean equals(final Object obj) {
+		@Override
+        public boolean equals(final Object obj) {
 			if (this == obj) {
                 return true;
             }
@@ -118,12 +121,14 @@ public class SiapCapability extends Capability {
              * @author info.vancauwenberge.tostring plugin
         
              */
+            @Override
             public String toString() {
                 final StringBuffer buffer = new StringBuffer();
                 buffer.append(getLong()).append(", ").append(getLat());
                 return buffer.toString();
             }
             /** @exclude */            
+        @Override
         public int hashCode() {
             final int PRIME = 31;
             int result = 1;
@@ -132,6 +137,7 @@ public class SiapCapability extends Capability {
             return result;
         }
         /** @exclude */
+        @Override
         public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
@@ -182,12 +188,14 @@ public class SiapCapability extends Capability {
              * @author info.vancauwenberge.tostring plugin
         
              */
+            @Override
             public String toString() {
                 final StringBuffer buffer = new StringBuffer();
                 buffer.append(getLong()).append(", ").append(getLat());
                 return buffer.toString();
             }
             /** @exclude */            
+        @Override
         public int hashCode() {
             final long PRIME = 31;
             long result = 1;
@@ -196,6 +204,7 @@ public class SiapCapability extends Capability {
             return (int)result;
         }
         /** @exclude */        
+        @Override
         public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
@@ -269,7 +278,8 @@ public class SiapCapability extends Capability {
 			 * @author info.vancauwenberge.tostring plugin
 		
 			 */
-			public String toString() {
+			@Override
+            public String toString() {
 				final StringBuffer buffer = new StringBuffer();
 				buffer.append("Query[");
 				buffer.append("size = ").append(size);
@@ -280,7 +290,8 @@ public class SiapCapability extends Capability {
 				return buffer.toString();
 			}
 		    /** @exclude */			
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			final int PRIME = 31;
 			int result = 1;
 			result = PRIME * result + ((this.extras == null) ? 0 : this.extras.hashCode());
@@ -290,7 +301,8 @@ public class SiapCapability extends Capability {
 			return result;
 		}
 	    /** @exclude */		
-		public boolean equals(final Object obj) {
+		@Override
+        public boolean equals(final Object obj) {
 			if (this == obj) {
                 return true;
             }
@@ -404,7 +416,8 @@ public class SiapCapability extends Capability {
 		this.maxRecords = maxRecords;
 	}
 	   /** @exclude */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
 		result = PRIME * result + ((this.imageServiceType == null) ? 0 : this.imageServiceType.hashCode());
@@ -417,7 +430,8 @@ public class SiapCapability extends Capability {
 		return result;
 	}
 	   /** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -477,7 +491,8 @@ public class SiapCapability extends Capability {
 		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("SiapCapability[");
 			buffer.append("imageServiceType = ").append(imageServiceType);

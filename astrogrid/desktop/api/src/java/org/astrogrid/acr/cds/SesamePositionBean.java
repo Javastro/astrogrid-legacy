@@ -123,7 +123,8 @@ public class SesamePositionBean implements Serializable {
 		this.aliases = aliases;
 	}
 	/** @exclude */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + SesamePositionBean.hashCode(this.aliases);
@@ -144,7 +145,8 @@ public class SesamePositionBean implements Serializable {
 		return result;
 	}
 	/** @exclude */
-	public boolean equals(final Object obj) {
+	@Override
+    public boolean equals(final Object obj) {
 		if (this == obj) {
             return true;
         }
@@ -213,7 +215,8 @@ public class SesamePositionBean implements Serializable {
 		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
-		public String toString() {
+		@Override
+        public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("SesamePositionBean[");
 			buffer.append("target = ").append(target);

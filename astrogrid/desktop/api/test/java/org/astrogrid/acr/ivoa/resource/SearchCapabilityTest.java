@@ -11,12 +11,14 @@ public class SearchCapabilityTest extends CapabilityTest {
 
     private SearchCapability sc;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         sc = new SearchCapability();
         cap = sc;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

@@ -313,11 +313,13 @@ public class StcResourceProfileTest extends TestCase {
 
     private StcResourceProfile stc;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         stc =new StcResourceProfile();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         stc = null;

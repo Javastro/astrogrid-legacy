@@ -13,11 +13,13 @@ import junit.framework.TestCase;
  */
 public class SecurityMethodTest extends TestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         sm = new SecurityMethod();
     }
     SecurityMethod sm;
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         sm = null;

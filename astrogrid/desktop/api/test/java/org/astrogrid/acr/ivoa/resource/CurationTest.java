@@ -16,12 +16,14 @@ public class CurationTest extends TestCase {
 
     private Curation cur;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         cur = new Curation();
         
     }
 
+    @Override
     protected void tearDown() throws Exception {
            super.tearDown();
            cur = null;
