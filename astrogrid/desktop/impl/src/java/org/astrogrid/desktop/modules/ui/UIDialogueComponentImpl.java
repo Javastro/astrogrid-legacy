@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ui;
 import java.awt.Component;
 import java.awt.HeadlessException;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -154,7 +155,9 @@ public class UIDialogueComponentImpl extends BaseDialog implements UIComponent {
     public void showTransientMessage(final String title, final String message) {
         this.assist.showTransientMessage(title, message);
     }
-
+    public final void showTransientMessage(final Icon icon,final String title, final String message) {
+        this.assist.showTransientMessage(icon,title, message);
+    }
     /**
      * @param title
      * @param message

@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -175,6 +176,12 @@ public final class UIComponentAssist {
     public void showTransientMessage(final String title, final String message) {
         TimedPopup.showInfoMessage(getTasksButton(),title,message);
     }        
+    
+    /** display a message in a popup, which will vanish after a few seconds */
+    public void showTransientMessage(final Icon icon,final String title, final String message) {
+        TimedPopup.showInfoMessage(getTasksButton(),icon,title,message);
+    }        
+    
     /** display a warning in a popup, which will vanish after a few seconds */
         public void showTransientWarning(final String title, final String message) {
             TimedPopup.showWarningMessage(getTasksButton(),title,message);     

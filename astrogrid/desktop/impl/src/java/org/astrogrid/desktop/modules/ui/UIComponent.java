@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 
+import javax.swing.Icon;
 import javax.swing.JPanel;
 
 import org.astrogrid.desktop.modules.system.ui.UIContext;
@@ -43,6 +44,9 @@ public interface UIComponent {
 
     /** display a message in a popup, which will vanish after a few seconds */
     public void showTransientMessage(String title, String message);
+    
+    /** display a message in a popup which will vainish in a few seconds */
+    public void showTransientMessage(Icon icon, String title, String message );
 /** display a warning in a popup, which will vanish after a few seconds */
     public void showTransientWarning(String title, String message);
 	

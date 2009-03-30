@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.24 2009/03/26 18:04:11 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.25 2009/03/30 15:04:55 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -220,6 +221,9 @@ public class UIComponentImpl extends JFrame implements UIComponent {
         this.assist.showTransientMessage(title, message);
     }
 
+    public final void showTransientMessage(final Icon icon,final String title, final String message) {
+        this.assist.showTransientMessage(icon,title, message);
+    }
 
     /**
      * @param title
@@ -235,6 +239,9 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.25  2009/03/30 15:04:55  nw
+added new method to allow provision of icon in popup.
+
 Revision 1.24  2009/03/26 18:04:11  nw
 source code improvements - cleaned imports, @override, etc.
 

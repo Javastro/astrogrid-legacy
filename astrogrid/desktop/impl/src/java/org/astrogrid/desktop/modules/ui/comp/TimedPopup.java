@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -115,12 +116,16 @@ public class TimedPopup {
      * @param title the title of the message
      * @param message the content of the message
      */
-    public static void showInfoMessage(final Component owner,final String title, final String message) {
+    public static void showInfoMessage(final Component owner,final String title, final String message) {  
+        showInfoMessage(owner,UIManager.getIcon("OptionPane.informationIcon"),title,message);
+    }
+    
+    public static void showInfoMessage(final Component owner,final Icon icon,final String title, final String message) {
         final JLabel l = new JLabel("<html><b>" + title + "</b><br>" + message);
-        l.setIcon(UIManager.getIcon("OptionPane.informationIcon")); // wish these magic keys were documented somewhere.
+        l.setIcon(icon); // wish these magic keys were documented somewhere.
         l.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         showMessage(owner,l);        
-    }
+    }    
 
     /**
      * display a transient warning message
