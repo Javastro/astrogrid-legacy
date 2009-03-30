@@ -66,7 +66,7 @@ public class WorkaroundTransformerFactory extends TransformerFactory {
     }
 
 
-    @Override
+    //not using annotation override, as not always overidden.
     public void setFeature(final String name, final boolean value) throws TransformerConfigurationException {
 
         // New method at J2SE1.6 - need to invoke using reflection to get this

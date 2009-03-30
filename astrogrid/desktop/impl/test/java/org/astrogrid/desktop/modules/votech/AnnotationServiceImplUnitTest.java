@@ -5,23 +5,9 @@ package org.astrogrid.desktop.modules.votech;
 
 
 import static org.astrogrid.Fixture.createMockContext;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -96,7 +82,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
     public void testInstantiateEmpty() throws Exception {
         expect(io.getSourcesList()).andReturn(Collections.EMPTY_LIST);
         replay(cache,context,io);
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
     
         //
         assertThat(asi.getUserAnnotationSource(),sameInstance(userAnnotationSource));
@@ -110,13 +96,13 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(cache.get(uri)).andReturn(null).times(2);
 
         // case for an entry
-        Map<AnnotationSource, UserAnnotation> m = new HashMap<AnnotationSource, UserAnnotation>();
+        final Map<AnnotationSource, UserAnnotation> m = new HashMap<AnnotationSource, UserAnnotation>();
         m.put(userAnnotationSource,uan);
-        Element e = new Element(uan.getResourceId(),m);
+        final Element e = new Element(uan.getResourceId(),m);
        
         expect(cache.get(uri)).andReturn(e).times(2);        
         replay(cache,context,io);
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         // test when there's nothing in the cache.
         assertThat(asi.getUserAnnotation(uri),nullValue());
@@ -138,14 +124,14 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 
         expect(cache.get(uri)).andReturn(null); // it's not in the cache.
         
-        Map<AnnotationSource,UserAnnotation>  m = new HashMap<AnnotationSource, UserAnnotation>();
+        final Map<AnnotationSource,UserAnnotation>  m = new HashMap<AnnotationSource, UserAnnotation>();
         m.put(userAnnotationSource,uan);
         cache.put(new Element(uri,m)); // it's stored in the cache.
         
         io.updateUserAnnotation(uan); // it's persisted.
         
         replay(cache,context,io);
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
         
         uan.setResourceId(null);
         uan.setSource(null);
@@ -164,9 +150,9 @@ public class AnnotationServiceImplUnitTest extends TestCase {
 
         expect(io.getSourcesList()).andReturn(Collections.EMPTY_LIST);
         
-        Map<AnnotationSource,Annotation>  m = new HashMap<AnnotationSource, Annotation>();
+        final Map<AnnotationSource,Annotation>  m = new HashMap<AnnotationSource, Annotation>();
         m.put(otherSource,new Annotation());
-        Element e = new Element(uri,m);        
+        final Element e = new Element(uri,m);        
         expect(cache.get(uri)).andReturn(e); // there's other annotations for this id.
         
         cache.put(new Element(uri,m)); // it's stored in the cache.
@@ -174,7 +160,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         io.updateUserAnnotation(uan); // it's persisted.
         
         replay(cache,context,io);
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
         
         uan.setResourceId(null);
         uan.setSource(null);
@@ -194,12 +180,12 @@ public class AnnotationServiceImplUnitTest extends TestCase {
 
         expect(io.getSourcesList()).andReturn(Collections.EMPTY_LIST);
         
-        Map<AnnotationSource,Object>  m = new HashMap<AnnotationSource, Object>();
+        final Map<AnnotationSource,Object>  m = new HashMap<AnnotationSource, Object>();
 
         assertFalse(otherSource.equals(userAnnotationSource));
         m.put(otherSource,new Annotation());
         m.put(userAnnotationSource,new UserAnnotation());
-        Element e = new Element(uri,m);        
+        final Element e = new Element(uri,m);        
         expect(cache.get(uri)).andReturn(e); 
         
         cache.put(new Element(uri,m)); // it's stored in the cache.
@@ -207,7 +193,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         io.removeUserAnnotation(resource); //deletion is persisted
         
         replay(cache,context,io);
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         asi.removeUserAnnotation(resource);
         assertThat(m,allOf(not(hasKey(userAnnotationSource))
@@ -221,9 +207,9 @@ public class AnnotationServiceImplUnitTest extends TestCase {
     
     
     public void testInstantiateWithSources() throws Exception {
-        AnnotationSource dyn = new DynamicAnnotationSource() {
+        final AnnotationSource dyn = new DynamicAnnotationSource() {
             @Override
-            public Annotation getAnnotationFor(Resource r) {
+            public Annotation getAnnotationFor(final Resource r) {
                 return null;
             }
 
@@ -232,25 +218,25 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return false;
             }
         };
-        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
+        final List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
         
         expect(io.getSourcesList()).andReturn(sources);
-        List<Annotation> uaAnns = new ArrayList<Annotation>();
+        final List<Annotation> uaAnns = new ArrayList<Annotation>();
         uaAnns.add(uan);
         expect(io.load(userAnnotationSource)).andReturn(uaAnns);
         expect(io.load(otherSource)).andThrow(new RuntimeException());
         
         expect(cache.get(uri)).andReturn(null);
-        Map<AnnotationSource, UserAnnotation> m = new HashMap<AnnotationSource, UserAnnotation>();
+        final Map<AnnotationSource, UserAnnotation> m = new HashMap<AnnotationSource, UserAnnotation>();
         m.put(userAnnotationSource,uan);
-        Element e= new Element(uri,m);
+        final Element e= new Element(uri,m);
         cache.put(e);
         replay(cache,context,io);
         
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
             
         assertThat(asi.listSources(),allOf(hasItemInArray(otherSource)
                 ,hasItemInArray(userAnnotationSource)
@@ -266,15 +252,15 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(cache.get(uri)).andReturn(null);
 
         // case for an entry
-        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
+        final Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
-        Element e = new Element(uri,m);
+        final Element e = new Element(uri,m);
        
         expect(cache.get(uri)).andReturn(e);        
         replay(cache,context,io);
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         // test when there's nothing in the cache.
         
@@ -282,7 +268,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
 // test when there's an entry in the cache.        
         final Iterator it = asi.getLocalAnnotations(resource);
         assertTrue(it.hasNext());
-        assertThat(IteratorUtils.toList(it),allOf(hasItem(uan),hasItem(otherAnn)));
+        assertThat((List<Annotation>)IteratorUtils.toList(it),allOf(hasItem(uan),hasItem(otherAnn)));
         
 // test for an erroneous inputs.        
         assertFalse(asi.getLocalAnnotations((Resource)null).hasNext());
@@ -295,18 +281,18 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(cache.get(uri)).andReturn(null);
 
         // case for an entry
-        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
+        final Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
-        Element e = new Element(uri,m);
+        final Element e = new Element(uri,m);
        
         expect(cache.get(uri)).andReturn(e);        
         replay(cache,context,io);
         
-        AnnotationProcessor proc = createMock(AnnotationProcessor.class);
+        final AnnotationProcessor proc = createMock(AnnotationProcessor.class);
         
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         // test when there's nothing in the cache.
         replay(proc);
@@ -331,9 +317,9 @@ public class AnnotationServiceImplUnitTest extends TestCase {
 
 /** exiting local cache entries, and dynamic returns nothing */
     public void testProcessRemainingAnnotations1() throws Exception {
-        AnnotationSource dyn = new DynamicAnnotationSource() {
+        final AnnotationSource dyn = new DynamicAnnotationSource() {
             @Override
-            public Annotation getAnnotationFor(Resource r) {
+            public Annotation getAnnotationFor(final Resource r) {
                 return null;
             }
 
@@ -342,7 +328,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return false;
             }
         };
-        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
+        final List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -354,20 +340,20 @@ public class AnnotationServiceImplUnitTest extends TestCase {
     //    expect(cache.get(uri)).andReturn(null);
 
         // case for an entry
-        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
+        final Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
-        Element e = new Element(uri,m);       
+        final Element e = new Element(uri,m);       
         expect(cache.get(uri)).andReturn(e);
         
         // case for annotation already fetched.
      //   expect(cache.get(uri)).andReturn(e);
         
-        AnnotationProcessor proc = createMock(AnnotationProcessor.class);
+        final AnnotationProcessor proc = createMock(AnnotationProcessor.class);
         replay(cache,context,io,proc);
                 
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         asi.processRemainingAnnotations(resource,proc);      
         verify(cache,context,io,proc);
@@ -376,9 +362,9 @@ public class AnnotationServiceImplUnitTest extends TestCase {
 /** existing cache entries, and dynamic returns something, no cache. */
     public void testProcessRemainingAnnotations2() throws Exception {
         final Annotation dynAnn = new Annotation();
-        AnnotationSource dyn = new DynamicAnnotationSource() {
+        final AnnotationSource dyn = new DynamicAnnotationSource() {
             @Override
-            public Annotation getAnnotationFor(Resource r) {
+            public Annotation getAnnotationFor(final Resource r) {
                 return dynAnn;
             }
 
@@ -387,7 +373,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return false;
             }
         };
-        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
+        final List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -396,18 +382,18 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(io.load(userAnnotationSource)).andReturn(null);
 
         // case for an entry
-        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
+        final Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
-        Element e = new Element(uri,m);       
+        final Element e = new Element(uri,m);       
         expect(cache.get(uri)).andReturn(e);
 
-        AnnotationProcessor proc = createMock(AnnotationProcessor.class);
+        final AnnotationProcessor proc = createMock(AnnotationProcessor.class);
         proc.process(dynAnn);
         replay(cache,context,io,proc);
                
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         asi.processRemainingAnnotations(resource,proc);      
         verify(cache,context,io,proc);
@@ -416,9 +402,9 @@ public class AnnotationServiceImplUnitTest extends TestCase {
     /** existing cache entries, and dynamic returns something, should cache. */
     public void testProcessRemainingAnnotations3() throws Exception {
         final Annotation dynAnn = new Annotation();
-        AnnotationSource dyn = new DynamicAnnotationSource() {
+        final AnnotationSource dyn = new DynamicAnnotationSource() {
             @Override
-            public Annotation getAnnotationFor(Resource r) {
+            public Annotation getAnnotationFor(final Resource r) {
                 return dynAnn;
             }
 
@@ -427,7 +413,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return true;
             }
         };
-        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
+        final List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -435,19 +421,19 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(io.load(otherSource)).andReturn(null);
         expect(io.load(userAnnotationSource)).andReturn(null);
 
-        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
+        final Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
-        Element e = new Element(uri,m);       
+        final Element e = new Element(uri,m);       
         expect(cache.get(uri)).andReturn(e);
         cache.put(e);
         
-        AnnotationProcessor proc = createMock(AnnotationProcessor.class);
+        final AnnotationProcessor proc = createMock(AnnotationProcessor.class);
         proc.process(dynAnn);
         replay(cache,context,io,proc);
                
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         asi.processRemainingAnnotations(resource,proc);     
         assertThat(m,hasEntry(dyn,dynAnn));
@@ -460,9 +446,9 @@ public class AnnotationServiceImplUnitTest extends TestCase {
      * could do with verifying that further dynamic annotaionts are still queried.. */
     public void testProcessRemainingAnnotations4() throws Exception {
         final Annotation dynAnn = new Annotation();
-        AnnotationSource dyn = new DynamicAnnotationSource() {
+        final AnnotationSource dyn = new DynamicAnnotationSource() {
             @Override
-            public Annotation getAnnotationFor(Resource r) {
+            public Annotation getAnnotationFor(final Resource r) {
                 throw new RuntimeException();
             }
 
@@ -471,7 +457,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return true;
             }
         };
-        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
+        final List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -479,17 +465,17 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(io.load(otherSource)).andReturn(null);
         expect(io.load(userAnnotationSource)).andReturn(null);
 
-        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
+        final Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
-        Element e = new Element(uri,m);       
+        final Element e = new Element(uri,m);       
         expect(cache.get(uri)).andReturn(e);
         
-        AnnotationProcessor proc = createMock(AnnotationProcessor.class);
+        final AnnotationProcessor proc = createMock(AnnotationProcessor.class);
         replay(cache,context,io,proc);
                
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         asi.processRemainingAnnotations(resource,proc);     
         assertThat(m,not(hasEntry(dyn,dynAnn)));
@@ -500,9 +486,9 @@ public class AnnotationServiceImplUnitTest extends TestCase {
     /** existing cache entries, and dynamic returns a user annotation, should cache. */
     public void testProcessRemainingAnnotations5() throws Exception {
         final UserAnnotation dynAnn = new UserAnnotation();
-        AnnotationSource dyn = new DynamicAnnotationSource() {
+        final AnnotationSource dyn = new DynamicAnnotationSource() {
             @Override
-            public Annotation getAnnotationFor(Resource r) {
+            public Annotation getAnnotationFor(final Resource r) {
                 return dynAnn;
             }
 
@@ -511,7 +497,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return true;
             }
         };
-        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
+        final List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -519,22 +505,22 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(io.load(otherSource)).andReturn(null);
         expect(io.load(userAnnotationSource)).andReturn(null);
 
-        Map m = new HashMap();
+        final Map m = new HashMap();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
-        Element e = new Element(uri,m);       
+        final Element e = new Element(uri,m);       
         expect(cache.get(uri)).andReturn(e);
         cache.put(e);
         
-        AnnotationProcessor proc = createMock(AnnotationProcessor.class);
+        final AnnotationProcessor proc = createMock(AnnotationProcessor.class);
         proc.process(dynAnn);
         replay(cache,context,io,proc);
                
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         asi.processRemainingAnnotations(resource,proc);     
-        assertThat(m,hasEntry(dyn,dynAnn));
+        assertThat((Map<AnnotationSource,UserAnnotation>) m,hasEntry(dyn,dynAnn));
         assertThat(m.size(),is(3));
         verify(cache,context,io,proc);
     }
@@ -542,9 +528,9 @@ public class AnnotationServiceImplUnitTest extends TestCase {
     /** no pre-existing cache object */
     public void testProcessRemainingAnnotations6() throws Exception {
         final UserAnnotation dynAnn = new UserAnnotation();
-        AnnotationSource dyn = new DynamicAnnotationSource() {
+        final AnnotationSource dyn = new DynamicAnnotationSource() {
             @Override
-            public Annotation getAnnotationFor(Resource r) {
+            public Annotation getAnnotationFor(final Resource r) {
                 return dynAnn;
             }
 
@@ -553,7 +539,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return true;
             }
         };
-        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
+        final List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -562,16 +548,16 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(io.load(userAnnotationSource)).andReturn(null);
 
         expect(cache.get(uri)).andReturn(null);
-        Map<AnnotationSource, UserAnnotation> m = new HashMap<AnnotationSource, UserAnnotation>();
+        final Map<AnnotationSource, UserAnnotation> m = new HashMap<AnnotationSource, UserAnnotation>();
         m.put(dyn,dynAnn);
-        Element e = new Element(uri,m);       
+        final Element e = new Element(uri,m);       
         cache.put(e);
         
-        AnnotationProcessor proc = createMock(AnnotationProcessor.class);
+        final AnnotationProcessor proc = createMock(AnnotationProcessor.class);
         proc.process(dynAnn);
         replay(cache,context,io,proc);
                
-        AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
+        final AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         asi.processRemainingAnnotations(resource,proc);     
         verify(cache,context,io,proc);

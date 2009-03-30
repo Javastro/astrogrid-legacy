@@ -36,7 +36,7 @@ public class AnnotationServiceImpl implements AnnotationService{
 			.getLog(AnnotationServiceImpl.class);
 
 	
-	private final List annotationSources;
+	private final List<AnnotationSource> annotationSources;
 	private final AnnotationIO io;
 	private final Ehcache cache;
 	protected final UIContext ui;	
@@ -77,7 +77,7 @@ private void saveSourceList() {
 }
 
 	public AnnotationSource[] listSources() {
-		return (AnnotationSource[])annotationSources.toArray(new AnnotationSource[annotationSources.size()]);
+		return annotationSources.toArray(new AnnotationSource[annotationSources.size()]);
 	}
 	
 	public void removeSource(final AnnotationSource remove) {
@@ -94,8 +94,8 @@ private void saveSourceList() {
 
 	/** load and process the annotation sources - or at least those that are static. */
 	public final void run() {
-		for (final Iterator i = annotationSources.iterator(); i.hasNext();) {
-			final AnnotationSource s = (AnnotationSource) i.next();
+		for (final Iterator<AnnotationSource> i = annotationSources.iterator(); i.hasNext();) {
+			final AnnotationSource s = i.next();
 			if (! (s instanceof DynamicAnnotationSource)) {
 				// so it's a static source.
 				loadStaticSource(s);
@@ -117,11 +117,11 @@ private void saveSourceList() {
 					final URI resourceId = a.getResourceId();
 					Element el = cache.get(resourceId);
 					if (el == null) { // new.
-						final Map m = new HashMap(annotationSources.size());
+						final Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>(annotationSources.size());
 						m.put(a.getSource(),a);
 						el = new Element(resourceId,m);
 					} else { // existing. just add it.
-						final Map m = (Map)el.getValue();
+						final Map<AnnotationSource, Annotation> m = (Map<AnnotationSource, Annotation>)el.getValue();
 						m.put(a.getSource(),a);
 					}
 					cache.put(el);
@@ -176,11 +176,11 @@ private void saveSourceList() {
 		// wap it into the cache.
 		Element el = cache.get(r.getId());
 		if (el == null) {
-			final Map m = new HashMap();
+			final Map<AnnotationSource, UserAnnotation> m = new HashMap<AnnotationSource, UserAnnotation>();
 			m.put(userSource,ann);
 			el = new Element(r.getId(),m);
 		} else {
-			final Map m = (Map)el.getValue();
+			final Map<AnnotationSource, UserAnnotation> m = (Map<AnnotationSource, UserAnnotation>)el.getValue();
 			m.put(userSource,ann);
 		}
 		cache.put(el);
@@ -237,16 +237,16 @@ private void saveSourceList() {
 
 	public void processRemainingAnnotations(final Resource r, final AnnotationProcessor processor) {
 		Element el = cache.get(r.getId());
-		final Map m;
+		final Map<AnnotationSource, Annotation> m;
 		if (el == null) {
-			m = new HashMap();
+			m = new HashMap<AnnotationSource, Annotation>();
 			el = new Element(r.getId(),m);
 		} else {
-			m = (Map)el.getValue();
+			m = (Map<AnnotationSource, Annotation>)el.getValue();
 		}
 		final Element toCache = el; // final restriction work-around.
-		for (final Iterator i = annotationSources.iterator(); i.hasNext();) {
-			final AnnotationSource source = (AnnotationSource) i.next();
+		for (final Iterator<AnnotationSource> i = annotationSources.iterator(); i.hasNext();) {
+			final AnnotationSource source = i.next();
 			if (source instanceof DynamicAnnotationSource &&
 					! m.containsKey(source)) {
 				(new BackgroundWorker(ui,"Loading annotations from " + source.getName(),BackgroundWorker.SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
