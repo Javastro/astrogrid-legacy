@@ -16,6 +16,12 @@
 
 <release version="1.2.3.beta2" date="2009-3-30">
     <action dev="nw" type="add">
+    Set HTTP Agent to report AstroRuntime as the client.
+    </action>
+    <action dev="nw" type="add">
+    Added SAMP messaging
+    </action>
+    <action dev="nw" type="add">
     AR: added simple XML access to registry resources. Used when exchanging resources in SAMP messages.
     </action>
     <action dev="nw" type="fix" due-to="Dave Morris">
@@ -32,7 +38,7 @@
     </action>
     <action dev="nw" type="add">
     AR: Added File API - uniform access to different kinds of 
-    file system - local disk, ftp, sftp, myspace, http, vospace (upcoming)
+    file system - local disk, ftp, sftp, myspace, http, vospace 
     </action>
 </release>
 <release version="1.2.3.beta1" date="2009-2-13">

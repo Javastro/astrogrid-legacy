@@ -78,6 +78,7 @@ NETWORK CONFIGURATION
       <construct class="org.astrogrid.desktop.modules.system.NetworkConfigurator">
         <object>preference:network.proxyHost</object>
         <object>preference:network.proxyPort</object>
+        <string>${astrogrid.desktop.version}</string>
         <object>preference:network.preferIPv4Stack</object>
         <object>preference:network.preferIPv6Addresses</object>
       </construct>

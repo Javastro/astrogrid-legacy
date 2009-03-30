@@ -18,21 +18,23 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
  */
 public class NetworkConfigurator implements Runnable {
 
-    private String proxyHost;
-    private int proxyPort;
-    private boolean preferIPv4Stack;
-    private boolean preferIPv6Addresses;
+    private final String proxyHost;
+    private final int proxyPort;
+    private final boolean preferIPv4Stack;
+    private final boolean preferIPv6Addresses;
 
     private static final Log logger = LogFactory.getLog(NetworkConfigurator.class);
+    private final String version;
 
-    public NetworkConfigurator(String proxyHost, String proxyPort, Preference preferIPv4Stack, Preference preferIPv6Addresses) {
+    public NetworkConfigurator(final String proxyHost, final String proxyPort, final String version, final Preference preferIPv4Stack, final Preference preferIPv6Addresses) {
         this.proxyHost = proxyHost;
+        this.version = version;
         int portNum;
         try {
             portNum = Integer.parseInt(proxyPort);
         }
-        catch (NumberFormatException e) {
-            int dfltPort = 80;
+        catch (final NumberFormatException e) {
+            final int dfltPort = 80;
             logger.warn("Bad port number string \"" + proxyPort +"\" - use " + dfltPort);
             portNum = dfltPort;
         }
@@ -45,12 +47,14 @@ public class NetworkConfigurator implements Runnable {
      * Invoked by hivemind to set properties.
      */
     public void run() {
-        Properties props = System.getProperties();
+        final Properties props = System.getProperties();
         if (proxyHost != null && proxyHost.trim().length() > 0) {
             setProxy(props, this.proxyHost, this.proxyPort);
         }
         props.setProperty("java.net.preferIPv4Stack", Boolean.toString(this.preferIPv4Stack));
         props.setProperty("java.net.preferIPv6Addresses", Boolean.toString(this.preferIPv6Addresses));
+        
+        props.setProperty("http.agent","AstroRuntime/" +version );
     }
 
     /**
@@ -59,9 +63,9 @@ public class NetworkConfigurator implements Runnable {
      * @param proxyHost  proxy host
      * @param proxyPort  proxy port
      */
-    private void setProxy(Properties props, String proxyHost, int proxyPort) {
-        String host = this.proxyHost;
-        String port = Integer.toString(this.proxyPort);
+    private void setProxy(final Properties props, final String proxyHost, final int proxyPort) {
+        final String host = this.proxyHost;
+        final String port = Integer.toString(this.proxyPort);
 
         // Belt and braces.  These property names apparently changed between
         // releases.  Note there are also deployment.proxy.http.{host,port},

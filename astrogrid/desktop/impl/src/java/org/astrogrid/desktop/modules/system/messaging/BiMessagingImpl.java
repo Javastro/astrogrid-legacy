@@ -13,6 +13,7 @@ import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuatio
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.samp.client.HubConnector;
 import org.astrogrid.samp.client.SampException;
+import org.joda.time.Duration;
 
 import uk.ac.starlink.plastic.PlasticUtils;
 
@@ -21,6 +22,11 @@ import uk.ac.starlink.plastic.PlasticUtils;
  * @since Mar 25, 200910:29:07 AM
  */
 public class BiMessagingImpl extends PlasticOnlyMessagingImpl {
+    @Override
+    public Duration getDelay() {
+        return new Duration(7000); // delay startup of this system by a few seconds.
+    }
+
     private static final Log logger = LogFactory.getLog(BiMessagingImpl.class);
     private final Samp samp;
     private final Preference startSamp;
