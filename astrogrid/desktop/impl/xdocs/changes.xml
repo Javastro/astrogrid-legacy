@@ -19,10 +19,10 @@
     Set HTTP Agent to report AstroRuntime as the client.
     </action>
     <action dev="nw" type="add">
-    Added SAMP messaging
+    Added SAMP messaging - Plastic messaging is still present too. 
     </action>
     <action dev="nw" type="add">
-    AR: added simple XML access to registry resources. Used when exchanging resources in SAMP messages.
+    AR: Added simple XML access to registry resources. Used when exchanging resources in SAMP messages.
     </action>
     <action dev="nw" type="fix" due-to="Dave Morris">
     File Explorer: Fixed multiple-listeners bug
@@ -31,13 +31,13 @@
     AR: Improved error reporting for faulty XQuery.
     </action>
     <action dev="nw" type="add">
-    VOExplorer: Added 'Publication' action to left pane and menu - displays info about associated bibcode.
+    VOExplorer: Added 'Publication' action to left pane and menu - opens a webpage about associated bibcode.
     </action>
     <action dev="nw" type="update">
     VOExplorer: Updated 'Download Tables' and 'Send Tables via PLASTIC' to work with new version of Vizier service.
     </action>
     <action dev="nw" type="add">
-    AR: Added File API - uniform access to different kinds of 
+    AR: Added a File API that provides uniform access to different kinds of 
     file system - local disk, ftp, sftp, myspace, http, vospace 
     </action>
 </release>
