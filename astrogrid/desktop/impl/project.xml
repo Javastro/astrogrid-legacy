@@ -765,12 +765,12 @@
         <dependency>
             <groupId>glazedlists</groupId>
             <artifactId>glazedlists</artifactId>
-            <version>1.7.0_java15</version>
+            <version>1.8.0_java15</version>
             <type>jar</type>
             <properties>
                 <dist.bundle>true</dist.bundle>
                 <strip>true</strip>
-                <upgraded>2008-04-14</upgraded>                
+                <upgraded>2009-03-30</upgraded>                
             </properties>
         </dependency>
         

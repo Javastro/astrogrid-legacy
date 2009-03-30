@@ -15,6 +15,9 @@
 <body>
 
 <release version="1.2.3.beta2" date="2009-3-30">
+    <action dev="nw" type="update">
+    updated glazedlists library to latest version
+    </action>
     <action dev="nw" type="add">
     Set HTTP Agent to report AstroRuntime as the client.
     </action>

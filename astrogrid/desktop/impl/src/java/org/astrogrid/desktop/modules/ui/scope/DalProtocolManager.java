@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.13 2008/11/04 14:35:48 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.14 2009/03/30 16:55:29 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -80,9 +80,6 @@ public class DalProtocolManager implements Iterable<DalProtocol>{
 			return this;
 		}
 
-		public void setObservableElementList(final ObservableElementList<DalProtocol> arg0) {
-			this.l = arg0;
-		}
 		private ObservableElementList<DalProtocol> l;
 		public void uninstallListener(final DalProtocol p, final EventListener arg1) {
 			if ( arg1 != this) {
@@ -96,6 +93,11 @@ public class DalProtocolManager implements Iterable<DalProtocol>{
 			final DalProtocol o = (DalProtocol)cb.getClientProperty(DalProtocol.OWNER);
 			l.elementChanged(o);
 		}
+
+        public void setObservableElementList(
+                final ObservableElementList<? extends DalProtocol> arg0) {
+            this.l = (ObservableElementList<DalProtocol>)arg0;
+        }
     }
 
 }
@@ -103,6 +105,9 @@ public class DalProtocolManager implements Iterable<DalProtocol>{
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.14  2009/03/30 16:55:29  nw
+upgraded glazed lists.
+
 Revision 1.13  2008/11/04 14:35:48  nw
 javadoc polishing
 

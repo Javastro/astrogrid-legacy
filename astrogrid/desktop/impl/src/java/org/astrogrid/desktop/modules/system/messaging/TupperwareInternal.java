@@ -24,10 +24,10 @@ public interface TupperwareInternal extends XmlRpcHandler {
 
 	// send messages.
 	/** send a message to a single named application */
-	public Object singleTargetRequestResponseMessage(URI message, List args, URI target) ;
+	public Object singleTargetRequestResponseMessage(URI message, List<Object> args, URI target) ;
 	
 	/** send a messagge to a single named application, don't wait for response */
-	public void singleTargetFireAndForgetMessage(URI message, List args, URI target);
+	public void singleTargetFireAndForgetMessage(URI message, List<Object> args, URI target);
 	
 	
 	/** access an action that can be used to connect to a plastic hub */

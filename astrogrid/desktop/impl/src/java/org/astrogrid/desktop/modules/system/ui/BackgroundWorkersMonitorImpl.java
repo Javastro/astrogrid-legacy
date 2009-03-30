@@ -275,9 +275,6 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
             return this;
         }
 
-        public void setObservableElementList(final ObservableElementList<UIComponent> list) {
-            this.list = list;
-        }
 
         public void uninstallListener(final UIComponent arg0, final EventListener arg1) {
             if (arg1 == this) {
@@ -287,6 +284,11 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
 
         public void propertyChange(final PropertyChangeEvent evt) {
             list.elementChanged((UIComponent)evt.getSource()); // relies on UIComponent.getComponent() returning self.
+        }
+
+        public void setObservableElementList(
+                final ObservableElementList<? extends UIComponent> arg0) {
+            this.list = (ObservableElementList<UIComponent>)arg0;
         }
     }
 

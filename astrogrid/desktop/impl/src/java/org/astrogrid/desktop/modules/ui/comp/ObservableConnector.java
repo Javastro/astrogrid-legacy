@@ -20,9 +20,7 @@ public class ObservableConnector<E extends Observable> implements ObservableElem
 		arg0.addObserver(this);
 		return this;
 	}
-	public void setObservableElementList(final ObservableElementList<E> arg0) {
-		this.list = arg0;
-	}
+
 
 	public void uninstallListener(final E arg0, final EventListener arg1) {
 		if (arg1 == this) {
@@ -33,4 +31,7 @@ public class ObservableConnector<E extends Observable> implements ObservableElem
 	public void update(final Observable o, final Object arg) {
 		list.elementChanged((E)o);
 	}
+    public void setObservableElementList(final ObservableElementList<? extends E> arg0) {
+        this.list = (ObservableElementList<E>)arg0;
+    }
 }
