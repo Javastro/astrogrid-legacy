@@ -177,7 +177,7 @@ The following example shows how to read the {@code .astrogrid-desktop} file, app
 create an XML-RPC client (confusingly by calling the function {@code Server}). The result is an XML-RPC client, called {@code ar}
 
 {@source
-from xmlrpc import Server
+from xmlrpclib import Server
 from os.path import expanduser
 ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')     
 }
