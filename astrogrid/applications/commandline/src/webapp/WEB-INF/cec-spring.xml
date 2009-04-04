@@ -65,8 +65,9 @@
 <bean id="ExecutionPolicy" class="org.astrogrid.applications.manager.ConfigurableExecutionPolicy">
 <property name="killPeriod" value="3600" /> <!-- 1 hr -->
 <property name="maxRunTime" value="86400" /> <!-- 1 day -->  
-<property name="defaultLifetime" value="8640000" /> <!-- 100 days -->
-<property name="destroyPeriod" value="3600" /> <!-- 1 hr -->
+<property name="defaultLifetime" value="300" /> <!-- 100 days -->
+<property name="destroyPeriod" value="600" /> <!-- 1 hr -->
+<property name="maxConcurrent" value="4"/>
 </bean>
 
 <bean id="ApplicationDescriptionLibrary" class="org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary" autowire="no" >
@@ -82,6 +83,12 @@
        <list>
          <bean class="org.astrogrid.applications.dal.stap.STAPApplicationDescription">
            <constructor-arg type="javax.sql.DataSource" index="1"><jee:jndi-lookup jndi-name="jdbc/STAP" resource-ref="true" expected-type="javax.sql.DataSource"></jee:jndi-lookup></constructor-arg>
+         </bean>
+         <!-- example java class application -->
+         <bean class="org.astrogrid.applications.javaclass.JavaClassApplicationDescription">
+            <constructor-arg index="0">
+               <value>org.astrogrid.applications.javaclass.SampleJavaClassApplications</value>
+            </constructor-arg>
          </bean>
        </list>
     </property>
