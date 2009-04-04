@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterTypes.java,v 1.1 2009/02/26 12:25:47 pah Exp $
+ * $Id: ParameterTypes.java,v 1.2 2009/04/04 20:38:08 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -82,7 +82,9 @@ public enum ParameterTypes {
     @XmlEnumValue("Image")
     IMAGE("Image"),
     @XmlEnumValue("Spectrum")
-    SPECTRUM("Spectrum");
+    SPECTRUM("Spectrum"),
+    UNKNOWN("unknown"); //Special default value that does not get into the XML hopefully.
+    
     private final String value;
 
     ParameterTypes(String v) {
