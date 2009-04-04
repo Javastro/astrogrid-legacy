@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.17 2008/10/06 12:16:14 pah Exp $
+/*$Id: JavaClassProviderTest.java,v 1.18 2009/04/04 20:41:54 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,9 @@ import org.astrogrid.applications.Application;
 import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
 import org.astrogrid.applications.description.ApplicationDescription;
-import org.astrogrid.applications.description.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.SimpleApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.TestServiceDefinition;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.description.execution.ListOfParameterValues;
@@ -37,6 +37,7 @@ import org.astrogrid.security.SecurityGuard;
 
 /** Test of the JavaClass backend to CEa
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 3 Apr 2009 update to reflect the new way that javaclass application behave.
  *
  */
 public class JavaClassProviderTest extends TestCase {
@@ -59,7 +60,9 @@ public class JavaClassProviderTest extends TestCase {
         monitor = new MockMonitor();
         AppAuthorityIDResolver aresolver = new TestAuthorityResolver();
         InternalCeaComponentFactory cf = new InternalCeaComponentFactory(protocolLib,idgen, aresolver);
-	lib = new JavaClassApplicationDescriptionLibrary(new MockNonSpringConfiguredConfig(), new TestServiceDefinition());
+	lib = new SimpleApplicationDescriptionLibrary(new MockNonSpringConfiguredConfig());
+        ((SimpleApplicationDescriptionLibrary)lib).addApplicationDescription(new JavaClassApplicationDescription("org.astrogrid.applications.javaclass.SampleJavaClassApplications", new MockNonSpringConfiguredConfig(), 
+                new TestServiceDefinition()));
         assertNotNull(lib);
     }
     protected ApplicationDescriptionLibrary lib;
@@ -69,17 +72,17 @@ public class JavaClassProviderTest extends TestCase {
     public void testLibrary() throws Exception {
         String[] names = lib.getApplicationNames();
         assertNotNull(names);
-        assertEquals(5,names.length); // 5 from provider       
+        assertEquals(2,names.length); // 1 from provider , 1 built-in       
     }
     
     public void testHelloWorld() throws Exception {
-        ApplicationDescription hw = lib.getDescription("ivo://org.astrogrid.test/helloWorld");
+        ApplicationDescription hw = lib.getDescription("ivo://local.test/sampleJavaApp");
         assertNotNull(hw);
-        assertEquals("ivo://org.astrogrid.test/helloWorld",hw.getId());
-        ApplicationInterface iface = hw.getInterfaces()[0];
+        assertEquals("ivo://local.test/sampleJavaApp",hw.getId());
+        ApplicationInterface iface = hw.getInterface("helloWorld");
         assertNotNull(iface);
         Tool tool = new Tool();
-        
+        tool.setInterface("helloWorld");
         ListOfParameterValues output= new ListOfParameterValues();
 	tool.setOutput(output);
         ParameterValue result = new ParameterValue();
@@ -98,12 +101,13 @@ public class JavaClassProviderTest extends TestCase {
         System.out.println(o);
     }
     public void testSum() throws Exception {
-        ApplicationDescription hw = lib.getDescription("ivo://org.astrogrid.test/sum");
+        ApplicationDescription hw = lib.getDescription("ivo://local.test/sampleJavaApp");
         assertNotNull(hw);
-        ApplicationInterface iface = hw.getInterfaces()[0];
+        ApplicationInterface iface = hw.getInterface("sum");
         String[] inputParameterNames = iface.getArrayofInputs();
         assertNotNull(iface);
         Tool tool = new Tool();
+        tool.setInterface("sum");
         ListOfParameterValues input= new ListOfParameterValues();
 	tool.setInput(input);
         ListOfParameterValues output= new ListOfParameterValues();
@@ -136,13 +140,13 @@ public class JavaClassProviderTest extends TestCase {
     
 
     public void testEchoDifferentArgs() throws Exception {
-        ApplicationDescription hw = lib.getDescription("ivo://org.astrogrid.test/echoDifferentArgs");
+        ApplicationDescription hw = lib.getDescription("ivo://local.test/sampleJavaApp");
         assertNotNull(hw);
-        ApplicationInterface iface = hw.getInterfaces()[0];
+        ApplicationInterface iface = hw.getInterface("echoDifferent");
         String[] inputParameterNames = iface.getArrayofInputs();
         assertNotNull(iface);
         Tool tool = new Tool();
-       
+        tool.setInterface("echoDifferent");
         ListOfParameterValues input= new ListOfParameterValues();
 	tool.setInput(input);
         
@@ -179,6 +183,11 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.18  2009/04/04 20:41:54  pah
+ASSIGNED - bug 2113: better configuration for java CEC
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2113
+Introduced annotations
+
 Revision 1.17  2008/10/06 12:16:14  pah
 factor out classes common to server and client
 

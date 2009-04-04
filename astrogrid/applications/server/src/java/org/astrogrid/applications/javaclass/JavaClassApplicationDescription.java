@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescription.java,v 1.10 2009/02/26 12:45:56 pah Exp $
+/*$Id: JavaClassApplicationDescription.java,v 1.11 2009/04/04 20:41:53 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,14 +11,13 @@
 package org.astrogrid.applications.javaclass;
 
 import java.lang.reflect.Method;
-
+import java.util.Map;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.AbstractApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.AppMetadataAdapter;
-import org.astrogrid.applications.description.cea.CeaApplication;
+import org.astrogrid.applications.description.ServiceDefinitionFactory;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.security.SecurityGuard;
@@ -36,33 +35,38 @@ import org.astrogrid.security.SecurityGuard;
  *
  */
 public class JavaClassApplicationDescription extends AbstractApplicationDescription {
+    
+    final Map<String, Method>  methods; 
     /** Construct a new JavaClassApplicationDescription
-     * @param method the method that is to be the implementation of this application
-     * @param authorityName the name of the authority under which to add this application
-     * @param env standard container for helper objects.
-     * @param app 
+     * @param implClass the class that is the implementation of the service 
      * @param config 
-     * 
+     * @param sf the curation information is taken from the service definition.
+     * @throws ClassNotFoundException 
      */
-    public JavaClassApplicationDescription(CeaApplication app, Method method, Configuration config) {
-        super(new AppMetadataAdapter(app), config);
-        this.method = method;
+    public JavaClassApplicationDescription(String implClass, Configuration config, ServiceDefinitionFactory sf) throws ClassNotFoundException {
+        super(new JavaClassMetadataAdapter(implClass, sf), config);
+        methods = ((JavaClassMetadataAdapter)metadataAdapter).getMethodMap();
      }
-    protected final Method method;
+    
+    
     /**
      * @see org.astrogrid.applications.description.ApplicationDefinition#initializeApplication(java.lang.String, SecurityGuard, org.astrogrid.workflow.beans.v1.Tool)
      */
     public Application initializeApplication(String jobStepID, SecurityGuard secGuard, Tool tool) throws Exception {
-        // we know there's only one interface supported for each application
-        ApplicationInterface interf = this.getInterfaces()[0];
+        ApplicationInterface interf = this.getInterface(tool.getInterface());
         ApplicationEnvironment env = new ApplicationEnvironment(jobStepID, secGuard, getInternalComponentFactory().getIdGenerator(), conf);
-	return new JavaClassApplication(tool,interf,env , getInternalComponentFactory().getProtocolLibrary());
+	return new JavaClassApplication(tool,interf, env, getInternalComponentFactory().getProtocolLibrary());
     }
 }
 
 
 /* 
 $Log: JavaClassApplicationDescription.java,v $
+Revision 1.11  2009/04/04 20:41:53  pah
+ASSIGNED - bug 2113: better configuration for java CEC
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2113
+Introduced annotations
+
 Revision 1.10  2009/02/26 12:45:56  pah
 separate more out into cea-common for both client and server
 

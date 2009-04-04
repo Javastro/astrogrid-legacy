@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.10 2008/09/13 09:51:03 pah Exp $
+/*$Id: JavaClassApplication.java,v 1.11 2009/04/04 20:41:54 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,10 +32,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.FutureTask;
 
-/** An application that executes by calling a static java method
+/** An application that executes by calling a static java method.
  * @see org.astrogrid.applications.javaclass.JavaClassApplicationDescription
  * @see java.lang.reflect.Method
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 3 Apr 2009 refactor so that each method of a class is now an interface to a CEAApplication.
  */
 public class JavaClassApplication extends AbstractApplication {
     /**
@@ -64,7 +65,7 @@ public class JavaClassApplication extends AbstractApplication {
         createAdapters();
 
        JavaClassApplicationDescription jappDesc = (JavaClassApplicationDescription)getApplicationDescription();            
-       Runnable task = new Worker(jappDesc.method);
+       Runnable task = new Worker(jappDesc.methods.get(getApplicationInterface().getId()));
        return new FutureTask<String>(task, getId());
    
     }
@@ -130,6 +131,11 @@ public class JavaClassApplication extends AbstractApplication {
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.11  2009/04/04 20:41:54  pah
+ASSIGNED - bug 2113: better configuration for java CEC
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2113
+Introduced annotations
+
 Revision 1.10  2008/09/13 09:51:03  pah
 code cleanup
 
