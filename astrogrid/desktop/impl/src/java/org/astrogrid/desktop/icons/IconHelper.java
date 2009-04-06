@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.13 2009/04/06 11:29:34 nw Exp $
+/*$Id: IconHelper.java,v 1.14 2009/04/06 17:04:03 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,6 @@
 **/
 package org.astrogrid.desktop.icons;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -19,7 +17,6 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.collections.map.ReferenceMap;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -41,25 +38,12 @@ public class IconHelper {
     }
     
     /** load an icon from a url.
-     * use this method in preference to <tt>new ImageIcon(url)</tt>, as this seems to cause security exceptions when running under webstart 
-     * @param iconUrl url of the object to load
+       * @param iconUrl url of the object to load
      * @return the icon object, or null if not found.
      */
     public static ImageIcon loadIcon(final URL iconUrl) {
-    	if (iconUrl!= null) {
-    		InputStream is = null;
-		      try { //need to do this the long way, rather than just passing the url to ImageIcon, because that seems to 
-	                // throw security exceptions when runnning under webstart.
-		    	  	// should run this on background thread - dunno how to.
-	                is = iconUrl.openStream();
-	                return  new ImageIcon( IOUtils.toByteArray(is));          
-	            } catch (final IOException e ) {
-	                logger.warn("Failed to download icon " + iconUrl);	                
-	            }  finally {
-	            	   IOUtils.closeQuietly(is);
-	            }
-    	}
-    	return null;
+        return new ImageIcon(iconUrl);
+    	
     	
     }
     
@@ -102,6 +86,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.14  2009/04/06 17:04:03  nw
+fixed hangover from webstart that was inefficient
+
 Revision 1.13  2009/04/06 11:29:34  nw
 added generic types
 
