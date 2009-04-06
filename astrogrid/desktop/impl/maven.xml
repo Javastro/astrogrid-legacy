@@ -538,10 +538,7 @@
     -keep class com.jcraft.jsch.jce.Random {
         public *;
         }
-    <!-- samp internal hub -->
-    -keep class org.astrogrid.samp.xmlrpc.internal.InternalClientFactory {
-    	public *;
-    	}
+
     <!-- 
     =================
     Additional library rules based on proguard warnings. -->
