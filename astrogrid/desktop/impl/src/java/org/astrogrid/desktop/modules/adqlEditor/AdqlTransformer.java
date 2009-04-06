@@ -111,7 +111,7 @@ public class AdqlTransformer {
         
         //
         // First pass estimates line breaks required...
-        ArrayList breakPoints = this.getBreakPoints( entry, tree, xmlString ) ;
+        ArrayList<Integer> breakPoints = this.getBreakPoints( entry, tree, xmlString ) ;
             
         StreamSource source = new StreamSource( new StringReader( xmlString ) ) ;
         StreamResult result = new StreamResult( new StringWriter() ) ;
@@ -134,15 +134,15 @@ public class AdqlTransformer {
                 Matcher m = p.matcher( retVal ) ;
                 StringBuffer sb = new StringBuffer( retVal.length() + ( breakPoints.size() * 4 ) + 32 );
                 int foundCount = 0 ;
-                ListIterator iterator = breakPoints.listIterator() ;
+                ListIterator<Integer> iterator = breakPoints.listIterator() ;
 //                int replaceRankOrder = ((Integer)breakPoints.get( 0 )).intValue() ;
-                int replaceRankOrder = ((Integer)iterator.next()).intValue() ;
+                int replaceRankOrder = iterator.next().intValue() ;
                 while( m.find() ) {
                     foundCount++ ;
                     if( replaceRankOrder == foundCount ) {
                         m.appendReplacement( sb, "<br></br>" ) ;
                         if( iterator.hasNext() ) {
-                            replaceRankOrder = ((Integer)iterator.next()).intValue() ;
+                            replaceRankOrder = iterator.next().intValue() ;
                         }
                         else {
                             break ;
@@ -163,8 +163,8 @@ public class AdqlTransformer {
         return retVal ;
     }
     
-    private ArrayList getBreakPoints( AdqlNode entry, AdqlTree tree, String xmlString ) {
-        ArrayList arrayList = null ;
+    private ArrayList<Integer> getBreakPoints( AdqlNode entry, AdqlTree tree, String xmlString ) {
+        ArrayList<Integer> arrayList = null ;
       
         int availablePixels = entry.getUseableWidth() ; 
         if( availablePixels > 0 ) {
@@ -190,7 +190,7 @@ public class AdqlTransformer {
                     int lineCharCount = 0 ;
                     int lineCharSize = availablePixels / charPixels ;
                     int textSearchSize = textVal.length() - 1 ;
-                    arrayList = new ArrayList();
+                    arrayList = new ArrayList<Integer>();
                     for( int i=0; i<textSearchSize; i++, lineCharCount++ ) {
                         if( textVal.charAt(i) == (char)160 ) {
                             nbsCount++ ;
@@ -213,8 +213,8 @@ public class AdqlTransformer {
       
     }
     
-    private ArrayList getBreakPoints2( AdqlNode entry, AdqlTree tree, String xmlString ) {
-        ArrayList arrayList = null ;
+    private ArrayList<Integer> getBreakPoints2( AdqlNode entry, AdqlTree tree, String xmlString ) {
+        ArrayList<Integer> arrayList = null ;
         //
         // Not sure when this gets updated (re resizing)
         // Update: seems to be OK. ie: when resizing I get the new size,
@@ -252,7 +252,7 @@ public class AdqlTransformer {
                     int linesRequired = ( requiredPixels / availablePixels ) 
                                       + ( requiredPixels % availablePixels > 0 ? 1 : 0 ) ;
  //                   int textLength = textVal.length() ;
-                    arrayList = new ArrayList() ;
+                    arrayList = new ArrayList<Integer>() ;
                     int index ;
                     from = 0 ;
                     //

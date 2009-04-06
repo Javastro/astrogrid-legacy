@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.5 2009/03/26 18:04:13 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.6 2009/04/06 11:32:46 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -216,7 +216,7 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
          * @return
          */
         private List filterOnAvailability(final List l) {
-            final List results = new ArrayList();
+            final List<Service> results = new ArrayList<Service>();
             for (final Iterator i = l.iterator(); i.hasNext();) {
                 final Service name = (Service) i.next();
                 final VoMonBean b = vomon.checkAvailability(name.getId());
@@ -485,6 +485,9 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.6  2009/04/06 11:32:46  nw
+Complete - taskConvert all to generics.
+
 Revision 1.5  2009/03/26 18:04:13  nw
 source code improvements - cleaned imports, @override, etc.
 

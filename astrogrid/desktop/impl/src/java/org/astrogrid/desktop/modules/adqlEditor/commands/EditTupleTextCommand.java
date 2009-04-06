@@ -40,12 +40,12 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 public class EditTupleTextCommand extends AbstractCommand {
     
     private static final Log log = LogFactory.getLog( EditTupleTextCommand.class ) ;
-    private HashMap fromTables ;
+    private HashMap<String, TableData> fromTables ;
     private String[] oldValues ;
     private String[] newValues ;
-    private ArrayList updates ;
-    private ArrayList references ;
-    private ArrayList typeList ;
+    private ArrayList<Object> updates ;
+    private ArrayList<Object> references ;
+    private ArrayList<AdqlNode> typeList ;
     
 private class UpdateControls {
         
@@ -90,7 +90,7 @@ private class UpdateControls {
      * @param target
      * @param source
      */
-    public EditTupleTextCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlNode target, HashMap fromTables ) {
+    public EditTupleTextCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlNode target, HashMap<String, TableData> fromTables ) {
         super( adqlTree, undoManager, target ) ;  
         this.fromTables = fromTables ;
         // NB: The way I have used target is acceptable ONLY in the constructor.
@@ -196,16 +196,16 @@ private class UpdateControls {
         return result ;    
     }
     
-    private ArrayList getReferences() {
+    private ArrayList<Object> getReferences() {
         if( references == null ) {
-            references = new ArrayList() ;
+            references = new ArrayList<Object>() ;
         }
         return references ;
     }
      
-    private ArrayList getUpdates() {
+    private ArrayList<Object> getUpdates() {
         if( updates == null ) {
-            updates = new ArrayList() ;
+            updates = new ArrayList<Object>() ;
         }
         return updates ;
     }
@@ -221,7 +221,7 @@ private class UpdateControls {
         super.redo();
         try {
             UpdateControls uc = null ;
-            ListIterator it = getUpdates().listIterator() ;
+            ListIterator<Object> it = getUpdates().listIterator() ;
             while( it.hasNext() ) {
                 uc = (UpdateControls)it.next() ;
                 if( uc.newValue == null || uc.newValue.length()==0 ) {
@@ -254,7 +254,7 @@ private class UpdateControls {
 //                    ((TableData)fromTables.get( cr.tableName ) ).alias = null ;
                 }
                 else {
-                    ((TableData)fromTables.get( cr.tableName ) ).addAlias( cr.newValue ) ;
+                    fromTables.get( cr.tableName ).addAlias( cr.newValue ) ;
                 }   
             }           
         }
@@ -271,7 +271,7 @@ private class UpdateControls {
         super.redo();
         try {
             UpdateControls uc = null ;
-            ListIterator it = getUpdates().listIterator() ;
+            ListIterator<Object> it = getUpdates().listIterator() ;
             while( it.hasNext() ) {
                 uc = (UpdateControls)it.next() ;
                 if( uc.newValue == null || uc.newValue.length()==0 ) {
@@ -297,7 +297,7 @@ private class UpdateControls {
 //                    ((TableData)fromTables.get( cr.tableName ) ).alias = null ;
                 }
                 else {
-                    ((TableData)fromTables.get( cr.tableName ) ).addAlias( cr.newValue ) ;
+                    fromTables.get( cr.tableName ).addAlias( cr.newValue ) ;
                 }   
             }           
         }
@@ -315,7 +315,7 @@ private class UpdateControls {
         super.undo();
         try {
             UpdateControls uc = null ;
-            ListIterator it = getUpdates().listIterator() ;
+            ListIterator<Object> it = getUpdates().listIterator() ;
             while( it.hasNext() ) {
                 uc = (UpdateControls)it.next() ;
                 if( uc.oldValue == null || uc.oldValue.length()==0 ) {
@@ -348,7 +348,7 @@ private class UpdateControls {
 //                    ((TableData)fromTables.get( cr.tableName ) ).alias = null ;
                 }
                 else {
-                    ((TableData)fromTables.get( cr.tableName ) ).addAlias( cr.oldValue ) ;
+                    fromTables.get( cr.tableName ).addAlias( cr.oldValue ) ;
                 }               
             }            
         }
@@ -430,7 +430,7 @@ private class UpdateControls {
     private boolean isTableValidationRequired( XmlObject element, String attributeName ) {
         String elementTypeName = AdqlUtils.getLocalName( element ) ;
         if( AdqlData.METADATA_LINK_TABLE.containsKey( elementTypeName ) ) {
-            String[] attrNames = (String[])AdqlData.CROSS_VALIDATION.get( elementTypeName ) ;
+            String[] attrNames = AdqlData.CROSS_VALIDATION.get( elementTypeName ) ;
             for( int i=0; i<attrNames.length; i++ ) {
                 if( attrNames[i].equals( attributeName ) )
                     return true ;
@@ -448,14 +448,14 @@ private class UpdateControls {
                                          , String oldValue
                                          , String newValue  ) {       
         String tableName = ((SimpleValue)AdqlUtils.get( tableElement, "name" )).getStringValue() ;
-        ListIterator iterator = getTypeList( AdqlData.COLUMN_REFERENCE_TYPE ).listIterator() ;
+        ListIterator<AdqlNode> iterator = getTypeList( AdqlData.COLUMN_REFERENCE_TYPE ).listIterator() ;
         if( iterator.hasNext() ) {
             XmlObject xmlTableName = XmlString.Factory.newValue( tableName ) ;
             AdqlNode node ;
             XmlObject element ;
             CommandFactory.EditStore editStore = adqlTree.getCommandFactory().getEditStore() ;
             while( iterator.hasNext() ) {
-                node = (AdqlNode)iterator.next() ;
+                node = iterator.next() ;
                 element = node.getXmlObject() ;
                 if( ((SimpleValue)AdqlUtils.get( element, "table" )).getStringValue().equals( oldValue ) ) {
                     AdqlUtils.set( element, "table", xmlTableName ) ;
@@ -467,7 +467,7 @@ private class UpdateControls {
                 }
             }
         }       
-        ((TableData)fromTables.get( tableName )).removeAlias( oldValue ) ;
+        fromTables.get( tableName ).removeAlias( oldValue ) ;
     }
     
     
@@ -476,14 +476,14 @@ private class UpdateControls {
                                          , String oldAliasValue
                                          , String newAliasValue  ) {
         String tableName = ((SimpleValue)AdqlUtils.get( tableElement, "name" )).getStringValue() ;
-        ListIterator iterator = getTypeList( AdqlData.COLUMN_REFERENCE_TYPE ).listIterator() ;
+        ListIterator<AdqlNode> iterator = getTypeList( AdqlData.COLUMN_REFERENCE_TYPE ).listIterator() ;
         if( iterator.hasNext() ) {
             XmlObject xmlTableName = XmlString.Factory.newValue( newAliasValue ) ;
             AdqlNode node ;
             XmlObject element ;
             CommandFactory.EditStore editStore = adqlTree.getCommandFactory().getEditStore() ;
             while( iterator.hasNext() ) {
-                node = (AdqlNode)iterator.next() ;
+                node = iterator.next() ;
                 element = node.getXmlObject() ;
                 if( ((SimpleValue)AdqlUtils.get( element, "table" )).getStringValue().equals( oldAliasValue ) ) {
                     AdqlUtils.set( element, "table", xmlTableName ) ;
@@ -495,8 +495,8 @@ private class UpdateControls {
                 }
             }
         } 
-        ((TableData)fromTables.get( tableName )).removeAlias( oldAliasValue ) ;
-        ((TableData)fromTables.get( tableName )).addAlias( newAliasValue ) ;
+        fromTables.get( tableName ).removeAlias( oldAliasValue ) ;
+        fromTables.get( tableName ).addAlias( newAliasValue ) ;
     }
     
     
@@ -505,14 +505,14 @@ private class UpdateControls {
                                          , String oldAliasValue
                                          , String newAliasValue  ) {
         String tableName = ((SimpleValue)AdqlUtils.get( tableElement, "name" )).getStringValue() ;
-        ListIterator iterator = getTypeList( AdqlData.COLUMN_REFERENCE_TYPE ).listIterator() ;
+        ListIterator<AdqlNode> iterator = getTypeList( AdqlData.COLUMN_REFERENCE_TYPE ).listIterator() ;
         if( iterator.hasNext() ) {
             XmlObject xmlTableName = XmlString.Factory.newValue( newAliasValue ) ;
             AdqlNode node ;
             XmlObject element ;
             CommandFactory.EditStore editStore = adqlTree.getCommandFactory().getEditStore() ;
             while( iterator.hasNext() ) {
-                node = (AdqlNode)iterator.next() ;
+                node = iterator.next() ;
                 element = node.getXmlObject() ;
                 if( ((SimpleValue)AdqlUtils.get( element, "table" )).getStringValue().equals( tableName ) ) {
                     AdqlUtils.set( element, "table", xmlTableName ) ;
@@ -524,7 +524,7 @@ private class UpdateControls {
                 }
             }
         }    
-        ((TableData)fromTables.get( tableName )).addAlias( newAliasValue ) ;
+        fromTables.get( tableName ).addAlias( newAliasValue ) ;
     }
     
     
@@ -537,7 +537,7 @@ private class UpdateControls {
         if( newAliasValue == null )
             return true ;
         boolean retValue = true ;
-        ArrayList tableList = new ArrayList(); 
+        ArrayList<XmlObject> tableList = new ArrayList<XmlObject>(); 
         XmlObject xmlAliasName = null ;
         XmlObject element = null ;
         XmlCursor cursor = tableElement.newCursor() ;               
@@ -554,9 +554,9 @@ private class UpdateControls {
             }                 
         } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
         cursor.dispose() ;
-        ListIterator iterator = tableList.listIterator() ;
+        ListIterator<XmlObject> iterator = tableList.listIterator() ;
         while( iterator.hasNext() ) {
-            element = (XmlObject)iterator.next() ;
+            element = iterator.next() ;
             if( element == tableElement )
                 continue ;
             xmlAliasName = AdqlUtils.get( element, attributeName ) ;
@@ -597,12 +597,12 @@ private class UpdateControls {
 //    }
     
 
-    private ArrayList getTypeList( String targetLocalName ) {
+    private ArrayList<AdqlNode> getTypeList( String targetLocalName ) {
         //
         // The first parameter in this call is just any valid type...
         SchemaType type = AdqlUtils.getType( getChildType(), targetLocalName ) ;
         if( typeList == null ) {
-            typeList = new ArrayList() ;
+            typeList = new ArrayList<AdqlNode>() ;
         }
         if( typeList.isEmpty()
             || 

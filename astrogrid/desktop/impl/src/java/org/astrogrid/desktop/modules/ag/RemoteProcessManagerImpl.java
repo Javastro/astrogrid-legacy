@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.21 2008/12/01 23:29:55 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.22 2009/04/06 11:32:46 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,11 +54,11 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 	 *  */
 	public static class MonitorMap {
 		/** map of process montiors */
-		private final Map m = new ListOrderedMap();
+		private final Map<URI, ProcessMonitor> m = new ListOrderedMap();
 		/** set of listeners which listen to all monitors
 		 * 	- so, need to be registered as listeners with all new tasks 
 		 */
-		private final Set wildcardListeners = new HashSet();
+		private final Set<RemoteProcessListener> wildcardListeners = new HashSet<RemoteProcessListener>();
 		
 		/** add a listener to all remoteProcesses.
 		 * adds it to all current processes, and takes note that it wishes to 
@@ -67,8 +67,8 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 		 */
 		public void addWildcardListener(final RemoteProcessListener rpl) {
 			wildcardListeners.add(rpl);
-			for (final Iterator i = m.values().iterator(); i.hasNext();) {
-				final ProcessMonitor rpm = (ProcessMonitor) i.next();
+			for (final Iterator<ProcessMonitor> i = m.values().iterator(); i.hasNext();) {
+				final ProcessMonitor rpm = i.next();
 				rpm.addRemoteProcessListener(rpl);
 			}
 		}
@@ -79,8 +79,8 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 		 */
 		public void removeWildcardListener(final RemoteProcessListener rpl) {
 			wildcardListeners.remove(rpl);
-			for (final Iterator i = m.values().iterator(); i.hasNext();) {
-				final ProcessMonitor rpm = (ProcessMonitor) i.next();
+			for (final Iterator<ProcessMonitor> i = m.values().iterator(); i.hasNext();) {
+				final ProcessMonitor rpm = i.next();
 				rpm.removeRemoteProcessListener(rpl);
 			}			
 		}
@@ -88,8 +88,8 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 		/** add a new remot process monitor */
 		public void add(final ProcessMonitor monitor) {
 			m.put(monitor.getId(),monitor);
-			for (final Iterator i = wildcardListeners.iterator(); i.hasNext();) {
-				final RemoteProcessListener l = (RemoteProcessListener) i.next();
+			for (final Iterator<RemoteProcessListener> i = wildcardListeners.iterator(); i.hasNext();) {
+				final RemoteProcessListener l = i.next();
 				monitor.addRemoteProcessListener(l);
 			}
 		}
@@ -110,11 +110,11 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 		}
 		/** access a monitor - may return null */
 		public ProcessMonitor get(final URI id) {
-			return (ProcessMonitor)m.get(id);
+			return m.get(id);
 		}
 		/** list the keys of the current monitors */
 		public URI[] listKeys() {
-			return (URI[])m.keySet().toArray(new URI[m.size()]);
+			return m.keySet().toArray(new URI[m.size()]);
 		}
 	}
     /**
@@ -123,7 +123,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
     private static final Log logger = LogFactory.getLog(RemoteProcessManagerImpl.class);
 
     //@todo remove usage of myspace.
-    public RemoteProcessManagerImpl(final List strategies, 
+    public RemoteProcessManagerImpl(final List<RemoteProcessStrategy> strategies, 
             final FileSystemManager vfs, final SnitchInternal snitch ) {
         super();
         this.vfs = vfs;
@@ -132,14 +132,14 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
         this.monitors = new MonitorMap();
     }
     private final MonitorMap monitors;
-    final List strategies;
+    final List<RemoteProcessStrategy> strategies;
     final FileSystemManager vfs;
     final SnitchInternal snitch;
 
     /** unused at the moment - but will be used when we want to enable resumable cea apps */
     private RemoteProcessStrategy selectStrategy(final URI uri) throws InvalidArgumentException {
-        for (final Iterator i = strategies.iterator(); i.hasNext(); ) {
-            final RemoteProcessStrategy s= (RemoteProcessStrategy)i.next();
+        for (final Iterator<RemoteProcessStrategy> i = strategies.iterator(); i.hasNext(); ) {
+            final RemoteProcessStrategy s= i.next();
             if (s.canProcess(uri)) {
                 return s;
             }
@@ -148,8 +148,8 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
     }
     
     public ProcessMonitor create(final Document doc) throws InvalidArgumentException, ServiceException {
-        for (final Iterator i = strategies.iterator(); i.hasNext(); ) {
-            final RemoteProcessStrategy s= (RemoteProcessStrategy)i.next();
+        for (final Iterator<RemoteProcessStrategy> i = strategies.iterator(); i.hasNext(); ) {
+            final RemoteProcessStrategy s= i.next();
             final String name = s.canProcess(doc);
             if (name != null) {
             	if (snitch != null) { // be extra safe..
@@ -322,6 +322,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.22  2009/04/06 11:32:46  nw
+Complete - taskConvert all to generics.
+
 Revision 1.21  2008/12/01 23:29:55  nw
 used commons.io utilities
 

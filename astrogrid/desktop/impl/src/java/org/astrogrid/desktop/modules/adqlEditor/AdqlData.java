@@ -79,9 +79,9 @@ public class AdqlData {
     public static final String TYPE_ENTRY = "TYPE".intern() ;
     public static final String ELEMENT_ENTRY = "ELEMENT".intern() ;
  
-    public static final Hashtable T2D_NAMES ;
+    public static final Hashtable<String,String> T2D_NAMES ;
     static {
-        T2D_NAMES = new Hashtable() ;
+        T2D_NAMES = new Hashtable<String,String>() ;
         T2D_NAMES.put( "closedExprType", "Bracket" ) ;
         T2D_NAMES.put( BINARY_EXPRESSION_TYPE, "Binary Expression" ) ;
         T2D_NAMES.put( BINARY_OPERATOR_TYPE, "+ - * /" ) ;
@@ -188,16 +188,16 @@ public class AdqlData {
         
     }
     
-    public static final Hashtable D2T_NAMES ;
+    public static final Hashtable<String,String> D2T_NAMES ;
     static {
-        D2T_NAMES = new Hashtable() ;
+        D2T_NAMES = new Hashtable<String,String>() ;
         D2T_NAMES.put( "", "" ) ;
         D2T_NAMES.put( "", "" ) ;
     }
     
-    public static final Hashtable UNSUPPORTED_TYPES ;
+    public static final Hashtable<String,String> UNSUPPORTED_TYPES ;
     static {
-        UNSUPPORTED_TYPES = new Hashtable() ;
+        UNSUPPORTED_TYPES = new Hashtable<String,String>() ;
 //        UNSUPPORTED_TYPES.put( JOIN_TABLE_TYPE, TYPE_ENTRY ) ;
         UNSUPPORTED_TYPES.put( "archiveTableType", TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES.put( ALIAS_SELECTION_ITEM_TYPE, TYPE_ENTRY ) ;
@@ -248,9 +248,9 @@ public class AdqlData {
 //    }
     
     
-    public static final Hashtable CASCADEABLE ;
+    public static final Hashtable<String,String> CASCADEABLE ;
     static {
-        CASCADEABLE = new Hashtable() ;
+        CASCADEABLE = new Hashtable<String,String>() ;
         CASCADEABLE.put( COLUMN_REFERENCE_TYPE, DUMMY_ENTRY ) ;
         CASCADEABLE.put( TRIG_FUNCTION_TYPE, DUMMY_ENTRY ) ;
         CASCADEABLE.put( "tableType", DUMMY_ENTRY ) ;    
@@ -266,9 +266,9 @@ public class AdqlData {
         CASCADEABLE.put( "orderOptionType", DUMMY_ENTRY ) ;  
     }
     
-    public static final Hashtable ENUMERATED_ATTRIBUTES ;
+    public static final Hashtable<String,String> ENUMERATED_ATTRIBUTES ;
     static {
-        ENUMERATED_ATTRIBUTES = new Hashtable() ;
+        ENUMERATED_ATTRIBUTES = new Hashtable<String,String>() ;
         ENUMERATED_ATTRIBUTES.put( TRIG_FUNCTION_TYPE , "trigonometricFunctionNameType" ) ;
         ENUMERATED_ATTRIBUTES.put( MATH_FUNCTION_TYPE , "mathFunctionNameType" ) ;
         ENUMERATED_ATTRIBUTES.put( AGGREGATE_FUNCTION_TYPE , "aggregateFunctionNameType" ) ;
@@ -280,9 +280,9 @@ public class AdqlData {
     }
     
     
-    public static final Hashtable ENUMERATED_ELEMENTS ;
+    public static final Hashtable<String, String> ENUMERATED_ELEMENTS ;
     static {
-        ENUMERATED_ELEMENTS = new Hashtable() ;
+        ENUMERATED_ELEMENTS = new Hashtable<String, String>() ;
         ENUMERATED_ELEMENTS.put( JOIN_TABLE_TYPE , JOIN_TABLE_QUALIFIER_TYPE ) ;
     }
     
@@ -298,16 +298,16 @@ public class AdqlData {
     //     simple XSLT translation. Might need programmable input via XmlBeans
     //     to achieve.
     //
-    public static final Hashtable ENUM_FILTERED_VALUES ;
+    public static final Hashtable<String,String> ENUM_FILTERED_VALUES ;
     static {
-        ENUM_FILTERED_VALUES = new Hashtable() ;
+        ENUM_FILTERED_VALUES = new Hashtable<String,String>() ;
         ENUM_FILTERED_VALUES.put( "CROSS", DUMMY_ENTRY ) ;
         ENUM_FILTERED_VALUES.put( "FULL_OUTER", DUMMY_ENTRY ) ;
     }
     
-    public static final Hashtable ENUM_SYNONYMS ;
+    public static final Hashtable<String,String[]> ENUM_SYNONYMS ;
     static {
-        ENUM_SYNONYMS = new Hashtable() ;
+        ENUM_SYNONYMS = new Hashtable<String,String[]>() ;
         ENUM_SYNONYMS.put( "<>", new String[]{ "<>", "!="  } ) ;
         ENUM_SYNONYMS.put( "!=", new String[]{ "<>", "!="  } ) ;
     }
@@ -318,31 +318,31 @@ public class AdqlData {
     // It prevents all its children from forming nodes.
     // The important one in the following is JoinTableQualifierType, which so
     // far is our only enumerated element.
-    public static final Hashtable NON_NODE_FORMING ;
+    public static final Hashtable<String, String> NON_NODE_FORMING ;
     static {
-        NON_NODE_FORMING = new Hashtable() ;
+        NON_NODE_FORMING = new Hashtable<String, String>() ;
         NON_NODE_FORMING.put( JOIN_TABLE_QUALIFIER_TYPE , DUMMY_ENTRY ) ;
     }
     
     
-    public static final Hashtable METADATA_LINK_TABLE ;
+    public static final Hashtable<String,String> METADATA_LINK_TABLE ;
     static {
-        METADATA_LINK_TABLE = new Hashtable() ;
+        METADATA_LINK_TABLE = new Hashtable<String,String>() ;
         METADATA_LINK_TABLE.put( "tableType", DUMMY_ENTRY ) ;
 //        METADATA_LINK_TABLE.put( JOIN_TABLE_TYPE, DUMMY_ENTRY ) ;
         METADATA_LINK_TABLE.put( "archiveTableType", DUMMY_ENTRY ) ;
     }
     
-    public static final Hashtable METADATA_LINK_COLUMN ;
+    public static final Hashtable<String, String> METADATA_LINK_COLUMN ;
     static {
-        METADATA_LINK_COLUMN = new Hashtable() ;
+        METADATA_LINK_COLUMN = new Hashtable<String, String>() ;
         METADATA_LINK_COLUMN.put( COLUMN_REFERENCE_TYPE, DUMMY_ENTRY ) ;
     }
     
     
-    public static final Hashtable EDITABLE_ATTRIBUTES ;
+    public static final Hashtable<String,Object> EDITABLE_ATTRIBUTES ; // value is sometimes String[] sometimes not.
     static {
-        EDITABLE_ATTRIBUTES = new Hashtable() ;
+        EDITABLE_ATTRIBUTES = new Hashtable<String,Object>() ;
         EDITABLE_ATTRIBUTES.put( "selectionLimitType", new String[] { "Top" } ) ;
         EDITABLE_ATTRIBUTES.put( REAL_TYPE, new String[] { "Value" } ) ;
         EDITABLE_ATTRIBUTES.put( INTEGER_TYPE, new String[] { "Value" } ) ;
@@ -362,38 +362,38 @@ public class AdqlData {
         EDITABLE_ATTRIBUTES.put( "double", DUMMY_ENTRY ) ; // this is the built in type
     }
     
-    public static final Hashtable EDITABLE_ELEMENTS ;
+    public static final Hashtable<String, String[]> EDITABLE_ELEMENTS ;
     static {
-        EDITABLE_ELEMENTS = new Hashtable() ;
+        EDITABLE_ELEMENTS = new Hashtable<String, String[]>() ;
         EDITABLE_ELEMENTS.put( JOIN_TABLE_TYPE, new String[] { "Qualifier" } ) ; 
     }
     
-    public static final Hashtable CROSS_VALIDATION ;
+    public static final Hashtable<String, String[]> CROSS_VALIDATION ;
     static {
-        CROSS_VALIDATION = new Hashtable() ;
+        CROSS_VALIDATION = new Hashtable<String,String[]>() ;
         CROSS_VALIDATION.put( "tableType" , new String[] { "Alias" } ) ;
     }
     
     
     
-    public static final Hashtable ATTRIBUTE_DEFAULTS ;
+    public static final Hashtable<String,String> ATTRIBUTE_DEFAULTS ;
     static {
-        ATTRIBUTE_DEFAULTS = new Hashtable() ;
+        ATTRIBUTE_DEFAULTS = new Hashtable<String,String>() ;
         ATTRIBUTE_DEFAULTS.put( "selectionLimitType", "100" ) ;
         ATTRIBUTE_DEFAULTS.put( REAL_TYPE, "0" ) ;
         ATTRIBUTE_DEFAULTS.put( INTEGER_TYPE, "0" ) ;
         ATTRIBUTE_DEFAULTS.put( STRING_TYPE, "" ) ;
     }
     
-    public static final Hashtable IMPOSED_CARDINIALITIES ;
+    public static final Hashtable<String, Integer[]> IMPOSED_CARDINIALITIES ;
     static {
-        IMPOSED_CARDINIALITIES = new Hashtable() ;
+        IMPOSED_CARDINIALITIES = new Hashtable<String, Integer[]>() ;
         IMPOSED_CARDINIALITIES.put( ELEMENT_FROM_TABLE_TYPE, new Integer[]{ new Integer(2), new Integer(2) } ) ;
     }
     
-    public static final Hashtable FUNCTION_CARDINALITIES ;
+    public static final Hashtable<String,Integer[]> FUNCTION_CARDINALITIES ;
     static {
-        FUNCTION_CARDINALITIES = new Hashtable() ;
+        FUNCTION_CARDINALITIES = new Hashtable<String,Integer[]>() ;
         FUNCTION_CARDINALITIES.put( "SIN", new Integer[]{ new Integer(1), new Integer(1) } ) ;
         FUNCTION_CARDINALITIES.put( "COS", new Integer[]{ new Integer(1), new Integer(1) } ) ;
         FUNCTION_CARDINALITIES.put( "TAN", new Integer[]{ new Integer(1), new Integer(1) } ) ;
@@ -425,9 +425,9 @@ public class AdqlData {
     }
   
     
-    public static final Hashtable DERIVED_DEFAULTS ;
+    public static final Hashtable<String,String> DERIVED_DEFAULTS ;
     static {
-        DERIVED_DEFAULTS = new Hashtable() ;
+        DERIVED_DEFAULTS = new Hashtable<String,String>() ;
         DERIVED_DEFAULTS.put( "double2Type", "0 0" ) ;
         DERIVED_DEFAULTS.put( "double3Type", "0 0 0" ) ;
         DERIVED_DEFAULTS.put( "double4Type", "0 0 0 0" ) ;
@@ -467,10 +467,10 @@ public class AdqlData {
          "| VALUES | VARCHAR | VARYING | VIEW | WHEN | WHENEVER | WHERE | WITH | WORK | WRITE | YEAR | ZONE" ;
   
 
-    public static final HashSet ADQL_RESERVED_WORDS ;
+    public static final HashSet<String> ADQL_RESERVED_WORDS ;
     static {
         String[] reservedWords = RESERVED_WORDS.split( " | " ) ;
-        ADQL_RESERVED_WORDS = new HashSet( reservedWords.length ) ;
+        ADQL_RESERVED_WORDS = new HashSet<String>( reservedWords.length ) ;
         for( int i=0; i<reservedWords.length; i++ ) {
             ADQL_RESERVED_WORDS.add( reservedWords[i] ) ;
         }

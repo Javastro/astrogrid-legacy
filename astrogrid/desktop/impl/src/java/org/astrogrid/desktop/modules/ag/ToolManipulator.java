@@ -116,7 +116,7 @@ public class ToolManipulator {
     	}
     	final CeaApplication info = (CeaApplication)r;
         InterfaceBean ib = null;
-        final List results = new ArrayList();
+        final List<String> results = new ArrayList<String>();
         for (int i = 0; i < info.getInterfaces().length; i++) {        
             if (info.getInterfaces()[i].getName().equals(interfaceName)) {
                 ib = info.getInterfaces()[i];
@@ -136,7 +136,7 @@ public class ToolManipulator {
                 results.add(pb.getName());
             }
         }
-        return (String[])results.toArray(new String[results.size()]);
+        return results.toArray(new String[results.size()]);
         
     }
 

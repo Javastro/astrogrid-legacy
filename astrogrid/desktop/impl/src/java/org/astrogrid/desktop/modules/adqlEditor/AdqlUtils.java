@@ -105,20 +105,20 @@ public final class AdqlUtils {
     }
     
     static public SchemaType[] getConcreteSubtypes( SchemaType aType ) {
-        ArrayList list = new ArrayList() ;
+        ArrayList<SchemaType> list = new ArrayList<SchemaType>() ;
         findSubtypes( list, aType ) ;
         SchemaType[] foundTypes = new SchemaType[ list.size() ] ;
-        ListIterator iterator ;
+        ListIterator<SchemaType> iterator ;
         int i = 0 ;
         for( iterator=list.listIterator(); iterator.hasNext(); i++) {
-            foundTypes[i] = (SchemaType)iterator.next() ;
+            foundTypes[i] = iterator.next() ;
         }
         return foundTypes ;
     }
     
     static public String[] getEnumValuesGivenDrivingType( SchemaType drivingType ) {    
         SchemaStringEnumEntry[] stringEnumEntries = drivingType.getStringEnumEntries() ;
-        ArrayList enumList = new ArrayList( stringEnumEntries.length + 2 ) ;
+        ArrayList<String> enumList = new ArrayList<String>( stringEnumEntries.length + 2 ) ;
         String[] enumStrings = null ;
         String entry = null ;
         for( int j=0; j<stringEnumEntries.length; j++ ) {
@@ -134,7 +134,7 @@ public final class AdqlUtils {
             }
         }
         enumStrings = new String[ enumList.size() ] ;
-        enumStrings = (String[])enumList.toArray( enumStrings );
+        enumStrings = enumList.toArray( enumStrings );
         return enumStrings ;
     }
     
@@ -149,13 +149,13 @@ public final class AdqlUtils {
         String drivenLocalTypeName = getLocalName( drivenType ) ;
         String drivingLocalTypeName = (String)AdqlData.ENUMERATED_ATTRIBUTES.get( drivenLocalTypeName ) ;
         if( drivingLocalTypeName == null || drivingLocalTypeName.length() == 0 ) {
-            drivingLocalTypeName = (String)AdqlData.ENUMERATED_ELEMENTS.get( drivenLocalTypeName ) ;
+            drivingLocalTypeName = AdqlData.ENUMERATED_ELEMENTS.get( drivenLocalTypeName ) ;
         }
         SchemaType drivingType = getType( drivenType, drivingLocalTypeName ) ;
         return getEnumValuesGivenDrivingType( drivingType ) ;
     }
     
-    static private void findSubtypes( ArrayList list, SchemaType aType ){
+    static private void findSubtypes( ArrayList<SchemaType> list, SchemaType aType ){
         if( aType.isSimpleType() ) 
             return ;
 //        SchemaParticle particle = aType.getContentModel() ;
@@ -435,7 +435,7 @@ public final class AdqlUtils {
         String[] enumArray = null ;
         String retVal = null ;
         try {
-            enumArray = (String[])AdqlData.ENUM_SYNONYMS.get( enumValue ) ;
+            enumArray = AdqlData.ENUM_SYNONYMS.get( enumValue ) ;
             if( enumArray == null ) {
                 retVal = enumValue ;
             }
@@ -456,7 +456,7 @@ public final class AdqlUtils {
         String[] enumArray = null ;
         String retVal = null ;
         try {
-            enumArray = (String[])AdqlData.ENUM_SYNONYMS.get( enumValue ) ;
+            enumArray = AdqlData.ENUM_SYNONYMS.get( enumValue ) ;
             if( enumArray == null ) {
                 retVal = enumValue ;
             }
@@ -570,7 +570,7 @@ public final class AdqlUtils {
     public static Integer[] getImposedCardinality( String elementName ) {
         Integer[] cardinalityArray = null ;
         try {
-            cardinalityArray = (Integer[])AdqlData.IMPOSED_CARDINIALITIES.get( elementName ) ;
+            cardinalityArray = AdqlData.IMPOSED_CARDINIALITIES.get( elementName ) ;
         }
         catch( Exception ex ) {
             ;
@@ -597,7 +597,7 @@ public final class AdqlUtils {
     public static Integer[] getFunctionCardinalities( XmlObject func ) {
         XmlString functionName = (XmlString)AdqlUtils.get( func, "Name" ) ;
         String name = functionName.getStringValue() ;
-        return (Integer[])AdqlData.FUNCTION_CARDINALITIES.get( name ) ;
+        return AdqlData.FUNCTION_CARDINALITIES.get( name ) ;
     }
     
     static public String extractDisplayName( String name ) {
@@ -891,7 +891,7 @@ public final class AdqlUtils {
     }
         
     static private Object[] getInterfaces( Class cls ) {
-        ArrayList iList = new ArrayList() ;
+        ArrayList<Class> iList = new ArrayList<Class>() ;
         Class[] interfaces = cls.getInterfaces() ;
         for( int i=0; i<interfaces.length; i++ ) {
             getInterfaces( interfaces[i], iList ) ;
@@ -899,7 +899,7 @@ public final class AdqlUtils {
         return iList.toArray() ;
     }
     
-    static private void getInterfaces( Class iFace, ArrayList iList ) {
+    static private void getInterfaces( Class iFace, ArrayList<Class> iList ) {
         iList.add( iFace ) ;
         Class[] interfaces = iFace.getInterfaces() ;
         for( int i=0; i<interfaces.length; i++ ) {
@@ -1120,7 +1120,7 @@ public final class AdqlUtils {
     }
     
     public static String[] getEditableElements( String localName ) {
-        return (String[])AdqlData.EDITABLE_ELEMENTS.get( localName ) ;
+        return AdqlData.EDITABLE_ELEMENTS.get( localName ) ;
     }
     
     public static String[] getEditableElements( SchemaType type ) {

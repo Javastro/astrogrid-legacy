@@ -35,6 +35,7 @@ import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTransformer;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree.TableData;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 import org.astrogrid.acr.astrogrid.TableBean;
@@ -114,8 +115,8 @@ public class CommandFactory {
         return new CutCommand( adqlTree, undoManager, targetOfCut ) ;
     }
     
-    public List newInsertCommands( AdqlNode parent ) {
-        List insertCommands = null ;
+    public List<StandardInsertCommand> newInsertCommands( AdqlNode parent ) {
+        List<StandardInsertCommand> insertCommands = null ;
         // Not sure whether this test is required:
         if( !parent.isHidingRequired() ) {
             // For each distinctive element we build a List
@@ -126,7 +127,7 @@ public class CommandFactory {
             SchemaType childType ;
           
             if( elements != null ) {
-                insertCommands = new ArrayList( elements.length ) ;
+                insertCommands = new ArrayList<StandardInsertCommand>( elements.length ) ;
                 for( int i=0; i<elements.length; i++ ) {
                     childType = elements[i].getType() ;
                     if( !AdqlUtils.isSupportedType( childType ) )
@@ -207,7 +208,7 @@ public class CommandFactory {
         return new EditSingletonTextCommand( adqlTree, undoManager, target ) ;
     }
     
-    public EditTupleTextCommand newEditTupleTextCommand( AdqlTree adqlTree, AdqlNode target, HashMap fromTables ) {
+    public EditTupleTextCommand newEditTupleTextCommand( AdqlTree adqlTree, AdqlNode target, HashMap<String, TableData> fromTables ) {
         return new EditTupleTextCommand( adqlTree, undoManager, target, fromTables ) ;
     }
     
@@ -369,8 +370,8 @@ public class CommandFactory {
     public class EditStore {
          
         private Random random = new Random() ;
-        private LinkedHashMap tokenToEntryStore = new LinkedHashMap( 64 ) ;
-        private LinkedHashMap entryToTokenStore = new LinkedHashMap( 64 ) ;
+        private LinkedHashMap<Integer, AdqlNode> tokenToEntryStore = new LinkedHashMap<Integer, AdqlNode>( 64 ) ;
+        private LinkedHashMap<AdqlNode, Integer> entryToTokenStore = new LinkedHashMap<AdqlNode, Integer>( 64 ) ;
         
         private Integer newToken() {
             Integer token ;
@@ -383,7 +384,7 @@ public class CommandFactory {
         public synchronized Integer add( AdqlNode entry ) {
             Integer token = null ;
             if( entryToTokenStore.containsKey( entry ) ) {
-                token = (Integer)entryToTokenStore.get( entry ) ;
+                token = entryToTokenStore.get( entry ) ;
             }
             else {
                 token = newToken() ;
@@ -397,7 +398,7 @@ public class CommandFactory {
         }
         
         public synchronized Integer exchange( AdqlNode in, AdqlNode out ) {
-            Integer token = (Integer)entryToTokenStore.get( out ) ;
+            Integer token = entryToTokenStore.get( out ) ;
             if( token == null ) {
                 token = add( in ) ;
             }
@@ -430,25 +431,25 @@ public class CommandFactory {
         }
         
         public AdqlNode get( Integer token ) {
-            return (AdqlNode)tokenToEntryStore.get( token ) ;
+            return tokenToEntryStore.get( token ) ;
         }
         
         public Integer get( AdqlNode node ) {
-            return (Integer)entryToTokenStore.get( node ) ;
+            return entryToTokenStore.get( node ) ;
         }
         
         protected void logPrintOfEditStore() {
             StringBuffer buffer = new StringBuffer( 512 ) ;
             buffer.append( "\ntokenToEntryStore:" ) ;
             buffer.append( "\nsize: " ).append( tokenToEntryStore.size() ) ;
-            Iterator it = tokenToEntryStore.keySet().iterator() ;
+            Iterator<Integer> it = tokenToEntryStore.keySet().iterator() ;
             while( it.hasNext() ) {
-                Integer token = (Integer)it.next() ;
+                Integer token = it.next() ;
                 buffer
                     .append( "\ntoken: [" )
                     .append( token )
                     .append( "]  Adql did: [")
-                    .append( ((AdqlNode)tokenToEntryStore.get( token )).getDid() )
+                    .append( tokenToEntryStore.get( token ).getDid() )
                     .append( "]" ) ;
             }
         }

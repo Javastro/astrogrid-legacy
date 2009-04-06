@@ -2249,14 +2249,14 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             popupMenu.add(new UndoRedoAction());
         }
 
-        final List commandArray = adqlTree.getCommandFactory().newInsertCommands(
+        final List<StandardInsertCommand> commandArray = adqlTree.getCommandFactory().newInsertCommands(
                 entry);
         if (commandArray != null && commandArray.size() > 0) {
             popupMenu.addSeparator();
             popupMenu.add("Insert into " + entry.getDisplayName() + "...");
-            final ListIterator iterator = commandArray.listIterator();
+            final ListIterator<StandardInsertCommand> iterator = commandArray.listIterator();
             while (iterator.hasNext()) {
-                final StandardInsertCommand command = (StandardInsertCommand) iterator
+                final StandardInsertCommand command = iterator
                         .next();
                 if (!command.isChildSupportedType()) {
                     continue;
@@ -2294,14 +2294,14 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             contextMenu.add(new UndoRedoAction());
         }
 
-        final List commandArray = adqlTree.getCommandFactory().newInsertCommands(
+        final List<StandardInsertCommand> commandArray = adqlTree.getCommandFactory().newInsertCommands(
                 entry);
         if (commandArray != null && commandArray.size() > 0) {
             contextMenu.addSeparator();
             contextMenu.add("Insert into " + entry.getDisplayName() + "...");
-            final ListIterator iterator = commandArray.listIterator();
+            final ListIterator<StandardInsertCommand> iterator = commandArray.listIterator();
             while (iterator.hasNext()) {
-                final StandardInsertCommand command = (StandardInsertCommand) iterator
+                final StandardInsertCommand command = iterator
                         .next();
                 if (!command.isChildSupportedType()) {
                     continue;

@@ -105,7 +105,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	
 	/** access execution messages returned from the process */
 	public ExecutionMessage[] getMessages() throws NotFoundException,     ServiceException {
-		return (ExecutionMessage[])messages.toArray(new ExecutionMessage[messages.size()]);
+		return messages.toArray(new ExecutionMessage[messages.size()]);
 	}
 	
 	public FileSystem getResultsFileSystem() {
@@ -113,7 +113,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	}
 	
 	
-	protected java.util.List messages = new ArrayList();
+	protected java.util.List<ExecutionMessage> messages = new ArrayList<ExecutionMessage>();
 	
 	/** helper method for default implementaiton of getMessages(),
 	 * @fires {@link #fireMessageReceived(ExecutionMessage)}

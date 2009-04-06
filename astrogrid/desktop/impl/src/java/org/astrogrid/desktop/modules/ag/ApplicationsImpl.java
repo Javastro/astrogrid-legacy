@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.40 2009/02/16 16:54:38 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.41 2009/04/06 11:32:46 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -348,14 +348,14 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 				"and capability[@xsi:type &= '*CeaCapability' or @standardID='"
 		        + StandardIds.CEA_1_0
                 +"']/managedApplications/*='"+ c.getId() +"']");  // work around for pauls cosmetic changes to schema.
-		        final List result = new ArrayList();
+		        final List<Resource> result = new ArrayList<Resource>();
 		// check ttypes.
 		for (int i = 0; i < res.length; i++) {
 			if (res[i] instanceof CeaService) {
 				result.add(res[i]);
 			}
 		}
-		return (CeaService[])result.toArray(new CeaService[result.size()]);
+		return result.toArray(new CeaService[result.size()]);
 	}           
     
 
@@ -462,6 +462,9 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.41  2009/04/06 11:32:46  nw
+Complete - taskConvert all to generics.
+
 Revision 1.40  2009/02/16 16:54:38  nw
 Complete - taskUse SRQL in AR
 

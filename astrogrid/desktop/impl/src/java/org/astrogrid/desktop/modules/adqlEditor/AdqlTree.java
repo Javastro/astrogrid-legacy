@@ -96,8 +96,8 @@ public final class AdqlTree extends JTree
     private CatalogService catalogueService ;
     private String title ;
     
-    private HashMap fromTables = new HashMap() ;
-    private HashMap fromTablesUsingAlias = new HashMap() ;
+    private HashMap<String, TableData> fromTables = new HashMap<String, TableData>() ;
+    private HashMap<String, TableData> fromTablesUsingAlias = new HashMap<String, TableData>() ;
     
     private int availableWidth ;
     private CommandFactory commandFactory ;
@@ -437,7 +437,7 @@ public final class AdqlTree extends JTree
                                  + (xAlias==null ? "null" : xAlias.getStringValue()) ) ;
                     }  
                     if( alias != null ) {
-                        TableData td = (TableData)fromTables.get( tableName ) ;
+                        TableData td = fromTables.get( tableName ) ;
                         if( td != null ) {
                             td.addAlias( alias ) ;
                         }
@@ -500,7 +500,7 @@ public final class AdqlTree extends JTree
     
     
     public TableData getTableData( String tableName ) {
-        TableData tableData = (TableData)fromTables.get( tableName ) ;
+        TableData tableData = fromTables.get( tableName ) ;
         return tableData ;
     }
     
@@ -512,7 +512,7 @@ public final class AdqlTree extends JTree
         return catalogueService != null ;
     }
     
-    public HashMap getFromTables() {
+    public HashMap<String, TableData> getFromTables() {
         return fromTables;
     }
     
@@ -610,7 +610,7 @@ public final class AdqlTree extends JTree
     public class AdqlTreeCellEditor implements TreeCellEditor, ActionListener {
         
         private static final int MINIMUM_WIDTH = 100 ;
-        Vector listeners = new Vector() ;
+        Vector<CellEditorListener> listeners = new Vector<CellEditorListener>() ;
         AdqlNode adqlNode ;
         EnumeratedAttributeEditor enumeratedAttributeEditor ;
         EnumeratedElementEditor enumeratedElementEditor ;
@@ -689,7 +689,7 @@ public final class AdqlTree extends JTree
             if( listeners.size() > 0 ) {
                 ChangeEvent changeEvent = new ChangeEvent( this ) ;
                 for( int i=listeners.size()-1; i>=0; i-- ) {
-                    ( (CellEditorListener)listeners.elementAt(i) ).editingStopped( changeEvent ) ;
+                    listeners.elementAt(i).editingStopped( changeEvent ) ;
                 }
             }
         }
@@ -1045,7 +1045,7 @@ public final class AdqlTree extends JTree
         
         public TableBean table ;
 //        public String alias ;
-        public ArrayList aliases = new ArrayList() ;
+        public ArrayList<String> aliases = new ArrayList<String>() ;
         
         public TableData( TableBean table, String alias ) {
             this.table = table ;
@@ -1080,7 +1080,7 @@ public final class AdqlTree extends JTree
         }
         
         public String[] getAliases() {
-            return (String[])aliases.toArray( new String[aliases.size() ] ) ;
+            return aliases.toArray( new String[aliases.size() ] ) ;
         }
         
     }
@@ -1088,11 +1088,11 @@ public final class AdqlTree extends JTree
     private class AliasStack {
         
        
-        private Stack autoStack ;
+        private Stack<String> autoStack ;
         private int suffix = 0 ;
         
         public AliasStack() {
-            autoStack = new Stack() ;
+            autoStack = new Stack<String>() ;
             for( int i=ALIAS_NAMES.length-1; i>-1; i-- ) {
                 autoStack.push( Character.toString( ALIAS_NAMES[i] ) ) ;
             }
@@ -1120,7 +1120,7 @@ public final class AdqlTree extends JTree
                     autoStack.push( Character.toString( ALIAS_NAMES[i] ) + Integer.toString( suffix ) ) ;
                 }
             }
-            return (String)autoStack.pop() ;
+            return autoStack.pop() ;
         }
         
         private boolean isAlreadyInUse( String newAlias ) {
@@ -1231,7 +1231,7 @@ public final class AdqlTree extends JTree
         } 
         else if( type == ColumnReferenceType.type ) {
             ColumnReferenceType crt = (ColumnReferenceType)xo ;
-            TableData td = (TableData)getFromTablesUsingAlias().get( crt.getTable() ) ;
+            TableData td = getFromTablesUsingAlias().get( crt.getTable() ) ;
             if( td == null )
                 return null ;
             ColumnBean[] cbs = td.getTable().getColumns() ;
@@ -1243,7 +1243,7 @@ public final class AdqlTree extends JTree
         }
         else if( type == TableType.type ) {
             TableType tt = (TableType)xo ;
-            TableData td = (TableData)fromTables.get( tt.getName() ) ;
+            TableData td = fromTables.get( tt.getName() ) ;
             if( td == null )
                 return null ;
             return  "<HTML>" + td.getTable().getDescription().replaceAll( "\n", "<BR>" ) ;
@@ -1262,11 +1262,11 @@ public final class AdqlTree extends JTree
     // This method is relatively inefficient,
     // although there should not be that many tables in a query
     // (even for LEDAS)...
-    private HashMap getFromTablesUsingAlias() {
+    private HashMap<String, TableData> getFromTablesUsingAlias() {
         fromTablesUsingAlias.clear() ;
-        Iterator it = fromTables.values().iterator() ;
+        Iterator<TableData> it = fromTables.values().iterator() ;
         while( it.hasNext() ) {
-            TableData td = (TableData)it.next() ;
+            TableData td = it.next() ;
             fromTablesUsingAlias.put( td.getTable().getName(), td) ;
             String[] aliases = td.getAliases() ;
             for( int i=0; i<aliases.length; i++ ) {

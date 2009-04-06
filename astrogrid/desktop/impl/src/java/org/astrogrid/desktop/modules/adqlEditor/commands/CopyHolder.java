@@ -1,4 +1,4 @@
-/*$Id: CopyHolder.java,v 1.5 2009/03/26 18:04:10 nw Exp $
+/*$Id: CopyHolder.java,v 1.6 2009/04/06 11:30:36 nw Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -80,8 +80,8 @@ public class CopyHolder {
     }
     
     private XmlObject source ;
-    private HashMap openBranchesByPosition ;
-    private HashMap openBranchesByContextPath ;
+    private HashMap<String, Position> openBranchesByPosition ;
+    private HashMap<String, Position> openBranchesByContextPath ;
     private boolean forEditPurposes ;
     
     private CopyHolder() {}
@@ -116,12 +116,12 @@ public class CopyHolder {
     
     private void put( Position position ) {
         if( openBranchesByPosition == null ) {
-            openBranchesByPosition = new HashMap() ;
+            openBranchesByPosition = new HashMap<String, Position>() ;
         }
         openBranchesByPosition.put( position.toString(), position ) ;
         if( forEditPurposes ) {
             if( openBranchesByContextPath == null ) {
-                openBranchesByContextPath = new HashMap() ;
+                openBranchesByContextPath = new HashMap<String, Position>() ;
             }
             openBranchesByContextPath.put( position.getRelativeContextPath(), position ) ;
         }
@@ -129,7 +129,7 @@ public class CopyHolder {
     
     private boolean isOpen( Position position ) {
         if( openBranchesByPosition != null ) {
-            Position found = (Position)openBranchesByPosition.get( position.toString() ) ;
+            Position found = openBranchesByPosition.get( position.toString() ) ;
             if( found != null ) {
                 if( position.getRelativeContextPath().equals( found.getRelativeContextPath() ) ) {
                     return true ;
@@ -137,7 +137,7 @@ public class CopyHolder {
             }
         }
         if( openBranchesByContextPath != null ) {
-            Position found = (Position)openBranchesByContextPath.get( position.getRelativeContextPath() ) ;
+            Position found = openBranchesByContextPath.get( position.getRelativeContextPath() ) ;
             if( found != null ) {
                 return true ;
             }
@@ -145,11 +145,11 @@ public class CopyHolder {
         return false ;
     }
     
-    public HashMap getOpenBranchesByContextPath() {
+    public HashMap<String, Position> getOpenBranchesByContextPath() {
         return openBranchesByContextPath;
     }
 
-    public HashMap getOpenBranchesByPosition() {
+    public HashMap<String, Position> getOpenBranchesByPosition() {
         return openBranchesByPosition;
     }
 
@@ -211,6 +211,9 @@ public class CopyHolder {
 
 /*
 $Log: CopyHolder.java,v $
+Revision 1.6  2009/04/06 11:30:36  nw
+Complete - taskConvert all to generics.
+
 Revision 1.5  2009/03/26 18:04:10  nw
 source code improvements - cleaned imports, @override, etc.
 

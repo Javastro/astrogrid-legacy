@@ -82,7 +82,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     
     public void setColumns( ColumnBean[] columns ) {
         this.columns = columns ;
-        this.internalUndoManager.columnList = new ArrayList( columns.length ) ;
+        this.internalUndoManager.columnList = new ArrayList<AdqlNode>( columns.length ) ;
     }
     
     public boolean isColumnCutPresent() {
@@ -521,7 +521,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         CutCommand tableCutCommand ;
         TableInsertCommand tableInsertCommand ; 
         StandardInsertCommand tableContainerInsertCommand ;
-        ArrayList columnList ;
+        ArrayList<AdqlNode> columnList ;
         int firstColumnIndex = -1 ;
         int lastColumnIndex = -1 ;
         
