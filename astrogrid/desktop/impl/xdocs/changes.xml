@@ -13,7 +13,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-
+<release version="1.2.3.beta3" date="unreleased">
+    <action dev="nw" type="fix">
+        File Explorer: Improved performance and reliability when working with myspace or vospace.
+    </action>
+</release>
 <release version="1.2.3.beta2" date="2009-3-30">
     <action dev="nw" type="update">
     updated glazedlists library to latest version
