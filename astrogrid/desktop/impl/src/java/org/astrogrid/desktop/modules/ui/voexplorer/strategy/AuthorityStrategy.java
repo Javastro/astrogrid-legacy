@@ -2,6 +2,8 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 
 import java.util.List;
 
+import javax.swing.JMenuItem;
+
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
 
@@ -16,7 +18,7 @@ import ca.odell.glazedlists.matchers.Matcher;
  */
 public final class AuthorityStrategy extends PipelineStrategy {
 	@Override
-    public Matcher createMatcher(final List selected) {
+    public Matcher createMatcher(final List<JMenuItem> selected) {
 		return new Matcher() {
 			public boolean matches(Object arg0) {
 				Resource r = (Resource)arg0;

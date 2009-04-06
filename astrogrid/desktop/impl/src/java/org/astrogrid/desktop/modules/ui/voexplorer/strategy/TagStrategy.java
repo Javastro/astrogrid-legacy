@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JMenuItem;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -47,7 +49,7 @@ public class TagStrategy extends PipelineStrategy {
 	}
 
 	@Override
-    public Matcher createMatcher(final List selected) {
+    public Matcher createMatcher(final List<JMenuItem> selected) {
 		return new Matcher() {
 
 			public boolean matches(final Object arg0) {

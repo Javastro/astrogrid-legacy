@@ -3,6 +3,8 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JMenuItem;
+
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
@@ -20,7 +22,7 @@ import ca.odell.glazedlists.matchers.Matcher;
  */
 public final class CreatorStrategy extends PipelineStrategy {
 	@Override
-    public Matcher createMatcher(final List selected) {
+    public Matcher createMatcher(final List<JMenuItem> selected) {
 		return new Matcher() {
 			public boolean matches(final Object arg0) {
 				final Resource r = (Resource)arg0;

@@ -22,7 +22,7 @@ public class Annotation implements Serializable {
 	protected String alternativeTitle;
 	
 	/** a set of tags applied to this resource */
-	protected Set tags;
+	protected Set<String> tags;
 	
 	/** a set of arbitrary-length notes applied to this resource */
 	protected String note;
@@ -73,14 +73,14 @@ public class Annotation implements Serializable {
 	/**
 	 * @return the tags - a list of strings
 	 */
-	public final Set getTags() {
+	public final Set<String> getTags() {
 		return this.tags;
 	}
 
 	/**
 	 * @param tags the tags to set
 	 */
-	public final void setTags(final Set tags) {
+	public final void setTags(final Set<String> tags) {
 		this.tags = tags;
 	}
 

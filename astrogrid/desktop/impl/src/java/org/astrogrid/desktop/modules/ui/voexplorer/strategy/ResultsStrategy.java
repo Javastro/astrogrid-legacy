@@ -5,6 +5,8 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 
 import java.util.List;
 
+import javax.swing.JMenuItem;
+
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
 import org.astrogrid.desktop.modules.ui.scope.RetrieverService;
 import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
@@ -33,7 +35,7 @@ public class ResultsStrategy extends PipelineStrategy {
     }
 
     @Override
-    public Matcher createMatcher(final List selected) {
+    public Matcher createMatcher(final List<JMenuItem> selected) {
         return new Matcher() {
             public boolean matches(final Object arg0) {
                 final Retriever r = ((RetrieverService)arg0).getRetriever();

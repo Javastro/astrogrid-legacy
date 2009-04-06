@@ -38,7 +38,7 @@ import org.astrogrid.acr.astrogrid.UserInformation;
 public class WorkspaceProvider extends AbstractFileProvider implements VfsFileProvider{
 
 	private final Community comm;
-	protected final static Collection caps = Collections.unmodifiableCollection(Arrays.asList(new Capability[]{
+	protected final static Collection<Capability> caps = Collections.unmodifiableCollection(Arrays.asList(new Capability[]{
 			Capability.DISPATCHER
 	}));
 	
@@ -46,7 +46,7 @@ public class WorkspaceProvider extends AbstractFileProvider implements VfsFilePr
 		super();
 		this.comm = comm;
 	}
-	public Collection getCapabilities() {
+	public Collection<Capability> getCapabilities() {
 		return caps;
 	}
 	// at the moment, requests a login, and then rewrites to the users myspace home.

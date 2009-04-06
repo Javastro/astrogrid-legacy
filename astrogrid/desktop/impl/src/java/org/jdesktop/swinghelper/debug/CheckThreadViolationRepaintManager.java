@@ -53,7 +53,7 @@ public class CheckThreadViolationRepaintManager extends RepaintManager {
 
     // it is recommended to pass the complete check  
     private boolean completeCheck = true;
-    private WeakReference lastComponent;
+    private WeakReference<JComponent> lastComponent;
 
     public CheckThreadViolationRepaintManager(boolean completeCheck) {
         this.completeCheck = completeCheck;
@@ -118,7 +118,7 @@ public class CheckThreadViolationRepaintManager extends RepaintManager {
             if (lastComponent != null && c == lastComponent.get()) {
                 return;
             }
-            lastComponent = new WeakReference(c);
+            lastComponent = new WeakReference<JComponent>(c);
             violationDetected(c, stackTrace);
         }
     }

@@ -6,6 +6,8 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JMenuItem;
+
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
@@ -23,7 +25,7 @@ import ca.odell.glazedlists.matchers.Matcher;
 public class CapabilityStrategy extends PipelineStrategy {
 
 	@Override
-    public Matcher createMatcher(final List selected) {
+    public Matcher createMatcher(final List<JMenuItem> selected) {
 		return new Matcher() {
 			public boolean matches(final Object arg0) {
 				final Capability[] c = getCapabilities(arg0);
