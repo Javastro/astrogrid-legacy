@@ -11,11 +11,10 @@ import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
+import javax.swing.event.HyperlinkListener;
 
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.ivoa.Vosi;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.comp.PinnableLabel;
@@ -51,8 +50,8 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
  * @param browser 
  * @param regBrowser 
  */
-    public ParametersInfoPane(final Model model, final EventList allElements, final BrowserControl browser, final RegistryBrowser regBrowser, final CapabilityTester tester,final Vosi vosi) {
-        super(browser,regBrowser,tester, vosi);
+    public ParametersInfoPane(final Model model, final EventList allElements, final HyperlinkListener hyper, final CapabilityTester tester,final Vosi vosi) {
+        super(hyper,tester, vosi);
         this.model = model;
         // using a function list means that we can register & deregister simply as the underlying parameter list changes.
         this.paramPins = new FunctionList(allElements,this); 

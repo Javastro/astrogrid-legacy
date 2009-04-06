@@ -278,16 +278,20 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
             this.o = f.getFile();       
         }
         private StorageFolder f = null;
-        private volatile FileObjectView o = null;
+        private FileObjectView o = null;
 
         public void actionPerformed(final ActionEvent e) {
             history.move(this);
         }       
-        public boolean hasResolved() {
+        public synchronized boolean hasResolved() {
             return o != null;
         }
         public synchronized void resolveFileObjectView() throws FileSystemException {
             if (o == null) {
+//                if (getURI().startsWith("vos")) {
+//                        System.err.println("Resolving " +Thread.currentThread().getName() + " : "  + ObjectUtils.identityToString(this));
+//                        new Throwable().printStackTrace(System.err);
+//                }
                 logger.debug("retriving file object - RESOLVING");
                 o = new FileObjectView(vfs.resolveFile(getURI()),FileNavigator.this.model.getIcons());
                 if (f != null) {
@@ -299,7 +303,11 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
          * else will throw.
          * @return
          */
-        public FileObjectView getFileObjectView() {
+        public  synchronized FileObjectView getFileObjectView() {
+//            if (getURI().startsWith("vos")) {
+//                System.err.println("Getting + " + Thread.currentThread().getName() + " : " + ObjectUtils.identityToString(this));
+//                new Throwable().printStackTrace(System.err);
+//            }
             if (o == null) {
                 throw new IllegalStateException(getText() + " - Has not yet been resolved");
             } else {
@@ -400,11 +408,11 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
             if (previous != null && previous.hasResolved()) {
                 final FileObject prev = previous.getFileObjectView().getFileObject();                
                 prev.getFileSystem().removeListener(prev,FileNavigator.this);                
-            }
+            }           
 
             // now load the new one.
                 reportProgress("Resolving directory");
-                loc.resolveFileObjectView();                                
+                loc.resolveFileObjectView();                  
                 requested = loc.getFileObjectView();
                 reportProgress("Listing children");
                 if (requested.getFileObject().getType().hasChildren()) { // use type of file object, not type of wrapper (which might be 'imaginary')

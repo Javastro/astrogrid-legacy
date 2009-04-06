@@ -1,11 +1,10 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
 import javax.swing.JEditorPane;
+import javax.swing.event.HyperlinkListener;
 
 import org.astrogrid.acr.ivoa.Vosi;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 
@@ -19,7 +18,7 @@ public class ResourceDisplayPane extends JEditorPane {
     private final Vosi vosiTester;
 	
 	/** construct a display pane with additional support for following hyperlinks */
-	public ResourceDisplayPane(final BrowserControl browser, final RegistryBrowser regBrowser, final CapabilityTester capTester, final Vosi vosiTester) {
+	public ResourceDisplayPane(final HyperlinkListener hyper, final CapabilityTester capTester, final Vosi vosiTester) {
 		this.vosiTester = vosiTester;
         setContentType("text/html");
 		setBorder(null);
@@ -28,7 +27,7 @@ public class ResourceDisplayPane extends JEditorPane {
 		setFont(UIConstants.SANS_FONT);
 		setName(ResourceDisplayPane.class.getName());
         this.capTester = capTester;
-		addHyperlinkListener(new ExternalViewerHyperlinkListener(browser, regBrowser));
+		addHyperlinkListener(hyper);
 	}
 	
 	protected Resource currentResource;

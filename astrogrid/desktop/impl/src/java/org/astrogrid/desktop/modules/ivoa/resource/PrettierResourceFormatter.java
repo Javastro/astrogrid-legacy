@@ -46,7 +46,9 @@ import org.astrogrid.acr.ivoa.resource.Source;
 import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.StapCapability;
 import org.astrogrid.acr.ivoa.resource.StcResourceProfile;
+import org.astrogrid.acr.ivoa.resource.TapCapability;
 import org.astrogrid.acr.ivoa.resource.Validation;
+import org.astrogrid.acr.ivoa.resource.VospaceCapability;
 import org.astrogrid.acr.ivoa.resource.WebServiceInterface;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.ImageSize;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
@@ -74,6 +76,7 @@ public final class PrettierResourceFormatter {
 		sb.append("  body { font-family: Arial, Helvetica, sans-serif }");
 		sb.append("  cite.label {font-size: 8px; color: #666633; font-style: normal}");
 		sb.append("  a.res { color: #2584a7 }");
+        sb.append("  a.vos { color: #2584a7 }"); // use same color for all 'internal' links		
 		sb.append(" img.logo {border-style: inset }");
 		sb.append("</style></head><body>");
 		
@@ -659,7 +662,18 @@ public final class PrettierResourceFormatter {
 	                sb.appendTitledObjectNoBR("Size",sc.getTestQuery().getSize());
 	                sb.appendTitledObjectNoBR("Query",sc.getTestQuery().getQueryDataCmd());
 	                sb.br();
-	            }            
+	            }      
+	        } else if (c instanceof TapCapability) {
+                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/db16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Query&nbsp;Service&nbsp;(ADQL)</b>");
+                sb.br();
+                formatCapabilityDescription(sb, c);
+	        } else if (c instanceof VospaceCapability) {	
+                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/anystorage16.png'>&nbsp;This resource describes a <b>VOSpace&nbsp;Storage&nbsp;Service</b>");
+                sb.br();
+                formatCapabilityDescription(sb, c);	            
+                sb.appendLabel("VOSpace&nbsp;Root");
+                sb.appendURI(((VospaceCapability)c).getVospaceRoot());
+                sb.br();
 	        } else if (c.getStandardID() != null && StringUtils.containsIgnoreCase(c.getStandardID().toString(),"availability")) { // loose rule for availability.
 	            sb.append("This resource provides a <b>Service&nbsp;Availability&nbsp;Check</b>");
 	            //sb.br();

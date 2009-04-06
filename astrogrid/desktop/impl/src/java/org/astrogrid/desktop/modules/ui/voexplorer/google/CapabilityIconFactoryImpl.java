@@ -22,6 +22,8 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.acr.ivoa.resource.StapService;
+import org.astrogrid.acr.ivoa.resource.TapService;
+import org.astrogrid.acr.ivoa.resource.VospaceService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity;
@@ -71,6 +73,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		,"ssap16.png" // ssap
 		,"siap16.png"// siap
 		,"filesave16.png"//download
+		,"anystorage16.png" // vospace.
 		,"server16.png" //a  service
 	//	,"unknown_thing16.png" // unknown service
 		,"exec16.png" // cea app
@@ -89,6 +92,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		,"Image access service (SIAP)"
 		,"Downloadable Table"
 	//	,"Technical system service"
+		,"VOSpace Storage"
 		,"Unspecified service"
 		,"Remote application (CEA)"
 		,"Catalog query service (ADQL)"
@@ -116,10 +120,13 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		caps.set(ix++,r instanceof SsapService);	
 		caps.set(ix++,r instanceof SiapService);
 		caps.set(ix++,ConeProtocol.isCdsCatalog(r));
+		caps.set(ix++,r instanceof VospaceService);
 		// something we've not already recognized, but not boring.
-		caps.set(ix++,caps.cardinality() == 0 && ! SystemFilter.onlyBoringCapabilities((Service)r)); // an unrecognized service, but not a boring one.
+		caps.set(ix++,caps.cardinality() == 0 
+		        && ! SystemFilter.onlyBoringCapabilities((Service)r)
+		        && ! (r instanceof TapService)); // an unrecognized service, but not a boring one.
 		} else { // just skip these.
-			ix+=6;
+			ix+=7;
 		}
 		// cea app 
 		if (r instanceof CeaApplication) {
@@ -128,7 +135,11 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		    caps.set(ix++, code < 1);
 		    // cea apps with an adql interface.
 		    caps.set(ix++,code >= 0);
-		} else if (r instanceof CatalogService && r instanceof CeaService) { // it's a catalog service with build in CEA - i.e. it's a DSA.
+		} else if (r instanceof CatalogService && r instanceof CeaService
+		        // it's a catalog service with build in CEA - i.e. it's a DSA.
+		    || r instanceof TapService
+		        // or it's a TAP service.
+		    ) { 
 		    caps.set(ix++,false);
 		    caps.set(ix++,true);
 		} else {

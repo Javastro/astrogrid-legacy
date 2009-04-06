@@ -230,7 +230,10 @@ public class HtmlBuilder extends StrBuilder {
 			append(wrappedURL).append("</a>");
 		} else if ("ivo".equals(scheme)) {
             append("<a class='res' href='").append(url).append("'>");
-            append(wrappedURL).append("</a>");		    
+            append(wrappedURL).append("</a>");
+        } else if ("vos".equals(scheme)) {
+            append("<a class='vos' href='").append(url).append("'>");
+            append(wrappedURL).append("</a>");            
 		} else {
 				append(wrappedURL);
 		}
@@ -245,7 +248,10 @@ public class HtmlBuilder extends StrBuilder {
             append(text).append("</a>");
         } else if ("ivo".equals(scheme)) {
                 append("<a class='res' href='").append(url).append("'>");
-                append(text).append("</a>");            
+                append(text).append("</a>"); 
+        } else if ("vos".equals(scheme)) {
+                append("<a class='vos' href='").append(url).append("'>");
+                append(text).append("</a>");
         } else {
             // fix for BZ 1970 - odd scheme types.
             final String wrappedURL = StringUtils.replace(url.toString(),"/","/<wbr>");

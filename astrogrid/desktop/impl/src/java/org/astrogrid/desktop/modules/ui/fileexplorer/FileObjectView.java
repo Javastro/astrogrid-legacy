@@ -141,8 +141,8 @@ public final  class FileObjectView {
             throw new ProgrammerError("Constructing FileObjectView on EDT: defeats the purpose");
         }
         // precompute all the fields.
-        this.type = fo.getType();
         this.exists = fo.exists();
+        this.type = fo.getType();
         this.hidden = fo.isHidden();
         this.writable = fo.isWriteable();
         this.icon = ifinder != null ? ifinder.find(fo)  : null;

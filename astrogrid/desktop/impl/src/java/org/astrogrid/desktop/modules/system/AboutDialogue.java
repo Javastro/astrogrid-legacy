@@ -5,22 +5,22 @@ package org.astrogrid.desktop.modules.system;
 
 import java.awt.Dimension;
 
-import org.astrogrid.acr.system.BrowserControl;
+import javax.swing.event.HyperlinkListener;
+
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
-import org.astrogrid.desktop.modules.ui.comp.ExternalViewerHyperlinkListener;
 
 /** Show an about dialogue.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 5, 20072:14:37 PM
  */
 public class AboutDialogue implements Runnable {
-    private final BrowserControl browser;
     private final String content;
+    private final HyperlinkListener hyper;
     
     public void run() {
-        ResultDialog rd = new ResultDialog(content);
-        rd.getResultDisplay().addHyperlinkListener(new ExternalViewerHyperlinkListener(browser));
+        final ResultDialog rd = new ResultDialog(content);
+        rd.getResultDisplay().addHyperlinkListener(hyper);
         rd.setSize(new Dimension(500,600));
         rd.getBanner().setVisible(true);
         rd.getBanner().setTitle("About VODesktop");
@@ -31,9 +31,9 @@ public class AboutDialogue implements Runnable {
         rd.toFront();
     }
 
-    public AboutDialogue(BrowserControl browser, String content) {
+    public AboutDialogue(final HyperlinkListener hyper, final String content) {
         super();
-        this.browser = browser;
+        this.hyper = hyper;
         this.content = content;
     }
 

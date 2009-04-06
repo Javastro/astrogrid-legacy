@@ -82,8 +82,8 @@ public abstract class AbstractResourceActivity extends AbstractActivity implemen
 			current = null;
 	}
 	
-	protected List computeInvokable() {
-		final List r = new ArrayList();
+	protected List<Resource> computeInvokable() {
+		final List<Resource> r = new ArrayList<Resource>();
 		for (int i = 0; i < current.length; i++) {
 			if (evaluate(current[i])) {
 				r.add(current[i]);

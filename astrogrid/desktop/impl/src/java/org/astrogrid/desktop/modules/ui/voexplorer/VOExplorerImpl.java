@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.29 2009/03/24 13:08:21 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.30 2009/04/06 17:04:59 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -69,6 +69,7 @@ import org.astrogrid.desktop.modules.ui.actions.SaveXoXoListActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.TapQueryActivity;
 import org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity;
+import org.astrogrid.desktop.modules.ui.actions.VospaceActivity;
 import org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
@@ -115,6 +116,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		        QueryScopeActivity.class
 		       ,BuildQueryActivity.class
 		       ,TapQueryActivity.class
+		       ,VospaceActivity.class
 		       ,TaskRunnerActivity.class
 		       ,WebInterfaceActivity.class
 		       ,MessagingScavenger.class

@@ -78,6 +78,8 @@ import org.astrogrid.acr.ivoa.resource.TableService;
 import org.astrogrid.acr.ivoa.resource.TapCapability;
 import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.acr.ivoa.resource.Validation;
+import org.astrogrid.acr.ivoa.resource.VospaceCapability;
+import org.astrogrid.acr.ivoa.resource.VospaceService;
 import org.astrogrid.acr.ivoa.resource.WebServiceInterface;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.ImageSize;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.Query;
@@ -130,7 +132,7 @@ import org.w3c.dom.NodeList;
  * @author Noel Winstanley
  * @since Aug 1, 20064:54:11 PM
  */
-public final class ResourceStreamParser implements Iterator {
+public final class ResourceStreamParser implements Iterator<Resource> {
 	/**
 	 * 
 	 */
@@ -146,7 +148,7 @@ public final class ResourceStreamParser implements Iterator {
 	    this.in = new TrimmingXMLStreamReader(in);
 	}
 	protected final XMLStreamReader in;
-	private Object current;
+	private Resource current;
 	/** iterator interface - returns true when there's still another resource present in the stream */
 	public final boolean hasNext() {
 		if (current == null) { // not got a result, so parse..
@@ -155,12 +157,12 @@ public final class ResourceStreamParser implements Iterator {
 		return current != EMPTY_RESOURCE;
 	}
 	/** return the next {@link Resource} object */
-	public final Object next() {
+	public final Resource next() {
 		// ensure we've got an object - parsing it if necessary.
 		if (! hasNext()) {
 			throw new NoSuchElementException();
 		}
-		final Object o = current;
+		final Resource o = current;
 		current = null;
 		return o; 	
 	}
@@ -173,7 +175,48 @@ public final class ResourceStreamParser implements Iterator {
 	
 	// custom 'Empty' object - means 'no objects found'
 	//- to differentiate between 'null' which means 'not parsed yet'
-	protected static  final Object EMPTY_RESOURCE = new Object();
+	protected static  final Resource EMPTY_RESOURCE = new Resource(){
+
+        public Content getContent() {
+            return null;
+        }
+
+        public String getCreated() {
+            return null;
+        }
+
+        public Curation getCuration() {
+            return null;
+        }
+
+        public URI getId() {
+            return null;
+        }
+
+        public String getShortName() {
+            return null;
+        }
+
+        public String getStatus() {
+            return null;
+        }
+
+        public String getTitle() {
+            return null;
+        }
+
+        public String getType() {
+            return null;
+        }
+
+        public String getUpdated() {
+            return null;
+        }
+
+        public Validation[] getValidationLevel() {
+            return null;
+        }
+	};
     static final DocumentBuilderFactory domBuilderFactory = DocumentBuilderFactory.newInstance();
 
 	/** parse the next object on the stream
@@ -181,17 +224,17 @@ public final class ResourceStreamParser implements Iterator {
 	 * @return a resource object, or EMPTY_RESOURCE to indicate no further resources are present.
 	 * never returns null;
 	 */
-	protected Object parseResource() {
+	protected Resource parseResource() {
 		logger.debug("parseResource");
 		try {
 		if (!scanToStartTag("Resource")) {
 			logger.debug("no resource found");
 			return EMPTY_RESOURCE;
 		}
-		final Set<Class>  ifaces = new HashSet<Class>();
+		final Set<Class<? extends Resource>>  ifaces = new HashSet<Class<? extends Resource>>();
 		ifaces.add(Resource.class);
 		// found a resource, better parse it then.
-		final HashMap m = new HashMap();
+		final HashMap<String,Object> m = new HashMap<String,Object>();
 		
 		m.put("getStatus",in.getAttributeValue(null,"status"));
 		m.put("getCreated",in.getAttributeValue(null,"created"));
@@ -247,11 +290,11 @@ public final class ResourceStreamParser implements Iterator {
 	
 		final List<Validation> validations = new ArrayList<Validation>(1);
 		final List<String> rights = new ArrayList<String>(1);
-		final List capabilities = new ArrayList(3);
+		final List<Capability> capabilities = new ArrayList<Capability>(3);
 		//the following could be lazily initialized.. might save some space / object creation..
 		// used in organization, and data collection
-		final List facilities = new ArrayList(1);
-		final List instruments = new ArrayList(1);
+		final List<ResourceName> facilities = new ArrayList<ResourceName>(1);
+		final List<ResourceName> instruments = new ArrayList<ResourceName>(1);
 		// used in data collection
 		final List<Catalog> catalogues = new ArrayList<Catalog>(1);
 		final List<Format> formats = new ArrayList<Format>(2);
@@ -261,6 +304,8 @@ public final class ResourceStreamParser implements Iterator {
 		final List<String> managedAuthorities = new ArrayList<String>(2);
 		// used in appllications
 		final List<URI> voStandards = new ArrayList<URI>(1);
+		// ivoid - when we see it.
+		URI ivoid = null;
 		// case for each top-level element.
 		// if only java had a decent switch statement...
 		for (in.next(); ! (in.isEndElement() && in.getLocalName().equals("Resource")); in.next()){
@@ -276,7 +321,8 @@ public final class ResourceStreamParser implements Iterator {
 				} else if (elementName.equals("identifier")) {
 				    final String id = in.getElementText();
 				    if (StringUtils.isNotBlank(id)) {
-				        m.put("getId",new URI(id));
+				        ivoid = new URI(id);
+                        m.put("getId",ivoid);
 				    }
 				} else if (elementName.equals("curation")) {
 					m.put("getCuration",parseCuration());
@@ -296,7 +342,7 @@ public final class ResourceStreamParser implements Iterator {
 				    }
 					// service interface
 				} else if (elementName.equals("capability")) {
-					final Capability cap = parseCapability();					
+					final Capability cap = parseCapability(ivoid);					
                     capabilities.add(cap);
                     // adjust ifaces based on what we've learned.
                     if (cap instanceof ConeCapability) {
@@ -323,6 +369,9 @@ public final class ResourceStreamParser implements Iterator {
                     } else if (cap instanceof TapCapability) {
                         ifaces.add(TapService.class);
                         m.put("findTapCapability",cap);
+                    } else if (cap instanceof VospaceCapability) {
+                        ifaces.add(VospaceService.class);
+                        m.put("findVospaceCapability",cap);
                     }
 					ifaces.add(Service.class); // it's a service
 		// application
@@ -407,7 +456,7 @@ public final class ResourceStreamParser implements Iterator {
 		if (ifaces.contains(Application.class)) {
 		    m.put("getApplicationCapabilities",voStandards.toArray(new URI[voStandards.size()]));
 		}
-		final Object o =  Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), ifaces.toArray(new Class[ifaces.size()]), new Handler(m));
+		final Resource o =  (Resource)Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), ifaces.toArray(new Class[ifaces.size()]), new Handler(m));
 		logger.debug("Returning");
 		logger.debug(o);
 		return o;
@@ -427,14 +476,14 @@ public final class ResourceStreamParser implements Iterator {
 	/** capability parsing - v1.0 verison.
      * registry porttion is correct.
      */
-    protected Capability parseCapability() { 
+    protected Capability parseCapability(final URI resourceID) { 
         final String xsiType = in.getAttributeValue(XSI_NS,"type");
         final String standardID =  in.getAttributeValue(null,"standardID");     
         final Capability c;
         final List<Interface> interfaces = new ArrayList<Interface>(2);
         final List<Validation> validations = new ArrayList<Validation>(1);
         List<String> optionalProtols = null;
-        List stapFormats = null;
+        List<String> stapFormats = null;
         List<String> ssapDataSource = null;
         List<String> ssapCreationType = null;
         List<String> ssapSupportedFrame = null;
@@ -465,10 +514,11 @@ public final class ResourceStreamParser implements Iterator {
         } else if (StringUtils.contains(xsiType,"SimpleTimeAccess") //@todo replace with contracts
                 || StandardIds.STAP_1_0.equals(standardID)) {
             c = new StapCapability();
-            stapFormats = new ArrayList(3);
+            stapFormats = new ArrayList<String>(3);
         } else if (TapCapability.CAPABILITY_ID.toString().equals(standardID)) { //@todo replace with StandardIds constant
             c = new TapCapability();
-            
+        } else if (VospaceCapability.CAPABILITY_ID.toString().equals(standardID)) { //@todo replace with standardIds constant, when it happens
+            c = new VospaceCapability(resourceID);
         } else {
             c = new Capability();
         }
@@ -634,7 +684,7 @@ public final class ResourceStreamParser implements Iterator {
             s.setOptionalProtocol(optionalProtols.toArray(new String[optionalProtols.size()]));
         } else if (c instanceof StapCapability) {
             final StapCapability s = (StapCapability)c;
-            s.setSupportedFormats((String[])stapFormats.toArray(new String[stapFormats.size()]));
+            s.setSupportedFormats(stapFormats.toArray(new String[stapFormats.size()]));
         } else if (c instanceof SsapCapability) {
             final SsapCapability s = (SsapCapability)c;
             s.setDataSources(ssapDataSource.toArray(new String[ssapDataSource.size()]));
@@ -1036,7 +1086,7 @@ public final class ResourceStreamParser implements Iterator {
 	
 	protected Relationship parseRelationship() {
 		final Relationship rel = new Relationship();
-		final List resource = new ArrayList(2);
+		final List<ResourceName> resource = new ArrayList<ResourceName>(2);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("relationship")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -1057,7 +1107,7 @@ public final class ResourceStreamParser implements Iterator {
 			} catch (final XMLStreamException x) {
 				logger.debug("Relationship - XMLStreamException",x);
 			}
-		rel.setRelatedResources((ResourceName[])resource.toArray(new ResourceName[resource.size()]));
+		rel.setRelatedResources(resource.toArray(new ResourceName[resource.size()]));
 		return rel;
 	}
 	
@@ -1065,7 +1115,7 @@ public final class ResourceStreamParser implements Iterator {
 	protected Curation parseCuration() {
 		final Curation c = new Curation();
 		final List<Creator> creator = new ArrayList<Creator>(2);
-		final List contributor = new ArrayList(2);
+		final List<ResourceName> contributor = new ArrayList<ResourceName>(2);
 		final List<Contact> contact = new ArrayList<Contact>(2);
 		final List<Date> date = new ArrayList<Date>(2);
 		try {
@@ -1097,7 +1147,7 @@ public final class ResourceStreamParser implements Iterator {
 			logger.debug("Curation - XMLStreamException",x);
 		} // end Curation;
 		c.setCreators(creator.toArray(new Creator[creator.size()]));
-		c.setContributors((ResourceName[])contributor.toArray(new ResourceName[contributor.size()]));
+		c.setContributors(contributor.toArray(new ResourceName[contributor.size()]));
 		c.setContacts(contact.toArray(new Contact[contact.size()]));
 		c.setDates(date.toArray(new Date[date.size()]));
 		return c;
@@ -1370,7 +1420,7 @@ public final class ResourceStreamParser implements Iterator {
 		        ,std);
 	}
 
-	private void parseCeaApplication(final Map m) {
+	private void parseCeaApplication(final Map<String,Object> m) {
 		final List<ParameterBean> params = new ArrayList<ParameterBean>(10);
 		final List<InterfaceBean> ifaces = new ArrayList<InterfaceBean>(3);
 		try {

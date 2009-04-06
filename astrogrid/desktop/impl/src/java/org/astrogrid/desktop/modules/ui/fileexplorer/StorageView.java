@@ -228,11 +228,14 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		    
 			final StorageFolder f = new StorageFolder();
 			try {
-				//@todo work out a more sensible icon in some cases.
 				final FileObjectView fo = navigator.current();
 				f.setFile(fo);
 				f.setUriString(fo.getUri());
-				f.setName(fo.getBasename());
+				final String name = StringUtils.isBlank(fo.getBasename()) ? "/" : fo.getBasename();
+				if (! "file".equals(fo.getScheme())) { // remote file
+				    f.setIconName("myspace16.png");
+				}
+				f.setName(name);
 				foldersList.add(f); // and this is automatically persisted.
 			} catch (final Exception ex) {
 				parent.showTransientError("Failed to add bookmark",ExceptionFormatter.formatException(ex));

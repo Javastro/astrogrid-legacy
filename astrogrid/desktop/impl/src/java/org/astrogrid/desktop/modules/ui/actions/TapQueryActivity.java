@@ -31,14 +31,11 @@ private final QueryBuilderInternal t;
 
 @Override
 public void actionPerformed(final ActionEvent e) {
-    final List l = computeInvokable();
+    final List<Resource> l = computeInvokable();
     final TapService r = (TapService)l.get(0);
     t.build(r);    
 	}
 
-
-
-	
 	
 	// accept a single database schema, or a single queriable service.
 	@Override

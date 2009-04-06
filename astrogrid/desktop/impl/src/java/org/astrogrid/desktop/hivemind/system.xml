@@ -1108,7 +1108,7 @@ XML Persistence -->
     <interceptor service-id="system.edtInvoke" />
     <invoke-factory>
         <construct class="org.astrogrid.desktop.modules.system.AboutDialogue">
-            <service>browser</service>
+            <service>ui.hyper</service>            
             <string><![CDATA[
             <html>
             <h1>VO Desktop v${astrogrid.desktop.version}</h1> 

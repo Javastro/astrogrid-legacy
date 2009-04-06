@@ -8,10 +8,9 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.event.HyperlinkListener;
 
 import org.astrogrid.acr.ivoa.Vosi;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.system.CSH;
@@ -23,8 +22,8 @@ import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
  */ 
 public class FormattedResourceViewer extends ResourceDisplayPane implements ResourceViewer {
 
-	public FormattedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser, final CapabilityTester tester,final Vosi vosi) {
-		super(browser, regBrowser, tester,vosi);
+	public FormattedResourceViewer(final HyperlinkListener hyper, final CapabilityTester tester,final Vosi vosi) {
+		super(hyper, tester,vosi);
 		CSH.setHelpIDString(this, "reg.details");
 		setPreferredSize(new Dimension(200,100));		
 	}

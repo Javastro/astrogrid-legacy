@@ -111,14 +111,12 @@ REGISTRY GOOGLE
 <!--  lists of available resource viewers -->
 <contribution configuration-id="ui.UiBuilderObjects">
 	<object name="formattedResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.FormattedResourceViewer">
-			<inject object="service:system.browser" />
-			<inject object="service:ui.registryBrowser" />
+			<inject object="service:ui.hyper" />
             <inject object="service:ivoa.capabilityTester" />
             <inject object="service:ivoa.vosi" />     
 	</object>
 	<object name="annotatedResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.AnnotatedResourceViewer">
-			<inject object="service:system.browser" />
-			<inject object="service:ui.registryBrowser" />
+			<inject object="service:ui.hyper" />
 			<inject object="service:votech.annotate" />
             <inject object="service:ivoa.capabilityTester" />   
             <inject object="service:ivoa.vosi" />        

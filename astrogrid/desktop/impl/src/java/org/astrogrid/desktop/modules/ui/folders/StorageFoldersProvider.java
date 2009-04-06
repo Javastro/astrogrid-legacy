@@ -31,7 +31,7 @@ public class StorageFoldersProvider extends AbstractListProvider<StorageFolder> 
 		final URI homeUri = SystemUtils.getUserHome().toURI();
 		getList().add(new StorageFolder("Home","home16.png",homeUri));
 		
-		final StorageFolder workspace = new StorageFolder("VO Workspace","networkdisk16.png",URI.create("workspace:///"));
+		final StorageFolder workspace = new StorageFolder("VO Workspace","anystorage16.png",URI.create("workspace:///"));
 		workspace.setDescription("Access to your VOSpace provided by AstroGrid:<br>requires login to a VO Community");
         getList().add(workspace);
 		

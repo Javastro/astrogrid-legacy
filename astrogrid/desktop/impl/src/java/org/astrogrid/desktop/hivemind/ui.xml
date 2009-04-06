@@ -248,8 +248,7 @@ HELIOSCOPE
             Displays information about a parameter of a remote application
             <inject-arg />
             <inject-arg />
-            <inject object="service:system.browser" />
-            <inject object="service:ui.registryBrowser" />
+            <inject object="service:ui.hyper" />
             <inject object="service:ivoa.capabilityTester" />     
             <inject object="service:ivoa.vosi" />                        
         </object>
@@ -468,19 +467,8 @@ FILE EXPLORER
  -->
  	<service-point id="fileManager" interface="org.astrogrid.desktop.modules.ui.FileManagerFactory">
         Factory for FileManager UI windows
- 		<interceptor service-id="system.snitchInterceptor" >
-                <!--  including things seems to mean we get 'all'. excluding what we dont' want seems to work. -->
-                <exclude method="appendHandler" />
-                <exclude method="getHandledMessages" />
-                <exclude method="perform" />
-                <exclude method="setNextHandler" />
-        </interceptor>
-            <interceptor service-id="system.edtInvoke" >
-                <exclude method="appendHandler" />
-                <exclude method="getHandledMessages" />
-                <exclude method="perform" />
-                <exclude method="setNextHandler" />
-            </interceptor>                    
+ 		<interceptor service-id="system.snitchInterceptor"/>        
+        <interceptor service-id="system.edtInvoke"/>                    
  		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.FileExplorerFactoryImpl" >
 				<service>UiBuilder</service>
@@ -586,6 +574,9 @@ ACTIONS
 		</object>
         <object name="tap" class="org.astrogrid.desktop.modules.ui.actions.TapQueryActivity">
             <inject object="service:queryBuilder"/>     
+        </object>
+        <object name="vospace" class="org.astrogrid.desktop.modules.ui.actions.VospaceActivity">
+            <inject object="service:fileManager" />
         </object>
         <object name="task" class="org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity">
 			<inject object="service:applicationLauncher"/>		
@@ -725,5 +716,23 @@ Building components on the EDT
 	<contribution configuration-id="hivemind.ObjectProviders">
 		<provider prefix="ui" service-id="UiBuilderObjectProvider"/>
 	</contribution>
+    
+    
+    <!--  
+    ============================
+    Hyperlink listener.
+    
+     -->
+    <service-point id="hyper"
+        interface="javax.swing.event.HyperlinkListener">
+        Opens hyperlinks in suitable viewer - external browsr, voexplorer, or filemanager.
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.ui.comp.ExternalViewerHyperlinkListener">
+                <service>system.browser</service>
+                <service>registryBrowser</service>
+                <service>fileManager</service>
+            </construct>
+        </invoke-factory>
+   </service-point>
  </module>
  
