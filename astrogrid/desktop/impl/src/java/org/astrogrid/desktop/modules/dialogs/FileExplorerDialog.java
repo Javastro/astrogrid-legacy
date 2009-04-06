@@ -33,9 +33,7 @@ import javax.swing.event.DocumentListener;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
@@ -45,6 +43,7 @@ import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationListener;
@@ -131,7 +130,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
     public void ok() {
         super.ok();
         try {
-            setUri(new URI(StringUtils.replace(selected.getName().getURI()," ","%20")));
+            setUri(new URI(StringUtils.replace(selected.getUri()," ","%20")));
         } catch (final URISyntaxException x) {
             //very unlikely to happen, as if this was the case, the ok button woudlnt'
             // be enabled, and so we couldn't have got here.
@@ -143,7 +142,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Oct 1, 200710:22:37 AM
      */
-    private final class ValidationWorker extends BackgroundWorker {
+    private final class ValidationWorker extends BackgroundWorker<FileObjectView> {
         protected volatile boolean cond;
         private final static String MSG =  "Validating text input";
         /**
@@ -155,7 +154,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
         }
 
         @Override
-        protected Object construct() throws Exception {
+        protected FileObjectView construct() throws Exception {
             if (StringUtils.isEmpty(filename.getText())) {
                 cond = false;
                 return null;
@@ -165,13 +164,13 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
             if (fo.exists()) {
                cond = cond && (selectDirectories == fo.getType().hasChildren());
             } 
-            return fo;
+            return new FileObjectView(fo,view.getNavigator().getModel().getIcons());
         }
 
         @Override
-        protected void doFinished(final Object result) {
+        protected void doFinished(final FileObjectView result) {
             if (this == latest) {
-                selected = (FileObject)result;
+                selected = result;
                 okButton.setEnabled(cond);
                 parent.setStatusMessage(MSG + " - " + (cond ? "OK" : "INVALID"));
             }
@@ -211,17 +210,18 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
         // listens to selection events.
         public void setSelection(final Transferable tran) {
             try {
-                selected = (FileObject)tran.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT);
+                selected = (FileObjectView)tran.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_VIEW);
                 final boolean selectionIsFolder = selected.getType().hasChildren();
-                final FileName selectedName = selected.getName();
-                view.getLocation().setText(selectedName.getParent().getURI());
+               // final FileName selectedName = selected.getName();
+                // @fixme - how to do the equivalent of this?
+               // view.getLocation().setText(selectedName.getParent().getURI());
                 if (selectDirectories == selectionIsFolder) { // either we've got a folder, and we want a folder, or we've got a file and we want a file.
-                    filename.setText(selectedName.getBaseName());
+                    filename.setText(selected.getBasename());
                 } else { // it's not what we want - set to null;
                     filename.setText(null);
                 }
                 
-                okButton.setEnabled( selectDirectories == selectionIsFolder && isSchemeValid(selectedName.getScheme()));                 
+                okButton.setEnabled( selectDirectories == selectionIsFolder && isSchemeValid(selected.getScheme()));                 
             } catch (final UnsupportedFlavorException x) {
                 // unexpected
             } catch (final IOException x) {
@@ -251,17 +251,13 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
     
     // matcher interface - determines what can be displayed.
     public boolean matches(final Object item) {
-        if (item instanceof FileObject) {
-            final FileObject fo = (FileObject) item;
+        if (item instanceof FileObjectView) {
+            final FileObjectView fo = (FileObjectView) item;
             // only remove files when in directory mode - else show both.
-            try {
                 if (selectDirectories && ! fo.getType().hasChildren()) {
                     return false;
                 }
-            } catch (final FileSystemException e) {
-                return false;
-            }
-            return isSchemeValid(fo.getName().getScheme());
+            return isSchemeValid(fo.getScheme());
         } else if (item instanceof StorageFolder ) {
             final StorageFolder f = (StorageFolder)item;
             return isSchemeValid(f.getUri().getScheme());
@@ -314,7 +310,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
      */
     private boolean isSchemeValid(final String scheme) {
         return (  (localEnabled && "file".equals(scheme))
-                || (vospaceEnabled &&( "ivo".equals(scheme) || "workspace".equals(scheme)) )
+                || (vospaceEnabled &&( "ivo".equals(scheme) || "workspace".equals(scheme) || "vos".equals(scheme) ))
                 || (urlEnabled && URL_SCHEMES.contains(scheme))
              );
     }
@@ -330,14 +326,14 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
         selected = view.getNavigator().current();
         // current selection is the folder we've just moved to. do we want to select folders?
         if (selectDirectories) {
-            filename.setText(selected.getName().getBaseName());
+            filename.setText(selected.getBasename());
         } else {
             filename.setText(null);
         }
-        okButton.setEnabled(selectDirectories && isSchemeValid(selected.getName().getScheme())); 
+        okButton.setEnabled(selectDirectories && isSchemeValid(selected.getScheme())); 
     }
     
-    private FileObject selected = null;
+    private FileObjectView selected = null;
     private final JLabel nameFieldLabel;
 
     public void moving() {
@@ -373,11 +369,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
             okButton.setEnabled(false);
             return;
         }
-        try {
-            okButton.setEnabled( (selectDirectories == selected.getType().hasChildren()) && isSchemeValid(selected.getName().getScheme()));
-        } catch (final FileSystemException x) {
-            okButton.setEnabled(false);
-        }    
+            okButton.setEnabled( (selectDirectories == selected.getType().hasChildren()) && isSchemeValid(selected.getScheme()));   
     }
 
     public void setLocalEnabled(final boolean enableLocalFilePanel) {
@@ -406,7 +398,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
     /** overridden to navigate to first appropriate position, if current position isn't suitable. */
     @Override
     public void show() {
-        final FileObject currentPosition = view.getNavigator().current();
+        final FileObjectView currentPosition = view.getNavigator().current();
         if (! matches(currentPosition)) { // the current position of the dialogue doesn't match the selection criteria.
             // find the first item in the list that does match the selection criteria.
             final ListModel model = view.getFoldersList().getModel();
