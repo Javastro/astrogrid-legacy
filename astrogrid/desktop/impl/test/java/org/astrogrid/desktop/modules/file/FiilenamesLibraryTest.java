@@ -49,21 +49,21 @@ public class FiilenamesLibraryTest extends TestCase {
     }
     
     public void testURI() throws Exception {
-        final Map map = PropertyUtils.describe(uri);
+        final Map<String, Object> map = PropertyUtils.describe(uri);
         MapUtils.debugPrint(System.err,"uri",map);
     }
     
     public void testFileName() throws Exception {
-        final Map map = PropertyUtils.describe(fn);
+        final Map<String, Object> map = PropertyUtils.describe(fn);
         MapUtils.debugPrint(System.err,"FileName",map);
     }
     
     public void testURL() throws Exception {
-        final Map map = PropertyUtils.describe(uri.toURL());
+        final Map<String, Object> map = PropertyUtils.describe(uri.toURL());
         MapUtils.debugPrint(System.err,"url",map);
     }
     public void testFile() throws Exception {
-        final Map map = PropertyUtils.describe(file);
+        final Map<String, Object> map = PropertyUtils.describe(file);
         MapUtils.debugPrint(System.err,"file",map);
     }
 }

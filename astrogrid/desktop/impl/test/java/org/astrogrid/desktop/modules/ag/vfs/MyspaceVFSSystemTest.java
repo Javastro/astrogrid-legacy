@@ -19,8 +19,6 @@ import org.astrogrid.desktop.InARTestCase;
 /**
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 5, 200711:38:49 AM
- * @FIXME complete implementation
- * @FIXME replace hard-coded homeIvorn with one found from test context.
  */
 public class MyspaceVFSSystemTest extends InARTestCase {
 
@@ -58,21 +56,21 @@ public class MyspaceVFSSystemTest extends InARTestCase {
 		assertNull(home.getParent());
 		
 		
-		FileObject[] chillun = home.getChildren();
+		final FileObject[] chillun = home.getChildren();
 		assertNotNull(chillun);
 		assertTrue(chillun.length > 0);
 		
-		FileObject o = home.getChild(chillun[0].getName().getBaseName());
+		final FileObject o = home.getChild(chillun[0].getName().getBaseName());
 		assertEquals(o.getName(),chillun[0].getName());
 	// not true - how odd.	assertSame(o,chillun[0]); // should be same object if vfs caching is working.
 	
 	}
 	
 	public void testFileSystem() throws Exception {
-		FileSystem fileSystem = home.getFileSystem();
+		final FileSystem fileSystem = home.getFileSystem();
 		assertNotNull(fileSystem);
 		
-		FileSystemOptions opts = fileSystem.getFileSystemOptions();
+		final FileSystemOptions opts = fileSystem.getFileSystemOptions();
 		assertNull(opts);
 		
 		assertNotNull(fileSystem.getRoot());
@@ -82,7 +80,7 @@ public class MyspaceVFSSystemTest extends InARTestCase {
 	}
 	
 	public void testFileOperations() throws Exception {
-		FileOperations ops = home.getFileOperations();
+		final FileOperations ops = home.getFileOperations();
 		assertNotNull(ops);
 		assertNull(ops.getOperations());
 		
@@ -101,7 +99,7 @@ public class MyspaceVFSSystemTest extends InARTestCase {
 	//canRenameTo
 	// do most of tests for home with a subfolder.
 	// 
-	private void assertIsFolder(FileObject home) throws FileSystemException {
+	private void assertIsFolder(final FileObject home) throws FileSystemException {
 		assertTrue(home.exists());
 		assertTrue(home.getType().equals(FileType.FOLDER));
 	}

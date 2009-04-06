@@ -79,8 +79,8 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 
 	private final ApplicationsInternal apps;
 	private final UIComponentWithMenu parent;
-	private final EventList inputElements;
-	private final EventList outputElements;
+	private final EventList<AbstractTaskFormElement> inputElements;
+	private final EventList<AbstractTaskFormElement> outputElements;
 	private final JComboBox interfaceChooser;
 	private final JToggleButton resourceLabel;
 	private final JPanel bottomPanel;
@@ -146,8 +146,8 @@ private Dimension preservedPreferredSize = null ;
     
     /** return a reference to the adql text form, if one exitsts, else null */
     public AdqlTextFormElement getAdqlFormElement() {
-        for (final Iterator i = inputElements.iterator(); i.hasNext();) {
-            final AbstractTaskFormElement el = (AbstractTaskFormElement) i.next();
+        for (final Iterator<AbstractTaskFormElement> i = inputElements.iterator(); i.hasNext();) {
+            final AbstractTaskFormElement el = i.next();
             if (el instanceof AdqlTextFormElement) {
                 return (AdqlTextFormElement)el;            
             }
@@ -205,7 +205,7 @@ private Dimension preservedPreferredSize = null ;
 		floatFormat = NumberFormat.getNumberInstance();
 		
 		// datastructure of all inputs and outputs.
-		final CompositeList allElements = new CompositeList(); // a view of all parameterrs.
+		final CompositeList<AbstractTaskFormElement> allElements = new CompositeList<AbstractTaskFormElement>(); // a view of all parameterrs.
 		this.inputElements = allElements.createMemberList();
 		allElements.addMemberList(inputElements);
 		this.outputElements = allElements.createMemberList();
@@ -222,9 +222,9 @@ private Dimension preservedPreferredSize = null ;
 		// file upload assistant. - create it, and then leave it alone to do it's thing.
 		this.uploadAssist = new LocalFileUploadAssistant(parent,vfs,allElements);
 		
-		final JEventListPanel inputsPanel = new JEventListPanel(inputElements, new ElementFormat());
+		final JEventListPanel<AbstractTaskFormElement> inputsPanel = new JEventListPanel<AbstractTaskFormElement>(inputElements, new ElementFormat());
 		inputsPanel.setBorder(BorderFactory.createEmptyBorder());
-		final JEventListPanel outputsPanel = new JEventListPanel(outputElements, new ElementFormat());
+		final JEventListPanel<AbstractTaskFormElement> outputsPanel = new JEventListPanel<AbstractTaskFormElement>(outputElements, new ElementFormat());
 		outputsPanel.setBorder(BorderFactory.createEmptyBorder());
 
 		interfaceChooser = new JComboBox();
@@ -428,7 +428,7 @@ private Dimension preservedPreferredSize = null ;
 	    private String interfaceName;
 	    /** map to cache some info about ui state of different form elements 
 	     *  - a cache of interfaceName -> InterfaceState objects*/	    
-	    private final Map m= new HashMap();
+	    private final Map<String, InterfaceState> m= new HashMap<String, InterfaceState>();
 	    
 	// state changing operations.
 	    /** empty the model */
@@ -455,7 +455,7 @@ private Dimension preservedPreferredSize = null ;
 	        // now onto the new interface
 	        this.interfaceName = interfacename;
 	     // see if we've got a previously worked-on tool for this interface.
-	        final InterfaceState previously = (InterfaceState)m.get(interfaceName);
+	        final InterfaceState previously = m.get(interfaceName);
 	        if (previously != null) {
 	            if (logger.isDebugEnabled()) {
 	                logger.debug("Found previous state for inteface" + interfaceName + " " + previously);
@@ -483,7 +483,7 @@ private Dimension preservedPreferredSize = null ;
          */
         private void rememberCurrent() {
             if (interfaceName != null) { // else we weren'te editing anything previously.
-	            final InterfaceState leaving = (InterfaceState)m.get(interfaceName);
+	            final InterfaceState leaving = m.get(interfaceName);
 	            if (leaving != null) {
 	                leaving.collapsed = ! getBottomPane().isVisible();
 	                logger.debug("Recording window state of interface we're leaving as " + leaving.collapsed);
@@ -535,8 +535,8 @@ private Dimension preservedPreferredSize = null ;
          * 
          */
         public boolean isAdqlInterface() {
-            for (final Iterator i = inputElements.iterator(); i.hasNext();) {
-                final AbstractTaskFormElement el = (AbstractTaskFormElement) i.next();
+            for (final Iterator<AbstractTaskFormElement> i = inputElements.iterator(); i.hasNext();) {
+                final AbstractTaskFormElement el = i.next();
                 if (el instanceof AdqlTextFormElement) {
                     return true;
                 }            
@@ -797,7 +797,7 @@ private Dimension preservedPreferredSize = null ;
 	private static abstract class FiddlyParameterManager implements ActionListener {
 		private final Param p;
 		/** the list (input or output) containing all elements */
-		private final List elementList;
+		private final List<AbstractTaskFormElement> elementList;
 		/** the list contaning all the elelemtns this manager is looking after */
 		private final ArrayStack myElementStack = new ArrayStack();
 		/**
@@ -805,7 +805,7 @@ private Dimension preservedPreferredSize = null ;
 		 * @param el the optional / repeated elemenet
 		 * @param ref information on how this parameter may be repeated.
 		 */
-		public FiddlyParameterManager(final List elementList, final AbstractTaskFormElement el, final Param p) {
+		public FiddlyParameterManager(final List<AbstractTaskFormElement> elementList, final AbstractTaskFormElement el, final Param p) {
 		    this.p = p;
 		    logger.debug(p.ref.getRef() + " is a fiddly parameter");
 		    this.elementList = elementList;

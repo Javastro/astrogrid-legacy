@@ -25,14 +25,14 @@ import javax.xml.transform.URIResolver;
  * @since    27 Feb 2008
  */
 public class WorkaroundTransformerFactory extends TransformerFactory {
-    private static Class baseClass;
+    private static Class<? extends TransformerFactory> baseClass;
     private final TransformerFactory base;
 
     /**
      * No-arg constructor used by JAXP to instantiate this factory.
      */
     public WorkaroundTransformerFactory() throws InstantiationException, IllegalAccessException {
-        base = (TransformerFactory) baseClass.newInstance();
+        base = baseClass.newInstance();
     }
 
     @Override

@@ -188,7 +188,7 @@ public final class ResourceStreamParser implements Iterator {
 			logger.debug("no resource found");
 			return EMPTY_RESOURCE;
 		}
-		final Set  ifaces = new HashSet();
+		final Set<Class>  ifaces = new HashSet<Class>();
 		ifaces.add(Resource.class);
 		// found a resource, better parse it then.
 		final HashMap m = new HashMap();
@@ -245,22 +245,22 @@ public final class ResourceStreamParser implements Iterator {
 			}
 		}
 	
-		final List validations = new ArrayList(1);
-		final List rights = new ArrayList(1);
+		final List<Validation> validations = new ArrayList<Validation>(1);
+		final List<String> rights = new ArrayList<String>(1);
 		final List capabilities = new ArrayList(3);
 		//the following could be lazily initialized.. might save some space / object creation..
 		// used in organization, and data collection
 		final List facilities = new ArrayList(1);
 		final List instruments = new ArrayList(1);
 		// used in data collection
-		final List catalogues = new ArrayList(1);
-		final List formats = new ArrayList(2);
+		final List<Catalog> catalogues = new ArrayList<Catalog>(1);
+		final List<Format> formats = new ArrayList<Format>(2);
 		// used in catalogue service.
-		final List tables = new ArrayList(4);
+		final List<TableBean> tables = new ArrayList<TableBean>(4);
 		// used in registry service
-		final List managedAuthorities = new ArrayList(2);
+		final List<String> managedAuthorities = new ArrayList<String>(2);
 		// used in appllications
-		final List voStandards = new ArrayList(1);
+		final List<URI> voStandards = new ArrayList<URI>(1);
 		// case for each top-level element.
 		// if only java had a decent switch statement...
 		for (in.next(); ! (in.isEndElement() && in.getLocalName().equals("Resource")); in.next()){
@@ -407,7 +407,7 @@ public final class ResourceStreamParser implements Iterator {
 		if (ifaces.contains(Application.class)) {
 		    m.put("getApplicationCapabilities",voStandards.toArray(new URI[voStandards.size()]));
 		}
-		final Object o =  Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), (Class[])ifaces.toArray(new Class[ifaces.size()]), new Handler(m));
+		final Object o =  Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), ifaces.toArray(new Class[ifaces.size()]), new Handler(m));
 		logger.debug("Returning");
 		logger.debug(o);
 		return o;
@@ -431,13 +431,13 @@ public final class ResourceStreamParser implements Iterator {
         final String xsiType = in.getAttributeValue(XSI_NS,"type");
         final String standardID =  in.getAttributeValue(null,"standardID");     
         final Capability c;
-        final List interfaces = new ArrayList(2);
-        final List validations = new ArrayList(1);
-        List optionalProtols = null;
+        final List<Interface> interfaces = new ArrayList<Interface>(2);
+        final List<Validation> validations = new ArrayList<Validation>(1);
+        List<String> optionalProtols = null;
         List stapFormats = null;
-        List ssapDataSource = null;
-        List ssapCreationType = null;
-        List ssapSupportedFrame = null;
+        List<String> ssapDataSource = null;
+        List<String> ssapCreationType = null;
+        List<String> ssapSupportedFrame = null;
         
         if (StringUtils.contains(xsiType,"Harvest")  
                 && StandardIds.REGISTRY_1_0.equals(standardID)) {
@@ -448,7 +448,7 @@ public final class ResourceStreamParser implements Iterator {
         } else if (StringUtils.contains(xsiType,"Search")
                 && StandardIds.REGISTRY_1_0.equals(standardID)) {
             c = new SearchCapability();
-            optionalProtols = new ArrayList(1);            
+            optionalProtols = new ArrayList<String>(1);            
         } else if (StringUtils.contains(xsiType,"CeaCapability")
                 || StandardIds.CEA_1_0.equals(standardID)) {
             c = new CeaServerCapability();
@@ -459,9 +459,9 @@ public final class ResourceStreamParser implements Iterator {
                 || StringUtils.contains(xsiType,"ProtoSpectralAccess")
                 ||StandardIds.SSAP_1_0.equals(standardID)) {
             c = new SsapCapability();
-            ssapDataSource = new ArrayList(3);
-            ssapCreationType = new ArrayList(3);
-            ssapSupportedFrame = new ArrayList(3);
+            ssapDataSource = new ArrayList<String>(3);
+            ssapCreationType = new ArrayList<String>(3);
+            ssapSupportedFrame = new ArrayList<String>(3);
         } else if (StringUtils.contains(xsiType,"SimpleTimeAccess") //@todo replace with contracts
                 || StandardIds.STAP_1_0.equals(standardID)) {
             c = new StapCapability();
@@ -627,19 +627,19 @@ public final class ResourceStreamParser implements Iterator {
             logger.debug("Capability - XMLStreamException",x);
         }
         // store array-values elements.
-        c.setValidationLevel((Validation[])validations.toArray(new Validation[validations.size()]));
-        c.setInterfaces((Interface[])interfaces.toArray(new Interface[interfaces.size()]));
+        c.setValidationLevel(validations.toArray(new Validation[validations.size()]));
+        c.setInterfaces(interfaces.toArray(new Interface[interfaces.size()]));
         if (c instanceof SearchCapability) {
             final SearchCapability s = (SearchCapability)c;
-            s.setOptionalProtocol((String[])optionalProtols.toArray(new String[optionalProtols.size()]));
+            s.setOptionalProtocol(optionalProtols.toArray(new String[optionalProtols.size()]));
         } else if (c instanceof StapCapability) {
             final StapCapability s = (StapCapability)c;
             s.setSupportedFormats((String[])stapFormats.toArray(new String[stapFormats.size()]));
         } else if (c instanceof SsapCapability) {
             final SsapCapability s = (SsapCapability)c;
-            s.setDataSources((String[])ssapDataSource.toArray(new String[ssapDataSource.size()]));
-            s.setCreationTypes((String[])ssapCreationType.toArray(new String[ssapCreationType.size()]));
-            s.setSupportedFrames((String[])ssapSupportedFrame.toArray(new String[ssapSupportedFrame.size()]));
+            s.setDataSources(ssapDataSource.toArray(new String[ssapDataSource.size()]));
+            s.setCreationTypes(ssapCreationType.toArray(new String[ssapCreationType.size()]));
+            s.setSupportedFrames(ssapSupportedFrame.toArray(new String[ssapSupportedFrame.size()]));
             }
         return c;
     }
@@ -923,7 +923,7 @@ public final class ResourceStreamParser implements Iterator {
 	
 	protected Coverage parseCoverage() {
 		final Coverage c = new Coverage();
-		final List wavebands = new ArrayList(4);
+		final List<String> wavebands = new ArrayList<String>(4);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("coverage")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -960,16 +960,16 @@ public final class ResourceStreamParser implements Iterator {
 		} catch (final XMLStreamException x) {
 			logger.debug("Coverage - XMLStreamException",x);
 		} // end Curation;
-		c.setWavebands((String[])wavebands.toArray(new String[wavebands.size()]));
+		c.setWavebands(wavebands.toArray(new String[wavebands.size()]));
 		return c;
 	}
 	
 	protected Content parseContent() {
 		final Content c = new Content();
-		final List subject = new ArrayList(4);
-		final List type = new ArrayList(4);
-		final List contentLevel = new ArrayList(4);
-		final List relationship = new ArrayList(2);
+		final List<String> subject = new ArrayList<String>(4);
+		final List<String> type = new ArrayList<String>(4);
+		final List<String> contentLevel = new ArrayList<String>(4);
+		final List<Relationship> relationship = new ArrayList<Relationship>(2);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("content")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -1016,10 +1016,10 @@ public final class ResourceStreamParser implements Iterator {
 		} catch (final XMLStreamException x) {
 			logger.debug("Curation - XMLStreamException",x);
 		} // end Curation;
-		c.setSubject((String[])subject.toArray(new String[subject.size()]));
-		c.setType((String[])type.toArray(new String[type.size()]));		
-		c.setContentLevel((String[])contentLevel.toArray(new String[contentLevel.size()]));			
-		c.setRelationships((Relationship[])relationship.toArray(new Relationship[relationship.size()]));
+		c.setSubject(subject.toArray(new String[subject.size()]));
+		c.setType(type.toArray(new String[type.size()]));		
+		c.setContentLevel(contentLevel.toArray(new String[contentLevel.size()]));			
+		c.setRelationships(relationship.toArray(new Relationship[relationship.size()]));
 		return c;
 	}
 	
@@ -1064,10 +1064,10 @@ public final class ResourceStreamParser implements Iterator {
 
 	protected Curation parseCuration() {
 		final Curation c = new Curation();
-		final List creator = new ArrayList(2);
+		final List<Creator> creator = new ArrayList<Creator>(2);
 		final List contributor = new ArrayList(2);
-		final List contact = new ArrayList(2);
-		final List date = new ArrayList(2);
+		final List<Contact> contact = new ArrayList<Contact>(2);
+		final List<Date> date = new ArrayList<Date>(2);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("curation")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -1096,10 +1096,10 @@ public final class ResourceStreamParser implements Iterator {
 		} catch (final XMLStreamException x) {
 			logger.debug("Curation - XMLStreamException",x);
 		} // end Curation;
-		c.setCreators((Creator[])creator.toArray(new Creator[creator.size()]));
+		c.setCreators(creator.toArray(new Creator[creator.size()]));
 		c.setContributors((ResourceName[])contributor.toArray(new ResourceName[contributor.size()]));
-		c.setContacts((Contact[])contact.toArray(new Contact[contact.size()]));
-		c.setDates((Date[])date.toArray(new Date[date.size()]));
+		c.setContacts(contact.toArray(new Contact[contact.size()]));
+		c.setDates(date.toArray(new Date[date.size()]));
 		return c;
 	}
 	
@@ -1233,7 +1233,7 @@ public final class ResourceStreamParser implements Iterator {
 	
 
 	private URI[] parseManagedApplications() {
-		final List result = new ArrayList(4);
+		final List<URI> result = new ArrayList<URI>(4);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("managedApplications")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -1260,7 +1260,7 @@ public final class ResourceStreamParser implements Iterator {
 			} catch (final XMLStreamException x) {
 				logger.debug("Managed Applications. - XMLStreamException",x);
 			}		
-			return (URI[])result.toArray(new URI[result.size()]);
+			return result.toArray(new URI[result.size()]);
 	}
 
 	
@@ -1271,7 +1271,7 @@ public final class ResourceStreamParser implements Iterator {
 	private Catalog parseCatalog() {
 		final Catalog c = new Catalog();
 		
-		final List tables = new ArrayList(2);
+		final List<TableBean> tables = new ArrayList<TableBean>(2);
 		try {
 		for (in.next(); !( in.isEndElement() && in.getLocalName().equals("catalog")); in.next()){
 			if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -1294,14 +1294,14 @@ public final class ResourceStreamParser implements Iterator {
 		} catch (final XMLStreamException x) {
 			logger.debug("db - XMLStreamException",x);
 		}
-		c.setTables((TableBean[])tables.toArray(new TableBean[tables.size()]));
+		c.setTables(tables.toArray(new TableBean[tables.size()]));
 		return c;	
 	}
 	
 	private TableBean parseTable() {
 		String name = null;
 		String description = null;
-		final List columns = new ArrayList(10);
+		final List<ColumnBean> columns = new ArrayList<ColumnBean>(10);
 		final String role = in.getAttributeValue(null,"role");
 		try {
 		for (in.next(); !( in.isEndElement() && in.getLocalName().equals("table")); in.next()){
@@ -1326,7 +1326,7 @@ public final class ResourceStreamParser implements Iterator {
 			logger.debug("table - XMLStreamException",x);
 		}
 		return new TableBean(name,description,
-				(ColumnBean[])columns.toArray(new ColumnBean[columns.size()])
+				columns.toArray(new ColumnBean[columns.size()])
 				,role
 						);
 	}
@@ -1371,8 +1371,8 @@ public final class ResourceStreamParser implements Iterator {
 	}
 
 	private void parseCeaApplication(final Map m) {
-		final List params = new ArrayList(10);
-		final List ifaces = new ArrayList(3);
+		final List<ParameterBean> params = new ArrayList<ParameterBean>(10);
+		final List<InterfaceBean> ifaces = new ArrayList<InterfaceBean>(3);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("applicationDefinition")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -1405,8 +1405,8 @@ public final class ResourceStreamParser implements Iterator {
 	    if (StringUtils.isNotBlank(arrSz)) {
 	        pb.setArraysize(arrSz);
 	    }
-		final List options = new ArrayList(3);
-		final List defValues = new ArrayList(1);
+		final List<String> options = new ArrayList<String>(3);
+		final List<String> defValues = new ArrayList<String>(1);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("parameterDefinition")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -1447,17 +1447,17 @@ public final class ResourceStreamParser implements Iterator {
 			} catch (final XMLStreamException x) {
 				logger.debug("parameterBean - XMLStreamException",x);
 			}			
-			pb.setDefaultValues((String[])defValues.toArray(new String[defValues.size()]));
+			pb.setDefaultValues(defValues.toArray(new String[defValues.size()]));
 			if (options.size() != 0) {
-			    pb.setOptions((String[])options.toArray(new String[options.size()]));
+			    pb.setOptions(options.toArray(new String[options.size()]));
 			}
 			return pb;
 	}
 	
 	private InterfaceBean parseCeaInterface() {
 		boolean inInput = true;
-		final List inputs = new ArrayList(8);
-		final List outputs = new ArrayList(4);
+		final List<ParameterReferenceBean> inputs = new ArrayList<ParameterReferenceBean>(8);
+		final List<ParameterReferenceBean> outputs = new ArrayList<ParameterReferenceBean>(4);
 		final String name = in.getAttributeValue(null,"id");
 		String description = null;
 		try {
@@ -1497,8 +1497,8 @@ public final class ResourceStreamParser implements Iterator {
 				logger.debug("table - XMLStreamException",x);
 			}		
 			return new InterfaceBean (name, description
-					, (ParameterReferenceBean[])inputs.toArray(new ParameterReferenceBean[inputs.size()])
-					, (ParameterReferenceBean[])outputs.toArray(new ParameterReferenceBean[outputs.size()])
+					, inputs.toArray(new ParameterReferenceBean[inputs.size()])
+					, outputs.toArray(new ParameterReferenceBean[outputs.size()])
 
 							);		
 	}
@@ -1510,18 +1510,18 @@ public final class ResourceStreamParser implements Iterator {
 	protected Interface parseInterface() {
 	    final String type = in.getAttributeValue(XSI_NS,"type");
 		final Interface iface;
-		final List urls = new ArrayList(2);
-		final List security = new ArrayList(2);
-		List wsdlURLs = null;
-		List params = null;
+		final List<AccessURL> urls = new ArrayList<AccessURL>(2);
+		final List<SecurityMethod> security = new ArrayList<SecurityMethod>(2);
+		List<URI> wsdlURLs = null;
+		List<InputParam> params = null;
 		if (StringUtils.contains(type,"ParamHTTP")) {
 		    iface = new ParamHttpInterface();
-		    params = new ArrayList(4);
+		    params = new ArrayList<InputParam>(4);
 		} else if (StringUtils.contains(type,"WebService") 
 		        || StringUtils.contains(type,"OAISOAP") // special case for registry.
 		        ) {
 		    iface = new WebServiceInterface();
-		    wsdlURLs = new ArrayList(1);
+		    wsdlURLs = new ArrayList<URI>(1);
 		} else {
 		    iface = new Interface();
 		}
@@ -1560,12 +1560,12 @@ public final class ResourceStreamParser implements Iterator {
 		} catch (final XMLStreamException x) {
 			logger.debug("Capability - XMLStreamException",x);
 		}
-		iface.setAccessUrls((AccessURL[])urls.toArray(new AccessURL[urls.size()]));
-		iface.setSecurityMethods((SecurityMethod[])security.toArray(new SecurityMethod[security.size()]));
+		iface.setAccessUrls(urls.toArray(new AccessURL[urls.size()]));
+		iface.setSecurityMethods(security.toArray(new SecurityMethod[security.size()]));
 		if (iface instanceof WebServiceInterface) {
-		    ((WebServiceInterface)iface).setWsdlURLs((URI[])wsdlURLs.toArray(new URI[wsdlURLs.size()]));
+		    ((WebServiceInterface)iface).setWsdlURLs(wsdlURLs.toArray(new URI[wsdlURLs.size()]));
 		} else if (iface instanceof ParamHttpInterface) {
-		    ((ParamHttpInterface)iface).setParams((InputParam[])params.toArray(new InputParam[params.size()]));
+		    ((ParamHttpInterface)iface).setParams(params.toArray(new InputParam[params.size()]));
 		}
 		return iface;
 	}

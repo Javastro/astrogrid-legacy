@@ -31,7 +31,7 @@ import ca.odell.glazedlists.FunctionList;
 public class LocalFileUploadAssistant implements PropertyChangeListener, FunctionList.AdvancedFunction{
     
 
-    public LocalFileUploadAssistant(final UIComponent parent, final FileSystemManager vfs, final EventList components) {
+    public LocalFileUploadAssistant(final UIComponent parent, final FileSystemManager vfs, final EventList<AbstractTaskFormElement> components) {
         super();
         this.parent = parent;
         this.vfs = vfs;

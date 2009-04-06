@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.19 2008/12/01 23:32:16 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.20 2009/04/06 11:43:20 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -148,7 +148,7 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
     // copied from rmiLite impl of Server
     private void publish(final Class iface, final Object impl, final Class[] exportedInterfaces) throws RemoteException {
-    	final RemoteInvocationHandler handler = new SessionAwareRemoteInvocationHandlerImpl(impl, new HashSet(Arrays.asList(exportedInterfaces)));
+    	final RemoteInvocationHandler handler = new SessionAwareRemoteInvocationHandlerImpl(impl, new HashSet<Class>(Arrays.asList(exportedInterfaces)));
     	registry.rebind(iface.getName(), handler);
     }
 
@@ -200,7 +200,7 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 		 * @param exportedInterfaces
 		 * @throws RemoteException
 		 */
-		public SessionAwareRemoteInvocationHandlerImpl(final Object impl, final Set exportedInterfaces) throws RemoteException {
+		public SessionAwareRemoteInvocationHandlerImpl(final Object impl, final Set<Class> exportedInterfaces) throws RemoteException {
 			super(impl, exportedInterfaces);
 		}
 
@@ -306,6 +306,11 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.20  2009/04/06 11:43:20  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.19  2008/12/01 23:32:16  nw
 used commons.io utilities
 

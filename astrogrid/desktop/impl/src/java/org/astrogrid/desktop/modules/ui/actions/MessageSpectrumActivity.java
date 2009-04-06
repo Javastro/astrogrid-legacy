@@ -6,20 +6,19 @@ package org.astrogrid.desktop.modules.ui.actions;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.JMenuItem;
 
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.system.messaging.SpectrumMessageSender;
 import org.astrogrid.desktop.modules.system.messaging.SpectrumMessageType;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.astrogrid.samp.Response;
 
@@ -40,19 +39,15 @@ public class MessageSpectrumActivity extends AbstractFileActivity {
             setText("Attempt to " + Character.toLowerCase(title.charAt(0)) + title.substring(1));
         }
         @Override
-        protected boolean invokable(final FileObject f) {
-            try {
+        protected boolean invokable(final FileObjectView f) {
                 return ! super.invokable(f) && f.getType().hasContent();
-            } catch (final FileSystemException x) {
-                return false;
-            }
         }
         protected boolean invokable(final Resource r) {
             return false ; // only ever for files.
         }
         //don't allow invokcation on multiple resources though - too dodgy.
         @Override
-        public void manySelected(final FileObject[] list) {
+        public void manySelected(final FileObjectView[] list) {
             noneSelected();
         }
         
@@ -91,24 +86,19 @@ public class MessageSpectrumActivity extends AbstractFileActivity {
         return super.createHidingMenuItem();
     }
 	@Override
-    protected boolean invokable(final FileObject f) {
-		try {	    
-			return VoDataFlavour.MIME_FITS_SPECTRUM.equals(f.getContent().getContentInfo().getContentType());
+    protected boolean invokable(final FileObjectView f) {
+			return VoDataFlavour.MIME_FITS_SPECTRUM.equals(f.getContentType());
 
-		} catch (final FileSystemException x) {
-			return false;
-		}
 	}
 	
 	@Override
     public void actionPerformed(final ActionEvent e) {
-		final List l = computeInvokable();	
+		final List<FileObjectView> l = computeInvokable();	
 		final int sz = l.size();	
 		final Runnable r= new Runnable() {
 
 		    public void run() {
-		        for (final Iterator i = l.iterator(); i.hasNext();) {
-		            final FileObject f = (FileObject) i.next();
+		        for (final FileObjectView f: l) {
 		            sendLoadSpectrumMessage(f);		            
 		        }	
 		    }
@@ -116,7 +106,7 @@ public class MessageSpectrumActivity extends AbstractFileActivity {
         confirmWhenOverThreshold(sz,"Send all " + sz + " files?",r);
 	}
 	/** extended verion, when additional metadata is available */
-	private void sendLoadSpectrumMessage(final FileObject f) {
+	private void sendLoadSpectrumMessage(final FileObjectView fv) {
 		(new BackgroundWorker<Response>(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 //		    {
 //		        setTransient(true);
@@ -124,6 +114,7 @@ public class MessageSpectrumActivity extends AbstractFileActivity {
 			@Override
             protected Response construct() throws Exception {
 				// see if an astroscopeFileObject is present - if so, use this as a source of richer metadata.
+			    final FileObject f = fv.getFileObject();
                 final AstroscopeFileObject astroscopeFileObject = AstroscopeFileObject.findAstroscopeFileObject(f);
                 final FileObject innermost = AstroscopeFileObject.findInnermostFileObject(f);
 				final URL url = innermost.getURL();

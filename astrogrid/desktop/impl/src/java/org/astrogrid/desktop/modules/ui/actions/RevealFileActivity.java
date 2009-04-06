@@ -9,7 +9,9 @@ import java.util.List;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.FileManagerFactory;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 /**Reveal a file in fileexplorer.
@@ -26,12 +28,10 @@ public class RevealFileActivity extends AbstractFileActivity {
 	
     // applies to all non-local files and folders.
 	@Override
-    protected boolean invokable(final FileObject f) { 
-	    final String innerScheme = AstroscopeFileObject.findInnermostFileObject(f).getName().getScheme();
-            return AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
-                    && 
-                    !( innerScheme.equals("tmp") || innerScheme.equals("http")
-                    );
+    protected boolean invokable(final FileObjectView f) { 
+            return f.isDelegate() 
+                    && !("tmp".equals(f.getInnermostScheme()) || "http".equals(f.getInnermostScheme()) )
+                    ;
 	}
 
 
@@ -47,15 +47,25 @@ public class RevealFileActivity extends AbstractFileActivity {
 
     // can only handle a single selection.
     @Override
-    public void manySelected(final FileObject[] list) {
+    public void manySelected(final FileObjectView[] list) {
         noneSelected();
     }
     
 	@Override
     public void actionPerformed(final ActionEvent e) {
-		final List l = computeInvokable();
-        mgr.show(AstroscopeFileObject.findInnermostFileObject((FileObject)l.get(0)));
-		
+		final List<FileObjectView> l = computeInvokable();
+		(new BackgroundWorker<FileObjectView>(uiParent.get(),"Finding target file object") {
+
+            @Override
+            protected FileObjectView construct() throws Exception {
+                final FileObject fileObject = AstroscopeFileObject.findInnermostFileObject(l.get(0).getFileObject());
+                return new FileObjectView(fileObject,null);
+            }
+            @Override
+            protected void doFinished(final FileObjectView result) {
+                mgr.show(result);
+            }
+		}).start();		
 	}
 	
 	

@@ -1160,7 +1160,7 @@ public class ResourceTree extends JTree {
                 throw new InvalidArgumentException("Unknow type dropped " + o.getClass().getName());
             }
             try {
-                final List result = new ArrayList();
+                final List<URI> result = new ArrayList<URI>();
                 it = IOUtils.lineIterator(r);
                 while (it.hasNext()) {
                     final String line = it.nextLine();               
@@ -1177,7 +1177,7 @@ public class ResourceTree extends JTree {
                 if (result.isEmpty()) {
                     throw new InvalidArgumentException("No resource ids found");
                 }
-                return (URI[])result.toArray(new URI[result.size()]);
+                return result.toArray(new URI[result.size()]);
             } finally {               
                LineIterator.closeQuietly(it);
                 

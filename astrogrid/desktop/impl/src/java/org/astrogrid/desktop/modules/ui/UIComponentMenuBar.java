@@ -469,7 +469,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
      */
     public class ActionBridge implements  PropertyChangeListener, ActionListener {
         private JComponent focusOwner = null;
-        List managed = new ArrayList();
+        List<JMenuItem> managed = new ArrayList<JMenuItem>();
         private final KeyboardFocusManager manager;
         public ActionBridge() {
             manager = KeyboardFocusManager.
@@ -499,14 +499,14 @@ public abstract class UIComponentMenuBar extends JMenuBar {
                 final ActionMap actMap = focusOwner.getActionMap();
                 //System.err.println(Arrays.asList(actMap.allKeys()));
                 for(int i = 0; i < managed.size(); i++) {                    
-                    final JMenuItem it = (JMenuItem)managed.get(i);
+                    final JMenuItem it = managed.get(i);
                     final Action nu = actMap.get(it.getActionCommand());
                     it.setAction(nu); // as we've overridden setAction, this just listens to enabled changes
                 }
             } else {                
                 focusOwner = null;
                 for(int i = 0; i < managed.size(); i++) {
-                    final JMenuItem it = (JMenuItem)managed.get(i);
+                    final JMenuItem it = managed.get(i);
                     it.setAction(null);
                 }                
                 

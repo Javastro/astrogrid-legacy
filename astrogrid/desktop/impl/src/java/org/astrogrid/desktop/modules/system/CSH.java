@@ -102,8 +102,8 @@ public class CSH {
     }
 
 	
-    static private java.util.Map comps;
-    static private java.util.Map parents;
+    static private java.util.Map<Object, Hashtable> comps;
+    static private java.util.Map<Component, CellRendererPane> parents;
     //static private java.util.Vector managers = new Vector();
     /**
      * Returns the dynamic HelpID for a object. The method passes the arguments
@@ -141,7 +141,7 @@ public class CSH {
                 helpID = (String) ((JComponent)comp).getClientProperty("HelpID");
             } else if ((comp instanceof Component) || (comp instanceof MenuItem)) {
                 if (comps != null) {
-                    final Hashtable clientProps = (Hashtable)comps.get(comp);
+                    final Hashtable clientProps = comps.get(comp);
                     if (clientProps !=null) {
                         helpID = (String) clientProps.get("HelpID");
                     }
@@ -206,14 +206,14 @@ public class CSH {
             
             // Initialize as necessary
             if (comps == null) {
-                comps = new WeakHashMap(5);
+                comps = new WeakHashMap<Object, Hashtable>(5);
             }
             
             // See if this component has already set some client properties
             // If so update.
             // If not then create the client props (as needed) and add to
             // the internal Hashtable of components and properties
-            Hashtable clientProps = (Hashtable) comps.get(comp);
+            Hashtable clientProps = comps.get(comp);
             if (clientProps != null) {
                 if (helpID != null) {
                     clientProps.put("HelpID", helpID);
@@ -535,7 +535,7 @@ public class CSH {
                 parents = new WeakHashMap(4) {
                     @Override
                     public Object put(final Object key, final Object value) {
-                        return super.put(key, new WeakReference(value));
+                        return super.put(key, new WeakReference<Object>(value));
                     }
                     @Override
                     public Object get(final Object key) {
@@ -845,11 +845,11 @@ public class CSH {
             }
             
             // change all the cursors on all windows
-            final Vector topComponents = getTopContainers(e.getSource());
+            final Vector<Component> topComponents = getTopContainers(e.getSource());
             cursors = null;
             
-                cursors = new Hashtable();
-                final Enumeration enm = topComponents.elements();
+                cursors = new Hashtable<Component, Cursor>();
+                final Enumeration<Component> enm = topComponents.elements();
                 while (enm.hasMoreElements()) {
                     setAndStoreCursors((Container)enm.nextElement(), onItemCursor);
                 }
@@ -869,7 +869,7 @@ public class CSH {
             }
             
             // restore the old cursors
-                final Enumeration containers = topComponents.elements();
+                final Enumeration<Component> containers = topComponents.elements();
                 while (containers.hasMoreElements()) {
                     resetAndRestoreCursors((Container)containers.nextElement());
                 }
@@ -877,12 +877,12 @@ public class CSH {
             cursors = null;
         }
         
-        private Hashtable cursors;
+        private Hashtable<Component, Cursor> cursors;
         
         /*
          * Get all top level containers to change it's cursors
          */
-        private static Vector getTopContainers(final Object source) {
+        private static Vector<Component> getTopContainers(final Object source) {
             // This method is used to obtain all top level components of application
             // for which the changing of cursor to question mark is wanted.
             // Method Frame.getFrames() is used to get list of Frames and
@@ -894,14 +894,14 @@ public class CSH {
             // in a Applet, cursor for applets is not changed to question mark. Only for
             // Frames, Windows and Dialogs is cursor changed properly.
             
-            final Vector containers = new Vector();
+            final Vector<Component> containers = new Vector<Component>();
             Component topComponent = null;
             topComponent = getRoot(source);
             if (topComponent instanceof Applet) {
                 try {
                     final Enumeration applets = ((Applet)topComponent).getAppletContext().getApplets();
                     while (applets.hasMoreElements()) {
-                        containers.add(applets.nextElement());
+                        containers.add((Component)applets.nextElement());
                     }
                 } catch (final NullPointerException npe) {
                     containers.add(topComponent);
@@ -975,7 +975,7 @@ public class CSH {
             if (comp == null) {
                 return;
             }
-            final Cursor oldCursor = (Cursor) cursors.get(comp);
+            final Cursor oldCursor = cursors.get(comp);
             if (oldCursor != null) {
                 debug("restored cursor " + oldCursor + " on " + comp);
                 comp.setCursor(oldCursor);

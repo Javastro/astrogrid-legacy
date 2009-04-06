@@ -10,11 +10,10 @@ import java.util.List;
 import javax.swing.KeyStroke;
 
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
-import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
-import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /**Duplicate one or more files.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -23,13 +22,10 @@ import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 public class DuplicateActivity extends AbstractFileActivity {
 
     @Override
-    protected boolean invokable(final FileObject f) {
-        try {
-            return (! AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
-                    && f.getParent().isWriteable());
-        } catch (final FileSystemException x) {
-            return false;
-        }
+    protected boolean invokable(final FileObjectView f) {
+            return (! f.isDelegate()
+                    //&& f.getParent().isWritable(); //should really be testing that the parent is writable
+                    );
     }
     
     private final FileSystemManager vfs;
@@ -45,19 +41,29 @@ public class DuplicateActivity extends AbstractFileActivity {
     
     @Override
     public void actionPerformed(final ActionEvent e) {
-        final List l = computeInvokable();
+        final List<FileObjectView> l = computeInvokable();
         // each item in the list is going to be a file object. Construct a command array...
         final CopyCommand[] commands = new CopyCommand[l.size()];
         for (int i = 0; i < l.size(); i++) {
-            commands[i] = new CopyCommand((FileObject)l.get(i));
+            commands[i] = new CopyCommand(l.get(i));
         }
-        try {
-            final FileObject parent = ((FileObject)l.get(0)).getParent();
-            new BulkCopyWorker(vfs,uiParent.get(),parent,commands).start();
-        } catch (final FileSystemException x) {
-            uiParent.get().showTransientError("Unable to duplicate",ExceptionFormatter.formatException(x));
-        }
+        // find the parent.
+        (new BackgroundWorker<FileObjectView>(uiParent.get(),"Finding parent folder") {
+
+            @Override
+            protected FileObjectView construct() throws Exception {
+                final FileObject pfo = l.get(0).getFileObject().getParent();
+                return new FileObjectView(pfo,null);
+            }
+            // found parent. now set off bulk copy worker.
+            @Override
+            protected void doFinished(final FileObjectView fov) {                
+                new BulkCopyWorker(vfs,uiParent.get(),fov,commands).start();
+            }
+        }).start();
+
     }
+    
     
 
 }

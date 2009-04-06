@@ -29,15 +29,15 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 	@Override
     protected void setUp() throws Exception {
 		super.setUp();
-		prefs = new HashMap();
+		prefs = new HashMap<String, Preference>();
 		pref1 = new Preference();
 		pref1.setName("a");
 		pref1.setDefaultValue("a");
 		pref2 = new Preference();
 		pref2.setName("b");
 		pref2.setDefaultValue("b");
-		root = new ArrayList();
-		Class clazz = this.getClass();
+		root = new ArrayList<Object>();
+		Class<? extends PreferenceManagerImplUnitTest> clazz = this.getClass();
 		Preferences javaPrefs = Preferences.userNodeForPackage(clazz);
 		javaPrefs.removeNode();
 		javaPrefs.flush();
@@ -62,8 +62,8 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 	protected PreferenceManagerImpl pMan;
 	protected Preference pref1;
 	protected Preference pref2;
-	protected Map prefs;
-	protected List root;
+	protected Map<String, Preference> prefs;
+	protected List<Object> root;
 	protected SymbolSource symbols;
 	
 	public void testInitialization() throws Exception {
@@ -80,13 +80,13 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		
 		try {
 
-			pMan = new PreferenceManagerImpl(prefs,new ArrayList(), symbols);
+			pMan = new PreferenceManagerImpl(prefs,new ArrayList<Object>(), symbols);
 		fail("expected to chuck");
 		} catch (IllegalArgumentException e) {
 			// ok
 		}
 		try {
-			List l = new ArrayList();
+			List<Object> l = new ArrayList<Object>();
 			l.add(new Object());
 			pMan = new PreferenceManagerImpl(prefs,l, symbols);
 			fail("expected to chuck");
@@ -320,7 +320,7 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		// add an arbitrary property.
 		pMan.setKey("key", "value");
 	
-		Map m = pMan.list();
+		Map<String, String> m = pMan.list();
 		assertNotNull(m);
 		assertEquals(2,m.size());
 		assertTrue(m.containsKey(pref1.getName()));
@@ -331,7 +331,7 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		
 		// while we're at it, test list keys too.		
 		String[] keys = pMan.listKeys();
-		assertEquals(m.keySet(),new HashSet(Arrays.asList(keys)));			
+		assertEquals(m.keySet(),new HashSet<String>(Arrays.asList(keys)));			
 	}	
 	
 	public void testPreferenceNoChangeOnNulls() throws Exception {

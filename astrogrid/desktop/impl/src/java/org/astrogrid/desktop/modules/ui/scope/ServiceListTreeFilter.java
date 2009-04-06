@@ -54,10 +54,10 @@ public class ServiceListTreeFilter extends Filter {
         ftree.setRoot(root);
         
         // process each node's edges
-        final List queue = new ArrayList();
+        final List<NodeItem> queue = new ArrayList<NodeItem>();
         queue.add(root);
         while (! queue.isEmpty()) {
-            final NodeItem ni = (NodeItem)queue.remove(0);
+            final NodeItem ni = queue.remove(0);
             final Node n = (Node)ni.getEntity();           
             final boolean filtered = Boolean.valueOf(n.getAttribute(VizualizationsPanel.SERVICE_FILTERED_ATTR)).booleanValue();
             if (filtered) {

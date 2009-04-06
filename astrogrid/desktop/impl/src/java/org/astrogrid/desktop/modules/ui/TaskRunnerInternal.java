@@ -4,9 +4,9 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.apache.commons.collections.Factory;
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ui.ApplicationLauncher;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** Internal interface to the task runner factory.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -21,6 +21,6 @@ public interface TaskRunnerInternal extends ApplicationLauncher, Factory{
 	// in fact, this is still a general framework for running anything which
 	// isn't coverd by astroscope.
 	
-	void edit(FileObject o);
+	void edit(FileObjectView o);
 
 }

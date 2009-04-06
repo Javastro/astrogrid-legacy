@@ -25,6 +25,7 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** worker class which does a bulk copy of a bunch of files/folders to another target.
  * 
@@ -47,7 +48,7 @@ public class BulkCopyWorker extends BackgroundWorker {
      */
     protected final CopyCommand[] cmds;
     private final FileSystemManager vfs;
-    private final FileObject saveObject;
+    private final FileObjectView  saveObject;
     private final URI saveLoc;
 
     /**
@@ -64,8 +65,8 @@ public class BulkCopyWorker extends BackgroundWorker {
         this.cmds = l;
     }
     
-    public BulkCopyWorker(final FileSystemManager vfs,final UIComponent parent,final FileObject saveObject, final CopyCommand[] l) {
-        super(parent,  "Copying to " + saveObject.getName().getPath(),BackgroundWorker.VERY_LONG_TIMEOUT);
+    public BulkCopyWorker(final FileSystemManager vfs,final UIComponent parent,final FileObjectView saveObject, final CopyCommand[] l) {
+        super(parent,  "Copying to " + saveObject.getBasename(),BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveObject = saveObject;
         this.saveDir = null;
@@ -119,7 +120,7 @@ public class BulkCopyWorker extends BackgroundWorker {
         setProgress(progress,tasksCount);
         reportProgress("Validating save location");
         if (saveObject != null) { // we've been given an file object
-            saveTarget = saveObject;
+            saveTarget = saveObject.getFileObject();
         } else if (saveDir != null) { // we've been given a file
             saveTarget = vfs.resolveFile(this.saveDir.toURI().toString());
         } else { // have been given a UI 
@@ -139,11 +140,11 @@ public class BulkCopyWorker extends BackgroundWorker {
         reportProgress((saveToMyspace ? "VOSpace " : "" ) + "Save location validated");
         setProgress(++progress,tasksCount);
         // go through each file in turn.
-        final List destList = new ArrayList();
+        final List<FileObject> destList = new ArrayList<FileObject>();
         for (int i  = 0; i < this.cmds.length; i++ ) {
                 final CopyCommand cmd = cmds[i];
                 final FileObject src =cmd.resolveSourceFileObject(vfs);
-                reportProgress("Processing " + src.getName());
+                reportProgress("Processing " + src.getName().getBaseName());
                 String name;
                 String ext;
                 if (cmd instanceof CopyAsCommand) {
@@ -167,7 +168,9 @@ public class BulkCopyWorker extends BackgroundWorker {
                         dest = saveTarget.resolveFile(name + (n == 0 ? "" : "-" + n ) +  ext);
                         n++;
                     } while  (dest.exists());
-                    reportProgress("Destination will be " + dest.getName().getBaseName());
+                    if (n > 1) { // renaming happened
+                        reportProgress("Destination will be " + dest.getName().getBaseName());
+                    }
                     // good. now got a non-existent destination file                    
                     dest.copyFrom(src, Selectors.SELECT_ALL); // creates and copies from src. handles folders and files. nice!
                     cmd.recordSuccess(dest.getName());
@@ -187,8 +190,8 @@ public class BulkCopyWorker extends BackgroundWorker {
             if (fs instanceof AbstractFileSystem) {
                 final AbstractFileSystem afs = (AbstractFileSystem) fs;
                 afs.fireFileChanged(saveTarget);
-                for (final Iterator it = destList.iterator(); it.hasNext();) {
-                    ((FileObject) it.next()).refresh();
+                for (final Iterator<FileObject> it = destList.iterator(); it.hasNext();) {
+                    it.next().refresh();
                 }
             }
       //  }

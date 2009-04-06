@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
@@ -18,7 +17,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
@@ -41,6 +39,7 @@ import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 
 /** 'controller' object that allows navigation around a filesystem; manages changes to a file model and a history.
@@ -139,7 +138,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
     private final FileSystemManager vfs;
 
     private final IconFinder icons;
-    public FileNavigator(final UIComponent parent,final FileSystemManager vfs, final MatcherEditor ed, final ActivitiesManager activities, final IconFinder icons) {
+    public FileNavigator(final UIComponent parent,final FileSystemManager vfs, final MatcherEditor<FileObjectView> ed, final ActivitiesManager activities, final IconFinder icons) {
         super();
         this.parent = parent;
         this.vfs = vfs;
@@ -155,7 +154,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
     }
 
     //vfs operations interface.
-    public FileObject get() {
+    public FileObjectView get() {
         return current();
     }
     /**
@@ -184,12 +183,12 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
 
 // current state
     /** access the current fiile - will throw an illeage state exception if not yet resolved */
-    public FileObject current()  {
+    public FileObjectView current()  {
         final Location loc = history.current();
         if (loc == null) {
             return null;
         }
-        return loc.getFileObject();
+        return loc.getFileObjectView();
     }
     
    //navigation functions
@@ -229,7 +228,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
     }  
         
     /** move ths view to the specified file object */
-    public void move(final FileObject fileToShow) {
+    public void move(final FileObjectView fileToShow) {
         history.move(new Location(fileToShow));        
     }
 
@@ -268,8 +267,8 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
             addActionListener(this); // listen to clicks on ourselves.
         }
         /** use an existing file object as a location */
-        public Location(final FileObject o) {
-            this( o.getName().getURI());            
+        public Location(final FileObjectView o) {
+            this( o.getUri());            
             this.o = o;
         }
         /** use a storage folder as a location */
@@ -279,7 +278,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
             this.o = f.getFile();       
         }
         private StorageFolder f = null;
-        private volatile FileObject o = null;
+        private volatile FileObjectView o = null;
 
         public void actionPerformed(final ActionEvent e) {
             history.move(this);
@@ -287,10 +286,10 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
         public boolean hasResolved() {
             return o != null;
         }
-        public synchronized void resolveFileObject() throws FileSystemException {
+        public synchronized void resolveFileObjectView() throws FileSystemException {
             if (o == null) {
                 logger.debug("retriving file object - RESOLVING");
-                o = vfs.resolveFile(getURI());
+                o = new FileObjectView(vfs.resolveFile(getURI()),FileNavigator.this.model.getIcons());
                 if (f != null) {
                     f.setFile(o);
                 }
@@ -300,7 +299,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
          * else will throw.
          * @return
          */
-        public FileObject getFileObject() {
+        public FileObjectView getFileObjectView() {
             if (o == null) {
                 throw new IllegalStateException(getText() + " - Has not yet been resolved");
             } else {
@@ -340,17 +339,18 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
      * then moves the history - which in turn fires events to trigger a view reload
      * calld by the up() api function, but not used in the up menu.
      */
-    private class UpWorker extends BackgroundWorker {
+    private class UpWorker extends BackgroundWorker<Void> {
 
         public UpWorker() {
             super(FileNavigator.this.parent,"Finding Parent",Thread.MAX_PRIORITY);
         }
         @Override
-        protected Object construct() throws Exception {
-            final FileObject p= current().getParent();
+        protected Void construct() throws Exception {
+            final FileObject p= current().getFileObject().getParent();
             if (p != null) {
                 logger.debug("Got parent");
-                history.move(new Location(p));
+                final FileObjectView view = new FileObjectView(p,model.getIcons());
+                history.move(new Location(view));
             } else {
                 logger.debug("parent was null");
             }
@@ -364,16 +364,16 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
             super(history.current(),history.current());            
         }
         @Override
-        protected Object construct() throws Exception {
+        protected List<FileName> construct() throws Exception {
             // refresh the object first, then just list the directory.
-            current().refresh();
+            current().getFileObject().refresh();
             return super.construct();
         }
         
     }
     
     /** background worker that opens a directory */
-    private class OpenDirectoryWorker extends BackgroundWorker {
+    private class OpenDirectoryWorker extends BackgroundWorker<List<FileName>> {
 
         public OpenDirectoryWorker(final Location current, final Location previous) {
             super(FileNavigator.this.parent,"Listing contents",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY);
@@ -389,61 +389,64 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
                 });
             }
         }
-        protected FileObject requested;
-        protected FileObject shown;
+        protected FileObjectView requested;
+        protected FileObjectView shown;
         protected final Location loc;
         private final Location previous;
         protected boolean isRoot;
         @Override
-        protected Object construct() throws Exception {
+        protected List<FileName> construct() throws Exception {
             // stop listening to whatever was previously displayed.
             if (previous != null && previous.hasResolved()) {
-                final FileObject prev = previous.getFileObject();
+                final FileObject prev = previous.getFileObjectView().getFileObject();                
                 prev.getFileSystem().removeListener(prev,FileNavigator.this);                
             }
 
             // now load the new one.
                 reportProgress("Resolving directory");
-                loc.resolveFileObject();                                
-                requested = loc.getFileObject();
+                loc.resolveFileObjectView();                                
+                requested = loc.getFileObjectView();
                 reportProgress("Listing children");
-                if (requested.getType().hasChildren()) {
+                if (requested.getFileObject().getType().hasChildren()) { // use type of file object, not type of wrapper (which might be 'imaginary')
                     shown = requested;
                 } else {
-                    shown = requested.getParent();
+                    final FileObject pfo = requested.getFileObject().getParent();
+                    if (pfo == null) {
+                        return null;
+                    }
+                    shown = new FileObjectView(pfo,model.getIcons());
                     history.replace(new Location(shown)); // replace in the history what was requested with what we're actually sowing
                 }
-                if (shown == null) {
-                    return null;
-                }
                 // populate the children.
-                final EventList files = model.getChildrenList();
+                final SortedList<FileObjectView> files = model.getChildrenList();
+                final FileObject shownFileObject = shown.getFileObject();
                 // special case - if we're looking for a particular file, and it's not in the folder, do a refresh.
-                if (shown != requested && null == shown.getChild(requested.getName().getBaseName())) {
-                    shown.refresh();
+                if (shown != requested && null == shownFileObject.getChild(requested.getFileObject().getName().getBaseName())) {
+                    shownFileObject.refresh();
                 }
-                final FileObject[] children = shown.getChildren();
+                final FileObject[] children = shownFileObject.getChildren();
                 
                 try {
                     files.getReadWriteLock().writeLock().lock();
                     files.clear();
-                    if (! ArrayUtils.isEmpty(children)) {
-                        files.addAll(Arrays.asList(children));
+                    for (final FileObject fo : children) {
+                        final FileObjectView view = new FileObjectView(fo,model.getIcons());
+                        files.add(view);
                     }
                 } finally {
                     files.getReadWriteLock().writeLock().unlock();
                 }
                 // populate the parents.
-                final java.util.List parents = new java.util.ArrayList();                    
+                final java.util.List<FileName> parents = new java.util.ArrayList<FileName>();                    
                 upList.clear();
-                FileName fn = shown.getName().getParent();
+                FileName fn = shownFileObject.getName().getParent();
                 while(fn != null) {
                     parents.add(fn);
                     fn = fn.getParent();
                 }
                 // listen for changes.
-                final FileSystem fileSystem = shown.getFileSystem();
-                isRoot = shown == fileSystem.getRoot();
+                final FileSystem fileSystem = shownFileObject.getFileSystem();
+                isRoot = shownFileObject == fileSystem.getRoot();
                 // Dave points out a bug in default impl of FileSystem
                 // adding a listener twice means you receive two notifications.
                 // so would like to check whether we're already listening to this,
@@ -452,14 +455,13 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
                 // only occurs on 'refresh' - when navigating to same dir.
                 // and when clicking the 'back' button.
                // fileSystem.removeListener(shown,FileNavigator.this);
-                fileSystem.addListener(shown,FileNavigator.this);
+                fileSystem.addListener(shownFileObject,FileNavigator.this);
                 reportProgress("Completed");
                 return parents;
         }
         // update the ui.
         @Override
-        protected void doFinished(final Object result) {
-            final List<FileName> parents = (java.util.List<FileName>) result;
+        protected void doFinished(final List<FileName> parents) {
             upList.clear();
             for (final FileName name : parents) {
                 upList.add(new UpMenuItem(name));                
@@ -469,7 +471,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
             forwardAction.setEnabled(history.hasNext());
                         
             loc.setText(loc.getURI());
-            if (requested != shown) { // we're meant to be showing a child of this folder.
+            if (requested != shown) { // we're meant to be showing a child of this folder.               
                 final int ix = model.getChildrenList().indexOf(requested);
                 model.getSelection().setSelectionInterval(ix,ix);
             }  

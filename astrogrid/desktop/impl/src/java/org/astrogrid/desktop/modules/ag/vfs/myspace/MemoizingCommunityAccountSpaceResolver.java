@@ -107,5 +107,5 @@ public class MemoizingCommunityAccountSpaceResolver extends
 	}
 	
 	// a memory-sensitive cache.
-	private final Map results = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+	private final Map<String, Object> results = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
 }

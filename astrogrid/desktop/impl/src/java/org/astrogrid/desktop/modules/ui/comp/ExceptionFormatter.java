@@ -217,7 +217,7 @@ public class ExceptionFormatter {
                     pw.println();
                     final UIComponent u = (UIComponent)parent;
                     try {
-                        final Map m = u.getContext().getConfiguration().list();
+                        final Map<String, String> m = u.getContext().getConfiguration().list();
                         final Properties props = new Properties();
                         props.putAll(m);
                         // nggg. clunky.

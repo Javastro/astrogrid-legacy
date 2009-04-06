@@ -40,7 +40,7 @@ public void init(final ServletConfig conf) throws ServletException {
 }
 	protected PreferencesArranger arranger;
 	/** maps from preference name to preference */
-	protected Map prefMap = new HashMap();
+	protected Map<String, Preference> prefMap = new HashMap<String, Preference>();
 
 	public final static String PREFERENCES_CONTEXT_KEY = "preferences";
 	public final static String ARRANGER_CONTEXT_KEY = "arranger";
@@ -138,7 +138,7 @@ protected void doPost(final HttpServletRequest request, final HttpServletRespons
 	final Enumeration e = request.getParameterNames();
 	while (e.hasMoreElements()) {
 		final String name = (String)e.nextElement();
-		final Preference p = (Preference)prefMap.get(name);
+		final Preference p = prefMap.get(name);
 		final String value = request.getParameter(name);
 		if (p != null && value != null) {
 			p.setValue(value); // shoudl we be doing checking here?

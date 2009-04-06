@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.18 2009/03/26 18:04:11 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.19 2009/04/06 11:43:18 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
@@ -162,12 +161,17 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 	final ActivitiesManager acts;
     StorageView view;
 	
-	public void show(final FileObject fileToShow) {
+	public void show(final FileObjectView fileToShow) {
 	        view.getNavigator().move(fileToShow);
 	}
+	 
+    
+    public void show(final java.net.URI fileToShow) {
+            view.getNavigator().move(fileToShow.toString());
+    }	
 
     public void moved(final NavigationEvent e) {
-        setTitle("File Explorer - " + view.getNavigator().current().getName());
+        setTitle("File Explorer - " + view.getNavigator().current().getUri());
     }
 
     public void moving() {

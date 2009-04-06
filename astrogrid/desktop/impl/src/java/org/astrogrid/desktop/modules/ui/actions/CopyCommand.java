@@ -9,6 +9,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /**A single copy command to the bulk copy worker.
  * this base class represents 'copy the source to the destination folder'
@@ -29,16 +30,20 @@ public class CopyCommand {
     final FileObject resolveSourceFileObject(final FileSystemManager vfs) throws FileSystemException {
         if (src instanceof FileObject) {
             return (FileObject)src;
+        } else if (src instanceof FileObjectView) {
+            return ((FileObjectView)src).getFileObject();
         } else {
             final String uriString = src.toString();
             return vfs.resolveFile(uriString);
         }           
     }
     /** construct a command, using a file object as the source */
-    public CopyCommand(final FileObject src) {
+    public CopyCommand(final FileObjectView src) {
         super();
         this.src = src;
     }
+       
+    
     /** construct a command, using a file as the source */
     public CopyCommand(final File src) {
         super();

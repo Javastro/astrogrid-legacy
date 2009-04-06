@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.21 2009/03/26 18:04:11 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.22 2009/04/06 11:43:20 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,10 +85,10 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
     public void schedule(final ScheduledTask task) {
         daemon.executePeriodically(task.getPeriod(), new Runnable() {
         	public void run() {
-        		final BackgroundWorker worker = new BackgroundWorker(context,task.getName(),BackgroundWorker.VERY_LONG_TIMEOUT,Thread.MIN_PRIORITY) {
+        		final BackgroundWorker<Void> worker = new BackgroundWorker<Void>(context,task.getName(),BackgroundWorker.VERY_LONG_TIMEOUT,Thread.MIN_PRIORITY) {
 
 					@Override
-                    protected Object construct() throws Exception {
+                    protected Void construct() throws Exception {
 						task.execute(this);
 						return null;
 					}
@@ -107,10 +107,10 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 		daemon.executeAfterDelay(task.getDelay().getMillis(),new Runnable() {
 
 			public void run() {// rund on scheduler thread. just submits a new backgroundWorker for execution.
-				final BackgroundWorker worker = new BackgroundWorker(context,task.getTitle(),BackgroundWorker.LONG_TIMEOUT) {
+				final BackgroundWorker<Void> worker = new BackgroundWorker<Void>(context,task.getTitle(),BackgroundWorker.LONG_TIMEOUT) {
 
 					@Override
-                    protected Object construct() throws Exception {
+                    protected Void construct() throws Exception {
 						final DelayedContinuation next =  task.execute();
 						if (next != null) {
 							schedule(next); // recursive call.
@@ -151,6 +151,11 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.22  2009/04/06 11:43:20  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.21  2009/03/26 18:04:11  nw
 source code improvements - cleaned imports, @override, etc.
 

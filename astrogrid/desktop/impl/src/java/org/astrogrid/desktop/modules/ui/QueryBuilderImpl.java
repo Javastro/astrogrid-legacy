@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Random;
 
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaServerCapability;
@@ -24,6 +23,7 @@ import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.RegistryGoogleInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
@@ -150,7 +150,7 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
     }
 
     @Override
-    public void edit(final FileObject fo) {
+    public void edit(final FileObjectView fo) {
        super.edit(fo);
     }
     

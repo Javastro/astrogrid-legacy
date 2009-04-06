@@ -10,8 +10,8 @@ import java.net.URL;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** Constants for  data flavours and mime types.
  * @author Noel Winstanley
@@ -35,8 +35,8 @@ public class VoDataFlavour {
 	
 	
 // types for file objects...
-	public static final DataFlavor LOCAL_FILEOBJECT = localDataFlavor(FileObject.class,"VFS file object");
-	public static final DataFlavor LOCAL_FILEOBJECT_ARRAY = localDataFlavor(FileObject[].class,"List of VFS file objects");
+	public static final DataFlavor LOCAL_FILEOBJECT_VIEW = localDataFlavor(FileObjectView.class,"VFS file object");
+	public static final DataFlavor LOCAL_FILEOBJECT_VIEW_ARRAY = localDataFlavor(FileObjectView[].class,"List of VFS file objects");
 	// doubt if it's possible to do a non-local version - as fileobject isn't serializable.
 	
 //	 reference types

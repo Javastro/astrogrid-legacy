@@ -64,6 +64,7 @@ import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
 import org.astrogrid.desktop.modules.ui.comp.ObservableConnector;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesList;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -529,7 +530,7 @@ public final ProcessMonitor getMoitor() {
          * @author Noel.Winstanley@manchester.ac.uk
          * @since Nov 26, 20077:09:23 PM
          */
-        private final class LoadResultsWorker extends RetriableBackgroundWorker {
+        private final class LoadResultsWorker extends RetriableBackgroundWorker<FileObjectView> {
             private boolean alreadyFoundRoot;
 
             /**
@@ -543,21 +544,21 @@ public final ProcessMonitor getMoitor() {
             }
 
             @Override
-            protected Object construct() throws Exception {
+            protected FileObjectView construct() throws Exception {
                 if (! alreadyFoundRoot) {
                     final FileObject root = pm.getResultsFileSystem().getRoot();
                     if (root.exists()) { // it's created lazily, once children are present.
                         alreadyFoundRoot = true;
-                        return root; // returned on first time.
+                        return new FileObjectView(root,navigator.getModel().getIcons()); // returned on first time.
                     }
                 }
                 return null;
             }
 
             @Override
-            protected void doFinished(final Object result) {
+            protected void doFinished(final FileObjectView result) {
                 if (result != null) {
-                    navigator.move((FileObject)result);		                
+                    navigator.move(result);		                
                 } else if  (alreadyFoundRoot) {
                     navigator.refresh();
                 }

@@ -8,8 +8,6 @@ import java.awt.event.MouseListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 
 /** Extends {@code OperableFilesTable} with navigation between folders.
  * 
@@ -28,7 +26,7 @@ public class NavigableFilesTable extends OperableFilesTable implements MouseList
 
 
     public NavigableFilesTable( final FileNavigator navigator) {
-        super(navigator.getIcons(),navigator.getModel());
+        super(navigator.getModel());
         this.navigator = navigator;
 
 	}
@@ -38,19 +36,15 @@ public class NavigableFilesTable extends OperableFilesTable implements MouseList
     public void mouseClicked(final MouseEvent e) {
 		 if(e.getClickCount() == 2){
 		     final int row = rowAtPoint(e.getPoint());
-		     final FileObject item = (FileObject)fileModel.getChildrenList().get(row);
+		     final FileObjectView item = fileModel.getChildrenList().get(row);
 		     if (item == null) {
 		    	 return;
 		     }
 		     // I thought I'd need to convert index scehems first
 		     // seems not
-		     try {
 		    	 if (item.getType().hasChildren()) {
 		    		 navigator.move(item);
 		    	 }
-		     } catch (final FileSystemException ex) {
-		    	 // @todo report?
-		     }
 		 } else {
 		     super.mouseClicked(e);
 		 }

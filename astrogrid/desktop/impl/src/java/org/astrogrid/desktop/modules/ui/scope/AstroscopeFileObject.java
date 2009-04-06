@@ -244,38 +244,37 @@ public class AstroscopeFileObject extends DelegateFileObject {
         return (fo instanceof DelegateFileObject && ! (fo instanceof AstroscopeFileObject));
     }
    
-    /** determin if fo is a delegate of any kind( including an astroscope file object) */
-    public static final boolean isDelegateOrAstroscopeFileObject(final FileObject fo) {
-        return fo instanceof DelegateFileObject;
-    }
-    
     /** return the Astroscope fileObject that this delegates to
      * 
      * @param fo a file object
      * @return the AstroscopeFIleObject that this fiileObject dlegates to, or null if there is no astroscopefileobject in the delegattion chain..
      */
     public static final AstroscopeFileObject findAstroscopeFileObject(FileObject fo) {
-        fo = findAstroscopeOrInnermostFileObject(fo);
+        FileObject fo1 = fo;
+        while (isOnlyDelegateFileObject(fo1)) {
+            fo1 = ((DelegateFileObject)fo1).getDelegateFile();
+        }
+        fo = fo1;
         return fo instanceof AstroscopeFileObject ? (AstroscopeFileObject)fo : null;
     }
   
     /** return the innermost file object that this delegates to
      * @return the innermost file - never null */
     public static final FileObject findInnermostFileObject(FileObject fo) {
-        while (isDelegateOrAstroscopeFileObject(fo)) {
+        while (fo instanceof DelegateFileObject) {
             fo = ((DelegateFileObject)fo).getDelegateFile();
         }
         return fo;
     }
 
-    
-    /** return AstroscopeFileObject that this file objct delegates to, or if none present, the innermost file object that this delegates to
-     * @return the file object - never null */
-    public static final FileObject findAstroscopeOrInnermostFileObject(FileObject fo) {
-        while (isOnlyDelegateFileObject(fo)) {
-            fo = ((DelegateFileObject)fo).getDelegateFile();
-        }
-        return fo;
+    /**
+     * @param fileObject
+     * @return
+     */
+    public static FileObject findAstroscopeOrInnermostFileObject(
+            final FileObject fileObject) {
+        final FileObject as = findAstroscopeFileObject(fileObject);
+        return as != null ? as : findInnermostFileObject(fileObject);
     }
     
 }

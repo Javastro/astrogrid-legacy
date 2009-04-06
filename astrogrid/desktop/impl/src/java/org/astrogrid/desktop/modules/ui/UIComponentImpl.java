@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.25 2009/03/30 15:04:55 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.26 2009/04/06 11:43:20 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -94,7 +94,7 @@ public class UIComponentImpl extends JFrame implements UIComponent {
      * into the enclosing UIComponentImpl instance.
      * Prefer {@link BackgroundWorker} if there's any chance that operations may be resuable.
      * */
-     protected abstract class BackgroundOperation extends BackgroundWorker {
+     protected abstract class BackgroundOperation<T> extends BackgroundWorker<T> {
          public BackgroundOperation(final String msg) {
              super(UIComponentImpl.this,msg);
          }
@@ -239,6 +239,11 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.26  2009/04/06 11:43:20  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.25  2009/03/30 15:04:55  nw
 added new method to allow provision of icon in popup.
 

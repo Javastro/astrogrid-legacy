@@ -98,7 +98,7 @@ public class NameResolvingPositionTextField extends PositionTextField implements
     private final UIComponent parent;
 
     // event machinery
-    private final ArrayList listeners= new ArrayList();
+    private final ArrayList<ResolutionListener> listeners= new ArrayList<ResolutionListener>();
     
     public void addResolutionListener(final ResolutionListener l) {
         listeners.add(l);
@@ -110,20 +110,20 @@ public class NameResolvingPositionTextField extends PositionTextField implements
     protected void fireResolving() {
         final ResolutionEvent re = new ResolutionEvent(this);
         for (int i = 0; i < listeners.size(); i++) {
-            ((ResolutionListener)listeners.get(i)).resolving(re);
+            listeners.get(i).resolving(re);
         }
     }
     
     protected void fireResolved() {
         final ResolutionEvent re = new ResolutionEvent(this);
         for (int i = 0; i < listeners.size(); i++) {
-            ((ResolutionListener)listeners.get(i)).resolved(re);
+            listeners.get(i).resolved(re);
         }        
     }
     protected void fireResolveFailed() {
         final ResolutionEvent re = new ResolutionEvent(this);
         for (int i = 0; i < listeners.size(); i++) {
-            ((ResolutionListener)listeners.get(i)).resolveFailed(re);
+            listeners.get(i).resolveFailed(re);
         }        
     }    
     

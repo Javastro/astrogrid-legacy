@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.20 2009/03/26 18:04:11 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.21 2009/04/06 11:43:20 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,7 +76,7 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
        
     }
     
-    private Map helpMapping = new HashMap();
+    private Map<String, HelpItemContribution> helpMapping = new HashMap<String, HelpItemContribution>();
     private final BrowserControl browser;
 
     
@@ -89,7 +89,7 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
     		logger.warn("Null help target - ignoring");
     		return;
     	}
-    	HelpItemContribution item = (HelpItemContribution) helpMapping.get(target);
+    	HelpItemContribution item = helpMapping.get(target);
     	if (item != null) {
     		try {
 				browser.openURL(item.getUrlObject());
@@ -278,6 +278,11 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.21  2009/04/06 11:43:20  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.20  2009/03/26 18:04:11  nw
 source code improvements - cleaned imports, @override, etc.
 

@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** base class for activities only applicable to file objects.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -30,10 +30,10 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 	        return;
 	    }
 		try {
-		if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
-			oneSelected((FileObject)r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT));
-		} else if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY)) {
-			manySelected((FileObject[])r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY));
+		if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_VIEW)) {
+			oneSelected((FileObjectView)r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_VIEW));
+		} else if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_VIEW_ARRAY)) {
+			manySelected((FileObjectView[])r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_VIEW_ARRAY));
 		} else {
 			noneSelected();
 		}
@@ -43,22 +43,22 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 			logger.error("UnsupportedFlavorException",x);
 		}
 	}
-	protected FileObject[] current;
+	protected FileObjectView[] current;
 	public boolean evaluate(final Object arg0) {
-		if (! (arg0 instanceof FileObject)) {
+		if (! (arg0 instanceof FileObjectView)) {
 			return false;
 		}
-		return invokable((FileObject)arg0);
+		return invokable((FileObjectView)arg0);
 	}
 	
 	/** to be implemented by subclasses - as a file filter which selects just
 	 * those files this activity can operate on.
 	 * @param f
 	 */
-	protected abstract boolean invokable(FileObject f);
+	protected abstract boolean invokable(FileObjectView f);
 	
-	protected List<FileObject> computeInvokable() {
-		final List<FileObject> r = new ArrayList<FileObject>();
+	protected List<FileObjectView> computeInvokable() {
+		final List<FileObjectView> r = new ArrayList<FileObjectView>();
 		for (int i = 0; i < current.length; i++) {
 			if (invokable(current[i])) {
 				r.add(current[i]);
@@ -67,17 +67,17 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 		return r;
 	}
 
-	public void oneSelected(final FileObject fo) {
+	public void oneSelected(final FileObjectView fo) {
 		if (invokable(fo)) {
 			setEnabled(true);
-			current =new FileObject[]{fo};
+			current =new FileObjectView[]{fo};
 		} else {
 			setEnabled( false);
 			current = null;
 		}
 	}
 
-	public void manySelected(final FileObject[] list) {
+	public void manySelected(final FileObjectView[] list) {
 		for (int i = 0; i < list.length; i++) {
 			if(evaluate(list[i])) { // lazy - only goes as far as the first 'yes'
 				setEnabled(true);

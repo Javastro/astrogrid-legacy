@@ -100,7 +100,7 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 
 	@Override
     protected JComponent createValueField() {
-		final EventList vals= new BasicEventList();
+		final EventList<DescribedValue> vals= new BasicEventList<DescribedValue>();
 		populate(vals);
 		final JComboBox c = new JComboBox();
 		c.setRenderer(new BasicComboBoxRenderer() {
@@ -111,7 +111,7 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 			return super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
 		}
 		});
-		final AutoCompleteSupport support = AutoCompleteSupport.install(c,vals);
+		final AutoCompleteSupport<DescribedValue> support = AutoCompleteSupport.install(c,vals);
 		c.setSelectedIndex(0);
 		support.setSelectsTextOnFocusGain(true);
 		support.setStrict(true); 
@@ -124,7 +124,7 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 	 * all items should be DescribedValues.
 	 * @param vals
 	 */
-	protected abstract void populate(List vals);
+	protected abstract void populate(List<DescribedValue> vals);
 
 	/** datastructure used to represent a value - precomputes the formatting */
 	public static final class DescribedValue {		

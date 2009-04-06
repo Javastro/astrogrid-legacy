@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.19 2008/11/04 14:35:49 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.20 2009/04/06 11:43:20 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -233,7 +233,7 @@ and has an 'express' slot which bypasses the queue. */
 
         public void interrupt(final Runnable r) {
             // need to find thread that's processing this task.
-            for (final Iterator i = threads_.keySet().iterator(); i.hasNext(); ) {
+            for (final Iterator<Worker> i = threads_.keySet().iterator(); i.hasNext(); ) {
                 final TimeoutAwareWorker w = (TimeoutAwareWorker)i.next();
                 if (r.equals(w.getCurrentTask())) {
                     final Thread t = (Thread)threads_.get(w);
@@ -393,7 +393,6 @@ and has an 'express' slot which bypasses the queue. */
     private final SessionManagerInternal ss;
     
     
-    
     public void executeWorker(final BackgroundWorker worker) {
         try {
             logger.debug("executing worker");
@@ -467,6 +466,11 @@ and has an 'express' slot which bypasses the queue. */
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.20  2009/04/06 11:43:20  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.19  2008/11/04 14:35:49  nw
 javadoc polishing
 

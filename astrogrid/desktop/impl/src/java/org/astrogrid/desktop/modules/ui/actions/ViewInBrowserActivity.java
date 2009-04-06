@@ -19,6 +19,7 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 /** Open a file using the system browser or default helper application.
@@ -32,8 +33,8 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 	
 	
 	@Override
-    protected boolean invokable(final FileObject f) { 
-		return true;
+    protected boolean invokable(final FileObjectView f) { 
+		return f.getType().hasContent();
 	}
 
 
@@ -50,31 +51,31 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 	
 	// can only handle a single selection.
 	@Override
-    public void manySelected(final FileObject[] list) {
+    public void manySelected(final FileObjectView[] list) {
 		noneSelected();
 	}
 	
 	@Override
     public void actionPerformed(final ActionEvent e) {
-		final List l = computeInvokable();
+		final List<FileObjectView> l = computeInvokable();
 		logger.debug(l);
-		final FileObject fo = (FileObject)l.get(0);
+		final FileObjectView fo =l.get(0);
 		logger.debug(fo);
-		(new BackgroundWorker(uiParent.get(),"Displaying " + fo.getName().getBaseName(),BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
+		(new BackgroundWorker<Void>(uiParent.get(),"Displaying " + fo.getBasename(),BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
 			@Override
-            protected Object construct() throws Exception {
-			    final FileObject f = AstroscopeFileObject.findAstroscopeOrInnermostFileObject(fo);
+            protected Void construct() throws Exception {
+			    final FileObject f = AstroscopeFileObject.findAstroscopeOrInnermostFileObject(fo.getFileObject());
 			    URL u = f.getURL();
 			    if (! (u.getProtocol().equals("file") || u.getProtocol().equals("http") || u.getProtocol().equals("ftp"))) { // pass it to the browser directly.
 			        // download file to temporary location, and then open it
 			        reportProgress("Downloading file to temporary location");
-			        final String ext = StringUtils.substringAfterLast(fo.getName().getBaseName(),".");
+			        final String ext = StringUtils.substringAfterLast(fo.getBasename(),".");
 			        final File tmpFile = File.createTempFile("view-in-browser","." + ext);
 			        tmpFile.deleteOnExit();
 			        logger.debug(tmpFile);
 			        final FileObject tmp = vfs.resolveFile(tmpFile.toURI().toString());
-			        FileUtil.copyContent(fo,tmp);
+			        FileUtil.copyContent(f,tmp);
 			        u = tmp.getURL();
 			    }
 			    reportProgress("Instructing browser to open " + u);

@@ -8,20 +8,11 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.BeanInfo;
-import java.beans.EventSetDescriptor;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -31,12 +22,10 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
-import javax.swing.text.JTextComponent;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.desktop.icons.IconHelper;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -54,7 +43,7 @@ import ca.odell.glazedlists.swing.JEventListPanel;
  * @since Apr 24, 20071:20:52 PM
  * @TEST lots in there - split up and test a bit.
  */
-public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementList.Connector, ActionListener {
+public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementList.Connector<Clause>, ActionListener {
 
 
 	static final Log logger = LogFactory
@@ -63,7 +52,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	public SrqlQueryBuilderPanel() {
 		super();
 		// clauses is a list that detects changes in-place to it's items.
-		this.clauses = new ObservableElementList(new BasicEventList(),this);
+		this.clauses = new ObservableElementList<Clause>(new BasicEventList<Clause>(),this);
 		clauses.addListEventListener(new ListEventListener() {
 
 			public void listChanged(final ListEvent arg0) {
@@ -74,19 +63,19 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 						case 0:
 							break;
 						case 1:
-							((Clause)clauses.get(0)).getRemoveButton().setEnabled(false);
+							clauses.get(0).getRemoveButton().setEnabled(false);
 							break;
 						default:
-							((Clause)clauses.get(0)).getRemoveButton().setEnabled(true);							
+							clauses.get(0).getRemoveButton().setEnabled(true);							
 						}
 					}
 				}
 			}
 		});
-		clauses.add(new Clause());
+		clauses.add(new Clause(this));
 			
 		// this panel displays contents of a list.
-		final JEventListPanel clausePanel = new JEventListPanel(clauses, new ClauseFormat());
+		final JEventListPanel<Clause> clausePanel = new JEventListPanel<Clause>(clauses, new ClauseFormat());
 		this.setLayout(new BorderLayout());
 		
 		final JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -103,12 +92,12 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	//	JCheckBox oldResources = new JCheckBox("Include inactive and deleted Resources");
 	//	this.add(oldResources,BorderLayout.SOUTH);
 	}
-	private final EventList clauses;
+	final EventList<Clause> clauses;
 	private final JComboBox  anyAll;
 	private static final int ALL = 0;
 	private static final int ANY = 1;
 	/** access a live view of the clauses being built. */
-	public EventList getClauses() {
+	public EventList<Clause> getClauses() {
 		return clauses;
 	}
 	
@@ -116,13 +105,13 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	public void reset() {
 		anyAll.setSelectedIndex(0);
 		clauses.clear();
-		clauses.add(new Clause());
+		clauses.add(new Clause(this));
 	}
 	
 	/** access the query that is represented by the current clauses */
 	public SRQL getQuery() {
-		final Iterator i = clauses.iterator();
-		SRQL q = ((Clause)i.next()).getClause();
+		final Iterator<Clause> i = clauses.iterator();
+		SRQL q = i.next().getClause();
 		while (i.hasNext()) {
 			BinaryOperatorSRQL bin;
 			if (anyAll.getSelectedIndex() == ALL) {
@@ -131,7 +120,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 				bin = new OrSRQL();
 			}
 			bin.setLeft(q);
-			bin.setRight(((Clause)i.next()).getClause());
+			bin.setRight(i.next().getClause());
 			q = bin;
 		}
 		return q;
@@ -255,14 +244,14 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 
 		public Object visit(final NotSRQL q) { // if we've visited a 'not' node it means no target was defined.
 			// in this case, we want the 'default' target - which is what clause is created with.
-			final Clause c= new Clause();
+			final Clause c= new Clause(SrqlQueryBuilderPanel.this);
 			c.setClause(q);
 			clauses.add(c);
 			return null;
 		}
 
 		public Object visit(final TermSRQL q) {  // if we've visited a 'not' node it means no target was defined.
-			final Clause c= new Clause();
+			final Clause c= new Clause(SrqlQueryBuilderPanel.this);
 			c.setClause(q);
 			clauses.add(c);			
 			return null;
@@ -281,7 +270,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 					ct= clauseTemplates[i];
 				}
 			}
-			final Clause c = new Clause();
+			final Clause c = new Clause(SrqlQueryBuilderPanel.this);
 			c.setSelectedItem(ct);
 			c.setClause(q.getChild());
 			clauses.add(c);
@@ -296,19 +285,17 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 //END of puplic API.
 	
 	// connector interface - listens to changes, and triggers change events.
-		public EventListener installListener(final Object arg0) {
-			final Clause c = (Clause)arg0;
+		public EventListener installListener(final Clause c) {
 			c.addActionListener(this);
 			return this; // we listen to stuff ourselves.
 		}
-		private ObservableElementList l;
-		public void setObservableElementList(final ObservableElementList arg0) {
-			this.l = arg0;
+		private ObservableElementList<Clause> l;
+		public void setObservableElementList(final ObservableElementList<? extends Clause> arg0) {
+			this.l = (ObservableElementList<Clause>)arg0;
 		}
 
-		public void uninstallListener(final Object arg0, final EventListener arg1) {
+		public void uninstallListener(final Clause c, final EventListener arg1) {
 			if (arg1 == this) {
-				final Clause c = (Clause)arg0;
 				c.removeActionListener(this);
 			}
 		}
@@ -319,12 +306,12 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 					l.elementChanged(l.get(0));
 				}
 			} else {
-				l.elementChanged(e.getSource()); // source is the clause Object itself.
+				l.elementChanged((Clause)e.getSource()); // source is the clause Object itself.
 			}
 		}
 
 	/** list of all the things possible to filter on */
-	private static ClauseTemplate[] clauseTemplates = new ClauseTemplate[]{
+	static ClauseTemplate[] clauseTemplates = new ClauseTemplate[]{
 		new TextMatchTemplate("Any main field","default") {{
 			setTooltip("Search in  Title, Subject, Identifier, Shortname and Description fields" );
 		}}
@@ -339,7 +326,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			setTooltip("Search in 'Resource Type', 'Content - Type' and 'Capability - Type'");			
 		}
 		@Override
-        protected void populate(final List vals) {
+        protected void populate(final List<DescribedValue> vals) {
 			vals.add(new DescribedValue("Archive",""));
 			vals.add(new DescribedValue("Catalog","")); // includes catalog service.
 			vals.add(new DescribedValue("Survey",""));
@@ -375,125 +362,6 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		, new TextMatchTemplate("Source","source")
 		,new TextMatchTemplate("Any field","any")
 	};
-	
-	/** Edits one line of the search expression.
-	 * is a combo box itself, selecting on a the list of clause templates.
-	 * also propagates events fired by sub-components - so the clauses eventlist
-	 * is always notified of changes.
-	 * @author Noel.Winstanley@manchester.ac.uk
-	 * @since Apr 24, 20078:32:09 PM
-	 */
-	private class Clause extends JComboBox implements ActionListener, ItemListener{
-		public Clause() {
-			super(clauseTemplates);// list of possibilities is shared between all clauses.
-			addItemListener(this);
-			setEditable(false);
-			setSelectedIndex(0);
-			setCurrentTemplate((ClauseTemplate)getSelectedItem());
-			setRenderer(new ToolTipComboBoxRenderer());
-			// control buttons.
-			 add = new JButton(IconHelper.loadIcon("editadd16.png"));
-			 add.setToolTipText("Add a new clause to this query");
-			 remove = new JButton(IconHelper.loadIcon("editremove16.png"));
-			 remove.setToolTipText("Remove this clause from the query");
-			 add.addActionListener(this);
-			 remove.addActionListener(this);
-
-		}
-		// access a component that allows a predicate on the currently selected clause
-		public JComponent getPredicateField() {
-			return predicateField;
-		}
-		// access a component that allows a value to be specified that the selected clause nedds to mathc
-		public JComponent getValueField() {
-			return valueField;
-		}
-		// a component that adds a new clause to the query
-		public JComponent getAddButton() {
-			return add;
-		}
-		// a component that removes a clause from the queyr
-		public JComponent getRemoveButton() {
-			return remove;
-		}
-		/** access the srql subexpression represented by this clause */
-		public SRQL getClause() {
-			return currentTemplate.constructClause(valueField,predicateField);
-		}
-		
-		public void setClause(final SRQL clause) {
-			currentTemplate.displayClause(clause,valueField,predicateField);
-		}
-		
-		private final JButton add;
-		private final JButton remove;
-		// listen to various sub-components.
-		@Override
-        public void actionPerformed(final ActionEvent e) {
-			if (e.getSource() == add) {
-				clauses.add(new Clause());
-			} else if (e.getSource() == remove) {
-				clauses.remove(this);
-			} else if (e.getSource() == valueField) {
-				fireActionEvent(); //escalates
-			} else if (e.getSource() == predicateField) {
-				fireActionEvent();
-			} else {
-				super.actionPerformed(e);
-			}
-		}
-		private JComponent valueField;
-		private JComponent predicateField;
-		private ClauseTemplate currentTemplate;
-		// detects when the combo box selection has been altered.
-		public void itemStateChanged(final ItemEvent e) {
-			if (e.getStateChange() == ItemEvent.SELECTED 
-					&& currentTemplate != e.getItem()) {
-			    String oldText = null;
-			    if (valueField instanceof JTextComponent) {
-			        // save the current input, so we can set the corresponding field in the new clause.
-			        oldText = ((JTextComponent)valueField).getText();
-			    }
-				setCurrentTemplate((ClauseTemplate)e.getItem());
-				// now see if new value field is a text component..
-                if (valueField instanceof JTextComponent && StringUtils.isNotBlank(oldText)) {
-                    // save the current input, so we can set the corresponding field in the new clause.
-                    ((JTextComponent)valueField).setText(oldText);
-                }				
-			}
-		}
-		private void setCurrentTemplate(final ClauseTemplate ct) {
-			currentTemplate = ct;
-			valueField = currentTemplate.createValueField();
-			predicateField = currentTemplate.createPredicateField();
-			// listen to these new fields, if possible.
-			registerListenersIfPossible(valueField);
-			registerListenersIfPossible(predicateField);
-		}
-		// uses bean introspection to find out whether the ActionListener event is supported,
-		// and listen to this if present.
-		private void registerListenersIfPossible(final JComponent comp) {
-			try {
-				final BeanInfo beanInfo = Introspector.getBeanInfo(comp.getClass());
-				final EventSetDescriptor[] esds = beanInfo.getEventSetDescriptors();
-				for (int i = 0; i < esds.length; i++) {
-					if (esds[i].getListenerType().equals(ActionListener.class)) {
-						final Method m = esds[i].getAddListenerMethod();
-						m.invoke(comp,new Object[]{this});
-						break; // found it - will only occur once.
-					}
-				}
-			} catch (final IntrospectionException x) {
-				logger.warn("Failed To register listener",x);
-			} catch (final IllegalArgumentException x) {
-				logger.warn("Failed To register listener",x);
-			} catch (final IllegalAccessException x) {
-				logger.warn("Failed To register listener",x);
-			} catch (final InvocationTargetException x) {
-				logger.warn("Failed To register listener",x);
-			}
-		}
-	}
 	
 	/** A 'template' for one line of the search expression.
 	 * 
@@ -605,12 +473,12 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 
 		@Override
         JComponent createValueField() {
-			final EventList l =GlazedLists.eventList(Arrays.asList(vals));
+			final EventList<String> l =GlazedLists.eventList(Arrays.asList(vals));
 			
 			final JComboBox c = new JComboBox();
 			//c.setEditable(false);
 			//c.setSelectedIndex(0);
-			final AutoCompleteSupport support = AutoCompleteSupport.install(c,l);
+			final AutoCompleteSupport<String> support = AutoCompleteSupport.install(c,l);
 			c.setSelectedIndex(0);
 			support.setSelectsTextOnFocusGain(true);
 			support.setStrict(true);
@@ -724,7 +592,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	}
 
 	/** adds tooltips to a combobox */
-    private static class ToolTipComboBoxRenderer extends BasicComboBoxRenderer {
+    static class ToolTipComboBoxRenderer extends BasicComboBoxRenderer {
         @Override
         public Component getListCellRendererComponent( final JList list, 
                final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {

@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.26 2009/03/04 18:43:09 nw Exp $
+/*$Id: DALImpl.java,v 1.27 2009/04/06 11:43:21 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -278,7 +278,7 @@ public abstract class DALImpl implements Dal{
         try {
             final FileObject target = vfs.resolveFile(arg1.toString());
             FileObject source;
-            if(target.getName().getScheme().equals("ivo")) { // optimzation for myspace.
+            if(target.getName().getScheme().equals("ivo") || target.getName().getScheme().equals("vos")) { // optimzation for myspace.
                 source = vfs.resolveFile(arg0.toString());            
             } else {
                 source = vfs.resolveFile(f.toString());
@@ -518,9 +518,9 @@ public abstract class DALImpl implements Dal{
 	
 	/** table handler that builds an array of maps as a result of parsing a votable */
 	protected static class StructureBuilder extends BasicErrorChecker{
-		List result = new ArrayList();
+		List<LinkedHashMap<String, Object>> result = new ArrayList<LinkedHashMap<String, Object>>();
 		public Map[] getResult() {
-			return (Map[])result.toArray(new Map[result.size()]);
+			return result.toArray(new Map[result.size()]);
 		}
 		protected String[] keys = null;
 		int colCount;
@@ -538,7 +538,7 @@ public abstract class DALImpl implements Dal{
 		}
 
 		public void rowData(final Object[] cells) throws SAXException {
-			final LinkedHashMap map = new LinkedHashMap();
+			final LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
 			for (int col = 0; col < colCount; col++) {
 				map.put(keys[col],cells[col]);
 			}
@@ -552,6 +552,11 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.27  2009/04/06 11:43:21  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.26  2009/03/04 18:43:09  nw
 Complete - taskMove DAL over to VFS
 

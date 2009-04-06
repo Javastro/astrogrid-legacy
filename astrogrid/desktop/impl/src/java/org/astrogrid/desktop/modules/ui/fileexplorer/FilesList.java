@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
-import java.util.Date;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
@@ -17,9 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
@@ -44,9 +41,9 @@ public class FilesList extends JList {
      * @param files 
      * 
      */
-    public FilesList(final EventList files, final IconFinder icons) {
+    public FilesList(final EventList<FileObjectView> files) {
         super();
-        setModel(new EventListModel(files));
+        setModel(new EventListModel<FileObjectView>(files));
         
         CSH.setHelpIDString(this,"files.icons");
         setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -65,10 +62,10 @@ public class FilesList extends JList {
             l.setHorizontalTextPosition(JLabel.CENTER);
             l.setHorizontalAlignment(JLabel.CENTER);
             l.setPreferredSize(dim);
-            final FileObject f = (FileObject)value;
-            final String name = f.getName().getBaseName();
+            final FileObjectView f = (FileObjectView)value;
+            final String name = f.getBasename();
             l.setText(WordUtils.wrap(name,14));
-            l.setIcon(icons.find(f)); 
+            l.setIcon(f.getIcon()); 
             return l;
         }
         });        
@@ -82,38 +79,40 @@ public class FilesList extends JList {
         }
         final ListModel dlm = getModel();
         ensureIndexIsVisible(index);
-        final FileObject item = (FileObject)dlm.getElementAt(index);
+        final FileObjectView item = (FileObjectView)dlm.getElementAt(index);
        return createToolTipFromFileObject(item);
    }
 
-    /**
-     * @param item
-     * @return
-     */
-    public static String createToolTipFromFileObject(FileObject item) {
-        if (item == null) {
+    public static String createToolTipFromFileObject(final FileObjectView fv) {
+
+        if (fv == null) {
             return null;
         }
-        item = AstroscopeFileObject.findAstroscopeOrInnermostFileObject(item);
+        final HtmlBuilder sb = new HtmlBuilder();        
+        { // take the URI from the AFO, if present.
+            final FileObject afo = fv.getAstroscopeFileObject();
+            sb.append("URI: ");
+            if (afo != null) {
+                sb.append(afo.getName().getURI());
+            } else {
+                sb.append(fv.getUri());
+            }
+        }
 
-        final HtmlBuilder sb = new HtmlBuilder();
-           sb.append("URI: ").append(item.getName().getURI());
-           try {
-           final FileContent content = item.getContent();
-           sb.br().append("Last modified: ").append(new Date(content.getLastModifiedTime()));
-           if (item.getType().hasContent()) {
-               final long sz = content.getSize();
-               sb.br()
-                   .append("Size: ")
-                   .append(sz == AstroscopeFileObject.UNKNOWN_SIZE ? "unknown" : FileUtils.byteCountToDisplaySize(sz));
-               sb.br()
-                   .append("Content type: ")
-                   .append(content.getContentInfo().getContentType());
-           }
-           } catch (final FileSystemException ex) {
-               // don't care
-           }
-           return sb.toString();
+        // all else comes from the view.           
+        sb.br()
+        .append("Last modified: ")
+        .append(fv.getLastModified());
+        if (fv.getType().hasContent()) {
+            final long sz = fv.getSize();
+            sb.br()
+            .append("Size: ")
+            .append(sz == AstroscopeFileObject.UNKNOWN_SIZE ? "unknown" : FileUtils.byteCountToDisplaySize(sz));
+            sb.br()
+            .append("Content type: ")
+            .append(fv.getContentType());
+        }
+        return sb.toString();
     }
 
 }

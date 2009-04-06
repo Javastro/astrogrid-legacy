@@ -92,9 +92,9 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	protected final JPanel cardContainer = new JPanel(cardLayout);
 
 	// a list of all input components.
-	protected final List inputComponents = new ArrayList();
+	protected final List<JComponent> inputComponents = new ArrayList<JComponent>();
 	// a list of all components whose visibility varies according to {@link #showAdvancedPreference} being true
-	protected final List componentsOnlyVisibleWhenAdvanced = new ArrayList();
+	protected final List<JComponent> componentsOnlyVisibleWhenAdvanced = new ArrayList<JComponent>();
 	// used to determine whether advanced options should be shown.
 	protected final Preference showAdvancedPreference;
 
@@ -112,8 +112,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	 * @param vis if true, show all optional components,
 	 */
 	void showOptionalComponents(final boolean vis) {
-		for (final Iterator i = componentsOnlyVisibleWhenAdvanced.iterator(); i.hasNext();) {
-			final JComponent c = (JComponent) i.next();
+		for (final Iterator<JComponent> i = componentsOnlyVisibleWhenAdvanced.iterator(); i.hasNext();) {
+			final JComponent c = i.next();
 			c.setVisible(vis);
 		}
 	}
@@ -121,8 +121,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	/** displays the dialogue and takes action on 'ok' or 'cancel' */
 	public void run() {
 		// reset / update all fields
-		for (final Iterator i1 = inputComponents.iterator(); i1.hasNext();) {
-			final JComponent c1 = (JComponent) i1.next();
+		for (final Iterator<JComponent> i1 = inputComponents.iterator(); i1.hasNext();) {
+			final JComponent c1 = i1.next();
 			final Preference p1 = (Preference)c1.getClientProperty(Preference.class);
 			if (! (c1 instanceof ValueAccess)) {
 				throw new ProgrammerError(" Encountered a component that was not a value access: " + c1);
@@ -148,8 +148,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		        super.ok();
 	            // go through each of the input components, saving back to preferences those that
 	            // have been modified.
-	            for (final Iterator i = inputComponents.iterator(); i.hasNext();) {
-	                final JComponent c = (JComponent) i.next();
+	            for (final Iterator<JComponent> i = inputComponents.iterator(); i.hasNext();) {
+	                final JComponent c = i.next();
 	                final Preference p = (Preference) c.getClientProperty(Preference.class);
 	                if (! (c instanceof ValueAccess)) {
 	                    throw new ProgrammerError(" Encountered a component that was not a value access: " + c);
@@ -264,7 +264,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		builder.setLeadingColumnOffset(1);
 		builder.nextLine();
 		
-		final List thisPanelInputComponents = new ArrayList();
+		final List<JComponent> thisPanelInputComponents = new ArrayList<JComponent>();
 		
 		if (basicPrefs != null && basicPrefs.size() > 0) {
 			// order the preferences  first.
@@ -300,14 +300,14 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	
 
 	/** build a panel containing 'restore defaults and 'apply' buttons. */
-	private JPanel makePanelButtons(final List panelComponents) {
+	private JPanel makePanelButtons(final List<JComponent> panelComponents) {
 		final JButton restore = new JButton("Restore Defaults") {{
 			setToolTipText("Restore settings for this pane back to defaults");
 			addActionListener(new ActionListener() {
 				public void actionPerformed(final ActionEvent e) {
-					for (final Iterator i = panelComponents.iterator(); i
+					for (final Iterator<JComponent> i = panelComponents.iterator(); i
 							.hasNext();) {
-						final JComponent c = (JComponent) i.next();
+						final JComponent c = i.next();
 						final Preference p = (Preference)c.getClientProperty(Preference.class);
 						((ValueAccess)c).setValue(p.getDefaultValue()); // nb - just setting text - not altering the preference value itself.
 						// clear any warnings on components.
@@ -323,9 +323,9 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 			setToolTipText("Apply any changes made to this pane");
 			addActionListener(new ActionListener() {
 				public void actionPerformed(final ActionEvent e) {
-					for (final Iterator i = panelComponents.iterator(); i
+					for (final Iterator<JComponent> i = panelComponents.iterator(); i
 							.hasNext();) {
-						final JComponent c = (JComponent) i.next();
+						final JComponent c = i.next();
 						final Preference p = (Preference)c.getClientProperty(Preference.class);
 						p.setValue(((ValueAccess)c).getValue()); // only fires those that differn.
 					}
@@ -349,9 +349,9 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		private static final int SPAN_ALL_COLUMNS = 4;
 
 		/** accumulating list of all components creatrd so far by this row factory */
-	final List allComponentList = new ArrayList();
+	final List<JComponent> allComponentList = new ArrayList<JComponent>();
 	/** accumulating list of all input components creaed so far by this row factory */
-	final List inputComponentList = new ArrayList();
+	final List<JComponent> inputComponentList = new ArrayList<JComponent>();
 	
 	/** builds a label for a preference , based on UiName and description*/
 	private JLabel mkLabel(final Preference p) {
@@ -702,9 +702,9 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 			super(arg0);
 			setEditable(true);
 			setSelectedItem(arg0[0]);
-			suggestions = new ArrayList(Arrays.asList(arg0));
+			suggestions = new ArrayList<String>(Arrays.asList(arg0));
 		}
-		private final List suggestions;
+		private final List<String> suggestions;
 
 		public String getValue() {
 			return (String)getSelectedItem();

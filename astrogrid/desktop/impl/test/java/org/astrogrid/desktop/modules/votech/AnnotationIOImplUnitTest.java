@@ -37,12 +37,12 @@ public class AnnotationIOImplUnitTest extends TestCase {
     private IterableObjectBuilder objectBuilder;
     private AnnotationService annotationService;
     private UIContext cxt;
-    private List userAnnotations;
+    private List<Object> userAnnotations;
     private UserAnnotation userAnnotation;
     private URI testURI;
     private Resource resource;
     private AnnotationSource annSource;
-    private ArrayList annotations;
+    private ArrayList<Object> annotations;
     private Annotation annotation;
 
     @Override
@@ -62,7 +62,7 @@ public class AnnotationIOImplUnitTest extends TestCase {
         expect(resource.getId()).andStubReturn(testURI);
         replay(resource);
         
-        userAnnotations = new ArrayList();
+        userAnnotations = new ArrayList<Object>();
         userAnnotation = new UserAnnotation();
         userAnnotation.setResourceId(testURI);
         userAnnotation.setFlagged(true);
@@ -71,7 +71,7 @@ public class AnnotationIOImplUnitTest extends TestCase {
         FileUtils.touch(annFile);
         this.annSource = new AnnotationSource(annFile.toURI(),"annSource");
         
-        annotations = new ArrayList();
+        annotations = new ArrayList<Object>();
         annotation = new Annotation();
         annotation.setResourceId(testURI);
         annotation.setAlternativeTitle("a title");

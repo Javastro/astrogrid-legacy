@@ -3,14 +3,14 @@
  */
 package org.astrogrid.desktop.alternatives;
 
+import static org.astrogrid.Fixture.createMockContext;
+import static org.easymock.EasyMock.*;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import static org.easymock.EasyMock.*;
-import static org.astrogrid.Fixture.*;
 
 /** test for the in thread executor.
  * test it within the mock ui context - want to ensure threads and workers
@@ -36,7 +36,7 @@ public class InThreadExecutorUnitTest extends TestCase {
          * @param parent
          * @param msg
          */
-        private ThreadRecordingBackgroundWorker(UIComponent parent, String msg) {
+        private ThreadRecordingBackgroundWorker(final UIComponent parent, final String msg) {
             super(parent, msg);
         }
 
@@ -48,7 +48,7 @@ public class InThreadExecutorUnitTest extends TestCase {
         }
 
         @Override
-        protected void doFinished(Object result) {
+        protected void doFinished(final Object result) {
             this.finishedThread = Thread.currentThread();
         }
 
@@ -77,11 +77,11 @@ public class InThreadExecutorUnitTest extends TestCase {
 	public void testExecuteWorker()  throws Exception{
 		r.run();
 		replay(cxt,r);
-		UIComponent parent = new HeadlessUIComponent("testing",cxt);
-		BackgroundWorker bw = new BackgroundWorker(parent,"test") {
+		final UIComponent parent = new HeadlessUIComponent("testing",cxt);
+		final BackgroundWorker<Void> bw = new BackgroundWorker<Void>(parent,"test") {
 
 			@Override
-            protected Object construct() throws Exception {
+            protected Void construct() throws Exception {
 				r.run();
 				return null;
 			}
@@ -97,8 +97,8 @@ public class InThreadExecutorUnitTest extends TestCase {
 	 */
 	public void testAllPartsOfBackgroundWorkerExecuteOnSameThreadFromStart() throws Exception {
         replay(cxt);
-        UIComponent parent = new HeadlessUIComponent("testing",cxt);
-        ThreadRecordingBackgroundWorker bw = new ThreadRecordingBackgroundWorker(parent, "test");
+        final UIComponent parent = new HeadlessUIComponent("testing",cxt);
+        final ThreadRecordingBackgroundWorker bw = new ThreadRecordingBackgroundWorker(parent, "test");
         bw.start();
         assertNotNull(bw.constructThread);
         // with start, fails here - construct happens on EDT
@@ -113,8 +113,8 @@ public class InThreadExecutorUnitTest extends TestCase {
 	/** any different when we call teh executor directly?? */
 	   public void testAllPartsOfBackgroundWorkerExecuteOnSameThreadFromExecute() throws Exception {
 	        replay(cxt);
-	        UIComponent parent = new HeadlessUIComponent("testing",cxt);
-	        ThreadRecordingBackgroundWorker bw = new ThreadRecordingBackgroundWorker(parent, "test");
+	        final UIComponent parent = new HeadlessUIComponent("testing",cxt);
+	        final ThreadRecordingBackgroundWorker bw = new ThreadRecordingBackgroundWorker(parent, "test");
 	        cxt.getExecutor().executeWorker(bw);
 	        assertNotNull(bw.constructThread);
 	        assertSame("construct not on lanunching thread",Thread.currentThread(),bw.constructThread);
@@ -135,8 +135,8 @@ public class InThreadExecutorUnitTest extends TestCase {
 	    *  */
 	    public void testAssertionErrorInConstructShouldFailTest()  throws Exception{	      
 	        replay(cxt);
-	        UIComponent parent = new HeadlessUIComponent("testing",cxt);
-	        BackgroundWorker bw = new BackgroundWorker(parent,"test") {
+	        final UIComponent parent = new HeadlessUIComponent("testing",cxt);
+	        final BackgroundWorker bw = new BackgroundWorker(parent,"test") {
 
 	            @Override
                 protected Object construct() throws Exception {
@@ -146,15 +146,15 @@ public class InThreadExecutorUnitTest extends TestCase {
 	        try {
 	            bw.start();
 	            fail("failure didn't propagate");
-	        } catch (AssertionError e) {
+	        } catch (final AssertionError e) {
 	            // expected
 	        }	        
 	        verify(cxt);
 	    }
         public void testAssertionFailedErrorInConstructShouldFailTest()  throws Exception{         
             replay(cxt);
-            UIComponent parent = new HeadlessUIComponent("testing",cxt);
-            BackgroundWorker bw = new BackgroundWorker(parent,"test") {
+            final UIComponent parent = new HeadlessUIComponent("testing",cxt);
+            final BackgroundWorker bw = new BackgroundWorker(parent,"test") {
 
                 @Override
                 protected Object construct() throws Exception {
@@ -165,51 +165,51 @@ public class InThreadExecutorUnitTest extends TestCase {
             try {
                 bw.start();
                 fail("failure didn't propagate");
-            } catch (AssertionFailedError e) {
+            } catch (final AssertionFailedError e) {
                 // expected
             }           
             verify(cxt);
         }
         public void testAssertionErrorInDoFinishedShouldFailTest()  throws Exception{       
             replay(cxt);
-            UIComponent parent = new HeadlessUIComponent("testing",cxt);
-            BackgroundWorker bw = new BackgroundWorker(parent,"test") {
+            final UIComponent parent = new HeadlessUIComponent("testing",cxt);
+            final BackgroundWorker bw = new BackgroundWorker(parent,"test") {
 
                 @Override
                 protected Object construct() throws Exception {
                     return null;
                 }
                 @Override
-                protected void doFinished(Object result) {
+                protected void doFinished(final Object result) {
                     throw new AssertionError("expected to propagage");
                 }
             };
             try {
                 bw.start();
                 fail("failure didn't propagate");
-            } catch (AssertionError e) {
+            } catch (final AssertionError e) {
                 // expected
             }           
             verify(cxt);
         }
         public void testAssertionFailedErrorInDoFinishedShouldFailTest()  throws Exception{         
             replay(cxt);
-            UIComponent parent = new HeadlessUIComponent("testing",cxt);
-            BackgroundWorker bw = new BackgroundWorker(parent,"test") {
+            final UIComponent parent = new HeadlessUIComponent("testing",cxt);
+            final BackgroundWorker bw = new BackgroundWorker(parent,"test") {
 
                 @Override
                 protected Object construct() throws Exception {
                     return null;
                 }
                 @Override
-                protected void doFinished(Object result) {
+                protected void doFinished(final Object result) {
                     fail("expected");
                 }
             };
             try {
                 bw.start();
                 fail("failure didn't propagate");
-            } catch (AssertionFailedError e) {
+            } catch (final AssertionFailedError e) {
                 // expected
             }           
             verify(cxt);

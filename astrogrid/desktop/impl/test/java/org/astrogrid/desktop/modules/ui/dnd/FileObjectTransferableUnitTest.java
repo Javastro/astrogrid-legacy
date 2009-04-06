@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ui.dnd;
 
+import static org.easymock.EasyMock.*;
+
 import java.awt.datatransfer.DataFlavor;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -16,7 +18,7 @@ import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.impl.DefaultFileContentInfo;
-import static org.easymock.EasyMock.*;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** unit test for the fileobject transferable.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -29,9 +31,9 @@ public class FileObjectTransferableUnitTest extends TestCase {
 		super.setUp();
 		f1 = createNiceMock(FileObject.class);
 
-		FileName n1 = createNiceMock(FileName.class);
+		final FileName n1 = createNiceMock(FileName.class);
 		
-		FileContent fc1 =createNiceMock(FileContent.class);
+		final FileContent fc1 =createNiceMock(FileContent.class);
 		
 		u1 = new URI("http://www.astrogrid.org");
 		
@@ -45,10 +47,12 @@ public class FileObjectTransferableUnitTest extends TestCase {
 
 		replay(f1,n1,fc1);
 		
-		trans = new FileObjectTransferable(f1,false);
+		v1 = new FileObjectView(f1,null);
+		trans = new FileObjectTransferable(v1,false);
 	}
 	public static final String MIME = "application/pdf";
 	FileObject f1;
+	FileObjectView v1;
 	URI u1;
 	FileObjectTransferable trans;
 
@@ -62,36 +66,36 @@ public class FileObjectTransferableUnitTest extends TestCase {
 
 
 	public void testGetDataFlavors() throws Exception {
-		DataFlavor[] arr = trans.getTransferDataFlavors();
+		final DataFlavor[] arr = trans.getTransferDataFlavors();
 		assertNotNull(arr);
 		assertTrue(arr.length > 0);
 		
 	}
 	
 	public void testLocalFileobjectFlavor() throws Exception {
-		assertTrue(trans.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT));
-		Object o = trans.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT);
-		assertFalse(VoDataFlavour.LOCAL_FILEOBJECT.isFlavorSerializedObjectType());
+		assertTrue(trans.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_VIEW));
+		final Object o = trans.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_VIEW);
+		assertFalse(VoDataFlavour.LOCAL_FILEOBJECT_VIEW.isFlavorSerializedObjectType());
 		assertNotNull(o);
-		assertSame(f1,o);
+		assertSame(v1,o);
 	}
 	
 
 	public void testLocalURIFlavor() throws Exception {
 		assertTrue(trans.isDataFlavorSupported(VoDataFlavour.LOCAL_URI));
-		Object o = trans.getTransferData(VoDataFlavour.LOCAL_URI);
+		final Object o = trans.getTransferData(VoDataFlavour.LOCAL_URI);
 		assertNotNull(o);
 		assertEquals(u1,o);
 	}
 	
 	public void testURIListFlavor() throws Exception {
 		assertTrue(trans.isDataFlavorSupported(VoDataFlavour.URI_LIST));
-		Object o = trans.getTransferData(VoDataFlavour.URI_LIST);
+		final Object o = trans.getTransferData(VoDataFlavour.URI_LIST);
 		assertTrue(VoDataFlavour.URI_LIST.isFlavorTextType());
 		assertTrue(VoDataFlavour.URI_LIST.isRepresentationClassInputStream());
 		assertNotNull(o);
 		assertTrue(o instanceof InputStream);
-		BufferedReader br = new BufferedReader(new InputStreamReader((InputStream)o));
+		final BufferedReader br = new BufferedReader(new InputStreamReader((InputStream)o));
 		assertEquals(u1.toString(),br.readLine());
 		assertNull(br.readLine());
 	}	

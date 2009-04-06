@@ -52,8 +52,8 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		if (ICON_NAMES.length != TOOL_TIP_FRAGMENTS.length) {
 			throw new RuntimeException("Programming error - icon names and tooltips are of different length");
 		}
-		icons = new HashMap();
-		tips = new HashMap();
+		icons = new HashMap<BitSet, Icon>();
+		tips = new HashMap<Icon, String>();
 		// populate icons map. Careful - icons here must match with order of tests below.
 		for (int i = 0; i < ICON_NAMES.length; i++) {
 			final BitSet key = new BitSet(ICON_NAMES.length);
@@ -100,8 +100,8 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 	};
 	
 	
-	private final Map icons;
-	private final Map tips;
+	private final Map<BitSet, Icon> icons;
+	private final Map<Icon, String> tips;
 	
 	public Icon buildIcon(final Resource r) {
 		
@@ -144,9 +144,9 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		if (caps.cardinality() ==0) { // nothing.
 			return null; 
 		} else if (caps.cardinality() == 1) { // single capability - will already be in the map.
-			return (Icon)icons.get(caps);
+			return icons.get(caps);
 		} else { // a composite of capabilities. may need to build a new icon for this..
-			Icon i = (Icon)icons.get(caps);
+			Icon i = icons.get(caps);
 			if (i == null) { // not there yet.
 				// find the individual icons - do this by testing for the same bit set in each of the keys.
 				// ignore already existing composite icons.
@@ -183,6 +183,6 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
     }
 
 	public String getTooltip(final Icon i) {
-		return (String)tips.get(i);
+		return tips.get(i);
 	}
 }

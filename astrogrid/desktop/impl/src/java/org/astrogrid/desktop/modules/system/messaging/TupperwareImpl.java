@@ -189,7 +189,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
             final URI src = new URI(request.getParameter(0).toString());
             final URI msg = new URI(request.getParameter(1).toString());
             final Object[] arr = (Object[])request.getParameter(2);
-            final List params = Arrays.asList(arr);
+            final List<Object> params = Arrays.asList(arr);
             final Object o =  plasticHandler.perform(src,msg,params);
             return o == null ? Collections.EMPTY_LIST : o; // can't ever return null (not a valid xmlrpc type) - use empty list to represent null instead.
             } catch (final URISyntaxException e) { 

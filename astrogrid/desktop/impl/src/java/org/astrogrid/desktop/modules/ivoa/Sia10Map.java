@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 
 class Sia10Map {
 
-    static final LinkedHashMap m = new LinkedHashMap(32);
+    static final LinkedHashMap<String, String> m = new LinkedHashMap<String, String>(32);
 
 
 
@@ -106,7 +106,7 @@ class Sia10Map {
 
     static String mapUCD(final String ucd) {
 
-        return ((String) m.get(ucd));
+        return m.get(ucd);
 
     }
 
@@ -114,7 +114,7 @@ class Sia10Map {
 
     // Get the hashmap.
 
-    static LinkedHashMap getMap() {
+    static LinkedHashMap<String, String> getMap() {
 
         return (m);
 

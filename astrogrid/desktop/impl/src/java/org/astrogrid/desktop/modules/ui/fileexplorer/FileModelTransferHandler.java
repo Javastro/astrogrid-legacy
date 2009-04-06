@@ -31,9 +31,7 @@ import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
-import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 
 import ca.odell.glazedlists.EventList;
@@ -63,8 +61,8 @@ public class FileModelTransferHandler extends TransferHandler{
 
     private final static DataFlavor[] inputFlavors = new DataFlavor[] {
         // other file objects - treat as a copy / move.
-        VoDataFlavour.LOCAL_FILEOBJECT
-        ,VoDataFlavour.LOCAL_FILEOBJECT_ARRAY
+        VoDataFlavour.LOCAL_FILEOBJECT_VIEW
+        ,VoDataFlavour.LOCAL_FILEOBJECT_VIEW_ARRAY
         // another url / uri reference from somewhere.
         ,VoDataFlavour.LOCAL_URI
         ,VoDataFlavour.LOCAL_URI_ARRAY
@@ -123,12 +121,12 @@ public class FileModelTransferHandler extends TransferHandler{
             if (canImport(dest,t.getTransferDataFlavors())) {
                 try {
                     List<?> objects = null;
-                    if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
+                    if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_VIEW)) {
                         logger.debug("local fileobject");
-                        objects = Collections.singletonList((FileObject)t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT));
-                    } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY)) {
+                        objects = Collections.singletonList((FileObjectView)t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_VIEW));
+                    } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_VIEW_ARRAY)) {
                         logger.debug("local fileobject array");
-                         final FileObject[] arr = (FileObject[])t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY);
+                         final FileObjectView[] arr = (FileObjectView[])t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_VIEW_ARRAY);
                          objects = Arrays.asList(arr);
                     } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URI)) {
                         logger.debug("local uri");
@@ -180,15 +178,15 @@ public class FileModelTransferHandler extends TransferHandler{
                         // see if we've got anything that is read-only.
                         boolean moveAllowed =true;
                         for (final Object o : objects) {
-                            if (!( o instanceof FileObject)) {
+                            if (!( o instanceof FileObjectView)) {
                                 // something else, so best not to move it.
                                 moveAllowed = false;
                                 break;
                             }
-                     final FileObject fo = (FileObject)o;
+                     final FileObjectView fo = (FileObjectView)o;
                      
                      // check whether it's a writable kind of file object
-                     if (AstroscopeFileObject.isDelegateOrAstroscopeFileObject(fo) || ! fo.isWriteable()) {
+                     if (fo.isDelegate()  || ! fo.isWritable()) {
                         moveAllowed = false;
                         break;
                      }
@@ -196,7 +194,7 @@ public class FileModelTransferHandler extends TransferHandler{
                          logger.debug("can move: " + moveAllowed);
                          if (moveAllowed) {
                              // if move allowed, we know it's a list of fileobject only.
-                             promptUserForSaveOrMove(dest,(List<FileObject>)objects);
+                             promptUserForSaveOrMove(dest,(List<FileObjectView>)objects);
                          } else {
                              filemodel.ops.copyToCurrent(objects);
                          }
@@ -215,7 +213,7 @@ public class FileModelTransferHandler extends TransferHandler{
         /** show a popup to the user. 
          * and perform a save or a move according to his selection.
          */
-        private void promptUserForSaveOrMove(final JComponent comp, final List<FileObject> fileObjects) {
+        private void promptUserForSaveOrMove(final JComponent comp, final List<FileObjectView> fileObjects) {
             final JPopupMenu m = new JPopupMenu(); // create a fresh one each time, as the model might be shared
             final int sz = fileObjects.size();
             m.add("Copy " + sz + " items here").addActionListener(new ActionListener() {
@@ -238,11 +236,11 @@ public class FileModelTransferHandler extends TransferHandler{
         }
         @Override
         public Icon getVisualRepresentation(final Transferable t) {
-            final EventList selected = filemodel.selection.getSelected();            
+            final EventList<FileObjectView> selected = filemodel.selection.getSelected();            
             if (selected.size() > 1) {
                 return ResourceTable.RESOURCES_ICON;
             } else {
-                return filemodel.icons.find((FileObject)selected.get(0));
+                return selected.get(0).getIcon();
             }
         }
     

@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.desktop.alternatives.InThreadExecutor;
 import org.astrogrid.desktop.modules.system.XStreamXmlPersist;
@@ -17,8 +19,6 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
 import org.astrogrid.desktop.modules.ui.comp.DoubleDimension;
-import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.PositionHistoryItem;
-import junit.framework.TestCase;
 
 /** test the persistence mechanism in scopeHistoryProvider.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -36,7 +36,7 @@ public class ScopeHistoryProviderUnitTest extends TestCase {
         super.setUp();
         xml = new XStreamXmlPersist();
         pref = new Preference();
-        File f = File.createTempFile("ScopeHistoryProvider",null);
+        final File f = File.createTempFile("ScopeHistoryProvider",null);
         f.delete();
         f.mkdir();
         pref.setValue(f.toString());
@@ -66,7 +66,7 @@ public class ScopeHistoryProviderUnitTest extends TestCase {
 
         final PositionHistoryItem i1 = new PositionHistoryItem();
         i1.setRadius(new DoubleDimension(2.0,1.1));
-        SesamePositionBean pos = new SesamePositionBean();
+        final SesamePositionBean pos = new SesamePositionBean();
         pos.setTarget("m32");
         pos.setService("NED");
         pos.setRa(234.2434534);
@@ -85,7 +85,7 @@ public class ScopeHistoryProviderUnitTest extends TestCase {
        //Piper.pipe(new FileInputStream(prov.getStorageLocation()),System.out);
         
         // maually deserialize, and compare..
-        List candidate = new ArrayList();
+        final List<PositionHistoryItem> candidate = new ArrayList<PositionHistoryItem>();
         prov.load(prov.getStorageLocation(),candidate);
         assertEquals(1,candidate.size());
         

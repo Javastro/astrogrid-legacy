@@ -203,7 +203,11 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	@Override
     protected long doGetLastModifiedTime() throws Exception {
 		logger.debug("getLastModifiedTime " + getName());
-		return node.getMetadata().getModifyDate().getTimeInMillis();
+		if (node.getMetadata() != null && node.getMetadata().getModifyDate() != null) {		    
+		    return node.getMetadata().getModifyDate().getTimeInMillis();
+		} else {
+		    return 0;
+		}
 	}
 
 	@Override

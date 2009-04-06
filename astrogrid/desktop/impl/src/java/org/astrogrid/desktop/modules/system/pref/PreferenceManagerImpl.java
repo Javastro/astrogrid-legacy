@@ -107,7 +107,7 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 	 * to persist properties in the preferences store.
 	 * @param sysPreferences source of system properties.
 	 */
-	public PreferenceManagerImpl(Map prefs, List preferencesRoot, SymbolSource sysPreferences) {
+	public PreferenceManagerImpl(Map<String, Preference> prefs, List<Object> preferencesRoot, SymbolSource sysPreferences) {
 	    SplashWindow.reportProgress("Loading Preferences...");
 		if (prefs == null || sysPreferences == null) {
 			throw new IllegalArgumentException("null parameter");
@@ -124,8 +124,8 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 
 		preferenceRegistry = Preferences.userNodeForPackage((Class)clazz);
 		// populate preferences and registry from each other
-		for (Iterator i = prefs.values().iterator(); i.hasNext(); ) {
-			Preference p = (Preference) i.next();
+		for (Iterator<Preference> i = prefs.values().iterator(); i.hasNext(); ) {
+			Preference p = i.next();
 			initialize(p);
 		}
 		// finally listen to further changes from the store too.
@@ -159,7 +159,7 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 		}
 	}
 
-	protected final Map preferenceObjectMap;
+	protected final Map<String, Preference> preferenceObjectMap;
 	protected final Preferences preferenceRegistry;
 	protected final SymbolSource systemProperties;
 
@@ -173,7 +173,7 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 		if (name == null) {
 			throw new IllegalArgumentException("Null preference name");
 		}
-		Preference o = (Preference)preferenceObjectMap.get(name);
+		Preference o = preferenceObjectMap.get(name);
 		if (o == null) {
 			throw new IllegalArgumentException("Preference not found: " + name);
 		}
@@ -201,8 +201,8 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 		}
 	}
 
-	public Map list() throws ACRException {
-		Map m = new LinkedHashMap();
+	public Map<String, String> list() throws ACRException {
+		Map<String, String> m = new LinkedHashMap<String, String>();
 		String[] keys;
 		try {
 			keys = preferenceRegistry.keys();
@@ -277,7 +277,7 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 	 */
 	public void preferenceChange(PreferenceChangeEvent evt) {
 		String name = evt.getKey();
-		Preference p = (Preference)preferenceObjectMap.get(name);
+		Preference p = preferenceObjectMap.get(name);
 		if (p == null ) { // not a preference - just some other property.
 			return;
 		}

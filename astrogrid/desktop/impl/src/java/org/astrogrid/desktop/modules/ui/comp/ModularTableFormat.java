@@ -10,22 +10,23 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
  * This is a convenience which makes it easier to assemble a multi-column table.
  *
  * @author   Mark Taylor
+ * @param <R> The type of object representing one 'row' of the table
  * @since    3 August 2007
  */
-public class ModularTableFormat implements AdvancedTableFormat {
+public class ModularTableFormat<R> implements AdvancedTableFormat<R> {
 
-    private ModularColumn[] columns = new ModularColumn[0];
+    private ModularColumn<R,?>[] columns = new ModularColumn[0];
 
     /**
      * Configures this object by providing an array of <code>ModularColumn</code>s.
      *
      * @param   columns   array of column configuration objects
      */
-    public void setColumns(final ModularColumn[] columns) {
+    public void setColumns(final ModularColumn<R,?>[] columns) {
         this.columns = columns;
     }
     
-    public ModularColumn[] getColumns() {
+    public ModularColumn<R,?>[] getColumns() {
         return this.columns;
     }
 
@@ -35,7 +36,7 @@ public class ModularTableFormat implements AdvancedTableFormat {
      * @param  icol  column index
      * @return   column description object
      */
-    public ModularColumn getColumn(final int icol) {
+    public ModularColumn<R,?> getColumn(final int icol) {
         return columns[icol];
     }
 
@@ -47,7 +48,7 @@ public class ModularTableFormat implements AdvancedTableFormat {
         return getColumn(icol).getColumnName();
     }
 
-    public Object getColumnValue(final Object baseObj, final int icol) {
+    public Object getColumnValue(final R baseObj, final int icol) {
         return getColumn(icol).getColumnValue(baseObj);
     }
 

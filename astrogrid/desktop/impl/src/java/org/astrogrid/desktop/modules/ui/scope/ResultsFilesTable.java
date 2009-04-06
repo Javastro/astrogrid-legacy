@@ -13,12 +13,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.vfs.FileContent;
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesTable;
 
 import ca.odell.glazedlists.GlazedLists;
@@ -37,9 +36,9 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 6, 20084:33:43 PM
  */
-public class ResultsFilesTable extends NavigableFilesTable implements AdvancedTableFormat {
+public class ResultsFilesTable extends NavigableFilesTable implements AdvancedTableFormat<FileObjectView> {
 
-    private final AdvancedTableFormat originalFormat;
+    private final AdvancedTableFormat<FileObjectView> originalFormat;
 
     /**
      * @param navigator
@@ -50,8 +49,8 @@ public class ResultsFilesTable extends NavigableFilesTable implements AdvancedTa
         //@todo new help string.
 
         // change table format - so we can display additional colummns.
-        final EventTableModel model = (EventTableModel)getModel();
-        this.originalFormat = (AdvancedTableFormat)model.getTableFormat();
+        final EventTableModel<FileObjectView> model = (EventTableModel<FileObjectView>)getModel();
+        this.originalFormat = (AdvancedTableFormat<FileObjectView>)model.getTableFormat();
         model.setTableFormat(this);
         
         final TableColumnModel cm = getColumnModel();
@@ -129,27 +128,26 @@ public class ResultsFilesTable extends NavigableFilesTable implements AdvancedTa
             
     }
 
-    public Object getColumnValue(final Object arg0, final int arg1) {
-        final DelegateFileObject dfo = (DelegateFileObject)arg0;
-       final AstroscopeFileObject afo = AstroscopeFileObject.findAstroscopeFileObject(dfo);
+    public Object getColumnValue(final FileObjectView o, final int arg1) {               
+       final AstroscopeFileObject afo = o.getAstroscopeFileObject();
        final TreeNode node = afo.getNode();
+       
         switch(arg1) {
 
             case 2: 
                 final String pos = node.getAttribute(AbstractRetriever.POS_ATTRIBUTE);
-                return pos == null ? "" : pos;                                
+                return pos == null ? "" : pos;
             case 3: 
                 final String offset = node.getAttribute(AbstractRetriever.OFFSET_DISPLAY_ATTRIBUTE);
-                return offset == null ? null : new Double(offset);    
+                return offset == null ? null : new Double(offset);           
             default:          
-                return this.originalFormat.getColumnValue(arg0, arg1);
-        }         
-   
+                return this.originalFormat.getColumnValue(o, arg1);
+        }
     }
     
     @Override
-    protected String createFileTableToolTip(final FileObject item) {
-        final AstroscopeFileObject afo = AstroscopeFileObject.findAstroscopeFileObject(item);
+    protected String createFileTableToolTip(final FileObjectView item) {
+        final AstroscopeFileObject afo = item.getAstroscopeFileObject();
         final HtmlBuilder b = new HtmlBuilder();
         b.append(afo.getNode().getAttribute(AbstractRetriever.TOOLTIP_ATTRIBUTE));
         b.br();

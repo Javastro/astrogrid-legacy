@@ -11,10 +11,8 @@ import org.astrogrid.acr.ivoa.resource.Resource;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 13, 20071:54:22 PM
  */
-public final class ResourceTitleComparator implements Comparator {
-	public int compare(final Object arg0, final Object arg1) {
-		final Resource a = (Resource)arg0;
-		final Resource b = (Resource)arg1;
+public final class ResourceTitleComparator implements Comparator<Resource> {
+	public int compare(final Resource a, final Resource b) {
 		if (a == null || a.getTitle() == null) {
 		    return -1;
 		} 

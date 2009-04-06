@@ -3,8 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** Factory for TaskRunner.
  * @author Noel Winstanley
@@ -44,7 +44,7 @@ public class TaskRunnerFactory implements TaskRunnerInternal{
 		return tr;
 	}
 
-    public void edit(final FileObject o) {
+    public void edit(final FileObjectView o) {
         final TaskRunnerInternal tr = newInstance();
         tr.show();        
         tr.edit(o);

@@ -42,7 +42,7 @@ import ca.odell.glazedlists.GlazedLists;
  * @author Mark Taylor
  */
 
-public class ResourceTableFomat extends ModularTableFormat {
+public class ResourceTableFomat extends ModularTableFormat<Resource> {
 
     protected final static String STATUS_NAME = "Status";
     protected final static String LABEL_NAME = "Title";
@@ -71,7 +71,7 @@ public class ResourceTableFomat extends ModularTableFormat {
         this.annService = annService;
         this.capBuilder = capBuilder;
 
-        final List columnList = new ArrayList();
+        final List<Column<Resource,?>> columnList = new ArrayList<Column<Resource,?>>();
 
         columnList.add(new IconColumn(STATUS_NAME) {
             @Override
@@ -382,7 +382,7 @@ public class ResourceTableFomat extends ModularTableFormat {
         });
         
         columnList.add(new StringColumn(TAG_NAME) {
-            final Set tags = new HashSet();
+            final Set<String> tags = new HashSet<String>();
             final StrBuilder sb = new StrBuilder();
             @Override
             protected String getValue(final Resource res) {
@@ -390,7 +390,7 @@ public class ResourceTableFomat extends ModularTableFormat {
                 sb.clear();
                 for (final Iterator i = annService.getLocalAnnotations(res); i.hasNext(); ) {
                     final Annotation a = (Annotation)i.next();
-                    final Set ts = a.getTags();
+                    final Set<String> ts = a.getTags();
                     if (ts != null) {
                         tags.addAll(ts);
                     }
@@ -404,7 +404,7 @@ public class ResourceTableFomat extends ModularTableFormat {
             }
         });
 
-        setColumns((ModularColumn[])columnList.toArray(new ModularColumn[columnList.size()]));
+        setColumns(columnList.toArray(new ModularColumn[columnList.size()]));
     }
 
     /**
@@ -461,7 +461,7 @@ public class ResourceTableFomat extends ModularTableFormat {
     /**
      * ModularColumn implementation for use internally to this TableFormat.
      */
-    protected static abstract class Column extends ModularColumn {
+    protected static abstract class Column<B,C> extends ModularColumn<B,C> {
 
         /**
          * Constructor.
@@ -471,7 +471,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          * @param  comparator  default comparator to use for this column;
          *                     use null for a non-comparable column
          */
-        public Column(final String name, final Class clazz, final Comparator comparator) {
+        public Column(final String name, final Class<C> clazz, final Comparator<? super C> comparator) {
             super(name, clazz, comparator);
         }
 
@@ -503,7 +503,7 @@ public class ResourceTableFomat extends ModularTableFormat {
     /**
      * Column implementation for a column containing strings.
      */
-    protected static abstract class StringColumn extends Column {
+    protected static abstract class StringColumn extends Column<Resource,String> {
 
         /**
          * Constructs a column with a default comparator.
@@ -521,7 +521,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          * @param  caseSensitive    true iff comparisons should be case sensitive
          */
         public StringColumn(final String name, final boolean caseSensitive) {
-            super(name, String.class, caseSensitive ? GlazedLists.comparableComparator() : GlazedLists.caseInsensitiveComparator());
+            super(name, String.class, (Comparator<String>)(caseSensitive ? GlazedLists.comparableComparator() : GlazedLists.caseInsensitiveComparator()));
         }
 
         /**
@@ -533,16 +533,15 @@ public class ResourceTableFomat extends ModularTableFormat {
         protected abstract String getValue(Resource res);
 
         @Override
-        public Object getColumnValue(final Object obj) {
-            return obj instanceof Resource ? getValue((Resource) obj)
-                                           : null;
+        public String getColumnValue(final Resource obj) {
+            return getValue( obj);
         }
     }
 
     /**
      * ModularColumn implementation for a column containing icons.
      */
-    protected static abstract class IconColumn extends Column {
+    protected static abstract class IconColumn extends Column<Resource,Icon> {
 
         /**
          * Constructor.
@@ -562,16 +561,13 @@ public class ResourceTableFomat extends ModularTableFormat {
         protected abstract Icon getValue(Resource res);
 
         @Override
-        public Object getColumnValue(final Object obj) {
-            return obj instanceof Resource ? getValue((Resource) obj)
-                                           : null;
+        public Icon getColumnValue(final Resource res) {
+            return getValue( res);
         }
 
         /** compare 2 icons. */
-        private static final Comparator ICON_COMPARATOR = new Comparator() {
-            public int compare(final Object arg0, final Object arg1) {
-                final Icon a = (Icon)arg0;
-                final Icon b = (Icon)arg1;
+        private static final Comparator<Icon> ICON_COMPARATOR = new Comparator<Icon>() {
+            public int compare(final Icon a, final Icon b) {
                 return map(a) - map(b); 
             }
             private int map(final Icon a) {

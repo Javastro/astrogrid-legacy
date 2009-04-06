@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.commons.vfs.FileObject;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** A 'copy as' command to the Bulk Copy Woeker.
  * The source plus a target filename are specified.
@@ -20,7 +20,7 @@ public class CopyAsCommand extends CopyCommand {
         this.targetFilename = target;
     }
 
-    public CopyAsCommand(final FileObject src, final String target) {
+    public CopyAsCommand(final FileObjectView src, final String target) {
         super(src);
         this.targetFilename = target;
     }

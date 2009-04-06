@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 import ca.odell.glazedlists.EventList;
 
@@ -22,7 +23,7 @@ public class EventListMenuManager extends EventListPopupMenuManager {
 	 * @param menu the popup menu to display items in
 	 * @param reverse if true, display the items in reverse order.
 	 */
-	public EventListMenuManager(final EventList el, final JMenu menu, final boolean reverse) {
+	public EventListMenuManager(final EventList<JMenuItem> el, final JMenu menu, final boolean reverse) {
 		super(el,menu,menu.getPopupMenu(),reverse);
 	}
 

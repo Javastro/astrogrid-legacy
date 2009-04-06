@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** base class for activities can are applicable to file objects and registry resources.
  * 
@@ -23,14 +23,14 @@ import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
  */
 public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
 
-	private FileObject[] currentFiles = null;
+	private FileObjectView[] currentFiles = null;
 	private Resource[] currentResources = null;
 	
 // machinery for files
-	public void oneSelected(final FileObject fo){
+	public void oneSelected(final FileObjectView fo){
         if (invokable(fo)) {
             setEnabled(true);
-            currentFiles =new FileObject[]{fo};
+            currentFiles =new FileObjectView[]{fo};
             currentResources = null;
         } else {
             setEnabled( false);
@@ -38,7 +38,7 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
             currentResources = null;
         }	    
 	}
-	public void manySelected(final FileObject[] list) {
+	public void manySelected(final FileObjectView[] list) {
         for (int i = 0; i < list.length; i++) {
             if(invokable(list[i])) { // lazy - only goes as far as the first 'yes'
                 setEnabled(true);
@@ -56,18 +56,18 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
      * those files this activity can operate on.
      * @param f
      */
-    protected abstract boolean invokable(FileObject f);
+    protected abstract boolean invokable(FileObjectView f);
     
     /** helper method, to be used in 'action performed' method of subclass
      * 
      * will return the empty list if there's no invokable files at the moment - which suggests
      * that there's invokable resources instead.
      * */
-    protected final List computeInvokableFiles() {
+    protected final List<FileObjectView> computeInvokableFiles() {
         if (currentFiles == null || currentFiles.length == 0) {
             return Collections.EMPTY_LIST;
         }
-        final List r = new ArrayList();
+        final List<FileObjectView> r = new ArrayList();
         for (int i = 0; i < currentFiles.length; i++) {
             if (invokable(currentFiles[i])) {
                 r.add(currentFiles[i]);
@@ -110,11 +110,11 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
      * that there's invokable resources instead.
      * never returns null
      * */
-    protected final List computeInvokableResources() {
+    protected final List<Resource> computeInvokableResources() {
         if (currentResources == null || currentResources.length == 0) {
             return Collections.EMPTY_LIST;
         }
-        final List r = new ArrayList();
+        final List<Resource> r = new ArrayList();
         for (int i = 0; i < currentResources.length; i++) {
             if (invokable(currentResources[i])) {
                 r.add(currentResources[i]);
@@ -150,10 +150,10 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
 			someSelected((Resource[])r.getTransferData(VoDataFlavour.LOCAL_RESOURCE_ARRAY));
 		} else if (r.isDataFlavorSupported(VoDataFlavour.RESOURCE_ARRAY)) {
 		    someSelected((Resource[])r.getTransferData(VoDataFlavour.RESOURCE_ARRAY));
-		} else if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
-			oneSelected((FileObject)r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT));
-		} else if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY)) {
-			manySelected((FileObject[])r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY));
+		} else if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_VIEW)) {
+			oneSelected((FileObjectView)r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_VIEW));
+		} else if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_VIEW_ARRAY)) {
+			manySelected((FileObjectView[])r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_VIEW_ARRAY));
 		} else {
 			noneSelected();
 		}

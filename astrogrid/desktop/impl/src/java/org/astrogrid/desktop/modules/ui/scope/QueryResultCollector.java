@@ -1,4 +1,4 @@
-/*$Id: QueryResultCollector.java,v 1.3 2008/11/04 14:35:48 nw Exp $
+/*$Id: QueryResultCollector.java,v 1.4 2009/04/06 11:43:19 nw Exp $
  * Created on 30-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,11 @@
  *
  **/
 package org.astrogrid.desktop.modules.ui.scope;
+
+import java.util.List;
+
+import org.astrogrid.desktop.modules.system.Tuple;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 
 /** interface to something that aggregates results from many retrievers. */
@@ -26,14 +31,19 @@ public interface QueryResultCollector {
     
 
 /** add these retriever to the list of things that are going to be queried.
- * @param retrievers
+ * @param retrievers list of retrievers paired with a fileobject that is to be used as it's results directory.
  */
-void addAll(Retriever[] retrievers);
+void addAll(final List<Tuple<Retriever,FileObjectView>> retrievers);
 
 }
 
 /* 
  $Log: QueryResultCollector.java,v $
+ Revision 1.4  2009/04/06 11:43:19  nw
+ Complete - taskConvert all to generics.
+
+ Incomplete - taskVOSpace VFS integration
+
  Revision 1.3  2008/11/04 14:35:48  nw
  javadoc polishing
 

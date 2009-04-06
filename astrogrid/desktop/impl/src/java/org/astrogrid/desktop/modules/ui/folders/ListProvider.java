@@ -11,10 +11,11 @@ import ca.odell.glazedlists.EventList;
  * from a persistent store, and then watching for updates - but this is 
  * not specified.
  * @author Noel.Winstanley@manchester.ac.uk
+ * @param <E> item type for list
  * @since Mar 5, 200712:36:10 PM
  */
-public interface ListProvider {
+public interface ListProvider<E> {
 
-	public EventList getList();
+	public EventList<E> getList();
 
 }

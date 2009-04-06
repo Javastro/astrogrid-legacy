@@ -39,7 +39,7 @@ public class ResourceTreeModel extends DefaultTreeModel {
 
     private final UIContext parent;
     private final XmlPersist persister;
-    private final Set subscriptionSet = new HashSet();
+    private final Set<DefaultMutableTreeNode> subscriptionSet = new HashSet<DefaultMutableTreeNode>();
 
     /**
      * Constructor.

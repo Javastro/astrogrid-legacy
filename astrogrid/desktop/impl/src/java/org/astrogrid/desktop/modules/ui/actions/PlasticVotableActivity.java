@@ -14,9 +14,6 @@ import java.util.List;
 import javax.swing.JMenuItem;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileContent;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -25,6 +22,7 @@ import org.astrogrid.desktop.modules.system.messaging.VotableMessageSender;
 import org.astrogrid.desktop.modules.system.messaging.VotableMessageType;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.samp.Response;
@@ -47,12 +45,8 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
             setText("Attempt to " + Character.toLowerCase(title.charAt(0)) + title.substring(1));
         }
         @Override
-        protected boolean invokable(final FileObject f) {
-            try {
+        protected boolean invokable(final FileObjectView f) {
                 return ! super.invokable(f) && f.getType().hasContent();
-            } catch (final FileSystemException x) {
-                return false;
-            }
         }
         @Override
         protected boolean invokable(final Resource r) {
@@ -60,7 +54,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
         }
         //don't allow invokcation on multiple resources though - too dodgy.
         @Override
-        public void manySelected(final FileObject[] list) {
+        public void manySelected(final FileObjectView[] list) {
             noneSelected();
         }
         
@@ -100,13 +94,8 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	
     
 	@Override
-    protected boolean invokable(final FileObject f) {
-		try {
-			final FileContent content = f.getContent();
-            return VoDataFlavour.MIME_VOTABLE.equals(content.getContentInfo().getContentType());
-		} catch (final FileSystemException x) {
-			return false;
-		}
+    protected boolean invokable(final FileObjectView f) {
+            return VoDataFlavour.MIME_VOTABLE.equals(f.getContentType());
 	}
 	
 
@@ -138,10 +127,9 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 
 		        for (final Iterator i = sources.iterator(); i.hasNext();) {
 	            final Object o = i.next();
-	            if (o instanceof FileObject) {                    
-	                FileObject f = (FileObject) o;
-	                f = AstroscopeFileObject.findInnermostFileObject(f);
-	                (new LoadVotableWorker(f,f.getName().getBaseName())).start();
+	            if (o instanceof FileObjectView) {                    
+	                final FileObjectView f = (FileObjectView) o;
+	                (new LoadVotableWorker(f,f.getBasename())).start();
 	                
 	            } else if (o instanceof CatalogService) {
 	                // very CDS specific
@@ -181,13 +169,13 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
      * @since Sep 11, 200711:08:12 AM
      */
 	private class LoadVotableWorker extends BackgroundWorker<Response>{
-        protected final FileObject fo;
+        protected final FileObjectView fv;
         protected final URI uri;
         protected final String id;
         private boolean reportSuccess = true;
-        public LoadVotableWorker(final FileObject fo, final String name) {
+        public LoadVotableWorker(final FileObjectView fv, final String name) {
             super(uiParent.get(),"Sending table " + name +  " to " + target.getName(),Thread.MAX_PRIORITY);
-            this.fo = fo;
+            this.fv = fv;
             this.id = name;
             this.uri = null;
             //setTransient(true);
@@ -202,7 +190,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
             super(uiParent.get(),"Sending table to " + target.getName(),Thread.MAX_PRIORITY);
             this.uri = uri;
             this.id = id;
-            this.fo = null;
+            this.fv = null;
             //setTransient(true);
         }             
 
@@ -210,8 +198,8 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
             protected Response construct() throws Exception {
 			    // first check if it's applicable, and if not fallback.
 			    URL url;
-			    if (fo != null) {				        
-			        url = fo.getURL();
+			    if (fv != null) {				        
+			        url = AstroscopeFileObject.findInnermostFileObject(fv.getFileObject()).getURL();
 			    } else { // must be a uri then.
 			        url = uri.toURL();
 			    }

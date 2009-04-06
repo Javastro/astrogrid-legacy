@@ -1,4 +1,4 @@
-/*$Id: InProcessFinderSeparateTest.java,v 1.6 2009/03/26 18:01:22 nw Exp $
+/*$Id: InProcessFinderSeparateTest.java,v 1.7 2009/04/06 11:43:29 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,7 +70,7 @@ public class InProcessFinderSeparateTest extends TestCase {
         assertNotNull(acr);
         Configuration conf = (Configuration)acr.getService(Configuration.class);
         assertNotNull(conf);
-        Map m = conf.list();
+        Map<String, String> m = conf.list();
         assertNotNull(m);
         assertTrue(m.size() > 0);
     }
@@ -119,6 +119,11 @@ public class InProcessFinderSeparateTest extends TestCase {
 
 /* 
 $Log: InProcessFinderSeparateTest.java,v $
+Revision 1.7  2009/04/06 11:43:29  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.6  2009/03/26 18:01:22  nw
 added override annotations
 

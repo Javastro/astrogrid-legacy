@@ -11,11 +11,10 @@ import javax.swing.JTextArea;
 
 import org.apache.commons.collections.Bag;
 import org.apache.commons.collections.bag.TreeBag;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageTableFormat;
 
 import com.l2fprod.common.swing.JTaskPaneGroup;
@@ -56,15 +55,11 @@ private final Bag types = new TreeBag();
 	}
 
 	@Override
-    public void manySelected(final FileObject[] l) {
+    public void manySelected(final FileObjectView[] l) {
 		typeField.setVisible(true);
 		types.clear();
 		for (int i = 0; i < l.length; i++) {
-				try {
 				    types.add(StorageTableFormat.findBestContentType(l[i]));
-				} catch (final FileSystemException x) {
-					logger.error("FileSystemException",x);
-				}
 		}
 		fmtResult();		
 	}
@@ -95,13 +90,9 @@ private final Bag types = new TreeBag();
 		typeField.setVisible(true);
 	}
 	@Override
-    public void oneSelected(final FileObject fo) {
-		try {
+    public void oneSelected(final FileObjectView fo) {
 		    typeField.setText(StorageTableFormat.findBestContentType(fo));
 		    typeField.setVisible(true);
-		} catch (final FileSystemException x) {
-			logger.error("FileSystemException",x);
-		}
 	}
 
 
@@ -123,7 +114,7 @@ private final Bag types = new TreeBag();
 
 	// not used in this subclass.
     @Override
-    protected boolean invokable(final FileObject f) {
+    protected boolean invokable(final FileObjectView f) {
         return false;
     }
 

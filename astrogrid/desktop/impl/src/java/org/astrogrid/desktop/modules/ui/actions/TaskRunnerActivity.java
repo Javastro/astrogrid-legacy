@@ -6,13 +6,12 @@ package org.astrogrid.desktop.modules.ui.actions;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** Open TaskRunner for a resource.
  * @todo initialize the form in a backgrund thread
@@ -35,7 +34,7 @@ private final TaskRunnerInternal t;
 
 @Override
 public void actionPerformed(final ActionEvent e) {
-    final List resources = computeInvokableResources();
+    final List<Resource> resources = computeInvokableResources();
     switch(resources.size()) {
         case 0:
             break;
@@ -46,12 +45,12 @@ public void actionPerformed(final ActionEvent e) {
         default:
             //can'\t edit more than one.           
     }
-    final List files= computeInvokableFiles();
+    final List<FileObjectView> files= computeInvokableFiles();
     switch(files.size()) {
         case 0:
             break;
         case 1:
-            final FileObject fo = (FileObject)files.get(0);
+            final FileObjectView fo = files.get(0);
             t.edit(fo);
             break;
         default:
@@ -62,7 +61,7 @@ public void actionPerformed(final ActionEvent e) {
 
 	
 	@Override
-    public void manySelected(final FileObject[] l) {
+    public void manySelected(final FileObjectView[] l) {
 		noneSelected(); // can't operate on more than one file.
 	}
 
@@ -72,18 +71,11 @@ public void actionPerformed(final ActionEvent e) {
 	}
 
 	@Override
-    public boolean invokable(final FileObject fo) {
-	    try {
-	        if (fo.getType().hasContent()) { // must be a file, not a folder.
-	            final String mime = fo.getContent().getContentInfo().getContentType();
-	            if (mime != null && mime.equals(VoDataFlavour.MIME_CEA)) {
-	                return true;
-	            }
-	        }
-	    } catch (final FileSystemException x) {
-	        return false;
-	    }
-	    return false;
+    public boolean invokable(final FileObjectView fo) {
+	    return (fo.getType().hasContent() 
+	            && VoDataFlavour.MIME_CEA.equals(fo.getContentType())
+	            );
+
 	}
 
 	@Override

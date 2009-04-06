@@ -23,6 +23,7 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
 import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
+import org.astrogrid.desktop.modules.ui.taskrunner.AbstractTaskFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BinaryFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BooleanFormElement;
@@ -181,7 +182,7 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
     }
 
     public ParametersInfoPane createParametersInfoPane(final Model model,
-            final EventList elements) {
+            final EventList<AbstractTaskFormElement> elements) {
         return (ParametersInfoPane)create("parametersInfoPane",new Object[]{model,elements});
      }
 

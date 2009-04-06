@@ -194,12 +194,12 @@ public class TimedPopup {
              //   xoffset = d.width + 1;
                 yoffset = d.height + 1;
                 //store new popup too.
-                final List l = new ArrayList();
+                final List<Object> l = new ArrayList<Object>();
                 l.add(o);
                 l.add(message);
                 popupsForComponent.put(owner,l);
             } else if (o instanceof List) {
-                final List l = (List)o;
+                final List<Component> l = (List<Component>)o;
                 boolean foundSlot = false;
                 for (int i = 0; i < l.size(); i++) {
                     final Object e = l.get(i);
@@ -242,7 +242,7 @@ public class TimedPopup {
      * key - the component popups are being displayed upon
      * value - a single message component, or list of message components, of the popups currenlty being shown
      *  */
-    private static final Map popupsForComponent = new WeakHashMap();
+    private static final Map<Component, Object> popupsForComponent = new WeakHashMap<Component, Object>();
     // main method for testing.
     public static void main(final String[] args) {
        final javax.swing.JComponent l = new JTree();

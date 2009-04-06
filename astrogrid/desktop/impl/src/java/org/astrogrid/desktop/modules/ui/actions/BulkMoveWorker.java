@@ -23,13 +23,14 @@ import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** worker class which does a bulk move of a bunch of files/folders to another target.
  * @future upgrade this to use the CopyCommands instead.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 25, 20074:49:51 PM
  */
-public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileSystemException>> {
+public final class BulkMoveWorker extends BackgroundWorker<Map<FileObjectView, FileSystemException>> {
     /**
      * Logger for this class
      */
@@ -42,16 +43,16 @@ public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileS
     /**
      * 
      */
-    private final List<FileObject> l;
+    private final List<FileObjectView> l;
     private final FileSystemManager vfs;
-    private final FileObject saveObject;
+    private final FileObjectView saveObject;
 
     /**
      * @param parent ui parent
      * @param saveDir directory to copy data to.
      * @param l list of file objects to copy.
      */
-    public BulkMoveWorker(final FileSystemManager vfs,final UIComponent parent,final File saveDir, final List<FileObject> l) {
+    public BulkMoveWorker(final FileSystemManager vfs,final UIComponent parent,final File saveDir, final List<FileObjectView> l) {
         super(parent,  "Moving to " + saveDir,BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveDir = saveDir;
@@ -59,8 +60,8 @@ public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileS
         this.l = l;
     }
     
-    public BulkMoveWorker(final FileSystemManager vfs,final UIComponent parent,final FileObject saveObject, final List<FileObject> l) {
-        super(parent,  "Moving to " + saveObject.getName().getPath(),BackgroundWorker.VERY_LONG_TIMEOUT);
+    public BulkMoveWorker(final FileSystemManager vfs,final UIComponent parent,final FileObjectView saveObject, final List<FileObjectView> l) {
+        super(parent,  "Moving to " + saveObject.getBasename(),BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveObject = saveObject;
         this.saveDir = null;
@@ -72,7 +73,7 @@ public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileS
 
     protected FileObject saveTarget;
     @Override
-    protected Map<FileObject, FileSystemException> construct() throws Exception {
+    protected Map<FileObjectView, FileSystemException> construct() throws Exception {
         final int tasksCount = l.size() + 1;
         int progress = 0;
         setProgress(progress,tasksCount);
@@ -81,7 +82,7 @@ public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileS
         if (saveObject == null) {
             saveTarget = vfs.resolveFile(this.saveDir.toURI().toString());
         } else {
-            saveTarget = saveObject;
+            saveTarget = saveObject.getFileObject();
         }
         if (! saveTarget.exists()) {
             reportProgress("Creating save location");
@@ -93,9 +94,10 @@ public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileS
         reportProgress("Save location validated");
         setProgress(++progress,tasksCount);        
         // will records errors copy indivitual files, continue, and report at the end.
-        final Map<FileObject, FileSystemException> errors = new HashMap<FileObject, FileSystemException>();
+        final Map<FileObjectView, FileSystemException> errors = new HashMap<FileObjectView, FileSystemException>();
         // go through each file in turn.
-        for (final FileObject src: l ) {
+        for (final FileObjectView fv: l ) {
+                final FileObject src = fv.getFileObject();
                 reportProgress("Processing " + src.getName().getBaseName());                
                 FileObject dest = null;
                 try {
@@ -120,7 +122,7 @@ public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileS
                 }
                 src.moveTo(dest);
             } catch (final FileSystemException x) {
-                errors.put(src,x);
+                errors.put(fv,x);
                 reportProgress("Move from " + src.getName().getBaseName() + " failed");                
             }finally {
                 setProgress(++progress,tasksCount);                
@@ -144,17 +146,17 @@ public final class BulkMoveWorker extends BackgroundWorker<Map<FileObject, FileS
     }
 
     @Override
-    protected void doFinished(final Map<FileObject, FileSystemException> errors) {       
+    protected void doFinished(final Map<FileObjectView, FileSystemException> errors) {       
         if (errors.size() ==0) {
             parent.showTransientMessage("Finished moving files","");
             return;
         }
         final HtmlBuilder msgBuilder = new HtmlBuilder();			    
-        for (final Map.Entry<FileObject,FileSystemException> err : errors.entrySet()) {           
-            final FileObject f = err.getKey();
+        for (final Map.Entry<FileObjectView,FileSystemException> err : errors.entrySet()) {           
+            final FileObjectView f = err.getKey();
             final Throwable e = err.getValue();
-            logger.warn(f.getName().getPath(),e);
-            msgBuilder.append(f.getName().getPath()).append("<br>");
+            logger.warn(f.getUri(),e);
+            msgBuilder.append(f.getUri()).append("<br>");
             msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
             msgBuilder.append("<p>");
         }

@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.util.Iterator;
 
 import javax.swing.AbstractButton;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import ca.odell.glazedlists.EventList;
@@ -19,8 +20,8 @@ import ca.odell.glazedlists.event.ListEventListener;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 11, 20071:24:22 PM
  */
-public class EventListPopupMenuManager implements ListEventListener {
-	private final EventList el;
+public class EventListPopupMenuManager implements ListEventListener<JMenuItem> {
+	private final EventList<? extends JMenuItem> el;
 	private final JPopupMenu popup;
 	private final boolean reverse;
 	private final AbstractButton triggerButton;
@@ -38,7 +39,7 @@ public class EventListPopupMenuManager implements ListEventListener {
 	 * additional components may be added to the menu before and after the 
 	 * creation of the menu manager. If true, no other components should be added.
 	 */
-	public EventListPopupMenuManager(final EventList el, final AbstractButton triggerButton, final JPopupMenu popup, final boolean reverse) {
+	public EventListPopupMenuManager(final EventList<? extends JMenuItem> el, final AbstractButton triggerButton, final JPopupMenu popup, final boolean reverse) {
 		super();
 		this.el = el;
 		this.popup = popup;
@@ -49,29 +50,29 @@ public class EventListPopupMenuManager implements ListEventListener {
 			triggerButton.setEnabled(startingSize + el.size() > 0);
 		}
 		int ix = startingSize;
-		for (final Iterator i = el.iterator(); i.hasNext(); ) {
-			final Component o = (Component)i.next();
+		for (final Iterator<? extends JMenuItem> i = el.iterator(); i.hasNext(); ) {
+			final Component o = i.next();
 			popup.insert(o,mbReverseInsert(ix++));
 		}		
 		el.addListEventListener(this);
 	}
 	
 
-	public void listChanged(final ListEvent e) {
+	public void listChanged(final ListEvent<JMenuItem> e) {
 		while (e.hasNext()) {
 			e.next();
 			final int i = e.getIndex();
 			Component o;
 			switch(e.getType()) {
 				case ListEvent.INSERT:
-					o = (Component)el.get(i);
+					o = el.get(i);
 					popup.insert(o,mbReverseInsert(i));
 					if (triggerButton != null && popup.getComponentCount() ==1) { // first insert
 						triggerButton.setEnabled(true);
 					}
 					break;
 				case ListEvent.UPDATE:
-					o = (Component)el.get(i);
+					o = el.get(i);
 					popup.remove(mbReverse(i));
 					popup.insert(o,mbReverseInsert(i));
 					break;

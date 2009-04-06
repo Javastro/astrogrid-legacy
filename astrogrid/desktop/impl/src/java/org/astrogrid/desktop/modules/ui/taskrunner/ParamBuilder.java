@@ -50,7 +50,7 @@ public final class ParamBuilder {
     public ParamBuilder(final String iName, final CeaApplication resource,final Tool t) {
     
         final InterfaceBean iface = ToolManipulator.findInterface(iName,resource.getInterfaces());
-        final Map descriptions = createDescriptionMap(resource);
+        final Map<String, ParameterBean> descriptions = createDescriptionMap(resource);
         
         // inputs
         ParameterReferenceBean[] refs = iface.getInputs();
@@ -58,7 +58,7 @@ public final class ParamBuilder {
         for (int i = 0; i < refs.length; i++) {
             inputs[i] = new Param(
                         refs[i]
-                         ,(ParameterBean)descriptions.get(refs[i].getRef())
+                         ,descriptions.get(refs[i].getRef())
                          , findValues(refs[i].getRef(),t.getInput().getParameter())        
                          );
         }
@@ -69,7 +69,7 @@ public final class ParamBuilder {
         for (int i = 0; i < refs.length; i++) {
             outputs[i] = new Param(
                         refs[i]
-                         ,(ParameterBean)descriptions.get(refs[i].getRef())
+                         ,descriptions.get(refs[i].getRef())
                          , findValues(refs[i].getRef(),t.getOutput().getParameter())        
                          );
         }	        
@@ -79,18 +79,18 @@ public final class ParamBuilder {
      * will never return null, but may return an empty array.
      *  */
     private final ParameterValue[] findValues(final String pName, final ParameterValue[] vals) {
-        final List l = new ArrayList();
+        final List<ParameterValue> l = new ArrayList<ParameterValue>();
         for (int i = 0; i < vals.length; i++) {
             if (pName.equals(vals[i].getName())){
                 l.add(vals[i]);
             }
         }
-        return (ParameterValue[])l.toArray(new ParameterValue[l.size()]);
+        return l.toArray(new ParameterValue[l.size()]);
     }
 
-    private final Map createDescriptionMap(final CeaApplication applicationResource) {
+    private final Map<String, ParameterBean> createDescriptionMap(final CeaApplication applicationResource) {
         final ParameterBean[] descriptions = applicationResource.getParameters();
-        final Map descriptionMap = new HashMap();
+        final Map<String, ParameterBean> descriptionMap = new HashMap<String, ParameterBean>();
         for (int i = 0; i < descriptions.length; i++) {
             descriptionMap.put(descriptions[i].getName(),descriptions[i]);
         }

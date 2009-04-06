@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.24 2008/11/04 14:35:48 nw Exp $
+/*$Id: ConeProtocol.java,v 1.25 2009/04/06 11:43:19 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,13 +48,13 @@ public class ConeProtocol extends SpatialDalProtocol {
     @Override
     public AbstractRetriever[] createRetrievers(final Service service,final double ra, final double dec, final double raSize, final double decSize) {
         final Capability[] capabilities = service.getCapabilities();
-        final List cList = new ArrayList();
+        final List<Capability> cList = new ArrayList<Capability>();
         for (int i = 0; i < capabilities.length; i++) {
             if (capabilities[i] instanceof ConeCapability && findParamUrl(capabilities[i]) != null) {
                 cList.add(capabilities[i]);
             }
         }
-        final ConeCapability[] cones = (ConeCapability[]) cList.toArray(new ConeCapability[0]);
+        final ConeCapability[] cones = cList.toArray(new ConeCapability[0]);
         final int ncone = cones.length;
         final AbstractRetriever[] retrievers;
         if (ncone == 0) {
@@ -105,6 +105,11 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.25  2009/04/06 11:43:19  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.24  2008/11/04 14:35:48  nw
 javadoc polishing
 

@@ -32,8 +32,8 @@ public class OperableFilesList extends FilesList implements MouseListener{
      * client of this class to listen for notifications on this model.
      * @param icons
      */
-    public OperableFilesList( final IconFinder icons, final Filemodel fileModel) {
-        super(fileModel.getChildrenList(),  icons);
+    public OperableFilesList(  final Filemodel fileModel) {
+        super(fileModel.getChildrenList());
         this.fileModel = fileModel;
         setSelectionModel(fileModel.getSelection());      
         this.addMouseListener(this);        

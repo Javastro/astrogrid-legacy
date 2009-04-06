@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.util;
 
+import java.awt.datatransfer.DataFlavor;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -37,7 +38,7 @@ public class ConnectivityTests extends TestSuite{
         addTest(new TestCase("Network interfaces"){
             @Override
             protected void runTest() throws Throwable {
-                final List ifaces = EnumerationUtils.toList(NetworkInterface.getNetworkInterfaces());
+                final List<DataFlavor> ifaces = EnumerationUtils.toList(NetworkInterface.getNetworkInterfaces());
                 assertNotNull("No network interfaces found",ifaces);
                 assertTrue("No network interfaces found",ifaces.size() > 0);
                 // filter the list of interfaces to those which are non-local and non-loopback

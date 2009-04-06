@@ -35,7 +35,7 @@ public class CollectionConvertor implements Converter {
     private static final Log logger = LogFactory.getLog(CollectionConvertor.class);
 
     public Object convert(final Class arg0, final Object arg1) {
-        Collection result;
+        Collection<Object> result;
         Class resultType = arg0;
         if (!Collection.class.isAssignableFrom(arg0)) {
         	throw new ConversionException("Can only convert to collections: " + arg0.getName());
@@ -59,7 +59,7 @@ public class CollectionConvertor implements Converter {
         }
         
         try {
-            result = (Collection) resultType.newInstance();
+            result = (Collection<Object>) resultType.newInstance();
         } catch (final InstantiationException e) {
             logger.error("Could not convert object ",e);
             throw new ConversionException("Can't create collection type: " + arg0.getName());
@@ -88,6 +88,11 @@ public class CollectionConvertor implements Converter {
 
 /* 
 $Log$
+Revision 1.9  2009/04/06 11:43:21  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.8  2008/12/10 21:02:09  nw
 Complete - taskadd input convertor to produce Date
 altered other input convertors to throw correct exception.

@@ -26,8 +26,8 @@ public final class ActionComboBox extends JComboBox {
 	/**
 	 * @param actions new list of actions.
 	 */
-	public ActionComboBox(final EventList actions) {
-		super(new EventComboBoxModel(actions));
+	public ActionComboBox(final EventList<Action> actions) {
+		super(new EventComboBoxModel<Action>(actions));
 		setEditable(false);
 		setSelectedIndex(0);
 

@@ -11,7 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileObject;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /**A bookmark for FileExplorer.
  * @todo merge with resourceFolder later.
@@ -68,12 +68,12 @@ public class StorageFolder extends Folder {
 		file = null;
 	}
 	
-	private transient FileObject file;
-	public FileObject getFile() {
+	private transient FileObjectView file;
+	public FileObjectView getFile() {
 		return this.file;
 	}
 
-	public void setFile(final FileObject file) {
+	public void setFile(final FileObjectView file) {
 		this.file = file;
 	}
 

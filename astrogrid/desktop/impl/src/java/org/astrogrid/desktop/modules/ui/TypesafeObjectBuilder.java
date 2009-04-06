@@ -16,6 +16,7 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
 import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
+import org.astrogrid.desktop.modules.ui.taskrunner.AbstractTaskFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BinaryFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BooleanFormElement;
@@ -81,7 +82,7 @@ public interface TypesafeObjectBuilder {
     
     /** returns a new object as named <tt>taskParametersForm</tt> */
     public TaskParametersForm createTaskParametersForm(UIComponentWithMenu parent);
-    public ParametersInfoPane createParametersInfoPane(Model model,EventList elements);
+    public ParametersInfoPane createParametersInfoPane(Model model,EventList<AbstractTaskFormElement> elements);
     
     ADQLEditorPanel createAdqlEditorPanel(ParameterValue pb, CeaApplication app, UIComponentWithMenu parent);
     

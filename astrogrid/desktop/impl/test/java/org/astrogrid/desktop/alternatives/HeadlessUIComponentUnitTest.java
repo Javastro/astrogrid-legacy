@@ -3,12 +3,12 @@
  */
 package org.astrogrid.desktop.alternatives;
 
+import static org.easymock.EasyMock.*;
 import junit.framework.TestCase;
 
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import static org.easymock.EasyMock.*;
 
 /** Test for the Headless UI alternative.
  * @author Noel Winstanley
@@ -21,7 +21,7 @@ public class HeadlessUIComponentUnitTest extends TestCase{
 	@Override
     protected void setUp() {
 		be = new InThreadExecutor();
-		UIContext cxt = createNiceMock(UIContext.class);
+		final UIContext cxt = createNiceMock(UIContext.class);
 		expect(cxt.getExecutor()).andReturn(be);
 		replay(cxt);		
 		ui = new HeadlessUIComponent("test",cxt);
@@ -37,9 +37,9 @@ public class HeadlessUIComponentUnitTest extends TestCase{
 	 * Test method for 'org.astrogrid.desktop.alternatives.HeadlessUI.addBackgroundWorker(BackgroundWorker)'
 	 */
 	public void testAddBackgroundWorker() {
-	    Runnable r = createMock(Runnable.class);
+	    final Runnable r = createMock(Runnable.class);
 		replay(r);		
-		BackgroundWorker bw = new BackgroundWorker(ui,"test") {
+		final BackgroundWorker bw = new BackgroundWorker(ui,"test") {
 
 			@Override
             protected Object construct() throws Exception {

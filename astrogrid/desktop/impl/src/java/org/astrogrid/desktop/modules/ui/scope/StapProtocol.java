@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.19 2009/03/26 18:04:10 nw Exp $
+/*$Id: StapProtocol.java,v 1.20 2009/04/06 11:43:19 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,13 +47,13 @@ public class StapProtocol extends TemporalDalProtocol {
 	@Override
     public AbstractRetriever[] createRetrievers(final Service service, final Date start, final Date end, final double ra, final double dec, final double raSize, final double decSize) {
         final Capability[] capabilities = service.getCapabilities();
-        final List cList = new ArrayList();
+        final List<Capability> cList = new ArrayList<Capability>();
         for (int i = 0; i < capabilities.length; i++) {
             if (capabilities[i] instanceof StapCapability && findParamUrl(capabilities[i]) != null) {
                 cList.add(capabilities[i]);
             }
         }
-        final StapCapability[] staps = (StapCapability[]) cList.toArray(new StapCapability[0]);
+        final StapCapability[] staps = cList.toArray(new StapCapability[0]);
         final int nstap = staps.length;
         final AbstractRetriever[] retrievers;
         if (nstap == 0) {
@@ -87,6 +87,11 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.20  2009/04/06 11:43:19  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.19  2009/03/26 18:04:10  nw
 source code improvements - cleaned imports, @override, etc.
 

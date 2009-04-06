@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.23 2009/03/26 18:04:11 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.24 2009/04/06 11:43:20 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -118,7 +118,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
             public final int getCurrentProgress() {
                 return currentValue;
             }
-            public final List getProgressMessages() {
+            public final List<String> getProgressMessages() {
                 return progressMessages;
             }
             
@@ -532,6 +532,11 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.24  2009/04/06 11:43:20  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.23  2009/03/26 18:04:11  nw
 source code improvements - cleaned imports, @override, etc.
 

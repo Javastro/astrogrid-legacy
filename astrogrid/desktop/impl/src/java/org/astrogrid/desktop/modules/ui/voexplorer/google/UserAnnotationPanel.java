@@ -137,7 +137,7 @@ private final JPromptingTextField  tags;
 private final JPromptingTextField title;
 
 // change notification interface.
-private final List listeners = new ArrayList();
+private final List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
 public void addChangeListener(final ChangeListener e) {
     listeners.add(e);
@@ -158,7 +158,7 @@ private void dirty() {
 public void actionPerformed(final ActionEvent ignored) {
     final ChangeEvent ce = new ChangeEvent(this);
     for (int i = 0; i < listeners.size(); i++) {
-        ((ChangeListener)listeners.get(i)).stateChanged(ce);
+        listeners.get(i).stateChanged(ce);
     }    
 }   
 

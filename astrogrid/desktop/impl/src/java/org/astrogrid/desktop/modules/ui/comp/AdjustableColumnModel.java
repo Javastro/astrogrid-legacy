@@ -251,7 +251,7 @@ public class AdjustableColumnModel extends DefaultTableColumnModel {
          * to the supplied array of column names. */
         int[] colIndices = new int[ colNames.length ];
         boolean foundAll = true;
-        Set nameSet = new HashSet();
+        Set<String> nameSet = new HashSet<String>();
         for ( int ic = 0; ic < colNames.length && foundAll; ic++ ) {
             if ( nameSet.contains( colNames[ ic ] ) ) {
                 throw new IllegalArgumentException( "Duplicate column names" );

@@ -743,12 +743,12 @@ public void xquerySearchSave(final String xquery, final File saveLocation) throw
 
     /** resource processor that just accumulates the resources into a list */
     private static final class  ResourceAccumulator implements ResourceConsumer {
-        private final ArrayList resources = new ArrayList();
+        private final ArrayList<Resource> resources = new ArrayList<Resource>();
         public void estimatedSize(final int i) {
             resources.ensureCapacity(i);
         }
         public final Resource[] getResources() {
-            return (Resource[])this.resources.toArray(new Resource[resources.size()]);
+            return this.resources.toArray(new Resource[resources.size()]);
         }
         public void process(final Resource s) {
             resources.add(s);

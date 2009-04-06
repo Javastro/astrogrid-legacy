@@ -26,6 +26,7 @@ import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** Delete one or more files.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -36,13 +37,8 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 public class DeleteFilesActivity extends AbstractFileActivity {
 
     @Override
-    protected boolean invokable(final FileObject f) { 
-	    try {
-            return f.isWriteable();
-        } catch (final FileSystemException x) {
-            logger.error("FileSystemException",x);
-            return false;
-        }
+    protected boolean invokable(final FileObjectView f) { 
+            return f.isWritable();
 	}
 
 
@@ -58,29 +54,30 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 
 	@Override
     public void actionPerformed(final ActionEvent e) {
-		final List<FileObject> l = computeInvokable(); 
+		final List<FileObjectView> l = computeInvokable(); 
 		logger.debug(l);
 
 
-		final BackgroundWorker<Map<FileObject,FileSystemException>> act = new BackgroundWorker<Map<FileObject,FileSystemException>>(uiParent.get(),"Deleting files",BackgroundWorker.LONG_TIMEOUT) {
+		final BackgroundWorker<Map<FileObjectView,FileSystemException>> act = new BackgroundWorker<Map<FileObjectView,FileSystemException>>(uiParent.get(),"Deleting files",BackgroundWorker.LONG_TIMEOUT) {
 		    {
 		        setWouldLikeIndividualMonitor(true);
 		    }
             @Override
-            protected Map<FileObject,FileSystemException> construct() throws Exception {
+            protected Map<FileObjectView,FileSystemException> construct() throws Exception {
                 int count = 0;
                 final int max = l.size();
                 setProgress(count,max);
                 final Set<FileObject> parents = new HashSet<FileObject>();
-                final Map<FileObject,FileSystemException> errors = new HashMap<FileObject,FileSystemException>();
-                for (final FileObject f : l) {
-                    reportProgress("Deleting " + f.getName().getBaseName());
+                final Map<FileObjectView,FileSystemException> errors = new HashMap<FileObjectView,FileSystemException>();
+                for (final FileObjectView f : l) {
+                    reportProgress("Deleting " + f.getBasename());
+                    final FileObject fo = f.getFileObject();
                     try {
-                        final FileObject parentFile = f.getParent();
+                        final FileObject parentFile = fo.getParent();
                         if (parent != null) {
                             parents.add(parentFile);
                         }
-                        f.delete(Selectors.SELECT_ALL);
+                        fo.delete(Selectors.SELECT_ALL);
                     } catch(final FileSystemException x) {
                         errors.put(f,x);
                         reportProgress("Failed to delete");
@@ -98,16 +95,16 @@ public class DeleteFilesActivity extends AbstractFileActivity {
             }
             
             @Override
-            protected void doFinished(final Map<FileObject,FileSystemException> errors) {               
+            protected void doFinished(final Map<FileObjectView,FileSystemException> errors) {               
                 if (errors.size() ==0) {
                     parent.showTransientMessage("Deleted files","");
                     return;
                 }
                 final HtmlBuilder msgBuilder = new HtmlBuilder();
-                for(final Map.Entry<FileObject,FileSystemException> err : errors.entrySet()) {
-                    final FileObject f = err.getKey();
+                for(final Map.Entry<FileObjectView,FileSystemException> err : errors.entrySet()) {
+                    final FileObjectView f = err.getKey();
                     final Throwable ex = err.getValue();
-                    msgBuilder.append(f.getName().getPath()).append("<br>");
+                    msgBuilder.append(f.getUri()).append("<br>");
                     msgBuilder.append(ExceptionFormatter.formatException(ex,ExceptionFormatter.ALL));
                     msgBuilder.append("<p>");                    
                 }

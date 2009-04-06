@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ui.comp;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 
 import ca.odell.glazedlists.EventList;
 
@@ -17,7 +18,7 @@ import ca.odell.glazedlists.EventList;
  */
 public class EventListDropDownButton extends DropDownButton {
 
-	public EventListDropDownButton(final JButton main,final EventList el, final boolean reverse) {
+	public EventListDropDownButton(final JButton main,final EventList<? extends JMenuItem> el, final boolean reverse) {
 		super(main);
 		setRunFirstItem(true);	
 		new EventListPopupMenuManager(el,this.getArrowButton(),getPopupMenu(),reverse);
@@ -25,7 +26,7 @@ public class EventListDropDownButton extends DropDownButton {
 	}
 	
 	
-	   public EventListDropDownButton(final String title, final Icon icon, final EventList el, final boolean reverse) {
+	   public EventListDropDownButton(final String title, final Icon icon, final EventList<? extends JMenuItem> el, final boolean reverse) {
 	        super(title,icon);
 	        setRunFirstItem(true);  
 	        new EventListPopupMenuManager(el,this.getArrowButton(),getPopupMenu(),reverse);

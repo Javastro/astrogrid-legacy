@@ -19,7 +19,7 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 26, 20073:32:38 PM
  */
-public abstract class RetriableBackgroundWorker extends BackgroundWorker {
+public abstract class RetriableBackgroundWorker<T> extends BackgroundWorker<T> {
 
     public RetriableBackgroundWorker(final UIComponent parent, final String msg,
             final int priority) {
@@ -56,7 +56,7 @@ public abstract class RetriableBackgroundWorker extends BackgroundWorker {
      * may return a non-retriable worker.
      * @return
      */
-    public abstract BackgroundWorker createRetryWorker() ;
+    public abstract BackgroundWorker<T> createRetryWorker() ;
 
     
     @Override

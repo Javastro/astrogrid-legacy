@@ -18,6 +18,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectTransferable;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 
 import edu.berkeley.guir.prefuse.focus.DefaultFocusSet;
@@ -31,7 +32,6 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 /** The shared model of the vizualization - a tree of results, plus selections.
  * model is shared between all vizualizations.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jan-2006
- *@TEST fileObject stuff
  */
 public  final class VizModel {
     private final TreeNode rootNode;
@@ -43,7 +43,7 @@ public  final class VizModel {
     private FileSystem resultsFS;
     final FileSystemManager vfs;
     private final QueryResultCollector summarizer;
-    private final IconFinder iconFinder;
+    public final IconFinder iconFinder;
     public VizModel(final AstroScopeLauncherImpl parent,final DalProtocolManager protocols, final QueryResultCollector summarizer
     		, final FileSystemManager vfs, final IconFinder iconFinder) {
         this.parent = parent;
@@ -145,12 +145,12 @@ public  final class VizModel {
 	 * @future reimplement so this is a single object, repopulated on each selection change.
 	 */
 	public Transferable getSelectionTransferable() {
-	    final List l = new ArrayList();
+	    final List<FileObjectView> l = new ArrayList<FileObjectView>();
         // scan through the selection, looking for nodes who  offer a FileObject.
         for (final Iterator i = getSelectionFocusSet().iterator(); i.hasNext();) {
             final TreeNode tn = (TreeNode) i.next();
             if (tn instanceof FileProducingTreeNode) {
-                final FileObject fo = ((FileProducingTreeNode)tn).getFileObject();
+                final FileObjectView fo = ((FileProducingTreeNode)tn).getFileObject();
                 if (fo != null) {
                     l.add(fo);
                 }
@@ -160,7 +160,7 @@ public  final class VizModel {
         case 0:
             return null; 
         case 1:
-            return new FileObjectTransferable((FileObject)l.get(0),false);
+            return new FileObjectTransferable(l.get(0),false);
         default:
             return new FileObjectListTransferable(l); 
         }
@@ -193,11 +193,11 @@ public  final class VizModel {
 	            } while (candidate != null && candidate.exists());
 	            // ok, found a candidate that doesn't yet exist.
 	            resultsFS.addJunction(fullName,result);
-	            
 	            // now find the image, based on the filename.
 	             final Image image = iconFinder.find(candidate).getImage();
 	             //tie both together.
-                node.setFileObject(candidate,image);
+                final FileObjectView fov = new FileObjectView(candidate,iconFinder);
+                node.setFileObject(fov,image);
                 result.setNode(node);
 	}
 	

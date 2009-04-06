@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.16 2009/03/24 13:08:21 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.17 2009/04/06 11:43:20 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -98,7 +98,7 @@ public class TypeStructureTransformer implements Transformer {
        // change it - - just transform the contents (which hopefully is more efficient than creating a whole new structure)
        
        if (arg0 instanceof Hashtable) {
-    	   final Hashtable t = (Hashtable)arg0;
+    	   final Hashtable<Object, Object> t = (Hashtable<Object, Object>)arg0;
     	   for (final Iterator i = t.entrySet().iterator(); i.hasNext(); ) {
     	       final Map.Entry e = (Map.Entry)i.next();
     	       final Object key = e.getKey();
@@ -134,7 +134,7 @@ public class TypeStructureTransformer implements Transformer {
         
         // special case for vector - as it's a supported type, transform it's contents in-place.
         if (arg0 instanceof Vector) {
-        	final Vector v = (Vector)arg0;
+        	final Vector<Object> v = (Vector<Object>)arg0;
         	for (int i = 0; i < v.size(); i++) {
         		final Object o = v.get(i);
         		v.set(i,trans.transform(o));
@@ -145,7 +145,7 @@ public class TypeStructureTransformer implements Transformer {
         // recursively transform a collection.
         if (arg0 instanceof Collection) {
             final Collection col = (Collection)arg0;
-            final Vector v = new Vector(col.size());
+            final Vector<Object> v = new Vector<Object>(col.size());
             for (final Iterator i = col.iterator(); i.hasNext(); ) {
                 v.add(trans.transform(i.next()));
             }
@@ -183,7 +183,7 @@ public class TypeStructureTransformer implements Transformer {
             }
         }
         //modified - add originating class type information.
-        final Vector iVector = getTypeInformation(arg0);
+        final Vector<String> iVector = getTypeInformation(arg0);
         result.put("__interfaces",iVector);
         return result;
     }
@@ -196,9 +196,9 @@ public class TypeStructureTransformer implements Transformer {
      * @param arg0 the object to inspect.
      * @return a vector of strings.
      */
-    private Vector getTypeInformation(final Object arg0) {
+    private Vector<String> getTypeInformation(final Object arg0) {
         Class beanClass = arg0.getClass();
-        final Vector iVector = new Vector();
+        final Vector<String> iVector = new Vector<String>();
         iVector.add(beanClass.getName());
         do {
             final Class[] interfaces = beanClass.getInterfaces();
@@ -215,6 +215,11 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.17  2009/04/06 11:43:20  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.16  2009/03/24 13:08:21  nw
 reworking of messaging system to make it protocol neutral.
 

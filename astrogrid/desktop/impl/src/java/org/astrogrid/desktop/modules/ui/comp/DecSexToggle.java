@@ -82,8 +82,8 @@ public class DecSexToggle extends ButtonGroup implements ActionListener {
 	 */
 	private void fireDegreesSelected() {
 		final EventObject e = new EventObject(this);
-		for (final Iterator i = listeners.iterator(); i.hasNext(); ){
-			((DecSexListener)i.next()).degreesSelected(e);
+		for (final Iterator<DecSexListener> i = listeners.iterator(); i.hasNext(); ){
+			i.next().degreesSelected(e);
 		}
 	}
 
@@ -92,8 +92,8 @@ public class DecSexToggle extends ButtonGroup implements ActionListener {
 	 */
 	private void fireSexaSelected() {
 		final EventObject e = new EventObject(this);
-		for (final Iterator i = listeners.iterator(); i.hasNext(); ){
-			((DecSexListener)i.next()).sexaSelected(e);
+		for (final Iterator<DecSexListener> i = listeners.iterator(); i.hasNext(); ){
+			i.next().sexaSelected(e);
 		}	
 	}
 	/** listener interface. Implement and register to be notified when user sleects 'degrees' or 'sexagesimal' */
@@ -108,7 +108,7 @@ public class DecSexToggle extends ButtonGroup implements ActionListener {
 		public void sexaSelected(EventObject e);
 	}
 
-	private final Set listeners = new HashSet();
+	private final Set<DecSexListener> listeners = new HashSet<DecSexListener>();
 
 	/** add a listener to the toggle - and fire a selection message to it straight away,
 	 * so it knows what the current preference is.*/

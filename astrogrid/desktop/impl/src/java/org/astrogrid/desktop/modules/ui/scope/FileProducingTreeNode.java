@@ -4,7 +4,7 @@ import java.awt.Image;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileObject;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 
@@ -19,7 +19,7 @@ public final class FileProducingTreeNode extends DefaultTreeNode implements Imag
      */
     private static final Log logger = LogFactory
             .getLog(FileProducingTreeNode.class);
-    private FileObject afo;
+    private FileObjectView afo;
     // cached image object - displayed in prefuse tree.
     private Image image;
 
@@ -29,17 +29,17 @@ public final class FileProducingTreeNode extends DefaultTreeNode implements Imag
 	/**
      * @param afo2
      */
-    public FileProducingTreeNode(final FileObject afo2,final Image img) {      
+    public FileProducingTreeNode(final FileObjectView afo2,final Image img) {      
         this.afo = afo2;
         this.image = img;
     }
 
     /** return the associated file object - may be null */
-	public FileObject getFileObject() {
+	public FileObjectView getFileObject() {
 	    return afo;
 	}
 	/** set the file object for this node */
-	public void setFileObject(final FileObject afo,final Image img) {
+	public void setFileObject(final FileObjectView afo,final Image img) {
 	    this.afo = afo;
 	    this.image = img;
 	}

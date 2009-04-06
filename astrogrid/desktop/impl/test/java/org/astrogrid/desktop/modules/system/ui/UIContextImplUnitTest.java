@@ -27,7 +27,6 @@ import org.astrogrid.desktop.modules.util.SelfTester;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.CompositeList;
-import ca.odell.glazedlists.EventList;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -261,17 +260,7 @@ public class UIContextImplUnitTest extends TestCase {
 		cxt.unregisterWindow(comp);
 		assertEquals(0,cxt.getWindowList().size());
 	}
-	
-	public void testWindowListImmutable() throws Exception {
-		final EventList windowList = cxt.getWindowList();
-		assertEquals(0,windowList.size());
-		try {
-			windowList.add(new Object());
-			fail("expected to chuck");
-		} catch (final UnsupportedOperationException e) {
-		}
-		assertEquals("mutated window list",0,windowList.size());		
-	}
+
 	
 	public void testFindMainWindow() throws Exception {
 

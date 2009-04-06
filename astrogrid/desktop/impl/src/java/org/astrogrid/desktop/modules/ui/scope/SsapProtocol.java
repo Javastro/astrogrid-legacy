@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.17 2009/03/26 18:04:10 nw Exp $
+/*$Id: SsapProtocol.java,v 1.18 2009/04/06 11:43:19 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,13 +41,13 @@ public String getXQuery() {
 	@Override
     public AbstractRetriever[] createRetrievers(final Service service, final double ra, final double dec, final double raSize, final double decSize) {
         final Capability[] capabilities = service.getCapabilities();
-        final List cList = new ArrayList();
+        final List<Capability> cList = new ArrayList<Capability>();
         for (int i = 0; i < capabilities.length; i++) {
             if (capabilities[i] instanceof SsapCapability && findParamUrl(capabilities[i]) != null) {
                 cList.add(capabilities[i]);
             }
         }
-        final SsapCapability[] ssaps = (SsapCapability[]) cList.toArray(new SsapCapability[0]);
+        final SsapCapability[] ssaps = cList.toArray(new SsapCapability[0]);
         final int nssap = ssaps.length;
         final AbstractRetriever[] retrievers;
         if (nssap == 0) {
@@ -80,6 +80,11 @@ public String getXQuery() {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.18  2009/04/06 11:43:19  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.17  2009/03/26 18:04:10  nw
 source code improvements - cleaned imports, @override, etc.
 

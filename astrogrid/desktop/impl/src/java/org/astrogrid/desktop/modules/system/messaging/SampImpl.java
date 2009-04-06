@@ -250,7 +250,7 @@ public class SampImpl implements Samp, ShutdownListener{
                     
                     //ceate dispatcher and marshaller.
                     final MessageSender dispatch = target.createMessageSender(type);
-                    final MessageUnmarshaller unmarshaller = type.createSampUnmarshaller();
+                    final MessageUnmarshaller<MessageSender> unmarshaller = type.createSampUnmarshaller();
                     
                     // try to find the sender 
                     ExternalMessageTarget source = null;

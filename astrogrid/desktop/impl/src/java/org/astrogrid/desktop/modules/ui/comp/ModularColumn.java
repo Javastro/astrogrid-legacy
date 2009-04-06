@@ -9,14 +9,16 @@ import java.util.Comparator;
  * Implementations must implement {@link #getColumnValue} to provide the data.
  *
  * @author   Mark Taylor
+ * @param <B> type of the base object
+ * @param <C> type of the projected column value
  * @since    3 August 2007
  * @see   {@link ModularTableFormat}
  */
-public abstract class ModularColumn {
+public abstract class ModularColumn<B,C> {
 
     private final String name;
-    private final Class clazz;
-    private final Comparator comparator;
+    private final Class<C> clazz;
+    private final Comparator<? super C> comparator;
 
     /**
      * Constructor.
@@ -26,7 +28,7 @@ public abstract class ModularColumn {
      * @param  comparator  default comparator to use for this column;
      *                     use null for a non-comparable column
      */
-    public ModularColumn(String name, Class clazz, Comparator comparator) {
+    public ModularColumn(final String name, final Class<C> clazz, final Comparator<? super C> comparator) {
         this.name = name;
         this.clazz = clazz;
         this.comparator = comparator;
@@ -47,14 +49,14 @@ public abstract class ModularColumn {
      * @param  baseObj  the object EventList underlying the required table row
      * @return  object in this column corresponding to <code>baseObj</code>
      */
-    public abstract Object getColumnValue(Object baseObj);
+    public abstract C getColumnValue(B baseObj);
 
     /**
      * Returns the most specific known superclass for values in this column.
      *
      * @return   content class
      */
-    public Class getColumnClass() {
+    public Class<C> getColumnClass() {
         return clazz;
     }
 
@@ -63,7 +65,7 @@ public abstract class ModularColumn {
      *
      * @return   comparator  comparator, or <code>null</code> for an incomparable column
      */
-    public Comparator getColumnComparator() {
+    public Comparator<? super C> getColumnComparator() {
         return comparator;
     }
 }

@@ -9,13 +9,14 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.desktop.alternatives.InThreadExecutor;
 import org.astrogrid.desktop.modules.system.XStreamXmlPersist;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
-import junit.framework.TestCase;
 
 /** unit test for storage folders - check that we can at least
  * initialize, and persist the initialized contents to disk.
@@ -33,7 +34,7 @@ public class StorageFoldersProviderUnitTest extends TestCase {
         super.setUp();
         xml = new XStreamXmlPersist();
         pref = new Preference();
-        File f = File.createTempFile("StorageFoldersProviderTest",null);
+        final File f = File.createTempFile("StorageFoldersProviderTest",null);
         f.delete();
         f.mkdir();
         pref.setValue(f.toString());
@@ -56,7 +57,7 @@ public class StorageFoldersProviderUnitTest extends TestCase {
         SwingUtilities.invokeAndWait(new Runnable() {
 
             public void run() {        
-                StorageFoldersProvider prov = new StorageFoldersProvider(ui,pref,xml);
+                final StorageFoldersProvider prov = new StorageFoldersProvider(ui,pref,xml);
                 assertNotNull(prov.getList());
                 assertEquals(3,prov.getList().size());
                 assertTrue(prov.getList().get(0) instanceof StorageFolder);
@@ -71,7 +72,7 @@ public class StorageFoldersProviderUnitTest extends TestCase {
                 }*/
                     
                 // now try to reload this.
-                List candidate = new ArrayList();
+                final List<StorageFolder> candidate = new ArrayList<StorageFolder>();
                 prov.load(prov.getStorageLocation(),candidate);
                 assertEquals(prov.getList().size(),candidate.size());
                 

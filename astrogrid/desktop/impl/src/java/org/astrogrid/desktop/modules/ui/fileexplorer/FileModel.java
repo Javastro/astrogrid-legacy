@@ -13,8 +13,6 @@ import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectTransferable;
@@ -49,14 +47,14 @@ public class Filemodel implements ListSelectionListener{
     /**
      * @return the selection
      */
-    public final EventSelectionModel getSelection() {
+    public final EventSelectionModel<FileObjectView> getSelection() {
         return this.selection;
     }
 
     /**
      * @return the files
      */
-    public final SortedList getChildrenList() {
+    public final SortedList<FileObjectView> getChildrenList() {
         return this.files;
     }
 
@@ -93,17 +91,12 @@ public class Filemodel implements ListSelectionListener{
         }
         
         protected Transferable getSelectionTransferable() {
-            final EventList selected =selection.getSelected();
+            final EventList<FileObjectView> selected =selection.getSelected();
             switch (selected.size()) {
             case 0:
                 return null;
             case 1:
-                try {
-                        return new FileObjectTransferable((FileObject)selected.get(0));
-                    } catch (final Exception x) {
-                        logger.error("FileSystemException",x);
-                        return null;
-                    } 
+                return new FileObjectTransferable(selected.get(0));
             default:
                 return  new FileObjectListTransferable(selected);
             }       
@@ -116,7 +109,7 @@ public class Filemodel implements ListSelectionListener{
         }   
         
         /** add an additional filter to the file view */
-        public final void installFilter(final Matcher m) {
+        public final void installFilter(final Matcher<? super FileObjectView> m) {
             programmaticFilter.setMatcher(m);
         }
 
@@ -124,14 +117,9 @@ public class Filemodel implements ListSelectionListener{
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Aug 30, 20072:20:51 PM
      */
-    protected static final class NoHiddenFiles implements Matcher {
-        public boolean matches(final Object arg0) {
-            final FileObject fo = (FileObject)arg0;
-            try {
-                return !(fo.isHidden() || fo.getName().getBaseName().charAt(0) == '.') ;
-            } catch (final FileSystemException x) {
-                return true;
-            }
+    protected static final class NoHiddenFiles implements Matcher<FileObjectView> {
+        public boolean matches(final FileObjectView fo) {
+                return !(fo.isHidden() || fo.getBasename().charAt(0) == '.') ;
         }
     }
     //
@@ -141,16 +129,16 @@ public class Filemodel implements ListSelectionListener{
     protected static final Log logger = LogFactory
             .getLog(Filemodel.class);
 
-    protected final EventSelectionModel selection;
-    protected final SortedList files;
-    protected final IconFinder icons;
+    protected final EventSelectionModel<FileObjectView> selection;
+    private final SortedList<FileObjectView> files;
+    private final IconFinder icons;
     protected final VFSOperations ops;
 
-    protected final ActivitiesManager activities;
+    private final ActivitiesManager activities;
 
-    protected final MutableMatcherEditor programmaticFilter;
+    private final MutableMatcherEditor<FileObjectView> programmaticFilter;
 
-    protected final MutableMatcherEditor hiddenFilter;
+    private final MutableMatcherEditor<FileObjectView> hiddenFilter;
     private final TransferHandler handler;
     // when selection changes.
     public void valueChanged(final ListSelectionEvent e) {
@@ -169,7 +157,7 @@ public class Filemodel implements ListSelectionListener{
     }
     
 
-    public Filemodel(final SortedList files,final MutableMatcherEditor programmaticFilter, final MutableMatcherEditor hiddenFilter, final ActivitiesManager activities,final IconFinder icons, final VFSOperations ops) {
+    public Filemodel(final SortedList<FileObjectView> files,final MutableMatcherEditor<FileObjectView> programmaticFilter, final MutableMatcherEditor<FileObjectView> hiddenFilter, final ActivitiesManager activities,final IconFinder icons, final VFSOperations ops) {
         
         super();
         this.programmaticFilter = programmaticFilter;
@@ -177,7 +165,7 @@ public class Filemodel implements ListSelectionListener{
         this.activities = activities;
         this.ops = ops;
         this.files = files;
-        this.selection = new EventSelectionModel(files);
+        this.selection = new EventSelectionModel<FileObjectView>(files);
         selection.setSelectionMode(ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
         selection.addListSelectionListener(this); // listen to currently selected files.
             
@@ -187,23 +175,30 @@ public class Filemodel implements ListSelectionListener{
 
     // factory method
     /** a complex object to build - need to use a factory method */
-    public static final Filemodel newInstance(final MatcherEditor ed,final ActivitiesManager activities,final IconFinder icons, final VFSOperations ops) {
-        final MutableMatcherEditor programmaticFilter = new MutableMatcherEditor();
-        final MutableMatcherEditor hiddenFilter = new MutableMatcherEditor();
+    public static final Filemodel newInstance(final MatcherEditor<FileObjectView> ed,final ActivitiesManager activities,final IconFinder icons, final VFSOperations ops) {
+        final MutableMatcherEditor<FileObjectView> programmaticFilter = new MutableMatcherEditor<FileObjectView>();
+        final MutableMatcherEditor<FileObjectView> hiddenFilter = new MutableMatcherEditor<FileObjectView>();
         hiddenFilter.setMatcher(new NoHiddenFiles());
         // make a composite out of all these matchers.
-        final CompositeMatcherEditor composite = new CompositeMatcherEditor();
+        final CompositeMatcherEditor<FileObjectView> composite = new CompositeMatcherEditor<FileObjectView>();
         composite.setMode(CompositeMatcherEditor.AND);
         composite.getMatcherEditors().add(programmaticFilter);
         composite.getMatcherEditors().add(hiddenFilter);
         if (ed != null) {
             composite.getMatcherEditors().add(ed);
         }
-        final EventList filteredFiles = new FilterList(new BasicEventList(),composite);
-        final SortedList list = new SortedList(filteredFiles, FileObjectComparator.getInstance());
+        final EventList<FileObjectView> filteredFiles = new FilterList<FileObjectView>(new BasicEventList<FileObjectView>(),composite);
+        final SortedList<FileObjectView> list = new SortedList<FileObjectView>(filteredFiles, FileObjectViewComparator.getInstance());
 //       return new FileModelAWTImpl(list,programmaticFilter, hiddenFilter,activities,icons,ops);
         return new Filemodel(list,programmaticFilter, hiddenFilter,activities,icons,ops);
 
+    }
+
+    /**
+     * @return the icons
+     */
+    public IconFinder getIcons() {
+        return this.icons;
     }
 
 }

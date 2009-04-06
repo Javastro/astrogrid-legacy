@@ -102,16 +102,15 @@ public class QuerySizeIndicator extends JProgressBar {
 		if (latest != null) { // previous sizing task running.
 			latest.interrupt();
 		}
-		latest = new BackgroundWorker(parent,"Computing query size",BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
+		latest = new BackgroundWorker<Integer>(parent,"Computing query size",BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
 
 			@Override
-            protected Object construct() throws Exception {
+            protected Integer construct() throws Exception {
 				return sizer.size(query);
 			}
 			@Override
-            protected void doFinished(final Object result) {
-				if (this == latest) { // i.e. it hasn't been superceded in the meantime. 
-					final int size = ((Integer)result).intValue();
+            protected void doFinished(final Integer size) {
+				if (this == latest) { // i.e. it hasn't been superceded in the meantime. 				
 					setValue(size);
 				}
 			}
@@ -139,16 +138,15 @@ public class QuerySizeIndicator extends JProgressBar {
 		if (latest != null) { // previous sizing task running.
 			latest.interrupt();
 		}
-		latest = new BackgroundWorker(parent,"Computing query size",BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
+		latest = new BackgroundWorker<Integer>(parent,"Computing query size",BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
 
 			@Override
-            protected Object construct() throws Exception {
+            protected Integer construct() throws Exception {
 				return sizer.size(query);
 			}
 			@Override
-            protected void doFinished(final Object result) {
+            protected void doFinished(final Integer size) {
 				if (this == latest) { // i.e. it hasn't been superceded in the meantime. 
-					final int size = ((Integer)result).intValue();
 					setValue(size);
 				}
 			}

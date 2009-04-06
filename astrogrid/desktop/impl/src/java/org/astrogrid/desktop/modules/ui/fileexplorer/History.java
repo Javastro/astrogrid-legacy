@@ -70,7 +70,7 @@ public class History<T>  {
 		public void currentChanged(HistoryEvent<T> current);
 	}
 	
-	private final Set<HistoryListener<T>> listeners = new HashSet();
+	private final Set<HistoryListener<T>> listeners = new HashSet<HistoryListener<T>>();
 	public void addHistoryListener(final HistoryListener<T> l) {
 		listeners.add(l);
 	}
@@ -108,7 +108,7 @@ public class History<T>  {
 		public int getMaxSize() {
 			return sz;
 		}
-		private final EventList<E> l = new BasicEventList();
+		private final EventList<E> l = new BasicEventList<E>();
 		/** useful for providing views over the data */
 		public EventList<E> getEventList() {
 			return l;

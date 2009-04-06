@@ -9,10 +9,7 @@ import java.util.Date;
 import javax.swing.Icon;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.provider.DelegateFileObject;
-import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
@@ -21,14 +18,8 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 29, 20071:57:55 AM
  */
-public class StorageTableFormat implements AdvancedTableFormat {
-	/**
-	 * 
-	 */
-	public StorageTableFormat(final IconFinder icons) {
-		this.icons = icons;
-	}
-	private final IconFinder icons;
+public class StorageTableFormat implements AdvancedTableFormat<FileObjectView> {
+
 	private static final int COLUMN_COUNT = 5;
 	
 	public int getColumnCount() {
@@ -47,31 +38,25 @@ public class StorageTableFormat implements AdvancedTableFormat {
 		}
 	}
 
-	public Object getColumnValue(final Object arg0, final int arg1) {
-		final FileObject o = (FileObject)arg0;
-		try {
+	public Object getColumnValue(final FileObjectView o, final int arg1) {
 		switch(arg1) {
 			case 0:
 			// mk an icon.
-				return icons.find(o);
+				return o.getIcon();
 			case 1:
-				return o.getName().getBaseName();
+				return o.getBasename();
 			case 2:
-				return new Date(o.getContent().getLastModifiedTime());
+				return o.getLastModified();
 			case 3:
 				if (! o.getType().hasContent()) {
 					return null;
 				}
-				final long sz = o.getContent().getSize() ;
-				return Long.valueOf(sz);
+				return o.getSize();			
 			case 4:
 				return findBestContentType(o);
 			
 			default:
 				throw new IndexOutOfBoundsException("Oversized column index " + arg1);
-		}
-		} catch (final FileSystemException e) {
-			return null;
 		}
 	}
 
@@ -80,16 +65,9 @@ public class StorageTableFormat implements AdvancedTableFormat {
      * @return
      * @throws FileSystemException
      */
-	public static String  findBestContentType(FileObject o) throws FileSystemException {
-	    if (o.getType().hasContent()) {
-	        String cType =  o.getContent().getContentInfo().getContentType();
-	        while (StringUtils.isEmpty(cType) && AstroscopeFileObject.isOnlyDelegateFileObject(o)) {
-	            o = ((DelegateFileObject)o).getDelegateFile();
-	            cType = o.getContent().getContentInfo().getContentType();
-	        }
-	        if (StringUtils.isNotEmpty(cType)) {
-	            return cType;
-	        }
+	public static String  findBestContentType(final FileObjectView o) {
+	    if (o.getType().hasContent()&& StringUtils.isNotEmpty(o.getContentType())) {
+	            return o.getContentType();	        
 	    }
 	    // fallback position
 	    return o.getType().getName();

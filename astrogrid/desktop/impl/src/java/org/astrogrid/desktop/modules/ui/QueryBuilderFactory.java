@@ -3,10 +3,10 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.TapService;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** Factory for the Query Builder.
  * @author Noel Winstanley
@@ -52,7 +52,7 @@ public class QueryBuilderFactory implements QueryBuilderInternal{
     }
 
 
-    public void edit(final FileObject fo) {
+    public void edit(final FileObjectView fo) {
         final QueryBuilderInternal tr = newInstance();
         tr.show();        
         tr.edit(fo);   

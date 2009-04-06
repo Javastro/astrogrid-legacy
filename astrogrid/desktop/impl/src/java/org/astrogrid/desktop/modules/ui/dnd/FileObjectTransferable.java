@@ -15,8 +15,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** {@code Transferable} for a single file object.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -36,30 +36,30 @@ public class FileObjectTransferable implements Transferable{
 	 * @param fo
 	 * @throws FileSystemException
 	 */
-	public FileObjectTransferable(final FileObject fo) throws FileSystemException{
+	public FileObjectTransferable(final FileObjectView fo) {
 	    this(fo,fo.getType().hasChildren());
 	}
 		/** constructor where the kind of file object is specified
      * @param fileObject
      * @param isFolder if true, this is a folder. else it's a file.
      */
-    public FileObjectTransferable(final FileObject fileObject, final boolean isFolder) {
+    public FileObjectTransferable(final FileObjectView fileObject, final boolean isFolder) {
         this.fo = fileObject;
         flavs = isFolder ? folderDataFlavours : fileDataFlavours;
     }
         private final DataFlavor[] flavs;
 	
-	private final FileObject fo;
+	private final FileObjectView fo;
 	public Object getTransferData(final DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException {
 		if (! isDataFlavorSupported(flavor)) {
 			throw new UnsupportedFlavorException(flavor);
 		}
-		if (VoDataFlavour.LOCAL_FILEOBJECT.equals(flavor)) {
+		if (VoDataFlavour.LOCAL_FILEOBJECT_VIEW.equals(flavor)) {
 			return fo;
 		} else if (VoDataFlavour.LOCAL_URI.equals(flavor)) {
 			try {
-				return new URI(StringUtils.replace(fo.getName().getURI()," ","%20"));
+				return new URI(StringUtils.replace(fo.getUri()," ","%20"));
 			} catch (final URISyntaxException x) {
 				logger.error("Unable to create URI for fileObject",x);
 				final UnsupportedFlavorException exception = new UnsupportedFlavorException(flavor);
@@ -67,11 +67,12 @@ public class FileObjectTransferable implements Transferable{
 				throw exception;
 			}
 		} else if (VoDataFlavour.URI_LIST.equals(flavor)) {
-			return IOUtils.toInputStream((StringUtils.replace(fo.getName().getURI()," ","%20")));
+			return IOUtils.toInputStream((StringUtils.replace(fo.getUri()," ","%20")));
 		} else if (VoDataFlavour.URI_LIST_STRING.equals(flavor)){
-		    return StringUtils.replace(fo.getName().getURI()," ","%20");
+		    return StringUtils.replace(fo.getUri()," ","%20");
 		} else { // must be asking for the content of the file then..
-			return fo.getContent().getInputStream();
+		    //will cause a barf if called on EDT.
+			return fo.getFileObject().getContent().getInputStream();
 		}
 	}
 
@@ -84,14 +85,14 @@ public class FileObjectTransferable implements Transferable{
 	}
 	
 	private static final DataFlavor[] fileDataFlavours = new DataFlavor[] {
-		VoDataFlavour.LOCAL_FILEOBJECT
+		VoDataFlavour.LOCAL_FILEOBJECT_VIEW
 		,VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URI_LIST
 		,VoDataFlavour.URI_LIST_STRING
-		,VoDataFlavour.PLAIN // seems to take precedence over uri-list. but this is probably generally more useful.
+		//causes everything to fail.,VoDataFlavour.PLAIN // seems to take precedence over uri-list. but this is probably generally more useful.
 	};
 	   private static final DataFlavor[] folderDataFlavours = new DataFlavor[] {
-	        VoDataFlavour.LOCAL_FILEOBJECT
+	        VoDataFlavour.LOCAL_FILEOBJECT_VIEW
 	        ,VoDataFlavour.LOCAL_URI
 	        ,VoDataFlavour.URI_LIST
 	        ,VoDataFlavour.URI_LIST_STRING

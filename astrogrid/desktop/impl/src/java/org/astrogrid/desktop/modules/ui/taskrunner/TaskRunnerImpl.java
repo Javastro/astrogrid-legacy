@@ -85,6 +85,7 @@ import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsEvent;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsListener;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
@@ -353,7 +354,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		
 	}
 	
-    public void edit(final FileObject o) {
+    public void edit(final FileObjectView o) {
         loadToolDocument(o);
     }
 
@@ -383,11 +384,11 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             // now need to take a copy of this tool, and load this copy into the editor.
             //can't use original, otherwise edits to the form will alter the original - rewriting history.
             // copy the tool object by marshalling to and from xml.
-            (new BackgroundWorker(this,"Loading Parameters") {
+            (new BackgroundWorker<Void>(this,"Loading Parameters") {
                 private Tool nTool;
                 private Resource newRes;
                 @Override
-                protected Object construct() throws Exception {
+                protected Void construct() throws Exception {
                     final Tool tool = ((ProcessMonitor.Advanced)monitor).getInvocationTool();
                     Writer sw = null;
                     Reader r = null;                  
@@ -404,7 +405,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                     }                    
                 }
                 @Override
-                protected void doFinished(final Object result) {
+                protected void doFinished(final Void result) {
                     buildForm(nTool,newRes);
 
                 }
@@ -438,20 +439,22 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
     
 
     /** load a tool document from storage
-     * @param o - either a vfs.FileObject, or a URI
+     * @param o - either a vfs.FileObject, or a URI, or a FileObjectView
      */
     private void loadToolDocument(final Object o) {
-        (new BackgroundOperation("Opening task document",Thread.MAX_PRIORITY) {
+        (new BackgroundOperation<Tool>("Opening task document",Thread.MAX_PRIORITY) {
             private Resource newRes;            
             private FileObject fo;
             @Override
-            protected Object construct() throws Exception {
+            protected Tool construct() throws Exception {
             	Reader fr = null;
             	try {
             	    if (o instanceof URI) {
             	        fo = vfs.resolveFile(o.toString());
             	    } else if (o instanceof FileObject) {
             	        fo = (FileObject)o;
+            	    } else if (o instanceof FileObjectView) {
+            	        fo = ((FileObjectView)o).getFileObject();
             	    }
             	    reportProgress("Resolved file");
             	    final MonitoringInputStream mis = MonitoringInputStream.create(this,fo,MonitoringInputStream.ONE_KB);
@@ -469,8 +472,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             	}
             }
             @Override
-            protected void doFinished(final Object o) {
-            	buildForm((Tool)o,newRes);
+            protected void doFinished(final Tool o) {
+            	buildForm(o,newRes);
             	try {
                     setStorageLocation(new URI(StringUtils.replace(fo.getName().getURI().trim()," ","%20")));
                 } catch (final URISyntaxException x) {
@@ -507,20 +510,20 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	}
 
 	/** extended toolbar which adds an 'execute' button - not static, as more tightly integrated into the taskrunner */
-	public class ExecutingTaskRunnerToolbar extends TaskRunnerToolbar implements ListEventListener {
+	public class ExecutingTaskRunnerToolbar extends TaskRunnerToolbar implements ListEventListener<Service> {
 	    public ExecutingTaskRunnerToolbar(final JMenu menu) {
 	        super(pForm,newTask);
 	        menu.add(executeAction);
 	        menu.addSeparator();
 	        // function that maps a service to an 'Execute' menu operation */
-	        final Function fn = new FunctionList.Function() {
-	            public Object evaluate(final Object sourceValue) {
-	                return new ExecuteTaskMenuItem((Service)sourceValue);
+	        final Function<Service,JMenuItem> fn = new FunctionList.Function<Service,JMenuItem>() {
+	            public JMenuItem evaluate(final Service sourceValue) {
+	                return new ExecuteTaskMenuItem(sourceValue);
 	            }
 	        };
-	        new EventListMenuManager( new FunctionList(executionServers,fn),menu, false);
+	        new EventListMenuManager( new FunctionList<Service,JMenuItem>(executionServers,fn),menu, false);
 	        execButton = new EventListDropDownButton("Unavailable",IconHelper.loadIcon("run16.png")
-	                ,new FunctionList(executionServers, fn),false);
+	                ,new FunctionList<Service,JMenuItem>(executionServers, fn),false);
 	        execButton.setEnabled(false);
 	        execButton.getMainButton().setToolTipText("Execute the task: Press to execute on the first suitable server, or click the arrow to manually choose a server");
 	        CSH.setHelpIDString(execButton,"task.execute");
@@ -539,10 +542,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	    };
 	    
 	    /** list of servers that provide this application - should contain Service objects */
-	    final EventList executionServers =  new BasicEventList();
+	    final EventList<Service> executionServers =  new BasicEventList<Service>();
 
 	    // enable / disable various bits of the exec button, depending on what is available.
-	    public void listChanged(final ListEvent listChanges) {
+	    public void listChanged(final ListEvent<Service> listChanges) {
 	        while (listChanges.hasNext()) {
 	            listChanges.next();
 	            if (executionServers.isEmpty()) {
@@ -574,9 +577,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 	         public void actionPerformed(final ActionEvent e) {
 	             final Tool tOrig = pForm.getTool();
-	             (new BackgroundOperation("Executing @ " + service.getTitle(),BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
+	             (new BackgroundOperation<Void>("Executing @ " + service.getTitle(),BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 	                 @Override
-                    protected Object construct() throws ParserConfigurationException, MarshalException, ValidationException, InvalidArgumentException, ServiceException, NotFoundException  {
+                    protected Void construct() throws ParserConfigurationException, MarshalException, ValidationException, InvalidArgumentException, ServiceException, NotFoundException  {
 	                     logger.debug("Executing");
 	                     final Document doc = XMLUtils.newDocument();
 	                     Marshaller.marshal(tOrig,doc);
@@ -622,7 +625,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Aug 2, 200712:43:15 AM
      */
-    final class ListServicesWorker extends RetriableBackgroundWorker {
+    final class ListServicesWorker extends RetriableBackgroundWorker<List<Service>> {
 
         public ListServicesWorker(final URI appId) {
             super(TaskRunnerImpl.this,"Listing task providers",Thread.MAX_PRIORITY);
@@ -631,14 +634,14 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 
         @Override
-        public BackgroundWorker createRetryWorker() {
+        public BackgroundWorker<List<Service>> createRetryWorker() {
             return new ListServicesWorker(appId);
         }
         
         private final URI appId;
 
         @Override
-        protected Object construct() throws Exception {
+        protected List<Service> construct() throws Exception {
             final Service[] services = apps.listServersProviding(this.appId);
             final int sz = services.length;
             logger.debug("resolved app to " + sz + " servers");
@@ -653,9 +656,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                 // of load balancing (taking into account vomon status too).
                 
                 // first split into 'up' and 'down'
-                    final List up = new ArrayList();
-                    final List down = new ArrayList();
-                    final List unknown = new ArrayList();
+                    final List<Service> up = new ArrayList<Service>();
+                    final List<Service> down = new ArrayList<Service>();
+                    final List<Service> unknown = new ArrayList<Service>();
                     for (int i = 0; i < services.length; i++) {
                         final Service service = services[i];
                         final VoMonBean avail = vomon.checkAvailability(service.getId());
@@ -683,9 +686,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
         }
 
         @Override
-        protected void doFinished(final Object result) {
+        protected void doFinished(final List<Service> result) {
             if (result != null) {
-                toolbar.executionServers.addAll((List)result);
+                toolbar.executionServers.addAll(result);
             }
         }
     }
@@ -843,10 +846,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
          */
         protected void writeToolTo(final URI u) {
             final Tool t = pForm.getTool();
-                   (new BackgroundOperation("Saving as" + u) {
+                   (new BackgroundOperation<Void>("Saving as" + u) {
 
                        @Override
-                    protected Object construct() throws Exception {
+                    protected Void construct() throws Exception {
                            Writer w = null;
                            FileObject fo = null;
                            try {
@@ -870,7 +873,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                            }
                        }
                        @Override
-                    protected void doFinished(final Object result) {
+                    protected void doFinished(final Void result) {
                            parent.showTransientMessage("Saved task document","");
                        }
                    }).start();

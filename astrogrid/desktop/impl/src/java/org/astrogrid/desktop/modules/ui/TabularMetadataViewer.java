@@ -70,9 +70,9 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 	 */
 	public TabularMetadataViewer() {
 	    CSH.setHelpIDString(this,"table.metadata");
-		catalogues = new BasicEventList();
-		tables = new BasicEventList();
-		columns = new BasicEventList();
+		catalogues = new BasicEventList<Catalog>();
+		tables = new BasicEventList<TableBean>();
+		columns = new BasicEventList<NumberedColumnBean>();
 
 		// build the panel. 
 		final FormLayout layout = new FormLayout("right:d, 3dlu,100dlu:grow,1dlu,d" // cols
@@ -85,7 +85,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 
 		builder.addLabel("Catalogue",cc.xy(1,row));
 
-		cataCombo = new JComboBox(new EventComboBoxModel(catalogues));
+		cataCombo = new JComboBox(new EventComboBoxModel<Catalog>(catalogues));
 		cataCombo.addItemListener(this);
 		cataCombo.setRenderer(new BasicComboBoxRenderer() {
 			@Override
@@ -105,10 +105,10 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		builder.addLabel("Table",cc.xy(1,row));
 		// make this one auto-complete.
 		//@todo should I sort these tables?
-		final EventList sortedTables = new SortedList(tables,new TableBeanComparator());
+		final EventList<TableBean> sortedTables = new SortedList<TableBean>(tables,new TableBeanComparator());
 		tableCombo = new JComboBox();
 		tableCombo.addItemListener(this);
-		final AutoCompleteSupport acs = AutoCompleteSupport.install(tableCombo,sortedTables,new TextFilterator(){
+		final AutoCompleteSupport<TableBean> acs = AutoCompleteSupport.install(tableCombo,sortedTables,new TextFilterator(){
 			public void getFilterStrings(final List baseList, final Object element) {
 				final TableBean tb = (TableBean)element;
 				baseList.add(tb.getName());
@@ -137,8 +137,8 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 			}
 			@Override
             public Object parseObject(final String source, final ParsePosition pos) {
-				for (final Iterator i = tables.iterator(); i.hasNext();) {
-					final TableBean tb = (TableBean) i.next();
+				for (final Iterator<TableBean> i = tables.iterator(); i.hasNext();) {
+					final TableBean tb = i.next();
 					if (source.equals(tb.getName())) {
 						return tb;
 					}
@@ -176,7 +176,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 
 		// add a text-filter to the columns list
 		final SearchField filterField = new SearchField("Filter columns");
-		final FilterList filteredColumns = new FilterList(columns,
+		final FilterList<NumberedColumnBean> filteredColumns = new FilterList<NumberedColumnBean>(columns,
 					new TextComponentMatcherEditor(filterField.getWrappedDocument(), new ColumnTextFilterator()));
 
         // add the text-filter box to the same row as the table combo.
@@ -227,11 +227,11 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 
 	
 	/** top level list - of catalogues */
-	protected final EventList catalogues;
+	protected final EventList<Catalog> catalogues;
 	/** list of tables in the selected catalogue */
-	protected final EventList tables;
+	protected final EventList<TableBean> tables;
 	/** list of colums in the selected table */
-	protected final EventList columns;
+	protected final EventList<NumberedColumnBean> columns;
 	
 	/** dropdown list of catalogues */
 	protected final JComboBox cataCombo;
@@ -266,7 +266,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 	    clear(); // reset everything first.
 		if (res instanceof DataCollection && ((DataCollection)res).getCatalogues().length > 0) {
 			final DataCollection coll = (DataCollection)res;
-			final List colList = Arrays.asList(coll.getCatalogues());
+			final List<Catalog> colList = Arrays.asList(coll.getCatalogues());
 			    catalogues.addAll(colList);
 			    cataCombo.setEnabled(true);
 			    cataCombo.setSelectedIndex(0);
@@ -415,11 +415,11 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 	/** JTable that displays a list of databse columns */
 	public static class MetadataTable extends JTable {
 		/** model containing the current _selection_ in jtable */
-		private final EventSelectionModel tableSelection;	
+		private final EventSelectionModel<NumberedColumnBean> tableSelection;	
 		
-		public MetadataTable(final EventList columns) { // sorted list required by TableComparatorChooser
+		public MetadataTable(final EventList<NumberedColumnBean> columns) { // sorted list required by TableComparatorChooser
             
-		    final SortedList sortedColumns = new SortedList(columns,
+		    final SortedList<NumberedColumnBean> sortedColumns = new SortedList<NumberedColumnBean>(columns,
 		            new Comparator() {
 
                         public int compare(final Object arg0, final Object arg1) {
@@ -429,11 +429,11 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
                         }
 		    });
                        
-			setModel(new EventTableModel(sortedColumns,new MetadataTableFormat()));
-			new TableComparatorChooser(this,sortedColumns,false);
+			setModel(new EventTableModel<NumberedColumnBean>(sortedColumns,new MetadataTableFormat()));
+			new TableComparatorChooser<NumberedColumnBean>(this,sortedColumns,false);
 //JL bug# 2419 tableSelection = new EventSelectionModel( columns ) ;
 //JL EventSelectionModel requires the sorted list...
-            tableSelection = new EventSelectionModel( sortedColumns ) ;
+            tableSelection = new EventSelectionModel<NumberedColumnBean>( sortedColumns ) ;
 			setSelectionModel(tableSelection);
 			tableSelection.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			getColumnModel().getColumn(0).setPreferredWidth(10);
@@ -447,11 +447,11 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		}
 		
 		public ColumnBean[] getSelected() {
-			final List l = tableSelection.getSelected();
+			final List<NumberedColumnBean> l = tableSelection.getSelected();
 			final ColumnBean[] result = new ColumnBean[l.size()];
-			final Iterator i = l.iterator();
+			final Iterator<NumberedColumnBean> i = l.iterator();
 			for (int ix = 0; i.hasNext(); ix++) {
-                result[ix] = ((NumberedColumnBean) i.next()).cb;                
+                result[ix] = i.next().cb;                
             }
 			return result;
 		}

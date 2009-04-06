@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformerUnitTest.java,v 1.6 2009/03/26 18:01:23 nw Exp $
+/*$Id: TypeStructureTransformerUnitTest.java,v 1.7 2009/04/06 11:43:29 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,7 @@ public class TypeStructureTransformerUnitTest extends TestCase {
         m.put("foo","wibble");
         
         a = new ABean();
-        a.setChildren(new ArrayList());
+        a.setChildren(new ArrayList<BBean>());
         a.setValues(l);
         a.setFoo("foo");
         a.setAnotherBean(null);
@@ -149,7 +149,7 @@ public class TypeStructureTransformerUnitTest extends TestCase {
     
     public void testNestedBeans() {
         a.setAnotherBean(b);
-        List list = new ArrayList();
+        List<BBean> list = new ArrayList<BBean>();
         list.add(b);
         list.add(b);
         a.setChildren(list);
@@ -164,7 +164,7 @@ public class TypeStructureTransformerUnitTest extends TestCase {
     
     
     public void testListOfBeans() {
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<Object>();
         list.add(a);
         list.add(b);
         Object result = trans.transform(list);
@@ -276,10 +276,10 @@ public class TypeStructureTransformerUnitTest extends TestCase {
         public void setAnotherBean(BBean anotherBean) {
             this.anotherBean = anotherBean;
         }
-        public List getChildren() {
+        public List<BBean> getChildren() {
             return this.children;
         }
-        public void setChildren(List children) {
+        public void setChildren(List<BBean> children) {
             this.children = children;
         }
         public String getFoo() {
@@ -296,7 +296,7 @@ public void setValues(List values) {
 }
 private List values;
         private String foo;
-        private List children;
+        private List<BBean> children;
         private BBean anotherBean;
         
     }
@@ -343,6 +343,11 @@ private int i;
 
 /* 
 $Log: TypeStructureTransformerUnitTest.java,v $
+Revision 1.7  2009/04/06 11:43:29  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.6  2009/03/26 18:01:23  nw
 added override annotations
 

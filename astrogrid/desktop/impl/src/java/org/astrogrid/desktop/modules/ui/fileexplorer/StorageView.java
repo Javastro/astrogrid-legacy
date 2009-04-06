@@ -63,6 +63,7 @@ import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.SearchField;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.BookmarkNavigationEvent;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.Location;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 
@@ -228,10 +229,10 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 			final StorageFolder f = new StorageFolder();
 			try {
 				//@todo work out a more sensible icon in some cases.
-				final FileObject fo = navigator.current();
+				final FileObjectView fo = navigator.current();
 				f.setFile(fo);
-				f.setUriString(fo.getName().getURI());
-				f.setName(fo.getName().getBaseName());
+				f.setUriString(fo.getUri());
+				f.setName(fo.getBasename());
 				foldersList.add(f); // and this is automatically persisted.
 			} catch (final Exception ex) {
 				parent.showTransientError("Failed to add bookmark",ExceptionFormatter.formatException(ex));
@@ -258,7 +259,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             chooser.setMultiSelectionEnabled(true);
             final int code = chooser.showOpenDialog(getParent().getComponent());
             if (code == JFileChooser.APPROVE_OPTION) {
-                final FileObject base = navigator.current();
+                final FileObjectView base = navigator.current();
                 final File[] files = chooser.getSelectedFiles();
                 final CopyCommand[] commands = new CopyCommand[files.length];
                 for (int i = 0; i < files.length; i++) {
@@ -282,10 +283,10 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             /**
              * 
              */
-            private final FileObject base;
+            private final FileObjectView base;
             private final JTextField tf = new JTextField(20);
             private void init (){
-                baseName = base.getName().getBaseName();
+                baseName = base.getBasename();
                 if (StringUtils.isEmpty(baseName)) {
                     baseName = "/";
                 }
@@ -307,18 +308,18 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             }
 
 
-            private NewFolderDialog(final FileObject base)
+            private NewFolderDialog(final FileObjectView base)
             throws HeadlessException {
                 this.base = base;
                 init();
             }
-            private NewFolderDialog(final Dialog d,final FileObject base)
+            private NewFolderDialog(final Dialog d,final FileObjectView base)
             throws HeadlessException {
                 super(d);
                 this.base = base;
                 init();
             }
-            private NewFolderDialog(final Frame f,final FileObject base)
+            private NewFolderDialog(final Frame f,final FileObjectView base)
             throws HeadlessException {
                 super(f);
                 this.base = base;
@@ -326,15 +327,15 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             }
             @Override
             public void ok() {
-                (new BackgroundWorker(StorageView.this.getParent(),"Creating subfolder of " + this.baseName,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
+                (new BackgroundWorker<String>(StorageView.this.getParent(),"Creating subfolder of " + this.baseName,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
                     
                     @Override
-                    protected Object construct() throws Exception {
+                    protected String construct() throws Exception {
                         final String nuName = tf.getText();
                         if (StringUtils.isEmpty(nuName)) {
                             return null; // bail out.
                         }
-                        final FileObject f = base.resolveFile(nuName);
+                        final FileObject f = base.getFileObject().resolveFile(nuName);
                         if (f.exists()) {
                             return nuName + " already exists";
                         }
@@ -345,14 +346,14 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
                             }
                            });	                        
                         f.createFolder();
-                        final FileSystem fs =base.getFileSystem();
+                        final FileSystem fs =base.getFileObject().getFileSystem();
                         if (fs instanceof AbstractFileSystem) {
-                            ((AbstractFileSystem)fs).fireFileChanged(base);
+                            ((AbstractFileSystem)fs).fireFileChanged(base.getFileObject());
                         }
                         return null;
                     }
                     @Override
-                    protected void doFinished(final Object result) {
+                    protected void doFinished(final String result) {
                         if (result == null && isVisible()) {
                             NewFolderDialog.super.ok();
                         } else {
@@ -372,7 +373,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	    }
 	    public void actionPerformed(final ActionEvent e) {
 	        // work out where we are at the moment.
-	        final FileObject base =navigator.current();
+	        final FileObjectView base =navigator.current();
 	        final Component pc = parent.getComponent();
 	        final Window w = pc instanceof Window
 	                 ? (Window) pc
@@ -396,11 +397,11 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     private final FileSystemManager vfs;
 
 
-		public StorageView(final UIComponent parent, final ActivitiesManager actsManager,final EventList unfilteredfoldersList, final FileSystemManager vfs, final IconFinder iconFinder, final Community comm) {
+		public StorageView(final UIComponent parent, final ActivitiesManager actsManager,final EventList<StorageFolder> unfilteredfoldersList, final FileSystemManager vfs, final IconFinder iconFinder, final Community comm) {
     		this.parent = parent;
             this.vfs = vfs;
-    		foldersListFilter = new MutableMatcherEditor();
-            this.foldersList = new FilterList(unfilteredfoldersList,foldersListFilter);
+    		foldersListFilter = new MutableMatcherEditor<StorageFolder>();
+            this.foldersList = new FilterList<StorageFolder>(unfilteredfoldersList,foldersListFilter);
     		
             final ButtonGroup bg = new ButtonGroup();
             bg.add(iconsMenuItem);
@@ -410,7 +411,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     		// core model.
             final SearchField filter = new SearchField("Filter files");	
             CSH.setHelpIDString(filter,"files.filter");
-            final MatcherEditor ed = new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator());
+            final MatcherEditor<FileObjectView> ed = new TextComponentMatcherEditor<FileObjectView>(filter.getWrappedDocument(),new FileObjectViewFilterator());
             navigator = new FileNavigator(getParent(),vfs,ed,actsManager,iconFinder);		
             comm.addUserLoginListener(this);
             navigator.addNavigationListener(this);
@@ -428,7 +429,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    final int c = 1;
     	    int r = 2;
     	    // previous button
-    	    final RangeList historyRange = new RangeList(navigator.getPreviousList());
+    	    final RangeList<Location> historyRange = new RangeList<Location>(navigator.getPreviousList());
     	    historyRange.setTailRange(navigator.getMaxHistorySize(),1); // not including the current.
     	    back = new EventListDropDownButton(new JButton(IconHelper.loadIcon("previous22.png")),historyRange,true);
             CSH.setHelpIDString(back,"files.back");
@@ -454,6 +455,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    location.setToolTipText("<html>Enter a URL or file location. Supported Schemes:"
     	    		+ "<br> [<b>file</b>://] absolute-path"
     	    		+ "<br> <b>workspace</b>://[ absolute-path]"
+    	    		+ "<br> <b>vos</b>://server!name/path "
     	    		// decided not to put an example of myspace in here - looks confusingly like registry key.
     	    		+ "<br> <b>ftp</b>://[ username[: password]@] hostname[: port][ absolute-path]"
     	    		+ "<br> <b>sftp</b>://[ username[: password]@] hostname[: port][ absolute-path]"
@@ -461,6 +463,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    		+"<br>/users/fred/myfile"
     	    		+ "<br>file:///home/someuser/somedir"
     	    		+ "<br>workspace:///myresults"
+    	    		+ "<br>vos://org.astrogrid!cambridge-vospace/somedir/somefile.txt"
     	    		+ "<br>ftp://myusername:mypassword@somehost/pub/downloads/somefile.tgz"
     	    		+ "<br>sftp://myusername:mypassword@somehost/pub/downloads/somefile.tgz"
     	    		//@todo add examples of myspace and vospace schemes.
@@ -477,7 +480,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    builder.add(createMainButton(newFolder),cc.xy(r++,c));
     	    r++;
     	    // can't be bothered making this track the menu entries, so just make it invisible if the menu is available.
-    	    final BasicEventList views = new BasicEventList();
+    	    final EventList<Action> views = new BasicEventList<Action>();
     	    views.add(icons);
     	    views.add(list);    	   
     	    viewsCombo = new ActionComboBox(views);
@@ -517,7 +520,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    fileList.requestFocusInWindow();
     	}
 	// list of folders being displayed in LHS
-	private final EventList foldersList;
+	private final EventList<StorageFolder> foldersList;
 	// list of Actions for selecting between different views.
 	//private final EventList views;
 	private final StorageFoldersList folders;
@@ -548,7 +551,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private final FileNavigator navigator;
 	private final JTextField location;
 	private final BiStateButton goButton;
-    private final MutableMatcherEditor foldersListFilter;
+    private final MutableMatcherEditor<StorageFolder> foldersListFilter;
     private final Action upload = new UploadAction();
     private final ActionComboBox viewsCombo;
 
@@ -614,7 +617,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
         goButton.enableA();
         refresh.setEnabled(true);
         up.setEnabled(! e.isRoot());
-        location.setText(navigator.current().getName().getURI());
+        location.setText(navigator.current().getUri());
         //  notifyStorageTasks();        
         if (e instanceof BookmarkNavigationEvent) {
             bookmark.setEnabled(false);

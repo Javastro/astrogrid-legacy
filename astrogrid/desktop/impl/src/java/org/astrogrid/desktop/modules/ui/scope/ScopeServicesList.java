@@ -12,12 +12,11 @@ import java.util.List;
 import javax.swing.table.TableColumn;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.system.Tuple;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
@@ -25,6 +24,7 @@ import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ModularColumn;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.scope.QueryResults.QueryResult;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
@@ -64,7 +64,7 @@ public class ScopeServicesList extends RegistryGooglePanel
 		super(parent,reg, uiBuilder
 		        ,createServicesListViews(parent,uiBuilder,acts)
 		        ,vomon, iconFac,annServer,pref);
-        this.astroscope = parent;		
+        this.astroscope = parent;	
         this.resultsView = (ResultsResourceViewer) this.resourceViewers[0]; // we know this is the resultsResourceViewer, because it's set up in createServicesListViews()
 		summary.setTitle("Query Results");
 		CSH.setHelpIDString(this,"scope.viz.services");
@@ -111,30 +111,18 @@ public class ScopeServicesList extends RegistryGooglePanel
 
 	}
 	/** add a number of services to the tabular display */
-	public void addAll(final Retriever[] retrievers) {
-	    final VizModel model = astroscope.getVizModel(); // can only access this now, not in the construct, as it's not yet been initialized at this point.
-	    for (int i = 0; i < retrievers.length; i++) {
-            final Retriever abstractRetriever = retrievers[i];
-	        // eagerly create this, and hang onto it - else it tends to get GC'd and we
-	        // lost the results tree
-	        FileObject fo = null;
-	        try {
-	            fo = model.createResultsDirectory(abstractRetriever);
-	        } catch (final FileSystemException e) {
-	            logger.warn("Inable to create results directory for " + abstractRetriever.getLabel());
-	        }
-	        final QueryResult qr = new QueryResult(abstractRetriever,fo);
-	        queryResults.addResult(qr);
-	    }
+	public void addAll(final List<Tuple<Retriever,FileObjectView>> retrievers) {
 	    items.getReadWriteLock().writeLock().lock();
 	    try {
-            for (int i = 0; i < retrievers.length; i++) {
-                items.add(RetrieverService.create(retrievers[i]));
-            }
+	        for (final Tuple<Retriever, FileObjectView> retr : retrievers) {	            
+	            final QueryResult qr = new QueryResult(retr.fst(),retr.snd());
+	            queryResults.addResult(qr);
+	            items.add(RetrieverService.create(retr.fst()));
+	        }
 	    } finally {
 	        items.getReadWriteLock().writeLock().unlock();
 	    }   
-	    
+
 	    // now check what size the list has grown to, and flip astroscope views if needed.
 	    // it's possible that if the user then flips back, this might flip back again
 	    // when more services are added - tough.
@@ -143,8 +131,8 @@ public class ScopeServicesList extends RegistryGooglePanel
 	        // show warning.
 	        astroscope.showTransientWarning("Large Number of Services to Query"
 	                ,"Switching to the 'Services Table' display" +
-	                		"<br>The previous display can be accessed from the 'View' menu"
-	                );
+	                "<br>The previous display can be accessed from the 'View' menu"
+	        );
 	        astroscope.flipToServicesTable();
 	    }
 	}
@@ -198,8 +186,8 @@ public class ScopeServicesList extends RegistryGooglePanel
         public ServicesListTableFormat(final AnnotationService annService,
                 final VoMonInternal vomon, final CapabilityIconFactory capBuilder) {
             super(annService, vomon, capBuilder);
-            final List colList = new ArrayList(Arrays.asList(getColumns()));
-            colList.add(new Column(RESULTS_NAME,Integer.class,new Comparator() {
+            final List<ModularColumn<Resource,?>> colList = new ArrayList<ModularColumn<Resource,?>>(Arrays.asList(getColumns()));
+            colList.add(new Column(RESULTS_NAME,Integer.class,new Comparator() { // can't use generic types here - as it's an Integer / String mix
                 // has to handle integers, and the string 'failed'
                 public int compare(final Object arg0, final Object arg1) {
                     if (arg0 instanceof String) {
@@ -233,7 +221,7 @@ public class ScopeServicesList extends RegistryGooglePanel
                 }
             });
 
-            setColumns((ModularColumn[])colList.toArray(new ModularColumn[0]));
+            setColumns(colList.toArray(new ModularColumn[0]));
         }
 
         private final static String RESULTS_NAME = "Results"; // integer, comparableComparator

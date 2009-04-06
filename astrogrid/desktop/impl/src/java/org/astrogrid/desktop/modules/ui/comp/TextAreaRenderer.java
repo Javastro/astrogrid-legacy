@@ -25,7 +25,7 @@ public class TextAreaRenderer extends JTextArea
   private final DefaultTableCellRenderer adaptee =
       new DefaultTableCellRenderer();
   /** map from table to map of rows to map of column heights */
-  private final Map cellSizes = new HashMap();
+  private final Map<JTable, Map> cellSizes = new HashMap<JTable, Map>();
 
   public TextAreaRenderer() {
     setLineWrap(true);
@@ -58,13 +58,13 @@ public class TextAreaRenderer extends JTextArea
 
   private void addSize(final JTable table, final int row, final int column,
                        final int height) {
-    Map rows = (Map) cellSizes.get(table);
+    Map<Integer, Map> rows = cellSizes.get(table);
     if (rows == null) {
-      cellSizes.put(table, rows = new HashMap());
+      cellSizes.put(table, rows = new HashMap<Integer, Map>());
     }
-    Map rowheights = (Map) rows.get(Integer.valueOf(row));
+    Map<Integer, Integer> rowheights = rows.get(Integer.valueOf(row));
     if (rowheights == null) {
-      rows.put(new Integer(row), rowheights = new HashMap());
+      rows.put(new Integer(row), rowheights = new HashMap<Integer, Integer>());
     }
     rowheights.put(new Integer(column), new Integer(height));
   }
@@ -90,7 +90,7 @@ public class TextAreaRenderer extends JTextArea
   }
 
   private int findMaximumRowSize(final JTable table, final int row) {
-    final Map rows = (Map) cellSizes.get(table);
+    final Map rows = cellSizes.get(table);
     if (rows == null) {
         return 0;
     }

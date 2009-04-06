@@ -4,9 +4,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.ListModel;
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-
 /** Extends {@code OperableFilesList} with navigation between folders.
  * 
  * New abilities: navigate around the file hierarchy by double-cicking
@@ -25,7 +22,7 @@ public class NavigableFilesList extends OperableFilesList {
 	 * @param files
 	 */
 	public NavigableFilesList(final FileNavigator navigator) {
-		super(navigator.getIcons(),navigator.getModel());
+		super(navigator.getModel());
         this.navigator = navigator;
 
 	}
@@ -38,16 +35,12 @@ public class NavigableFilesList extends OperableFilesList {
 		     final int index = locationToIndex(e.getPoint());
 		     final ListModel dlm = getModel();
 		     ensureIndexIsVisible(index);
-		     final FileObject item = (FileObject)dlm.getElementAt(index);
+		     final FileObjectView item = (FileObjectView)dlm.getElementAt(index);
 		     if (item == null) {
 		    	 return;
 		     }
-		     try {
 		     if (item.getType().hasChildren()) {
 		    	 navigator.move(item);
-		     }
-		     } catch (final FileSystemException ex) {
-		    	 //@todo report or recover
 		     }
 		 } else {
 		     super.mouseClicked(e);

@@ -53,7 +53,6 @@ public final class SystemFilter implements Matcher {
 				(r instanceof CeaService)
 				|| (r instanceof Authority)
 				|| (r instanceof RegistryService)
-			// covered in above clause.	|| StringUtils.contains(r.getType(),"Registry")
 			) { 
 			return false;
 		}
@@ -72,8 +71,7 @@ public final class SystemFilter implements Matcher {
         if (caps.length == 0) {
             return true; // nothing here - it's boring.
         }
-        for (int i = 0; i < caps.length; i++) {
-            final Capability c = caps[i];
+        for (final Capability c : caps) {
             if (! isBoringCapability(c)) {
                 return false;
             }
@@ -91,7 +89,7 @@ public final class SystemFilter implements Matcher {
     
     
 /** a set of the boring capabilities */
-    private static final Set boringCapabilities = new TreeSet(
+    private static final Set<URI> boringCapabilities = new TreeSet<URI>(
             Arrays.asList(
                     new URI[] {
                             URI.create(StandardIds.CEA_1_0)

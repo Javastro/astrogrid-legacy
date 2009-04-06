@@ -63,7 +63,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
     private SelfTestDisplay theDisplay;
     
     // contents of the table model.
-    private final EventList testResults = new BasicEventList();
+    private final EventList<SingleTestResult> testResults = new BasicEventList<SingleTestResult>();
 
     private final UIContext context;
 
@@ -197,7 +197,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             context.unregisterWindow(this); // registered by parent, don't want it.
             
             // a table component, based on the testResults, where all updates occur on the EDT
-            final JTable table = new JTable(new EventTableModel(
+            final JTable table = new JTable(new EventTableModel<SingleTestResult>(
                     GlazedListsSwing.swingThreadProxyList(testResults)
                     ,new SelfTestTableFormat()
                     ));

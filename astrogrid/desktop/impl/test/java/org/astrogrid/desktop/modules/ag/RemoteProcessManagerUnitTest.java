@@ -3,6 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
+import static org.astrogrid.Fixture.createVFS;
+import static org.easymock.EasyMock.*;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Map;
@@ -17,11 +20,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
-import  static org.easymock.EasyMock.*;
 import org.w3c.dom.Document;
-
-
-import static org.astrogrid.Fixture.*;
 /** 
  * @author Noel Winstanley
  * @since Jun 13, 20067:01:00 PM
@@ -35,9 +34,9 @@ public class RemoteProcessManagerUnitTest extends TestCase {
 	@Override
     protected void setUp() throws Exception {
 		super.setUp();
-		strats = new ArrayList();
+		strats = new ArrayList<RemoteProcessStrategy>();
 		strats.add(new TestRemoteProcessStrategy());
-		SnitchInternal snitch = createNiceMock("snitch",SnitchInternal.class);
+		final SnitchInternal snitch = createNiceMock("snitch",SnitchInternal.class);
 		rpm = new RemoteProcessManagerImpl(strats,createVFS(),snitch);
 		
 		mocdoc = createMock("document",Document.class);
@@ -50,29 +49,29 @@ protected void tearDown() throws Exception {
 	rpm = null;
 }
  	protected Document mocdoc;
-	protected java.util.List strats;
+	protected java.util.List<RemoteProcessStrategy> strats;
 	protected RemoteProcessManager rpm;
 	
 	
 	public void testList() throws Exception {
-		URI[] u = rpm.list();
+		final URI[] u = rpm.list();
 		assertNotNull(u);
 		assertEquals(0,u.length);
 	}
 
 	public void testSubmit() throws Exception {
-		URI uri = rpm.submit(mocdoc);
+		final URI uri = rpm.submit(mocdoc);
 		assertNotNull(uri);
-		URI[] list = rpm.list();
+		final URI[] list = rpm.list();
 		assertEquals(1,list.length);
 		assertEquals(uri,list[0]);
 		rpm.halt(uri);
 
-		ExecutionMessage[] arr = rpm.getMessages(uri);
+		final ExecutionMessage[] arr = rpm.getMessages(uri);
 		assertNotNull(arr);
 		assertEquals(0,arr.length);
 		
-		Map results = rpm.getResults(uri);
+		final Map results = rpm.getResults(uri);
 		assertNotNull(results);
 		assertEquals(0,results.size());
 		
@@ -83,23 +82,23 @@ protected void tearDown() throws Exception {
 		// verify it's gone.
 		try {
 			rpm.getMessages(uri);
-		} catch (NotFoundException e) {
+		} catch (final NotFoundException e) {
 		}		
 	}
 	
 	public void testSubmitTo() throws Exception {
-		URI uri = rpm.submitTo(mocdoc,new URI("test://foo"));
+		final URI uri = rpm.submitTo(mocdoc,new URI("test://foo"));
 		assertNotNull(uri);
-		URI[] list = rpm.list();
+		final URI[] list = rpm.list();
 		assertEquals(1,list.length);
 		assertEquals(uri,list[0]);
 		rpm.halt(uri);
 		
-		ExecutionMessage[] arr = rpm.getMessages(uri);
+		final ExecutionMessage[] arr = rpm.getMessages(uri);
 		assertNotNull(arr);
 		assertEquals(0,arr.length);
 		
-		Map results = rpm.getResults(uri);
+		final Map results = rpm.getResults(uri);
 		assertNotNull(results);
 		assertEquals(0,results.size());
 		
@@ -111,66 +110,66 @@ protected void tearDown() throws Exception {
 		// verify it's gone.
 		try {
 			rpm.getMessages(uri);
-		} catch (NotFoundException e) {
+		} catch (final NotFoundException e) {
 		}
 	}
 	
 	public void testUnknownHalt() throws Exception {
-		URI u = new URI("test://foo");
+		final URI u = new URI("test://foo");
 		try {
 			rpm.halt(u);
 			fail("expected to chuck");
-		} catch(NotFoundException e) {
+		} catch(final NotFoundException e) {
 			// expected
 		}
 	}
 	
 	public void testUnknownGetMessages() throws Exception {
-		URI u = new URI("test://foo");
+		final URI u = new URI("test://foo");
 		try {
 			rpm.getMessages(u);
 			fail("expected to chuck");
-		} catch(NotFoundException e) {
+		} catch(final NotFoundException e) {
 			// expected
 		}
 	}
 	
 	public void testUnknownGetExecutionInformation() throws Exception {
-		URI u = new URI("test://foo");
+		final URI u = new URI("test://foo");
 		try {
 			rpm.getExecutionInformation(u);
 			fail("expected to chuck");
-		} catch(NotFoundException e) {
+		} catch(final NotFoundException e) {
 			// expected
 		}
 	}
 	
 	public void testUnknownGetResults() throws Exception {
-		URI u = new URI("test://foo");
+		final URI u = new URI("test://foo");
 		try {
 			rpm.getResults(u);
 			fail("expected to chuck");
-		} catch(NotFoundException e) {
+		} catch(final NotFoundException e) {
 			// expected
 		}
 	}
 	
 	public static class TestRemoteProcessStrategy implements RemoteProcessStrategy {
 
-		public boolean canProcess(URI execId) {
+		public boolean canProcess(final URI execId) {
 			return true;
 		}
 
-		public String canProcess(Document doc) {
+		public String canProcess(final Document doc) {
 			return "ok";
 		}
 
 
-        public ProcessMonitor create(Document doc)
+        public ProcessMonitor create(final Document doc)
                 throws InvalidArgumentException, ServiceException {
             try {
                 return new MonitorMapUnitTest.TestRemoteProcessMonitor(VFS.getManager());
-            } catch (FileSystemException x) {
+            } catch (final FileSystemException x) {
                 throw new ServiceException(x);
             }
         }

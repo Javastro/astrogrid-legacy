@@ -75,6 +75,6 @@ public class MemoizingEndpointResolver extends FileManagerEndpointResolverImpl
 	
 	
 	// a memory-sensitive cache.
-	private final Map results = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+	private final Map<String, Object> results = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
 
 }

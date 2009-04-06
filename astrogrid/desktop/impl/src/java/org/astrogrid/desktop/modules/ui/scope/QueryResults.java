@@ -3,7 +3,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.vfs.FileObject;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
@@ -11,11 +11,11 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
  *  */
 public final class QueryResults {
-    private final Map m = new HashMap();
-    private final Map nodeMap = new HashMap();
+    private final Map<Retriever, QueryResult> m = new HashMap<Retriever, QueryResult>();
+    private final Map<TreeNode, Retriever> nodeMap = new HashMap<TreeNode, Retriever>();
     
     public QueryResults.QueryResult getResult(final Retriever r) {
-        return (QueryResults.QueryResult) m.get(r);
+        return m.get(r);
     }
     void addResult(final QueryResults.QueryResult qr) {
         if (qr == null) {
@@ -41,7 +41,7 @@ public final class QueryResults {
     }
     /** for a given tree node, find the associated retriever */
     public Retriever findRetriever(final TreeNode t) {
-        return (Retriever)nodeMap.get(t);
+        return nodeMap.get(t);
     }
     /** associate a node with a query result.
      * @param qr
@@ -63,7 +63,7 @@ public final class QueryResults {
     }
 /** structure representing a single query result */
 public static final class QueryResult {
-    public QueryResult(final Retriever r,final FileObject resultsDir) {
+    public QueryResult(final Retriever r,final FileObjectView resultsDir) {
         this.retriever = r;
         this.resultsDir = resultsDir;
     }
@@ -74,7 +74,7 @@ public static final class QueryResult {
    /** the retriever this result pertains to */
    public final Retriever retriever;
    /** the virtual results directory containing pointers to the result files */
-   public  final FileObject resultsDir;
+   public  final FileObjectView resultsDir;
    /** the tree node assocoated with this result */
    private TreeNode node;
    /** helper method to format the result count - taking into account errors, and pending status */

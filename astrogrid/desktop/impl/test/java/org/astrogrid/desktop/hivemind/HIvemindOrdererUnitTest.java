@@ -1,4 +1,4 @@
-/*$Id: HIvemindOrdererUnitTest.java,v 1.5 2009/03/26 18:01:23 nw Exp $
+/*$Id: HIvemindOrdererUnitTest.java,v 1.6 2009/04/06 11:43:29 nw Exp $
  * Created on 29-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ public class HIvemindOrdererUnitTest extends TestCase {
      //  err = new StrictErrorHandler();
        err = new DefaultErrorHandler();
        orderer = new Orderer(err,"Test Orderer");
-       expected = new ArrayList();
+       expected = new ArrayList<String>();
     }
     
     /*
@@ -50,7 +50,7 @@ public class HIvemindOrdererUnitTest extends TestCase {
     private Orderer orderer;
     private ErrorHandler err;
     private static String[] values = new String[]{"A","B","C","D","E"};
-    private List expected;
+    private List<String> expected;
 
     /** '*' means before or after all */
     public void testSimpleWildcards() {
@@ -220,6 +220,11 @@ public class HIvemindOrdererUnitTest extends TestCase {
 
 /* 
 $Log: HIvemindOrdererUnitTest.java,v $
+Revision 1.6  2009/04/06 11:43:29  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.5  2009/03/26 18:01:23  nw
 added override annotations
 

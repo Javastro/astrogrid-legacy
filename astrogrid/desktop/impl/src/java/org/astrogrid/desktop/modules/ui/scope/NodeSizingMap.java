@@ -1,4 +1,4 @@
-/*$Id: NodeSizingMap.java,v 1.2 2007/01/29 10:43:49 nw Exp $
+/*$Id: NodeSizingMap.java,v 1.3 2009/04/06 11:43:19 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,10 +27,10 @@ public class NodeSizingMap {
      */
     public NodeSizingMap() {
         super();
-        m =  Collections.synchronizedMap(new java.util.TreeMap());
+        m =  Collections.synchronizedMap(new java.util.TreeMap<Object, NodeSizing>());
     }
     
-    private final Map m;
+    private final Map<Object, NodeSizing> m;
 
     
     /** adds a new offset value into the map
@@ -68,7 +68,7 @@ public class NodeSizingMap {
         if (offset == null) {
             return null;
         }
-        return (NodeSizing)m.get(offset);
+        return m.get(offset);
     }
 
     
@@ -82,6 +82,11 @@ public class NodeSizingMap {
 
 /* 
 $Log: NodeSizingMap.java,v $
+Revision 1.3  2009/04/06 11:43:19  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.2  2007/01/29 10:43:49  nw
 documentation fixes.
 

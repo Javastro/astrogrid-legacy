@@ -3,10 +3,12 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
+import java.net.URI;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** Factory for fileexplorers.
  * - also handles some messages.
@@ -45,8 +47,12 @@ public class FileExplorerFactoryImpl  implements FileManagerFactory {
 	}
 	
 
-    public void show(final FileObject fo) {
+    public void show(final FileObjectView fo) {
         newWindow().show(fo);
+    }
+    
+    public void show(final URI loc) {
+        newWindow().show(loc);
     }
 	
 }

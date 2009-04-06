@@ -1,4 +1,4 @@
-/*$Id: ConfigurationIntegrationTest.java,v 1.5 2009/03/26 18:01:21 nw Exp $
+/*$Id: ConfigurationIntegrationTest.java,v 1.6 2009/04/06 11:43:29 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,7 +54,7 @@ public class ConfigurationIntegrationTest extends InARTestCase {
     }
     
     public void testList() throws Exception {
-        Map m = conf.list();
+        Map<String, String> m = conf.list();
         assertNotNull(m);
     }
     
@@ -75,6 +75,11 @@ public class ConfigurationIntegrationTest extends InARTestCase {
 
 /* 
 $Log: ConfigurationIntegrationTest.java,v $
+Revision 1.6  2009/04/06 11:43:29  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.5  2009/03/26 18:01:21  nw
 added override annotations
 

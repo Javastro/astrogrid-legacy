@@ -31,10 +31,10 @@ public class FilesTable extends JTable {
     private static final Log logger = LogFactory.getLog(FilesTable.class);
 
     
-    public FilesTable(final SortedList files, final IconFinder icons) {
+    public FilesTable(final SortedList<FileObjectView> files) {
 
         // setup the model.
-        setModel(new EventTableModel(files,new StorageTableFormat(icons)));     
+        setModel(new EventTableModel<FileObjectView>(files,new StorageTableFormat()));     
         CSH.setHelpIDString(this,"files.table");
 
         // setup the behaviour

@@ -14,10 +14,7 @@ import java.util.List;
 import javax.swing.KeyStroke;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.provider.local.LocalFileSystem;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
@@ -26,6 +23,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
 
@@ -42,9 +40,8 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 	
     // applies to all non-local files and folders.
 	@Override
-    protected boolean invokable(final FileObject f) { 
-	    final FileSystem fileSystem = f.getFileSystem();
-	    return ! (fileSystem instanceof LocalFileSystem);
+    protected boolean invokable(final FileObjectView f) {
+	    return ! "file".equals(f.getScheme());
 	}
 	
     @Override
@@ -65,8 +62,8 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 
 	@Override
     public void actionPerformed(final ActionEvent e) {
-        final List resources = computeInvokableResources();
-        final List files = computeInvokableFiles();
+        final List<Resource> resources = computeInvokableResources();
+        final List<FileObjectView> files = computeInvokableFiles();
         final int sz = resources.size() + files.size();
         confirmWhenOverThreshold(sz,"Download all " + sz + " files?",new Runnable() {
             public void run() {
@@ -76,8 +73,8 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 	}
 	
 	
-	private void doit(final List resources, final List files) {
-	    final List commandList = new ArrayList();
+	private void doit(final List<Resource> resources, final List<FileObjectView> files) {
+	    final List<CopyCommand> commandList = new ArrayList<CopyCommand>();
 	    if (resources.size() > 0) {
 	        // utterly CDS specific
 	        for (final Iterator i = resources.iterator(); i.hasNext();) {
@@ -106,7 +103,7 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 	    }	 
         
 		for (int i = 0 ; i < files.size(); i++) {
-		    commandList.add(new CopyCommand((FileObject)files.get(i)));
+		    commandList.add(new CopyCommand(files.get(i)));
 		}
 		
 		if (commandList.isEmpty()) {
@@ -129,7 +126,7 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
         }
         URI saveDir = chooser.getSelectedFile().toURI();
      */
-        final CopyCommand[] cmdArr = (CopyCommand[])commandList.toArray(new CopyCommand[commandList.size()]);
+        final CopyCommand[] cmdArr = commandList.toArray(new CopyCommand[commandList.size()]);
 		(new BulkCopyWorker(vfs,uiParent.get(),saveDir, cmdArr)).start();
 		
 	}

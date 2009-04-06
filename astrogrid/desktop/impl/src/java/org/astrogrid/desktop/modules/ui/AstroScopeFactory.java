@@ -5,6 +5,8 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.util.List;
 
+import org.astrogrid.acr.ivoa.resource.Resource;
+
 /** Factory that builds instances of astroscope.
  * used to enable more than one instance under hivemind.
  * also can be used later to pre-fetch shared resources (e.g. registry queries)
@@ -15,7 +17,7 @@ import java.util.List;
  */
 public class AstroScopeFactory implements AstroScopeInternal{
 
-	public AstroScopeFactory(TypesafeObjectBuilder builder) {
+	public AstroScopeFactory(final TypesafeObjectBuilder builder) {
 		this.builder = builder;
 	}
 	private final TypesafeObjectBuilder builder;
@@ -23,12 +25,12 @@ public class AstroScopeFactory implements AstroScopeInternal{
 		newWindow();
 	}
 // astrscope intetnal interface.
-	public void runSubset(List resources) {
-		AstroScopeInternal	i = newWindow();
+	public void runSubset(final List<? extends Resource> resources) {
+		final AstroScopeInternal	i = newWindow();
 		i.runSubset(resources) ;
 	}
-	   public void runSubsetAsHelioscope(List resources) {
-	        AstroScopeInternal  i = newWindow();
+	   public void runSubsetAsHelioscope(final List<? extends Resource> resources) {
+	        final AstroScopeInternal  i = newWindow();
 	        i.runSubsetAsHelioscope(resources) ;
 	    }
 // factory interface
@@ -37,7 +39,7 @@ public class AstroScopeFactory implements AstroScopeInternal{
 	}
 	
 	private AstroScopeLauncherImpl newWindow() {
-		AstroScopeLauncherImpl i = builder.createAstroscope();
+		final AstroScopeLauncherImpl i = builder.createAstroscope();
 		i.show();
 		return i;
 	}

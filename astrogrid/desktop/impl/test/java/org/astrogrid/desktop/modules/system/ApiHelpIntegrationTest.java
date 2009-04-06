@@ -1,4 +1,4 @@
-/*$Id: ApiHelpIntegrationTest.java,v 1.7 2009/03/26 18:01:21 nw Exp $
+/*$Id: ApiHelpIntegrationTest.java,v 1.8 2009/04/06 11:43:29 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import junit.framework.TestSuite;
 
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
 import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.ARTestSetup;
@@ -54,28 +55,28 @@ public class ApiHelpIntegrationTest extends InARTestCase {
 
 
     public void testListMethods() {
-        final List l = Arrays.asList(help.listMethods());
+        final List<String> l = Arrays.asList(help.listMethods());
         assertNotNull(l);
         assertTrue(l.size() > 20);
         assertTrue(l.contains("system.configuration.getKey"));
     }
 
     public void testListModules() {
-        final List l = Arrays.asList(help.listModules());
+        final List<String> l = Arrays.asList(help.listModules());
         assertNotNull(l);
         assertTrue(l.contains("system"));
         assertTrue(l.size() > 3);
     }
 
     public void testListModuleDescriptors() {
-    	final List l = Arrays.asList(help.listModuleDescriptors());
+    	final List<ModuleDescriptor> l = Arrays.asList(help.listModuleDescriptors());
     	assertNotNull(l);
     	assertTrue(l.size() > 3);
     	assertNotNull(l.get(0));
     }
     	
     public void testListComponentsOfModule() throws Exception {
-        List l = Arrays.asList(help.listComponentsOfModule("builtin"));
+        List<String> l = Arrays.asList(help.listComponentsOfModule("builtin"));
         assertTrue(l.contains("builtin.shutdown"));
         l = Arrays.asList(help.listComponentsOfModule("system"));
         assertTrue(l.contains("system.configuration"));
@@ -137,7 +138,7 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     }  
 
     public void testListMethodsOfComponent() throws Exception {
-        List l = Arrays.asList(help.listMethodsOfComponent("builtin.shutdown"));
+        List<String> l = Arrays.asList(help.listMethodsOfComponent("builtin.shutdown"));
         assertTrue(l.contains("builtin.shutdown.halt"));
         assertFalse(l.contains("system.configuration.list"));        
         l = Arrays.asList(help.listMethodsOfComponent("system.configuration"));
@@ -183,17 +184,17 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     
     
     public void testMethodSignature() throws Exception {
-        final List result = Arrays.asList(help.methodSignature("system.configuration.list"));
+        final List<String[]> result = Arrays.asList(help.methodSignature("system.configuration.list"));
         assertEquals(1,result.size());
-        final String[] sig1 = (String[])result.get(0);
+        final String[] sig1 = result.get(0);
         assertEquals(1,sig1.length);
         assertEquals("Map",sig1[0]); 
     }
     
     public void testMethodSignatureParameters() throws NotFoundException {
-        final List result = Arrays.asList(help.methodSignature("system.configuration.setKey"));
+        final List<String[]> result = Arrays.asList(help.methodSignature("system.configuration.setKey"));
         assertEquals(1,result.size());
-        final String[] sig1 = (String[])result.get(0);
+        final String[] sig1 = result.get(0);
         assertEquals(3,sig1.length);
         System.out.println(Arrays.asList(sig1));
         assertEquals("boolean",sig1[0]); 
@@ -355,6 +356,11 @@ public class ApiHelpIntegrationTest extends InARTestCase {
 
 /* 
 $Log: ApiHelpIntegrationTest.java,v $
+Revision 1.8  2009/04/06 11:43:29  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.7  2009/03/26 18:01:21  nw
 added override annotations
 

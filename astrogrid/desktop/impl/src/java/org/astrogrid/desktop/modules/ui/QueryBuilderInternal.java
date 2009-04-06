@@ -4,11 +4,11 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.apache.commons.collections.Factory;
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.acr.ui.QueryBuilder;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** Internal interface to the query builder factory.
  * Methods on this interface are called by VOExplorer to create new query builder windows
@@ -21,7 +21,7 @@ import org.astrogrid.acr.ui.QueryBuilder;
 public interface QueryBuilderInternal extends QueryBuilder, Factory {
 	
 	/** open the specified file for editing */
-	void edit(FileObject fo);
+	void edit(FileObjectView fo);
 	
 	/** build a query against the specified cea application */
 	void build(CeaApplication app) ;

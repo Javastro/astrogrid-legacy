@@ -14,8 +14,10 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.system.ui.BackgroundWorkersMonitor;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import ca.odell.glazedlists.EventList;
@@ -117,11 +119,11 @@ public void setUp() {
       return null;
     }
 
-    public EventList getPlasticList() {
+    public EventList<ExternalMessageTarget> getPlasticList() {
       return null;
     }
 
-    public EventList getTasksList() {
+    public EventList<BackgroundWorker> getTasksList() {
       return null;
     }
 

@@ -50,14 +50,14 @@ public class AbstractListProviderUnitTest extends TestCase {
 		ui = null;
 	}
 	public void testList() throws Exception {
-		EventList el = prov.getList();
+		EventList<Object> el = prov.getList();
 		assertNotNull(el);
 		assertEquals(1,el.size());
 		assertEquals(folder,el.get(0));
 	}
 	
 	public void testUpdateList() throws Exception {
-		final EventList el = prov.getList();
+		final EventList<Object> el = prov.getList();
 		final Folder f2 = new Folder("fred","icon");
         SwingUtilities.invokeAndWait(new Runnable() {
 
@@ -69,12 +69,12 @@ public class AbstractListProviderUnitTest extends TestCase {
 		
 		// now load it in separate instance, and check contents are the same - ie. it's been persisted.
 		ListProvider prov1 = new TestFoldersProvider(ui,f,xml);
-		EventList el1 = prov1.getList();
+		EventList<Object> el1 = prov1.getList();
 		assertEquals(el,el1);
 	}
 	
 	public void testUpdateListWithSubtype() throws Exception {
-		final EventList el = prov.getList();
+		final EventList<Object> el = prov.getList();
 		final Folder f2 = new FolderSubclass("fred","icon",true);
 
         SwingUtilities.invokeAndWait(new Runnable() {
@@ -87,7 +87,7 @@ public class AbstractListProviderUnitTest extends TestCase {
       
       // now load it in separate instance, and check contents are the same - ie. it's been persisted.
       ListProvider prov1 = new TestFoldersProvider(ui,f,xml);
-      EventList el1 = prov1.getList();
+      EventList<Object> el1 = prov1.getList();
       assertEquals(el,el1);
 	}
 

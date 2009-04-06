@@ -11,6 +11,7 @@ import java.util.Comparator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -92,7 +93,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 				return new AnnotationPanel((Annotation)arg0,hyperLinkHandler);
 			}
 		});
-		final JEventListPanel annPanel = new JEventListPanel(annotationsPanels,new AnnotationsFormat());
+		final JEventListPanel<JMenuItem> annPanel = new JEventListPanel<JMenuItem>(annotationsPanels,new AnnotationsFormat());
 		annPanel.setElementColumns(1);
 		annPanel.setBackground(Color.white);
 		annPanel.setBorder(BorderFactory.createEmptyBorder());

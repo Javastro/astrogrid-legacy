@@ -69,7 +69,7 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 		,Capability.ATTRIBUTES // file attributes are supported
 		
 	};
-	public static final Collection CAPABILITIES = Collections.unmodifiableCollection(Arrays.asList(caps));
+	public static final Collection<Capability> CAPABILITIES = Collections.unmodifiableCollection(Arrays.asList(caps));
 	
 	public MyspaceProvider(final BundlePreferences prefs, final MyspaceInternal msi) {
 		super();
@@ -78,7 +78,7 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 	}
 	private final MyspaceInternal msi;
 
-	public Collection getCapabilities() {
+	public Collection<Capability> getCapabilities() {
 		return CAPABILITIES; 
 	}
 	
@@ -100,7 +100,7 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 	
 	}
 	// hang onto the the filesystems, so can be closed on user logout.
-	private final List filesystems = new ArrayList();
+	private final List<FileSystem> filesystems = new ArrayList<FileSystem>();
 	
 	public void userLogin(final UserLoginEvent arg0) {
 		// do nothing.
@@ -108,7 +108,7 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 
 	public void userLogout(final UserLoginEvent arg0) {
 		// close all the open myspace filesystems.
-		for (final Iterator i = filesystems.iterator(); i.hasNext();) {
+		for (final Iterator<FileSystem> i = filesystems.iterator(); i.hasNext();) {
 			final MyspaceFileSystem f = (MyspaceFileSystem) i.next();
 			try {
 			    getContext().getFileSystemManager().getFilesCache().clear(f);

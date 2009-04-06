@@ -40,8 +40,8 @@ import org.apache.hivemind.internal.Module;
  */
 public class Preference {
 
-	private List alternatives = new ArrayList();
-	private List options = new ArrayList();	
+	private List<String> alternatives = new ArrayList<String>();
+	private List<String> options = new ArrayList<String>();	
 	private String name;
 	private String defaultValue;
 	private boolean advanced;
@@ -73,7 +73,7 @@ public class Preference {
 	 * @return an array of alternatives, or an empty array if none provided.
 	 * never null. */
 	public String[] getAlternatives() {
-		return (String[]) alternatives.toArray(new String[alternatives.size()]);
+		return alternatives.toArray(new String[alternatives.size()]);
 	}
 	
 	public void addAlternative (String s) {
@@ -85,21 +85,21 @@ public class Preference {
 	 * @return an array of suggestions, no duplicates,where first one will be the current value
 	 */
 	public String[] getAllAlternatives() {
-		Set s= new HashSet(); // use a set to merge recommendations, current, default.
+		Set<String> s= new HashSet<String>(); // use a set to merge recommendations, current, default.
 		s.addAll(Arrays.asList(getAlternatives()));
 		s.add(getDefaultValue());
 		s.remove(getValue()); // if it's already there.
-		List l = new ArrayList();
+		List<String> l = new ArrayList<String>();
 		l.add(getValue());
 		l.addAll(s);
-		return (String[]) l.toArray(new String[l.size()]);
+		return l.toArray(new String[l.size()]);
 	}
 		
 	/** lists permitted option values
 	 * @return an array of options, or an empty array if none provided.
 	 * never null. */
 	public String[] getOptions() {
-		return (String[]) options.toArray(new String[options.size()]);
+		return options.toArray(new String[options.size()]);
 	}
 	
 	public void addOption (String s) {

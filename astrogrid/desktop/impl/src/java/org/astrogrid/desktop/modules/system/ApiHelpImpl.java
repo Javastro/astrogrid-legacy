@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.13 2008/12/22 18:18:00 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.14 2009/04/06 11:43:20 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -141,7 +141,7 @@ public class ApiHelpImpl implements ApiHelp {
     }
     
     public String[][] methodSignature(final String methodName) throws NotFoundException {
-        final List sigs = new ArrayList();
+        final List<String[]> sigs = new ArrayList<String[]>();
         if (methodName == null) {
         	throw new NotFoundException("null");
         }
@@ -150,35 +150,35 @@ public class ApiHelpImpl implements ApiHelp {
         if (names[0].equalsIgnoreCase("system")) {
             if (names[1].equalsIgnoreCase("listMethods")) {
                 sigs.add(new String[]{"array","string"});
-                return(String[][])sigs.toArray(new String[sigs.size()][2]);
+                return sigs.toArray(new String[sigs.size()][2]);
             }
             if (names[1].equalsIgnoreCase("methodSignature")) {
                 sigs.add(new String[]{"array","string"});
-                return (String[][])sigs.toArray(new String[sigs.size()][2]);
+                return sigs.toArray(new String[sigs.size()][2]);
             }
             if (names[1].equalsIgnoreCase("listModules")) {
                 sigs.add(new String[]{"array","string"});
-                return (String[][])sigs.toArray(new String[sigs.size()][2]);
+                return sigs.toArray(new String[sigs.size()][2]);
             }                
             if (names[1].equalsIgnoreCase("methodHelp")) {
                 sigs.add(new String[]{"string","string"});
-                return (String[][])sigs.toArray(new String[sigs.size()][2]);
+                return sigs.toArray(new String[sigs.size()][2]);
             }
             if (names[1].equalsIgnoreCase("moduleHelp")) {
                 sigs.add(new String[]{"string","string"});
-                return (String[][])sigs.toArray(new String[sigs.size()][2]);
+                return sigs.toArray(new String[sigs.size()][2]);
             }
             if (names[1].equalsIgnoreCase("componentHelp")) {
                 sigs.add(new String[]{"string","string"});
-                return (String[][])sigs.toArray(new String[sigs.size()][2]);
+                return sigs.toArray(new String[sigs.size()][2]);
             }                
             if (names[1].equalsIgnoreCase("listComponentsOfModule")) {
                 sigs.add(new String[]{"array","string"});
-                return(String[][])sigs.toArray(new String[sigs.size()][2]);
+                return sigs.toArray(new String[sigs.size()][2]);
             }
             if (names[1].equalsIgnoreCase("listMethodsOfComponent")) {
                 sigs.add(new String[]{"array","string"});
-                return (String[][])sigs.toArray(new String[sigs.size()][2]);
+                return sigs.toArray(new String[sigs.size()][2]);
             }                
         }
             final ModuleDescriptor m = reg.getDescriptors().get(names[0]);
@@ -193,7 +193,7 @@ public class ApiHelpImpl implements ApiHelp {
             if (md == null) {
                 throw new NotFoundException("Unknown method "+ names[2]);
             }     
-            final List sig= new ArrayList();
+            final List<String> sig= new ArrayList<String>();
             sig.add(getXMLRPCType(md.getReturnValue()));
             for (final Iterator i = md.parameterIterator(); i.hasNext();) {
                 sig.add(getXMLRPCType( ((ValueDescriptor)i.next())));
@@ -201,7 +201,7 @@ public class ApiHelpImpl implements ApiHelp {
             sigs.add(sig.toArray(new String[sig.size()]));
         
             
-        return (String[][])sigs.toArray(new String[sigs.size()][]);
+        return sigs.toArray(new String[sigs.size()][]);
     }
     
     protected String getXMLRPCType(final ValueDescriptor vd) {
@@ -395,6 +395,11 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.14  2009/04/06 11:43:20  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.13  2008/12/22 18:18:00  nw
 improved in-program API help.
 

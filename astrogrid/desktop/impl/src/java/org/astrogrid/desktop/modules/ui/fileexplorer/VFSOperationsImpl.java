@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.util.List;
 
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
@@ -20,7 +19,7 @@ public class VFSOperationsImpl implements VFSOperations {
 
     /** interface to something from which the current directory can be accessed */
 	public static interface Current {
-		FileObject get();
+		FileObjectView get();
 	}
 	
 	private final UIComponent parent;
@@ -35,17 +34,17 @@ public class VFSOperationsImpl implements VFSOperations {
 	}
 
 	public void copyToCurrent(final List fileObjects) {
-		final FileObject target = current.get(); // take a ref before going into background. 
+		final FileObjectView target = current.get(); // take a ref before going into background. 
 		final CopyCommand[] commands = new CopyCommand[fileObjects.size()];
 		for (int i = 0; i < commands.length; i++) {
-		    commands[i] = new CopyCommand((FileObject)fileObjects.get(i));
+		    commands[i] = new CopyCommand((FileObjectView)fileObjects.get(i));
 		}
 		(new BulkCopyWorker(vfs,parent,target,commands)).start();
 
 	}
 
-	public void moveToCurrent(final List<FileObject> fileObjects) {
-		final FileObject target = current.get(); // take a ref before going into background. 
+	public void moveToCurrent(final List<FileObjectView> fileObjects) {
+		final FileObjectView target = current.get(); // take a ref before going into background. 
 		(new BulkMoveWorker(vfs,parent,target,fileObjects)).start();
 	}
 

@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import javax.swing.Icon;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
@@ -98,7 +99,7 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		new EventListPopupMenuManager(createNewMenuItemList(true),null,menu,false);	
 	}
 
-	protected EventList createNewMenuItemList(final boolean hiding) {
+	protected EventList<JMenuItem> createNewMenuItemList(final boolean hiding) {
 		return new FunctionList(getChildren(), new FunctionList.Function() {
 			public Object evaluate(final Object arg0) {
 				final AbstractActivity a = (AbstractActivity)arg0;

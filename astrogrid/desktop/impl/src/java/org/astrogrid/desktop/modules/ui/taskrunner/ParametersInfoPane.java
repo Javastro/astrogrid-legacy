@@ -42,7 +42,7 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
     /** list of parameter pinnable labels */
     private final FunctionList paramPins;
     /** list of additional pinnable labels to manage */
-    private final List additionalPins;
+    private final List<JToggleButton> additionalPins;
 /**
  * construct a new info pane
  * @param model used to access the current resource metadata
@@ -56,7 +56,7 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
         this.model = model;
         // using a function list means that we can register & deregister simply as the underlying parameter list changes.
         this.paramPins = new FunctionList(allElements,this); 
-        this.additionalPins = new java.util.ArrayList(1);
+        this.additionalPins = new java.util.ArrayList<JToggleButton>(1);
     }
     
     private void register(final JToggleButton l) {
@@ -164,7 +164,7 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
             pinnedTo = (JToggleButton)e.getSource();
             // make sure everything else is unselected.
             for(int i = 0; i < additionalPins.size(); i++) {
-                final JToggleButton tb = (JToggleButton)additionalPins.get(i);
+                final JToggleButton tb = additionalPins.get(i);
                 if (tb != pinnedTo && tb.isSelected()) {
                     tb.setSelected(false);                    
                 }

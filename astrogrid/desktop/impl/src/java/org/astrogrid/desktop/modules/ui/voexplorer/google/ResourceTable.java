@@ -83,7 +83,7 @@ public class ResourceTable extends JTable {
 	 * @param items list (probablby a glazed list) of items that the table model is based upon.
 	 * @param vomon monitoring information.
 	 */
-	public ResourceTable(final TableModel dm, final List items, final VoMonInternal vomon) {
+	public ResourceTable(final TableModel dm, final List<Resource> items, final VoMonInternal vomon) {
 		super(dm);
 		this.items = items;
 		this.vomon = vomon;
@@ -162,13 +162,13 @@ public class ResourceTable extends JTable {
 		
 	
 	public Transferable getSelectionTransferable() {
-		final EventList selected = ((EventSelectionModel)getSelectionModel()).getSelected();
+		final EventList<Resource> selected = ((EventSelectionModel<Resource>)getSelectionModel()).getSelected();
 		switch (selected.size()) {
 		case 0:
 			// ignore
 			return null;
 		case 1:
-			return new ResourceTransferable((Resource)selected.get(0));
+			return new ResourceTransferable(selected.get(0));
 		default:
 			return  new ResourceListTransferable(selected);
 		} 

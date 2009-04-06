@@ -19,6 +19,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -83,7 +84,7 @@ public class FilterPipelineFactory   {
 		// append the length of the strategies, so we get 2 keys -one for voexplorer, one for astroscope services view.
 		filterPane.setCollapsed(PREFERENCES.getBoolean(SHOW_BROWSER_KEY + strategies.length,true));
 		// create the pipeline, plumbing together the various items.
-		final EventList pipeline = new BasicEventList();	
+		final EventList<PipelineItem> pipeline = new BasicEventList<PipelineItem>();	
 		for (int i = 0; i < pipelineSize; i++) {
 			final PipelineItem p = new PipelineItem(i,filteredItems,strategies,filterPane);
 			pipeline.add(p);
@@ -91,7 +92,7 @@ public class FilterPipelineFactory   {
 		}
 		totallyFilteredItems = filteredItems;
 
-		final JEventListPanel pipelineDisplay = new JEventListPanel(pipeline, new PipelineFormat());
+		final JEventListPanel<PipelineItem> pipelineDisplay = new JEventListPanel<PipelineItem>(pipeline, new PipelineFormat());
 		pipelineDisplay.setElementColumns(3);
 		filterPane.add(pipelineDisplay);
 		
@@ -173,7 +174,7 @@ public class FilterPipelineFactory   {
 		 *  */
 		public abstract TransformedList createView(EventList base); 
 		/** create a matcher for the base list, from these items */
-		public abstract Matcher createMatcher(List selected);
+		public abstract Matcher createMatcher(List<JMenuItem> selected);
 
 		@Override
         public final String toString() {
@@ -276,7 +277,7 @@ public class FilterPipelineFactory   {
 		private PipelineStrategy strategy;
 		private final EventList items;
 		private TransformedList view;
-		private EventList selected;
+		private EventList<JMenuItem> selected;
 
 		/** to save creating a new object every time, we implement runnable ourselves.
 		 * so we can pass self to invokeLater()
@@ -300,9 +301,9 @@ public class FilterPipelineFactory   {
 			}
 
 			view = strategy.createView(items);
-			final EventList unq = new SortedList(new UniqueList(view));
-			final EventListModel listModel = new EventListModel(unq);			
-			final TogglingEventSelectionModel selectionModel = new TogglingEventSelectionModel(new EventSelectionModel(unq));
+			final EventList<JMenuItem> unq = new SortedList<JMenuItem>(new UniqueList<JMenuItem>(view));
+			final EventListModel<JMenuItem> listModel = new EventListModel<JMenuItem>(unq);			
+			final TogglingEventSelectionModel selectionModel = new TogglingEventSelectionModel(new EventSelectionModel<JMenuItem>(unq));
 
 			selectionModel.setSelectionMode(EventSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			this.selected = selectionModel.getSelected();
@@ -373,9 +374,9 @@ public class FilterPipelineFactory   {
 	 */
 	public static class TogglingEventSelectionModel implements ListSelectionModel {
 		
-		private final EventSelectionModel esm;
+		private final EventSelectionModel<JMenuItem> esm;
 
-		public TogglingEventSelectionModel(final EventSelectionModel esm) {
+		public TogglingEventSelectionModel(final EventSelectionModel<JMenuItem> esm) {
 			super();
 			this.esm = esm;
 		}
@@ -490,7 +491,7 @@ public class FilterPipelineFactory   {
 			return this.esm.getSelectionMode();
 		}
 
-		public EventList getSelected() {
+		public EventList<JMenuItem> getSelected() {
 			return this.esm.getSelected();
 		}
 

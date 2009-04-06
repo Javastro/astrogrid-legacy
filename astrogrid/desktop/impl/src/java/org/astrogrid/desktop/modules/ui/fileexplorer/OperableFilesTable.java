@@ -9,7 +9,6 @@ import java.awt.event.MouseListener;
 import javax.swing.ActionMap;
 import javax.swing.TransferHandler;
 
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
 /** 
@@ -29,8 +28,8 @@ public class OperableFilesTable extends FilesTable implements MouseListener {
      * @param icons
      * @param fileModel
      */
-    public OperableFilesTable(final IconFinder icons, final Filemodel fileModel) {
-        super(fileModel.getChildrenList(),icons);
+    public OperableFilesTable(final Filemodel fileModel) {
+        super(fileModel.getChildrenList());
         this.fileModel = fileModel;
         //@todo selection doesn't seem to show up.
         setSelectionModel(fileModel.getSelection());        
@@ -54,7 +53,7 @@ public class OperableFilesTable extends FilesTable implements MouseListener {
     	final String tip = null;
     	final java.awt.Point p = e.getPoint();
     	final int rowIndex = rowAtPoint(p);
-    	final FileObject item = (FileObject)fileModel.getChildrenList().get(rowIndex);
+    	final FileObjectView item = fileModel.getChildrenList().get(rowIndex);
     	return createFileTableToolTip(item);
     }
 
@@ -62,7 +61,7 @@ public class OperableFilesTable extends FilesTable implements MouseListener {
      * @param item
      * @return
      */
-    protected String createFileTableToolTip(final FileObject item) {
+    protected String createFileTableToolTip(final FileObjectView item) {
         return FilesList.createToolTipFromFileObject(item);
     }
     

@@ -6,8 +6,6 @@ package org.astrogrid.desktop.modules.ui.actions;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
@@ -18,6 +16,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.QueryBuilderInternal;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** Open QueryBuilder for the selected resource.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -138,12 +137,12 @@ private final QueryBuilderInternal t;
 	
 	@Override
     public void actionPerformed(final ActionEvent e) {
-	    final List resources = computeInvokableResources();
+	    final List<Resource> resources = computeInvokableResources();
 	    switch(resources.size()) {
 	        case 0:
 	            break;
 	        case 1:
-	            final Resource r = (Resource) resources.get(0);
+	            final Resource r =  resources.get(0);
 	            if (r instanceof CatalogService && r instanceof CeaService) {
 	                    t.build((CatalogService)r);
 	            } else if (r instanceof CeaApplication) {
@@ -154,12 +153,12 @@ private final QueryBuilderInternal t;
 	        default:
 	            //future for multi-table querying.	            
 	    }
-	    final List files= computeInvokableFiles();
+	    final List<FileObjectView> files= computeInvokableFiles();
 	    switch(files.size()) {
 	        case 0:
 	            break;
 	        case 1:
-	            final FileObject fo = (FileObject)files.get(0);
+	            final FileObjectView fo = files.get(0);
 	            t.edit(fo);
 	            break;
 	        default:
@@ -170,24 +169,20 @@ private final QueryBuilderInternal t;
 	 // can't operate on more than one file.
 	// ponder - should we open each selected adql file in a new viewer?
 	@Override
-    public void manySelected(final FileObject[] l) {
+    public void manySelected(final FileObjectView[] l) {
 		noneSelected();
 	}
 
 	// accept a single adql file.
 	@Override
-    public boolean invokable(final FileObject fo) {
-	    try {
+    public boolean invokable(final FileObjectView fo) {
 	        if (fo.getType().hasContent()) {
-	            final String mime = fo.getContent().getContentInfo().getContentType();
+	            final String mime = fo.getContentType();
 	            if (mime != null && mime.startsWith(VoDataFlavour.MIME_ADQL)) {
 	                // testing with start-with to match against adql and adqlx
 	                return true;
 	            } 	
 	        }
-	    } catch (final FileSystemException e) {
-	        return false;
-	    }
 	    return false;
 	}
 	

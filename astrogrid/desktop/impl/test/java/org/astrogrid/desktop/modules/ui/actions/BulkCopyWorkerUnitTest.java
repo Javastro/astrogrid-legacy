@@ -4,12 +4,13 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import static org.astrogrid.Fixture.*;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.replay;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
@@ -22,6 +23,7 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** Unit test for the bulk copy worker.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -52,11 +54,11 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         saveDir = createTempDir(this.getClass());
         
         // different kinds of file to copy
-        URL dir = this.getClass().getResource("test-resources");
+        final URL dir = this.getClass().getResource("test-resources");
         assertNotNull(dir);
-        URL file = this.getClass().getResource("test-resources/something.txt");
+        final URL file = this.getClass().getResource("test-resources/something.txt");
         assertNotNull(file);
-        URL nonexistent = new URL(dir,"nonexistent.txt");
+        final URL nonexistent = new URL(dir,"nonexistent.txt");
         // create a set of commands
         this.dirCommand = new CopyCommand(dir);
         this.fileCommand = new CopyCommand(file);
@@ -96,7 +98,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
     
     /** if nothing to copy, it still proceeds correctly */
     public void testNullCopy() throws Exception {
-       BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[0]);
+       final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[0]);
        worker.start();     
        assertTrue(saveDir.exists());
        assertEquals(0,saveDir.list().length);
@@ -107,7 +109,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
     public void testNullCopyNonExistentDest() throws Exception {
         saveDir.delete();
         assertFalse(saveDir.exists());
-        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[0]);
+        final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[0]);
         worker.start();  
         assertTrue(saveDir.exists());
      }
@@ -115,7 +117,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
 // single kinds of file.    
     /**single copy of a file.*/
     public void testSingleCopy() throws Exception {
-       BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
+       final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                fileCommand
        });
        worker.start();   
@@ -133,7 +135,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
            
            // check that the command records the correct info.
            assertFalse("file command reports as failed",fileCommand.failed());
-           FileName destination = fileCommand.getDestination();
+           final FileName destination = fileCommand.getDestination();
            assertNotNull("no destination",destination);
            assertEquals("reported destination different to what's on disk",saveDir.list()[0],destination.getBaseName());
         assertEquals("destination filename differs to source filename"
@@ -152,7 +154,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         FileUtils.touch(saveDir);
         assertTrue(saveDir.exists());
         assertTrue(saveDir.isFile());
-        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
+        final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 fileCommand
         });
         worker.start();   
@@ -171,7 +173,8 @@ public class BulkCopyWorkerUnitTest extends TestCase {
 
     /** test with file object destination */
     public void testSingleCopyFileObjectDestination() throws Exception {
-        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,vfs.resolveFile(saveDir,"."),new CopyCommand[]{
+        final FileObjectView v = new FileObjectView(vfs.resolveFile(saveDir,"."),null);
+        final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,v,new CopyCommand[]{
                 fileCommand
         });
         worker.start();   
@@ -181,7 +184,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
      }    
     /**  test with url destination */
     public void testSingleCopyURIDestination() throws Exception {
-        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir.toURI(),new CopyCommand[]{
+        final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir.toURI(),new CopyCommand[]{
                 fileCommand
         });
         worker.start();   
@@ -192,7 +195,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
     
     /** single copy of non-existent file */
     public void testSingleCopyNonExistentSource() throws Exception {
-        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
+        final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 nonexistentCommand
         });
         worker.start();   
@@ -206,7 +209,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         
     /** single copy of a folder - should copy contents  */
     public void testSingleCopyFolder() throws Exception {
-        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
+        final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 dirCommand
         });
         worker.start();     
@@ -216,18 +219,18 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         final File copiedDir = saveDir.listFiles()[0];
         assertEquals(dirFO.getName().getBaseName(),copiedDir.getName());
         assertEquals("child of directory not copied",1,copiedDir.list().length);
-        File copiedFile = copiedDir.listFiles()[0];
+        final File copiedFile = copiedDir.listFiles()[0];
         assertEquals(fileFO.getName().getBaseName(),copiedFile.getName());
         assertTrue(IOUtils.contentEquals(fileFO.getContent().getInputStream(),new FileInputStream(copiedFile)));
         
         
         // check that the command records the correct info.
         assertFalse("dir command reports as failed",dirCommand.failed());
-        FileName destination = dirCommand.getDestination();
+        final FileName destination = dirCommand.getDestination();
         assertNotNull("no destination",destination);
         assertEquals("reported destination different to what's on disk",copiedDir.getName(),destination.getBaseName());
 
-     FileObject destinationFO = vfs.resolveFile(destination.getURI());
+     final FileObject destinationFO = vfs.resolveFile(destination.getURI());
      assertNotNull(destinationFO);
      assertTrue(destinationFO.exists()); 
      assertTrue(destinationFO.getType().hasChildren());
@@ -248,7 +251,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
     // - expect rest to succed - no matter which order.
     
     public void testListContainingNonExistentA() throws Exception {
-        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
+        final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 nonexistentCommand
                 , fileCommand
         });
@@ -258,7 +261,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         validateFileWritten();
      }
     public void testListContainingNonExistentB() throws Exception {
-        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
+        final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 fileCommand
                 ,nonexistentCommand
         });
@@ -273,8 +276,9 @@ public class BulkCopyWorkerUnitTest extends TestCase {
     // - expect multiple copies, with varied names.
     
     public void testListDuplicate() throws Exception {
-        CopyCommand fileCommand1 = new CopyCommand(fileFO);
-        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
+        final FileObjectView v = new FileObjectView(fileFO,null);
+        final CopyCommand fileCommand1 = new CopyCommand(v);
+        final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 fileCommand
                 , fileCommand1
         });
@@ -284,9 +288,9 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         // check that the command records the correct info.
         assertFalse("file command reports as failed",fileCommand.failed());
         assertFalse("file command1 reports as failed",fileCommand1.failed());
-        FileName destination = fileCommand.getDestination();
+        final FileName destination = fileCommand.getDestination();
         assertNotNull("no destination",destination);
-        FileName destination1 = fileCommand1.getDestination();
+        final FileName destination1 = fileCommand1.getDestination();
         assertNotNull("no destination",destination1);        
         assertFalse("both commands written to same destination",destination.equals(destination1));
         assertTrue("reported destination differs to what's on disk",ArrayUtils.contains(saveDir.list(),destination.getBaseName()));
@@ -306,8 +310,9 @@ public class BulkCopyWorkerUnitTest extends TestCase {
     //test a list, containing a save-as.
     public void testListDuplicateSaveAs() throws Exception {
         final String savedAs = "savedAs.txt";
-        CopyCommand fileCommand1 = new CopyAsCommand(fileFO,savedAs);
-        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
+        final FileObjectView v = new FileObjectView(fileFO,null);
+        final CopyCommand fileCommand1 = new CopyAsCommand(v,savedAs);
+        final BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 fileCommand
                 , fileCommand1
         });
@@ -317,9 +322,9 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         // check that the command records the correct info.
         assertFalse("file command reports as failed",fileCommand.failed());
         assertFalse("file command1 reports as failed",fileCommand1.failed());
-        FileName destination = fileCommand.getDestination();
+        final FileName destination = fileCommand.getDestination();
         assertNotNull("no destination",destination);
-        FileName destination1 = fileCommand1.getDestination();        
+        final FileName destination1 = fileCommand1.getDestination();        
         assertNotNull("no destination",destination1);        
         assertFalse("both commands written to same destination",destination.equals(destination1));
         assertTrue("reported destination differs to what's on disk",ArrayUtils.contains(saveDir.list(),destination.getBaseName()));

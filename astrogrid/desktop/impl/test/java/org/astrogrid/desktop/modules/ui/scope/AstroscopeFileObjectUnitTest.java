@@ -11,6 +11,7 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileUtil;
 import org.apache.commons.vfs.Selectors;
 import org.apache.commons.vfs.VFS;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FilesList;
 
 import junit.framework.TestCase;
@@ -48,7 +49,7 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
      * @throws Exception
      */
     public void testUsualBehaviour() throws Exception {
-        FileObject fo = vfs.resolveFile(f.toURI().toString());
+        final FileObject fo = vfs.resolveFile(f.toURI().toString());
         assertNotNull(fo);
         // not attached on creation
         assertFalse(fo.isAttached());
@@ -57,9 +58,9 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
        assertTrue(fo.isAttached());
     }
     public void testBasics() throws Exception {
-        FileObject fo = vfs.resolveFile(f.toURI().toString());
+        final FileObject fo = vfs.resolveFile(f.toURI().toString());
         assertNotNull(fo);
-        AstroscopeFileObject afo = new AstroscopeFileObject(fo,10,100,"text/html");
+        final AstroscopeFileObject afo = new AstroscopeFileObject(fo,10,100,"text/html");
         // not attached on creation
         assertFalse(fo.isAttached());
         assertFalse(afo.isAttached());
@@ -76,9 +77,9 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
         final long len = msg.getBytes().length;
         FileUtils.writeStringToFile(f,msg);
         
-        FileObject fo = vfs.resolveFile(f.toURI().toString());
+        final FileObject fo = vfs.resolveFile(f.toURI().toString());
         assertNotNull(fo);
-        AstroscopeFileObject afo = new AstroscopeFileObject(fo,len,100,"text/plain");
+        final AstroscopeFileObject afo = new AstroscopeFileObject(fo,len,100,"text/plain");
         // not attached on creation
         assertFalse(fo.isAttached());
         assertFalse(afo.isAttached());
@@ -89,7 +90,7 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
        assertEquals("text/plain",afo.getContent().getContentInfo().getContentType());
        assertFalse(afo.isAttached());
        // ok. now attempt to read the file.
-       byte[] arr = FileUtil.getContent(afo);
+       final byte[] arr = FileUtil.getContent(afo);
        assertEquals(msg,new String(arr));
       
        // try reading the file manually.
@@ -101,9 +102,9 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
         final long len = msg.getBytes().length -3;
         FileUtils.writeStringToFile(f,msg);
         
-        FileObject fo = vfs.resolveFile(f.toURI().toString());
+        final FileObject fo = vfs.resolveFile(f.toURI().toString());
         assertNotNull(fo);
-        AstroscopeFileObject afo = new AstroscopeFileObject(fo,len,100,"text/plain");
+        final AstroscopeFileObject afo = new AstroscopeFileObject(fo,len,100,"text/plain");
         // not attached on creation
         assertFalse(fo.isAttached());
         assertFalse(afo.isAttached());
@@ -114,7 +115,7 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
        assertEquals("text/plain",afo.getContent().getContentInfo().getContentType());
        assertFalse(afo.isAttached());
        // ok. now attempt to read the file.
-       byte[] arr = FileUtil.getContent(afo);
+       final byte[] arr = FileUtil.getContent(afo);
        assertEquals(msg.substring(0,(int)len),new String(arr)); // we've read in only a portion of the file.
        // ==> file Utils respects 'size'
        
@@ -129,22 +130,22 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
         final long len = msg.getBytes().length;        
         FileUtils.writeStringToFile(f,msg);
         
-        FileObject fo = vfs.resolveFile(f.toURI().toString());
+        final FileObject fo = vfs.resolveFile(f.toURI().toString());
         assertNotNull(fo);
-        AstroscopeFileObject afo = new AstroscopeFileObject(fo,len,100,"text/plain");
+        final AstroscopeFileObject afo = new AstroscopeFileObject(fo,len,100,"text/plain");
         // not attached on creation
         assertFalse(fo.isAttached());
         assertFalse(afo.isAttached());
 
         // check we can copy the content.
-        File targetFile = File.createTempFile("AstroscopeFileObjectTestTarget",".txt");
+        final File targetFile = File.createTempFile("AstroscopeFileObjectTestTarget",".txt");
         assertTrue(targetFile.exists());
-        FileObject target = vfs.resolveFile(targetFile.toURI().toString());
+        final FileObject target = vfs.resolveFile(targetFile.toURI().toString());
         target.copyFrom(afo,Selectors.SELECT_ALL);
         assertTrue(target.exists());
         // ok. now attempt to read the file.
         // ok. now attempt to read the file.
-        byte[] arr = FileUtil.getContent(afo);
+        final byte[] arr = FileUtil.getContent(afo);
         assertEquals(msg,new String(arr)); 
         // try reading the file manually.
         assertEquals(msg,IOUtils.toString(afo.getContent().getInputStream()));        
@@ -155,22 +156,22 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
         final long len = msg.getBytes().length -3;        
         FileUtils.writeStringToFile(f,msg);
         
-        FileObject fo = vfs.resolveFile(f.toURI().toString());
+        final FileObject fo = vfs.resolveFile(f.toURI().toString());
         assertNotNull(fo);
-        AstroscopeFileObject afo = new AstroscopeFileObject(fo,len,100,"text/plain");
+        final AstroscopeFileObject afo = new AstroscopeFileObject(fo,len,100,"text/plain");
         // not attached on creation
         assertFalse(fo.isAttached());
         assertFalse(afo.isAttached());
 
         // check we can copy the content.
-        File targetFile = File.createTempFile("AstroscopeFileObjectTestTarget",".txt");
+        final File targetFile = File.createTempFile("AstroscopeFileObjectTestTarget",".txt");
         assertTrue(targetFile.exists());
-        FileObject target = vfs.resolveFile(targetFile.toURI().toString());
+        final FileObject target = vfs.resolveFile(targetFile.toURI().toString());
         target.copyFrom(afo,Selectors.SELECT_ALL);
         assertTrue(target.exists());
         // ok. now attempt to read the file.
         // ok. now attempt to read the file.
-        byte[] arr = FileUtil.getContent(afo);
+        final byte[] arr = FileUtil.getContent(afo);
         
         assertEquals(msg.substring(0,(int)len),new String(arr)); // we've read in only a portion of the file.
         // ==> file Utils respects 'size'
@@ -182,9 +183,9 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
     }
     
     public void testFilesList() throws Exception {
-        FileObject fo = vfs.resolveFile(f.toURI().toString());
+        final FileObject fo = vfs.resolveFile(f.toURI().toString());
         assertNotNull(fo);
-        AstroscopeFileObject afo = new AstroscopeFileObject(fo,10,100,"text/html");
+        final AstroscopeFileObject afo = new AstroscopeFileObject(fo,10,100,"text/html");
         // not attached on creation
         assertFalse(fo.isAttached());
         assertFalse(afo.isAttached());
@@ -192,14 +193,14 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
        //calls used in FilesList...
        afo.getName().getBaseName();
        assertFalse(afo.isAttached());       
-       FilesList.createToolTipFromFileObject(afo);
+       FilesList.createToolTipFromFileObject(new FileObjectView(afo, null));
        assertFalse(afo.isAttached());
   
     }
     public void testFilesTable() throws Exception {
-        FileObject fo = vfs.resolveFile(f.toURI().toString());
+        final FileObject fo = vfs.resolveFile(f.toURI().toString());
         assertNotNull(fo);
-        AstroscopeFileObject afo = new AstroscopeFileObject(fo,10,100,"text/html");
+        final AstroscopeFileObject afo = new AstroscopeFileObject(fo,10,100,"text/html");
         // not attached on creation
         assertFalse(fo.isAttached());
         assertFalse(afo.isAttached());
@@ -216,9 +217,9 @@ public class AstroscopeFileObjectUnitTest extends TestCase {
      
     }
     public void testIconFinder() throws Exception {
-        FileObject fo = vfs.resolveFile(f.toURI().toString());
+        final FileObject fo = vfs.resolveFile(f.toURI().toString());
         assertNotNull(fo);
-        AstroscopeFileObject afo = new AstroscopeFileObject(fo,10,100,"text/html");
+        final AstroscopeFileObject afo = new AstroscopeFileObject(fo,10,100,"text/html");
         // not attached on creation
         assertFalse(fo.isAttached());
 

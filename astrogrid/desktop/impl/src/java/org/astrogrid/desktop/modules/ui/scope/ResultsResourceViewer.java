@@ -20,8 +20,6 @@ import javax.swing.JTabbedPane;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
@@ -35,6 +33,7 @@ import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesTable;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
@@ -105,11 +104,11 @@ private RetrieverService service;
 private final NavigableFilesTable resultsTable;
 
 public void display(final Resource res) {
-    
+
     if ( res instanceof RetrieverService) {
         service = (RetrieverService)res;
         final QueryResult result = parent.getServicesList().getQueryResults().getResult(service.getRetriever());
-        try {
+
         if (result.error != null) { // flip and display this
             sb.clear();
             sb.append("<head><style>");
@@ -124,8 +123,8 @@ public void display(final Resource res) {
 
             pane.setText(sb.toString());
             pane.setCaretPosition(0);
-            final FileObject f = result.resultsDir;
-            if (f.exists()) {                
+            final FileObjectView f = result.resultsDir;
+            if (f.isExists()) {                
                 navigator.move(f); // show what response we got.
                 errorFiles.setVisible(true);
             } else {
@@ -134,21 +133,21 @@ public void display(final Resource res) {
             }
             show(ERROR);
             return;
+        } else if (result.count == QueryResults.PENDING) {
+            clear();
         } else { // display files list then
-            final FileObject f = result.resultsDir;
-                if (f.exists()) {
-                    navigator.move(f);
-                    show(TABLE);
-                    return;            
-                } 
+            final FileObjectView f = result.resultsDir;
+            //    if (f.isExists()) {
+            navigator.move(f);
+            show(TABLE);
+            return;            
+            //   } 
         }
-            } catch (final FileSystemException e) { // unlikely, as all virtual
-            }
-           
-        // fall thru - either unexpected - not got a service,
-        // or filesystem exception was thrown.
-        clear();
+
     }
+    // fall thru - either unexpected - not got a service,
+    // or filesystem exception was thrown.
+    //  clear();
 }
 	
 

@@ -1,4 +1,4 @@
-/*$Id: ConfigurationRpcTransportTest.java,v 1.7 2009/03/26 18:01:21 nw Exp $
+/*$Id: ConfigurationRpcTransportTest.java,v 1.8 2009/04/06 11:43:29 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,9 +64,9 @@ public class ConfigurationRpcTransportTest extends ConfigurationIntegrationTest 
 		}
 	}
 
-	public Map list() throws ACRException {	
+	public Map<String, String> list() throws ACRException {	
 		try {
-			return (Map)client.execute("system.configuration.list",new Object[]{});
+			return (Map<String, String>)client.execute("system.configuration.list",new Object[]{});
 		} catch (Exception e) {
 			throw new ACRException(e.getMessage());
 		}
@@ -112,6 +112,11 @@ public class ConfigurationRpcTransportTest extends ConfigurationIntegrationTest 
 
 /* 
 $Log: ConfigurationRpcTransportTest.java,v $
+Revision 1.8  2009/04/06 11:43:29  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.7  2009/03/26 18:01:21  nw
 added override annotations
 

@@ -33,9 +33,9 @@ public class URIArrayConvertor implements Converter {
             throw new ConversionException("Can only convert  to URI arrays: "
                     + arg0.getName() + " " + arg1.getClass().getName());
         }
-        final Collection c;
+        final Collection<Object> c;
         if (arg1 instanceof Collection) {
-            c = (Collection)arg1;
+            c = (Collection<Object>)arg1;
         } else if (arg1 instanceof Object[]) {
             c = Arrays.asList((Object[])arg1);
         } else {

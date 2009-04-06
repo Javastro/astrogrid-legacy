@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ui.folders;
 
 import java.io.File;
 import java.net.URI;
-import java.util.Iterator;
 
 import org.apache.commons.lang.SystemUtils;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
@@ -18,7 +17,7 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 200711:35:21 PM
  */
-public class StorageFoldersProvider extends AbstractListProvider implements UserLoginListener {
+public class StorageFoldersProvider extends AbstractListProvider<StorageFolder> implements UserLoginListener {
 
 
 	public StorageFoldersProvider(final UIContext parent, final Preference workdirPreference, final XmlPersist xml) {
@@ -56,8 +55,7 @@ public class StorageFoldersProvider extends AbstractListProvider implements User
 
     public void userLogout(final UserLoginEvent arg0) {
         // some of the sotrage folders may hold a pointer to a myspace file - be safe by removing them all.
-        for (final Iterator i = getList().iterator(); i.hasNext();) {
-            final StorageFolder f = (StorageFolder) i.next();
+        for (final StorageFolder f : getList()) {
             f.setFile(null);
         }        
     }

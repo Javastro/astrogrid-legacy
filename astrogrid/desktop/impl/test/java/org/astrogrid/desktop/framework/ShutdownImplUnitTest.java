@@ -120,14 +120,14 @@ public class ShutdownImplUnitTest extends TestCase {
 	}
 	
 	public void testFmtEmpty() throws Exception {
-		List l = new ArrayList();
+		List<Object> l = new ArrayList<Object>();
 		String s= shutdown.fmt(l);
 		assertNotNull(s);
 		assertTrue(s.trim().length() > 0);
 	}
 	
 	public void testFmt() throws Exception {
-		List l = new ArrayList();
+		List<Object> l = new ArrayList<Object>();
 		l.add(new Object());
 		String s= shutdown.fmt(l);
 		assertNotNull(s);

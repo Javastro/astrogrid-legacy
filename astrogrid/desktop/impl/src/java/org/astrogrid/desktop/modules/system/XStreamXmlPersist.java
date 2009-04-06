@@ -22,7 +22,7 @@ import org.astrogrid.desktop.modules.ui.folders.SmartList;
 import org.astrogrid.desktop.modules.ui.folders.StaticList;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 import org.astrogrid.desktop.modules.ui.folders.XQueryList;
-import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.PositionHistoryItem;
+import org.astrogrid.desktop.modules.ui.scope.PositionHistoryItem;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.KeywordSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;

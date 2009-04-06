@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -26,11 +25,11 @@ public class ResourceListTransferable implements Transferable {
 	 /**
 	 * 
 	 */
-	public ResourceListTransferable(final List l) {
-		this.l = new ArrayList(l); // take a copy, else the selection changes as we drag.
+	public ResourceListTransferable(final List<Resource> l) {
+		this.l = new ArrayList<Resource>(l); // take a copy, else the selection changes as we drag.
 	}
 	
-	private final List l;
+	private final List<Resource> l;
 	
 	
 	public Object getTransferData(final DataFlavor flavor)
@@ -39,16 +38,14 @@ public class ResourceListTransferable implements Transferable {
 				|| VoDataFlavour.RESOURCE_ARRAY.equals(flavor)) {
 			return l.toArray(new Resource[l.size()]);
 		} else if (VoDataFlavour.LOCAL_URI_ARRAY.equals(flavor)){
-			final List u = new ArrayList();
-			for (final Iterator i = l.iterator(); i.hasNext();) {
-				final Resource r = (Resource) i.next();
+			final List<URI> u = new ArrayList<URI>();
+			for (final Resource r : l) {
 				u.add(r.getId());
 			}
 			return u.toArray(new URI[u.size()]);
 		} else if (VoDataFlavour.URI_LIST.equals(flavor) || VoDataFlavour.PLAIN.equals(flavor)) {
 			final StringBuffer s = new StringBuffer();
-			for (final Iterator i = l.iterator(); i.hasNext();) {
-				final Resource r = (Resource) i.next();
+			for (final Resource r : l) {
 				s.append(r.getId());
 				s.append("\n");
 			}

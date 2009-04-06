@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.38 2008/11/04 14:35:48 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.39 2009/04/06 11:43:21 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -120,7 +120,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * @see org.astrogrid.desktop.modules.ui.voexplorer.google
  */
 public class RegistryGooglePanel extends JPanel
-implements ListEventListener, ListSelectionListener, ChangeListener, TableModelListener {
+implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, TableModelListener {
 
 	protected static final Log logger = LogFactory
 			.getLog(RegistryGooglePanel.class);
@@ -133,15 +133,15 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
      * not  thread safe - expects to be called on EDT
      * 
      * also listens to the advanced preference, and according to it's value, takes a reading either before or after the 'system filter'
-     *
+     * @todo could possiblly implement this more cleanly / efficiently using GlazedList's Calculation structures.
      * */
     protected static class SearchSummaryFormatter implements PropertyChangeListener {
         private final JLabel lab;
         private final StrBuilder sb = new StrBuilder();
         private final Preference advanced;
-        private final List advancedList;
-        private final List basicList;
-        private final List filteredList;
+        private final List<?> advancedList;
+        private final List<?> basicList;
+        private final List<?> filteredList;
 
         /**
          * 
@@ -151,7 +151,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
          * @param basicList result list to take reading from in 'basic' mode.
          * @param filteredList the filtered list.
          */
-        public SearchSummaryFormatter(final JLabel lab, final Preference advanced, final List advancedList, final List basicList, final List filteredList) {
+        public SearchSummaryFormatter(final JLabel lab, final Preference advanced, final List<?> advancedList, final List<?> basicList, final List<?> filteredList) {
             super();
             this.lab = lab;
             this.advanced = advanced;
@@ -162,7 +162,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
             advanced.initializeThroughListener(this);           
         }
         private String title = null;
-        private List searchCountSource;
+        private List<?> searchCountSource;
         private int searchCount = 0;
         private int filterCount = 0;
         public void setTitle(final String t) {
@@ -217,7 +217,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
     
 	/** an asbtract background worker that provides machinery for processing the results of a streaming parse
 	 * and caching the result */
-	private abstract class Worker extends BackgroundWorker implements ResourceConsumer {
+	private abstract class Worker extends BackgroundWorker<Void> implements ResourceConsumer {
 		
         public Worker(final UIComponent parent, final String message) {
 			super(parent,message,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY);
@@ -290,7 +290,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		// no need to lock - as we know we're the thread that was doing the modifying. and it's finished now.
 		}
 		@Override
-        protected void doFinished(final Object result) {
+        protected void doFinished(final Void result) {
 			//resourceTable.selectAll(); dislike this.
 		    if (! isInterrupted()) {
 		        parent.setProgressMax(0);
@@ -326,7 +326,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 			this.q = q;	
 		}
 		@Override
-        protected Object construct() throws Exception {   
+        protected Void construct() throws Exception {   
 		        reportProgress("Building Query");
 				// produce a query from the search parse tree.
 				final String briefXQuery = briefXQueryBuilder.build(this.q,null);
@@ -350,7 +350,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		}
 		
 		@Override
-        protected Object construct() throws Exception {   
+        protected Void construct() throws Exception {   
 			runQuery(q);
 			return null;
 		}
@@ -374,7 +374,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		private final Collection<URI> ids;
 		
 		@Override
-        protected Object construct() throws Exception {   
+        protected Void construct() throws Exception {   
 		    reportProgress("Running query");
             if (bypassCache) {      
                 reg.consumeResourceListReload(ids,this);                
@@ -391,11 +391,11 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	
 	// member variables.
 	protected final ResourceTable resourceTable;
-	protected final EventList  items ;
-	protected final EventList edtItems; // a view of the items event list, on the Event dispatch thread.
-    private final EventTableModel resourceTableModel;
+	protected final EventList<Resource>  items ;
+	protected final EventList<Resource> edtItems; // a view of the items event list, on the Event dispatch thread.
+    private final EventTableModel<Resource> resourceTableModel;
 	// tracks the currently clicked on registry entry - i.e. the one to display in viewer
-	private final EventSelectionModel currentResourceInView;
+	private final EventSelectionModel<Resource> currentResourceInView;
     private final ResettableAdjustableColumnModel resourceColumnModel;
     private final JScrollPane tableScroller;
 
@@ -456,20 +456,20 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		
 	//DATAPIPELINE
 		// create datamodel.
-		items= new BasicEventList();
+		items= new BasicEventList<Resource>();
 		
 		//listen to changes to items list - define a view that always fires events on the EDT
 		edtItems = GlazedListsSwing.swingThreadProxyList(items);
 		edtItems.addListEventListener(this);
 		
 		// sorted view of this model . all ui component should attach to this.
-		final SortedList sortedItems = new SortedList(items,new ResourceTitleComparator());
+		final SortedList<Resource> sortedItems = new SortedList<Resource>(items,new ResourceTitleComparator());
 		
 		final PipelineStrategy[] pStrategies = createPipeStrategies();
 		final FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies,annServer,advancedPreference);
 		filteredItems = mPipeline.getFilteredItems();
         // item currenlty selected in table list.
-		currentResourceInView = new EventSelectionModel(filteredItems);
+		currentResourceInView = new EventSelectionModel<Resource>(filteredItems);
 		currentResourceInView.setSelectionMode(ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
 		currentResourceInView.addListSelectionListener(this); // assume this happens on EDT?
 		
@@ -506,13 +506,13 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		
 		// model for the table.
 		final ResourceTableFomat tableFormat = createTableFormat();
-        resourceTableModel= new EventTableModel(filteredItems,tableFormat);          		
+        resourceTableModel= new EventTableModel<Resource>(filteredItems,tableFormat);          		
 		resourceTableModel.addTableModelListener(this);
 		resourceTable = createTable(resourceTableModel,filteredItems);
 		CSH.setHelpIDString(resourceTable, "reg.table");
 		resourceTable.setSelectionModel(currentResourceInView);
 		// surprising - this is all that's needed tp add sorting to columns in the table.
-		new TableComparatorChooser(resourceTable,sortedItems,true);
+		TableComparatorChooser.install(resourceTable,sortedItems,TableComparatorChooser.MULTIPLE_COLUMN_MOUSE_WITH_UNDO);
 		tableScroller = new JScrollPane(resourceTable,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		tableScroller.setPreferredSize(null);
 		tableScroller.getViewport().setBackground(Color.WHITE);
@@ -680,7 +680,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
     }
 	
 	/** called to create the central table - may be overridden by subclasses */
-	protected ResourceTable createTable(final EventTableModel model,final EventList list) {
+	protected ResourceTable createTable(final EventTableModel<Resource> model,final EventList<Resource> list) {
 		return new ResourceTable(model,list,vomon);
 	}
 
@@ -698,7 +698,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 // view updating methods	
 
 	/** triggered when resource list contents change - glazeed lists will always call this on the EDT*/
-	public void listChanged(final ListEvent arg0) {
+	public void listChanged(final ListEvent<Resource> arg0) {
 		while(arg0.next()) { // I assume this is the correct pattern
 			if (arg0.getType() == ListEvent.DELETE) {// delete is only ever a clear.
 				for (int i = 0; i < resourceViewers.length; i++) {
@@ -737,11 +737,11 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	protected Resource currentlyDisplaying;// tries to make things idempotent.
 	/** controller that takes care of displayng the current resource in the currently visible viewer */
 	protected void updateViewers() {
-		final List l  = currentResourceInView.getSelected();
+		final List<Resource> l  = currentResourceInView.getSelected();
 		if (l.isEmpty()) {
 			return;
 		}
-		final Resource res = (Resource)l.get(0); //@todo make this work nicely when I've got a multiple selection going on - want to show latest selection.
+		final Resource res = l.get(0); //@todo make this work nicely when I've got a multiple selection going on - want to show latest selection.
 		if (res == currentlyDisplaying) { // list has changed, but selected item is the same.
 			return;
 		}
@@ -767,14 +767,14 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	private boolean bypassCache = false;
 
 	/** the filtered list of items, as currently displayed in the table. */
-    private final EventList filteredItems;
+    private final EventList<Resource> filteredItems;
     /** access an event list of the items currently displayed in the table */
-    public EventList getCurrentDisplayedResources() {
+    public EventList<Resource> getCurrentDisplayedResources() {
         return filteredItems;
     }
 	
 	/** expose the currently viewed resource */
-	public EventSelectionModel getCurrentResourceModel() {
+	public EventSelectionModel<Resource> getCurrentResourceModel() {
 		return this.currentResourceInView;
 	}
 	
@@ -929,6 +929,11 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.39  2009/04/06 11:43:21  nw
+Complete - taskConvert all to generics.
+
+Incomplete - taskVOSpace VFS integration
+
 Revision 1.38  2008/11/04 14:35:48  nw
 javadoc polishing
 

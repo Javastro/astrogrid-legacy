@@ -5,20 +5,18 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JMenuItem;
 
-import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.system.messaging.FitsImageMessageSender;
 import org.astrogrid.desktop.modules.system.messaging.FitsImageMessageType;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.astrogrid.samp.Response;
 
@@ -39,19 +37,16 @@ public class MessageFitsActivity extends AbstractFileActivity {
         setText("Attempt to " + Character.toLowerCase(title.charAt(0)) + title.substring(1));
     }
     @Override
-    protected boolean invokable(final FileObject f) {
-        try {
+    protected boolean invokable(final FileObjectView f) {
             return ! super.invokable(f) && f.getType().hasContent();
-        } catch (final FileSystemException x) {
-            return false;
-        }
+     
     }
     protected boolean invokable(final Resource r) {
         return false ; // only ever for files.
     }
     //don't allow invokcation on multiple resources though - too dodgy.
     @Override
-    public void manySelected(final FileObject[] list) {
+    public void manySelected(final FileObjectView[] list) {
         noneSelected();
     }
     
@@ -90,28 +85,22 @@ private final ExternalMessageTarget plas;
         return super.createHidingMenuItem();
     }
 	@Override
-    protected boolean invokable(final FileObject f) {
-		try {
-			final FileContent content = f.getContent();
-            final String contentType = content.getContentInfo().getContentType();
+    protected boolean invokable(final FileObjectView f) {
+            final String contentType = f.getContentType();
             return VoDataFlavour.MIME_FITS_IMAGE.equals(contentType)
                 || VoDataFlavour.MIME_FITS_TABLE.equals(contentType)
                 || VoDataFlavour.MIME_FITS_SPECTRUM.equals(contentType);
-		} catch (final FileSystemException x) {
-			return false;
-		}
+
 	}
 
 	@Override
     public void actionPerformed(final ActionEvent e) {
-	    final List l = computeInvokable();
+	    final List<FileObjectView> l = computeInvokable();
 	    final Runnable r = new Runnable() {
 
 	        public void run() {
-	            for (final Iterator i = l.iterator(); i.hasNext();) {
-	                final FileObject f = (FileObject) i.next();
-	                final FileObject inner = AstroscopeFileObject.findInnermostFileObject(f);
-	                sendLoadImageMessage(inner,f.getName().getBaseName());
+	            for (final FileObjectView f : l) {	                
+	                sendLoadImageMessage(f,f.getBasename());
 	            }
 	        }
 	    };
@@ -119,13 +108,14 @@ private final ExternalMessageTarget plas;
 	    confirmWhenOverThreshold(sz,"Sent all " + sz + " files?",r);
 	}
 
-	private void sendLoadImageMessage(final FileObject f,final String name) {
+	private void sendLoadImageMessage(final FileObjectView fv,final String name) {
 		(new BackgroundWorker<Response>(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 //		    {
 //		        setTransient(true);
 //		    }
 			@Override
             protected Response construct() throws Exception {
+			    final FileObject f = AstroscopeFileObject.findInnermostFileObject(fv.getFileObject());
 				final URL url = f.getURL();
 				final FitsImageMessageSender sender = plas.createMessageSender(FitsImageMessageType.instance);
 				return sender.sendFitsImage(url,null,name);

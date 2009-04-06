@@ -21,12 +21,11 @@ import javax.swing.WindowConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
-import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
-import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 import com.l2fprod.common.swing.BaseDialog;
 
@@ -45,7 +44,7 @@ public class RenameActivity extends AbstractFileActivity {
         /**
          * 
          */
-        private final FileObject original;
+        private final FileObjectView original;
         private final JTextField tf = new JTextField();
         private String originalName;
 
@@ -53,14 +52,14 @@ public class RenameActivity extends AbstractFileActivity {
          * @param owner
          * @param original
          */
-        private RenameDialog(final Frame owner, final FileObject original)
+        private RenameDialog(final Frame owner, final FileObjectView original)
                 throws HeadlessException {
             super(owner);
             this.original = original;  
             init();
         }
         
-        private RenameDialog(final Dialog owner, final FileObject original) {
+        private RenameDialog(final Dialog owner, final FileObjectView original) {
             super(owner);
             this.original = original;
             init();
@@ -69,7 +68,7 @@ public class RenameActivity extends AbstractFileActivity {
         /**
          * @param original2
          */
-        public RenameDialog(final FileObject original2) {
+        public RenameDialog(final FileObjectView original2) {
             this.original = original2;
             init();
         }
@@ -79,7 +78,7 @@ public class RenameActivity extends AbstractFileActivity {
             setDialogMode(BaseDialog.OK_CANCEL_DIALOG);
             setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             setTitle("Rename");
-            originalName = this.original.getName().getBaseName();
+            originalName = this.original.getBasename();
             getBanner().setTitle("Renaming " + originalName);
             getBanner().setSubtitle("Enter a new name");
             getBanner().setSubtitleVisible(true);
@@ -97,11 +96,11 @@ public class RenameActivity extends AbstractFileActivity {
         /** process input */
         @Override
         public void ok() {
-            (new BackgroundWorker(uiParent.get(),"Renaming " + originalName,Thread.MAX_PRIORITY) {
+            (new BackgroundWorker<String>(uiParent.get(),"Renaming " + originalName,Thread.MAX_PRIORITY) {
                 
                 @Override
-                protected Object construct() throws Exception {
-                    final FileObject parent = original.getParent();
+                protected String construct() throws Exception {
+                    final FileObject parent = original.getFileObject().getParent();
                     final String nuName = tf.getText();
                     if (StringUtils.isEmpty(nuName) || originalName.equals(nuName)) {
                             return null; // no input, or no change - just close the dialogue
@@ -117,7 +116,7 @@ public class RenameActivity extends AbstractFileActivity {
                        }
                       });                     
                    // now get on with the task in hand.
-                    original.moveTo(f);
+                    original.getFileObject().moveTo(f);
                     final FileSystem fs = parent.getFileSystem();
                     if (fs instanceof AbstractFileSystem) {
                         ((AbstractFileSystem)fs).fireFileChanged(parent);
@@ -125,7 +124,7 @@ public class RenameActivity extends AbstractFileActivity {
                     return null;
                 }
                 @Override
-                protected void doFinished(final Object result) {
+                protected void doFinished(final String result) {
                     if (result == null && isVisible()) {
                         RenameDialog.super.ok();
                     } else {
@@ -142,13 +141,9 @@ public class RenameActivity extends AbstractFileActivity {
 	
 	
 	@Override
-    protected boolean invokable(final FileObject f) { 
-		try {
-            return (! AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
-                    && f.isWriteable());
-        } catch (final FileSystemException x) {
-            return false;
-        }
+    protected boolean invokable(final FileObjectView f) { 
+            return (! f.isDelegate() 
+                    && f.isWritable());
 	}
 
 
@@ -163,15 +158,15 @@ public class RenameActivity extends AbstractFileActivity {
 	
 	// can only handle a single selection.
 	@Override
-    public void manySelected(final FileObject[] list) {
+    public void manySelected(final FileObjectView[] list) {
 		noneSelected();
 	}
 	
 	@Override
     public void actionPerformed(final ActionEvent e) {
-		final List l = computeInvokable();
+		final List<FileObjectView> l = computeInvokable();
 		logger.debug(l);
-		final FileObject original = (FileObject)l.get(0);
+		final FileObjectView original = l.get(0);
         final Component pc = uiParent.get().getComponent();
         final Window w = pc instanceof Window
                  ? (Window) pc

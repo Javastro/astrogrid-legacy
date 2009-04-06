@@ -49,7 +49,6 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileName;
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -83,7 +82,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 			.getLog(StorageFoldersList.class);
     private final FileSystemManager vfs;
 
-	public StorageFoldersList(final EventList folderList, final UIComponent parent,final FileSystemManager vfs) {
+	public StorageFoldersList(final EventList<StorageFolder> folderList, final UIComponent parent,final FileSystemManager vfs) {
 		this.parent = parent;
         this.vfs = vfs;
 		CSH.setHelpIDString(this,"files.bookmarks");
@@ -96,7 +95,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 		setDragEnabled(true);
 		
 		setBorder(BorderFactory.createEmptyBorder());
-		setModel(new EventListModel(folderList));
+		setModel(new EventListModel<StorageFolder>(folderList));
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setSelectedIndex(0);
 		addListSelectionListener(this);
@@ -269,7 +268,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	private final Action create;
 	private final Action delete;
 	private final JPopupMenu popup;
-	private final EventList folderList;
+	private final EventList<StorageFolder> folderList;
 	private final UIComponent parent;
 
 	// listening to myself.
@@ -309,7 +308,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	}	
 	
 	private final static DataFlavor[] inputFlavors = new DataFlavor[]{
-	    VoDataFlavour.LOCAL_FILEOBJECT
+	    VoDataFlavour.LOCAL_FILEOBJECT_VIEW
 	    //	,VoDataFlavour.LOCAL_FILEOBJECT_LIST don't know what to do with a multiple selection at the moment
 	    ,VoDataFlavour.LOCAL_URI
 	    ,VoDataFlavour.LOCAL_URL
@@ -345,11 +344,10 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	        }
 	        try {
                 StorageFolder sf = null;
-                if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
-                    final FileObject fo = (FileObject)t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT);
+                if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_VIEW)) {
+                    final FileObjectView fo = (FileObjectView)t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_VIEW);
                     if (fo.getType().hasChildren()) {
-                        sf = build(fo.getName());
-                        sf.setFile(fo);
+                        sf = build(fo);
                     } // rejects non-folders.
                 } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URI) ){
                     sf = build(t.getTransferData(VoDataFlavour.LOCAL_URI));
@@ -417,11 +415,12 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             return null;
 	    }
 	    
-	    private StorageFolder build(final FileName fn) {
+	    private StorageFolder build(final FileObjectView fn) {
 	        try {
             final StorageFolder sf = new StorageFolder();
-            sf.setName(fn.getBaseName());
-            sf.setUriString(fn.getURI());
+            sf.setName(fn.getBasename());
+            sf.setUriString(fn.getUri());
+            sf.setFile(fn);
             return sf;
             } catch (final URISyntaxException e) {
                 parent.showTransientError("Failed to parse dropped uri",ExceptionFormatter.formatException(e));

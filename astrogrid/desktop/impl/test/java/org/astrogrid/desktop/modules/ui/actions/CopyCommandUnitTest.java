@@ -15,6 +15,7 @@ import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 
 /** unit test for the copy command.
  * 
@@ -43,10 +44,10 @@ public class CopyCommandUnitTest extends TestCase {
     }
     
     public void testDestination() throws Exception {
-        CopyCommand command = new CopyCommand(home);
+        final CopyCommand command = new CopyCommand(home);
         assertNull(command.getDestination());
         assertFalse(command.failed());
-        FileName n = createMock(FileName.class);
+        final FileName n = createMock(FileName.class);
         command.recordSuccess(n);
         assertSame(n,command.getDestination());
         
@@ -55,10 +56,10 @@ public class CopyCommandUnitTest extends TestCase {
     }
     
     public void testError() throws Exception {
-        CopyCommand command = new CopyCommand(home);
+        final CopyCommand command = new CopyCommand(home);
         assertNull(command.getDestination());
         assertFalse(command.failed());
-        FileSystemException e= new FileSystemException("*!*");
+        final FileSystemException e= new FileSystemException("*!*");
         command.recordError(e);
         assertTrue(command.failed());
         assertNotNull(command.formatResult());
@@ -67,30 +68,31 @@ public class CopyCommandUnitTest extends TestCase {
 
 
     public void testFromFile() throws Exception {
-        CopyCommand command = new CopyCommand(home);
-        FileObject fo = command.resolveSourceFileObject(vfs);
+        final CopyCommand command = new CopyCommand(home);
+        final FileObject fo = command.resolveSourceFileObject(vfs);
         assertNotNull(fo);
         assertEquals(homeObject,fo);
     }
 
     public void testFromFileObject() throws Exception {
-        CopyCommand command = new CopyCommand(homeObject);
-        FileObject fo = command.resolveSourceFileObject(vfs);
+        final FileObjectView v = new FileObjectView(homeObject,null);
+        final CopyCommand command = new CopyCommand(v);
+        final FileObject fo = command.resolveSourceFileObject(vfs);
         assertNotNull(fo);
         assertEquals(homeObject,fo);        
     }
     
     public void testFromURI() throws Exception {
-        CopyCommand command = new CopyCommand(home.toURI());
-        FileObject fo = command.resolveSourceFileObject(vfs);
+        final CopyCommand command = new CopyCommand(home.toURI());
+        final FileObject fo = command.resolveSourceFileObject(vfs);
         assertNotNull(fo);
         assertEquals(homeObject,fo);
         
     }
     
     public void testFromURL() throws Exception {
-        CopyCommand command = new CopyCommand(home.toURL());
-        FileObject fo = command.resolveSourceFileObject(vfs);
+        final CopyCommand command = new CopyCommand(home.toURL());
+        final FileObject fo = command.resolveSourceFileObject(vfs);
         assertNotNull(fo);
         assertEquals(homeObject,fo);
     }
