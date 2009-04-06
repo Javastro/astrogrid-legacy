@@ -15,6 +15,7 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 import org.apache.hivemind.schema.Translator;
 import org.apache.hivemind.service.EventLinker;
+import org.astrogrid.desktop.modules.votech.AnnotationSource;
 
 /** Implementation of {@code IterableObjectBuilder}
  * 
@@ -36,7 +37,7 @@ public class IterableObjectBuilderImpl extends ObjectBuilderImpl implements
 	}
 	private final Map objects;
 
-	public Iterator creationIterator() {
+	public Iterator<AnnotationSource> creationIterator() {
 		return IteratorUtils.transformedIterator(objects.keySet().iterator(),
 				new Transformer() {
 
@@ -46,7 +47,7 @@ public class IterableObjectBuilderImpl extends ObjectBuilderImpl implements
 		});
 	}
 
-	public Iterator creationIterator(final Object o) {
+	public Iterator<AnnotationSource> creationIterator(final Object o) {
 		return IteratorUtils.transformedIterator(objects.keySet().iterator(),
 				new Transformer() {
 
@@ -56,7 +57,7 @@ public class IterableObjectBuilderImpl extends ObjectBuilderImpl implements
 		});
 	}
 
-	public Iterator creationIterator(final Object[] o) {
+	public Iterator<AnnotationSource> creationIterator(final Object[] o) {
 		return IteratorUtils.transformedIterator(objects.keySet().iterator(),
 				new Transformer() {
 

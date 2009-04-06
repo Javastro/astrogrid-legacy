@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.28 2008/12/01 23:29:23 nw Exp $
+/*$Id: Launcher.java,v 1.29 2009/04/06 11:29:15 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ import org.apache.hivemind.Registry;
 import org.apache.hivemind.impl.DefaultClassResolver;
 import org.apache.hivemind.impl.RegistryBuilder;
 import org.apache.hivemind.impl.XmlModuleDescriptorProvider;
+import org.apache.hivemind.util.AbstractResource;
 import org.apache.hivemind.util.ClasspathResource;
 import org.apache.hivemind.util.URLResource;
 import org.astrogrid.desktop.modules.system.pref.WorkaroundTransformerFactory;
@@ -119,7 +120,7 @@ public class Launcher implements Runnable {
 	private static final Log logger = LogFactory.getLog("startup");
 
     private final ClassResolver cl;
-    private final List resources = new ArrayList();
+    private final List<AbstractResource> resources = new ArrayList<AbstractResource>();
   
     private Registry reg;
     
@@ -250,6 +251,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.29  2009/04/06 11:29:15  nw
+added generic types
+
 Revision 1.28  2008/12/01 23:29:23  nw
 removed some jnlp stuff
 

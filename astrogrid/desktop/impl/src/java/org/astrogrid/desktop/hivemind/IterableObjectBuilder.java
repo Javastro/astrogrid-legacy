@@ -11,7 +11,7 @@ import net.sourceforge.hiveutils.service.ObjectBuilder;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 5, 200711:07:49 AM
  */
-public interface IterableObjectBuilder extends ObjectBuilder {
+public interface IterableObjectBuilder<I> extends ObjectBuilder {
 	/** lists the names of the objects this component knows how to build */
 	String[] listObjectNames();
 	
@@ -19,19 +19,19 @@ public interface IterableObjectBuilder extends ObjectBuilder {
 	 *a new one of each
 	 * @return an iterator that creates objects
 	 */
-	Iterator creationIterator();
+	Iterator<I> creationIterator();
 	
 	/** iterate through all the objects this builder can create, instantiating
 	 * a new one at each call
 	 * @param o constructor parameter to pass to each object to instantiate
 	 * @return  an iterator that creates objects
 	 */
-	Iterator creationIterator(Object o);
+	Iterator<I> creationIterator(Object o);
 	/** iterate through all the objects this builder can create, instantiating
 	 * a new one at each call
 	 * @param o list of constructor parameters to pass to each object to instantiate
 	 * @return  an iterator that creates objects
 	 */	
-	Iterator creationIterator(Object[] o);
+	Iterator<I> creationIterator(Object[] o);
 	
 }

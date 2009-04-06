@@ -68,11 +68,11 @@ public class NestingNode extends AdqlNode {
         CHILDREN_NESTING.put( AdqlData.INTERSECTION_SEARCH_TYPE, "" ) ;
     }
     
-    public static boolean isNestingRequired( XmlObject o ) {
+    public static boolean isNestingRequired( final XmlObject o ) {
         return isNestingRequired( o.schemaType() ) ;
     }
     
-    public static boolean isNestingRequired( SchemaType type ) {
+    public static boolean isNestingRequired( final SchemaType type ) {
         if(  ( type.isBuiltinType() == false )
              &&
              ( type.isAnonymousType() == false )
@@ -85,11 +85,11 @@ public class NestingNode extends AdqlNode {
 
     private Boolean arrayContext ;
     private SchemaProperty elementProperty ;
-    private SchemaType nestingType ;
+    private final SchemaType nestingType ;
     /**
      * @param o
      */
-    NestingNode( NodeFactory nodeFactory, AdqlNode parent, XmlObject o ) throws UnsupportedObjectException {
+    NestingNode( final NodeFactory nodeFactory, final AdqlNode parent, final XmlObject o ) throws UnsupportedObjectException {
         super( nodeFactory, parent, o, true );
         if( !CHILDREN_NESTING.containsKey( AdqlUtils.getLocalName( o.schemaType() ) ) ) {
             throw new UnsupportedObjectException( "Object " + o.schemaType().getName() + " does not support Child Nesting." ) ;
@@ -98,7 +98,7 @@ public class NestingNode extends AdqlNode {
     }
     
     
-    NestingNode( NodeFactory nodeFactory, AdqlNode parent, XmlObject o, int childNodeIndex ) throws UnsupportedObjectException {
+    NestingNode( final NodeFactory nodeFactory, final AdqlNode parent, final XmlObject o, final int childNodeIndex ) throws UnsupportedObjectException {
         super( nodeFactory, parent, o, childNodeIndex );
         if( !CHILDREN_NESTING.containsKey( AdqlUtils.getLocalName( o.schemaType() ) ) ) {
             throw new UnsupportedObjectException( "Object " + o.schemaType().getName() + " does not support Child Nesting." ) ;
@@ -107,7 +107,7 @@ public class NestingNode extends AdqlNode {
     }
     
 
-    protected void maintainNodeIndex( AdqlNode childNode ) { 
+    protected void maintainNodeIndex( final AdqlNode childNode ) { 
         add( childNode ) ;
 //        XmlObject childObject = childNode.getXmlObject() ;
 //        XmlObject nested = AdqlUtils.getParent( childObject ) ;
@@ -128,9 +128,9 @@ public class NestingNode extends AdqlNode {
     }
     
     @Override
-    protected void build( XmlObject o ) {
-        Object[] obs = AdqlUtils.getArray( o, getElementName() ) ;
-        SchemaType type = getXmlObject().schemaType() ;
+    protected void build( final XmlObject o ) {
+        final Object[] obs = AdqlUtils.getArray( o, getElementName() ) ;
+        final SchemaType type = getXmlObject().schemaType() ;
         if( obs != null ) {
             for( int i=0; i<obs.length; i++ ) {
                 if( AdqlUtils.areTypesEqual( type, ((XmlObject)obs[i]).schemaType()  ) ) {
@@ -144,24 +144,25 @@ public class NestingNode extends AdqlNode {
     }
    
     @Override
-    public AdqlNode insert( CommandInfo ci, XmlObject source, boolean before ) {
+    public AdqlNode insert( final CommandInfo ci, final XmlObject source, final boolean before ) {
         AdqlNode newInstance = null ;
         if( getChildCount() <= 1 ) {            
             newInstance = super.insert( ci, source, before ) ;           
         }
         else {
-            AdqlNode targetNode = ci.getChildEntry() ;
-            XmlObject nestedObject = AdqlUtils.getParent( ci.getChildObject() ) ;
+            final AdqlNode targetNode = ci.getChildEntry() ;
+            final XmlObject nestedObject = AdqlUtils.getParent( ci.getChildObject() ) ;
             int index = super.getIndex( ci.getChildEntry() ) ;
-            if( before == false )
+            if( before == false ) {
                 index++ ;
+            }
             newInstance = nodeFactory.newInstance( this, add( ci, targetNode, nestedObject, before ).set( source ), index ) ;
         }
         return newInstance ;
     }
     
     @Override
-    public AdqlNode insert( CommandInfo ci, XmlObject source, int index ) {
+    public AdqlNode insert( final CommandInfo ci, final XmlObject source, final int index ) {
         AdqlNode newInstance = null ;
         if( getChildCount() <= 1 ) {            
             newInstance = super.insert( ci, source, index ) ;           
@@ -176,16 +177,16 @@ public class NestingNode extends AdqlNode {
             else {
                 targetNode = getChild( index ) ;
             }          
-            XmlObject nestedObject = AdqlUtils.getParent( targetNode.getXmlObject() ) ;        
+            final XmlObject nestedObject = AdqlUtils.getParent( targetNode.getXmlObject() ) ;        
             newInstance = nodeFactory.newInstance( this, add( ci, targetNode, nestedObject, before ).set( source ), index ) ;
         }
         return newInstance ;
     }
     
     @Override
-    public AdqlNode insert(CommandInfo ci, XmlObject source) {
+    public AdqlNode insert(final CommandInfo ci, final XmlObject source) {
         AdqlNode newInstance = null ;
-        XmlObject lastNested = getLastNested() ;
+        final XmlObject lastNested = getLastNested() ;
         if( AdqlUtils.sizeOfArray( lastNested, ci.getChildElementName() ) < 2 ) {
             newInstance = super.insert( ci, source ) ;
         }
@@ -196,9 +197,9 @@ public class NestingNode extends AdqlNode {
     }
     
     @Override
-    public AdqlNode insert( CommandInfo ci ) {
+    public AdqlNode insert( final CommandInfo ci ) {
         AdqlNode newInstance = null ;
-        XmlObject lastNested = getLastNested() ;
+        final XmlObject lastNested = getLastNested() ;
         if( AdqlUtils.sizeOfArray( lastNested, ci.getChildElementName() ) < 2 ) {
             newInstance = super.insert( ci ) ;
         }
@@ -210,30 +211,31 @@ public class NestingNode extends AdqlNode {
     
 
     @Override
-    public void remove( CommandInfo ci ) {
+    public void remove( final CommandInfo ci ) {
         if( getLastNested() == getXmlObject() ) {
             super.remove( ci ) ;
             return ;
         }
         boolean check ;
-        AdqlNode parentNode = ci.getParentEntry();
+        final AdqlNode parentNode = ci.getParentEntry();
         XmlObject preservedSibling = null ;
-        Object[] array = AdqlUtils.getArray( AdqlUtils.getParent(ci.getChildObject()), getElementName() ) ;
+        final Object[] array = AdqlUtils.getArray( AdqlUtils.getParent(ci.getChildObject()), getElementName() ) ;
         for( int i=0; i<array.length; i++ ) {
             if( ci.getChildObject() != array[i] ) {
                 preservedSibling = ((XmlObject)array[i]) ;
                 break ;
             }
         }
-        XmlCursor pCursor = preservedSibling.newCursor() ;
-        XmlCursor nCursor = ci.getChildObject().newCursor() ;
+        final XmlCursor pCursor = preservedSibling.newCursor() ;
+        final XmlCursor nCursor = ci.getChildObject().newCursor() ;
         check = nCursor.toParent() ; 
-        XmlObject oldNest = nCursor.getObject() ;
-        if( oldNest == userObject )
+        final XmlObject oldNest = nCursor.getObject() ;
+        if( oldNest == userObject ) {
             userObject = null ;
+        }
         nCursor.push() ;
-        XmlObject pObject = pCursor.getObject() ;
-        XmlObject nObject = nCursor.getObject() ;
+        final XmlObject pObject = pCursor.getObject() ;
+        final XmlObject nObject = nCursor.getObject() ;
         check = pCursor.copyXml( nCursor ) ;
         pCursor.dispose() ;
         
@@ -266,14 +268,14 @@ public class NestingNode extends AdqlNode {
         nCursor.dispose() ;
         
         if( log.isDebugEnabled() ) {
-            XmlOptions opts = new XmlOptions();
+            final XmlOptions opts = new XmlOptions();
             opts.setSavePrettyPrint();
             opts.setSavePrettyPrintIndent(4);
             log.debug( "NestingNode.remove()...\n" + getXmlObject().toString() ) ;
         }       
         
         // Free all moved nodes...
-        ArrayList nodeList = freeNodesAfterRemove( ci ) ;
+        final ArrayList<AdqlNode> nodeList = freeNodesAfterRemove( ci ) ;
         
         // Now rebuild nodes for those xmlobjects that were forced
         // into new positions by the remove...
@@ -281,11 +283,11 @@ public class NestingNode extends AdqlNode {
             
     }  
     
-    private ArrayList freeNodesAfterRemove( CommandInfo ci) {
-        AdqlNode removedNode = ci.getChildEntry() ;
-        ArrayList nodeList = new ArrayList() ;
-        int childrenSize = children.size() ;
-        int indexRemovedNode = children.indexOf( removedNode ) ;
+    private ArrayList<AdqlNode> freeNodesAfterRemove( final CommandInfo ci) {
+        final AdqlNode removedNode = ci.getChildEntry() ;
+        final ArrayList<AdqlNode> nodeList = new ArrayList<AdqlNode>() ;
+        final int childrenSize = children.size() ;
+        final int indexRemovedNode = children.indexOf( removedNode ) ;
         // This first check is to see whether the removed child
         // was one of the last two in the nest...
         // (If so, then we need to free the last two, or three if
@@ -294,18 +296,18 @@ public class NestingNode extends AdqlNode {
         // node and everything to its right )
         if( indexRemovedNode >= childrenSize-2 ) {
             if( childrenSize >= 3 ) {
-                nodeList.add( children.elementAt( childrenSize-3 ) ) ;
+                nodeList.add((AdqlNode) children.elementAt( childrenSize-3 ) ) ;
             }          
             if( indexRemovedNode == childrenSize-1 ){
-                nodeList.add( children.elementAt( childrenSize-2 ) ) ;
+                nodeList.add((AdqlNode) children.elementAt( childrenSize-2 ) ) ;
             }
             else {
-                nodeList.add( children.elementAt( childrenSize-1 ) ) ;
+                nodeList.add((AdqlNode) children.elementAt( childrenSize-1 ) ) ;
             }      
         }
         else {       
             AdqlNode node = null ;
-            Enumeration e = children() ;
+            final Enumeration e = children() ;
             boolean found = false ;
             int index = 0 ;
             while( e.hasMoreElements() ) {
@@ -313,7 +315,7 @@ public class NestingNode extends AdqlNode {
                 if( node == removedNode ){
                     found = true ;
                     if( index > 0 ){
-                        nodeList.add( children.elementAt( index-1) ) ;
+                        nodeList.add((AdqlNode) children.elementAt( index-1) ) ;
                     }
                 }
                 else if( found ) {
@@ -322,23 +324,24 @@ public class NestingNode extends AdqlNode {
                 index++ ;
             }          
         }
-        if( nodeList.size() > 0 )
+        if( nodeList.size() > 0 ) {
             children.removeAll( nodeList ) ;
+        }
         children.remove( removedNode ) ;
         return nodeList ;
     }
     
 
-    private XmlObject add( CommandInfo ci, XmlObject lastNested ) {
-        AdqlNode parentNode = ci.getParentEntry() ;
+    private XmlObject add( final CommandInfo ci, final XmlObject lastNested ) {
+        final AdqlNode parentNode = ci.getParentEntry() ;
         // Make a space for the new nested object...
-        AdqlNode disconnectedChildNode = ((AdqlNode)this.getChildAt( this.getChildCount()-1 ) ) ;
+        final AdqlNode disconnectedChildNode = ((AdqlNode)this.getChildAt( this.getChildCount()-1 ) ) ;
         XmlObject disconnectedObject = disconnectedChildNode.getXmlObject().copy() ;
         AdqlUtils.removeFromArray( lastNested, ci.getChildElementName(), 1 ) ;
         disconnectedChildNode.removeFromParent() ;
 
         // Create a new nested object...
-        XmlObject nextNested = AdqlUtils.addNewToEndOfArray( lastNested, ci.getChildElementName() ).changeType( lastNested.schemaType() ) ;
+        final XmlObject nextNested = AdqlUtils.addNewToEndOfArray( lastNested, ci.getChildElementName() ).changeType( lastNested.schemaType() ) ;
         // Reknit the old and new to the new nested object...
         disconnectedObject = AdqlUtils.addNewToEndOfArray( nextNested, ci.getChildElementName() ).set( disconnectedObject ) ;
         nodeFactory.newInstance( parentNode, disconnectedObject ) ;
@@ -350,26 +353,26 @@ public class NestingNode extends AdqlNode {
     
     
     
-    private XmlObject add( CommandInfo ci, AdqlNode targetNode, XmlObject nested, boolean before ) {
+    private XmlObject add( final CommandInfo ci, AdqlNode targetNode, final XmlObject nested, final boolean before ) {
         boolean check ;
         XmlObject newObject = null ;
         // Insertion requested before the first child...
         if( this.getFirstChild() == targetNode && before == true ) {
-            XmlCursor cursor = targetNode.getXmlObject().newCursor() ;
+            final XmlCursor cursor = targetNode.getXmlObject().newCursor() ;
             check = cursor.toParent() ;
             
             //
             // Remember the nested element qname and the nested that is target to be moved...
-            QName qName = cursor.getName() ;
-            XmlObject targetNest = cursor.getObject() ;
+            final QName qName = cursor.getName() ;
+            final XmlObject targetNest = cursor.getObject() ;
             
             // Create new nest...
             check = cursor.toParent() ;
-            XmlCursor.TokenType token = cursor.toEndToken() ;
+            final XmlCursor.TokenType token = cursor.toEndToken() ;
             cursor.beginElement( qName ) ;  
             cursor.push() ; // remember inside of new nest
             check = cursor.toParent() ;
-            XmlObject newNest = cursor.getObject().changeType( targetNest.schemaType() ) ;
+            final XmlObject newNest = cursor.getObject().changeType( targetNest.schemaType() ) ;
             
             // Create the inserted object...
             newObject = AdqlUtils.addNewToEndOfArray( newNest, ci.getChildElementName() ).changeType( ci.getChildType() ) ;
@@ -377,7 +380,7 @@ public class NestingNode extends AdqlNode {
             // Recover position on inside of new nest
             check = cursor.pop() ;
             // Then move the targetted nest to its new spot...
-            XmlCursor sourcePoint = targetNest.newCursor() ;
+            final XmlCursor sourcePoint = targetNest.newCursor() ;
             check = sourcePoint.moveXml( cursor ) ;
             sourcePoint.dispose() ;
             cursor.dispose() ;
@@ -389,16 +392,16 @@ public class NestingNode extends AdqlNode {
             
             // Insertion requested before the last child...
             if( before == true ) {
-                XmlCursor cursor = targetNode.getXmlObject().newCursor() ;
+                final XmlCursor cursor = targetNode.getXmlObject().newCursor() ;
                 check = cursor.toParent() ;
                 // Remember element name for nest...
-                QName qName = cursor.getName() ;
+                final QName qName = cursor.getName() ;
                 // Create new nest within targetNodes current parent nest...
-                XmlCursor.TokenType token = cursor.toEndToken() ;
+                final XmlCursor.TokenType token = cursor.toEndToken() ;
                 cursor.beginElement( qName ) ;  
                 cursor.push() ; // remember inside of new nest
                 check = cursor.toParent() ;
-                XmlObject newNest = cursor.getObject().changeType( nestingType ) ;
+                final XmlObject newNest = cursor.getObject().changeType( nestingType ) ;
                 
                 // Create the inserted object...
                 newObject = AdqlUtils.addNewToEndOfArray( newNest, ci.getChildElementName() ).changeType( ci.getChildType() ) ;
@@ -406,27 +409,27 @@ public class NestingNode extends AdqlNode {
                 // Recover position on inside of new nest
                 check = cursor.pop() ;
                 // Then move the targetted nest to its new spot...
-                XmlCursor sourcePoint = targetNode.getXmlObject().newCursor() ;
+                final XmlCursor sourcePoint = targetNode.getXmlObject().newCursor() ;
                 check = sourcePoint.moveXml( cursor ) ;
                 sourcePoint.dispose() ;
                 cursor.dispose() ;
             }
             // Insertion requested after the last child...
             else {
-                XmlCursor cursor = targetNode.getXmlObject().newCursor() ;
+                final XmlCursor cursor = targetNode.getXmlObject().newCursor() ;
                 check = cursor.toParent() ;
-                QName qName = cursor.getName() ;
+                final QName qName = cursor.getName() ;
                 // Create new nest within targetNodes current parent...
-                XmlCursor.TokenType token = cursor.toEndToken() ;
+                final XmlCursor.TokenType token = cursor.toEndToken() ;
                 cursor.beginElement( qName ) ;  
                 cursor.push() ; // remember inside of new nest
                 check = cursor.toParent() ;
-                XmlObject newNest = cursor.getObject().changeType( nestingType ) ;
+                final XmlObject newNest = cursor.getObject().changeType( nestingType ) ;
                    
                 // Recover position on inside of new nest
                 check = cursor.pop() ;
                 // Then move the targetted nest to its new spot...
-                XmlCursor sourcePoint = targetNode.getXmlObject().newCursor() ;
+                final XmlCursor sourcePoint = targetNode.getXmlObject().newCursor() ;
                 check = sourcePoint.moveXml( cursor ) ;
                 sourcePoint.dispose() ;
                 cursor.dispose() ;
@@ -441,21 +444,21 @@ public class NestingNode extends AdqlNode {
             if( before == false ) {
                 targetNode = (AdqlNode)children.elementAt( children.indexOf( targetNode ) + 1 ) ;
             }
-                XmlCursor cursor = targetNode.getXmlObject().newCursor() ;
+                final XmlCursor cursor = targetNode.getXmlObject().newCursor() ;
                 check = cursor.toParent() ;
                 
                 //
                 // Remember the nested element qname and the nested that is target to be moved...
-                QName qName = cursor.getName() ;
-                XmlObject targetNest = cursor.getObject() ;
+                final QName qName = cursor.getName() ;
+                final XmlObject targetNest = cursor.getObject() ;
                 
                 // Create new nest...
                 check = cursor.toParent() ;
-                XmlCursor.TokenType token = cursor.toEndToken() ;
+                final XmlCursor.TokenType token = cursor.toEndToken() ;
                 cursor.beginElement( qName ) ;  
                 cursor.push() ; // remember inside of new nest
                 check = cursor.toParent() ;
-                XmlObject newNest = cursor.getObject().changeType( targetNest.schemaType() ) ;
+                final XmlObject newNest = cursor.getObject().changeType( targetNest.schemaType() ) ;
                 
                 // Create the inserted object...
                 newObject = AdqlUtils.addNewToEndOfArray( newNest, ci.getChildElementName() ).changeType( ci.getChildType() ) ;
@@ -463,16 +466,16 @@ public class NestingNode extends AdqlNode {
                 // Recover position on inside of new nest
                 check = cursor.pop() ;
                 // Then move the targetted nest to its new spot...
-                XmlCursor sourcePoint = targetNest.newCursor() ;
+                final XmlCursor sourcePoint = targetNest.newCursor() ;
                 check = sourcePoint.moveXml( cursor ) ;
                 sourcePoint.dispose() ;
                 cursor.dispose() ;
         }
         
         // Free all moved nodes...
-        Enumeration e = children() ;
+        final Enumeration e = children() ;
         AdqlNode node ;
-        ArrayList nodeList = new ArrayList() ;
+        final ArrayList<AdqlNode> nodeList = new ArrayList<AdqlNode>() ;
         boolean found = false ;
         while( e.hasMoreElements() ) {
             node = (AdqlNode)e.nextElement() ;
@@ -494,9 +497,9 @@ public class NestingNode extends AdqlNode {
     }
     
     
-    private void rebuildMovedNodesAfterInsert(  CommandInfo ci, XmlObject newObject, ArrayList oldNodes ) {
-        ArrayList newNodes = new ArrayList() ;
-        XmlCursor cursor = newObject.newCursor() ;
+    private void rebuildMovedNodesAfterInsert(  final CommandInfo ci, final XmlObject newObject, final ArrayList<AdqlNode> oldNodes ) {
+        final ArrayList<AdqlNode> newNodes = new ArrayList<AdqlNode>() ;
+        final XmlCursor cursor = newObject.newCursor() ;
         XmlObject xmlObject = null ;
         QName qualifiedName ;
         int depth = 0;
@@ -532,9 +535,9 @@ public class NestingNode extends AdqlNode {
     }
     
     
-    private void rebuildMovedNodesAfterRemove( CommandInfo ci, XmlObject rebuildPoint, ArrayList oldNodes ) {
-        ArrayList newNodes = new ArrayList() ;
-        XmlCursor cursor = rebuildPoint.newCursor() ;
+    private void rebuildMovedNodesAfterRemove( final CommandInfo ci, final XmlObject rebuildPoint, final ArrayList<AdqlNode> oldNodes ) {
+        final ArrayList<AdqlNode> newNodes = new ArrayList<AdqlNode>() ;
+        final XmlCursor cursor = rebuildPoint.newCursor() ;
         XmlObject xmlObject = null ;
         QName qualifiedName ;
         int depth = 0;
@@ -564,13 +567,13 @@ public class NestingNode extends AdqlNode {
         updateEditStore( ci, newNodes, oldNodes ) ;
     }
     
-    private void updateEditStore( CommandInfo ci, ArrayList newNodes, ArrayList oldNodes ) {
+    private void updateEditStore( final CommandInfo ci, final ArrayList<AdqlNode> newNodes, final ArrayList<AdqlNode> oldNodes ) {
         if( oldNodes.size() > 0 ) {
-            ListIterator newIterator = newNodes.listIterator() ;
-            ListIterator oldIterator = oldNodes.listIterator() ;
+            final ListIterator<AdqlNode> newIterator = newNodes.listIterator() ;
+            final ListIterator<AdqlNode> oldIterator = oldNodes.listIterator() ;
             while( oldIterator.hasNext() ) {
-                AdqlNode oldNode = (AdqlNode)oldIterator.next() ;
-                AdqlNode newNode = (AdqlNode)newIterator.next() ;
+                final AdqlNode oldNode = oldIterator.next() ;
+                final AdqlNode newNode = newIterator.next() ;
                 ci.exchangeInEditStore( newNode, oldNode ) ;
             }
         }
@@ -579,7 +582,7 @@ public class NestingNode extends AdqlNode {
     private XmlObject getLastNested() {
         XmlObject retObject = getXmlObject() ;
         QName qualifiedName ;
-        XmlCursor cursor = retObject.newCursor() ;
+        final XmlCursor cursor = retObject.newCursor() ;
         int depth = 0 ;
         boolean check = cursor.toLastChild() ;  
         if( check ) {
@@ -606,20 +609,21 @@ public class NestingNode extends AdqlNode {
     
     private boolean getArrayContext() {
         if( arrayContext == null ){
-            int minOccurs = getElementProperty().getMinOccurs().intValue() ;
-            BigInteger biMaxOccurs = getElementProperty().getMaxOccurs() ;
-            int maxOccurs = ( biMaxOccurs == null ? -1 : biMaxOccurs.intValue() ) ;
-            if( maxOccurs == -1  ||  maxOccurs > 1 )
+            final int minOccurs = getElementProperty().getMinOccurs().intValue() ;
+            final BigInteger biMaxOccurs = getElementProperty().getMaxOccurs() ;
+            final int maxOccurs = ( biMaxOccurs == null ? -1 : biMaxOccurs.intValue() ) ;
+            if( maxOccurs == -1  ||  maxOccurs > 1 ) {
                 arrayContext = Boolean.TRUE;
-            else
+            } else {
                 arrayContext =Boolean.FALSE;
+            }
         }
         return arrayContext.booleanValue() ;
     }
     
     private SchemaProperty getElementProperty() {
         if( elementProperty == null ) {
-            SchemaProperty[] elements = AdqlUtils.getParent( getXmlObject() ).schemaType().getElementProperties() ; ;
+            final SchemaProperty[] elements = AdqlUtils.getParent( getXmlObject() ).schemaType().getElementProperties() ; ;
             for( int i=0; i<elements.length; i++ ) {
                 if( elements[i].getType().isAssignableFrom( getXmlObject().schemaType() ) ) {
                     elementProperty = elements[i] ;
@@ -635,8 +639,8 @@ public class NestingNode extends AdqlNode {
     }
     
     @Override
-    public String toHtml( boolean expanded, boolean leaf, AdqlTree tree ) { 
-        String retValue = super.toHtml( expanded, leaf, tree ) ;
+    public String toHtml( final boolean expanded, final boolean leaf, final AdqlTree tree ) { 
+        final String retValue = super.toHtml( expanded, leaf, tree ) ;
         return retValue ;
     }
     

@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.12 2008/12/01 23:29:55 nw Exp $
+/*$Id: IconHelper.java,v 1.13 2009/04/06 11:29:34 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -72,7 +72,7 @@ public class IconHelper {
     		return null;
     	}
         if (cache.containsKey(imgName)) {
-            return (ImageIcon)cache.get(imgName);
+            return cache.get(imgName);
         }
         URL u = IconHelper.class.getResource(imgName);
         if (u != null) {
@@ -94,7 +94,7 @@ public class IconHelper {
     
     /** cache for icons - hard references for keys, weak references for values. 
      * @modified nww - corrected from WEAK to SOFT - otherwise it doesn't cache.*/
-    protected static final Map cache = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+    protected static final Map<String, ImageIcon> cache = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
   
 
 }
@@ -102,6 +102,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.13  2009/04/06 11:29:34  nw
+added generic types
+
 Revision 1.12  2008/12/01 23:29:55  nw
 used commons.io utilities
 

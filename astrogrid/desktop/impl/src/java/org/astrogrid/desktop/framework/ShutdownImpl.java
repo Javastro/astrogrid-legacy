@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.11 2009/03/26 18:04:12 nw Exp $
+/*$Id: ShutdownImpl.java,v 1.12 2009/04/06 11:28:17 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,10 +64,10 @@ public class ShutdownImpl  extends Thread implements Shutdown{
         logger.debug("halt() - start");
 
         // tell everyone 
-        final List objections = new ArrayList();
-        for (final Iterator i = listeners.iterator(); i.hasNext(); ) {
+        final List<Object> objections = new ArrayList<Object>();
+        for (final Iterator<ShutdownListener> i = listeners.iterator(); i.hasNext(); ) {
             try {
-                final ShutdownListener sl = (ShutdownListener)i.next();
+                final ShutdownListener sl = i.next();
                 if (sl != null) {
                   final String msg =   sl.lastChance();
                   if (msg != null) {
@@ -89,7 +89,7 @@ public class ShutdownImpl  extends Thread implements Shutdown{
         logger.debug("halt() - end");
     }
     
-    String fmt(final List l) {
+    String fmt(final List<Object> l) {
         logger.debug("fmt(List) - start");
 
         final StringBuffer sb = new StringBuffer();
@@ -130,10 +130,10 @@ public class ShutdownImpl  extends Thread implements Shutdown{
     	}
 
         // tell everyone 
-        final List copy = new ArrayList(listeners);
-        for (final Iterator i = copy.iterator(); i.hasNext(); ) {
+        final List<ShutdownListener> copy = new ArrayList<ShutdownListener>(listeners);
+        for (final Iterator<ShutdownListener> i = copy.iterator(); i.hasNext(); ) {
             try {
-                final ShutdownListener sl = (ShutdownListener)i.next();
+                final ShutdownListener sl = i.next();
                 if (sl != null) {
                     sl.halting();
                 }
@@ -148,7 +148,7 @@ public class ShutdownImpl  extends Thread implements Shutdown{
         
     }   
 
-    protected Set listeners = new HashSet();
+    protected Set<ShutdownListener> listeners = new HashSet<ShutdownListener>();
     /**
      * @see org.astrogrid.acr.builtin.Shutdown#addShutdownListener(org.astrogrid.acr.builtin.ShutdownListener)
      */
@@ -191,6 +191,9 @@ public class ShutdownImpl  extends Thread implements Shutdown{
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.12  2009/04/06 11:28:17  nw
+added generic types
+
 Revision 1.11  2009/03/26 18:04:12  nw
 source code improvements - cleaned imports, @override, etc.
 

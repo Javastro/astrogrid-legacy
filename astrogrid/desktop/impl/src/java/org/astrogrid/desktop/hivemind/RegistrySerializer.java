@@ -142,11 +142,11 @@ class RegistrySerializer
 
 {
 
-    private final Set _processedSchemas = new HashSet();
+    private final Set<SchemaImpl> _processedSchemas = new HashSet<SchemaImpl>();
 
 
 
-    private final List _providers = new ArrayList();
+    private final List<ModuleDescriptorProvider> _providers = new ArrayList<ModuleDescriptorProvider>();
 
 
 
@@ -202,11 +202,11 @@ class RegistrySerializer
 
 
 
-        for (final Iterator i = _providers.iterator(); i.hasNext();)
+        for (final Iterator<ModuleDescriptorProvider> i = _providers.iterator(); i.hasNext();)
 
         {
 
-            final ModuleDescriptorProvider provider = (ModuleDescriptorProvider) i.next();
+            final ModuleDescriptorProvider provider = i.next();
 
 
 
