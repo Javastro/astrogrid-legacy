@@ -144,7 +144,9 @@ public class BulkCopyWorker extends BackgroundWorker {
         for (int i  = 0; i < this.cmds.length; i++ ) {
                 final CopyCommand cmd = cmds[i];
                 final FileObject src =cmd.resolveSourceFileObject(vfs);
-                reportProgress("Processing " + src.getName().getBaseName());
+                if (src.getName() != null) {
+                    reportProgress("Processing " + src.getName().getBaseName());
+                }
                 String name;
                 String ext;
                 if (cmd instanceof CopyAsCommand) {
