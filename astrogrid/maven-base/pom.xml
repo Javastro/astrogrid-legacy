@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.9 2008/11/12 11:17:10 pah Exp $ -->
+<!-- $Id: pom.xml,v 1.10 2009/04/06 15:01:31 pah Exp $ -->
    <!--
       This pom is intended to contain the "version" information for the astrogrid (and other commonly used) components.
       In addition it contains the basic project information - however it *must not* contain any specific build information - this is contained in the
@@ -58,6 +58,16 @@
       <name>AstroGrid</name>
       <url>http://www.astrogrid.org</url>
    </organization>
+   <repositories>
+   	<repository>
+   		<id>agrepo</id>
+   		<name>Astrogrid Maven 2 Repository</name>
+   		<url>http://www.astrogrid.org/maven2</url>
+   		<releases>
+   			<checksumPolicy>warn</checksumPolicy>
+   		</releases>
+   	</repository>
+   </repositories>
    
    
    
@@ -467,7 +477,6 @@
        <id>agrepo</id>
        <name>Astrogrid Maven 2 Repository</name>
        <url>scpexe://katatjuta.star.le.ac.uk/maven2/</url> <!-- also known as maven.astrogrid.org -->
-       
     </repository>
     <snapshotRepository>
         <id>ag-snapshot</id>
