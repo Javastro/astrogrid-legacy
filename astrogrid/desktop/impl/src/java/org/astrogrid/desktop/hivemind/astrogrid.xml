@@ -189,7 +189,7 @@ LOGIN DIALOGUE -->
         <invoke-factory model="session"><!--  privacy fix - else input field values are shared. -->
             <construct  class="org.astrogrid.desktop.modules.auth.SwingLoginDialogue" >
                 <service>system.ui</service>
-                <service>votech.vomon</service>
+                <service>ivoa.vosi</service>
                 <service>system.browser</service>
                 <service>ivoa.registry</service>
                 <service>community</service>

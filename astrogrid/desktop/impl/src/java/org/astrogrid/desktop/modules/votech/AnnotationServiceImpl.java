@@ -131,8 +131,9 @@ private void saveSourceList() {
 			@Override
             protected void doError(final Throwable ex) {
 			    // silently swallow exceptions.
-                //parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));                
+                //parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));			   
                  logger.warn("Failed to load annotations from " + source.getName());
+                 logger.debug("Cause",ex);
                 
 			}
 		}).start();
@@ -277,6 +278,7 @@ private void saveSourceList() {
 					    // silently swallow exceptions.
 					    //parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));
 	                    logger.warn("Failed to load annotations from " + source.getName());
+	                    logger.debug("Cause",ex);
 					    
 					}
 				}).start();

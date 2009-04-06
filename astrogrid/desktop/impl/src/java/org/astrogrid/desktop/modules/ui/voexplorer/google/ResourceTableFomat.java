@@ -72,7 +72,7 @@ public class ResourceTableFomat extends ModularTableFormat<Resource> {
         this.capBuilder = capBuilder;
 
         final List<Column<Resource,?>> columnList = new ArrayList<Column<Resource,?>>();
-
+/* vomon - omit this for now
         columnList.add(new IconColumn(STATUS_NAME) {
             @Override
             public Icon getValue(final Resource res) {
@@ -88,6 +88,7 @@ public class ResourceTableFomat extends ModularTableFormat<Resource> {
                 return vomon.getTooltipInformationFor(res);
             }
         });
+        */
 
         columnList.add(new StringColumn(LABEL_NAME) {
             final StrBuilder result = new StrBuilder(64);

@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Icon;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -20,7 +22,6 @@ import org.apache.xmlbeans.XmlException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.ivoa.Vosi;
 import org.astrogrid.acr.ivoa.VosiAvailabilityBean;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
@@ -28,6 +29,8 @@ import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
@@ -42,10 +45,10 @@ import org.joda.time.Period;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 20085:15:03 PM
  */
-public class VosiImpl implements Vosi {
+public class VosiImpl implements VosiInternal {
     
     private final RegistryInternal reg;
-    
+    private final DateFormat df;
 
     /**
      * @param reg
@@ -53,6 +56,7 @@ public class VosiImpl implements Vosi {
     public VosiImpl(final RegistryInternal reg) {
         super();
         this.reg = reg;
+        df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);        
     }
 
 
@@ -123,10 +127,14 @@ public class VosiImpl implements Vosi {
                     } else if (StringUtils.containsIgnoreCase(localName,"uptime")) { // 0.3
                         final String content = in.getElementText();
                         if (StringUtils.isNotEmpty(content)) {
+                            try {
                             final Period period = new Period(content.trim());
                             final DateTime now = new DateTime();
                             final DateTime upSince = now.minus(period);
                             result.setUpSince(upSince.toDate());
+                            } catch (final IllegalArgumentException e) {
+                                // no matter.
+                            }
                         }
                         
                     } else if (StringUtils.containsIgnoreCase(localName,"validTo")) { // 0.3
@@ -148,7 +156,7 @@ public class VosiImpl implements Vosi {
             return result;
         } catch (final IOException e) {
             result.setAvailable(false);
-            result.setNotes(new String[] {"Failed to contact service: " + e.getMessage()});
+            result.setNotes(new String[] {"Failed to contact service"});
             result.setBackAt(null);
             result.setDownAt(null);
             result.setUpSince(null);
@@ -211,6 +219,54 @@ public class VosiImpl implements Vosi {
             }
         }// end for all capabilities
         throw new InvalidArgumentException(s.getId() + " does not provide an availability capability");
+    }
+
+
+    public String makeTooltipFor(final VosiAvailabilityBean b) {
+        final HtmlBuilder sb = new HtmlBuilder();
+        if (b == null) {
+            sb.append("This service provides no availability information");
+        } else {
+            if (b.isAvailable()) {
+                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/greenled16.png'>&nbsp;");
+                if (b.getDownAt() != null) {
+                    sb.append("OK until " + df.format(b.getDownAt()));
+                } else {
+                    sb.append("Service OK");
+                }
+                
+            } else {                      
+                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/redled16.png'>&nbsp;");
+                if (b.getBackAt() != null) {
+                    sb.append("Down until " + df.format(b.getBackAt()));
+                } else {
+                    sb.append("Service Down");
+                }
+            }
+            if (b.getUpSince()!= null) {
+                sb.append("<br>Up since " +df.format(b.getUpSince()));
+            }
+            final String[] notes = b.getNotes();
+            if (notes != null && notes.length > 0) {
+                sb.append("<p>");
+                for (int i = 0; i < notes.length; i++) {
+                    sb.append("<br>")
+                        .append(notes[i]);
+                }                 
+            }                        
+        }
+        return sb.toString();
+    }
+
+
+    public Icon suggestIconFor(final VosiAvailabilityBean bean) {
+        if (bean == null) {
+            return UIConstants.UNKNOWN_ICON;
+        } else if (bean.isAvailable()) {
+            return UIConstants.SERVICE_OK_ICON;
+        } else {
+            return UIConstants.SERVICE_DOWN_ICON;
+        }
     }
     
 }

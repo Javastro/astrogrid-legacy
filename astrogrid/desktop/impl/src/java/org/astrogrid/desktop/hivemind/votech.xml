@@ -101,7 +101,7 @@ ANNOTATION SERVICE
     <object name="vosi" class="org.astrogrid.desktop.modules.votech.VosiAnnotationSource">
         <inject object="service:ivoa.vosi" />
     </object>
-    
+        
 	<object name="vomon" class="org.astrogrid.desktop.modules.votech.VomonAnnotationSource">
 		<inject object="service:vomon" />
 	</object>
@@ -212,9 +212,11 @@ VOMON
 			</preference>
 	</contribution>
     
+    <!--  it's always down - so disable selftest for now. for now
      <contribution configuration-id="util.selftest" >
         <object>service-property:vomon:selftest</object>
     </contribution>
+     -->
 
 	<!--  run periodically -->	
 	<contribution configuration-id="system.scheduledTasks">

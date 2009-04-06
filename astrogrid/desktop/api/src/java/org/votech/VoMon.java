@@ -6,12 +6,16 @@ package org.votech;
 import java.net.URI;
 
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.ivoa.Vosi;
 
 /** Monitor service availability using the VoMon service
  * @see <a href="http://vomon.sourceforge.net">VoMon project page</a>
+ * @deprecated no vomon services are maintained. Using {@link Vosi} is a more reliable method of
+ * getting service availability information.
  * @author Noel Winstanley
  * @service votech.vomon
  */
+@Deprecated
 public interface VoMon {
 	/** forces the status information to be reloaded from the vomon server 
 	 * - potentially expensive operation*/

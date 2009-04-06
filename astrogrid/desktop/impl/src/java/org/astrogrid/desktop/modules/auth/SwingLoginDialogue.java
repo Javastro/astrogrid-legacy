@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.21 2009/04/06 11:39:07 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.22 2009/04/06 19:57:14 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -26,17 +27,20 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.VosiAvailabilityBean;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.contracts.StandardIds;
+import org.astrogrid.desktop.modules.ivoa.VosiInternal;
+import org.astrogrid.desktop.modules.system.Tuple;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
@@ -45,7 +49,6 @@ import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.UniqueList;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
@@ -71,11 +74,91 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     private final Preferences prefs;
     private final Community comm;
 
-    private final EventList<Resource> communityList =new BasicEventList<Resource>();
-    private Timer vomonRecheckTimer;
+    private final EventList<Tuple<Resource,VosiAvailabilityBean>> communityList =new BasicEventList<Tuple<Resource,VosiAvailabilityBean>>();
     
     private static String USER_PREFERENCE_KEY = "username";
     private static String COMMUNITY_PREFERENCE_KEY = "community.ivorn";
+
+    private final VosiInternal monitor;
+
+    private final Registry reg;
+    
+    /** Worker that lists all known communities
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Apr 6, 20097:44:16 PM
+     */
+    private final class CommunityLister extends
+            BackgroundWorker<Void> {
+        {
+            setTransient(true);
+        }
+        private CommunityLister() {
+            super(SwingLoginDialogue.this, "Listing known communities", Thread.MAX_PRIORITY);
+        }
+
+        @Override
+        protected  Void construct() throws Exception {
+            final Resource[] comms = reg.xquerySearch(
+                "//vor:Resource[capability/@standardID='" + 
+                StandardIds.AG_ACCOUNTS +  
+                "' and not (@status='deleted' or @status='inactive')]"
+            );
+                         
+            for (final Resource c : comms) {
+                // now spawn a further background task for each community to retreive vosi statues
+                // ensures those that return 'ok' aren't blocked by one that timesout.
+                (new CommunityVosi(c)).start();                             
+            }
+            return null;
+        }
+
+    }
+    
+    /** background worker that checks the vosi status of a community */
+    private final class CommunityVosi extends BackgroundWorker<Tuple<Resource,VosiAvailabilityBean>>{
+        private final Resource c;
+
+        public CommunityVosi(final Resource c) {
+            super(SwingLoginDialogue.this, "Finding availability of " + c.getTitle(),BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MAX_PRIORITY);
+            this.c = c;
+        }
+
+        @Override
+        protected Tuple<Resource, VosiAvailabilityBean> construct()
+                throws Exception {
+            try {
+                final VosiAvailabilityBean bean = monitor.checkAvailability(c.getId());
+                return new Tuple<Resource,VosiAvailabilityBean>(c,bean);
+            } catch (final InvalidArgumentException e) { // indicates that this resourc doesn't have a vosi capability.
+                return new Tuple<Resource,VosiAvailabilityBean>(c,null);                        
+            }            
+        }
+        @Override
+        protected void doFinished(final Tuple<Resource, VosiAvailabilityBean> result) {
+            communityList.add(result);
+        }
+        
+        @Override
+        protected void doError(final Throwable ex) { // probably due to a timeout.
+            // just add the tuple - don't care what went wrong.
+            communityList.add(new Tuple<Resource,VosiAvailabilityBean>(c,null));
+        }
+  
+    };
+
+    private static class MyUniqifier implements Comparator<Tuple<Resource,VosiAvailabilityBean>> {
+        public int compare(final Tuple<Resource, VosiAvailabilityBean> o1,
+                final Tuple<Resource, VosiAvailabilityBean> o2) {
+            return o1.fst().getId().compareTo(o2.fst().getId());
+        }
+    }
+    
+    private static class MySorter implements Comparator<Tuple<Resource,VosiAvailabilityBean>> {
+        public int compare(final Tuple<Resource, VosiAvailabilityBean> o1,
+                final Tuple<Resource, VosiAvailabilityBean> o2) {
+            return o1.fst().getTitle().compareTo(o2.fst().getTitle());
+        }
+    }
     
     /**
      * Constructs a new dialog.
@@ -83,30 +166,38 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
      * @throws ServiceException 
      * @throws URISyntaxException 
      */
-    public SwingLoginDialogue( final UIContext coxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,final String defaultCommunity) throws MalformedURLException, ServiceException, URISyntaxException {
+    public SwingLoginDialogue( final UIContext coxt,final VosiInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,final String defaultCommunity) throws MalformedURLException, ServiceException, URISyntaxException {
         super(coxt,"Virtual Observatory Login","dialog.login");
+        this.monitor = monitor;
+        this.reg = reg;
         this.comm = comm;
     	this.defaultCommunityIvorn = new URI(defaultCommunity); // if this throws, is a system misconfiguration - fail fast.
         prefs = Preferences.userNodeForPackage(SwingLoginDialogue.class);
-    	
-    	final EventComboBoxModel<Resource> model = new EventComboBoxModel<Resource>(
-    	        new SortedList<Resource>(
-    	                new UniqueList<Resource>(communityList, GlazedLists.beanPropertyComparator(Resource.class,"id")) // unique list by ID
-    	        , GlazedLists.beanPropertyComparator(Resource.class,"title")) // sorted list by title
+    	        
+    	final EventComboBoxModel<Tuple<Resource,VosiAvailabilityBean>> model = new EventComboBoxModel<Tuple<Resource,VosiAvailabilityBean>>(
+    	        new SortedList<Tuple<Resource,VosiAvailabilityBean>>(
+    	                new UniqueList<Tuple<Resource,VosiAvailabilityBean>>(communityList, new MyUniqifier()) // unique list by ID
+    	                    , new MySorter()) // sorted list by title
     	);
     	// retrieve the resource for the user's preferred community.
     	// if there is one, it's most probably cached..
     	final URI preferredCommunity = new URI(prefs.get(COMMUNITY_PREFERENCE_KEY,defaultCommunityIvorn.toString()));
-    	    (new BackgroundWorker<Resource>(this,"Finding user's preferred community",Thread.MAX_PRIORITY) {
+    	    (new BackgroundWorker<Tuple<Resource,VosiAvailabilityBean>>(this,"Finding user's preferred community",Thread.MAX_PRIORITY) {
     	        {
     	            setTransient(true);
     	        }    	    
     	        @Override
-    	        protected Resource construct() throws Exception {
-    	            return reg.getResource(preferredCommunity);
+    	        protected Tuple<Resource,VosiAvailabilityBean> construct() throws Exception {
+    	            final Resource r =  reg.getResource(preferredCommunity);
+    	            try {
+                        final VosiAvailabilityBean bean = monitor.checkAvailability(r.getId());
+                        return new Tuple<Resource,VosiAvailabilityBean>(r,bean);
+                    } catch (final InvalidArgumentException e) { // indicates that this resourc doesn't have a vosi capability.    	            
+                        return new Tuple<Resource,VosiAvailabilityBean>(r,null);
+                    }
     	        }
     	        @Override
-    	        protected void doFinished(final Resource result) {
+    	        protected void doFinished(final Tuple<Resource,VosiAvailabilityBean> result) {
     	            if (result != null) {
     	                communityList.add(result);
     	                model.setSelectedItem(result);
@@ -115,26 +206,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     	    }).start();    	            
     	
     	//retreive a list of communities in a background thread - will take more time than jsut getting the preferred communtiy.
-    	(new BackgroundWorker<Resource[]>(this,"Listing known communities",Thread.MAX_PRIORITY) {
-    	    {
-    	        setTransient(true);
-    	    }
-    	        
-            @Override
-            protected Resource[] construct() throws Exception {
-                return reg.xquerySearch(
-                    "//vor:Resource[capability/@standardID='" + 
-                    StandardIds.AG_ACCOUNTS +  
-                    "' and not (@status='deleted' or @status='inactive')]"
-                );
-            }
-            @Override
-            protected void doFinished(final Resource[] knownCommunities) {
-                for (final Resource r : knownCommunities) {
-                    communityList.add(r);
-                }
-            }
-    	}).start();
+    	(new CommunityLister()).start();
     	
     	// assemble the community combo box
     	commField_ = new JComboBox(model);
@@ -144,13 +216,16 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
             public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
                   super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
                    if (value != null) {
-                       if (value instanceof Resource) {
-                           final Resource r = (Resource) value;
+                       if (value instanceof Tuple) {
+                           final Tuple<Resource,VosiAvailabilityBean> tup = (Tuple<Resource,VosiAvailabilityBean>)value;
+                           
                           //    String s = "<html>" + r.getTitle() + "<br><i>" + r.getId(); // can't get the 2-line to display correctly in the form - combo box doesn't expand.
-                           final String s = r.getTitle();
+                           final String s = tup.fst().getTitle();
                            setText(s);
-                           setIcon(monitor.suggestIconFor(r));
-                           setToolTipText(monitor.getTooltipInformationFor(r));
+                           if (tup.snd() != null) {
+                               setIcon(monitor.suggestIconFor(tup.snd()));
+                               setToolTipText(monitor.makeTooltipFor(tup.snd()));
+                           }
                        } else if (value instanceof String) { // just used in prototyping the size
                            setText((String)value);
                        }
@@ -180,10 +255,10 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         registerButton.setToolTipText("Click here to apply for an account on the virtual observatory");        
         registerButton.addActionListener(new ActionListener() {           
         	public void actionPerformed(final ActionEvent e) {
-        	    new BackgroundWorker(SwingLoginDialogue.this,"Opening registration page") {
+        	    new BackgroundWorker<Void>(SwingLoginDialogue.this,"Opening registration page") {
 
                     @Override
-                    protected Object construct() throws Exception {
+                    protected Void construct() throws Exception {
                         getContext().getHelpServer().showHelpForTarget("dialog.login.register");
                         return null;
                     }
@@ -241,7 +316,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     @Override
     public void ok() {
         
-        prefs.put(COMMUNITY_PREFERENCE_KEY,((Resource)commField_.getSelectedItem()).getId().toString());
+        prefs.put(COMMUNITY_PREFERENCE_KEY,((Tuple<Resource,VosiAvailabilityBean>)commField_.getSelectedItem()).fst().getId().toString());
         prefs.put(USER_PREFERENCE_KEY,getUser());
         
         // user pressed ok - so try to login
@@ -274,7 +349,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
      */
     private String getCommunity() {
     	final Object o = commField_.getSelectedItem();    	
-    	return ((Resource)o).getId().getAuthority();
+    	return ((Tuple<Resource,VosiAvailabilityBean>)o).fst().getId().getAuthority();
     }
 
     /**
@@ -312,6 +387,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.22  2009/04/06 19:57:14  nw
+Complete - taskRemove vomon
+
 Revision 1.21  2009/04/06 11:39:07  nw
 Complete - taskConvert all to generics.
 

@@ -342,10 +342,13 @@ RESULT CACHE
     <!--  vosi availability tester
     ==================
      -->
-     <service-point id="vosi" interface="org.astrogrid.acr.ivoa.Vosi">
+     <service-point id="vosi" interface="org.astrogrid.desktop.modules.ivoa.VosiInternal">
         VOSI availability tester. Knows how to check VOSI information.
-        <interceptor service-id="system.edt" />        
-        <interceptor service-id="system.throbber" />            
+        <interceptor service-id="system.edt" >
+            <exclude method="makeTooltipFor" />
+            <exclude method="suggestIconFor" />
+        </interceptor>        
+        <interceptor service-id="system.throbber" />                    
         <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.ivoa.VosiImpl">
                 <service>registry</service>

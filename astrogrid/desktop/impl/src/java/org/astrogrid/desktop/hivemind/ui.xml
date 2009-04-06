@@ -212,7 +212,7 @@ HELIOSCOPE
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:dialogs.registryGoogle" />	
             <inject object="service:ui.UiBuilder" />        	
-            <inject object="service:votech.vomon" />
+            <inject object="service:ivoa.vosi" />
             <inject object="service:ivoa.registry" />            
 		</object>
         
@@ -374,7 +374,7 @@ Query Builder
             <inject object="service:dialogs.resourceChooser" />
             <inject object="service:dialogs.registryGoogle" />  
             <inject object="service:ui.UiBuilder" />  
-             <inject object="service:votech.vomon" />                                  
+             <inject object="service:ivoa.vosi" />                                  
             <inject object="service:ivoa.registry" />                
         </object>
        </contribution>

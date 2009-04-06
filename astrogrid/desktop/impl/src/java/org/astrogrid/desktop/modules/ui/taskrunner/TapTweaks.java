@@ -24,13 +24,15 @@ public class TapTweaks implements ProtocolSpecificTweaks {
     }
 
     public void buildForm(final TaskRunnerImpl tr) {
-        tr.toolbar.executionServers.add(r);
+        tr.new VosiServiceWorker(r).start(); // populate the services list (and check for availability)
+ 
         tr.pForm.buildForm(cea); // only one interface at the moment.
         tr.showADQLOnly(true);
     }
 
     public void buildForm(final Tool t,final TaskRunnerImpl tr) {
-        tr.toolbar.executionServers.add(r);
+        tr.new VosiServiceWorker(r).start(); // populate the services list (and check for availability)
+        
         tr.pForm.buildForm(t,t.getInterface(),cea);
         tr.showADQLOnly(true);
     }

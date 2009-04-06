@@ -22,10 +22,10 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.RegistryGoogleInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.ivoa.VosiInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
-import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
 /** Implementation of QueryBuilder.
  * A subclass of taskrunnner that specializes in  query building.
@@ -41,10 +41,10 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
             final RemoteProcessManagerInternal rpmi
             ,final ResourceChooserInternal rci, final RegistryGoogleInternal regChooser,
              final TypesafeObjectBuilder builder
-            , final VoMonInternal vomon
+            , final VosiInternal vosi
             ,final Registry reg)
             throws HeadlessException {
-        super(context, apps, rpmi,rci, regChooser, builder,vomon,reg);
+        super(context, apps, rpmi,rci, regChooser, builder,vosi,reg);
         this.reg = reg;
     }
 

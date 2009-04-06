@@ -24,9 +24,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Comparator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -42,7 +40,6 @@ import javax.swing.SwingUtilities;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -55,6 +52,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.VosiAvailabilityBean;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.TapCapability;
@@ -65,8 +63,9 @@ import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.dialogs.RegistryGoogleInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.ivoa.VosiInternal;
 import org.astrogrid.desktop.modules.system.CSH;
-import org.astrogrid.desktop.modules.system.ui.RetriableBackgroundWorker;
+import org.astrogrid.desktop.modules.system.Tuple;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
@@ -86,17 +85,16 @@ import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsEvent;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsListener;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
-import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
-import org.votech.VoMonBean;
 import org.w3c.dom.Document;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
+import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.FunctionList.Function;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
@@ -126,7 +124,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	public TaskRunnerImpl(final UIContext context, final ApplicationsInternal apps
 	        ,final RemoteProcessManagerInternal rpmi,final ResourceChooserInternal rci
 	        ,final RegistryGoogleInternal regChooser,final TypesafeObjectBuilder builder
-	        ,final VoMonInternal vomon
+	        ,final VosiInternal vosi
 	        ,final Registry reg) throws HeadlessException {
 		super(context,"Task Runner","window.taskrunner");
         this.reg = reg;
@@ -135,7 +133,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		this.fileChooser = rci;
 		this.regChooser = regChooser;
         this.vfs = rci.getVFS();
-        this.vomon = vomon;
+        this.vosi = vosi;
 		this.apps = apps;
 
 	      // form panel
@@ -326,7 +324,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	    
 	    private final JPanel trackerPanel;	    
 	private final FileSystemManager vfs;
-	private final VoMonInternal vomon;
+	private final VosiInternal vosi;
 	protected final ApplicationsInternal apps;
 	//private final DescriptionsPanel descriptions;
 	protected final TaskParametersForm pForm;
@@ -510,20 +508,20 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	}
 
 	/** extended toolbar which adds an 'execute' button - not static, as more tightly integrated into the taskrunner */
-	public class ExecutingTaskRunnerToolbar extends TaskRunnerToolbar implements ListEventListener<Service> {
+	public class ExecutingTaskRunnerToolbar extends TaskRunnerToolbar implements ListEventListener<Tuple<Service,VosiAvailabilityBean>> {
 	    public ExecutingTaskRunnerToolbar(final JMenu menu) {
 	        super(pForm,newTask);
 	        menu.add(executeAction);
 	        menu.addSeparator();
 	        // function that maps a service to an 'Execute' menu operation */
-	        final Function<Service,JMenuItem> fn = new FunctionList.Function<Service,JMenuItem>() {
-	            public JMenuItem evaluate(final Service sourceValue) {
+	        final Function<Tuple<Service,VosiAvailabilityBean>,JMenuItem> fn = new FunctionList.Function<Tuple<Service,VosiAvailabilityBean>,JMenuItem>() {
+	            public JMenuItem evaluate(final Tuple<Service,VosiAvailabilityBean> sourceValue) {
 	                return new ExecuteTaskMenuItem(sourceValue);
 	            }
 	        };
-	        new EventListMenuManager( new FunctionList<Service,JMenuItem>(executionServers,fn),menu, false);
+	        new EventListMenuManager( new FunctionList<Tuple<Service,VosiAvailabilityBean>,JMenuItem>(executionServers,fn),menu, false);
 	        execButton = new EventListDropDownButton("Unavailable",IconHelper.loadIcon("run16.png")
-	                ,new FunctionList<Service,JMenuItem>(executionServers, fn),false);
+	                ,new FunctionList<Tuple<Service,VosiAvailabilityBean>,JMenuItem>(executionServers, fn),false);
 	        execButton.setEnabled(false);
 	        execButton.getMainButton().setToolTipText("Execute the task: Press to execute on the first suitable server, or click the arrow to manually choose a server");
 	        CSH.setHelpIDString(execButton,"task.execute");
@@ -541,11 +539,15 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             }
 	    };
 	    
-	    /** list of servers that provide this application - should contain Service objects */
-	    final EventList<Service> executionServers =  new BasicEventList<Service>();
+	    /** list of servers that provide this application - should contain Service objects
+	     * sorted using vosi information (allowing for nulls) */
+	    final EventList<Tuple<Service,VosiAvailabilityBean>> executionServers = new SortedList<Tuple<Service,VosiAvailabilityBean>>(  	        
+	            new BasicEventList<Tuple<Service,VosiAvailabilityBean>>()
+	            , new VosiComparator()
+	            );
 
 	    // enable / disable various bits of the exec button, depending on what is available.
-	    public void listChanged(final ListEvent<Service> listChanges) {
+	    public void listChanged(final ListEvent<Tuple<Service,VosiAvailabilityBean>> listChanges) {
 	        while (listChanges.hasNext()) {
 	            listChanges.next();
 	            if (executionServers.isEmpty()) {
@@ -565,11 +567,11 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	     *  */
 	     protected final class ExecuteTaskMenuItem extends JMenuItem implements ActionListener {
 
-	         public ExecuteTaskMenuItem(final Service service) {            
-	             this.service = service;
-	            setIcon(vomon.suggestIconFor(service)); 
-	             setText("Execute @  " + service.getTitle());
-	             setToolTipText(vomon.getTooltipInformationFor(service));
+	         public ExecuteTaskMenuItem(final Tuple<Service,VosiAvailabilityBean> tupp) {            
+	             this.service = tupp.fst();
+	            setIcon(vosi.suggestIconFor(tupp.snd())); 
+	             setText("Execute @  " + this.service.getTitle());
+	             setToolTipText(vosi.makeTooltipFor(tupp.snd()));
 	             addActionListener(this);
 	         }
 
@@ -620,78 +622,86 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	     }
 
 	}
+	private class VosiComparator implements Comparator<Tuple<?,VosiAvailabilityBean>> {
+
+        public int compare(final Tuple<?, VosiAvailabilityBean> o1,
+                final Tuple<?, VosiAvailabilityBean> o2) {
+            final VosiAvailabilityBean a = o1.snd();
+            final VosiAvailabilityBean b = o2.snd();
+            if (a == null) {
+                if (b == null) {
+                    return 0;
+                } else {
+                    return -1;                    
+                }
+            } else if (b == null) { // a is not null;
+                return 1;
+            } else {
+                final int i = a.isAvailable() ? 1 : 0;
+                final int i1 = b.isAvailable() ? 1 : 0;
+                return i - i1;
+                }
+            }
+        }
+	
 	/** worker which lists the services that provide the current application
 	 * cea specific
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Aug 2, 200712:43:15 AM
      */
-    final class ListServicesWorker extends RetriableBackgroundWorker<List<Service>> {
+    final class ListServicesWorker extends BackgroundWorker<Void> {
 
         public ListServicesWorker(final URI appId) {
             super(TaskRunnerImpl.this,"Listing task providers",Thread.MAX_PRIORITY);
             this.appId = appId;
         }
-
-
-        @Override
-        public BackgroundWorker<List<Service>> createRetryWorker() {
-            return new ListServicesWorker(appId);
-        }
         
         private final URI appId;
 
         @Override
-        protected List<Service> construct() throws Exception {
+        protected Void construct() throws Exception {
             final Service[] services = apps.listServersProviding(this.appId);
             final int sz = services.length;
             logger.debug("resolved app to " + sz + " servers");
-
-            switch(sz) {
-                case 0:
-                    return ListUtils.EMPTY_LIST;
-                case 1:
-                    return Collections.singletonList(services[0]);
-                default:
-                // more than one provider. Lets do a shuffle to promote a bit 
-                // of load balancing (taking into account vomon status too).
-                
-                // first split into 'up' and 'down'
-                    final List<Service> up = new ArrayList<Service>();
-                    final List<Service> down = new ArrayList<Service>();
-                    final List<Service> unknown = new ArrayList<Service>();
-                    for (int i = 0; i < services.length; i++) {
-                        final Service service = services[i];
-                        final VoMonBean avail = vomon.checkAvailability(service.getId());
-                        if (avail == null) {
-                            unknown.add(service);
-                        } else if  (avail.getCode() == VoMonBean.UP_CODE) {
-                            up.add(service);
-                        } else {
-                            down.add(service);
-                        }
-                    }
-                 // now if we've more than one 'up', shuffle the list.
-                    if (up.size() > 1) {
-                        Collections.shuffle(up);
-                    }
-                    // merge back together..
-                    if (! unknown.isEmpty()) {
-                       up.addAll(unknown);
-                    }
-                    if (! down.isEmpty()) {
-                        up.addAll(down); // tack the services that are 'down' at the end.
-                    }
-                    return up;
+            for (final Service s : services) {
+                new VosiServiceWorker(s).start();
             }
+            return null;            
         }
+
+    }
+    
+    /** check the availability of a single service, and add the service (and availability, if known) to the services list. */
+    public final class VosiServiceWorker extends BackgroundWorker<Tuple<Service,VosiAvailabilityBean>> {
+    
+        public VosiServiceWorker(final Service s) {
+            super(TaskRunnerImpl.this, "Checking availability of " + s.getTitle(),BackgroundWorker.INSANELY_SHORT_TIMEOUT,Thread.MAX_PRIORITY);
+            this.s = s;
+        }
+        Service s;
 
         @Override
-        protected void doFinished(final List<Service> result) {
-            if (result != null) {
-                toolbar.executionServers.addAll(result);
+        protected Tuple<Service, VosiAvailabilityBean> construct()
+                throws Exception {
+            try {
+                final VosiAvailabilityBean bean = vosi.checkAvailability(s.getId());
+                return new Tuple<Service,VosiAvailabilityBean>(s,bean);                
+            } catch (final InvalidArgumentException e) {
+                // no matter.
+                return new Tuple<Service,VosiAvailabilityBean>(s,null);
             }
         }
+        @Override
+        protected void doFinished(final Tuple<Service, VosiAvailabilityBean> result) {
+            toolbar.executionServers.add(result);
+        }
+        @Override
+        protected void doError(final Throwable ex) {
+            // don't care about the error - probablly a timeout. 
+            toolbar.executionServers.add(new Tuple<Service,VosiAvailabilityBean>(s,null));
+        }
     }
+    
     /** choose a new applicatino */
     private final class NewTaskAction extends AbstractAction {
         public NewTaskAction() {

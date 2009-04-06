@@ -38,7 +38,6 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
-import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.votech.VoMonBean;
 
@@ -214,8 +213,10 @@ public void reload() throws ServiceException {
 		try {
 			reload(reporter);
 		} catch (final Throwable t) {
-		    reporter.reportProgress("Failed to download statuses");
-		    reporter.reportProgress(new ExceptionFormatter().format(t));
+		    logger.info("Failed to download vomon statuses - never mind");
+		    // as vomon is bust, just swallow the errors for now.
+		   // reporter.reportProgress("Failed to download statuses");
+		   // reporter.reportProgress(new ExceptionFormatter().format(t));
 		}		
 	}
 
