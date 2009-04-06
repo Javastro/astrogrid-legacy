@@ -32,6 +32,9 @@ import org.astrogrid.acr.astrogrid.UserInformation;
  * has replaced it's myspace service with a vospace service, this could be detected by 
  * this provider (using some at-the-moment unknown registry metadata) and from then on
  * workspace: for that user will redirect to their vospace storage. 
+ * 
+ * @todo when vospace is integrated with community, this will need a rewrite to redirect to 
+ * myspace or vospace as appropriate
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 5, 200712:47:40 PM
  */
