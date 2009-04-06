@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.20 2009/03/26 18:04:12 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.21 2009/04/06 11:39:07 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,7 +71,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     private final Preferences prefs;
     private final Community comm;
 
-    private final EventList communityList =new BasicEventList();
+    private final EventList<Resource> communityList =new BasicEventList<Resource>();
     private Timer vomonRecheckTimer;
     
     private static String USER_PREFERENCE_KEY = "username";
@@ -83,30 +83,30 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
      * @throws ServiceException 
      * @throws URISyntaxException 
      */
-    public SwingLoginDialogue( final UIContext coxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,String defaultCommunity) throws MalformedURLException, ServiceException, URISyntaxException {
+    public SwingLoginDialogue( final UIContext coxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,final String defaultCommunity) throws MalformedURLException, ServiceException, URISyntaxException {
         super(coxt,"Virtual Observatory Login","dialog.login");
         this.comm = comm;
     	this.defaultCommunityIvorn = new URI(defaultCommunity); // if this throws, is a system misconfiguration - fail fast.
         prefs = Preferences.userNodeForPackage(SwingLoginDialogue.class);
     	
-    	final EventComboBoxModel model = new EventComboBoxModel(
-    	        new SortedList(
-    	                new UniqueList(communityList, GlazedLists.beanPropertyComparator(Resource.class,"id")) // unique list by ID
+    	final EventComboBoxModel<Resource> model = new EventComboBoxModel<Resource>(
+    	        new SortedList<Resource>(
+    	                new UniqueList<Resource>(communityList, GlazedLists.beanPropertyComparator(Resource.class,"id")) // unique list by ID
     	        , GlazedLists.beanPropertyComparator(Resource.class,"title")) // sorted list by title
     	);
     	// retrieve the resource for the user's preferred community.
     	// if there is one, it's most probably cached..
     	final URI preferredCommunity = new URI(prefs.get(COMMUNITY_PREFERENCE_KEY,defaultCommunityIvorn.toString()));
-    	    (new BackgroundWorker(this,"Finding user's preferred community",Thread.MAX_PRIORITY) {
+    	    (new BackgroundWorker<Resource>(this,"Finding user's preferred community",Thread.MAX_PRIORITY) {
     	        {
     	            setTransient(true);
     	        }    	    
     	        @Override
-    	        protected Object construct() throws Exception {
+    	        protected Resource construct() throws Exception {
     	            return reg.getResource(preferredCommunity);
     	        }
     	        @Override
-    	        protected void doFinished(Object result) {
+    	        protected void doFinished(final Resource result) {
     	            if (result != null) {
     	                communityList.add(result);
     	                model.setSelectedItem(result);
@@ -115,13 +115,13 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     	    }).start();    	            
     	
     	//retreive a list of communities in a background thread - will take more time than jsut getting the preferred communtiy.
-    	(new BackgroundWorker(this,"Listing known communities",Thread.MAX_PRIORITY) {
+    	(new BackgroundWorker<Resource[]>(this,"Listing known communities",Thread.MAX_PRIORITY) {
     	    {
     	        setTransient(true);
     	    }
     	        
             @Override
-            protected Object construct() throws Exception {
+            protected Resource[] construct() throws Exception {
                 return reg.xquerySearch(
                     "//vor:Resource[capability/@standardID='" + 
                     StandardIds.AG_ACCOUNTS +  
@@ -129,8 +129,8 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
                 );
             }
             @Override
-            protected void doFinished(Object knownCommunities) {
-                for (Resource r :(Resource[]) knownCommunities) {
+            protected void doFinished(final Resource[] knownCommunities) {
+                for (final Resource r : knownCommunities) {
                     communityList.add(r);
                 }
             }
@@ -141,13 +141,13 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     	   commField_.setEditable(false);
            commField_.setRenderer(new BasicComboBoxRenderer() {
                @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
                   super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
                    if (value != null) {
                        if (value instanceof Resource) {
-                           Resource r = (Resource) value;
+                           final Resource r = (Resource) value;
                           //    String s = "<html>" + r.getTitle() + "<br><i>" + r.getId(); // can't get the 2-line to display correctly in the form - combo box doesn't expand.
-                           String s = r.getTitle();
+                           final String s = r.getTitle();
                            setText(s);
                            setIcon(monitor.suggestIconFor(r));
                            setToolTipText(monitor.getTooltipInformationFor(r));
@@ -160,10 +160,10 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
            });      
  
     	// assemble the form
-    	FormLayout fl = new FormLayout("10dlu:grow,right:d,2dlu,150dlu,10dlu:grow","5dlu,p,5dlu,p,2dlu,p,2dlu,p,5dlu,p,5dlu");
+    	final FormLayout fl = new FormLayout("10dlu:grow,right:d,2dlu,150dlu,10dlu:grow","5dlu,p,5dlu,p,2dlu,p,2dlu,p,5dlu,p,5dlu");
     	fl.setColumnGroups(new int[][]{{1,5}});
-    	PanelBuilder pb = new PanelBuilder(fl);    	
-    	CellConstraints cc = new CellConstraints();
+    	final PanelBuilder pb = new PanelBuilder(fl);    	
+    	final CellConstraints cc = new CellConstraints();
     	pb.addTitle("Enter your login details",cc.xyw(2,2,4));
     	pb.addLabel("Community",cc.xy(2,4));
     	pb.add(commField_,cc.xy(4,4));
@@ -176,10 +176,10 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         passField_ = new JPasswordField();
         pb.add(passField_,cc.xy(4,8));
 
-        JButton registerButton = new JLinkButton("Click here to register..");
+        final JButton registerButton = new JLinkButton("Click here to register..");
         registerButton.setToolTipText("Click here to apply for an account on the virtual observatory");        
         registerButton.addActionListener(new ActionListener() {           
-        	public void actionPerformed(ActionEvent e) {
+        	public void actionPerformed(final ActionEvent e) {
         	    new BackgroundWorker(SwingLoginDialogue.this,"Opening registration page") {
 
                     @Override
@@ -192,7 +192,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         });
         pb.add(registerButton,cc.xyw(2,10,3));
 
-        JPanel p = pb.getPanel(); // main panel of the form.
+        final JPanel p = pb.getPanel(); // main panel of the form.
  
         userField_.setText(prefs.get(USER_PREFERENCE_KEY,""));
              
@@ -213,7 +213,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         }
         */
         // configure the dialogue.
-        JPanel mainPanel = getMainPanel();
+        final JPanel mainPanel = getMainPanel();
         mainPanel.add(p,BorderLayout.CENTER);
         getContentPane().add(mainPanel);
         assist.getPlasticList().setVisible(false); // don't show the plastic list - just clutter in this ui.
@@ -228,7 +228,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
      */
     private boolean isVomonPopulated(final VoMonInternal monitor,
             final List<Resource> resources) {
-        for (Resource r : resources) {
+        for (final Resource r : resources) {
             
             if ( monitor.suggestIconFor(r) != null) {
                 return true;
@@ -253,11 +253,11 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
                 return null;
             }
             @Override
-            protected void doFinished(Object result) {
+            protected void doFinished(final Object result) {
                 setVisible(false); // close the dialogue.
             }
             @Override
-            protected void doError(Throwable ex) {
+            protected void doError(final Throwable ex) {
                 showError("Unable to login: " + ExceptionFormatter.formatException(ex,ExceptionFormatter.INNERMOST));
             }
 
@@ -273,7 +273,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
      * @todo once community can acept it, should change this to full ivorn.
      */
     private String getCommunity() {
-    	Object o = commField_.getSelectedItem();    	
+    	final Object o = commField_.getSelectedItem();    	
     	return ((Resource)o).getId().getAuthority();
     }
 
@@ -312,6 +312,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.21  2009/04/06 11:39:07  nw
+Complete - taskConvert all to generics.
+
 Revision 1.20  2009/03/26 18:04:12  nw
 source code improvements - cleaned imports, @override, etc.
 

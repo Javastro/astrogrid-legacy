@@ -12,7 +12,7 @@ import org.apache.commons.beanutils.Converter;
  * @since Apr 14, 20062:22:16 AM
  */
 public class ConverterContribution {
-  private Class output;
+  private Class<Class> output;
   private Converter converter;
   private boolean array;
 /**
@@ -30,13 +30,13 @@ public void setConverter(final Converter converter) {
 /** set the class of output this converter can produce.
  * @return the output
  */
-public Class getOutput() {
+public Class<Class> getOutput() {
 	return this.output;
 }
 /**
  * @param output the output to set
  */
-public void setOutput(final Class output) {
+public void setOutput(final Class<Class> output) {
 	this.output = output;
 }
 

@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.18 2008/11/04 14:35:53 nw Exp $
+/*$Id: CommunityImpl.java,v 1.19 2009/04/06 11:39:07 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -160,10 +160,10 @@ public class CommunityImpl implements CommunityInternal {
      */
     private void notifyListeners(final boolean loggedIn) {
         final UserLoginEvent e= new UserLoginEvent(loggedIn,this);
-        for (final Iterator i = listeners.iterator(); i.hasNext(); ) {
+        for (final Iterator<UserLoginListener> i = listeners.iterator(); i.hasNext(); ) {
         	UserLoginListener l = null;
             try {
-                 l = (UserLoginListener)i.next();
+                 l = i.next();
                 if (l != null) {
                     if (loggedIn == true) {
                         l.userLogin(e);
@@ -180,7 +180,7 @@ public class CommunityImpl implements CommunityInternal {
             }
         }
     }
-    protected Set listeners = new HashSet();
+    protected Set<UserLoginListener> listeners = new HashSet<UserLoginListener>();
     
   
     public void addUserLoginListener(final UserLoginListener l) {
@@ -266,6 +266,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.19  2009/04/06 11:39:07  nw
+Complete - taskConvert all to generics.
+
 Revision 1.18  2008/11/04 14:35:53  nw
 javadoc polishing
 
