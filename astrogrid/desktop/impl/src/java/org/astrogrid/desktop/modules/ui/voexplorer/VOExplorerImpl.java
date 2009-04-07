@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.30 2009/04/06 17:04:59 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.31 2009/04/07 13:10:42 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -469,6 +469,8 @@ public class VOExplorerImpl extends UIComponentImpl
             cp.add(new JLabel("Name :"));
             cp.add(tf);                
             pack();
+            tf.selectAll();
+            tf.requestFocusInWindow();
             setLocationRelativeTo(VOExplorerImpl.this.getComponent());
         }
         

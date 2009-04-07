@@ -30,7 +30,7 @@ public class StorageFolder extends Folder {
 				info.getPropertyDescriptors();
 			for (int i = 0; i < propertyDescriptors.length; ++i) {
 				final PropertyDescriptor pd = propertyDescriptors[i];
-				if (pd.getName().equals("file")) {
+				if (pd.getName().equals("file") || pd.getName().equals("uri")) {
 					pd.setValue("transient", Boolean.TRUE);
 				}
 			}
@@ -43,16 +43,16 @@ public class StorageFolder extends Folder {
 	private String description;
 	// constructor for persistence.
 	public StorageFolder()  {
-		super();
-		//@todo work out when it's a root, or remote, or someting
-		// and use networkdisk16.png instead.
+		super();		
 		setIconName("folder16.png");
 	}
 	
 	public StorageFolder(final String name, final String iconName,final URI uri)  {
 		super(name,iconName);
-		this.uri =uri;
+		setUri(uri);
+		setIconName(iconName); // used to ignore any icon set by setURI.
 	}	
+	/** access the URI for this folder */
 	public URI getUri() {
 		return this.uri;
 	}
@@ -60,19 +60,32 @@ public class StorageFolder extends Folder {
 	public String getUriString() {
 		return this.uri == null ? null :  this.uri.toString();
 	} 
+	// necessary for persistence.
 	public void setUriString(final String uri) throws URISyntaxException {
 	    if (StringUtils.isEmpty(uri)) {
 	        throw new URISyntaxException(uri,"Empty URI provided");
 	    }
-		this.uri = new URI(StringUtils.replace(uri.trim()," ","%20")); //escape any spaces that have leaked in.
-		file = null;
+		setUri( new URI(StringUtils.replace(uri.trim()," ","%20"))); //escape any spaces that have leaked in.	
+	}
+	/** set the URI for this storage folder .
+	 * setting URI nullifies the file attribute, and recomputes the icon name*/
+	public void setUri(final URI uri) {
+	    this.uri = uri;
+	    this.file = null;
+	    // compute a URI.
+	    if ("file".equals(uri.getScheme())) {
+	        setIconName("folder16.png");
+	    } else { // asssume it's remote then
+	        setIconName("myspace16.png");
+	    }
 	}
 	
 	private transient FileObjectView file;
+	/** acceess the transient file object for this storage folder - may be null*/
 	public FileObjectView getFile() {
 		return this.file;
 	}
-
+	/** set the file object - transient, and not used in the definition of the storage folder */
 	public void setFile(final FileObjectView file) {
 		this.file = file;
 	}

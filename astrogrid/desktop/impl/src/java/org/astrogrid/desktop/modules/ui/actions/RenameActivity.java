@@ -90,6 +90,8 @@ public class RenameActivity extends AbstractFileActivity {
             cp.add(new JLabel("Filename :"));
             cp.add(tf);
             pack();
+            tf.selectAll();
+            tf.requestFocusInWindow();
             setLocationRelativeTo(uiParent.get().getComponent());
         }
 

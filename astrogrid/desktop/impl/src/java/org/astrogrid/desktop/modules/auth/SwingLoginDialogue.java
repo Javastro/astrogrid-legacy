@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.22 2009/04/06 19:57:14 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.23 2009/04/07 13:10:42 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -368,11 +368,11 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
   
     @Override
     public void show() {
-        super.show();
+        passField_.requestFocusInWindow();
         passField_.setText("");
+        super.show();
         toFront();
         requestFocus();
-        passField_.requestFocus();
     }
  
 
@@ -387,6 +387,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.23  2009/04/07 13:10:42  nw
+Complete - taskUI Focus Improvements.
+
 Revision 1.22  2009/04/06 19:57:14  nw
 Complete - taskRemove vomon
 

@@ -12,6 +12,8 @@ import java.awt.HeadlessException;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -215,33 +217,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 			PREFERENCES.put(PREFERRED_VIEW_KEY,mainPanel.currentlyShowing());			
 		}		
 	}
-	
-	private class BookmarkAction extends AbstractAction {
-		public BookmarkAction() {
-			super("Bookmark this Folder", IconHelper.loadIcon("addbookmark22.png"));
-			CSH.setHelpIDString(this,"files.bookmark");
-			putValue(Action.SHORT_DESCRIPTION,"Bookmark the current location");
-			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_K,UIComponentMenuBar.MENU_KEYMASK));
-			setEnabled(false);
-		}
-		public void actionPerformed(final ActionEvent e) {
-		    
-			final StorageFolder f = new StorageFolder();
-			try {
-				final FileObjectView fo = navigator.current();
-				f.setFile(fo);
-				f.setUriString(fo.getUri());
-				final String name = StringUtils.isBlank(fo.getBasename()) ? "/" : fo.getBasename();
-				if (! "file".equals(fo.getScheme())) { // remote file
-				    f.setIconName("myspace16.png");
-				}
-				f.setName(name);
-				foldersList.add(f); // and this is automatically persisted.
-			} catch (final Exception ex) {
-				parent.showTransientError("Failed to add bookmark",ExceptionFormatter.formatException(ex));
-			}
-		}
-	}
+
 	
 	private class UploadAction extends AbstractAction {
 	    /**
@@ -307,6 +283,8 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
                 cp.add(new JLabel("Folder Name :"));
                 cp.add(tf);
                 pack();
+                tf.selectAll();
+                tf.requestFocusInWindow();
                 setLocationRelativeTo(StorageView.this.getParent().getComponent());                
             }
 
@@ -419,7 +397,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             comm.addUserLoginListener(this);
             navigator.addNavigationListener(this);
     	// hierarchies.
-    		folders = new StorageFoldersList(foldersList,parent,vfs);
+    		folders = new StorageFoldersList(foldersList,this,vfs);
     		folders.addListSelectionListener(this);
     		folders.setName(STORAGE_VIEW);
        // toolbar
@@ -454,7 +432,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    //@todo later - maybe add autocomplete support for this?
     	    location = new JTextField();
     	    CSH.setHelpIDString(location,"files.location");
-    	    location.requestFocusInWindow();
+    	 
     	    location.setToolTipText("<html>Enter a URL or file location. Supported Schemes:"
     	    		+ "<br> [<b>file</b>://] absolute-path"
     	    		+ "<br> <b>workspace</b>://[ absolute-path]"
@@ -479,7 +457,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     		configureButton(goButton);
     	    builder.add(goButton,cc.xy(r++,c));
     	    builder.add(createMainButton(refresh),cc.xy(r++,c));
-    	    builder.add(createMainButton(bookmark),cc.xy(r++,c));
+    	    builder.add(createMainButton(folders.getCreate()),cc.xy(r++,c));
     	    builder.add(createMainButton(newFolder),cc.xy(r++,c));
     	    r++;
     	    // can't be bothered making this track the menu entries, so just make it invisible if the menu is available.
@@ -513,14 +491,36 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             
             if (PREFERENCES.get(PREFERRED_VIEW_KEY,"list").equals("list")) {
                 getIcons().doClick(); // misleading names - the constant 'list' corresponds to the icons view. really.
+                
             } else {
                 getList().doClick();
             } 
     
-      // finally, select first item in the views list, to start the whole thing going.
     	    folders.clearSelection();
-    	    folders.setSelectedIndex(0);
-    	    fileList.requestFocusInWindow();
+    	    // finally,move to the home directory.
+    	    navigator.move(SystemUtils.getUserHome().toURI().toString());
+    	    // add a listener to window display. and make sure first item is selected.
+    	    final Component pc = parent.getComponent();
+    	    final Window w = pc instanceof Window
+    	                ? (Window) pc
+    	                : SwingUtilities.getWindowAncestor(pc);
+    	     w.addWindowListener(new WindowAdapter() {
+    	         @Override
+    	        public void windowOpened(final WindowEvent e) {
+    	            if (fileList.isShowing()) {
+    	                if (fileList.getModel().getSize() > 0) {
+    	                    fileList.setSelectedIndex(0);
+    	                }
+    	                fileList.requestFocusInWindow();
+    	            } else { // must be file table then.
+    	                if (fileTable.getRowCount() > 0) {
+    	                    fileTable.getSelectionModel().setSelectionInterval(0,0);
+    	                }
+    	                fileTable.requestFocusInWindow();
+    	            }
+    	        }
+    	     });           
+    	            
     	}
 	// list of folders being displayed in LHS
 	private final EventList<StorageFolder> foldersList;
@@ -548,7 +548,6 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	    iconsMenuItem.setIcon(null); // don't want icons on these menu items.
 	    listMenuItem.setIcon(null);
 	}
-	private final Action bookmark = new BookmarkAction();
 	private final Action newFolder = new NewFolderAction();
 
 	private final FileNavigator navigator;
@@ -623,7 +622,6 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
         location.setText(navigator.current().getUri());
         //  notifyStorageTasks();        
         if (e instanceof BookmarkNavigationEvent) {
-            bookmark.setEnabled(false);
             final StorageFolder bookmark = ((BookmarkNavigationEvent)e).getBookmark();
             // if this item isn't already selected, select it.
             if (! bookmark.equals(folders.getSelectedValue())) {
@@ -632,7 +630,6 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
                 // as it's idempotent.
             }            
         } else {
-            bookmark.setEnabled(true);
             folders.clearSelection();
         }
     }
@@ -725,12 +722,6 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
         return this.listMenuItem;
     }
 
-    /**
-     * @return the bookmark action
-      */
-    public final Action getBookmark() {
-        return this.bookmark;
-    }
 
     /**
      * @return the newFolder action

@@ -838,6 +838,8 @@ public class ResourceTree extends JTree {
                 cp.add(new JLabel("Name :"));
                 cp.add(tf);                
                 pack();
+                tf.selectAll();
+                tf.requestFocusInWindow();
                 setLocationRelativeTo(parent.getComponent());
             }
             

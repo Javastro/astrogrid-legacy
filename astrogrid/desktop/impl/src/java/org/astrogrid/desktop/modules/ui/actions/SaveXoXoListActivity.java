@@ -7,7 +7,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.PrintWriter;
 import java.net.URI;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.vfs.FileObject;
@@ -52,7 +51,7 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 	private final FileSystemManager vfs;
 	@Override
     public void actionPerformed(final ActionEvent e) {
-		final List rs = computeInvokable();
+		final List<Resource> rs = computeInvokable();
 		Component comp = null;
 		if (e.getSource() instanceof Component) {
 			comp = (Component)e.getSource();
@@ -61,9 +60,9 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 		if (u == null) {
 			return;
 		}
-		(new BackgroundWorker(uiParent.get(),"Exporting summaries",BackgroundWorker.LONG_TIMEOUT) {
+		(new BackgroundWorker<Void>(uiParent.get(),"Exporting summaries",BackgroundWorker.LONG_TIMEOUT) {
 			@Override
-            protected Object construct() throws Exception {
+            protected Void construct() throws Exception {
 				PrintWriter out = null;
                 FileObject fo = null;
 				final int max = rs.size() + 2;
@@ -75,8 +74,7 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 				    setProgress(++count,max);
 					out.print("<ul class='xoxo'>");
 					out.println("<!-- See http://microformats.org/wiki/xoxo for details of XoXo format -->");
-					for (final Iterator i = rs.iterator(); i.hasNext();) {
-						final Resource r = (Resource) i.next();
+					for (final Resource r : rs) {
 						String name = r.getShortName();
 						if (name == null || name.trim().length() == 0) {
 							name = r.getTitle();
@@ -133,7 +131,7 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 				return null;
 			}
             @Override
-            protected void doFinished(final Object result) {
+            protected void doFinished(final Void result) {
                 parent.showTransientMessage("Export complete","");
             }			
 		}).start();

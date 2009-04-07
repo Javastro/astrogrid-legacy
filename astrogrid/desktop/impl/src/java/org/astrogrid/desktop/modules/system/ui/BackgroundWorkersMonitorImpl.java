@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.lang.WordUtils;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -113,8 +114,10 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
                 String title;
                 if (value instanceof String) {
                     title = (String)value;
-                } else if (value != null){                    
-                    title = ((UIComponent)value).getTitle();
+                } else if (value != null){       
+                    final String fullTitle = ((UIComponent)value).getTitle();
+                    // need to use min below to work aoround index-out-of-range bug in abbreviate..
+                    title = WordUtils.abbreviate(fullTitle,Math.min(30,fullTitle.length()), 45,String.valueOf(UIComponentMenuBar.ELLIPSIS));
                 } else {
                     title = "Dialogue";
                 }

@@ -81,9 +81,11 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	private static final Log logger = LogFactory
 			.getLog(StorageFoldersList.class);
     private final FileSystemManager vfs;
+    private final StorageView storageView;
 
-	public StorageFoldersList(final EventList<StorageFolder> folderList, final UIComponent parent,final FileSystemManager vfs) {
-		this.parent = parent;
+	public StorageFoldersList(final EventList<StorageFolder> folderList, final StorageView storageView,final FileSystemManager vfs) {
+		this.storageView = storageView;
+        this.parent = storageView.getParent();
         this.vfs = vfs;
 		CSH.setHelpIDString(this,"files.bookmarks");
 		this.folderList = folderList;
@@ -128,12 +130,29 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	private class NewBookmarkAction extends AbstractAction {
 
         public NewBookmarkAction() {
-            super("New Bookmark" + UIComponentMenuBar.ELLIPSIS,IconHelper.loadIcon("editadd16.png"));
-            putValue(SHORT_DESCRIPTION,"Add a new bookmark");
-            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
+            super("Add Bookmark" + UIComponentMenuBar.ELLIPSIS,IconHelper.loadIcon("addbookmark22.png"));
+            CSH.setHelpIDString(this,"files.bookmark");            
+            putValue(SHORT_DESCRIPTION,"Add a new bookmark");          
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_K,UIComponentMenuBar.MENU_KEYMASK));            
         }
         public void actionPerformed(final ActionEvent e) {
+            // create an initial storage folder, set to home directory.
             final StorageFolder f = new StorageFolder();
+            final FileObjectView fo = storageView.getNavigator().current();
+            
+            try {
+                // important to set uri before file object
+                // as setting uri clears file object
+                f.setUriString(fo.getUri());
+                final String name = StringUtils.isBlank(fo.getBasename()) ? "/" : fo.getBasename();
+                f.setName(name);
+                f.setFile(fo);
+            } catch (final URISyntaxException x) { // some reason didn't like current uri.
+                // no matter - fall back to home.
+                f.setUri(SystemUtils.getUserHome().toURI());
+                f.setName("Home");
+            }
+            // now show it to the user for editing.
             final Component pc = parent.getComponent();
             final Window w = pc instanceof Window
                      ? (Window) pc
@@ -167,10 +186,8 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             @Override
             protected void init() {
                 super.init();
-                setTitle("Create Bookmark");
-                getBanner().setTitle("Enter the new bookmark details");
-                name.setText("untitled");
-                uri.setText(SystemUtils.getUserHome().toURI().toString());
+                setTitle("Add Bookmark");
+                getBanner().setTitle("Edit the new bookmark details");
                 
             }
             
@@ -251,8 +268,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
                 super.init();
                 setTitle("Edit Bookmark");
                 getBanner().setTitle("Editing " + this.f.getName());
-                name.setText(this.f.getName());
-                uri.setText(this.f.getUriString());            
+          
             }
             
             @Override
@@ -420,7 +436,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             final StorageFolder sf = new StorageFolder();
             sf.setName(fn.getBasename());
             sf.setUriString(fn.getUri());
-            sf.setFile(fn);
+            sf.setFile(fn); // important that setFile happens after setURI.
             return sf;
             } catch (final URISyntaxException e) {
                 parent.showTransientError("Failed to parse dropped uri",ExceptionFormatter.formatException(e));
@@ -492,6 +508,8 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
         protected JTextField name = new JTextField();
         protected JTextField uri = new JTextField();
         protected void init(){
+            name.setText(this.f.getName());
+            uri.setText(this.f.getUriString());  
             setModal(false);
             setDialogMode(BaseDialog.OK_CANCEL_DIALOG);
             setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -505,6 +523,8 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             pb.addLabel("Location :",cc.xy(1,3));
             pb.add(uri,cc.xy(3,3));
             pack();
+            name.selectAll();
+            name.requestFocusInWindow();
             setLocationRelativeTo(parent.getComponent());
             
         }
@@ -531,13 +551,16 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
         public void ok() {
             if (StringUtils.isEmpty(name.getText()) || StringUtils.isEmpty(uri.getText())) {
                 return;
-            }
+            }            
             this.f.setName(name.getText().trim());
-            try {
-                this.f.setUriString(uri.getText().trim());
-            } catch (final URISyntaxException e) {
-                getBanner().setSubtitle("Invalid location entered - please try again");
-                return;
+            final String uriInput = uri.getText().trim();
+            if (! uriInput.equals(f.getUriString())) { // only set if it's changed. if we don't set, it preserves any cached file object
+                try {
+                    this.f.setUriString(uriInput);
+                } catch (final URISyntaxException e) {
+                    getBanner().setSubtitle("Invalid location entered - please try again");
+                    return;
+                }
             }
             // although we're aliasing, do this to notify the folder list that things have changed.
             super.ok(); // closes the dialogue.

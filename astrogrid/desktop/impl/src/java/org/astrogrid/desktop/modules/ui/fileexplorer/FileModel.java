@@ -4,8 +4,11 @@
 package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.awt.datatransfer.Transferable;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 import javax.swing.event.ListSelectionEvent;
@@ -25,6 +28,7 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.matchers.CompositeMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.matchers.MatcherEditor;
+import ca.odell.glazedlists.matchers.Matchers;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 
 /**
@@ -113,11 +117,17 @@ public class Filemodel implements ListSelectionListener{
             programmaticFilter.setMatcher(m);
         }
 
+        
+       // private class Toggle
+        
     /** A matcher that filters out hidden files.
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Aug 30, 20072:20:51 PM
      */
     protected static final class NoHiddenFiles implements Matcher<FileObjectView> {
+        static final public Matcher<FileObjectView> instance = new NoHiddenFiles();
+        private NoHiddenFiles() {
+        }
         public boolean matches(final FileObjectView fo) {
                 return !(fo.isHidden() || fo.getBasename().charAt(0) == '.') ;
         }
@@ -140,6 +150,8 @@ public class Filemodel implements ListSelectionListener{
 
     private final MutableMatcherEditor<FileObjectView> hiddenFilter;
     private final TransferHandler handler;
+
+    private final JCheckBoxMenuItem hiddenToggleButton;
     // when selection changes.
     public void valueChanged(final ListSelectionEvent e) {
         if (e.getValueIsAdjusting()) {
@@ -171,6 +183,21 @@ public class Filemodel implements ListSelectionListener{
             
         this.icons = icons;
         this.handler = new FileModelTransferHandler(this);
+        
+        this.hiddenToggleButton = new JCheckBoxMenuItem("Show Hidden Files",false);
+        hiddenToggleButton.setToolTipText("Show hidden files and folders");
+        hiddenToggleButton.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(final ItemEvent e) {
+                final boolean selected = e.getStateChange() == ItemEvent.SELECTED;
+                if (selected) {
+                    hiddenFilter.setMatcher(Matchers.trueMatcher());
+                } else {
+                    hiddenFilter.setMatcher(NoHiddenFiles.instance);
+                }
+            }
+        });
+        
     }
 
     // factory method
@@ -178,7 +205,7 @@ public class Filemodel implements ListSelectionListener{
     public static final Filemodel newInstance(final MatcherEditor<FileObjectView> ed,final ActivitiesManager activities,final IconFinder icons, final VFSOperations ops) {
         final MutableMatcherEditor<FileObjectView> programmaticFilter = new MutableMatcherEditor<FileObjectView>();
         final MutableMatcherEditor<FileObjectView> hiddenFilter = new MutableMatcherEditor<FileObjectView>();
-        hiddenFilter.setMatcher(new NoHiddenFiles());
+        hiddenFilter.setMatcher(NoHiddenFiles.instance);
         // make a composite out of all these matchers.
         final CompositeMatcherEditor<FileObjectView> composite = new CompositeMatcherEditor<FileObjectView>();
         composite.setMode(CompositeMatcherEditor.AND);
@@ -199,6 +226,13 @@ public class Filemodel implements ListSelectionListener{
      */
     public IconFinder getIcons() {
         return this.icons;
+    }
+
+    /** toggle button that controls whether hidden files are shown.
+     * @return
+     */
+    public JCheckBoxMenuItem getHiddenToggleButton() {
+        return this.hiddenToggleButton;
     }
 
 }

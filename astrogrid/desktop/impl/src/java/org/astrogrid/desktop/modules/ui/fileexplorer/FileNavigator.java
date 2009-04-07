@@ -147,6 +147,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
         this.history = new History<Location>();
         history.addHistoryListener(this);
         this.upList = new BasicEventList<UpMenuItem>();
+                
     }
 
     public Filemodel getModel() {
@@ -489,7 +490,17 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
                 fireMoved(isRoot);
             }
         }
-
+      
+        @Override
+        protected void doError(final Throwable ex) {
+            // something has gond wrong.
+            // move back to where we were.
+            if (previous != null) {
+                move(previous.getFileObjectView());
+            }
+            super.doError(ex);
+        }
+        
     }
 
  // file listener interface - call refresh on a bg thread.

@@ -5,6 +5,8 @@ package org.astrogrid.desktop.modules.ui.voexplorer;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -80,7 +82,15 @@ public class XQueryListEditingPanel extends EditingPanel implements ActionListen
 		builder.add(cancel,cc.xy(8,row));		
 		
 	    ok.setEnabled(false); //to start with, query hasn't been sized.
-				
+
+	       this.addComponentListener(new ComponentAdapter() { // put focus in correct place on display
+	            @Override
+	            public void componentShown(final ComponentEvent e) {
+	                folderName.selectAll();
+	                folderName.requestFocusInWindow();                  
+	            
+	            }
+	        });
 	}
 	private final JButton estimate;
 	private final QuerySizeIndicator sizing;

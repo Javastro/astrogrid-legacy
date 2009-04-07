@@ -1,6 +1,8 @@
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -78,6 +80,14 @@ public class SubscriptionEditingPanel extends EditingPanel {
         row += 2;
         builder.add(ok, cc.xy(5, row));
         builder.add(cancel, cc.xy(7, row));
+        this.addComponentListener(new ComponentAdapter() { // put focus in correct place on display
+            @Override
+            public void componentShown(final ComponentEvent e) {
+                nameField.selectAll();
+                nameField.requestFocusInWindow();                  
+            
+            }
+        });        
     }
 
     @Override

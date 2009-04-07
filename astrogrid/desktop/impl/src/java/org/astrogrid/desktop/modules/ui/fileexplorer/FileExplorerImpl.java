@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.19 2009/04/06 11:43:18 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.20 2009/04/07 13:10:41 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -82,7 +82,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		                .windowOperation(acts.getActivity(RenameActivity.class))
 		                .windowOperation(acts.getActivity(DuplicateActivity.class))
 		                .windowOperation(acts.getActivity(DeleteFilesActivity.class))
-		                .windowOperation(view.getBookmark())
+		                //.windowOperation(view.getBookmark()) //- functionality merged into 'new bookmark' 
 		                .windowOperation(view.getFoldersList().getEdit())
 		                .windowOperation(view.getFoldersList().getDelete());
 		        }
@@ -100,6 +100,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		            final MenuBuilder vmb = new MenuBuilder("View",KeyEvent.VK_V)
 		                .windowOperation(view.getRefresh())
 		                .windowOperation(view.getStop())
+		                .checkbox(view.getNavigator().getModel().getHiddenToggleButton())
 		                .separator()
 		                .radiobox(view.getIcons())
 		                .radiobox(view.getList());

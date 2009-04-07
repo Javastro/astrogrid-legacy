@@ -5,6 +5,8 @@ package org.astrogrid.desktop.modules.ui.voexplorer;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -85,6 +87,15 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 		builder.add(cancel,cc.xy(8,row));	
 		ok.setEnabled(false); // we know the editor starts out with an invalid query.
 		this.invalidate();
+		
+		this.addComponentListener(new ComponentAdapter() { // put focus in correct place on display
+		    @Override
+		    public void componentShown(final ComponentEvent e) {
+		        folderName.selectAll();
+		        folderName.requestFocusInWindow();   		        
+		    
+		    }
+		});
 	}
 
 	private final JTextArea text;
@@ -116,6 +127,7 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 			qb.reset();
 			showForm();
 		}
+
 	}
 	/** load the edits made into the currentlyEdited resource */
 	@Override
@@ -200,6 +212,7 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 	private void showForm() {
         flip.show(QB);	    
         ok.setEnabled(shouldOkBeEnabled());
+     
 	}
 	private void showError() {
 	    flip.show(ERROR);

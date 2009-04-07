@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.96 2009/04/06 11:43:20 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.97 2009/04/07 13:10:42 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -403,6 +403,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		});		
 		final JPanel pane = getMainPanel();
 		pane.add(searchPanel,BorderLayout.WEST);
+
 		
 	// main part of the window
 		flip = new VizualizationsPanel(vizualizations,radialViz,hyperbolicViz,servicesList);
@@ -517,9 +518,15 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 				// halt all my background processes.
 				haltQuery();
 			}
+			@Override
+			public void windowOpened(final WindowEvent e) {
+			    posText.requestFocusInWindow();
+			    posText.selectAll();
+			}
 		});
 	
 	}
+
 
 
 	/** buffer of history items */

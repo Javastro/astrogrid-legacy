@@ -14,8 +14,11 @@
 	</head>
 <body>
 <release version="1.2.3.beta3" date="unreleased">
+    <action dev="nw" type="fix">
+    UI: improved focus in dialogues.
+    </action>
     <action dev="nw" type="remove">
-    Removed VoMon from UI, replaced with Vosi where available (more reliable).
+    UI: Removed VoMon information, replaced with more reliable info from Vosi where available.
     </action>
     <action dev="nw" type="fix">
         File Explorer: Improved performance and reliability when working with myspace or vospace.

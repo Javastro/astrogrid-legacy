@@ -59,12 +59,15 @@ public void actionPerformed(final ActionEvent e) {
 	if (e.getSource() instanceof Component) {
 		comp = (Component)e.getSource();
 	}	
-	final List l = computeInvokable();
+	final List<Resource> l = computeInvokable();
 		final URI u = chooser.chooseResourceWithParent("Choose output file",true,true,true,comp);
-		(new BackgroundWorker(uiParent.get(),"Exporting XML",BackgroundWorker.LONG_TIMEOUT) {
+        if (u == null) {
+            return;
+        }		
+		(new BackgroundWorker<Void>(uiParent.get(),"Exporting XML",BackgroundWorker.LONG_TIMEOUT) {
 
 			@Override
-            protected Object construct() throws Exception {
+            protected Void construct() throws Exception {
 				OutputStream os = null;
                 FileObject fo = null;
 				final int max = l.size() + 2;
@@ -78,7 +81,7 @@ public void actionPerformed(final ActionEvent e) {
 				        os.write("<resources>\n".getBytes());
 				    }
 				    for (int i = 0; i < l.size(); i++) {
-				        final Resource res = (Resource)l.get(i);
+				        final Resource res = l.get(i);
 				        final Document doc = reg.getResourceXML(res.getId());
 				        DomHelper.ElementToStream(doc.getDocumentElement(),os);
 				        setProgress(++count,max);
@@ -97,7 +100,7 @@ public void actionPerformed(final ActionEvent e) {
 				return null;
 			}
 			@Override
-            protected void doFinished(final Object result) {
+            protected void doFinished(final Void result) {
 			    parent.showTransientMessage("Export complete","");
 			}
 		}).start();
