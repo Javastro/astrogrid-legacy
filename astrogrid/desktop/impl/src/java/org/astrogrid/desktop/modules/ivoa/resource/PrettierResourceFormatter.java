@@ -84,13 +84,19 @@ public final class PrettierResourceFormatter {
 		sb.h2(r.getTitle());
 		
 		sb.appendTitledObjectNoBR("Short Name",r.getShortName());
-		sb.appendTitledObjectNoBR("ID",r.getId());		
+		sb.appendTitledObjectNoBR("IVOA-ID",r.getId());		
 		sb.br();
 		
-		sb.appendTitledObjectNoBR("Type",formatType(r.getType()));
-	    sb.appendTitledObjectNoBR("Created",r.getCreated());
-	    sb.appendTitledObjectNoBR("Updated",r.getUpdated());	   
-	    //    sb.appendTitledObject("Status",r.getStatus()); always active.
+		sb.appendTitledObjectNoBR("Resource Type",formatType(r.getType()));
+		// shorten timestamps - just return dates.
+	    final String created = StringUtils.substringBefore(r.getCreated(),"T");
+        sb.appendTitledObjectNoBR("Created",created);
+	    final String updated = StringUtils.substringBefore(r.getUpdated(),"T");
+	    if (! created.equals(updated)) {	            
+	        sb.appendTitledObjectNoBR("Updated",updated);	   
+	    }
+	    
+        //    sb.appendTitledObject("Status",r.getStatus()); always active.
 		
 		final Validation[] validationLevel = r.getValidationLevel();
         formatValidation(sb, validationLevel);
@@ -100,7 +106,7 @@ public final class PrettierResourceFormatter {
 		// content
 		        final Content content = r.getContent();
 		        formatContent(sb, content);     
-
+		        sb.hr().br();
 		     // type-specific that apply to more than one type.
 		        // coverage
 		        if (r instanceof HasCoverage) {
