@@ -250,7 +250,8 @@ HELIOSCOPE
             <inject-arg />
             <inject object="service:ui.hyper" />
             <inject object="service:ivoa.capabilityTester" />     
-            <inject object="service:ivoa.vosi" />                        
+            <inject object="service:ivoa.vosi" />
+           <inject object="service:dialogs.capabilityIconFactory" />                                       
         </object>
         
         <!--  full adql editor panel -->

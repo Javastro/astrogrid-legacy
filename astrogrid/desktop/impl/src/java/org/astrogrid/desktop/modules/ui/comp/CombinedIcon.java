@@ -53,7 +53,7 @@ public class CombinedIcon implements Icon
     
     public int getIconWidth()
     {
-        if (orientation_ == VERTICAL)
+        if (orientation_ == HORIZONTAL)
         {
         	int sum = 0;
         	for (int i = 0; i < is.length; i++) {

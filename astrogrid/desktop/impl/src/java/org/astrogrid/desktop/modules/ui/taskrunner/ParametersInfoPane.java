@@ -20,6 +20,7 @@ import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.comp.PinnableLabel;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm.Model;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
@@ -50,8 +51,8 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
  * @param browser 
  * @param regBrowser 
  */
-    public ParametersInfoPane(final Model model, final EventList allElements, final HyperlinkListener hyper, final CapabilityTester tester,final Vosi vosi) {
-        super(hyper,tester, vosi);
+    public ParametersInfoPane(final Model model, final EventList allElements, final HyperlinkListener hyper, final CapabilityTester tester,final Vosi vosi, final CapabilityIconFactory iconFactory) {
+        super(hyper,tester, vosi,iconFactory);
         this.model = model;
         // using a function list means that we can register & deregister simply as the underlying parameter list changes.
         this.paramPins = new FunctionList(allElements,this); 

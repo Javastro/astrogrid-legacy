@@ -113,13 +113,15 @@ REGISTRY GOOGLE
 	<object name="formattedResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.FormattedResourceViewer">
 			<inject object="service:ui.hyper" />
             <inject object="service:ivoa.capabilityTester" />
-            <inject object="service:ivoa.vosi" />     
+            <inject object="service:ivoa.vosi" />
+            <inject object="service:capabilityIconFactory" />     
 	</object>
 	<object name="annotatedResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.AnnotatedResourceViewer">
 			<inject object="service:ui.hyper" />
 			<inject object="service:votech.annotate" />
             <inject object="service:ivoa.capabilityTester" />   
-            <inject object="service:ivoa.vosi" />        
+            <inject object="service:ivoa.vosi" />    
+           <inject object="service:capabilityIconFactory" />                   
 	</object>	
 	<object name="tableResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataResourceViewer">
     </object>

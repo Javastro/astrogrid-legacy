@@ -10,7 +10,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /** Generate an XQuery from SRQL, using the {@code for - where} form.
- * made abstract, to prevent accidental instantiation. I've determined that the subclass 'HeadClauseSRQL' is a more efficient implementation.
+ * made abstract, to prevent accidental instantiation.
+ *  I've determined that the subclass 'HeadClauseSRQL' is a more efficient 
+ *  implementation - however, most of the configuration is in this class.
  * @author Noel Winstanley
  * @since Aug 9, 20066:36:57 PM
  */
@@ -41,14 +43,18 @@ public abstract class BasicRegistrySRQLVisitor implements Builder{
 		targets.put("default", defaultTarget);
 		targets.put("any", new String[] {"$r//*"}); //@todo add attributes too - can't get //@* to work with latest XQuery.
 		targets.put("all", new String[] {"$r//*"}); //@todo add attributes too?
-		//targets.put("publisher", new String[] {"$r/curation/publisher","$r/curation/publisher/@ivo-id"});
+		targets.put("publisher", new String[] {"$r/curation/publisher","$r/curation/publisher/@ivo-id"});
+		targets.put("creator", new String[]{"$r/curation/creator/name", "$r/curation/creator/name/@ivo-id"});
 		targets.put("curation",new String[] {"$r/curation//*"});
+		//deprecated - prefer resourcetype or capability.
 		targets.put("type", new String[] {
 		        "$r/@xsi:type"
 		        ,"$r/content/type"
 		        ,"$r/capability/@xsi:type"
 		 //drags in too much cruft.       ,"$r/capability/@standardID"
 		        }); 
+		targets.put("capability",new String[] {"$r/capability/@xsi:type","$r/capability/@standardID"});
+		targets.put("resourcetype",new String[] {"$r/@xsi:type" });
 		targets.put("level", new String[] {"$r/content/contentLevel"});
 		targets.put("waveband",new String[] {"$r/coverage/waveband"}); 
 		targets.put("col",     new String[]{
@@ -61,8 +67,8 @@ public abstract class BasicRegistrySRQLVisitor implements Builder{
 	}	
    
 	public String build(final SRQL q, final String filter) {
-		final Object o = q.accept(this);
-		final StringBuffer sb = new StringBuffer();
+		final String o = q.accept(this);
+		final StringBuilder sb = new StringBuilder();
 		sb.append("for $r in //vor:Resource[not (@status = 'inactive' or @status = 'deleted')]\nwhere (");
     	if (filter != null) { // apply the filter first - as should restrict faster.
     		sb.append(filter).append(") and (");
@@ -88,35 +94,35 @@ public abstract class BasicRegistrySRQLVisitor implements Builder{
 	}
 	
     
-	public Object visit(final AndSRQL q) {
+	public String visit(final AndSRQL q) {
 		return "(" + q.getLeft().accept(this) + ") and (" + q.getRight().accept(this) + ")";
 	}
 
-	public Object visit(final OrSRQL q) {
+	public String visit(final OrSRQL q) {
 		return "(" + q.getLeft().accept(this) + ") or (" + q.getRight().accept(this) + ")";
 	}
 
-	public Object visit(final NotSRQL q) {
+	public String visit(final NotSRQL q) {
 		return "not (" + q.getChild().accept(this) + ")";
 	}
 
-	public Object visit(final TermSRQL q) {
+	public String visit(final TermSRQL q) {
 		return buildClause(q.getTerm());
 	}
 
-	public Object visit(final PhraseSRQL q) {
+	public String visit(final PhraseSRQL q) {
 		return buildClause(q.getPhrase());
 	}
-	public Object visit(final TargettedSRQL q) {
+	public String visit(final TargettedSRQL q) {
 		setTarget(q.getTarget());
-		final Object result = q.getChild().accept(this);
+		final String result = q.getChild().accept(this);
 		resetTarget();
 		return result;
 	}
 	
 
 	
-	public Object visit(final XPathSRQL q) {
+	public String visit(final XPathSRQL q) {
 		return q.getXpath(); // just gets inlined.
 	}
 	  //strange - more advanced xqeuery (union, some, etc) is very very slow.

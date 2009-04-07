@@ -56,8 +56,8 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	private static final Log logger = LogFactory
 			.getLog(AnnotatedResourceViewer.class);
 
-    public AnnotatedResourceViewer(final HyperlinkListener hyper, final AnnotationService annService, final CapabilityTester tester,final Vosi vosi) {
-		super(hyper, tester,vosi);
+    public AnnotatedResourceViewer(final HyperlinkListener hyper, final AnnotationService annService, final CapabilityTester tester,final Vosi vosi, final CapabilityIconFactory ico) {
+		super(hyper, tester,vosi,ico);
 		this.annService = annService;
 		userSource = annService.getUserAnnotationSource();
 	

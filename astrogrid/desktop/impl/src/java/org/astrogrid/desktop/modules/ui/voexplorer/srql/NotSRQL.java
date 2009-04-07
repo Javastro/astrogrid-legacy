@@ -14,7 +14,7 @@ public class NotSRQL extends SRQL {
 	private static final long serialVersionUID = -7785830546764343584L;
 	protected SRQL child;
 	@Override
-    public Object accept(final SRQLVisitor visitor) {
+    public <R> R accept(final SRQLVisitor<R> visitor) {
 		return visitor.visit(this);
 }
 	public SRQL getChild() {

@@ -16,7 +16,7 @@ public class XPathSRQL extends SRQL {
 	private static final long serialVersionUID = -1849502401267001744L;
 
 	@Override
-    public Object accept(final SRQLVisitor visitor) {
+    public <R> R accept(final SRQLVisitor<R> visitor) {
 		return visitor.visit(this);
 	}
 	

@@ -11,6 +11,9 @@ import java.io.Serializable;
  */
 public abstract class SRQL implements Serializable{
 
-	/** accept a visitor to this query */
-		public abstract Object accept(SRQLVisitor visitor);
+	/** accept a visitor to this query 
+	 * @param visitor 
+	 * @param <R> result type of visitor
+	 * @return a result of type {@code R}*/
+	 public abstract <R> R accept(SRQLVisitor<R> visitor);
 }

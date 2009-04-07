@@ -13,7 +13,7 @@ public class AndSRQL extends BinaryOperatorSRQL {
 	 */
 	private static final long serialVersionUID = 7812605180017847050L;
 	@Override
-    public Object accept(final SRQLVisitor visitor) {
+    public <R> R accept(final SRQLVisitor<R> visitor) {
 		return visitor.visit(this);
 }
 	@Override

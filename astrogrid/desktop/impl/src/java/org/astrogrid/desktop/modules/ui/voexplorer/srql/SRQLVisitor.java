@@ -7,14 +7,15 @@ package org.astrogrid.desktop.modules.ui.voexplorer.srql;
  * it's the visitor's responsibility to call accept() on sub terms - the accept methods
  * of the SRQL classes don't do the recursive calls for you.
  * @author Noel Winstanley
+ * @param <R> return type when visiting an element.
  * @since Aug 9, 20062:49:29 PM
  */
-public interface SRQLVisitor {
-	public Object visit(AndSRQL q) ;
-	public Object visit(OrSRQL q) ;
-	public Object visit(NotSRQL q);
-	public Object visit(TermSRQL q);
-	public Object visit(PhraseSRQL q);
-	public Object visit(TargettedSRQL q);
-	public Object visit(XPathSRQL q);
+public interface SRQLVisitor<R> {
+	public R visit(AndSRQL q) ;
+	public R visit(OrSRQL q) ;
+	public R visit(NotSRQL q);
+	public R visit(TermSRQL q);
+	public R visit(PhraseSRQL q);
+	public R visit(TargettedSRQL q);
+	public R visit(XPathSRQL q);
 }

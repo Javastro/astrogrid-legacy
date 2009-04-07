@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.StringUtils;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.DescribedEnumerationTemplate.DescribedValue;
 
 /** Query building template for a UCD clause.
  *  loads data from ucdlist.txt
@@ -20,12 +19,15 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.DescribedEnumerationTemp
 public final class UcdClauseTemplate extends DescribedEnumerationTemplate {
 
 	public UcdClauseTemplate() {
-		super("Any column UCD","ucd");
+		super("Table column UCDs","ucd");
 	} 
 
 	protected static final String LIST_RESOURCE = "ucd.list";
 
-	
+	@Override
+	protected String[] getPredicates() {
+	    return new String[]{"include", "do not include"};
+	}
 	@Override
     protected void populate(final List<DescribedValue> l) {
 		InputStream is = null;

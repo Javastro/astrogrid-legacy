@@ -53,9 +53,9 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		super();
 		// clauses is a list that detects changes in-place to it's items.
 		this.clauses = new ObservableElementList<Clause>(new BasicEventList<Clause>(),this);
-		clauses.addListEventListener(new ListEventListener() {
+		clauses.addListEventListener(new ListEventListener<Clause>() {
 
-			public void listChanged(final ListEvent arg0) {
+			public void listChanged(final ListEvent<Clause> arg0) {
 				while(arg0.hasNext()) {
 					arg0.next();
 					if (arg0.getType() != ListEvent.UPDATE) { //i.e. is a delete or add
@@ -136,7 +136,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		return v.canDisplay();
 	}
 	/** Examines a query and verifies it can be displayed in this panel */
-	private static class PanelVerifyingVisitor implements SRQLVisitor {
+	private static class PanelVerifyingVisitor implements SRQLVisitor<Void> {
 		public boolean canDisplay() {
 			return 
 				(
@@ -157,37 +157,37 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		private boolean complexTarget;
 		private boolean unknownTarget;
 		private boolean phraseSeen;
-		public Object visit(final AndSRQL q) {
+		public Void visit(final AndSRQL q) {
 			andSeen = true;
 			q.getLeft().accept(this);
 			q.getRight().accept(this);
 			return null;
 		}
 
-		public Object visit(final OrSRQL q) {
+		public Void visit(final OrSRQL q) {
 			orSeen = true;
 			q.getLeft().accept(this);
 			q.getRight().accept(this);
 			return null;
 		}
 
-		public Object visit(final NotSRQL q) { // can only have a single term inside a neg.
+		public Void visit(final NotSRQL q) { // can only have a single term inside a neg.
 			if (! (q.getChild() instanceof TermSRQL)) {
 				complexNegation = true;
 			}
 			return null;
 		}
 
-		public Object visit(final TermSRQL q) {// always ok
+		public Void visit(final TermSRQL q) {// always ok
 			return null;
 		}
 
-		public Object visit(final PhraseSRQL q) {// not expected at the moment.
+		public Void visit(final PhraseSRQL q) {// not expected at the moment.
 			phraseSeen = true;
 			return null;
 		}
 
-		public Object visit(final TargettedSRQL q) { // can only have a neg, or a term inside a target
+		public Void visit(final TargettedSRQL q) { // can only have a neg, or a term inside a target
 			final SRQL c = q.getChild();
 			if (! ( c instanceof TermSRQL || c instanceof NotSRQL) ) {
 				complexTarget = true;
@@ -203,7 +203,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			return null;
 		}
 
-		public Object visit(final XPathSRQL q) {
+		public Void visit(final XPathSRQL q) {
 			unknownXPathSeen = true; // can't handle any xpath at the moment.
 			return null;
 		}
@@ -227,22 +227,22 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	/** Traverse a query and populate the builder panel from it. 
 	 * doesn't work for general queries - assumes specfic structure.
 	 * */
-	private class PanelPopulatingVisitor implements SRQLVisitor {
-		public Object visit(final AndSRQL q) {
+	private class PanelPopulatingVisitor implements SRQLVisitor<Void> {
+		public Void visit(final AndSRQL q) {
 			anyAll.setSelectedIndex(ALL);
 			q.getLeft().accept(this);
 			q.getRight().accept(this);
 			return null;
 		}
 
-		public Object visit(final OrSRQL q) {
+		public Void visit(final OrSRQL q) {
 			anyAll.setSelectedIndex(ANY);
 			q.getLeft().accept(this);
 			q.getRight().accept(this);
 			return null;
 		}
 
-		public Object visit(final NotSRQL q) { // if we've visited a 'not' node it means no target was defined.
+		public Void visit(final NotSRQL q) { // if we've visited a 'not' node it means no target was defined.
 			// in this case, we want the 'default' target - which is what clause is created with.
 			final Clause c= new Clause(SrqlQueryBuilderPanel.this);
 			c.setClause(q);
@@ -250,18 +250,18 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			return null;
 		}
 
-		public Object visit(final TermSRQL q) {  // if we've visited a 'not' node it means no target was defined.
+		public Void visit(final TermSRQL q) {  // if we've visited a 'not' node it means no target was defined.
 			final Clause c= new Clause(SrqlQueryBuilderPanel.this);
 			c.setClause(q);
 			clauses.add(c);			
 			return null;
 		}
 
-		public Object visit(final PhraseSRQL q) {
+		public Void visit(final PhraseSRQL q) {
 			throw new RuntimeException("Programming error - have already validated srql query, and don't expect a phrase");
 		}
 
-		public Object visit(final TargettedSRQL q) {
+		public Void visit(final TargettedSRQL q) {
 			// find correct clause template, instantiate a new clause based on this template, then populate using children.
 			final String target = q.getTarget();
 			ClauseTemplate ct = null;
@@ -277,7 +277,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			return null;
 		}
 
-		public Object visit(final XPathSRQL q) {
+		public Void visit(final XPathSRQL q) {
 			throw new RuntimeException("Programming error - have already validated srql query, and don't expect an xpath");
 		}
 	}
@@ -313,54 +313,90 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	/** list of all the things possible to filter on */
 	static ClauseTemplate[] clauseTemplates = new ClauseTemplate[]{
 		new TextMatchTemplate("Any main field","default") {{
-			setTooltip("Search in  Title, Subject, Identifier, Shortname and Description fields" );
+			setTooltip("Search in  Title, Subject, IVOA-ID, Shortname and Description fields" );
 		}}
 		, new TextMatchTemplate("title")
+		// service capability
+		, new DescribedEnumerationTemplate("Service capability","capability"){{
+		    setTooltip("Search in 'Capability - Type' and 'Capability - StandardID");          	           		   
+		    }
+		    @Override
+		    protected void populate(final List<DescribedValue> vals) {
+	            vals.add(new DescribedValue("Cone","Catalog cone search service"));
+	            vals.add(new DescribedValue("Image","Image access service (SIAP)"));
+	            vals.add(new DescribedValue("Spectral","Spectrum access service (SSAP)"));
+	            vals.add(new DescribedValue("Time","Time range access service (STAP)"));
+	      //      vals.add(new DescribedValue("TAP","Table Access Service")); not official, and matches all STAP.
+
+	            vals.add(new DescribedValue("VOSpace","VOSpace remote storage"));
+	            // don't want this - no fun.
+	            //vals.add(new DescribedValue("CeaCapability","Offline application server (CEA)"));
+		    }
+		}
+		
+	      , new DescribedEnumerationTemplate("Resource type","resourcetype"){{
+	            setTooltip("Search in 'Resource Type''");                                 
+	            }
+	            @Override
+	            protected void populate(final List<DescribedValue> vals) {
+	                
+	                vals.add(new DescribedValue("CeaApplication","Remote application (CEA)"));
+	                vals.add(new DescribedValue("DataCollection",""));
+	                vals.add(new DescribedValue("DataService",""));
+	                vals.add(new DescribedValue("Resource",""));
+	                vals.add(new DescribedValue("CatalogService",""));
+	            //    vals.add(new DescribedValue("Registry",""));
+	                vals.add(new DescribedValue("Authority",""));
+	                vals.add(new DescribedValue("Organisation",""));
+	                //vals.add(new DescribedValue("Application",""));
+	                vals.add(new DescribedValue("Service","All services")); 	                
+	            }
+	        }
+		// reswource type
+//        , new DescribedEnumerationTemplate("Type","type"){{
+//            setTooltip("Search in 'Resource Type', 'Content - Type' and 'Capability - Type'");          
+//        }
+//        @Override
+//        protected void populate(final List<DescribedValue> vals) {
+//            vals.add(new DescribedValue("Archive",""));
+//            vals.add(new DescribedValue("Catalog","")); // includes catalog service.
+//            vals.add(new DescribedValue("Survey",""));
+//            vals.add(new DescribedValue("Simulation",""));
+//            vals.add(new DescribedValue("BasicData",""));
+//
+// 
+//            vals.add(new DescribedValue("DataCollection",""));
+//            vals.add(new DescribedValue("DataService",""));
+//            vals.add(new DescribedValue("TableService",""));
+//            vals.add(new DescribedValue("CatalogService",""));
+//            vals.add(new DescribedValue("Registry",""));
+//            vals.add(new DescribedValue("Authority",""));
+//            vals.add(new DescribedValue("Organisation",""));
+//            vals.add(new DescribedValue("CeaCapability","Offline application server (CEA)"));
+//            vals.add(new DescribedValue("Service","All services")); 
+//        }}
+		//
 		, new TextMatchTemplate("subject")
 		, new TextMatchTemplate("description")
 		, new EnumerationTemplate("waveband",new String[]{"Radio","Millimeter","Infrared","Optical","UV","EUV","X-ray","Gamma-ray"})
 
-		// I've not put in the whole list of types - andy doesn't want them all.
-		// this is a mix of stuff in subject/type and @xsi:type - shortest distinct prefixes.
-		, new DescribedEnumerationTemplate("Type","type"){{
-			setTooltip("Search in 'Resource Type', 'Content - Type' and 'Capability - Type'");			
-		}
-		@Override
-        protected void populate(final List<DescribedValue> vals) {
-			vals.add(new DescribedValue("Archive",""));
-			vals.add(new DescribedValue("Catalog","")); // includes catalog service.
-			vals.add(new DescribedValue("Survey",""));
-			vals.add(new DescribedValue("Simulation",""));
-			vals.add(new DescribedValue("BasicData",""));
-			vals.add(new DescribedValue("Cone","Catalog cone search service"));
-			vals.add(new DescribedValue("Image","Image access service (SIAP)"));
-			vals.add(new DescribedValue("Spectral","Spectrum access service (SSAP)"));
-			vals.add(new DescribedValue("Time","Time range access service (STAP)"));
-			vals.add(new DescribedValue("CeaApplication","Offline application (CEA)"));
-			//@todo describe these.
-			vals.add(new DescribedValue("DataCollection",""));
-			vals.add(new DescribedValue("DataService",""));
-			vals.add(new DescribedValue("TableService",""));
-			vals.add(new DescribedValue("CatalogService",""));
-			vals.add(new DescribedValue("Registry",""));
-			vals.add(new DescribedValue("Authority",""));
-			vals.add(new DescribedValue("Organisation",""));
-			vals.add(new DescribedValue("CeaCapability","Offline application server (CEA)"));
-			vals.add(new DescribedValue("Service","All services"));	
-		}}
 
-		// @future also to add - validation-level 
-		// @future add date-based querying.
+		// publisher
+		,new TextMatchTemplate("publisher")
+		,new TextMatchTemplate("creator")
+		, new TextMatchTemplate("Any curation field","curation")
 		
-		, new UcdClauseTemplate()
-		, new TextMatchTemplate("Any column name","col")
+
+		, new UcdClauseTemplate() // rename to Table Column UCD [includes | not includes]
+		, new TextMatchTemplate("IVOA-ID","id")
+
+		//	,new TextMatchTemplate("Any field","any")
+		// none of the following are wanted.
+		//, new TextMatchTemplate("Any column name","col")
 		
-		, new EnumerationTemplate("Content level","level",new String[]{"General","Elementary Education","Middle School Education","Secondary Education","Community College","University","Research","Amateur","Informal Education"})
-		, new TextMatchTemplate("Curator","curation")
-		, new TextMatchTemplate("Short name","shortname")
-		, new TextMatchTemplate("Identifier","id")
-		, new TextMatchTemplate("Source","source")
-		,new TextMatchTemplate("Any field","any")
+//		, new EnumerationTemplate("Content level","level",new String[]{"General","Elementary Education","Middle School Education","Secondary Education","Community College","University","Research","Amateur","Informal Education"})
+//		, new TextMatchTemplate("Short name","shortname")
+//		, new TextMatchTemplate("Source","source")
 	};
 	
 	/** A 'template' for one line of the search expression.
@@ -563,13 +599,12 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	}
 	
 	/** Formats a Clause */
-	private static class ClauseFormat extends JEventListPanel.AbstractFormat {
+	private static class ClauseFormat extends JEventListPanel.AbstractFormat<Clause> {
 		public ClauseFormat() {
 			super("d","60dlu:grow,2dlu,60dlu:grow,2dlu,60dlu:grow,6dlu,d,d","0dlu","2dlu"
 					,new String[]{"1,1","3,1","5,1","7,1","8,1"});//col,row for each item.
 		}
-		public JComponent getComponent(final Object arg0, final int arg1) {
-			final Clause c= (Clause)arg0;
+		public JComponent getComponent(final Clause c, final int arg1) {
 			switch (arg1) {
 			case 0: 
 				return c;

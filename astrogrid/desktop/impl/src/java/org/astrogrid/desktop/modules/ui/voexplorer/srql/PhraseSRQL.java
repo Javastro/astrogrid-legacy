@@ -15,7 +15,7 @@ public class PhraseSRQL extends SRQL {
 	private static final long serialVersionUID = -74242873320481568L;
 	protected String phrase;
 	@Override
-    public Object accept(final SRQLVisitor visitor) {
+    public <R> R accept(final SRQLVisitor<R> visitor) {
 		return visitor.visit(this);
 }
 	public String getPhrase() {

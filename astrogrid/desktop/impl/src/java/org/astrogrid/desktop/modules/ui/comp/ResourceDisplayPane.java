@@ -7,6 +7,7 @@ import org.astrogrid.acr.ivoa.Vosi;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 
 /** Custom widget to display resources.
  * 
@@ -18,8 +19,9 @@ public class ResourceDisplayPane extends JEditorPane {
     private final Vosi vosiTester;
 	
 	/** construct a display pane with additional support for following hyperlinks */
-	public ResourceDisplayPane(final HyperlinkListener hyper, final CapabilityTester capTester, final Vosi vosiTester) {
+	public ResourceDisplayPane(final HyperlinkListener hyper, final CapabilityTester capTester, final Vosi vosiTester, final CapabilityIconFactory iconFactory) {
 		this.vosiTester = vosiTester;
+        this.iconFactory = iconFactory;
         setContentType("text/html");
 		setBorder(null);
 		setEditable(false);
@@ -32,6 +34,7 @@ public class ResourceDisplayPane extends JEditorPane {
 	
 	protected Resource currentResource;
 	private String currentHTML;
+    private final CapabilityIconFactory iconFactory;
 	public void display(final Resource r) {
 		if (currentResource != r) {
 			currentResource = r;
@@ -58,5 +61,9 @@ public class ResourceDisplayPane extends JEditorPane {
     /** get a component to fetch vosi availability infomation.*/
     public final Vosi getAvailabilityTester() {
         return this.vosiTester;
+    }
+    
+    public final CapabilityIconFactory getIconFactory() {
+        return this.iconFactory;
     }
 }

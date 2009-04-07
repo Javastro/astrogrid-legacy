@@ -14,7 +14,7 @@ public class TargettedSRQL extends SRQL {
 	 */
 	private static final long serialVersionUID = 2393097896016240910L;
 	@Override
-    public Object accept(SRQLVisitor visitor) {
+    public <R> R accept(final SRQLVisitor<R> visitor) {
 		return visitor.visit(this);
 	}
 	protected String target;
@@ -22,13 +22,13 @@ public class TargettedSRQL extends SRQL {
 	public SRQL getChild() {
 		return this.child;
 	}
-	public void setChild(SRQL child) {
+	public void setChild(final SRQL child) {
 		this.child = child;
 	}
 	public String getTarget() {
 		return this.target;
 	}
-	public void setTarget(String target) {
+	public void setTarget(final String target) {
 		this.target = target;
 	}
 	/**
@@ -38,7 +38,7 @@ public class TargettedSRQL extends SRQL {
 		 */
 		@Override
         public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("TargettedQuery[");
 			buffer.append("target = ").append(target);
 			buffer.append(", child = ").append(child);
@@ -54,24 +54,31 @@ public class TargettedSRQL extends SRQL {
 		return result;
 	}
 	@Override
-    public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof TargettedSRQL)) 
-			return false;
+    public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (!(obj instanceof TargettedSRQL)) {
+            return false;
+        }
 		final TargettedSRQL other = (TargettedSRQL) obj;
 		if (this.child == null) {
-			if (other.child != null)
-				return false;
-		} else if (!this.child.equals(other.child))
-			return false;
+			if (other.child != null) {
+                return false;
+            }
+		} else if (!this.child.equals(other.child)) {
+            return false;
+        }
 		if (this.target == null) {
-			if (other.target != null)
-				return false;
-		} else if (!this.target.equals(other.target))
-			return false;
+			if (other.target != null) {
+                return false;
+            }
+		} else if (!this.target.equals(other.target)) {
+            return false;
+        }
 		return true;
 	}
 }

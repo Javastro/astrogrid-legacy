@@ -8,7 +8,7 @@ package org.astrogrid.desktop.modules.ui.voexplorer.srql;
  * @author Noel Winstanley
  * @since Aug 11, 200610:11:04 AM
  */
-public interface Builder extends SRQLVisitor {
+public interface Builder extends SRQLVisitor<String> {
 	public String build(SRQL q,String filter);
 
 }

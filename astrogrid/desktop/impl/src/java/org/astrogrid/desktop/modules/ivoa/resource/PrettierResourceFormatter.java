@@ -81,8 +81,16 @@ public final class PrettierResourceFormatter {
 		sb.append("</style></head><body>");
 		
 // core resource data
-		sb.h2(r.getTitle());
-		
+		//sb.h2(r.getTitle());
+		  sb
+		  //.append("<h2>")
+		  //    .append(r.getTitle())
+		      .append(" <object classid='")
+		      .append(InlineCapabilityIcons.class.getName())
+		      .append("'></object>")
+		      //.append("</h2>")
+		      .append("<br>")
+		      ;
 		sb.appendTitledObjectNoBR("Short Name",r.getShortName());
 		sb.appendTitledObjectNoBR("IVOA-ID",r.getId());		
 		sb.br();

@@ -33,8 +33,8 @@ public class HeadClauseSRQLVisitor extends BasicRegistrySRQLVisitor {
     }
     @Override
     public String build(final SRQL q, final String filter) {
-        final Object o = q.accept(this);
-        final StringBuffer sb = new StringBuffer();
+        final String o = q.accept(this);
+        final StringBuilder sb = new StringBuilder();
         sb.append("//vor:Resource[(not (@status = 'inactive' or @status = 'deleted')) and (");
         if (filter != null) { // apply the filter first - as should restrict faster.
             sb.append(filter).append(") and (");
@@ -47,7 +47,7 @@ public class HeadClauseSRQLVisitor extends BasicRegistrySRQLVisitor {
     
     // reject all incomplete queries.
     @Override
-    public Object visit(final TermSRQL q) {
+    public String visit(final TermSRQL q) {
         if (q.getTerm() == null || q.getTerm().trim().length() == 0) {
             throw new IllegalArgumentException("Not a complete query");
         }

@@ -21,6 +21,7 @@ public class UIConstants {
 
 	/** a nice sans-serif font */
 	public static final Font SANS_FONT = Font.decode("Helvetica")	;
+	public static final Font SANS_TITLE_FONT = SANS_FONT.deriveFont(Font.BOLD).deriveFont(AffineTransform.getScaleInstance(1.2,1.2));
 	/** smaller version of the dialog font */
 	public static final Font SMALL_DIALOG_FONT = Font.decode("Dialog").deriveFont(AffineTransform.getScaleInstance(0.9,0.9));
     

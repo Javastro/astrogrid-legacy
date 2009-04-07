@@ -22,8 +22,8 @@ import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
  */ 
 public class FormattedResourceViewer extends ResourceDisplayPane implements ResourceViewer {
 
-	public FormattedResourceViewer(final HyperlinkListener hyper, final CapabilityTester tester,final Vosi vosi) {
-		super(hyper, tester,vosi);
+	public FormattedResourceViewer(final HyperlinkListener hyper, final CapabilityTester tester,final Vosi vosi, final CapabilityIconFactory ico) {
+		super(hyper, tester,vosi, ico);
 		CSH.setHelpIDString(this, "reg.details");
 		setPreferredSize(new Dimension(200,100));		
 	}

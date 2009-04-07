@@ -30,7 +30,7 @@ public class ResourceDisplayPaneEmbeddedButton extends JButton {
      */
     
     
-    protected ResourceDisplayPane getResourceDisplayPane(final EventObject e) {
+    public static ResourceDisplayPane getResourceDisplayPane(final EventObject e) {
         final Container ancestor = SwingUtilities.getAncestorNamed(ResourceDisplayPane.class.getName(),(Component)e.getSource());
         if (ancestor == null) {
             throw new ProgrammerError("No ancestor available");
@@ -44,7 +44,7 @@ public class ResourceDisplayPaneEmbeddedButton extends JButton {
          
     }
     
-    protected UIComponent getUIComponent(final EventObject e) {
+    public static UIComponent getUIComponent(final EventObject e) {
         final Container ancestor = SwingUtilities.getAncestorOfClass(UIComponent.class,(Component)e.getSource());
         if (ancestor == null) {
             throw new ProgrammerError("No ancestor available");

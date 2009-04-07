@@ -33,7 +33,11 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 	 */
 	protected static final Log logger = LogFactory
 				.getLog(UcdClauseTemplate.class);
-	private static final String[] predicates = new String[]{"is","is not"};
+	// returns the list of labels to use as predicates.
+	// doesn't have any affect on actual behaviour.
+	protected String[] getPredicates() {
+	    return new String[]{"is","is not"}; 
+	}
 
 	@Override
     protected void displayClause(SRQL clause, final JComponent valueField, final JComponent predicateField) {
@@ -92,7 +96,7 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 
 	@Override
     protected JComponent createPredicateField() {
-		final JComboBox c = new JComboBox(predicates);
+		final JComboBox c = new JComboBox(getPredicates());
 		c.setEditable(false);
 		c.setSelectedIndex(0);
 		return c;
