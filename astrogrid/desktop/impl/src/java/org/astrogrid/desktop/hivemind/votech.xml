@@ -101,10 +101,11 @@ ANNOTATION SERVICE
     <object name="vosi" class="org.astrogrid.desktop.modules.votech.VosiAnnotationSource">
         <inject object="service:ivoa.vosi" />
     </object>
-        
+        <!-- not used - vomon is moribund.
 	<object name="vomon" class="org.astrogrid.desktop.modules.votech.VomonAnnotationSource">
 		<inject object="service:vomon" />
 	</object>
+         -->
 	<object name="jackdaw" class="org.astrogrid.desktop.modules.votech.JackdawAnnotationSource">
         <inject object="preference:experimental.suggestions.services" />
 		<inject object="preference:votech.jackdaw.endpoint" />
