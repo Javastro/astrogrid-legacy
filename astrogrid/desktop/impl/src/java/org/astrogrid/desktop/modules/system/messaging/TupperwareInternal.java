@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.system.messaging;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 import javax.swing.Action;
@@ -38,6 +39,10 @@ public interface TupperwareInternal extends XmlRpcHandler {
 	
 	/** access an action that can be used to start an internal hub */
 	public Action startInternalHubAction();
+	
+	
+	/** access the webserver root */
+	public URL getWebserverRoot();
 
 
 	

@@ -328,7 +328,8 @@ System module.
 				</element>
 			</schema>
 	</configuration-point>
-	
+	<!-- TODO: would like to remove much of the context, and 
+    just provide access to the hivemind registry . but can't see how to get a handle on it  -->
 	<configuration-point id="servletContext">
 		List of objects to add into servlet context, so they can be accessed by servlets
 		(as hivemind can't constructor-inject into servlets itself)
@@ -373,6 +374,12 @@ System module.
 	<contribution configuration-id="servlets" if="not (property system.html.disabled)">
 			<servlet name="html" path="/*" servletClass="org.astrogrid.desktop.modules.system.HtmlServlet"/>		
 	</contribution>
+    
+    <contribution configuration-id="servlets" if="not (property system.file.servlet.disabled)">
+        <!--  the path is fragile - used within MessageType -->
+        <servlet name="file" path="/file-access"
+            servletClass="org.astrogrid.desktop.modules.system.FileServlet" />
+    </contribution>
 		
 	<contribution configuration-id="servletContext">
 		<attribute name="module-registry" object="service:builtin.acr"/>
@@ -381,6 +388,7 @@ System module.
 		<attribute name="plainResultTransformer" object="service:framework.plainResultTransformer" />
 		<attribute name="htmlResultTransformer" object="service:framework.htmlResultTransformer" />
 		<attribute name="rpcResultTransformer" object="service:framework.rpcResultTransformer" />
+        <attribute name="vfs" object="service:vfs" />
 	</contribution>
 	
 <!-- XMLRPC server - used from within the xmlrpc servlet 
@@ -732,10 +740,10 @@ SYSTEM TRAY
             -->
 		<provider scheme="sftp"
 			implementation="instance:org.apache.commons.vfs.provider.sftp.SftpFileProvider" />
-            <!-- unneeded 
+
 		<provider scheme="res"
 			implementation="instance:org.apache.commons.vfs.provider.res.ResourceFileProvider" />
-            -->
+           
 		<provider scheme="ram"
 			implementation="instance:org.apache.commons.vfs.provider.ram.RamFileProvider" />
 	</contribution>
@@ -1035,6 +1043,7 @@ MAC SETUP
 			<construct class="org.astrogrid.desktop.modules.system.messaging.TupperwareImpl">
                 <event-listener service-id="builtin.shutdown" /> 
 				<service>ui</service>
+                <object>service-property:system.webserver:root</object>                
 				<string>${interop.app.name}</string>
 				<string>${interop.app.description} - ${interop.app.url}</string>
                 <string>${interop.app.icon}</string>

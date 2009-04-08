@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.messaging;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,14 +24,14 @@ import org.astrogrid.samp.client.SampException;
 public final class SpectrumMessageType extends MessageType<SpectrumMessageSender> {
     private static final URI SPECTRA_LOAD_FROM_URL =  URI.create("ivo://votech.org/spectrum/loadFromURL");
     private static final String SAMP_MTYPE = "spectrum.load.ssa-generic";
-    
+
     public final static SpectrumMessageType instance = new SpectrumMessageType();
     @Override
     protected SpectrumMessageSender createPlasticSender(
             final PlasticApplicationDescription plas) {
         return new PlasticSender(plas);
     }
-    
+
     private class PlasticSender extends AbstractMessageSender implements SpectrumMessageSender {
 
         /**
@@ -42,29 +43,34 @@ public final class SpectrumMessageType extends MessageType<SpectrumMessageSender
 
         public Response sendSpectrum(final URL spectrumURL, final Map metadata, final String specID,
                 final String specName) {
-            final List l = new ArrayList();
-            l.add(spectrumURL.toString());// url
-            l.add(specName);
-            final Hashtable t;
-            if (metadata instanceof Hashtable) { // must be hashtable for xmlrpc library
-                t = (Hashtable)metadata;
-            } else {
-                t = new Hashtable(metadata);
-            }
-            //MapUtils.verbosePrint(System.err,"params",t);
-            l.add(t);
             final PlasticApplicationDescription plasTarget = (PlasticApplicationDescription)getTarget();
-            
-            plasTarget.getTupperware().singleTargetFireAndForgetMessage(
-                    getPlasticMessageType()
-                    ,l
-                    ,plasTarget.id);
-            //mock up a response.
-            return new Response(Response.OK_STATUS,null,null);
+            final List<Object> l = new ArrayList<Object>();
+            try {
+                l.add(maybeRewriteForAccessability(spectrumURL,plasTarget.getTupperware().getWebserverRoot()).toString());
+                l.add(specName);
+                final Hashtable t;
+                if (metadata instanceof Hashtable) { // must be hashtable for xmlrpc library
+                    t = (Hashtable)metadata;
+                } else {
+                    t = new Hashtable(metadata);
+                }
+                //MapUtils.verbosePrint(System.err,"params",t);
+                l.add(t);
 
+                plasTarget.getTupperware().singleTargetFireAndForgetMessage(
+                        getPlasticMessageType()
+                        ,l
+                        ,plasTarget.id);
+                //mock up a response.
+                return new Response(Response.OK_STATUS,null,null);
+            } catch (final MalformedURLException x) {
+                final ErrInfo err = new ErrInfo(x);
+                err.setErrortxt("Failed to rewrite source URL");
+                return new Response(Response.ERROR_STATUS,null,err);                
+            }
         }
     }
-    
+
     private class SampSender extends AbstractMessageSender implements SpectrumMessageSender {
 
         /**
@@ -80,9 +86,9 @@ public final class SpectrumMessageType extends MessageType<SpectrumMessageSender
             try {
                 final Map<String,Object> params = new HashMap<String,Object>();
                 final Map<String,String> ids = new HashMap<String,String>();
-                params.put("url",spectrumURL.toString());
+                params.put("url",maybeRewriteForAccessability(spectrumURL,t.getSampImpl().getWebserverRoot()).toString());
                 params.put("meta",metadata);
-            
+
                 if (specID != null) {
                     params.put("spectrum-id",specID);
                 }
@@ -95,6 +101,10 @@ public final class SpectrumMessageType extends MessageType<SpectrumMessageSender
                 final ErrInfo err = new ErrInfo(x);
                 err.setErrortxt("Failed to send message");
                 return new Response(Response.ERROR_STATUS,null,err);   
+            } catch (final MalformedURLException x) {
+                final ErrInfo err = new ErrInfo(x);
+                err.setErrortxt("Failed to rewrite source URL");
+                return new Response(Response.ERROR_STATUS,null,err);
             }
         }
     }

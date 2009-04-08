@@ -23,9 +23,14 @@ import org.astrogrid.samp.client.HubConnector;
 public class SampMessageTarget implements ExternalMessageTarget {
     
     private  ImageIcon icon;
-    protected final SampImpl samp;
+    private final SampImpl samp;
     private final Client client;
 
+    
+    /** acccess the samp implementation */
+    public SampImpl getSampImpl() {
+        return samp;
+    }
     /**
      * @param client
      */

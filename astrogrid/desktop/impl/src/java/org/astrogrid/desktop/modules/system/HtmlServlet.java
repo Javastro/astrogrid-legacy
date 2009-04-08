@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.19 2009/03/26 18:04:11 nw Exp $
+/*$Id: HtmlServlet.java,v 1.20 2009/04/08 12:41:16 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,6 +89,8 @@ public class HtmlServlet extends AbstractReflectionServlet {
         out.println("or <a href='./system/configuration/reset'>reset the configuration to factory settings</a>.");
         out.println("<h2>Registry XML Access</h2>");
         out.println("<a href='./resource'>Access XML of registry resources</a>");
+        out.println("<h2>File Access</h2>");
+        out.println("<a href='./file-access'>Access content of remote files</a>");
         out.println("<h2>XML-RPC interface</h2>");
         out.println("<a href='./xmlrpc'>Endpoint for the XML-RPC</a> interface to this Astro Runtime.");
         footer(out);
@@ -395,6 +397,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.20  2009/04/08 12:41:16  nw
+Complete - taskSAMP access to odd URLs
+
 Revision 1.19  2009/03/26 18:04:11  nw
 source code improvements - cleaned imports, @override, etc.
 

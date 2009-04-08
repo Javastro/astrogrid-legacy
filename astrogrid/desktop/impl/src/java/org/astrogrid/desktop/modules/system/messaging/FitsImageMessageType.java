@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.messaging;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,14 +28,14 @@ public final class FitsImageMessageType extends MessageType<FitsImageMessageSend
      */
     private static final String SAMP_MTYPE = "image.load.fits";
     public static final FitsImageMessageType instance = new FitsImageMessageType();
-    
+
     @Override
     protected FitsImageMessageSender createPlasticSender(
             final PlasticApplicationDescription plas) {
-       return new PlasticSender(plas);
+        return new PlasticSender(plas);
     }
-    
-    
+
+
     private class PlasticSender extends AbstractMessageSender implements FitsImageMessageSender {
 
         /**
@@ -46,15 +47,20 @@ public final class FitsImageMessageType extends MessageType<FitsImageMessageSend
 
         public Response sendFitsImage(final URL fitsURL, final String imageId, final String imageName) {
             final PlasticApplicationDescription plasTarget = (PlasticApplicationDescription)getTarget();
-                        
-            final List l = new ArrayList();
-            l.add(fitsURL.toString());
-            plasTarget.getTupperware().singleTargetFireAndForgetMessage(
-                    CommonMessageConstants.FITS_LOAD_FROM_URL
-                    ,l
-                    ,plasTarget.id);
-            //mock up a response.
-            return new Response(Response.OK_STATUS,null,null);            
+            try {
+                final List<Object> l = new ArrayList<Object>();
+                l.add(maybeRewriteForAccessability(fitsURL,plasTarget.getTupperware().getWebserverRoot()).toString());                            
+                plasTarget.getTupperware().singleTargetFireAndForgetMessage(
+                        CommonMessageConstants.FITS_LOAD_FROM_URL
+                        ,l
+                        ,plasTarget.id);
+                //mock up a response.
+                return new Response(Response.OK_STATUS,null,null);    
+            } catch (final MalformedURLException x) {
+                final ErrInfo err = new ErrInfo(x);
+                err.setErrortxt("Failed to rewrite source URL");
+                return new Response(Response.ERROR_STATUS,null,err);                
+            }               
         }
     }
 
@@ -68,7 +74,7 @@ public final class FitsImageMessageType extends MessageType<FitsImageMessageSend
             final SampMessageTarget t = (SampMessageTarget)getTarget();            
             try {
                 final Map params = new HashMap();
-                params.put("url",fitsURL.toString());
+                params.put("url",maybeRewriteForAccessability(fitsURL,t.getSampImpl().getWebserverRoot()).toString());
                 if (imageId != null) {
                     params.put("image-id",imageId);
                 }
@@ -81,7 +87,11 @@ public final class FitsImageMessageType extends MessageType<FitsImageMessageSend
                 final ErrInfo err = new ErrInfo(x);
                 err.setErrortxt("Failed to send message");
                 return new Response(Response.ERROR_STATUS,null,err);  
-            }              
+            } catch (final MalformedURLException x) {
+                final ErrInfo err = new ErrInfo(x);
+                err.setErrortxt("Failed to rewrite source URL");
+                return new Response(Response.ERROR_STATUS,null,err);
+            }         
         }
     }
 

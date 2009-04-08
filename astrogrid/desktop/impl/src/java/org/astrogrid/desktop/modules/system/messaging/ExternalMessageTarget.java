@@ -23,7 +23,7 @@ public interface ExternalMessageTarget extends MessageTarget {
     public String getId();
     /** description */
     public String getDescription();
-
-      
     
+    
+
 }

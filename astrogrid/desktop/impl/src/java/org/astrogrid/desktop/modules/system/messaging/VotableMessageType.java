@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.messaging;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
      */
     private static final String SAMP_MTYPE = "table.load.votable";
     public static final VotableMessageType instance = new VotableMessageType();
-    
+
     @Override
     protected VotableMessageSender createPlasticSender(
             final PlasticApplicationDescription plas) {
@@ -45,20 +46,25 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
 
         public Response sendVotable(final URL votableURL, final String tableID, final String tableName) {
             final PlasticApplicationDescription plasTarget = (PlasticApplicationDescription)getTarget();
-                        
-            final List l = new ArrayList();
-            l.add(votableURL.toString());
-            l.add(tableName);  
-            plasTarget.getTupperware().singleTargetFireAndForgetMessage(
-                    getPlasticMessageType()
-                    ,l
-                    ,plasTarget.id);
-            //mock up a response.
-            return new Response(Response.OK_STATUS,null,null);
+            try {
+                final List<Object> l = new ArrayList<Object>();
+                l.add(maybeRewriteForAccessability(votableURL,plasTarget.getTupperware().getWebserverRoot()).toString());            
+                l.add(tableName);  
+                plasTarget.getTupperware().singleTargetFireAndForgetMessage(
+                        getPlasticMessageType()
+                        ,l
+                        ,plasTarget.id);
+                //mock up a response.
+                return new Response(Response.OK_STATUS,null,null);
+            } catch (final MalformedURLException x) {
+                final ErrInfo err = new ErrInfo(x);
+                err.setErrortxt("Failed to rewrite source URL");
+                return new Response(Response.ERROR_STATUS,null,err);                
+            }            
         }
     }
 
-    
+
     @Override
     protected MessageUnmarshaller<VotableMessageSender> createPlasticUnmarshaller() {
         throw new UnsupportedOperationException();
@@ -68,7 +74,7 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
     protected VotableMessageSender createSampSender(final SampMessageTarget somethingSamp) {
         return new SampSender(somethingSamp);
     }
-    
+
     private class SampSender extends AbstractMessageSender implements VotableMessageSender {
 
         /**
@@ -80,10 +86,10 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
 
         public Response sendVotable(final URL votableURL, final String tableID, final String tableName) {
             final SampMessageTarget t = (SampMessageTarget)getTarget();
-                    
+
             try {
                 final Map params = new HashMap();
-                params.put("url",votableURL.toString());
+                params.put("url",maybeRewriteForAccessability(votableURL,t.getSampImpl().getWebserverRoot()).toString());
                 if (tableID != null) {
                     params.put("table-id",tableID);
                 }
@@ -96,11 +102,16 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
                 final ErrInfo err = new ErrInfo(x);
                 err.setErrortxt("Failed to send message");
                 return new Response(Response.ERROR_STATUS,null,err);               
+            } catch (final MalformedURLException x) {
+                final ErrInfo err = new ErrInfo(x);
+                err.setErrortxt("Failed to rewrite source URL");
+                return new Response(Response.ERROR_STATUS,null,err);
             }
-            
+
         }
     }
-        
+
+
 
     @Override
     protected MessageUnmarshaller<VotableMessageSender> createSampUnmarshaller() {

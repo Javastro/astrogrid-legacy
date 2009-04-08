@@ -3,7 +3,9 @@
  */
 package org.astrogrid.desktop.modules.system.messaging;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 /** Abstract class for message types.
  * 
@@ -59,5 +61,31 @@ public abstract class MessageType<S extends MessageSender> {
     public final int hashCode() {
         return this.getClass().hashCode();
     }
+    
+// utilities for working with URL references.
+
+    /** returns true only if the scheme is one of the commonly accessible ones */
+    public static boolean isMessagingAccessibleURL(final URL u) {
+        final String scheme = u.getProtocol();
+        return "http".equals(scheme) || "file".equals(scheme) || "ftp".equals(scheme);
+    }
+    
+    /** rewrite URL to make is messaging accessible
+     * 
+     * @param u original url
+     * @param root root URL of the local webserver. (can be found at {@code SampMessageTarget.getSampImpl().getWebserverRoot()}
+     * or {@code PlasticApplicationDescription.getTupperware().getWebserverRoot()}
+     * @return u, unless {@link #isMessagingAccessibleURL(URL)} is true, in which 
+     * case will rewrite to point to file through file-access servlet
+     * @throws MalformedURLException 
+     */
+    public static URL maybeRewriteForAccessability(final URL u, final URL root ) throws MalformedURLException {
+        if (isMessagingAccessibleURL(u)) {
+            return u;
+        } else {            
+            return new URL(root + "file-access?id=" + u);
+        }
+    }
+    
     
 }

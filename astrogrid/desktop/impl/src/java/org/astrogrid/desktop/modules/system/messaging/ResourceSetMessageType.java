@@ -82,7 +82,8 @@ public final  class ResourceSetMessageType extends MessageType<ResourceSetMessag
                 final Map<String,String> ids = new HashMap<String,String>();
                 params.put("ids",ids);
                 for(final URI r: resourceList) {
-                    final String url = t.samp.webserverRoot + "resource?id=" + r; // a bit of magic here.
+                    //fragile! depends on configuration of servlet remaining the same.
+                    final String url = t.getSampImpl().getWebserverRoot() + "resource?id=" + r; // a bit of magic here.
                     ids.put(r.toString(),url);
                 }
             

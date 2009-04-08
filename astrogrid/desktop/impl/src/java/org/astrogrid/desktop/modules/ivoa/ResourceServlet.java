@@ -24,7 +24,8 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
-/**
+/** Servlet that provides trivial access to XML of registry resources.
+ * do a http get, single parameter {@code id} containing the IVOA-ID of the resource to display
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 24, 20095:06:39 PM
  */
@@ -40,7 +41,7 @@ public class ResourceServlet extends HttpServlet {
         try {
             final String v = req.getParameter("id");
             if (StringUtils.isBlank(v)) {
-                throw new ServletException("Provide the id of the resource to display using the ?id= query parameter");
+                throw new ServletException("Provide the IVOA-ID of the resource to display using the ?id= query parameter");
             }
             id  = new URI(v);
             if (! "ivo".equals(id.getScheme())) {

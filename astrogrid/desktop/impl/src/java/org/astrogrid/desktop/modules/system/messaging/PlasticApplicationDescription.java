@@ -33,9 +33,6 @@ public class PlasticApplicationDescription implements ExternalMessageTarget {
     private final Set<MessageType<?>> mtypes;
     private final TupperwareInternal tupperware;
 
-    
-    
-
     @SuppressWarnings({ "unchecked", "cast" })
     public PlasticApplicationDescription(final URI id, final String name,final String description
             , final Set<MessageType<?>> mtypes

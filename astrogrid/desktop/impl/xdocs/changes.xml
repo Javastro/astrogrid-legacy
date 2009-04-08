@@ -14,6 +14,10 @@
 	</head>
 <body>
 <release version="1.2.3.beta3" date="unreleased">
+    <action dev="nw" type="add">
+    Samp / Plastic: Used internal webserver to provide access to files in vospace and
+    other odd locations - means that, eg. a votable from anywhere can be sent to topcat.
+    </action>
     <action dev="nw" type="update">
     Voexplorer: Updated metadata and querying options.
     </action>

@@ -47,8 +47,12 @@ public class SampImpl implements Samp, ShutdownListener{
     protected final List<MessageType<?>> knownTypes;
     private final EventList<ExternalMessageTarget> sampTargets;
     protected final GuiHubConnector hubConnector;
-    protected final URL webserverRoot;
+    private final URL webserverRoot;
 
+    
+    public URL getWebserverRoot() {
+        return webserverRoot;
+    }
     
     public HubConnector getConnector() {
         return hubConnector;

@@ -74,6 +74,12 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
     private final String vodesktop_ivorn;
     private final HttpClient httpClient;
     private final List<MessageType<?>> allKnownMessages;
+    private final URL webserverRoot;
+    
+    public URL getWebserverRoot() {
+        return webserverRoot;
+    }
+    
 	/**
 	 * 
 	 * @param parent the ui context
@@ -88,7 +94,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
 	 * @param httpClient client to use to connect to hubs.
 	 * @throws IOException 
 	 */
-	public TupperwareImpl(final UIContext parent
+	public TupperwareImpl(final UIContext parent, final URL webserverRoot
 	        ,  final String applicationName, final String description, final String icon,final String ivorn
 	        , final URL clientEndpoint
 	        , final List<MessageTarget> internalTargets
@@ -100,6 +106,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
 		super();
 		
         this.parent = parent;
+        this.webserverRoot = webserverRoot;
         this.applicationName = applicationName;
         this.vodesktop_ivorn = ivorn;
         this.allKnownMessages = knownTypes;
