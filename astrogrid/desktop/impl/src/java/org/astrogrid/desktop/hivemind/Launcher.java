@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.29 2009/04/06 11:29:15 nw Exp $
+/*$Id: Launcher.java,v 1.30 2009/04/08 12:40:55 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -105,6 +105,9 @@ public class Launcher implements Runnable {
 //	    setProperty("apple.awt.textantialiasing","true");
         // disable this before release.
         //setProperty("acr.debug","true");
+        
+        // jsamp - work-around for shortcoming in lib - set to always use loopback.
+        setProperty("samp.localhost","127.0.0.1");
     }};    
 
     //static initializer - ensures this gets done really early on
@@ -251,6 +254,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.30  2009/04/08 12:40:55  nw
+samp configuraiton fix.
+
 Revision 1.29  2009/04/06 11:29:15  nw
 added generic types
 
