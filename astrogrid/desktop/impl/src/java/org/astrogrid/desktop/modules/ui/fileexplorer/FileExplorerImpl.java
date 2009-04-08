@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.20 2009/04/07 13:10:41 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.21 2009/04/08 17:13:59 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -113,6 +113,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		                .separator()
 		                .windowOperationWithIcon(view.getNavigator().getGoHomeAction())
 		                .windowOperationWithIcon(view.getNavigator().getGoWorkspaceAcgtion())
+		                .windowOperationWithIcon(view.getNavigator().getGoExamplesAction())
 		                .separator()
 		                .windowOperation(view.getOpenLocation())
 		                .windowOperation(view.getOpenFolder());

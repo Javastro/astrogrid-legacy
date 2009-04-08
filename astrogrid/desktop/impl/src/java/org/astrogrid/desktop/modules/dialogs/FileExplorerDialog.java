@@ -309,16 +309,33 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
      * @return
      */
     private boolean isSchemeValid(final String scheme) {
-        return (  (localEnabled && "file".equals(scheme))
-                || (vospaceEnabled &&( "ivo".equals(scheme) || "workspace".equals(scheme) || "vos".equals(scheme) ))
+        return (  (localEnabled && LOCAL_SCHEMES.contains(scheme))                 
+                || (vospaceEnabled && VOSPACE_SCHEMES.contains(scheme))
                 || (urlEnabled && URL_SCHEMES.contains(scheme))
              );
     }
-    private final static Set URL_SCHEMES = new HashSet();
+    
+    private final static Set<String> LOCAL_SCHEMES = new HashSet<String>();
+    static {
+        LOCAL_SCHEMES.add("file");
+        LOCAL_SCHEMES.add("tmp");
+        LOCAL_SCHEMES.add("examples");
+        LOCAL_SCHEMES.add("res");
+        LOCAL_SCHEMES.add("jar");
+    }
+    
+    private final static Set<String> URL_SCHEMES = new HashSet<String>();
     static {
         URL_SCHEMES.add("http");
         URL_SCHEMES.add("ftp");
         URL_SCHEMES.add("sftp");
+    }
+    
+    private final static Set<String> VOSPACE_SCHEMES = new HashSet<String>();
+    static {
+        VOSPACE_SCHEMES.add("ivo");
+        VOSPACE_SCHEMES.add("workspace");
+        VOSPACE_SCHEMES.add("vos");
     }
     
     // listen to navigation events.

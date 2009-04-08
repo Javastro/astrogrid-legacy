@@ -528,6 +528,8 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
     private final Action backAction = new BackAction();
     private final Action forwardAction = new ForwardAction();
 
+    private final Action goExamplesAction= new GoExamplesAction();
+
     private class GoHomeAction extends AbstractAction {
 
         public GoHomeAction() {
@@ -551,6 +553,19 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
         }
         public void actionPerformed(final ActionEvent e) {
             move("workspace:///");
+        }                
+    }
+    
+    private class GoExamplesAction extends AbstractAction {
+        
+        public GoExamplesAction() {
+            super("Examples",IconHelper.loadIcon("folder_examples16.png"));
+            putValue(SHORT_DESCRIPTION,"Go to examples directory");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_W,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
+             
+        }
+        public void actionPerformed(final ActionEvent e) {
+            move("examples:/");
         }                
     }
     
@@ -604,6 +619,11 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
     public final Action getGoWorkspaceAcgtion() {
         return this.goWorkspaceAcgtion;
     }
+    
+    public final Action getGoExamplesAction() {
+        return this.goExamplesAction;
+    }
+    
     /**
      * @return the backAction
      */

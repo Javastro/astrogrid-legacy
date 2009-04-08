@@ -15,6 +15,10 @@
 <body>
 <release version="1.2.3.beta3" date="unreleased">
     <action dev="nw" type="add">
+    FileExplorer: Added 'examples' directory - contains example queries and scripts, appears in file explorer
+    and file-load dialogues.
+    </action>
+    <action dev="nw" type="add">
     Samp / Plastic: Used internal webserver to provide access to files in vospace and
     other odd locations - means that, eg. a votable from anywhere can be sent to topcat.
     </action>

@@ -711,12 +711,17 @@ SYSTEM TRAY
 		<provider scheme="file" 
 			implementation="instance:org.apache.commons.vfs.provider.local.DefaultLocalFileProvider" />
             <!--  don't want these for now - not sure if my ui could support it 
-            re-examine these later
+            re-examine these later -->
 		<provider scheme="zip"
 			implementation="instance:org.apache.commons.vfs.provider.zip.ZipFileProvider" />
+        <provider scheme="jar"
+            implementation="instance:org.apache.commons.vfs.provider.zip.ZipFileProvider" />
+            <!-- real jar impl is buggy - I get a tack overflow error. zip provider works fine.
+             implementation="instanceo:org.apache.commons.vfs.provider.jar.JarFileSystem" />
+             -->
 		<provider scheme="gz"
 			implementation="instance:org.apache.commons.vfs.provider.gzip.GzipFileProvider" />
-            -->
+            
 			<!--  required external libs 
 		<provider scheme="tar"
 			implementation="instance:org.apache.commons.vfs.provider.tar.TarFileProvider" />
@@ -751,6 +756,7 @@ SYSTEM TRAY
 	<contribution configuration-id="vfsExtensions">
 		<extension name="zip" scheme="zip"/>
 		<extension name="gz" scheme="gz"/>
+        <extension name="jar" scheme="jar" />
 <!-- 		<extension name="tar" scheme="tar"/>
 		<extension name="bz2" scheme="bz2"/>
 		<extension name="tgz" scheme="tar"/>

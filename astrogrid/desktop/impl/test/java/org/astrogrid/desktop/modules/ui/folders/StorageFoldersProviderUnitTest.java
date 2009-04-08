@@ -59,7 +59,7 @@ public class StorageFoldersProviderUnitTest extends TestCase {
             public void run() {        
                 final StorageFoldersProvider prov = new StorageFoldersProvider(ui,pref,xml);
                 assertNotNull(prov.getList());
-                assertEquals(3,prov.getList().size());
+                assertTrue(prov.getList().size() > 2); // there's some stuff in the list.
                 assertTrue(prov.getList().get(0) instanceof StorageFolder);
                 
                 //uncomment to peek at the written output.

@@ -81,7 +81,7 @@ MYSPACE
 		</invoke-factory>
 	</service-point>
 	
-	<service-point id="workspacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
+	<service-point id="workspacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" visibility="private" >
         VFS protocol provider for workspace://
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ag.vfs.WorkspaceProvider">
@@ -89,12 +89,29 @@ MYSPACE
 			</construct>
 		</invoke-factory>
 	</service-point>
-    	
+
+    <contribution configuration-id="hivemind.FactoryDefaults">                  
+        <default symbol="astrogrid.examples.url" value="res:examples/"/> 
+    </contribution>
+
+    <service-point id="examplevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider"  visibilitiy="private">
+        VFS protocol provider for workspace://
+        <invoke-factory model="primitive">
+            <construct class="org.astrogrid.desktop.modules.ag.vfs.ExampleProvider">
+                <string>${astrogrid.examples.url}</string>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
+
+
 	<contribution configuration-id="system.vfsProviders">
 		<provider scheme="ivo"
 			implementation="service:myspacevfs" />
 		<provider scheme="workspace"
 			implementation="service:workspacevfs" />
+        <provider scheme="examples"
+            implementation="service:examplevfs"/>
 	</contribution><!-- 
 ==========================
 COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.modules.auth.CommunityInternal">		Community and login service	
