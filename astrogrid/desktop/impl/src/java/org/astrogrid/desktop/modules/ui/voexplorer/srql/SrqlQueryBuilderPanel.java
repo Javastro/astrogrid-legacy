@@ -390,7 +390,8 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		, new UcdClauseTemplate() // rename to Table Column UCD [includes | not includes]
 		, new TextMatchTemplate("IVOA-ID","id")
 
-		//	,new TextMatchTemplate("Any field","any")
+		,new TextMatchTemplate("Any field","any")
+		
 		// none of the following are wanted.
 		//, new TextMatchTemplate("Any column name","col")
 		

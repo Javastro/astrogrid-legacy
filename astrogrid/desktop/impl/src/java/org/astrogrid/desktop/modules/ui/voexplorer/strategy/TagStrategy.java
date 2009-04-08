@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.JMenuItem;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -49,11 +47,10 @@ public class TagStrategy extends PipelineStrategy {
 	}
 
 	@Override
-    public Matcher createMatcher(final List<JMenuItem> selected) {
-		return new Matcher() {
+    public Matcher<Resource> createMatcher(final List<String> selected) {
+		return new Matcher<Resource>() {
 
-			public boolean matches(final Object arg0) {
-				final Resource r = (Resource)arg0;
+			public boolean matches(final Resource r) {
 				boolean seenNone = true;
 				for (final Iterator i = annServer.getLocalAnnotations(r); i.hasNext(); ) {
 					final Annotation a = (Annotation)i.next();
@@ -70,7 +67,7 @@ public class TagStrategy extends PipelineStrategy {
 //					    System.err.println(a.getNote());
 //					    return true;
 //					}
-					final Set tags = a.getTags();
+					final Set<String> tags = a.getTags();
 					if (tags != null && ! tags.isEmpty()) {
 						seenNone = false;
 						if (CollectionUtils.containsAny(selected,tags)) {
@@ -84,23 +81,22 @@ public class TagStrategy extends PipelineStrategy {
 	}
 
 	@Override
-    public TransformedList createView(final EventList base) {
-		return new CollectionList(base,
-				new CollectionList.Model() {
-			public List getChildren(final Object arg0) {
-				final Resource r = (Resource)arg0;
-				List result = NONE_PROVIDED;
+    public TransformedList<Resource,String> createView(final EventList<Resource> base) {
+		return new CollectionList<Resource,String>(base,
+				new CollectionList.Model<Resource,String>() {
+			public List<String> getChildren(final Resource r) {
+				List<String> result = NONE_PROVIDED;
 				for(final Iterator i = annServer.getLocalAnnotations(r); i.hasNext(); ) {
 					final Annotation a = (Annotation)i.next();
 					if (a instanceof UserAnnotation && ((UserAnnotation)a).isFlagged()) {
 						if (result == NONE_PROVIDED) {
-							result = new ArrayList();
+							result = new ArrayList<String>();
 						}						
 						result.add(FLAGGED);
 					}
 					if (StringUtils.isNotBlank(a.getAlternativeTitle())) {
 					    if (result == NONE_PROVIDED) {
-					        result = new ArrayList();
+					        result = new ArrayList<String>();
 					    }
 					    result.add(RETITLED);
 					}
@@ -111,10 +107,10 @@ public class TagStrategy extends PipelineStrategy {
 //				        }
 //				        result.add(ANNOTATED);
 //				    }
-					final Set tags = a.getTags();
+					final Set<String> tags = a.getTags();
 					if (tags != null && ! tags.isEmpty()) {
 						if (result == NONE_PROVIDED) {
-							result = new ArrayList(tags.size());
+							result = new ArrayList<String>(tags.size());
 						}
 						result.addAll(tags);
 					}

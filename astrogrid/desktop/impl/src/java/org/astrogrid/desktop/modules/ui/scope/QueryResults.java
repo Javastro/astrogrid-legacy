@@ -89,7 +89,7 @@ public static final class QueryResult {
    }
 
 /** helper method to format the result count for the results filterwheel. */
-public Object getSummarizedResultCount() {
+public String getSummarizedResultCount() {
     if (error != null || count == null) {
         return "Failed";             
     } else {

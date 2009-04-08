@@ -2,8 +2,6 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 
 import java.util.List;
 
-import javax.swing.JMenuItem;
-
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
@@ -19,11 +17,10 @@ import ca.odell.glazedlists.matchers.Matcher;
  */
 public final class TypeStrategy extends PipelineStrategy {
 	@Override
-    public Matcher createMatcher(final List<JMenuItem> selected) {
-		return new Matcher() {
+    public Matcher<Resource> createMatcher(final List<String> selected) {
+		return new Matcher<Resource>() {
 	
-			public boolean matches(final Object arg0) {
-				final Resource r = (Resource)arg0;
+			public boolean matches(final Resource r) {
 				final String type = r.getType();
 				return selected.contains(PrettierResourceFormatter.formatType(type));
 			}
@@ -31,12 +28,11 @@ public final class TypeStrategy extends PipelineStrategy {
 	}
 
 	@Override
-    public TransformedList createView(final EventList base) {
-		return new FunctionList(base,
-				new FunctionList.Function() {
+    public TransformedList<Resource,String> createView(final EventList<Resource> base) {
+		return new FunctionList<Resource,String>(base,
+				new FunctionList.Function<Resource,String>() {
 
-					public Object evaluate(final Object arg0) {
-						final Resource r = (Resource)arg0;
+					public String evaluate(final Resource r) {
 						final String rawType = r.getType();
 						return PrettierResourceFormatter.formatType(rawType);
 					}

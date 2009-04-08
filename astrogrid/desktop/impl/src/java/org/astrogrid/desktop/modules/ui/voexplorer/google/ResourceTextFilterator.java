@@ -26,7 +26,7 @@ import ca.odell.glazedlists.TextFilterator;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 13, 20076:55:58 PM
  */
-public final class ResourceTextFilterator implements Filterator, TextFilterator {
+public final class ResourceTextFilterator implements Filterator<String,Resource>, TextFilterator<Resource> {
 
 	private final AnnotationService annotationService;
 	
@@ -36,8 +36,7 @@ public final class ResourceTextFilterator implements Filterator, TextFilterator 
 		this.annotationService = annotationService;
 	}
 
-	public void getFilterValues(final List l, final Object arg1) {
-	    final Resource res = (Resource)arg1;
+	public void getFilterValues(final List<String> l, final Resource res) {
 	    l.add(res.getId().toString());
 	    l.add(res.getTitle());
 	    l.add(res.getShortName());
@@ -68,14 +67,24 @@ public final class ResourceTextFilterator implements Filterator, TextFilterator 
 	        if (creators != null) {
 	           for (int i =0; i < creators.length; i++) {
 	               final ResourceName name = creators[i].getName();
-	               if (name != null && name.getValue() != null) {
-	                   l.add(name.getValue());
+	               if (name != null) {
+	                   if (name.getValue() != null) {
+	                       l.add(name.getValue());
+	                   }
+	                   if (name.getId() != null) {
+	                       l.add(name.getId().toString());
+	                   }
 	               }
 	           }
 	        }
 	        final ResourceName publisher = curation.getPublisher();
-	        if (publisher != null && publisher.getValue() != null) {
-	            l.add(publisher.getValue());
+	        if (publisher != null) {
+	            if (publisher.getValue() != null) {
+	                l.add(publisher.getValue());
+	            }
+	            if (publisher.getId() != null) {
+	                l.add(publisher.getId().toString());
+	            }
 	        }
 	        
 	        final ResourceName[] contributors = curation.getContributors();
@@ -109,7 +118,7 @@ public final class ResourceTextFilterator implements Filterator, TextFilterator 
 	        if (n != null) {
 	            l.add(n);
 	        }
-	        final Set tags = a.getTags();
+	        final Set<String> tags = a.getTags();
 	        if (tags != null) {
 	            l.addAll(tags);
 	        }
@@ -133,7 +142,7 @@ public final class ResourceTextFilterator implements Filterator, TextFilterator 
 	    }
 	}
 
-	public void getFilterStrings(final List arg0, final Object arg1) {
+	public void getFilterStrings(final List<String> arg0, final Resource arg1) {
 		getFilterValues(arg0,arg1);
 	}
 

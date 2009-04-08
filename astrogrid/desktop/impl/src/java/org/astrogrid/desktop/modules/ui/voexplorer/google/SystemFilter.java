@@ -29,10 +29,9 @@ import ca.odell.glazedlists.matchers.Matcher;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 17, 200710:39:37 PM
  */
-public final class SystemFilter implements Matcher {
+public final class SystemFilter implements Matcher<Resource> {
 
-	public boolean matches(final Object arg0) {
-		final Resource r = (Resource)arg0;
+	public boolean matches(final Resource r) {
 		
 		//optimization -  stuff to pass thru straight away... (only specify interesting subtypes of service (as we'd be doing further processing on these later otherwise)
 		if (

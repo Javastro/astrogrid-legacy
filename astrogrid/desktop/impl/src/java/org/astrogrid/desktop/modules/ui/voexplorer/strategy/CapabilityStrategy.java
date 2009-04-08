@@ -6,9 +6,8 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JMenuItem;
-
 import org.astrogrid.acr.ivoa.resource.Capability;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
@@ -25,18 +24,22 @@ import ca.odell.glazedlists.matchers.Matcher;
 public class CapabilityStrategy extends PipelineStrategy {
 
 	@Override
-    public Matcher createMatcher(final List<JMenuItem> selected) {
-		return new Matcher() {
-			public boolean matches(final Object arg0) {
+    public Matcher<Resource> createMatcher(final List<String> selected) {
+		return new Matcher<Resource>() {
+			public boolean matches(final Resource arg0) {
 				final Capability[] c = getCapabilities(arg0);
 				if (c == null) {
 					return selected.contains(NONE_PROVIDED.get(0)); // obvioousluy nt a service.
 				}				
-				for (int i = 0; i < c.length; i++) {
-					final String subj = PrettierResourceFormatter.formatType(c[i].getType());
+				for (final Capability cap : c) {
+					final String subj = PrettierResourceFormatter.formatType(cap.getType());
 					if (selected.contains(subj)) {
 						return true;
 					}
+//					final URI id = cap.getStandardID();
+//					if (id != null && selected.contains(id.toString())) {
+//					   return true;
+//					}
 				}
 				return false;
 			}					
@@ -52,17 +55,21 @@ public class CapabilityStrategy extends PipelineStrategy {
 	}
 	
 	@Override
-    public TransformedList createView(final EventList base) {	
-		return new CollectionList(base,
-			new CollectionList.Model() {
-		public List getChildren(final Object arg0) {
+    public TransformedList<Resource,String> createView(final EventList<Resource> base) {	
+		return new CollectionList<Resource,String>(base,
+			new CollectionList.Model<Resource,String>() {
+		public List<String> getChildren(final Resource arg0) {
 			final Capability[] c = getCapabilities(arg0);
 			if (c == null || c.length == 0) {
 				return NONE_PROVIDED;
 			}			
-			final List result = new ArrayList(c.length);
-			for (int i = 0; i < c.length; i++) {
-				result.add(PrettierResourceFormatter.formatType(c[i].getType()));
+			final List<String> result = new ArrayList<String>(c.length);
+			for (final Capability cap : c) {
+				result.add(PrettierResourceFormatter.formatType(cap.getType()));
+//				final URI uri = cap.getStandardID();
+//				if (uri != null) {
+//				    result.add(uri.toString());
+//				}
 			}
 			return result;
 		}
@@ -71,7 +78,7 @@ public class CapabilityStrategy extends PipelineStrategy {
 
 	@Override
     public String getName() {
-		return "Service - Capability";
+		return "Service Capability";
 	}
 
 }

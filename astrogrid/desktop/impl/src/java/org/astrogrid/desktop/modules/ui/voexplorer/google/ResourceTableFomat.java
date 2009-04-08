@@ -17,7 +17,6 @@ import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
-import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.HasCoverage;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -44,20 +43,20 @@ import ca.odell.glazedlists.GlazedLists;
 
 public class ResourceTableFomat extends ModularTableFormat<Resource> {
 
-    protected final static String STATUS_NAME = "Status";
+   // protected final static String STATUS_NAME = "Status";
     protected final static String LABEL_NAME = "Title";
     protected final static String CAPABILITY_NAME = "Capability";
     protected final static String DATE_NAME = "Date";
     protected final static String SHORT_NAME = "Short Name";
     protected final static String SUBJECT_NAME = "Subject";
     protected final static String PUBLISHER_NAME = "Publisher";
-    protected final static String CONTACT_NAME = "Contact";
+ //   protected final static String CONTACT_NAME = "Contact";
     protected final static String CREATOR_NAME = "Creator";
-    protected final static String ID_NAME = "Id";
-    protected final static String TYPE_NAME = "Type";
+    protected final static String ID_NAME = "IVOA-ID";
+ //   protected final static String TYPE_NAME = "Type";
     protected final static String VALIDATION_NAME = "Validation";
-    protected final static String VERSION_NAME = "Version";
-    protected final static String SOURCE_NAME = "Source";
+ //   protected final static String VERSION_NAME = "Version";
+    protected final static String SOURCE_NAME = "Source Reference";
     
     protected final static String FLAG_NAME = "Flagged";
     protected final static String TAG_NAME = "Tags";
@@ -230,7 +229,7 @@ public class ResourceTableFomat extends ModularTableFormat<Resource> {
                 tcol.setPreferredWidth(150);
             }
         });
-
+/* omiit
         columnList.add(new StringColumn(CONTACT_NAME) {
             final StrBuilder sbuf = new StrBuilder();
             @Override
@@ -261,7 +260,7 @@ public class ResourceTableFomat extends ModularTableFormat<Resource> {
                 tcol.setPreferredWidth(200);
             }
         });
-
+*/
         columnList.add(new StringColumn(CREATOR_NAME) {
             final StrBuilder sbuf = new StrBuilder();
             @Override
@@ -293,7 +292,7 @@ public class ResourceTableFomat extends ModularTableFormat<Resource> {
                 tcol.setPreferredWidth(200);
             }
         });
-
+/*not wanted.
         columnList.add(new StringColumn(TYPE_NAME) {
             @Override
             public String getValue(final Resource res) {
@@ -304,7 +303,7 @@ public class ResourceTableFomat extends ModularTableFormat<Resource> {
                 tcol.setPreferredWidth(150);
             }
         });
-        
+  */      
         columnList.add(new StringColumn(SOURCE_NAME) {
 
             @Override
@@ -356,7 +355,7 @@ public class ResourceTableFomat extends ModularTableFormat<Resource> {
                 tcol.setMaxWidth(50);
             }
         });
-
+/* don't want it.
         columnList.add(new StringColumn(VERSION_NAME) {
             @Override
             public String getValue(final Resource res) {
@@ -367,7 +366,7 @@ public class ResourceTableFomat extends ModularTableFormat<Resource> {
                 tcol.setPreferredWidth(75);
             }
         });
-        
+  */      
         columnList.add(new IconColumn(FLAG_NAME) {
             final Icon FLAG = IconHelper.loadIcon("flag16.png"); 
             @Override

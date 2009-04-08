@@ -5,8 +5,7 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 
 import java.util.List;
 
-import javax.swing.JMenuItem;
-
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
 import org.astrogrid.desktop.modules.ui.scope.RetrieverService;
 import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
@@ -35,9 +34,9 @@ public class ResultsStrategy extends PipelineStrategy {
     }
 
     @Override
-    public Matcher createMatcher(final List<JMenuItem> selected) {
-        return new Matcher() {
-            public boolean matches(final Object arg0) {
+    public Matcher<Resource> createMatcher(final List<String> selected) {
+        return new Matcher<Resource>() {
+            public boolean matches(final Resource arg0) {
                 final Retriever r = ((RetrieverService)arg0).getRetriever();
                 final QueryResult result = services.getQueryResults().getResult(r);
                 if (result == null) {
@@ -49,10 +48,10 @@ public class ResultsStrategy extends PipelineStrategy {
     }
 
     @Override
-    public TransformedList createView(final EventList base) {
-        return new FunctionList(base,
-                new FunctionList.Function() {
-            public Object evaluate(final Object arg0) {
+    public TransformedList<Resource,String> createView(final EventList<Resource> base) {
+        return new FunctionList<Resource,String>(base,
+                new FunctionList.Function<Resource,String>() {
+            public String evaluate(final Resource arg0) {
                 final Retriever r = ((RetrieverService)arg0).getRetriever();
                 final QueryResult result = services.getQueryResults().getResult(r);
                 if (result == null) {

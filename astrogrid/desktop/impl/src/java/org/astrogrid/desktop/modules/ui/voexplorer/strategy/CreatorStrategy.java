@@ -1,9 +1,8 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JMenuItem;
 
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -22,17 +21,23 @@ import ca.odell.glazedlists.matchers.Matcher;
  */
 public final class CreatorStrategy extends PipelineStrategy {
 	@Override
-    public Matcher createMatcher(final List<JMenuItem> selected) {
-		return new Matcher() {
-			public boolean matches(final Object arg0) {
-				final Resource r = (Resource)arg0;
+    public Matcher<Resource> createMatcher(final List<String> selected) {
+		return new Matcher<Resource>() {
+			public boolean matches(final Resource r) {
 				final Creator[] creators = r.getCuration().getCreators();
 				for (int i = 0; i < creators.length; i++) {
 					final Creator c =creators[i];
 					if (c !=null) {
 						final ResourceName name = c.getName();
 						if (name != null) {
-							return selected.contains(name.getValue());
+						    final URI id = name.getId();
+						    if (id != null) {
+	                            return selected.contains(name.getValue())
+                                || selected.contains(id);						        
+						    } else {
+	                            return selected.contains(name.getValue());			        
+						    }
+
 						}
 					}
 				}
@@ -42,20 +47,23 @@ public final class CreatorStrategy extends PipelineStrategy {
 	}
 
 	@Override
-    public TransformedList createView(final EventList base) {
-		return new CollectionList(base,
-						new CollectionList.Model() {
-							public List getChildren(final Object arg0) {
-								final Resource r = (Resource)arg0;
+    public TransformedList<Resource,String> createView(final EventList<Resource> base) {
+		return new CollectionList<Resource,String>(base,
+						new CollectionList.Model<Resource,String>() {
+							public List<String> getChildren(final Resource r) {						
 								final Creator[] creators = r.getCuration().getCreators();
-								final List result = new ArrayList(creators.length);
+								final List<String> result = new ArrayList<String>(creators.length);
 								for (int i = 0; i < creators.length; i++) {
 									final Creator c =creators[i];
 									if (c !=null) {
 										final ResourceName name = c.getName();
 										if (name != null) {
 											result.add(name.getValue());
+											if (name.getId() != null) {
+											    result.add(name.getId().toString());
+											}
 										}
+										
 									}
 								}
 								return result;

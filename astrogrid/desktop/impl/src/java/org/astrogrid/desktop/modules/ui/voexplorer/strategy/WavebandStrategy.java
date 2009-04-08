@@ -6,10 +6,9 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JMenuItem;
-
 import org.astrogrid.acr.ivoa.resource.Coverage;
 import org.astrogrid.acr.ivoa.resource.HasCoverage;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
 
 import ca.odell.glazedlists.CollectionList;
@@ -24,9 +23,9 @@ import ca.odell.glazedlists.matchers.Matcher;
 public class WavebandStrategy extends PipelineStrategy {
 
 	@Override
-    public Matcher createMatcher(final List<JMenuItem> selected) {
-		return new Matcher() {
-			public boolean matches(final Object arg0) {
+    public Matcher<Resource> createMatcher(final List<String> selected) {
+		return new Matcher<Resource>() {
+			public boolean matches(final Resource arg0) {
 				if (! (arg0 instanceof HasCoverage)) {
 					return selected.contains(NONE_PROVIDED.get(0));
 				}
@@ -49,10 +48,10 @@ public class WavebandStrategy extends PipelineStrategy {
 
 
 	@Override
-    public TransformedList createView(final EventList base) {	
-		return new CollectionList(base,
-			new CollectionList.Model() {
-		public List getChildren(final Object arg0) {
+    public TransformedList<Resource,String> createView(final EventList<Resource> base) {	
+		return new CollectionList<Resource,String>(base,
+			new CollectionList.Model<Resource,String>() {
+		public List<String> getChildren(final Resource arg0) {
 			if (! ( arg0 instanceof HasCoverage) ) {
 				return NONE_PROVIDED;
 			}
@@ -61,7 +60,7 @@ public class WavebandStrategy extends PipelineStrategy {
 				return NONE_PROVIDED;
 			}			
 			final String[] bands = c.getWavebands();
-			final List result = new ArrayList(bands.length);
+			final List<String> result = new ArrayList<String>(bands.length);
 			for (int i = 0; i < bands.length; i++) {
 				result.add(bands[i]);
 			}

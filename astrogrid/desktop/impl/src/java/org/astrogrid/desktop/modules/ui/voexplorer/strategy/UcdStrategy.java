@@ -3,13 +3,12 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JMenuItem;
-
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
 
 import ca.odell.glazedlists.CollectionList;
@@ -24,9 +23,9 @@ import ca.odell.glazedlists.matchers.Matcher;
  */
 public final class UcdStrategy extends PipelineStrategy {
 	@Override
-    public Matcher createMatcher(final List<JMenuItem> selected) {
-		return new Matcher() {
-			public boolean matches(final Object r) {
+    public Matcher<Resource> createMatcher(final List<String> selected) {
+		return new Matcher<Resource>() {
+			public boolean matches(final Resource r) {
 				if (r instanceof DataCollection) {
 					final DataCollection dc = (DataCollection)r;
 					final Catalog[] catalogues = dc.getCatalogues();
@@ -61,11 +60,11 @@ public final class UcdStrategy extends PipelineStrategy {
 	
 
 	@Override
-    public TransformedList createView(final EventList base) {
-		return new CollectionList(base,
-				new CollectionList.Model() {
-			public List getChildren(final Object r) {
-				final List l = new ArrayList();
+    public TransformedList<Resource,String> createView(final EventList<Resource> base) {
+		return new CollectionList<Resource,String>(base,
+				new CollectionList.Model<Resource,String>() {
+			public List<String> getChildren(final Resource r) {
+				final List<String> l = new ArrayList<String>();
 				if (r instanceof DataCollection) {
 					final DataCollection dc = (DataCollection)r;
 					final Catalog[] catalogues = dc.getCatalogues();
@@ -100,6 +99,6 @@ public final class UcdStrategy extends PipelineStrategy {
 
 	@Override
     public String getName() {
-		return "UCD";
+		return "Table Column UCD";
 	}
 }

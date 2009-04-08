@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.39 2009/04/06 11:43:21 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.40 2009/04/08 00:35:08 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -87,14 +87,12 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.AuthorityStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.CapabilityStrategy;
-import org.astrogrid.desktop.modules.ui.voexplorer.strategy.ContentLevelStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.CreatorStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.PublisherStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.SourceStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.SubjectsStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.TagStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.TypeStrategy;
-import org.astrogrid.desktop.modules.ui.voexplorer.strategy.TypesStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.UcdStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.WavebandStrategy;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
@@ -584,18 +582,18 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
         return new PipelineStrategy[] {
 				new SubjectsStrategy()
 				, new WavebandStrategy()
-				,new TypeStrategy()
-				, new TypesStrategy()
-				, new org.astrogrid.desktop.modules.ui.voexplorer.strategy.ServiceTypeStrategy()
-				,new UcdStrategy()
-				, new ContentLevelStrategy()
 				,new PublisherStrategy()
-				,new AuthorityStrategy()
 				,new CreatorStrategy()
 				, new CapabilityStrategy()
-				,new TagStrategy(annServer)
+				,new TypeStrategy()						
+				,new UcdStrategy()
 				, new SourceStrategy()
-				// @future add strategies for meta-metadata - last used, recently added, tags, etc.
+				,new AuthorityStrategy()
+				, new org.astrogrid.desktop.modules.ui.voexplorer.strategy.ServiceTypeStrategy()
+				,new TagStrategy(annServer)
+				
+				//, new TypesStrategy() content-type - crap.
+				//, new ContentLevelStrategy() crap
 				};
     }
 
@@ -929,6 +927,9 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.40  2009/04/08 00:35:08  nw
+Complete - taskVOExp Changes
+
 Revision 1.39  2009/04/06 11:43:21  nw
 Complete - taskConvert all to generics.
 
