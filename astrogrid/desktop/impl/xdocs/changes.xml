@@ -13,7 +13,12 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="1.2.3.beta3" date="unreleased">
+<release version="1.2.3.beta4" date="unreleased">
+    <action dev="dave" type="update">
+    vospace: updated plugin, now handles remote-copy (through client), and filenames containing spaces.
+    </action>
+</release>
+<release version="1.2.3.beta3" date="2009-4-8">
     <action dev="nw" type="add">
     FileExplorer: Added 'examples' directory - contains example queries and scripts, appears in file explorer
     and file-load dialogues.

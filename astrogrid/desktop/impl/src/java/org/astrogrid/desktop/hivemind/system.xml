@@ -710,17 +710,20 @@ SYSTEM TRAY
 	<contribution configuration-id="vfsProviders">
 		<provider scheme="file" 
 			implementation="instance:org.apache.commons.vfs.provider.local.DefaultLocalFileProvider" />
-            <!--  don't want these for now - not sure if my ui could support it 
-            re-examine these later -->
+            <!--  would be nice, but interferes with jar classloader.
+            this is because I'm using vfs as java's URLFactoryHandler thinguymmy,             
 		<provider scheme="zip"
 			implementation="instance:org.apache.commons.vfs.provider.zip.ZipFileProvider" />
         <provider scheme="jar"
             implementation="instance:org.apache.commons.vfs.provider.zip.ZipFileProvider" />
+             -->
             <!-- real jar impl is buggy - I get a tack overflow error. zip provider works fine.
              implementation="instanceo:org.apache.commons.vfs.provider.jar.JarFileSystem" />
              -->
+             <!-- 
 		<provider scheme="gz"
 			implementation="instance:org.apache.commons.vfs.provider.gzip.GzipFileProvider" />
+              -->
             
 			<!--  required external libs 
 		<provider scheme="tar"
@@ -745,22 +748,26 @@ SYSTEM TRAY
             -->
 		<provider scheme="sftp"
 			implementation="instance:org.apache.commons.vfs.provider.sftp.SftpFileProvider" />
-
+     
+     <!--  no point unless we can have jar: protocol
 		<provider scheme="res"
 			implementation="instance:org.apache.commons.vfs.provider.res.ResourceFileProvider" />
+      -->
+     
            
 		<provider scheme="ram"
 			implementation="instance:org.apache.commons.vfs.provider.ram.RamFileProvider" />
 	</contribution>
 	
+<!-- 	only useful if there's jar or zip enabled
 	<contribution configuration-id="vfsExtensions">
 		<extension name="zip" scheme="zip"/>
 		<extension name="gz" scheme="gz"/>
         <extension name="jar" scheme="jar" />
-<!-- 		<extension name="tar" scheme="tar"/>
+	<extension name="tar" scheme="tar"/>
 		<extension name="bz2" scheme="bz2"/>
 		<extension name="tgz" scheme="tar"/>
-		<extension name="tbz2" scheme="tar"/> -->		
+		<extension name="tbz2" scheme="tar"/> 
 	</contribution>
 	
 	<contribution configuration-id="vfsMimes">
@@ -768,6 +775,7 @@ SYSTEM TRAY
 		<mime name="application/x-gzip" scheme="gz" />
 		<mime name="application/x-tar" scheme="tar" />
 	</contribution>
+        -->		
 		
 	<contribution configuration-id="hivemind.FactoryDefaults">			
 	    <default symbol="vfs.basefile" value="${user.home}" />
