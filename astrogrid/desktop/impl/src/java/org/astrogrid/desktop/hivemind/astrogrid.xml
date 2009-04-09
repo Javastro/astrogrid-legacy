@@ -91,10 +91,10 @@ MYSPACE
 	</service-point>
 
     <contribution configuration-id="hivemind.FactoryDefaults">                  
-        <default symbol="astrogrid.examples.url" value="res:examples/"/> 
+        <default symbol="astrogrid.examples.url" value="res:examples"/> 
     </contribution>
 
-    <service-point id="examplevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider"  visibilitiy="private">
+    <service-point id="examplevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider"  visibility="private">
         VFS protocol provider for workspace://
         <invoke-factory model="primitive">
             <construct class="org.astrogrid.desktop.modules.ag.vfs.ExampleProvider">
