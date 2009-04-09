@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.23 2009/04/07 13:10:42 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.24 2009/04/09 15:22:15 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -333,6 +333,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
             }
             @Override
             protected void doError(final Throwable ex) {
+                logger.info("Failed to login",ex);
                 showError("Unable to login: " + ExceptionFormatter.formatException(ex,ExceptionFormatter.INNERMOST));
             }
 
@@ -387,6 +388,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.24  2009/04/09 15:22:15  nw
+log login failures
+
 Revision 1.23  2009/04/07 13:10:42  nw
 Complete - taskUI Focus Improvements.
 
