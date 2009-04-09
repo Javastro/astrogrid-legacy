@@ -456,11 +456,9 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 				c.invoke("XQuerySearch",new Object[]{inStream});
 			} catch (final XFireFault f) { // special treatment -make sure error message gets back to client.
 				//logger.error("Error",f);
-				throw new ServiceException("Unable to query the registry service at " + endpoint 
-				        + "\n" + f.toString()
-				        + "\nXQuery sent to server:\n" 
-				        + fullQ 
-				        ,f);
+			    logger.warn("Unable to query registry service at " + endpoint,f);
+			    logger.warn("XQuery sent to server was :\n" + fullQ);
+				throw new ServiceException("Unable to query the registry service at " + endpoint ,f);
 			} catch (final ParserConfigurationException x) {
 			    throw new RuntimeException(x);				
 			} catch (final Exception x) {
