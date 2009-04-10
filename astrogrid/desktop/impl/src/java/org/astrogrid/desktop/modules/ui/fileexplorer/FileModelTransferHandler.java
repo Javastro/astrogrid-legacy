@@ -227,10 +227,11 @@ public class FileModelTransferHandler extends TransferHandler{
                 }
             });
             
-                // center it in the component
-                // would like to get drop position, but not possible using a TransferHandler.
-                final Dimension size = comp.getSize();
-                final Point  location = new Point(size.width/2,size.height/2);
+                Point location = comp.getMousePosition();
+                if (location == null) { // mouse not in component - fall back to centering it.
+                    final Dimension size = comp.getSize();
+                    location = new Point(size.width/2,size.height/2);
+                }
             m.show(comp,location.x,location.y);
             
         }
