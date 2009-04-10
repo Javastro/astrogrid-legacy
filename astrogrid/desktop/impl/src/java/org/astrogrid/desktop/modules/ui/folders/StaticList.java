@@ -26,7 +26,7 @@ public class StaticList extends ResourceFolder  {
 		super(name, defaultIcon);
 	}
 	
-	public StaticList(final String name, final Collection coll) {
+	public StaticList(final String name, final Collection<URI> coll) {
 	    this(name);
 	    setResourceSet(coll);
 	}
@@ -56,7 +56,7 @@ public class StaticList extends ResourceFolder  {
 	}
 	
 	/** reutrn a set of URI objects */
-	public Set getResourceSet() {
+	public Set<URI> getResourceSet() {
 		return this.resouceUris;
 	}
 	/**
@@ -68,7 +68,7 @@ public class StaticList extends ResourceFolder  {
 		for (final Iterator i = s.iterator(); i.hasNext();) {
 			final Object element =  i.next();
 			if (element instanceof URI) {
-				this.resouceUris.add(element);
+				this.resouceUris.add((URI)element);
 			} else {
 				try {
 					this.resouceUris.add(new URI(element.toString()));
@@ -81,7 +81,7 @@ public class StaticList extends ResourceFolder  {
 	}
     private static final String defaultIcon ="doc16.png";
 	//private static final String defaultIcon ="folder16.png";
-	private final Set resouceUris = new LinkedHashSet(); // maintains order of insertion.
+	private final Set<URI> resouceUris = new LinkedHashSet<URI>(); // maintains order of insertion.
 	
 	public int getSize() {
 		return resouceUris.size();

@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
+import java.awt.Component;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,9 +17,12 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellEditor;
+import javax.swing.text.JTextComponent;
 
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
@@ -43,10 +47,10 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 30, 20072:05:03 PM
  */
-public class StaticListEditingPanel extends EditingPanel implements ActionListener, ListSelectionListener, ListEventListener {
+public class StaticListEditingPanel extends EditingPanel implements ActionListener, ListSelectionListener, ListEventListener<URI> {
 
     /** defines the format of the table */
-	private static class StaticListEditorTableFormat implements AdvancedTableFormat, WritableTableFormat {
+	private static class StaticListEditorTableFormat implements AdvancedTableFormat<URI>, WritableTableFormat<URI> {
 
 		public Class getColumnClass(final int arg0) {
 			return URI.class;
@@ -64,18 +68,18 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 			return "Identifier";
 		}
 
-		public Object getColumnValue(final Object arg0, final int arg1) {
+		public Object getColumnValue(final URI arg0, final int arg1) {
 			return arg0;
 		}
 
-		public boolean isEditable(final Object arg0, final int arg1) {
+		public boolean isEditable(final URI arg0, final int arg1) {
 			return true;
 		}
-
-		public Object setColumnValue(final Object arg0, final Object arg1, final int arg2) {
-			// easy - edited value is already a URI at this point.
-			return arg1;
-		}
+	
+        public URI setColumnValue(final URI baseObject, final Object editedValue, final int column) {
+            // easy - edited value is already a URI at this point.
+            return (URI)editedValue;
+        }
 	}
 	/**
 	 * 
@@ -98,10 +102,34 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 		builder.addLabel("Contains the resources:",cc.xyw(2,row,3));
 		
 		row++;
-		ids = new BasicEventList();
+		ids = new BasicEventList<URI>();
 		ids.addListEventListener(this);
-		table = new JTable(new EventTableModel(ids,new StaticListEditorTableFormat()));
-		selection = new EventSelectionModel(ids);
+		table = new JTable(new EventTableModel<URI>(ids,new StaticListEditorTableFormat()))
+		  {
+            //  Select the text when the cell starts editing
+            //  a) text will be replaced when you start typing in a cell
+            //  b) text will be selected when you use F2 to start editing
+            //  c) caret is placed at end of text when double clicking to start editing
+ 
+            public Component prepareEditor(
+            final TableCellEditor editor, final int row, final int column)
+            {
+                final Component c = super.prepareEditor(editor, row, column);
+ 
+                if (c instanceof JTextComponent)
+                {
+                    ((JTextField)c).selectAll();
+                }
+ 
+                return c;
+            }
+            };		
+        table.setSurrendersFocusOnKeystroke(true);
+        // some weird magic that means 'enter' isn't required to finish an edit.
+        // wish these bloody things were documented.
+
+        table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);		
+		selection = new EventSelectionModel<URI>(ids);
 		selection.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setSelectionModel(selection);
 		selection.addListSelectionListener(this);
@@ -140,8 +168,8 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 	private final JTable table;
 	private final JButton add;
 	private final JButton remove;
-	private final EventList ids;
-	private final EventSelectionModel selection;
+	private final EventList<URI> ids;
+	private final EventSelectionModel<URI> selection;
 	
 	@Override
     public void setCurrentlyEditing(final ResourceFolder currentlyEditing) {
@@ -152,6 +180,10 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 		final StaticList sl = (StaticList)getCurrentlyEditing();
 		ids.clear();
 		ids.addAll(sl.getResourceSet());
+		// now, if this is a new 'empty' list, create a new item within it.
+		if (ids.isEmpty()) {
+		    addEditTemplate();
+		}
 	}
 	
 	@Override
@@ -163,15 +195,20 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 // responds to button clicks.
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getSource() == add) {
-			final int insPos = ids.size();
-			final URI nu = URI.create("ivo://edit.me");
-			ids.add(insPos,nu);
-			final Rectangle rect =  table.getCellRect(insPos, 0, true);
-			table.scrollRectToVisible(rect);
-			table.editCellAt(insPos,0);
+		    addEditTemplate();
 		} else if (e.getSource() == remove && ! selection.isSelectionEmpty()) {
 			ids.remove(selection.getSelected().get(0));
 		}
+	}
+	
+	/** add a template line to the list */
+	private void addEditTemplate() {
+	    final int insPos = ids.size();
+        final URI nu = URI.create("ivo://edit.me");
+        ids.add(insPos,nu);
+        final Rectangle rect =  table.getCellRect(insPos, 0, true);
+        table.scrollRectToVisible(rect);
+        table.editCellAt(insPos,0);	    
 	}
 
 	// listens to selecito in table.
@@ -180,7 +217,7 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 	}
 
 // listens to changes of id list.
-	public void listChanged(final ListEvent arg0) {
+	public void listChanged(final ListEvent<URI> arg0) {
 		while (arg0.hasNext()) {
 			arg0.next();
 			ok.setEnabled(shouldOkBeEnabled());
