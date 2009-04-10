@@ -127,7 +127,7 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
 			}
         });
         setValue(p);
-        setToolTipText("Position (187.27,+2.05 or 12:29:06.00,+02:03:08.60)");
+        setToolTipText("Enter a J2000 position (187.27,+2.05 or 12:29:06.00,+02:03:08.60)");
         
     }
     

@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.taskrunner;
 
+import java.awt.BorderLayout;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -10,6 +11,7 @@ import java.text.ParseException;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -21,7 +23,8 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
-import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
+import org.astrogrid.desktop.modules.ui.comp.TimerDrivenNameResolvingPositionTextField;
+import org.astrogrid.desktop.modules.ui.comp.UserDrivenNameResolvingPositionTextField;
 
 /** Composite form element that edits RA and Dec parameters.
  * 
@@ -39,7 +42,7 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
     private final Sesame ses;
     private final ParameterValue ra;
     private final ParameterBean raDesc;
-    private NameResolvingPositionTextField positionField;
+    private UserDrivenNameResolvingPositionTextField positionField;
     private DecSexToggle toggle;
 
     public PositionFormElement(final ParameterValue ra, final ParameterBean raDesc, final ParameterValue dec, final ParameterBean decDesc,  final UIComponent parent,final ResourceChooserInternal chooser, final Sesame ses) {
@@ -68,8 +71,8 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
         logger.debug("ra :" + ra.getValue());
         logger.debug("dec:" + dec.getValue());        
 
-        positionField = new NameResolvingPositionTextField(parent,ses);
-        positionField.addPropertyChangeListener(NameResolvingPositionTextField.VALUE_PROPERTY,this);
+        positionField = new UserDrivenNameResolvingPositionTextField(parent,ses);
+        positionField.addPropertyChangeListener(TimerDrivenNameResolvingPositionTextField.VALUE_PROPERTY,this);
         try { 
             positionField.setPosition(ra.getValue() + "," + dec.getValue());
         } catch (final ParseException x) {
@@ -79,7 +82,10 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
         toggle.addListener(positionField);
 
         final Box p = Box.createVerticalBox();
-        p.add(positionField);
+        final JPanel h = new JPanel(new BorderLayout());
+        h.add(positionField,BorderLayout.CENTER);
+        h.add(positionField.getProgressButton(),BorderLayout.EAST);        
+        p.add(h);
         p.add(toggle.getDegreesRadio());
         p.add(toggle.getSexaRadio());
         return p;

@@ -23,7 +23,10 @@ import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-/** Position input field that also accepts object names. these are
+/** 
+ * UNUSED - replaced by user-driven alternative.
+ * 
+ * Position input field that also accepts object names. these are
  * resolved into positions using simbad.
  * <p/>
  * If the user enters an input into the field that the superclass parser fails to parse (i.e. not in the format ra,dec)
@@ -38,7 +41,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  * @author Noel Winstanley
  * @since May 16, 20068:12:34 AM
  */
-public class NameResolvingPositionTextField extends PositionTextField implements DocumentListener, ActionListener {
+public class TimerDrivenNameResolvingPositionTextField extends PositionTextField implements DocumentListener, ActionListener {
     /**listener interface for components that wish to be notified of resolution behaviour. */
     public static interface ResolutionListener extends EventListener{
         /** messaged when this position text field starts resolving an object name via sesame
@@ -70,7 +73,7 @@ public class NameResolvingPositionTextField extends PositionTextField implements
     }
     
 	/** Construct a new resolving component */
-    public NameResolvingPositionTextField(final UIComponent parent, final Sesame ses) {
+    public TimerDrivenNameResolvingPositionTextField(final UIComponent parent, final Sesame ses) {
         super();
         this.ses = ses;
         this.parent = parent;
@@ -78,6 +81,7 @@ public class NameResolvingPositionTextField extends PositionTextField implements
         super.decimal = new SesameResolver(decimal);
         super.sexa = new SesameResolver(sexa);    
         getDocument().addDocumentListener(this);
+        setToolTipText("Object name (3c273) or " + super.getToolTipText());
     }
     
     /* unused
@@ -180,9 +184,9 @@ public class NameResolvingPositionTextField extends PositionTextField implements
         fireResolving();                
     	objectName = inputPos;
     	pos = new SesamePositionBean(); // temporary placehoder
-    	latest = new BackgroundWorker(parent,"Resolving " + inputPos + " using Sesame",BackgroundWorker.SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
+    	latest = new BackgroundWorker<SesamePositionBean>(parent,"Resolving " + inputPos + " using Sesame",BackgroundWorker.SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
 			@Override
-            protected Object construct() throws Exception {
+            protected SesamePositionBean construct() throws Exception {
 				return ses.resolve(inputPos.trim());   
 			}
 			@Override
@@ -207,9 +211,8 @@ public class NameResolvingPositionTextField extends PositionTextField implements
 			    }
 			}
 			@Override
-            protected void doFinished(final Object result) {	
-			    if (this == latest) { // i.e. hasn't been superceded by a more recent task
-			        pos = (SesamePositionBean)result;
+            protected void doFinished(final SesamePositionBean pos) {	
+			    if (this == latest) { // i.e. hasn't been superceded by a more recent task			     
 			        setPosition(new Point2D.Double(pos.getRa(),pos.getDec()));
 			        fireResolved();
 			    }

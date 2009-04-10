@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.97 2009/04/07 13:10:42 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.98 2009/04/10 16:29:18 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,11 +86,12 @@ import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.DoubleDimension;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
-import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.comp.RadiusTextField;
+import org.astrogrid.desktop.modules.ui.comp.TimerDrivenNameResolvingPositionTextField;
+import org.astrogrid.desktop.modules.ui.comp.UserDrivenNameResolvingPositionTextField;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
-import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField.ResolutionEvent;
+import org.astrogrid.desktop.modules.ui.comp.TimerDrivenNameResolvingPositionTextField.ResolutionEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 import org.astrogrid.desktop.modules.ui.scope.AbstractRetriever;
@@ -239,10 +240,17 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		builder.addLabel("Position (RA,Dec) or Object Name",cc.xyw(2,row,3));
 
 		row++;
-		posText = new NameResolvingPositionTextField(this,ses);
+	//	posText = new TimerDrivenNameResolvingPositionTextField(this,ses);
+		posText = new UserDrivenNameResolvingPositionTextField(this,ses);
 		posText.setAlignmentX(LEFT_ALIGNMENT);
 		posText.setColumns(10);
-		builder.add(posText,cc.xyw(2,row,3));
+		// don't want to crump the rest of the layout, so stuff these 2 into their own panel.
+		final JPanel p = new JPanel(new BorderLayout(0,0)); //new FlowLayout(FlowLayout.LEFT,0,0));
+		p.add(posText,BorderLayout.CENTER);
+		p.add(posText.getProgressButton(),BorderLayout.EAST);
+		builder.add(p,cc.xyw(2,row,3));
+//		builder.add(posText,cc.xyw(2,row,2));
+//		builder.add(posText.createResolveButton(),cc.xy(4,row));
 
 		row++;
 		builder.addLabel("Search Radius (degs/arcsecs)",cc.xyw(2,row,3));
@@ -541,7 +549,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
     protected final Action clearAction = new ClearSelectionAction();
 
 	protected final DecSexToggle dsToggle;
-	protected final NameResolvingPositionTextField posText;
+	//protected final TimerDrivenNameResolvingPositionTextField posText;
+	protected final UserDrivenNameResolvingPositionTextField posText;
 	protected final DalProtocolManager protocols;
 	protected final RadiusTextField regionText;
 	protected final Sesame ses;
@@ -1148,8 +1157,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 	/** perform search action.
 	 *  listens to position field and is only enabled when position field is valiud.*/
-	protected class SearchAction extends AbstractAction implements NameResolvingPositionTextField.ResolutionListener {
-		public SearchAction(final NameResolvingPositionTextField pos) {		    
+	protected class SearchAction extends AbstractAction implements TimerDrivenNameResolvingPositionTextField.ResolutionListener {
+		public SearchAction(final UserDrivenNameResolvingPositionTextField pos) {		    
 			super("Search",IconHelper.loadIcon("search32.png"));
 			this.putValue(SHORT_DESCRIPTION,"Find data for this Position");
 			this.putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.MENU_KEYMASK));
