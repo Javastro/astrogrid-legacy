@@ -93,8 +93,10 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 		this.edit = new EditBookmarkAction();
 		this.create = new NewBookmarkAction();
 		
-		setTransferHandler(new StorageFoldersListTransferHandler());
-		setDragEnabled(true);
+		// removed this - makes it too twitchy when doing a drag-n-drop from the files list.
+		// also, it's not likely to be much use to drag or drop from this folders list.
+		//setTransferHandler(new StorageFoldersListTransferHandler());
+		//setDragEnabled(true);
 		
 		setBorder(BorderFactory.createEmptyBorder());
 		setModel(new EventListModel<StorageFolder>(folderList));
