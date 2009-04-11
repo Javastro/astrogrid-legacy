@@ -194,9 +194,9 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		}
 
 		public void actionPerformed(final ActionEvent e) {
-			mainPanel.show("list");
+			mainPanel.setShowing("list");
 			fileList.requestFocusInWindow();
-			PREFERENCES.put(PREFERRED_VIEW_KEY,mainPanel.currentlyShowing());
+			PREFERENCES.put(PREFERRED_VIEW_KEY,mainPanel.getShowing());
 			
 		}		
 	}
@@ -212,9 +212,9 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		}
 
 		public void actionPerformed(final ActionEvent e) {
-			mainPanel.show("table");
+			mainPanel.setShowing("table");
 			fileTable.requestFocusInWindow();
-			PREFERENCES.put(PREFERRED_VIEW_KEY,mainPanel.currentlyShowing());			
+			PREFERENCES.put(PREFERRED_VIEW_KEY,mainPanel.getShowing());			
 		}		
 	}
 

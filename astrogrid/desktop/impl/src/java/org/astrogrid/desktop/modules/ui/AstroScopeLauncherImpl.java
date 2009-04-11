@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.99 2009/04/11 13:33:57 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.100 2009/04/11 16:35:00 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,6 +86,7 @@ import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.DoubleDimension;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
+import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.comp.RadiusTextField;
 import org.astrogrid.desktop.modules.ui.comp.TimerDrivenNameResolvingPositionTextField;
@@ -408,6 +409,13 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		
 	// main part of the window
 		flip = new VizualizationsPanel(vizualizations,radialViz,hyperbolicViz,servicesList);
+		flip.addPropertyChangeListener(FlipPanel.SHOWING,new PropertyChangeListener() {
+            public void propertyChange(final PropertyChangeEvent evt) {
+                topAction.setEnabled(! flip.currentlyServicesTable());                
+            }
+		});
+		//initialize this too.
+		topAction.setEnabled(! flip.currentlyServicesTable());
 		
 		pane.add(flip, BorderLayout.CENTER);
 		showTransientWarnings = new JCheckBoxMenuItem("Show Popup Warnings");

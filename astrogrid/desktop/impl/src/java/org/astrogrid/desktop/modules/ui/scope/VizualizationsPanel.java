@@ -168,8 +168,8 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
  
 /** overridden to record current view in preferences */ 
  @Override
-public void show(final String viewName) {
-    super.show(viewName);
+public void setShowing(final String viewName) {
+    super.setShowing(viewName);
     PREFERENCES.put(PREFERRED_VIEW_KEY,viewName);
 }
 /**
@@ -199,7 +199,7 @@ private void clearPrefuseSelection() {
              viz.reDrawGraphs();           
              getShowServicesFiltersAction().setEnabled(false);
          }
-         show(RADIAL_VIEW);
+         setShowing(RADIAL_VIEW);
          servicesHasPrecedence = false;
      }
  }
@@ -215,7 +215,7 @@ private void clearPrefuseSelection() {
              viz.reDrawGraphs();               
              getShowServicesFiltersAction().setEnabled(false);             
          }         
-         show(HYPERBOLIC_VIEW);
+         setShowing(HYPERBOLIC_VIEW);
          servicesHasPrecedence = false;
      }
  }
@@ -232,7 +232,7 @@ private void clearPrefuseSelection() {
              tableSelected.add(table.getCurrentDisplayedResources().get(0));
          }
          getShowServicesFiltersAction().setEnabled(true);         
-         show(SERVICES_VIEW);
+         setShowing(SERVICES_VIEW);
          servicesHasPrecedence = true;        
      }
  }
@@ -290,17 +290,17 @@ public Action getShowServicesFiltersAction() {
 
 /** true if currently showing the radial view */
     public boolean currentlyRadial() {
-        return VizualizationsPanel.RADIAL_VIEW.equals(currentlyShowing());
+        return VizualizationsPanel.RADIAL_VIEW.equals(getShowing());
     }
     
     /** true if currently showing the hyperbolic view */
     public boolean currentlyHyperbolic() {
-        return VizualizationsPanel.HYPERBOLIC_VIEW.equals(currentlyShowing());
+        return VizualizationsPanel.HYPERBOLIC_VIEW.equals(getShowing());
     }
     
     /** true is currenlty showing the services table */
     public boolean currentlyServicesTable() {
-        return VizualizationsPanel.SERVICES_VIEW.equals(currentlyShowing());
+        return VizualizationsPanel.SERVICES_VIEW.equals(getShowing());
     }
 
     /** show the services table */

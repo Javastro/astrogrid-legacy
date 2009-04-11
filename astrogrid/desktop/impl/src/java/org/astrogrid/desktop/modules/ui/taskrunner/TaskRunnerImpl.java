@@ -282,7 +282,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             pForm.remove(rightPane);
             adqlOnlyForm.add(rightPane,BorderLayout.EAST);
             
-            flipper.show(ADQL_ONLY_VIEW);
+            flipper.setShowing(ADQL_ONLY_VIEW);
         } else {
             adqlOnlyForm.removeAll();
             // adql editor
@@ -295,7 +295,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             //right-pane
             pForm.setRightPane("Execute",rightPane);
             
-            flipper.show(PARAMETER_VIEW);
+            flipper.setShowing(PARAMETER_VIEW);
         }        
     }
     

@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.31 2009/04/07 13:10:42 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.32 2009/04/11 16:35:00 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -358,7 +358,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		resourceLists.store(r);
 		//display updated folder contents.
 		
-        mainPanel.show(RESOURCES_VIEW);
+        mainPanel.setShowing(RESOURCES_VIEW);
         // clearing selection and then setting hte selection will trigger a query reload in all circumstances.
         resourceLists.clearSelection();
         resourceLists.setSelectedFolder(r);
@@ -375,7 +375,7 @@ public class VOExplorerImpl extends UIComponentImpl
 	public void editNewSmartList(final SmartList f) {
 		smartEditPanel.getOkButton().setText("Create");
 		smartEditPanel.setCurrentlyEditing(f);
-		mainPanel.show(EDIT_SMART_VIEW);
+		mainPanel.setShowing(EDIT_SMART_VIEW);
 		resourceLists.setEnabled(false);
 		acts.clearSelection(); // removes list of actions.
 	}
@@ -383,7 +383,7 @@ public class VOExplorerImpl extends UIComponentImpl
 	public void editExistingSmartList(final SmartList f) {
 		smartEditPanel.getOkButton().setText("Update");
 		smartEditPanel.setCurrentlyEditing(f);
-		mainPanel.show(EDIT_SMART_VIEW);
+		mainPanel.setShowing(EDIT_SMART_VIEW);
 		resourceLists.setEnabled(false);
 		acts.clearSelection(); // removes list of actions.
 	}
@@ -391,7 +391,7 @@ public class VOExplorerImpl extends UIComponentImpl
 	public void editNewStaticList(final StaticList f) {
 		staticEditPanel.getOkButton().setText("Create");
 		staticEditPanel.setCurrentlyEditing(f);
-		mainPanel.show(EDIT_STATIC_VIEW);
+		mainPanel.setShowing(EDIT_STATIC_VIEW);
 		resourceLists.setEnabled(false);
 		acts.clearSelection(); // removes list of actions.
 	}
@@ -399,7 +399,7 @@ public class VOExplorerImpl extends UIComponentImpl
 	public void editExistingStaticList(final StaticList f) {
 		staticEditPanel.getOkButton().setText("Update");
 		staticEditPanel.setCurrentlyEditing(f);
-		mainPanel.show(EDIT_STATIC_VIEW);
+		mainPanel.setShowing(EDIT_STATIC_VIEW);
 		resourceLists.setEnabled(false);
 		acts.clearSelection(); // removes list of actions.
 	}
@@ -407,7 +407,7 @@ public class VOExplorerImpl extends UIComponentImpl
 	public void editNewQueryList(final XQueryList f) {
 		xqueryEditPanel.getOkButton().setText("Create");
 		xqueryEditPanel.setCurrentlyEditing(f);
-		mainPanel.show(EDIT_XQUERY_VIEW);
+		mainPanel.setShowing(EDIT_XQUERY_VIEW);
 		resourceLists.setEnabled(false);
 		acts.clearSelection(); // removes list of actions.
 	}
@@ -415,7 +415,7 @@ public class VOExplorerImpl extends UIComponentImpl
 	public void editExistingQueryList(final XQueryList f) {
 		xqueryEditPanel.getOkButton().setText("Update");
 		xqueryEditPanel.setCurrentlyEditing(f);
-		mainPanel.show(EDIT_XQUERY_VIEW);
+		mainPanel.setShowing(EDIT_XQUERY_VIEW);
 		resourceLists.setEnabled(false);
 		acts.clearSelection(); // removes list of actions.
 	}
@@ -489,7 +489,7 @@ public class VOExplorerImpl extends UIComponentImpl
     public void editNewSubscription(final ResourceFolder f) {
         subscriptionEditPanel.getOkButton().setText("Create");
         subscriptionEditPanel.setCurrentlyEditing(f);
-        mainPanel.show(EDIT_SUBSCRIPTION_VIEW);
+        mainPanel.setShowing(EDIT_SUBSCRIPTION_VIEW);
         resourceLists.setEnabled(false);
         acts.clearSelection();
     }
@@ -497,14 +497,14 @@ public class VOExplorerImpl extends UIComponentImpl
     public void editExistingSubscription(final ResourceFolder f) {
         subscriptionEditPanel.getOkButton().setText("Create");
         subscriptionEditPanel.setCurrentlyEditing(f);        
-        mainPanel.show(EDIT_SUBSCRIPTION_VIEW);
+        mainPanel.setShowing(EDIT_SUBSCRIPTION_VIEW);
         resourceLists.setEnabled(false);
         acts.clearSelection();
         
     }
 
 	public void showResourceView() {
-		mainPanel.show(RESOURCES_VIEW);
+		mainPanel.setShowing(RESOURCES_VIEW);
 		resourceLists.setEnabled(true);
 	}	
 

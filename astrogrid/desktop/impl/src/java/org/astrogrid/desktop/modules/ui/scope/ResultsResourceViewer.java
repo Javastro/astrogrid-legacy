@@ -90,7 +90,7 @@ public class ResultsResourceViewer extends FlipPanel implements ResourceViewer ,
 		}
 
 	public void clear() {
-	    show(CLEAR);
+	    setShowing(CLEAR);
 	    errorFiles.clearSelection();
 	    resultsTable.clearSelection();
 	    
@@ -135,7 +135,7 @@ public void display(final Resource res) {
                 // no response - so dont show the files.
                 errorFiles.setVisible(false);
             }
-            show(ERROR);
+            setShowing(ERROR);
             return;
         } else if (result.count == QueryResults.PENDING) {
             clear();
@@ -143,7 +143,7 @@ public void display(final Resource res) {
             final FileObjectView f = result.resultsDir;
             //    if (f.isExists()) {
             navigator.move(f);
-            show(TABLE);
+            setShowing(TABLE);
             return;            
             //   } 
         }

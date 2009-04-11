@@ -108,7 +108,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	protected void disableIndirect() {
         
         //make sure we just show direct mode.
-        getEditor().show(DIRECT);
+        getEditor().setShowing(DIRECT);
         indirectToggle.setEnabled(false);
         indirectToggle.setVisible(false);	    
 	}
@@ -155,11 +155,11 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				pval.setIndirect(true);
 				pval.setValue((String)indirectField.getValue());
-				getEditor().show(INDIRECT);
+				getEditor().setShowing(INDIRECT);
 			} else {
 				pval.setIndirect(false);
 				pval.setValue(getStringValue());
-				getEditor().show(DIRECT);
+				getEditor().setShowing(DIRECT);
 			}
 		}
 	}
@@ -217,7 +217,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	        _editor.add(indirectPanel,INDIRECT);
 	        // populate it, if there's stuff already in the tool.
 	        if (pval.getValue() != null && pval.getIndirect()) {
-	            _editor.show(INDIRECT);
+	            _editor.setShowing(INDIRECT);
 	            indirectField.setValue(pval.getValue());
 	        }	        
 	    }

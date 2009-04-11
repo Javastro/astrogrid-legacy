@@ -15,6 +15,9 @@
 <body>
 <release version="1.2.3.beta4" date="unreleased">
     <action dev="nw" type="fix">
+        Astroscope: disabled 'go to top' button when in services table view
+    </action>
+    <action dev="nw" type="fix">
         Astroscope: position and offset now toggle correctly between sexagesimal and decimal
         degrees in results table.
     </action>

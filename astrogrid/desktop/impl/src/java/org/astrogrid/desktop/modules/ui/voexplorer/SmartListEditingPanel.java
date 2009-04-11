@@ -201,25 +201,25 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 	}	
 	
 	private boolean isFormShowing() {
-	    return QB.equals(flip.currentlyShowing())	 ;   
+	    return QB.equals(flip.getShowing())	 ;   
 	}
 	private boolean isErrorShowing() {
-        return ERROR.equals(flip.currentlyShowing())    ;   	    
+        return ERROR.equals(flip.getShowing())    ;   	    
 	}
 	private boolean isTooComplexShowing() {
-        return COMPLEX.equals(flip.currentlyShowing())   ;   	    
+        return COMPLEX.equals(flip.getShowing())   ;   	    
 	}
 	private void showForm() {
-        flip.show(QB);	    
+        flip.setShowing(QB);	    
         ok.setEnabled(shouldOkBeEnabled());
      
 	}
 	private void showError() {
-	    flip.show(ERROR);
+	    flip.setShowing(ERROR);
 	    ok.setEnabled(false);
 	}
 	private void showTooComplex() {
-	    flip.show(COMPLEX);
+	    flip.setShowing(COMPLEX);
 	    ok.setEnabled(shouldOkBeEnabled());
 	}
 
