@@ -1,7 +1,6 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Date;
 import java.util.Iterator;
@@ -78,6 +77,12 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     /** attribute giving a formatted offset dfor this node - usd in ResultsFileTable */
     public static final String OFFSET_DISPLAY_ATTRIBUTE = "displayOffset";        
   //  private static final int MAX_INLINE_IMAGE_SIZE = 100000;
+    
+    /** attribute used as a flag to indicate this node represents
+     * a row in the query result
+     */
+    public static final String IS_ROW_DATA_ATTRIBUTE = "is.row.data";
+    
     protected final double ra;
     protected final double dec;
     protected final Service service;
@@ -143,6 +148,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         return getLabel();
     }
 
+    
     /** helper method - called by subclasses to SAX-parse a votable, attaching results as nodes to the service node 
      * @param tableHandler handler to use on the votable.
      * @throws FactoryConfigurationError
@@ -270,86 +276,82 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
            return uk.ac.starlink.ttools.func.Coords.skyDistanceDegrees(queryra,querydec,objectra,objectdec);
        }  
        
-       protected final String chopValue(final String doubleValue, final int scale) {
-     	   // @todo would it be more efficient to use a NumberFormatter here? - this has Round_half_up behaviour too.
-    	   try {
-    	   return new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString();
-    	   } catch (final NumberFormatException e) {
-    		   return "unknown";
-    	   }
-       }
+
        
     /** called once for each row in the table
      * @see uk.ac.starlink.votable.TableHandler#rowData(java.lang.Object[])
      */
-    public void rowData(final Object[] row) throws SAXException {
-        isWorthProceeding();
-        resultCount++; 
-        final String rowRa = getRaFromRow(row);
-        final String rowDec = getDecFromRow(row);                                 
-        final DefaultTreeNode valNode = createValueNode();
-        final String positionString = chopValue(String.valueOf(rowRa),6) + "," + chopValue(String.valueOf(rowDec),6);
-        valNode.setAttribute(LABEL_ATTRIBUTE,"*");
-        valNode.setAttribute(SERVICE_TYPE_ATTRIBUTE,getServiceType());
-        
-        valNode.setAttribute(RA_ATTRIBUTE,rowRa); // these might come in handy for searching later.
-        valNode.setAttribute(DEC_ATTRIBUTE,rowDec);
-        valNode.setAttribute(POS_ATTRIBUTE,positionString);
+       public void rowData(final Object[] row) throws SAXException {
+           isWorthProceeding();
+           resultCount++; 
+           final String rowRaStr = getRaFromRow(row);
+           final String rowDecStr = getDecFromRow(row);     
+           try {
+               final double rowRa = Double.parseDouble(rowRaStr);
+               final double rowDec = Double.parseDouble(rowDecStr);
 
-        // handle further parsing in subclasses.
-        rowDataExtensionPoint(row,valNode);
-        
-        final StringBuffer tooltip = new StringBuffer();
-        tooltip.append("<html><p>Position (decimal degrees): ").append(rowRa).append(", ").append(rowDec);
-        try {
-        tooltip.append("<br>Position (sexagesimal): ")
-        .append(PositionUtils.getRASexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))))
-        .append(",").append(PositionUtils.getDECSexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))));
+               final DefaultTreeNode valNode = createValueNode();
+               final String positionString = model.chopValue(rowRaStr,6) + "," + model.chopValue(rowDecStr,6);
+               valNode.setAttribute(IS_ROW_DATA_ATTRIBUTE,"");
+               valNode.setAttribute(LABEL_ATTRIBUTE,"*");
+               valNode.setAttribute(SERVICE_TYPE_ATTRIBUTE,getServiceType());
 
-        for (int v = 0; v < row.length; v++) {
-            final Object o = row[v];
-            if (o == null || omitRowFromTooltip(v)) {
-                continue;
-            }
-            tooltip.append("<br>")
-            .append(titles[v])
-            .append( ": ")
-            .append(safeTrim(o));
-        }        
-        tooltip.append("</p>");
-        valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());  
-        final double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
-        final String offsetVal = chopValue(String.valueOf(offset),6);
-        valNode.setAttribute(OFFSET_DISPLAY_ATTRIBUTE,offsetVal); // formatted value, just for display.
-        // now find correct offset node to add to.
-        TreeNode offsetNode = findNode(offsetVal, serviceNode);
-        final String tempAttr;
-        if(offsetNode == null) { // not found offset node.
-            offsetNode = new DefaultTreeNode();
-            offsetNode.setAttribute(LABEL_ATTRIBUTE,offsetVal);
-            offsetNode.setAttribute(OFFSET_ATTRIBUTE,String.valueOf(offset));
-            offsetNode.setAttribute(TOOLTIP_ATTRIBUTE,"Offset from search position: " + String.valueOf(offset));
-            serviceNode.addChild(new DefaultEdge(serviceNode,offsetNode));
-            model.getNodeSizingMap().addOffset(offsetVal);
-        }
+               valNode.setAttribute(RA_ATTRIBUTE,rowRaStr); // these might come in handy for searching later.
+               valNode.setAttribute(DEC_ATTRIBUTE,rowDecStr);
+               valNode.setAttribute(POS_ATTRIBUTE,positionString);
 
-        // now have found or created the offsetNode, find the pointNode within it.
-        TreeNode pointNode = findNode(positionString,offsetNode);
-        if (pointNode == null) {
-            pointNode = new DefaultTreeNode();
-            offsetNode.addChild(new DefaultEdge(offsetNode,pointNode));
-            pointNode.setAttribute(LABEL_ATTRIBUTE,positionString);
-            pointNode.setAttribute(TOOLTIP_ATTRIBUTE,"Actual position of result: " + positionString);
-        }
-        // now have found or created point node. add new result to this.
-        
-       pointNode.addChild(new DefaultEdge(pointNode,valNode));
-        } catch (final NumberFormatException e) {
-       	 logger.warn("Failed to parse",e);
-        } catch (final ArrayIndexOutOfBoundsException e) {
-          	 logger.warn("Failed to parse",e);
-          }          
-    }
+               // handle further parsing in subclasses.
+               rowDataExtensionPoint(row,valNode);
+
+               final StringBuffer tooltip = new StringBuffer();
+               tooltip.append("<html><p>Position (decimal degrees): ").append(rowRa).append(", ").append(rowDec);
+               tooltip.append("<br>Position (sexagesimal): ")
+               .append(PositionUtils.decimalToSexagesimal(ra,dec));
+
+               for (int v = 0; v < row.length; v++) {
+                   final Object o = row[v];
+                   if (o == null || omitRowFromTooltip(v)) {
+                       continue;
+                   }
+                   tooltip.append("<br>")
+                   .append(titles[v])
+                   .append( ": ")
+                   .append(safeTrim(o));
+               }        
+               tooltip.append("</p>");
+               valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());  
+               final double offset = getOffset(ra, dec, rowRa, rowDec);
+               final String offsetVal = model.chopValue(String.valueOf(offset),6);
+               valNode.setAttribute(OFFSET_DISPLAY_ATTRIBUTE,offsetVal); // formatted value, just for display.
+               // now find correct offset node to add to.
+               TreeNode offsetNode = findNode(offsetVal, serviceNode);
+               final String tempAttr;
+               if(offsetNode == null) { // not found offset node.
+                   offsetNode = new DefaultTreeNode();
+                   model.populateOffsetNode(offsetNode,offset); 
+                   serviceNode.addChild(new DefaultEdge(serviceNode,offsetNode));
+                   model.getNodeSizingMap().addOffset(offsetVal);
+               }
+
+               // now have found or created the offsetNode, find the pointNode within it.
+               TreeNode pointNode = findNode(positionString,offsetNode);
+               if (pointNode == null) {
+                   pointNode = new DefaultTreeNode();
+                   model.populatePointNode(pointNode,rowRa,rowDec); 
+                   offsetNode.addChild(new DefaultEdge(offsetNode,pointNode));
+               }
+               // now have found or created point node. add new result to this.
+
+               pointNode.addChild(new DefaultEdge(pointNode,valNode));
+           } catch (final NumberFormatException e) {
+               logger.warn("Failed to parse",e);
+           } catch (final ArrayIndexOutOfBoundsException e) {
+               logger.warn("Failed to parse",e);
+           }          
+       }
+    
+    
+
 
     /** factored out, may be overidden to source dec from elsewhere.
      * @param row
@@ -450,8 +452,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         parent.setStatusMessage(service.getTitle() + " - " + th.getResultCount() + " results");
     }
 
-
-
+   
     
     /** create a node to represent the service about to be called.
      * @param serviceURL

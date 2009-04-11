@@ -15,6 +15,18 @@
 <body>
 <release version="1.2.3.beta4" date="unreleased">
     <action dev="nw" type="fix">
+        Astroscope: position and offset now toggle correctly between sexagesimal and decimal
+        degrees in results table.
+    </action>
+    <action dev="nw" type="fix">
+        Astroscope: Object names are now recorded in search history.
+    </action>
+    <action dev="nw" type="remove">
+        Astroscope: Removed automatic name-resolution in the Object name field.
+            Instead, there's a button that the user must press to trigger a call
+            to the sesame name resolver.  
+    </action>
+    <action dev="nw" type="fix">
       Voexplorer: edits to static lists now 'stick' without hitting 'enter'.
     </action>
     <action dev="nw" type="fix">

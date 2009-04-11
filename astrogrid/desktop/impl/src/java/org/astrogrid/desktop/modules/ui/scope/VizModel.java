@@ -1,8 +1,11 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
+import static org.astrogrid.desktop.modules.ui.scope.AbstractRetriever.*;
+
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.datatransfer.Transferable;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectTransferable;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
@@ -33,7 +37,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * model is shared between all vizualizations.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jan-2006
  */
-public  final class VizModel {
+public  final class VizModel{
     private final TreeNode rootNode;
     private final FocusSet selectionFocusSet;
     private final NodeSizingMap nodeSizingMap;
@@ -258,4 +262,87 @@ public  final class VizModel {
         return URLEncoder.encode(munged);
     }
     
+
+ // position and offset formatting functions
+     public static final String chopValue(final String doubleValue, final int scale) {
+         // would it be more efficient to use a NumberFormatter here? - this has Round_half_up behaviour too.
+         // however, number formatted isn't thread safe.. - so would need to create one for each retriever..
+         try {
+         return new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString();
+         } catch (final NumberFormatException e) {
+             return "unknown";
+         }
+     }    
+     
+     
+     /** shared flag that indicates whether to render in decimal or sexagesimal
+      * 
+      */
+     private volatile boolean sexa = false;
+     
+     
+     public void setSexagesimal(final boolean s) {
+         this.sexa =s;
+     }
+     
+     /** populate an offset node with the correct attributes */
+     public  void populateOffsetNode(final TreeNode n, final double offset) {
+         n.setAttribute(OFFSET_ATTRIBUTE,String.valueOf(offset));
+         final String offsetString = String.valueOf(sexa ? offset * 3600 : offset);
+         n.setAttribute(LABEL_ATTRIBUTE,chopValue(offsetString,6));
+         n.setAttribute(TOOLTIP_ATTRIBUTE,"Offset from search position: " + offsetString);            
+     }   
+     
+     /** populate a dec node with the correct attributes */
+     public  void populatePointNode(final TreeNode pointNode,final double ra,final double dec) {
+
+         final String raStr = Double.toString(ra);
+         pointNode.setAttribute(RA_ATTRIBUTE,raStr); 
+         final String decStr = Double.toString(dec);
+         pointNode.setAttribute(DEC_ATTRIBUTE,decStr);
+         final String positionString = sexa 
+                 ? PositionUtils.decimalToSexagesimal(ra,dec)
+                 : chopValue(raStr,6) + ", " + chopValue(decStr,6)
+                 ;
+                 
+         pointNode.setAttribute(LABEL_ATTRIBUTE,positionString);
+         pointNode.setAttribute(TOOLTIP_ATTRIBUTE,"Position of result: " + positionString);
+       
+     }
+     
+     // adjust nodes
+ //  coordinate conversion stuff.
+     public  void toggleAndConvertNodes(final TreeNode nd) {
+         String offsetString = null;  
+         boolean foundOffset = false;
+         if((offsetString = nd.getAttribute(AbstractRetriever.OFFSET_ATTRIBUTE)) != null) {
+             foundOffset = true;
+             populateOffsetNode(nd,Double.parseDouble(offsetString));
+
+             for(int i = 0;i < nd.getChildCount();i++) {
+                 final TreeNode posNode = nd.getChild(i);
+                 //should be a position node - so will have ra and dec attributes.
+                 final String raStr = posNode.getAttribute(AbstractRetriever.RA_ATTRIBUTE);
+                 final String decStr = posNode.getAttribute(AbstractRetriever.DEC_ATTRIBUTE);
+                 if (raStr != null && decStr != null) {
+                     try {
+                         final double ra = Double.parseDouble(raStr);
+                         final double dec = Double.parseDouble(decStr);
+                         populatePointNode(posNode,ra,dec);
+                     } catch (final NumberFormatException ex) {
+                         // oh well.
+                     }
+                 }               
+             }
+         }//if
+         for(int i = 0;i < nd.getChildCount();i++) {
+             if(!foundOffset) {
+                 toggleAndConvertNodes(nd.getChild(i));
+             }
+         }
+     }
+
+     
+     
+         
 }

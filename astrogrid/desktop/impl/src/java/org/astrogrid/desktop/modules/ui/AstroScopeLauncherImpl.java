@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.98 2009/04/10 16:29:18 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.99 2009/04/11 13:33:57 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -197,7 +197,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		this.setSize(1000, 707); // same proportions as A4,
 		setIconImage(IconHelper.loadIcon("scope16.png").getImage());   
 		final FormLayout layout = new FormLayout(
-				"1dlu,m,1dlu,m,1dlu"
+				"1dlu,m,1dlu,m,p,1dlu"
 				,"p," + protocols.getRowspec() 
 				+ ",bottom:max(20dlu;p),p,p,p,p,p" // spatial
 				+ ",p,bottom:max(20dlu;p),p,p,p,p" // temporal
@@ -210,7 +210,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		
 		int row = 1;
 // services
-		builder.addSeparator("Search for",cc.xyw(2,row,4));
+		builder.addSeparator("Search for",cc.xyw(2,row,5));
 		
 		row++;
 		// display in 2 columns
@@ -218,7 +218,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		boolean leftCol = true;
 		for (final Iterator<DalProtocol> i = protocols.iterator(); i.hasNext(); leftCol = ! leftCol ) {
 			final DalProtocol p = i.next();
-			builder.add(p.getCheckBox(),cc.xy(leftCol ? 2 : 4,row));
+			builder.add(p.getCheckBox(),cc.xyw(leftCol ? 2 : 4,row, leftCol ? 1 : 2));
 			// while we're iterating through, look out for the stap protocol - we want to add extra logic here.
 			if (p instanceof TemporalDalProtocol) {
 				tempStap = (TemporalDalProtocol)p; // will need to treat this differently if there's more temporal protocols later..
@@ -235,25 +235,20 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}		
 	
 // spatial
-		builder.addSeparator("At",cc.xyw(2,row,4));
+		builder.addSeparator("At",cc.xyw(2,row,5));
 		row++;
-		builder.addLabel("Position (RA,Dec) or Object Name",cc.xyw(2,row,3));
+		builder.addLabel("Position (RA,Dec) or Object Name",cc.xyw(2,row,4));
 
 		row++;
 	//	posText = new TimerDrivenNameResolvingPositionTextField(this,ses);
 		posText = new UserDrivenNameResolvingPositionTextField(this,ses);
 		posText.setAlignmentX(LEFT_ALIGNMENT);
 		posText.setColumns(10);
-		// don't want to crump the rest of the layout, so stuff these 2 into their own panel.
-		final JPanel p = new JPanel(new BorderLayout(0,0)); //new FlowLayout(FlowLayout.LEFT,0,0));
-		p.add(posText,BorderLayout.CENTER);
-		p.add(posText.getProgressButton(),BorderLayout.EAST);
-		builder.add(p,cc.xyw(2,row,3));
-//		builder.add(posText,cc.xyw(2,row,2));
-//		builder.add(posText.createResolveButton(),cc.xy(4,row));
+		builder.add(posText,cc.xyw(2,row,3));
+		builder.add(posText.getProgressButton(),cc.xy(5,row));
 
 		row++;
-		builder.addLabel("Search Radius (degs/arcsecs)",cc.xyw(2,row,3));
+		builder.addLabel("Search Radius (degs/arcsecs)",cc.xyw(2,row,5));
 
 		row++;
 		regionText = new RadiusTextField();
@@ -266,15 +261,13 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		dsToggle = new DecSexToggle();
 		dsToggle.addListener(posText);
 		dsToggle.addListener(regionText);
-		dsToggle.addListener(servicesList);
 		dsToggle.addListener(this);
 		//if we start as sexa,  servicesList and other visualizations needs initializing.
 		if (!dsToggle.isDegrees()) {
-		    servicesList.sexaSelected(null);
 		    this.sexaSelected(null);
 		}
 		builder.add(dsToggle.getDegreesRadio(),cc.xy(2,row));
-		builder.add(dsToggle.getSexaRadio(),cc.xy(4,row));
+		builder.add(dsToggle.getSexaRadio(),cc.xyw(4,row,2));
 
 // temporal
 		row++;
@@ -309,13 +302,13 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 				}// end while.
 			}
 		});
-		builder.add(noPosition,cc.xyw(2,row,3));
+		builder.add(noPosition,cc.xyw(2,row,4));
 		
 		row++;
-		final JComponent temporalTitle = builder.addSeparator("Between",cc.xyw(2,row,4));
+		final JComponent temporalTitle = builder.addSeparator("Between",cc.xyw(2,row,5));
 		
 		row++;
-		final JLabel temporalLabel1 = builder.addLabel("Start date && time",cc.xyw(2,row,3));
+		final JLabel temporalLabel1 = builder.addLabel("Start date && time",cc.xyw(2,row,4));
 		
 		row++;
         startCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
@@ -327,10 +320,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
         final Calendar setStartCal = startCal.getCalendar();
         setStartCal.set(2000,0,1,0,0,0);
         startCal.setDate(setStartCal.getTime());
-        builder.add(startCal,cc.xyw(2,row,3));
+        builder.add(startCal,cc.xyw(2,row,4));
         
         row++;
-		final JLabel temporalLabel2 = builder.addLabel("End date && time",cc.xyw(2,row,3)); // double ampersand is intentional.
+		final JLabel temporalLabel2 = builder.addLabel("End date && time",cc.xyw(2,row,4)); // double ampersand is intentional.
 		
 		row++;
         endCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
@@ -342,7 +335,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
         final Calendar setEndCal = endCal.getCalendar();
         setEndCal.set(2000,0,2,0,0,0);
         endCal.setDate(setEndCal.getTime());
-        builder.add(endCal,cc.xyw(2,row,3));
+        builder.add(endCal,cc.xyw(2,row,4));
 		
         // configure all this as hidable when stap isn't in use.
         if (stap != null) {
@@ -372,31 +365,31 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 // navigation   
 		row++;
 		// start of tree navigation buttons - maybe add more here later.
-		builder.addSeparator("Navigate",cc.xyw(2,row,4));
+		builder.addSeparator("Navigate",cc.xyw(2,row,5));
 		
 		row++;
 		final Action haltAction = new HaltAction();	
 		final Action searchAction = new SearchAction(posText);		
 		submitButton = new BiStateButton(searchAction,haltAction);
-		builder.add(submitButton,cc.xyw(2,row,3));
+		builder.add(submitButton,cc.xyw(2,row,4));
 		
 		row++;
 		final FocusSet sel = vizModel.getSelectionFocusSet();
 		sel.addFocusListener(this);
 		
 		builder.add(new JButton(topAction),cc.xy(2,row));
-		builder.add(new JButton(clearAction),cc.xy(4,row));
+		builder.add(new JButton(clearAction),cc.xyw(4,row,2));
 
 		// start of activities panel.
 		row++;
-		builder.addSeparator("Process",cc.xyw(2,row,4));		
+		builder.addSeparator("Process",cc.xyw(2,row,5));		
 		
 		row++; 
 
 		final JScrollPane actionsScroll = new JScrollPane(acts.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		actionsScroll.setBorder(BorderFactory.createEmptyBorder());
 		actionsScroll.setMinimumSize(new Dimension(200,200));			
-		builder.add(actionsScroll,cc.xyw(2,row,4));
+		builder.add(actionsScroll,cc.xyw(2,row,5));
 		
 		// done building the left side.
 		final JPanel searchPanel = builder.getPanel();
@@ -578,51 +571,22 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 // DecSexListener interface
 	// another listener to the decSex toggle - convert node display
 	public void degreesSelected(final EventObject e) {
-	        toggleAndConvertNodes(vizModel.getTree().getRoot(),false);
-	        if (isShowing()) {
+	    vizModel.setSexagesimal(false);
+	    vizModel.toggleAndConvertNodes(vizModel.getTree().getRoot());
+	    if (isShowing()) {
 	        vizualizations.reDrawGraphs();
+            servicesList.redrawResultsTable();
 	    }
 	}
 	public void sexaSelected(final EventObject e) {
-	        toggleAndConvertNodes(vizModel.getTree().getRoot(),true);
-	        if (isShowing()) {
+	    vizModel.setSexagesimal(true);
+	    vizModel.toggleAndConvertNodes(vizModel.getTree().getRoot());
+	    if (isShowing()) {
 	        vizualizations.reDrawGraphs();
+	        servicesList.redrawResultsTable();
 	    }
 	}
-//	 coordinate conversion stuff.
-	private void toggleAndConvertNodes(final TreeNode nd,final boolean fromDegrees) {
-		String ndVal = null;  
-		String posVal = null;
-		boolean foundOffset = false;
-		if((ndVal = nd.getAttribute(AbstractRetriever.OFFSET_ATTRIBUTE)) != null) {
-			foundOffset = true;
-			double val;
-			if(fromDegrees) {
-				val = Double.parseDouble(ndVal) * 3600;                
-			} else {
-				val = Double.parseDouble(ndVal);
-			}
-			nd.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE,nf.format(val));
-			nd.setAttribute(AbstractRetriever.TOOLTIP_ATTRIBUTE,String.valueOf(val));
-			for(int i = 0;i < nd.getChildCount();i++) {
-				final TreeNode childNode = nd.getChild(i);
-				//should be a position string.
-				ndVal = childNode.getAttribute(AbstractRetriever.LABEL_ATTRIBUTE);
-				if(fromDegrees) {
-					posVal = PositionUtils.getRASexagesimal(ndVal) + "," + PositionUtils.getDECSexagesimal(ndVal);
-				}else {
-					posVal = nf.format(PositionUtils.getRADegrees(ndVal)) + "," + nf.format(PositionUtils.getDECDegrees(ndVal));
-				}
-				childNode.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE,posVal);
-				childNode.setAttribute(AbstractRetriever.TOOLTIP_ATTRIBUTE,posVal);
-			}
-		}//if
-		for(int i = 0;i < nd.getChildCount();i++) {
-			if(!foundOffset) {
-                toggleAndConvertNodes(nd.getChild(i), fromDegrees);
-            }
-		}
-	}	
+	
 	
 //Astroscope internal interface.
 	// configure to run against this list of services.
@@ -840,7 +804,9 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}
 		try {
 		    history.getReadWriteLock().writeLock().lock();
-		    history.add(0,shi); // insert at top of list.
+		    if (! history.contains(shi)) {
+		        history.add(0,shi); // insert at top of list.
+		    }
 		} finally {
 		    history.getReadWriteLock().writeLock().unlock();
 		}
@@ -1050,7 +1016,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		    if (shi.getPosition() != null) { // assume that whatever applies to position applies to radius too.
 		        if (shi.getPosition().getOName() != null) {
 		            sb.append(shi.getPosition().getOName()).append(", ");
-		        }
+		        } 
 		        try { // assume that if we've got a position, we've got a radius as well.
 		            if (dsToggle.isDegrees()) {
 		                sb.append("position: ")

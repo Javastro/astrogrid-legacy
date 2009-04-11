@@ -13,7 +13,6 @@ import org.astrogrid.desktop.modules.ui.folders.AbstractListProvider;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.RangeList;
-import ca.odell.glazedlists.UniqueList;
 
 /** Provides a persistent model of the astroscope
  * search history. Can be shared between multiple views.
@@ -41,8 +40,11 @@ public class ScopeHistoryProvider extends AbstractListProvider<PositionHistoryIt
 		// probably not an issue though, given the number of searches performed in 
 		// an average session..
 	    final RangeList<PositionHistoryItem> historyList = new RangeList<PositionHistoryItem>(
-	                new UniqueList<PositionHistoryItem>(	
-	                        new BasicEventList<PositionHistoryItem>()));			
+	                //new UniqueList<PositionHistoryItem>( // removing unique list - as it seems to be doing reordering.
+	                // instead will just check not to add duplicates on insertion
+	                        new BasicEventList<PositionHistoryItem>()
+	                        //)
+	                        );			
 	    historyList.setHeadRange(0,HISTORY_SIZE);
 	    return historyList;
 	}

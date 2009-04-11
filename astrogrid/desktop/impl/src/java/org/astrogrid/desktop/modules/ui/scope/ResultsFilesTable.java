@@ -46,7 +46,6 @@ public class ResultsFilesTable extends NavigableFilesTable implements AdvancedTa
     public ResultsFilesTable(final FileNavigator navigator) {
         
         super(navigator);
-        //@todo new help string.
 
         // change table format - so we can display additional colummns.
         final EventTableModel<FileObjectView> model = (EventTableModel<FileObjectView>)getModel();
@@ -135,11 +134,24 @@ public class ResultsFilesTable extends NavigableFilesTable implements AdvancedTa
         switch(arg1) {
 
             case 2: 
-                final String pos = node.getAttribute(AbstractRetriever.POS_ATTRIBUTE);
-                return pos == null ? "" : pos;
+                //final String pos = node.getAttribute(AbstractRetriever.POS_ATTRIBUTE);
+                // label of parent node is position, correctly rendered as sexa or decDeg.
+                if (node.getAttribute(AbstractRetriever.IS_ROW_DATA_ATTRIBUTE) == null) {
+                    // not row data
+                    return "";
+                } else {
+                    return  node.getParent().getAttribute(AbstractRetriever.LABEL_ATTRIBUTE);
+                }
             case 3: 
-                final String offset = node.getAttribute(AbstractRetriever.OFFSET_DISPLAY_ATTRIBUTE);
-                return offset == null ? null : new Double(offset);           
+                //final String offset = node.getAttribute(AbstractRetriever.OFFSET_DISPLAY_ATTRIBUTE);
+                // label of grandparent is offset, correctly rendered as sexa or decDeg
+                if (node.getAttribute(AbstractRetriever.IS_ROW_DATA_ATTRIBUTE) == null) {
+                    // not row data
+                    return null;
+                } else {                
+                    final String offset = node.getParent().getParent().getAttribute(AbstractRetriever.LABEL_ATTRIBUTE);
+                    return offset == null ? null : new Double(offset);
+                }
             default:          
                 return this.originalFormat.getColumnValue(o, arg1);
         }
@@ -164,5 +176,7 @@ public class ResultsFilesTable extends NavigableFilesTable implements AdvancedTa
         }
         return b.toString();
     }
+
+  
 
 }

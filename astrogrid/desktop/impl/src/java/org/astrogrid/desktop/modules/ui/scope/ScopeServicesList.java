@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.ui.scope;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.EventObject;
 import java.util.List;
 
 import javax.swing.table.TableColumn;
@@ -23,7 +22,6 @@ import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ModularColumn;
-import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.scope.QueryResults.QueryResult;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
@@ -41,7 +39,7 @@ import org.astrogrid.desktop.modules.votech.VoMonInternal;
  * @since May 2, 20075:58:51 PM
  */
 public class ScopeServicesList extends RegistryGooglePanel
-	implements QueryResultCollector, DecSexListener{
+	implements QueryResultCollector{
 
     /**
      * 
@@ -241,13 +239,12 @@ public class ScopeServicesList extends RegistryGooglePanel
         return this.queryResults;
     }
 
-    // listens to changes to decimal or sexagesimal repr.
-    public void degreesSelected(final EventObject e) {
-        // just delegate onto the resultsView.
-        resultsView.degreesSelected(e);
+    /**
+     * called to request the results table is redrawn.
+     * called when representation has changes from decimal degrees to sexa.
+     */
+    public void redrawResultsTable() {
+      resultsView.refresh();
     }
 
-    public void sexaSelected(final EventObject e) {
-        resultsView.sexaSelected(e);
-    }
 }
