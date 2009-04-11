@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.100 2009/04/11 16:35:00 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.101 2009/04/11 16:48:37 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -718,7 +718,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 					}
 					@Override
                     protected void doError(final Throwable ex) {
-						showError("Simbad failed to resolve " + positionString,ex);
+						showTransientError("Simbad failed to resolve " + positionString,ex.getMessage());
+						submitButton.enableA(); 
 					}
 					@Override
                     protected void doFinished(final SesamePositionBean pb) {
@@ -1141,7 +1142,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 		public void actionPerformed(final ActionEvent e) {
 			submitButton.enableB();
-			final Map<String,String> m = new HashMap();
+			final Map<String,String> m = new HashMap<String,String>();
 			m.put("name","VO Scope");
 			snitch.snitch("SUBMIT",m);
 			query();		
