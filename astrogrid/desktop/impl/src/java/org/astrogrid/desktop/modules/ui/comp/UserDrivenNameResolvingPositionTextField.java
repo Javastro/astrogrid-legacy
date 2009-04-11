@@ -138,9 +138,11 @@ public class UserDrivenNameResolvingPositionTextField extends PositionTextField 
                 }
             }
             @Override
-            protected void doFinished(final SesamePositionBean pos) {	
+            protected void doFinished(final SesamePositionBean newPos) {	
                 if (this == latest) { // i.e. hasn't been superceded by a more recent task			     
-                    setPosition(new Point2D.Double(pos.getRa(),pos.getDec()));
+                    setPosition(new Point2D.Double(newPos.getRa(),newPos.getDec()));
+                    // record this position bean
+                    pos = newPos;
                     fireResolved();
                 }
             }			
