@@ -33,7 +33,7 @@ public class Upgrade implements Runnable {
 		logger.info("Upgrading from " + (upgradedVersion == null ? "unknown" : upgradedVersion) + " to " + currentVersion);
 		// now test for individual versions.
 		if (upgradedVersion == null || upgradedVersion.compareTo("2007.2") < 0) { // corrects bugs in 2007.1
-			Preference vomon = conf.find("votech.vomon.endpoint");
+			final Preference vomon = conf.find("votech.vomon.endpoint");
 			// reset this - as was previously wrong.
 			logger.info("Resetting VOMon endpoint");
 			vomon.setValue(vomon.getDefaultValue());
@@ -50,14 +50,23 @@ public class Upgrade implements Runnable {
 		}
 		if (upgradedVersion == null || upgradedVersion.compareTo("2008.1.1") <=0) { //@fixme - alter to check against the correct version number.
 		    // I've changed the default for the  registry cache preference - so reset it back to default - previous default is much too long for the new scheme
-		    Preference cacheLife = conf.find("ivo.registry.cacheLife");
+		    final Preference cacheLife = conf.find("ivo.registry.cacheLife");
 		    cacheLife.setValue(cacheLife.getDefaultValue());
+		}
+		if (upgradedVersion == null || upgradedVersion.compareTo("1.2.3") <= 0) {
+		    final Preference resourceTreeLocation = conf.find("resourcetree.examples.location");
+		    if ("http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/exampleResourceLists.xml".equals(resourceTreeLocation.getValue())) {
+		        // i.e. it's set to the previous default
+		        // then set it to the new default
+		        resourceTreeLocation.setValue(resourceTreeLocation.getDefaultValue());
+		    }
+		    
 		}
 		// finaly, record that we've upgraded.
 		conf.setKey(UPGRADED_VERSION,currentVersion);
 		logger.info("Upgraded");
 	}
-	public Upgrade(final String currentVersion, ConfigurationInternal conf) {
+	public Upgrade(final String currentVersion, final ConfigurationInternal conf) {
 		super();
 		this.conf = conf;
 		this.upgradedVersion = conf.getKey(UPGRADED_VERSION); 

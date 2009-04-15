@@ -455,7 +455,7 @@ Query Builder
         <preference name="resourcetree.examples.location"
             advanced="true"
             requires-restart="true"
-            default-value="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/exampleResourceLists.xml">
+            default-value="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/exampleResourceLists-a.xml">
             <ui-name>VoExplorer Example Lists</ui-name>
             <description>A location containing example resource lists</description>
             <units>url</units>

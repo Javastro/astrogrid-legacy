@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.desktop.modules.system.XmlPersist;
@@ -40,8 +41,8 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
      * @param    workdirPreference   directory for persistence
      * @param    persister   XML persistence implementation
      */
-    public ResourceTreeProvider(UIContext parent, Preference workdirPreference, Preference examplesPreference,
-                                XmlPersist persister) {
+    public ResourceTreeProvider(final UIContext parent, final Preference workdirPreference, final Preference examplesPreference,
+                                final XmlPersist persister) {
         super(parent, new File(new File(workdirPreference.getValue()),
                                         "resourceLists.xml"), persister);
         logger.info("Resource folders will be read from/written to " +
@@ -61,13 +62,13 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
      */
     @Override
     public DefaultMutableTreeNode load() throws IOException, ServiceException {
-        DefaultMutableTreeNode root = super.load();
+        final DefaultMutableTreeNode root = super.load();
         if (root != null && root.getAllowsChildren()) {
-            DefaultMutableTreeNode examplesNode = findExamples(root);
+            final DefaultMutableTreeNode examplesNode = findExamples(root);
             if (examplesNode == null) { // no examples node
                 root.insert(createExamplesNode(), 0);
             } else { // an obsolete examples note - either no subscription, or pointing to a different location than current preference.
-                ResourceFolder examplesFolder = (ResourceFolder) examplesNode.getUserObject();                
+                final ResourceFolder examplesFolder = (ResourceFolder) examplesNode.getUserObject();                
                 if (examplesFolder.getSubscription() == null || ! examplesLocation.equals(examplesFolder.getSubscription())) {
                 root.remove(examplesNode);
                 root.insert(createExamplesNode(),0);
@@ -79,7 +80,7 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
 
     @Override
     public DefaultMutableTreeNode getDefaultRoot() {
-        DefaultMutableTreeNode root =
+        final DefaultMutableTreeNode root =
             new DefaultMutableTreeNode(new ResourceBranch("Resource Lists"), true);
         root.insert(createExamplesNode(), 0);
         return root;
@@ -89,14 +90,14 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
      * Generates a list of example folders.
      */
     private DefaultMutableTreeNode createExamplesNode() {
-        ResourceBranch examplesBranch = new ResourceBranch(EXAMPLES_NODE_NAME);
+        final ResourceBranch examplesBranch = new ResourceBranch(EXAMPLES_NODE_NAME);
 
         // Subscribe to central updating examples file
         examplesBranch.setSubscription(examplesLocation);
         examplesBranch.setIconName("myspace16.png");
-        DefaultMutableTreeNode examplesNode =
+        final DefaultMutableTreeNode examplesNode =
             new DefaultMutableTreeNode(examplesBranch, true);
-        ResourceFolder[] folders = getExampleFolders();
+        final ResourceFolder[] folders = getExampleFolders();
         for (int i = 0; i < folders.length; i++) {
             examplesNode.add(new DefaultMutableTreeNode(folders[i], false));
         }
@@ -109,12 +110,12 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
      * @param  node  node to test
      * @return  the MutableTreeNode containing the examples resource folder, or null if not present
      */
-    private DefaultMutableTreeNode findExamples(DefaultMutableTreeNode node) {
+    private DefaultMutableTreeNode findExamples(final DefaultMutableTreeNode node) {
         if (node.getAllowsChildren()) {
-            for (Enumeration en = node.children(); en.hasMoreElements();) {
-                DefaultMutableTreeNode child =
+            for (final Enumeration en = node.children(); en.hasMoreElements();) {
+                final DefaultMutableTreeNode child =
                     (DefaultMutableTreeNode) en.nextElement();
-                ResourceFolder folder = (ResourceFolder) child.getUserObject();
+                final ResourceFolder folder = (ResourceFolder) child.getUserObject();
                 if (folder instanceof ResourceBranch 
                     && EXAMPLES_NODE_NAME.equals(folder.getName())
                     ) {
@@ -190,8 +191,8 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
                                 ,"ivo://org.astrogrid/HDFImager"
                                 ,"ivo://org.astrogrid/MERLINImager"
                     })
-                    , new SmartList("Spectrum access examples","type = Spectral")
-                    ,new SmartList("Remote applications","type = CeaApplication")
+                    , new SmartList("Spectrum access examples","capability = Spectral")
+                    ,new SmartList("Remote applications","resourcetype = CeaApplication")
                     ,new StaticList("Queryable database examples",new String[]{
                             "ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
                                 ,"ivo://wfau.roe.ac.uk/6df-dsa/wsa"
@@ -226,13 +227,13 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
                                 ,"ivo://fs.usno/cat/usnob"
                                 ,"ivo://nasa.heasarc/xmmssc"                        
                     })
-                    , new SmartList("Radio images","(waveband = Radio) and (type = Image)")
-                    ,new SmartList("Vizier AGN tables","(publisher = vizier) and (subject = agn)") 
+                    , new SmartList("Radio images","(waveband = Radio) and (capability = Image)")
+                    ,new SmartList("Vizier AGN tables","(publisher = CDS) and (subject = agn)") 
                     ,new SmartList("VOEvent services","default=voevent")
                     
             };
         }
-        catch (InvalidArgumentException e) {
+        catch (final InvalidArgumentException e) {
             throw new RuntimeException("Programming error", e);
         }
         for (int i = 0; i < folders.length; i++) {

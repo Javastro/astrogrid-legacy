@@ -14,6 +14,10 @@
 	</head>
 <body>
 <release version="1.2.3.beta4" date="unreleased">
+    <action dev="nw" type="update">
+        Voexplorer: Updated definitions of example resource lists to use new search
+        targets 'capability' and 'resourcetype'.
+    </action>
     <action dev="nw" type="fix">
         Astroscope: disabled 'go to top' button when in services table view
     </action>
