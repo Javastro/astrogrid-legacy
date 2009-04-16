@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | <meta:header>
+    |     <meta:licence>
+    |         Copyright (C) AstroGrid. All rights reserved.
+    |         This software is published under the terms of the AstroGrid Software License version 1.2.
+    |         See [http://software.astrogrid.org/license.html] for details. 
+    |     </meta:licence>
+    |     <svn:header>
+    |         $LastChangedRevision: 1184 $
+    |         $LastChangedDate: 2008-08-28 13:26:21 +0100 (Thu, 28 Aug 2008) $
+    |         $LastChangedBy: dmorris $
+    |     </svn:header>
+    | </meta:header>
+    |
+    +-->
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:artifact="artifact"
+    default="rebuild-snapshot"
+    >
+
+    <!--+
+        | Fix the Maven JAXP properties.
+        +-->
+    <ant:echo message="Fixing JAXP properties ...."/>
+    <core:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}"/>
+    <ant:echo message=""/>
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+    <!-- ================ Reactor goals ================ -->
+
+    <!--+
+        | Clean, build and install our snapshot jar.
+        +-->
+    <goal name="rebuild-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <attainGoal name="clean"/>
+        <attainGoal name="install-snapshot"/>
+    </goal>
+
+    <!--+
+        | Clean our build target.
+        +-->
+    <goal name="clean">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <attainGoal name="clean:clean"/>
+    </goal>
+
+    <!--+
+        | Build and install our artifact jar.
+        +-->
+    <goal name="install-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Build our artifact jar.
+            +-->
+        <attainGoal name="jar:jar"/>
+        <!--+
+            | Install our artifact jar.
+            +-->
+        <artifact:install
+            artifact="${maven.build.dir}/${maven.final.name}.jar"
+            project="${pom}"
+            type="jar"
+            />
+    </goal>
+
+    <!--+
+        | Build and install our snapshot jar(s).
+        +-->
+    <goal name="install-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our snapshot name.
+            +-->
+        <maven:snapshot project="${pom}"/>
+        <core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <!--+
+            | Build our snapshot jar.
+            +-->
+        <attainGoal name="jar:jar"/>
+        <!--+
+            | Install our snapshot jar(s).
+            +-->
+        <artifact:install-snapshot
+            artifact="${maven.build.dir}/${maven.final.name}.jar"
+            project="${pom}"
+            type="jar"
+            />
+    </goal>
+
+    <!--+
+        | Build and deploy our artifact jar.
+        +-->
+    <goal name="deploy-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact jar.
+            +-->
+        <attainGoal name="install-artifact"/>
+        <!--+
+            | Deploy our artifact jar.
+            +-->
+        <artifact:deploy
+            artifact="${maven.build.dir}/${maven.final.name}.jar"
+            project="${pom}"
+            type="jar"
+            />
+    </goal>
+
+    <!--+
+        | Build and deploy our snapshot jar(s).
+        +-->
+    <goal name="deploy-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our snapshot jar.
+            +-->
+        <attainGoal name="install-snapshot"/>
+        <!--+
+            | Deploy our snapshot jar(s).
+            +-->
+        <artifact:deploy-snapshot
+            artifact="${maven.build.dir}/${maven.final.name}.jar"
+            project="${pom}"
+            type="jar"
+            />
+    </goal>
+
+    <!--+
+        | Build our project website.
+        +-->
+    <goal name="build-site">
+        <!--+
+            | Generate our project site(s).
+            +-->
+        <attainGoal name="multiproject:site"/>
+    </goal>
+
+    <!-- ================ Component goals ================ -->
+
+    <!--+
+        | Before java:compile goal ....
+        +-->
+    <preGoal name="java:compile">
+        <ant:echo message="Pre java:compile"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+
+    </preGoal>
+
+    <!--+
+        | Before the test:test goal.
+        +-->
+    <preGoal name="test:test">
+        <ant:echo message="Pre test:test"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Check the JUnit test settings.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="JUnit fork VM - ${maven.junit.fork}"/>
+        <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
+        <!--+
+            | Create our test directories.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Creating test directories"/>
+        <ant:mkdir dir="${org.astrogrid.junit.temp}"/>
+        <ant:mkdir dir="${org.astrogrid.junit.repo}"/>
+
+    </preGoal>
+
+    <!--+
+        | Before the jar:jar goal.
+        +-->
+    <preGoal name="jar:jar">
+        <ant:echo message="pre jar:jar"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+
+    </preGoal>
+
+</project>

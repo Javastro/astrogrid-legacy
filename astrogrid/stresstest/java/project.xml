@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | <meta:header>
+    |     <meta:licence>
+    |         Copyright (C) AstroGrid. All rights reserved.
+    |         This software is published under the terms of the AstroGrid Software License version 1.2.
+    |         See [http://software.astrogrid.org/license.html] for details. 
+    |     </meta:licence>
+    |     <svn:header>
+    |         $LastChangedRevision: 1191 $
+    |         $LastChangedDate: 2008-08-30 03:40:22 +0100 (Sat, 30 Aug 2008) $
+    |         $LastChangedBy: dmorris $
+    |     </svn:header>
+    | </meta:header>
+    |
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | The project identifier.
+        +-->
+    <pomVersion>3</pomVersion>
+    <groupId>org.astrogrid</groupId>
+    <package>org.astrogrid.vospace</package>
+
+    <!--+
+        | Set the component version.
+        +-->
+    <currentVersion>${vospace.version}</currentVersion>
+
+    <!--+
+        | The short name of the project.
+        +-->
+    <id>astrogrid-vospace-delegate</id>
+
+    <!--+
+        | The full name of the project.
+        +-->
+    <name>AstroGrid VoSpace-1.1 delegate</name>
+
+    <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+    <shortDescription>
+        A wrapper for the VOSpace-1.1 client to integrate it into the AstroGrid code base. 
+    </shortDescription>
+
+    <!--+
+        | A detailed description of the project.
+        | This is used to generate the front page of the projects web site. 
+        +-->
+    <description>
+        <![CDATA[
+            <p>
+                This component provides a wrapper for the VOSpace-1.1 client to integrate it into the AstroGrid code base.
+                <br/>
+                AstroGrid specific changes are added here, and then folded back into the main VOSpace client code later.
+            </p>
+        ]]>
+    </description>
+
+    <organization>
+        <name>AstroGrid</name>
+        <url>http://www.astrogrid.org/</url>
+        <logo>http://www.astrogrid.org/images/AGlogo.png</logo>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Academic Free License v2.1</name>
+            <url>http://opensource-definition.org/licenses/afl-2.1.html</url>
+            <distribution>manual</distribution>
+        </license>
+    </licenses>
+
+    <mailingLists>
+        <mailingList>
+            <name>IVOA VOSpace specification discussion</name>
+            <!--subscribe/-->
+            <!--unsubscribe/-->
+            <!--post/-->
+            <archive>http://ivoa.net/forum/vospace/index.htm</archive>
+        </mailingList>
+    </mailingLists>
+
+    <!--siteAddress>terror.star.le.ac.uk</siteAddress-->
+    <!--siteDirectory>/software_docs/security-${pom.currentVersion}</siteDirectory-->
+  
+    <issueTrackingUrl>http://esavo02.esac.esa.int/trac/VOSpace/</issueTrackingUrl>
+  
+    <inceptionYear>2006</inceptionYear>
+  
+    <developers>
+        <developer>
+            <name>Dave Morris</name>
+            <id>dmorris</id>
+            <email>dave[at]ast.cam.ac.uk</email>
+            <organization>University of Cambridge</organization>
+            <organizationUrl>http://www.ast.cam.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <name>Catherine Qin</name>
+            <id>clq</id>
+            <email>catherine.qin[at]star.le.ac.uk</email>
+            <organization>University of Leicester</organization>
+            <organizationUrl>http://www.star.le.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+        <contributor>
+            <name>Guy Rixon</name>
+            <id>gtr</id>
+            <email>gtr[at]ast.cam.ac.uk</email>
+            <organization>University of Cambridge</organization>
+            <organizationUrl>http://www.ast.cam.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </contributor>
+        <developer>
+            <name>Kona Andrews</name>
+            <id>kea</id>
+            <email>kea[at]roe.ac.uk</email>
+            <organization>The Royal Observatory, Edinburgh</organization>
+            <organizationUrl>http://www.roe.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <name>Paul Harrison</name>
+            <id>pharrison</id>
+            <email>paul.harrison[at]manchester.ac.uk</email>
+            <organization>University of Manchester</organization>
+            <organizationUrl>http://www.manchester.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <name>Jeff Lusted</name>
+            <id>jeff</id>
+            <email>jl99[at]star.le.ac.uk</email>
+            <organization>University of Leicester</organization>
+            <organizationUrl>http://www.star.le.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+    </developers>
+
+    <!--+
+        | The external libraries required to build our component.
+        +-->
+    <dependencies>
+
+        <!--+
+            | The VOSpace JUnit extensions.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-vospace-junit</artifactId>
+            <version>${vospace.version}</version>
+            <type>jar</type>
+            <url>../junit/</url>
+        </dependency>
+
+        <!--+
+            | The VOSpace common tools.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-vospace-util</artifactId>
+            <version>${vospace.version}</version>
+            <type>jar</type>
+            <url>../util/</url>
+        </dependency>
+
+        <!--+
+            | The VOSpace 1.1 schema components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-vospace-1.1-schema</artifactId>
+            <version>${vospace.version}</version>
+            <type>jar</type>
+            <url>../vospace-1.1/schema/</url>
+        </dependency>
+
+        <!--+
+            | The VOSpace 1.1 client components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-vospace-1.1-client</artifactId>
+            <version>${vospace.version}</version>
+            <type>jar</type>
+            <url>../vospace-1.1/client/</url>
+        </dependency>
+
+        <!--+
+            | The Axis libraries.
+            +-->
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <version>${vospace.axis.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/maven/</url>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-ant</artifactId>
+            <version>${vospace.axis.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/maven/</url>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-jaxrpc</artifactId>
+            <version>${vospace.axis.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/maven/</url>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-saaj</artifactId>
+            <version>${vospace.axis.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/maven/</url>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>wsdl4j</artifactId>
+            <version>1.5.1</version>
+            <type>jar</type>
+            <url>http://ws.apache.org/axis/index.html</url>
+        </dependency>
+
+        <!--+
+            | JUnit library for test tasks.
+            +-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <type>jar</type>
+            <url>http://www.junit.org/</url>
+        </dependency>
+
+        <!--+
+            | Ant library for test tasks.
+            +-->
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.5.3-1</version>
+            <type>jar</type>
+            <url>http://ant.apache.org/</url>
+        </dependency>
+
+        <!--+
+            | The Apache commons libraries.
+            +-->
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.4</version>
+            <type>jar</type>
+            <url>http://jakarta.apache.org/commons/logging/</url>
+        </dependency>
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>0.2</version>
+            <type>jar</type>
+            <url>http://jakarta.apache.org/commons/discovery/</url>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.1</version>
+            <type>jar</type>
+            <url>http://jakarta.apache.org/commons/collections/</url>
+        </dependency>
+
+        <!--+
+            | Log4j toolkit.
+            +-->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.13</version>
+            <type>jar</type>
+            <url>http://logging.apache.org/log4j/docs/index.html</url>
+        </dependency>
+
+        <!--+
+            | The AstroGrid security components.
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-security</artifactId>
+            <version>2008.2.02</version>
+            <type>jar</type>
+            <url>http://deployer.astrogrid.org/software/security-2008.2.02/</url>
+        </dependency>
+        <dependency>
+            <groupId>xmlsec</groupId>
+            <type>jar</type>
+            <artifactId>xmlsec</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>bouncycastle</groupId>
+            <type>jar</type>
+            <artifactId>bcprov-jdk15</artifactId>
+            <version>140</version>
+        </dependency>
+        <dependency>
+            <groupId>globus</groupId>
+            <artifactId>cog-jglobus</artifactId>
+            <version>1.4</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>globus</groupId>
+            <artifactId>cog-puretls</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+        </dependency>
+        <!--+
+            | Contains org/apache/xml/utils/URI$MalformedURIException
+            | Used by org.apache.ws.security tools, called by
+            | org.astrogrid.security.wsse.WsseSignature.createSigatureElement(WsseSignature.java:215)
+            +-->
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.0</version>
+            <type>jar</type>
+        </dependency>
+
+        <!--+
+            | The AstroGrid registry client.
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
+            <version>2008.0a3r</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>2007.2c</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>2008.0a3r</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+
+        <!--+
+            | Added for the CEA test case ...
+            +-->
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-cea-client</artifactId>
+      <version>2007.2a</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>2007.2.01</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-workflow-objects</artifactId>
+      <version>2007.2wo</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-jxpath</groupId>
+      <artifactId>commons-jxpath</artifactId>
+      <version>1.2</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>castor</groupId>
+      <artifactId>castor</artifactId>
+      <version>0.9.5</version>
+      <type>jar</type>
+    </dependency>
+
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | Our project resources.
+            | These get included in the target jar file.
+            +-->
+        <resources>
+            <resource>
+                <directory>src/config</directory>
+                <includes>
+                </includes>
+            </resource>
+        </resources>
+        <!--+
+            | The location of our JUnit source code.
+            +-->
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <!--include>**/AGVOSpaceDelegateTestCase.java</include-->
+                <!--include>**/DSAQueryTestCase.java</include-->
+                <include>**/*TestCase.java</include>
+
+            </includes>
+            <!--+
+                | Our test resources.
+                | Note - Have to use '..' because '${project.base.root}' hasn't been resolved yet.
+                <resource>
+                    <directory>../keystore/server</directory>
+                </resource>
+                +-->
+            <resources>
+                <resource>
+                    <directory>src/config</directory>
+                    <include>log4j.properties</include>
+                </resource>
+            </resources>
+        </unitTest>
+    </build>
+
+    <reports>
+        <report>maven-checkstyle-plugin</report>
+        <report>maven-javadoc-plugin</report>
+        <!--report>maven-jdepend-plugin</report-->
+        <report>maven-junit-report-plugin</report>
+        <report>maven-jxr-plugin</report>
+        <report>maven-license-plugin</report>
+        <!--report>maven-linkcheck-plugin </report-->
+        <!--report>maven-pmd-plugin</report-->
+        <!--report>maven-tasklist-plugin</report-->
+        <!--report>maven-simian-plugin</report-->
+    </reports>
+
+</project>
