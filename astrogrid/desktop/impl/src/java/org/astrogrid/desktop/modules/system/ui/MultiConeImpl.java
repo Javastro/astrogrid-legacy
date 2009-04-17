@@ -96,7 +96,9 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/**
+/**TODO:
+ *  * should allow service to be provided just by URL
+ *  preference for 'upload' doesn't seem to stick.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 15, 20094:30:06 PM
  */
