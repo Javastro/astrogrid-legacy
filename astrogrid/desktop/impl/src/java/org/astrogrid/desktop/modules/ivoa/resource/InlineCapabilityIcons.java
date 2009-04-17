@@ -39,7 +39,7 @@ public final class InlineCapabilityIcons extends JLabel {
         addHierarchyListener(new HierarchyListener() {
             // when we're shown, set the icon.
             public void hierarchyChanged(final HierarchyEvent e) {
-                if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && isShowing()) {
+                if ((e.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0 && isShowing()) {
                     final ResourceDisplayPane resourceDisplayPane = ResourceDisplayPaneEmbeddedButton.getResourceDisplayPane(e);
                     final Resource r = resourceDisplayPane.getCurrentResource();
                     final CapabilityIconFactory iconFactory = resourceDisplayPane.getIconFactory();
