@@ -13,7 +13,8 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="1.2.3.beta4" date="unreleased">
+<release version="1.2.3.beta4" date="2009-4-17">
+
     <action dev="nw" type="add">
         Added Multi-position Catalog search application. Can be launched from
         VOExplorer by selecting a catalog service, or by selecting a votable of positions
@@ -45,7 +46,8 @@
        FileExplorer: improved positioning of popup menu on drag-n-drop, and removed 'twitchyness' from folders list
     </action>
     <action dev="dave" type="update">
-    vospace: updated plugin, now handles remote-copy (through client), and filenames containing spaces.
+    vospace: updated plugin, now handles remote-copy (through client), and filenames containing spaces,
+    and file permissions.
     </action>
 </release>
 <release version="1.2.3.beta3" date="2009-4-8">
