@@ -12,7 +12,7 @@ import java.net.URI;
  */
 public class TapCapability extends Capability {
     /** @exclude */
-    public static final URI CAPABILITY_ID = URI.create("ivo://org.astrogrid/std/TAP");
+    public static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/std/TAP");
     
     /** @exclude */
     public TapCapability() {

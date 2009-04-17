@@ -13,7 +13,8 @@ import java.net.URISyntaxException;
 public class VospaceCapability extends Capability {
 
     /** @exclude */
-    public static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/vospace/core#vospace-1.1");
+    public static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/std/VOSpace");
+            //"ivo://ivoa.net/vospace/core#vospace-1.1");
     private final URI root;
 
     /** @exclude */
