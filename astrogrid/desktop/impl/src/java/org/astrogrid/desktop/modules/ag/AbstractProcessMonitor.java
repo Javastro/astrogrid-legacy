@@ -63,6 +63,9 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 		this.vfs = vfs;
         this.id = UNINITIALIZED;
 	}
+	
+	
+	
 	public static final URI UNINITIALIZED = URI.create("uninitialized:/task/");
 	
 	public boolean started() {
@@ -177,7 +180,37 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	
 	// mutable member variables - can be adjusted at will.
 	protected String name;
-	protected String description;
+	/**
+     * @return the name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return this.description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+
+
+    protected String description;
 	private String status = ExecutionInformation.UNKNOWN;
 	protected java.util.Date startTime = new Date();
 	protected java.util.Date finishTime;
