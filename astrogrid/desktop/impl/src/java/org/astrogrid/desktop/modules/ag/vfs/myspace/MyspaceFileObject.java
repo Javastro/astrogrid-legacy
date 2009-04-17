@@ -20,6 +20,7 @@ import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.Selectors;
 import org.apache.commons.vfs.provider.AbstractFileObject;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
+import org.astrogrid.desktop.modules.ui.taskrunner.LocalFileUploadAssistant;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeIterator;
@@ -46,9 +47,12 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
             throws FileSystemException {
         file = AstroscopeFileObject.findInnermostFileObject(file);
         if (file.getURL().getProtocol().equals("http")
-                && ( selector == Selectors.SELECT_ALL  || selector == Selectors.SELECT_FILES || selector == Selectors.SELECT_SELF || selector == Selectors.SELECT_SELF_AND_CHILDREN)) {
+                && (! LocalFileUploadAssistant.isPrivateNetworkAddress(file.getURL().getHost()))
+                && ( selector == Selectors.SELECT_ALL  || selector == Selectors.SELECT_FILES 
+                        || selector == Selectors.SELECT_SELF 
+                        || selector == Selectors.SELECT_SELF_AND_CHILDREN)) {
             // unlikely any other kind of selector swould be intentionally used, but there miught be some pathological cases.
-            // dunno if it\s possible to copy a subtree from http - as you can't get an 'ls'
+            // dunno if it\s possible to copy a subtree from http - as you can't get an 'ls'            
             try {
                 logger.debug("Attempting to use optimized copy URL to myspace");
                 if (node == null) { // this file doesn't exist yet. need to create it
