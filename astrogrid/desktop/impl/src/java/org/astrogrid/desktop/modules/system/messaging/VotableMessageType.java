@@ -67,7 +67,26 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
 
     @Override
     protected MessageUnmarshaller<VotableMessageSender> createPlasticUnmarshaller() {
-        throw new UnsupportedOperationException();
+        return new MessageUnmarshaller<VotableMessageSender>() {
+
+            public Object handle(final ExternalMessageTarget source, final List args,
+                    final VotableMessageSender handler) throws Exception {
+                final Object o = args.get(0);
+                if (o == null) {
+                    return Boolean.FALSE;
+                } else {
+                    final String urlString = o.toString();
+                    try {
+                        final URL u = new URL(urlString);
+                        handler.setSource(source);
+                        handler.sendVotable(u,null,null);
+                        return Boolean.TRUE;
+                    } catch (final MalformedURLException e) {
+                        return Boolean.FALSE;
+                    }
+                }
+            }
+        };
     }
 
     @Override
@@ -115,7 +134,31 @@ public final class VotableMessageType extends MessageType<VotableMessageSender> 
 
     @Override
     protected MessageUnmarshaller<VotableMessageSender> createSampUnmarshaller() {
-        throw new UnsupportedOperationException();
+        return new MessageUnmarshaller<VotableMessageSender>() {
+
+            public Object handle(final ExternalMessageTarget source, final List args,
+                    final VotableMessageSender handler) throws Exception {
+                URL u = null;
+                String tableId = null;
+                String name = null;
+                for (final Map.Entry<?,?> e : (List<Map.Entry<?,?>>)args) {
+                    if ("url".equals(e.getKey())) {
+                        u = new URL(e.getValue().toString());
+                    } else if ("table-id".equals(e.getKey())) {
+                        tableId= e.getValue().toString();
+                    } else if ("name".equals(e.getKey())) {
+                        name = e.getValue().toString();
+                    }
+                }
+                if (u == null) {
+                    throw new IllegalArgumentException("No 'url' parameter provided");
+                }
+
+                handler.setSource(source);
+                handler.sendVotable(u,tableId,name);
+                return null;
+            }
+        };
     }
 
     @Override
