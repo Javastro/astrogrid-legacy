@@ -104,12 +104,12 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
         return ConeProtocol.isCdsCatalog(r);
     }
 
-	private static final List supportedProtocols = new ArrayList();
-	static {
-	    supportedProtocols.add("http");
-	    supportedProtocols.add("ftp");
-	    supportedProtocols.add("file");
-	}
+//	private static final List supportedProtocols = new ArrayList();
+//	static {
+//	    supportedProtocols.add("http");
+//	    supportedProtocols.add("ftp");
+//	    supportedProtocols.add("file");
+//	}
 	
 	@Override
     public void actionPerformed(final ActionEvent e) {
