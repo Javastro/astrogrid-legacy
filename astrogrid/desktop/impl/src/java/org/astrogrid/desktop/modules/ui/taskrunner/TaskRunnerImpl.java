@@ -74,6 +74,7 @@ import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.actions.MessagingScavenger;
+import org.astrogrid.desktop.modules.ui.actions.MultiConeActivity;
 import org.astrogrid.desktop.modules.ui.actions.RevealFileActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
@@ -171,6 +172,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                 rmb
                     .windowOperation(tracker.getActs().getActivity(ViewInBrowserActivity.class))
                     .windowOperation(tracker.getActs().getActivity(SimpleDownloadActivity.class))
+                    .windowOperation(tracker.getActs().getActivity(MultiConeActivity.class))
                     .windowOperation(tracker.getActs().getActivity(RevealFileActivity.class))
                       ;
                 tracker.getActs().getActivity(MessagingScavenger.class).addTo(rmb.getMenu());
@@ -622,10 +624,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	     }
 
 	}
-	private class VosiComparator implements Comparator<Tuple<?,VosiAvailabilityBean>> {
+	public static class VosiComparator<A> implements Comparator<Tuple<A,VosiAvailabilityBean>> {
 
-        public int compare(final Tuple<?, VosiAvailabilityBean> o1,
-                final Tuple<?, VosiAvailabilityBean> o2) {
+        public int compare(final Tuple<A, VosiAvailabilityBean> o1,
+                final Tuple<A, VosiAvailabilityBean> o2) {
             final VosiAvailabilityBean a = o1.snd();
             final VosiAvailabilityBean b = o2.snd();
             if (a == null) {

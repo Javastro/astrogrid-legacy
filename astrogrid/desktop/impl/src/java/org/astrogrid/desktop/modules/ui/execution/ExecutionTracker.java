@@ -58,6 +58,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
 import org.astrogrid.desktop.modules.ui.actions.MessagingScavenger;
+import org.astrogrid.desktop.modules.ui.actions.MultiConeActivity;
 import org.astrogrid.desktop.modules.ui.actions.RevealFileActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
@@ -116,6 +117,7 @@ public class ExecutionTracker implements ListSelectionListener{
         this.acts = actFact.create(parent,new Class[]{
                 ViewInBrowserActivity.class
                 ,SimpleDownloadActivity.class 
+                ,MultiConeActivity.class
                 ,MessagingScavenger.class
                 ,RevealFileActivity.class
                 ,InfoActivity.class                

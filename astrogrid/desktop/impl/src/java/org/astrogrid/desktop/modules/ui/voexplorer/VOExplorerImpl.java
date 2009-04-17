@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.32 2009/04/11 16:35:00 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.33 2009/04/17 17:01:47 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -42,7 +42,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreeModel;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -63,6 +62,7 @@ import org.astrogrid.desktop.modules.ui.actions.FurtherInfoActivity;
 import org.astrogrid.desktop.modules.ui.actions.GetPaperActivity;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
 import org.astrogrid.desktop.modules.ui.actions.MessagingScavenger;
+import org.astrogrid.desktop.modules.ui.actions.MultiConeActivity;
 import org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity;
 import org.astrogrid.desktop.modules.ui.actions.SaveResourceActivity;
 import org.astrogrid.desktop.modules.ui.actions.SaveXoXoListActivity;
@@ -75,6 +75,7 @@ import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.folders.ResourceBranch;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
+import org.astrogrid.desktop.modules.ui.folders.ResourceTreeModel;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;
 import org.astrogrid.desktop.modules.ui.folders.StaticList;
 import org.astrogrid.desktop.modules.ui.folders.XQueryList;
@@ -100,7 +101,7 @@ public class VOExplorerImpl extends UIComponentImpl
 
 	public VOExplorerImpl( final UIContext context, final ActivityFactory activityBuilder
 	        , final TypesafeObjectBuilder builder
-			, final TreeModel folderModel, final QuerySizer sizer
+			, final ResourceTreeModel folderModel, final QuerySizer sizer
             ,final ResourceChooserInternal chooser,  final XmlPersist persister) {
 		super(context,"VO Explorer","window.voexplorer");
         this.chooser = chooser;
@@ -114,6 +115,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		// build the actions menu / pane
 		acts = activityBuilder.create(this,new Class[]{
 		        QueryScopeActivity.class
+		        , MultiConeActivity.class
 		       ,BuildQueryActivity.class
 		       ,TapQueryActivity.class
 		       ,VospaceActivity.class

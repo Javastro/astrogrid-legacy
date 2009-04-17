@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.6 2009/04/06 11:32:46 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.7 2009/04/17 17:01:47 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,23 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
+import java.net.URL;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
@@ -49,6 +55,7 @@ import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
+import org.astrogrid.desktop.modules.system.ui.MultiConeImpl;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -72,20 +79,21 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 		
 		public RemoteTaskMonitor(final Tool t,final CeaApplication app) throws ServiceException {
 		    super(vfs);
-			this.tool = t;
-			this.app = app;
-			this.name = app.getTitle();
-			if (app.getInterfaces().length > 1) { // more than one interface
-				this.name = tool.getInterface() + " - " + this.name;
-			}
-			this.description = app.getContent().getDescription();
-		
+		    this.tool = t;
+		    this.app = app;
+
+		    this.name = app.getTitle();
+		    if (app.getInterfaces().length > 1) { // more than one interface
+		        this.name = tool.getInterface() + " - " + this.name;
+		    }
+		    this.description = app.getContent().getDescription();					
 		}
 		private final Tool tool;		
 		private final CeaApplication app;
 
 		private String ceaid;
 		private CommonExecutionConnectorClient delegate;
+        private CeaService targetService;
 	    /**
 	     * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#getLatestResults(java.net.URI)
 	     */
@@ -94,7 +102,7 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 		NotFoundException, InvalidArgumentException {
 			if (resultMap.size() != 0) { // already got results - just return these
 				return resultMap;
-			}
+			}			
 			try {
 			// ask server for interim results.
 	            final ResultListType results = delegate.getResults(ceaid);
@@ -161,10 +169,11 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
         }		
         
         // actually set the process running.
-        private void invoke(final CeaService target) throws ServiceException {
+        private void invoke(final CeaService targetService) throws ServiceException {
+            this.targetService = targetService;
             //check whether we need to login first.
             if (! community.isLoggedIn()) {
-                final Interface[] interfaces = target.findCeaServerCapability().getInterfaces();
+                final Interface[] interfaces = targetService.findCeaServerCapability().getInterfaces();
                 for (int i = 0; i < interfaces.length; i++) {
                     final Interface ifa = interfaces[i];
                     if (ifa.getSecurityMethods().length != 0) { //assume for now that any kind of security will require login
@@ -174,15 +183,15 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
                 }
             }
             try {
-            final JobIdentifierType jid = new JobIdentifierType(target.getId().toString());
-            delegate = ceaHelper.createCEADelegate(target);                                   
-            info("Initializing on server " + target.getId() );
+            final JobIdentifierType jid = new JobIdentifierType(targetService.getId().toString());
+            delegate = ceaHelper.createCEADelegate(targetService);                                   
+            info("Initializing on server " + targetService.getId() );
 
             //make a version of the tool with concrete ivorns, just for the remote service
             final Tool remotetool = makeMySpaceIvornsConcrete(tool);
             ceaid = delegate.init(remotetool,jid);
             info("Server returned taskID " + ceaid);            
-            setId(mkGlobalExecId(ceaid,target));
+            setId(mkGlobalExecId(ceaid,targetService));
             // kick it off.
                 if (delegate.execute(ceaid)) {
                     info("Started application");
@@ -301,15 +310,50 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 				        ||newStatus.equals(ExecutionInformation.COMPLETED)) {
 				    finishTime = qes.getTimestamp();
 				    // retrive the results - might take us more than one execute() to get them all.
-				    final ExecutionSummaryType summ = delegate.getExecutionSumary(ceaid);
-				    if (summ != null && summ.getResultList() != null) {
-				        final ParameterBean[] descs = app.getParameters();
-				        final ParameterValue[] arr = summ.getResultList().getResult();
-				        for (int i = 0 ; i < arr.length; i++) {
-				            final ParameterValue val = arr[i];
-				            final ParameterBean desc = findDescriptionFor(val,descs);
-						if (val.getIndirect()) { 
-					            String value = val.getValue(); 
+				    // @future hack - should be factored better than this				   
+				    final URI uwsEndpoint = MultiConeImpl.ceaAlsoHasUwsInterface(targetService);
+				    if (isMulticoneTask() && uwsEndpoint != null) { // optimization for cases where there's a uws backend.
+				        if (newStatus.equals(ExecutionInformation.ERROR)) {
+	                        final URL error = new URL(StringUtils.stripEnd(uwsEndpoint.toString(),"/")
+	                                + "/" +   ceaid + "/error");		
+	                        InputStream is = null;
+	                        try {
+	                            is= error.openStream();
+	                            final String errBody = IOUtils.toString(is);	                        
+	                        addMessage(new ExecutionMessage(
+	                                getId().toString()
+	                                ,"error"
+	                                ,newStatus
+	                                ,new Date()
+	                                ,errBody
+	                                ));
+	                        } catch (final IOException e) {
+	                            // fallback to mounting error as a file then..
+	                            final FileObject src = vfs.resolveFile(error.toString());                         
+	                            sys.addJunction("error.txt",src);
+	                            resultMap.put("error",error);
+	                        } finally {
+	                            IOUtils.closeQuietly(is);
+	                        }
+				        } else { // completed
+	                        final URL result = new URL(StringUtils.stripEnd(uwsEndpoint.toString(),"/")
+	                                + "/" +   ceaid + "/results/coneskymatch_out");				            
+                            final FileObject src = vfs.resolveFile(result.toString());                         
+                            sys.addJunction("results.vot",src);
+                            resultMap.put("results",result);	                        
+				        }
+
+				        
+				    } else {
+				        final ExecutionSummaryType summ = delegate.getExecutionSumary(ceaid);
+				        if (summ != null && summ.getResultList() != null) {
+				            final ParameterBean[] descs = app.getParameters();
+				            final ParameterValue[] arr = summ.getResultList().getResult();
+				            for (int i = 0 ; i < arr.length; i++) {
+				                final ParameterValue val = arr[i];
+				                final ParameterBean desc = findDescriptionFor(val,descs);
+				                if (val.getIndirect()) { 
+				                    String value = val.getValue(); 
 
 				                    //FIXME this is a hack to prevent concrete ivorns leaking back into the desktop - taking the indirect parameter value from the input tool, rather than reading back what the CEA server sends back - should be removed when myspace leaves us....		the line above should take precedence			            
 				                    value = ((ParameterValue)tool.findXPathValue("/output/parameter[name='"+val.getName()+"']")).getValue();
@@ -318,7 +362,7 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 				                    // however, user would probably have logged in to setup this indirection in the first place.
 				                    try {
 				                        final FileObject src = vfs.resolveFile(value);
-				                            src.refresh();
+				                        src.refresh();
 				                        if (! src.exists()) {
 				                            // caught by surrounding block.
 				                            throw new FileSystemException(value + " does not exist");
@@ -329,14 +373,20 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 				                        warn("Failed to retrieve " + value + "<br>" + exFormatter.format(e,ExceptionFormatter.ALL));
 				                    }
 				                } else {
-				                    addResult(val.getName(),val.getName() + suggestExtension(desc), val.getValue());
+				                    if (isMulticoneTask() && val.getName().equals("coneskymatch_out")) {
+				                        // special case for when multicone is runing on CEA server that lacks UWS
+				                        addResult(val.getName(),"results.vot",val.getValue());
+				                    } else {
+				                        addResult(val.getName(),val.getName() + suggestExtension(desc), val.getValue());
+				                    }
 				                }
-				            
+
+				            }
 				        }
+				    }
 				        fireResultsReceived(resultMap); // send the results we've got, no matter whether they're all there or not.
 				        // done
 				        return  null; 
-				    }
 				}
 				return this;
 			} catch (final Throwable x) {
@@ -346,6 +396,14 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 				return this;
 			}
 
+		}
+		
+		/** will return true if this monitor is running the cea app used to implement multicone
+		 * used to apply some optimizations - which can't harm, whether running in multicone or taskrunn.er
+		 * @return
+		 */
+		private boolean isMulticoneTask() {
+		    return app.getId().equals(MultiConeImpl.APPLICATION_ID) && MultiConeImpl.IFACE_NAME.equals(tool.getInterface());
 		}
 
 		/** work out a suitable file extension for this parameter, if none was provided
@@ -485,6 +543,9 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.7  2009/04/17 17:01:47  nw
+MultiCone.
+
 Revision 1.6  2009/04/06 11:32:46  nw
 Complete - taskConvert all to generics.
 

@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.21 2009/04/08 17:13:59 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.22 2009/04/17 17:01:46 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ import org.astrogrid.desktop.modules.ui.actions.DeleteFilesActivity;
 import org.astrogrid.desktop.modules.ui.actions.DuplicateActivity;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
 import org.astrogrid.desktop.modules.ui.actions.MessagingScavenger;
+import org.astrogrid.desktop.modules.ui.actions.MultiConeActivity;
 import org.astrogrid.desktop.modules.ui.actions.RenameActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity;
@@ -57,6 +58,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		            TaskRunnerActivity.class
 		            ,ViewInBrowserActivity.class
 		            ,SimpleDownloadActivity.class
+		            ,MultiConeActivity.class
 		            ,RenameActivity.class
 		            ,DuplicateActivity.class
 		            ,DeleteFilesActivity.class

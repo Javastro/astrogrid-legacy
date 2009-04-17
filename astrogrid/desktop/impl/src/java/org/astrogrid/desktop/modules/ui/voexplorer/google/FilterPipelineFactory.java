@@ -43,6 +43,7 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.UniqueList;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
+import ca.odell.glazedlists.matchers.CompositeMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.swing.EventListModel;
@@ -61,6 +62,7 @@ public class FilterPipelineFactory   {
 
 
 	private final Preference advanced;
+    private final CustomMatcherEditor<Resource> clientMatcher;
 	private final static String SYSTEM_TOGGLE_KEY = "system.toggle.key";
 	private final static String SHOW_BROWSER_KEY = "show.browser.";
     public FilterPipelineFactory(final SortedList<Resource> items, final PipelineStrategy[] strategies, final AnnotationService annotationService, final Preference advanced) {
@@ -72,11 +74,23 @@ public class FilterPipelineFactory   {
 		systemToggle.setToolTipText("Show technical system resources");	
 		systemFilteredItems = new FilterList<Resource>(items
 				,new NotToggleMatcherEditor(systemToggle,PREFERENCES,SYSTEM_TOGGLE_KEY,new SystemFilter()));
+
+		// collect together some matchers, and apply them all at once.
+		final BasicEventList<MatcherEditor<Resource>> matchers = new BasicEventList<MatcherEditor<Resource>>();
+		final CompositeMatcherEditor<Resource> composite = new CompositeMatcherEditor(matchers);
+		composite.setMode(CompositeMatcherEditor.AND);
+
+		// custom (client-installed) matcher
+		clientMatcher = new CustomMatcherEditor<Resource>();
+		matchers.add(clientMatcher);
+		
         // incremental text field..
 		final SearchField sf = new SearchField("Filter results");
         sf.setToolTipText("Filter list of resources using text string");
-		FilterList<Resource> filteredItems = new FilterList<Resource>(systemFilteredItems
-				, new TextComponentMatcherEditor(sf.getWrappedDocument(), new ResourceTextFilterator(annotationService)));
+        matchers.add( new TextComponentMatcherEditor(sf.getWrappedDocument()
+                    , new ResourceTextFilterator(annotationService)));
+        // apply all these matchers at onces.
+		FilterList<Resource> filteredItems = new FilterList<Resource>(systemFilteredItems,composite);				
 		textField = sf;
 		
 		// collapsible filters.
@@ -134,6 +148,22 @@ public class FilterPipelineFactory   {
 	public JCheckBoxMenuItem getSystemToggleButton() {
 		return systemToggle;
 	}
+	
+	
+	/** set a custom matcher that will be applied in the pipeline
+	 * 
+	 * @param r a matcher which must <b>match</b> a resource for it to be displayed.
+	 * may be null to remove a previously installed matcher.
+	 */
+	public void setCustomMatcher(final Matcher<Resource> r) {
+	    if (r != null) {
+	        clientMatcher.setMatcher(r);
+	    } else {
+	        clientMatcher.clearMatcher();
+	    }
+	}
+	
+	
 	
 	
 	/**
@@ -538,6 +568,26 @@ public class FilterPipelineFactory   {
 			}
 		}
 		
+	}
+	
+	private static class CustomMatcherEditor<R> extends AbstractMatcherEditor<R> {
+	    /**
+         * 
+         */
+        public CustomMatcherEditor() {
+            fireMatchAll();
+        }
+        
+        public void setMatcher(final Matcher<R> m) {
+            if (m == null) {
+                clearMatcher();
+            } else {
+                fireChanged(m);
+            }
+        }
+        public void clearMatcher() {
+            fireMatchAll();
+        }
 	}
 	// triggered when advanced property is flipped.
 //    public void propertyChange(PropertyChangeEvent evt) {

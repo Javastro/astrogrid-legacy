@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.101 2009/04/11 16:48:37 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.102 2009/04/17 17:01:47 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -80,6 +80,7 @@ import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
 import org.astrogrid.desktop.modules.ui.actions.MessagingScavenger;
+import org.astrogrid.desktop.modules.ui.actions.MultiConeActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
@@ -174,6 +175,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		acts = activityBuilder.create(this, new Class[]{
 		        ViewInBrowserActivity.class
 		        ,SimpleDownloadActivity.class
+		        ,MultiConeActivity.class
 		        ,MessagingScavenger.class
 		        ,InfoActivity.class
 		});

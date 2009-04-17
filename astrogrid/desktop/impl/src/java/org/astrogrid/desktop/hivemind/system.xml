@@ -219,6 +219,7 @@ System module.
             <option>Task Runner</option>
             <option>All-VO Astroscope</option>
             <option>All-VO Helioscope</option>
+            <option>Multi Position Search</option>
             <option>none</option>            
 		</preference>
 	</contribution>	

@@ -154,6 +154,7 @@ public class UIContextImpl implements UIContext{
 		                ,"Task Runner"
 		                ,"All-VO Astroscope"
 		                ,"All-VO Helioscope"
+		                ,"Multi Position Search"
 		             }));
             public int compare(final String o1, final String o2) {
                 return order.indexOf(o1) - order.indexOf(o2);

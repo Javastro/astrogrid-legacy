@@ -76,6 +76,7 @@ REGISTRY GOOGLE
 			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryGoogleImpl" >
 				<service>system.ui</service>
                 <service>ui.UiBuilder</service>
+                <object>service-property:ui.resourceFolderModel:treeModel</object>                
 			</construct>
 		</invoke-factory>	
     </implementation>   

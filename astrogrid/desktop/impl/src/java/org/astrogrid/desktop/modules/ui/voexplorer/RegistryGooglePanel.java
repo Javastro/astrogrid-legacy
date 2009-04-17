@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.40 2009/04/08 00:35:08 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.41 2009/04/17 17:01:46 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -104,6 +104,7 @@ import ca.odell.glazedlists.ListSelection;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
+import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
@@ -464,8 +465,8 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
 		final SortedList<Resource> sortedItems = new SortedList<Resource>(items,new ResourceTitleComparator());
 		
 		final PipelineStrategy[] pStrategies = createPipeStrategies();
-		final FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies,annServer,advancedPreference);
-		filteredItems = mPipeline.getFilteredItems();
+		pipeline = new FilterPipelineFactory(sortedItems,pStrategies,annServer,advancedPreference);
+		filteredItems = pipeline.getFilteredItems();
         // item currenlty selected in table list.
 		currentResourceInView = new EventSelectionModel<Resource>(filteredItems);
 		currentResourceInView.setSelectionMode(ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
@@ -481,13 +482,13 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
         final JLabel summaryLabel = builder.addLabel("Resources",cc.xy(2,1));
         summaryLabel.setForeground(Color.DARK_GRAY);
         summaryLabel.setFont(UIConstants.SMALL_DIALOG_FONT);
-        this.summary = new SearchSummaryFormatter(summaryLabel,advancedPreference, edtItems,mPipeline.getSystemFilteredItems(),mPipeline.getFilteredItems());
+        this.summary = new SearchSummaryFormatter(summaryLabel,advancedPreference, edtItems,pipeline.getSystemFilteredItems(),pipeline.getFilteredItems());
 
-		final JTextField filterField = mPipeline.getTextField();
+		final JTextField filterField = pipeline.getTextField();
 		CSH.setHelpIDString(filterField, "reg.filter");
 		builder.add(filterField,cc.xy(3, 1));
-		this.systemToggleButton = mPipeline.getSystemToggleButton();
-		final JToggleButton expandButton = mPipeline.getExpandButton();		
+		this.systemToggleButton = pipeline.getSystemToggleButton();
+		final JToggleButton expandButton = pipeline.getExpandButton();		
 		CSH.setHelpIDString(expandButton,"reg.showFilters");
         builder.add(expandButton,cc.xy(5, 1));
         this.expandAction = expandButton.getAction();
@@ -496,7 +497,7 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
 		this.add(topBox,BorderLayout.NORTH);
 		topBox.add(toolbar);
 		
-		final JComponent filters = mPipeline.getFilters();
+		final JComponent filters = pipeline.getFilters();
 		CSH.setHelpIDString(filters, "reg.filters");
 		topBox.add(filters);
 	
@@ -766,6 +767,8 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
 
 	/** the filtered list of items, as currently displayed in the table. */
     private final EventList<Resource> filteredItems;
+
+    private final FilterPipelineFactory pipeline;
     /** access an event list of the items currently displayed in the table */
     public EventList<Resource> getCurrentDisplayedResources() {
         return filteredItems;
@@ -909,6 +912,14 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
 			super(source);
 		}
 	}
+	
+	/** install a custom matcher to use to filter resources.
+	 * 
+	 * @param r use null to clear a previous matcher.
+	 */
+	public void setCustomMatcher(final Matcher<Resource> r) {
+	    pipeline.setCustomMatcher(r);
+	}
 
     /**
      * @return the systemToggleButton
@@ -927,6 +938,9 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.41  2009/04/17 17:01:46  nw
+MultiCone.
+
 Revision 1.40  2009/04/08 00:35:08  nw
 Complete - taskVOExp Changes
 

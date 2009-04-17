@@ -17,6 +17,7 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.hivemind.EventDispatchThreadObjectBuilder;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
+import org.astrogrid.desktop.modules.system.ui.MultiConeImpl;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
@@ -210,6 +211,10 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
 
     public ResourceViewer createXMLResourceView(final UIComponent parent) {
         return (ResourceViewer)create("xmlResourceView",parent);
+    }
+
+    public MultiConeImpl createMultiCone() {
+        return (MultiConeImpl)create("multicone");
     }
 
 
