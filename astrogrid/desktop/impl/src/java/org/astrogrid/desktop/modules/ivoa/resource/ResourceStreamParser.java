@@ -515,7 +515,8 @@ public final class ResourceStreamParser implements Iterator<Resource> {
                 || StandardIds.STAP_1_0.equals(standardID)) {
             c = new StapCapability();
             stapFormats = new ArrayList<String>(3);
-        } else if (TapCapability.CAPABILITY_ID.toString().equals(standardID)) { //@todo replace with StandardIds constant
+       //} else if (TapCapability.CAPABILITY_ID.toString().equals(standardID)) { //@todo replace with StandardIds constant
+        } else if (standardID != null && standardID.contains("/TAP")) { //more sloppy parsing
             c = new TapCapability();
         } else if (VospaceCapability.CAPABILITY_ID.toString().equals(standardID)) { //@todo replace with standardIds constant, when it happens
             c = new VospaceCapability(resourceID);
