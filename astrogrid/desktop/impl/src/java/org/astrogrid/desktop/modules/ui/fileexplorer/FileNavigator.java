@@ -36,6 +36,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryListener;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
+import org.astrogrid.vospace.v11.client.exception.PermissionException;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -498,7 +499,11 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
             if (previous != null) {
                 move(previous.getFileObjectView());
             }
-            super.doError(ex);
+            if (ex.getCause() != null && ex.getCause() instanceof PermissionException) {
+                parent.showError("You do not have sufficient permissions to list this directory");
+            } else {
+                super.doError(ex);
+            }
         }
         
     }
