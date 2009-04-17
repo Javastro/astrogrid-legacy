@@ -10,9 +10,12 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
+import org.astrogrid.desktop.modules.ui.folders.ResourceTreeModel;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
+
+import ca.odell.glazedlists.matchers.Matcher;
 
 /** Implementation of the RegistryGoogle component.
  * @author Noel Winstanley
@@ -20,9 +23,9 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
  */ 
 public class RegistryGoogleImpl implements RegistryGoogleInternal {
 	
-	public RegistryGoogleImpl( final UIContext context, final TypesafeObjectBuilder builder) {
+	public RegistryGoogleImpl( final UIContext context, final TypesafeObjectBuilder builder, final ResourceTreeModel model) {
         super();
-        dialog = new RegistryGoogleDialog(context,builder);
+        dialog = new RegistryGoogleDialog(context,builder, model);
     }
     private final RegistryGoogleDialog dialog;
 
@@ -57,7 +60,7 @@ public class RegistryGoogleImpl implements RegistryGoogleInternal {
         dialog.setPrompt(arg0);
         dialog.setMultipleResources(arg1);
         dialog.setShowPlaylists(false);
-        dialog.populateWithIds(arg2);
+        dialog.populateWithIds(arg2);       
         dialog.setVisible(true);
         dialog.toFront();
         dialog.requestFocus();        
@@ -75,6 +78,24 @@ public class RegistryGoogleImpl implements RegistryGoogleInternal {
             final boolean multiple, final String query, final Component comp) {
         dialog.setLocationRelativeTo(comp);
         return selectResourcesXQueryFilter(prompt,multiple,query);
+    }
+
+    public Resource[] selectResourcesFullUI(final String prompt, final boolean multiple,
+            final Matcher<Resource> accept, final Component comp) {
+        dialog.setPrompt(prompt);
+        dialog.setMultipleResources(multiple);
+        dialog.setShowPlaylists(true);
+        dialog.installMatcher(accept);
+        dialog.setVisible(true);
+        dialog.toFront();
+        dialog.requestFocus();        
+        return dialog.getSelectedResources();
+    }
+
+    public Resource[] selectResourcesWithParent(final String prompt,
+            final boolean multiple, final String srql, final Component comp) throws InvalidArgumentException {
+        dialog.setLocationRelativeTo(comp);
+        return selectResources(prompt,multiple,srql);
     }
 
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.20 2008/11/04 14:35:52 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.21 2009/04/17 16:55:16 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,18 +12,23 @@ package org.astrogrid.desktop.modules.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ProgrammerError;
@@ -31,7 +36,13 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
+import org.astrogrid.desktop.modules.ui.folders.ResourceTreeModel;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
+import org.astrogrid.desktop.modules.ui.voexplorer.UneditableResourceTree;
+import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel.LoadEvent;
+
+import ca.odell.glazedlists.matchers.Matcher;
 
 /** Dialogue around a registry chooser pane.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
@@ -39,20 +50,72 @@ import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
  */
 public class RegistryGoogleDialog extends UIDialogueComponentImpl implements ListSelectionListener {
 
-    final RegistryGooglePanel chooserPanel;
-    private final JButton okButton;
+    /** representation of no resources selected */
+    private static final Resource[] NOTHING_SELECTED = new Resource[0];
+    public RegistryGoogleDialog(final Component parentComponent,final UIContext context,final TypesafeObjectBuilder builder, final ResourceTreeModel model) throws HeadlessException {
+    	this(context,builder, model);
+        setLocationRelativeTo(parentComponent);
+    }
     /** Construct a new RegistryChooserDialog
+     * @param model 
      * @throws java.awt.HeadlessException
      */
-    public RegistryGoogleDialog( final UIContext context, final TypesafeObjectBuilder builder) throws HeadlessException {
+    public RegistryGoogleDialog( final UIContext context, final TypesafeObjectBuilder builder, final ResourceTreeModel model) throws HeadlessException {
         super(context,"Registry Resource Chooser","dialog.registry");
-        this.chooserPanel = builder.createGooglePanel(this);
+        this.google = builder.createGooglePanel(this);
         this.okButton = getOkButton();
         this.okButton.setEnabled(false);
-        chooserPanel.getCurrentResourceModel().addListSelectionListener(this);
+        google.getCurrentResourceModel().addListSelectionListener(this);
+        
+        // assmble resource tree.
+        resourceLists = new UneditableResourceTree(model);
+        // connect resource lists to google.
+        resourceLists.addTreeSelectionListener(new TreeSelectionListener() {
+            public void valueChanged(final TreeSelectionEvent evt) {
+                    final ResourceFolder folder = resourceLists.getSelectedFolder();
+                    if (folder != null) {
+                        folder.display(google);
+                    }
+                }            
+        }); 
+
+        // button to stop searches
+        final JButton folderButton = new JButton("Halt Search");
+        folderButton.addActionListener(new ActionListener() {
+            
+            public void actionPerformed(final ActionEvent e) {
+                google.halt();
+            }
+        });
+        folderButton.setEnabled(false);
+        
+        // listen to google, and temporarily disable tree / enable button
+        google.addLoadListener(new RegistryGooglePanel.LoadListener() {
+            
+            public void loadCompleted(final LoadEvent e) {
+                resourceLists.setEnabled(true);
+                folderButton.setEnabled(false);
+            }
+            
+            public void loadStarted(final LoadEvent e) {
+                resourceLists.setEnabled(false);
+                folderButton.setEnabled(true);
+            }
+        });
+        
+        // panel to contain resource lists and button.       
+        final JScrollPane foldersScroll = new JScrollPane(resourceLists,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        foldersScroll.setBorder(null);
+        foldersScroll.setPreferredSize(new Dimension(150,400));
+        folderPanel = new JPanel(new BorderLayout());
+        folderPanel.setBorder(null);
+        folderPanel.add(foldersScroll,BorderLayout.CENTER);        
+        folderPanel.add(folderButton,BorderLayout.SOUTH);
+        
+        
         final JPanel main =getMainPanel();
-        main.add(getTopLabel(),BorderLayout.NORTH);
-        main.add(chooserPanel,BorderLayout.CENTER);
+        main.add(google,BorderLayout.CENTER);
+        main.add(folderPanel,BorderLayout.WEST);
 /* might need to do something like this in a bit
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
         jOptionPane.getInputMap().remove(enter);
@@ -63,52 +126,42 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
         this.getContentPane().add(main);           
      
         this.pack();
-        this.setSize(600,600);        
+        this.setSize(700,600);        
     }
+    private final RegistryGooglePanel google;
+    private final JButton okButton;
     
-    public RegistryGoogleDialog(final Component parentComponent,final UIContext context,final TypesafeObjectBuilder builder) throws HeadlessException {
-    	this(context,builder);
-        setLocationRelativeTo(parentComponent);
-    }
+    private final UneditableResourceTree resourceLists;
 
-
-    /** display the playlist (folder tree) on the lhs of the dialogue - this allows the user to 
-     * access any of their previously saved queries, and to build new queries within the dialogue
-     * @param showPlaylists
-     */
-    public void setShowPlaylists(final boolean showPlaylists) {
-        //@implement
+    private Resource[] selectedResources = NOTHING_SELECTED;
+    
+    private final JPanel folderPanel;   
+    
+    /** just resets the form for next time */
+    @Override
+    public void cancel() {
+        super.cancel();
+        selectedResources = NOTHING_SELECTED;
+        google.clear();
     }
-    
-    /** enable the user to select more than one resource */
-    public void setMultipleResources(final boolean multiple) {
-        chooserPanel.setMultipleResources(multiple);
-    }   
-    
-    /** populate the dialogue by running an xquery */
-    public void populateFromXQuery(final String xquery) {
-        chooserPanel.displayQuery("Options",xquery); // use the title variant too?
-    }
-    
-    /** populate the dialogue by retireving a list of resources */
-    public void populateWithIds(final URI[] ids) {
-        chooserPanel.displayIdSet("Options",Arrays.asList(ids)); // thre's a variant which sets a title too - use this?
-    } 
-
     
     /** access the user's selection */
     public Resource[] getSelectedResources() {
         return selectedResources;
-    }
+    } 
+
     
-    /** representation of no resources selected */
-    private static final Resource[] NOTHING_SELECTED = new Resource[0];
-    private Resource[] selectedResources = NOTHING_SELECTED;
+    /** Install a matcher, that controls which resources will be selectable.
+     * @param accept
+     */
+    public void installMatcher(final Matcher<Resource> acceptanceMatcher) {
+       google.setCustomMatcher(acceptanceMatcher);
+    }
     
     /** store the user's selection before resetting the form. */
     @Override
     public void ok() {
-        final Transferable tran = chooserPanel.getSelectionTransferable(); // see what's been chosen then
+        final Transferable tran = google.getSelectionTransferable(); // see what's been chosen then
         try {
             if (tran.isDataFlavorSupported(VoDataFlavour.RESOURCE)) {
                 selectedResources = new Resource[] {
@@ -125,40 +178,58 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
             throw new ProgrammerError(x);
         } 
         super.ok();
-        chooserPanel.clear();
+        google.clear();
+    }
+    /** populate the dialogue by running an xquery */
+    public void populateFromXQuery(final String xquery) {
+        google.displayQuery("Options",xquery); // use the title variant too?
+    }
+    /** populate the dialogue by retireving a list of resources */
+    public void populateWithIds(final URI[] ids) {
+        google.displayIdSet("Options",Arrays.asList(ids)); // thre's a variant which sets a title too - use this?
     }
     
-    /** just resets the form for next time */
-    @Override
-    public void cancel() {
-        super.cancel();
-        selectedResources = NOTHING_SELECTED;
-        chooserPanel.clear();
+    /** enable the user to select more than one resource */
+    public void setMultipleResources(final boolean multiple) {
+        google.setMultipleResources(multiple);
     }
     
     /** set the prompt to display at the top of the dialogue */
     public void setPrompt(final String s) {
-        getTopLabel().setText(s);
+        setTitle(s);
     }
     
-    private JLabel topLabel;
-    private JLabel getTopLabel() {
-        if (topLabel == null) {
-            topLabel = new JLabel();
+    /** display the playlist (folder tree) on the lhs of the dialogue - this allows the user to 
+     * access any of their previously saved queries,
+     * if false, clears any previously set matcher.
+     * @param showPlaylists
+     */
+    public void setShowPlaylists(final boolean showPlaylists) {
+        folderPanel.setVisible(showPlaylists);
+        if (showPlaylists) {
+            resourceLists.initialiseViewAndSelection();
+        } else {
+          // clear any previous matcher.
+            google.setCustomMatcher(null);
         }
-        return topLabel;
     }
+    
+  
 
     /** listens to changes in the user's selection. - impleentation detail */
     public void valueChanged(final ListSelectionEvent e) {
-        okButton.setEnabled(chooserPanel.getSelectionTransferable() != null); 
+        okButton.setEnabled(google.getSelectionTransferable() != null); 
     }
+
 
 }
 
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.21  2009/04/17 16:55:16  nw
+added new registry dialog options.
+
 Revision 1.20  2008/11/04 14:35:52  nw
 javadoc polishing
 
