@@ -67,14 +67,55 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
         if (evt.getNewValue() != null 
                 && ! evt.getNewValue().equals(evt.getOldValue()))  {
             try {
-                final URI u = new URI(evt.getNewValue().toString());
-                if (u.getScheme().equals("file")) {
+                final URI u = new URI(evt.getNewValue().toString());               
+                if (! isCeaAccessible(u)) {
                     offerToRelocateFile(u,(JFormattedTextField) evt.getSource());
                 }
             } catch (final URISyntaxException x) {
                 // don't care.
             }
         }
+    }
+    
+    /** CEA can only access a uri if it's in 
+     * myspace, vospace (soon), 
+     * or ftp, http that isn't a local addr.
+     * This will capture 10.*, and 127.0.*, and 192.168.* and 169.254*  
+     * other kinds of issue won't be caught.
+     * Taken from <a href='http://en.wikipedia.org/wiki/10.0.0.1'>Wikipedia article on local networks</a>
+     * 
+     * @param u
+     * @return
+     */
+    public static boolean isCeaAccessible(final URI u) {
+        final String scheme = u.getScheme();
+        if ("ivo".equals(scheme) || "vos".equals(scheme)) {
+            return true;
+        }
+        if ("ftp".equals(scheme) || "http".equals(scheme)) {
+            final String host = u.getHost();
+            return ! isPrivateNetworkAddress(host);
+        } 
+        // anything else - sftp, tmp, file, can't be accessed.
+        return false;
+        
+    }
+
+    /**
+     * @param host
+     * @return
+     */
+    public static boolean isPrivateNetworkAddress(final String host) {
+
+        return  (host.startsWith("localhost")
+                || host.endsWith(".local")
+                || host.startsWith("127.0.0.1")
+                || host.startsWith("10.0.")
+                || host.startsWith("192.168.")
+                || host.startsWith("169.254.")
+                || host.startsWith("172.") // should really be between 172.16 - 172.31
+                || StringUtils.isBlank(host) // seem to be getting an empty host sometimes.
+                );
     }
 
 // the business end.
@@ -83,7 +124,7 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
      * @param resultField ui field to update with new location.
      * @return
      */
-    private void offerToRelocateFile(final URI u, final JFormattedTextField resultField) {
+    public void offerToRelocateFile(final URI u, final JFormattedTextField resultField) {
         final boolean loggedIn = parent.getContext().getLoggedInModel().isEnabled();
         final boolean firstRun = prefs.getBoolean(FIRST_RUN_KEY,true);
         if ( ! loggedIn || firstRun) {
