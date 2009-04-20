@@ -1,1 +1,0 @@
-select s.id, s.name, o.order_amount from orders as o full outer join suppliers as s on s.id = o.id ;

@@ -1,5 +1,0 @@
--- Here is a comment before the Select statment
-select 
--- Comment before the select all item
-* from catalogue as a 
-;

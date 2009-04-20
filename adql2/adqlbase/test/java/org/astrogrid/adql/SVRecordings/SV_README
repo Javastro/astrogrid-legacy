@@ -1,9 +1,0 @@
-#
-# SV_README
-#
-The SVRecordings directory contains a subdirectory for each RDBMS, eg: MYSQL.
-Each subdirectory contains files with the extension .query
-Each .query file has been produced by the AdqlCompilerSVTest program when
-processing all of the ADQL/s files associated with the AdqlStoXTest unit tests.
-A file will contain the input ADQL/s and the output SQL for comparison, produced
-by the server side AdqlCompilerSV of the adql compiler.

@@ -1,7 +1,0 @@
-select 
-	min(a.ra) as minra, 
-	max(a.ra) as maxra, 
-	min(a."dec") as minra, 
-	max(a."dec") as maxra  
-from cata as a
-where a.signal >= 23 ;

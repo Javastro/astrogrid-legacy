@@ -1,1 +1,0 @@
-select * from arc1.foo as f inner join arc2.bar as b on f.y >= b.x ;

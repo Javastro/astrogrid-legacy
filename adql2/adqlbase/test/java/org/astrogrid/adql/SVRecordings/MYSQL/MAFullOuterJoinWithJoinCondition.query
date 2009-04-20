@@ -1,8 +1,0 @@
-+=====================================================+
-|  Input ADQL:                                        |
-+=====================================================+
-select s.id, s.name, o.order_amount from ar1.orders as o full outer join ar2.suppliers as s on s.id = o.id ;
-+=====================================================+
-|  Output SQL:                                        |
-+=====================================================+
-Select s.id, s.name, o.order_amount From orders as osuppliers as ss.id=o.id 

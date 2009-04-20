@@ -1,8 +1,0 @@
-+=====================================================+
-|  Input ADQL:                                        |
-+=====================================================+
-Select a.POS_EQ_RA, a.POS_EQ_DEC, a.ID_FIELD, a.CODE_QUALITY, a.PHOT_FLUX_PEAK From catalogue as a ;
-+=====================================================+
-|  Output SQL:                                        |
-+=====================================================+
-Select a.POS_EQ_RA, a.POS_EQ_DEC, a.ID_FIELD, a.CODE_QUALITY, a.PHOT_FLUX_PEAK From catalogue as a 

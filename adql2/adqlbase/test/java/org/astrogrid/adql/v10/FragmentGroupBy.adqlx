@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xml-fragment>
-    <v1:Column Table="a" Name="POS_EQ_RA" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0"/>
-    <v1:Column Table="a" Name="POS_EQ_DEC" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0"/>
-</xml-fragment>

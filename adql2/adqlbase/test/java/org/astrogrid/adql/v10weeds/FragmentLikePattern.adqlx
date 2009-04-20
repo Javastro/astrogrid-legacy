@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xml-fragment xsi:type="adql:characterValueExpressionType" xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <adql:CharacterFactor xsi:type="adql:atomType">
-        <adql:Literal xsi:type="adql:stringType" Value="%son"/>
-    </adql:CharacterFactor>
-</xml-fragment>

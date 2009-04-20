@@ -1,1 +1,0 @@
-select SIN(a.POS_EQ_RA) from catalogue as a ;

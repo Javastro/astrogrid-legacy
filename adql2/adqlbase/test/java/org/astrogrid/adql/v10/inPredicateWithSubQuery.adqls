@@ -1,1 +1,0 @@
-select * from personnel as p where p.city_name in ( select c.city_name from cities as c where c.state = 'NY' ) ;

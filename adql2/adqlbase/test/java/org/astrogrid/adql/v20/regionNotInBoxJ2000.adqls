@@ -1,1 +1,0 @@
-select * from cata as a where (a.ra,a.dec) not in box j2000( 12.3, -4.5, 20, 40 );

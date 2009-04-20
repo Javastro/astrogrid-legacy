@@ -1,1 +1,0 @@
-scomp -nopvr -d ../v2.0/target/classes -src ../v2.0/target/src/java -out ../v2.0/target/lib/astrogrid-adql_v2_0-xmlbeans.jar ../../../contracts/src/schema/adql/v2.0/ ../config/adql.xsdconfig

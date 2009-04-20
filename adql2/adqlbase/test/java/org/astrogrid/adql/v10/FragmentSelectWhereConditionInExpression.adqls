@@ -1,3 +1,0 @@
---Select/Where/Condition[@type='inclusiveSearchType']/Expression
-square(a.col2) + power(a.col3, 3 )
- 

@@ -1,1 +1,0 @@
-Select * From catalogue Where catalogue.POS_EQ_DEC<0.0 ;

@@ -1,1 +1,0 @@
-select * from cata as a where (a.ra, a.dec) in circle J2000 ( 12.4, -3.5, udf_FormRadiusFromError(a.error) ) ;

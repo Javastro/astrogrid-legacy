@@ -1,2 +1,0 @@
-Select  ( SIN(a.POS_EQ_RA) + COS(b.POS_EQ_DEC) )   /   ( SQRT(ABS(c.POS_EQ_RA)) - LOG(ABS(d.POS_EQ_DEC)) )     
-From catalogue as a, catalogue as b, catalogue as c, catalogue as d ;

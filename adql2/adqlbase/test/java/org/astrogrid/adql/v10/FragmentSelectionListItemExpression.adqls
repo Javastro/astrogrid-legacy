@@ -1,3 +1,0 @@
---Select/SelectionList/Item[@type='aliasSelectionItemType']/Expression
-square(a.col2)
- 

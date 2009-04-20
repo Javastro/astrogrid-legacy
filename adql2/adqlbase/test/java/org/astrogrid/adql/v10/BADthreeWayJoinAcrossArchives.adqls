@@ -1,4 +1,0 @@
-SELECT las.sourceID, las.ra, las.dec, fsc.seqNo, fsc.ra, fsc.dec
-FROM lasSource AS las, ROSAT..rosat_fsc AS fsc, lasSourceXrosat_fsc AS x
-WHERE x.masterObjID=las.sourceID AND x.slaveObjID=fsc.seqNo AND 
-x.distanceMins<0.1

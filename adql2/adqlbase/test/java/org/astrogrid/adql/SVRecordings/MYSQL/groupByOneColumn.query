@@ -1,8 +1,0 @@
-+=====================================================+
-|  Input ADQL:                                        |
-+=====================================================+
-select v.state_code, v.city_name, count(*) from villes as v group by v.state_code ;
-+=====================================================+
-|  Output SQL:                                        |
-+=====================================================+
-Select v.state_code, v.city_name, COUNT(*)  From villes as v Group By  

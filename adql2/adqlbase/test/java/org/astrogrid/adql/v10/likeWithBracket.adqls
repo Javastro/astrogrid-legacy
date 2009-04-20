@@ -1,1 +1,0 @@
-SElect * from people p where ( p.name like '%son' ) 

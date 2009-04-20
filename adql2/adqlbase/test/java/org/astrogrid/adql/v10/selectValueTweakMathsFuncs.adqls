@@ -1,1 +1,0 @@
-Select ABS(a.POS_EQ_RA) , CEILING(a.POS_EQ_RA) , FLOOR(a.POS_EQ_RA) , ROUND(a.POS_EQ_RA) , TRUNCATE(a.POS_EQ_RA)  From catalogue as a 
