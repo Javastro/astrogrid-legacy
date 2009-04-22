@@ -366,6 +366,7 @@ RESULT CACHE
         <invoke-factory model="primitive"><!--  has to be primitive, as vfs implementation casts it to implementation type. -->
             <construct class="org.astrogrid.vospace.v11.client.vfs.acr.AcrVosFileProvider">
                 <service>registry</service>
+                <service>astrogrid.community</service>
             </construct>
         </invoke-factory>
     </service-point>
