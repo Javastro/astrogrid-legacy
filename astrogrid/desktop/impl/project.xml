@@ -122,16 +122,7 @@
                 <!--  public interface - although these could be sliced, think it's best to leave all unchanged -->
             </properties>
         </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>examples</artifactId>
-            <version>0.1</version>
-            <type>jar</type>
-            <properties>
-                <dist.bundle>true</dist.bundle>
-                <strip>false</strip>
-            </properties>
-        </dependency>
+
         <!--  plastic support libraries.-->
         <dependency>
             <artifactId>plaskit</artifactId>
