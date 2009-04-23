@@ -1,7 +1,5 @@
 package org.astrogrid.security;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Socket;
@@ -35,8 +33,10 @@ import javax.security.auth.x500.X500Principal;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.security.authorization.AccessPolicy;
 import org.astrogrid.security.community.RegistryClient;
+import org.astrogrid.security.myproxy.MyProxyClient;
 import org.astrogrid.security.ssl.GullibleX509TrustManager;
 import org.astrogrid.security.community.SsoClient;
+import org.astrogrid.security.keystore.KeyStoreClient;
 
 /**
  * A container for security information.
@@ -215,6 +215,20 @@ public class SecurityGuard implements X509KeyManager {
     else {
       return (String)(passwords.iterator().next());
     }
+  }
+
+  /**
+   * Indicates whether the guard is signed on correctly.
+   * A correct sign-on implies that the guard has a certificate
+   * chain and matching private-key and can therefore authenticate to
+   * services.
+   *
+   * @return true If the guard is correctly signed on.
+   */
+  public boolean isSignedOn() {
+    // Assume that any X500Principal in the guard results from
+    // a proper sign-on.
+    return (getX500Principal() != null);
   }
   
   /**
@@ -446,6 +460,7 @@ public class SecurityGuard implements X509KeyManager {
    * @throws GeneralSecurityException If authentication fails.
    * @throws RegistryException If the accounts service cannot be found in the registry.
    * @throws RegistryException If the registry is off-line.
+   * @deprecated Use the 4-argument form of signOn() instead.
    */
   public void signOn(String account, 
                      String password, 
@@ -461,7 +476,7 @@ public class SecurityGuard implements X509KeyManager {
     // Sign on at the community's accounts service.
     // This adds to the subject a certificate chain and private key but
     // does nor record any principals.
-    SsoClient s = new SsoClient(findAccountsService(ivorn.getCommunityIvorn()));
+    SignOnClient s = getSignOnClient(ivorn.getCommunityIvorn());
     s.authenticate(ivorn.getUserName(), password, lifetime, this);
     s.home(ivorn.getUserName(), this);
     
@@ -504,26 +519,32 @@ public class SecurityGuard implements X509KeyManager {
     assert password != null;
     assert lifetime > 0;
     assert source != null;
+
     
+
+    SignOnClient s = getSignOnClient(source);
+
+    // Get the certificate chain.
+    try {
+      s.authenticate(username, password, lifetime, this);
+    }
+    catch (IOException ex) {
+      throw new GeneralSecurityException("Authentication failed", ex);
+    }
+
+    // Find the home space. Only a sub-set of the credential sources
+    // know this; for the others, the call returns silently without effect.
+    s.home(username, this);
+
+    // If the credential source is associated with a community, we can now
+    // claim community membership as a principal.
     if (source.getScheme().equals("ivo")) {
-      SsoClient s = new SsoClient(findAccountsService(source));
-      try {
-        s.authenticate(username, password, lifetime, this);
-      } catch (IOException ex) {
-        throw new GeneralSecurityException("Authentication failed", ex);
-      }
-      s.home(username, this);
       String account = "ivo://" + 
                        username + 
                        '@' + 
                        source.getAuthority() +
                        source.getPath();
       this.subject.getPrincipals().add(new AccountIvorn(account));
-    }
-    else {
-      KeyStore store = KeyStore.getInstance("JKS");
-      store.load(source.toURL().openStream(), password.toCharArray());
-      loadKeyStoreEntry(username, password, store);
     }
   }
   
@@ -537,36 +558,13 @@ public class SecurityGuard implements X509KeyManager {
                                                    IOException,
                                                    GeneralSecurityException, 
                                                    RegistryException {
-    
-    // Change the password at a community-accounts service.
-    if (source.getScheme().equals("ivo")) {
-      SsoClient s = new SsoClient(findAccountsService(source));
-      try {
-        s.changePassword(username, oldPassword, newPassword, this);
-      } catch (IOException ex) {
-        throw new GeneralSecurityException("Failed to change the password", ex);
-      }
-    }
-    
-    // Change the password on a key-store in a local file.
-    else if (source.getScheme().equals("file")) {
-      KeyStore store = KeyStore.getInstance("JKS");
-      store.load(source.toURL().openStream(), oldPassword.toCharArray());
-      loadKeyStoreEntry(username, oldPassword, store);
-      store.setKeyEntry(username,
-                        this.getPrivateKey(),
-                        newPassword.toCharArray(),
-                        this.getCertificateChain());
-      store.store(new FileOutputStream(new File(source)), 
-                  newPassword.toCharArray());
-    }
-    
-    // Other sources are assumed to be inaccessible key-stores.
-    else {
-      throw new IOException("Can't change the password on " +
-                            source.toString() +
-                            " - can't write to that kind of URI.");
-    }
+   SignOnClient s = getSignOnClient(source);
+   try {
+     s.changePassword(username, oldPassword, newPassword, this);
+   }
+   catch (Exception ex) {
+     throw new GeneralSecurityException("Failed to change the password", ex);
+   }
   }
   
   /**
@@ -728,21 +726,56 @@ public class SecurityGuard implements X509KeyManager {
   }
   
   /**
-   * Finds the endpoint for the accounts service given the community IVORN.
+   * Makes a client for a given source of credentials.
+   * The kind of client depends on the scheme of the credential-source.
    *
-   * @param The IVORN for the community.
+   * @param source The source of credentials.
    * @return The endpoint (never null).
    * @throws RegistryException If the service was not found in the registry.
    * @throws RegistryException If the registry does not respond.
    */
-  private String findAccountsService(URI community) throws RegistryException {
-    if (this.registry == null) {
+  private SignOnClient getSignOnClient(URI source) throws RegistryException {
+    if (registry == null) {
       registry = new RegistryClient();
     }
-    return registry.getEndpointByIdentifier(
-               community.toString(), 
-               "ivo://org.astrogrid/std/Community/accounts"
-           );
+
+    String scheme = source.getScheme();
+
+    // It's an explicit MyProxy service so we know the endpoint already.
+    if (scheme.equals("myproxy")) {
+      return new MyProxyClient(source);
+    }
+
+    // It's something on an HTTPS server, which we assumed to be an accounts
+    // service.
+    if (scheme.equals("https")) {
+      return new SsoClient(source.toString());
+    }
+
+    // It's something registered in the IVO registry; could be an accounts
+    // service, could be a MyProxy service. We have to get the endpoint from
+    // the registry.
+    if (scheme.equals("ivo")) {
+      URI endpoint = registry.getAccountsEndpoint(source);
+      if (endpoint == null) {
+        endpoint = registry.getMyProxyEndpoint(source);
+        if (endpoint == null) {
+          throw new RegistryException(source.toString() +
+                                      " is not a recognized sign-on service.");
+        }
+        else {
+          return new MyProxyClient(endpoint);
+        }
+      }
+      else {
+        return new SsoClient(endpoint.toString());
+      }
+    }
+
+    // It's something else, which we assume is a key-store.
+    return new KeyStoreClient(source);
   }
+
+    
   
 }
