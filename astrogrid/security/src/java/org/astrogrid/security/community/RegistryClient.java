@@ -1,5 +1,7 @@
 package org.astrogrid.security.community ;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.v1_0.RegistryService;
@@ -19,7 +21,7 @@ public class RegistryClient {
    * The configuration may impose a mockery of the registry for testing.
    */
   public RegistryClient() {
-    this.registry = new RegistryDelegateFactory().createQueryv1_0();
+    this.registry = RegistryDelegateFactory.createQueryv1_0();
   }
   
   /**
@@ -46,5 +48,48 @@ public class RegistryClient {
     return endpoint;
   }
 
+  /**
+   * Supplies the endpoint for an community-accounts service.
+   *
+   * @param ivorn The IVORN for the service registration.
+   * @return The endpoint (null if service or capability not registered).
+   * @throws RegistryException If the registry does not respond.
+   */
+  public URI getAccountsEndpoint(URI ivorn) throws RegistryException {
+   return getEndpoint(ivorn, "ivo://org.astrogrid/std/Community/accounts");
+  }
+
+  /**
+   * Supplies the endpoint for an MyProxy service.
+   *
+   * @param ivorn The IVORN for the service registration.
+   * @return The endpoint (null if service or capability not registered).
+   * @throws RegistryException If the registry does not respond.
+   */
+  public URI getMyProxyEndpoint(URI ivorn) throws RegistryException {
+    return getEndpoint(ivorn, "ivo://ivoa.net/std/MyProxy");
+  }
+
+  /**
+   * Supplies the endpoint for a given registration and capability.
+   *
+   * @param ivorn The IVORN for the service registration.
+   * @param capability The URI identifying the capability.
+   * @return The endpoint (null if service or capability not registered).
+   * @throws RegistryException If the registry does not respond.
+   */
+  private URI getEndpoint(URI ivorn, String capability) throws RegistryException {
+    if (ivorn.getScheme().equals("ivo")) {
+      try {
+        return new URI(registry.getEndpointByIdentifier(ivorn.toString(), capability));
+      }
+      catch (URISyntaxException ex) {
+        throw new RegistryException("Registered endpoint is invalid", ex);
+      }
+    }
+    else {
+      return null;
+    }
+  }
 }
 

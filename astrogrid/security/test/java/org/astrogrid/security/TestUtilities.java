@@ -92,5 +92,46 @@ public class TestUtilities {
     bos.close();
     bis.close();
   }
+
+  /**
+   * Copies an entity found as a class resource to a temporary file.
+   *
+   * @param clazz The class whose resource is to be copied.
+   * @param resource The resource to be copied.
+   * @return The name of the temporary file.
+   */
+  static public File copyResourceToFile(Class  clazz,
+                                        String resource) throws Exception {
+    assert resource != null;
+
+
+    File file = File.createTempFile("test", "");
+    file.deleteOnExit();
+
+    InputStream is = clazz.getResourceAsStream(resource);
+    if (is == null) {
+      throw new Exception(clazz.getName() +
+                          " does not have a resource " +
+                          resource);
+    }
+    BufferedInputStream bis = new BufferedInputStream(is);
+
+    FileOutputStream fos = new FileOutputStream(file);
+    BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+    while (true) {
+      int c = bis.read();
+      if (c == -1) {
+        break;
+      }
+      else {
+        bos.write(c);
+      }
+    }
+    bos.close();
+    bis.close();
+
+    return file;
+  }
   
 }

@@ -11,8 +11,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.AccessControlException;
 import java.security.GeneralSecurityException;
@@ -22,6 +22,7 @@ import java.security.cert.CertPath;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.security.SignOnClient;
 import org.bouncycastle.openssl.PEMWriter;
 
 /**
@@ -34,7 +35,7 @@ import org.bouncycastle.openssl.PEMWriter;
  *
  * @author Guy Rixon
  */
-public class SsoClient {
+public class SsoClient implements SignOnClient {
   
   /**
    * The URI for the SSO or "accounts" service.
@@ -42,6 +43,15 @@ public class SsoClient {
    * URI for the credentials for a particular user.
    */
   private String endpoint;
+
+  /**
+   * Constructs an SsoClient.
+   *
+   * @param endpoint The endpoint URI for the service.
+   */
+  public SsoClient(URI u) {
+    endpoint = u.toString();
+  }
   
   /**
    * Constructs a SsoClient.
@@ -66,6 +76,8 @@ public class SsoClient {
    * @param password The password, unhashed and unencrypted.
    * @param lifetime The duration of validity of the credentials, in seconds.
    * @param guard The SecurityGuard to receive the credentials.
+   * @throws AccessControlException If the service rejects the user's password.
+   * @throws FileNotFoundException If the service does not recognize the user name.
    * @throws IOException If communication with the service fails.
    * @throws CertificateException If the service returns invalid credentials.
    */
@@ -73,6 +85,7 @@ public class SsoClient {
                            String        password, 
                            int           lifetime,
                            SecurityGuard guard) throws IOException,
+                                                       AccessControlException,
                                                        CertificateException {
     assert userName != null;
     assert password != null;
@@ -117,6 +130,18 @@ public class SsoClient {
     osw.write(lifetimeParameter);
     osw.flush();
     osw.close();
+
+    int code = connection.getResponseCode();
+    switch (code) {
+      case 200:
+        break; // This is the case we hope for.
+      case 403:
+        throw new AccessControlException("The password was rejected.");
+      case 404:
+        throw new FileNotFoundException("The user-name " + userName + " is not recogognized.");
+      default:
+        throw new IOException("The community service returned HTTP code " + code);
+    }
       
     // Read the certificate chain from the HTTP response.
     // This throws CertificateException if the response is invalid and

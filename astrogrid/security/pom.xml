@@ -8,19 +8,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <packaging>jar</packaging>
-  <version>2008.2.03</version>
-  
-  <repositories>
-    <repository>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>ag-m1-repository</id>
-      <name>AstroGrid's Maven-1 repository</name>
-      <url>http://www.astrogrid.org/maven</url>
-      <layout>legacy</layout>
-    </repository>
-  </repositories>
+  <version>2009.1.a04</version>
 
   <distributionManagement>
     <site>
@@ -28,6 +16,18 @@
       <name>Security on deployer, version ${pom.version}</name>
       <url>scp://terror.star.le.ac.uk//software_docs/security-${pom.version}</url>
     </site>
+    <!-- Only one of these can be active at a time.
+    <repository>
+      <id>ag-m1</id>
+      <name>AstroGrid Maven-1 repository</name>
+      <url>scp://maven.astrogrid.org/maven</url>
+    </repository>
+    -->
+    <repository>
+      <id>ag-m2</id>
+      <name>AstroGrid Maven-2 repository</name>
+      <url>scp://maven.astrogrid.org/maven2</url>
+    </repository>
   </distributionManagement>
   
   <dependencies>
@@ -37,75 +37,31 @@
         <artifactId>astrogrid-common</artifactId>
         <version>2007.2.01</version>
       </dependency>
-      
-      <dependency>
-        <groupId>org.astrogrid</groupId>
-        <artifactId>astrogrid-community-server</artifactId>
-        <version>2008.2</version>
-        <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-        <groupId>org.astrogrid</groupId>
-        <artifactId>astrogrid-community-common</artifactId>
-        <version>2008.0</version>
-        <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-        <groupId>jetty</groupId>
-        <artifactId>jetty</artifactId>
-        <version>6.1.11</version>
-        <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-        <groupId>jetty</groupId>
-        <artifactId>jetty-util</artifactId>
-        <version>6.1.11</version>
-        <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-        <groupId>jetty</groupId>
-        <artifactId>jetty-servlet-tester</artifactId>
-        <version>6.1.11</version>
-        <scope>test</scope>
-      </dependency>
+
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+      <version>6.1.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>6.1.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-servlet-tester</artifactId>
+      <version>6.1.11</version>
+      <scope>test</scope>
+    </dependency>
       
       <dependency>
         <groupId>axis</groupId>
         <type>jar</type>
         <artifactId>axis</artifactId>
         <version>1.3</version>
-      </dependency>
-      
-      <dependency>
-        <groupId>castor</groupId>
-        <artifactId>castor</artifactId>
-        <version>1.2</version>
-        <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-        <groupId>castor</groupId>
-        <artifactId>castor-jdo</artifactId>
-        <version>1.2</version>
-        <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-        <groupId>jta</groupId>
-        <artifactId>jta</artifactId>
-        <version>1.0.1</version>
-        <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-        <groupId>hsqldb</groupId>
-        <artifactId>hsqldb</artifactId>
-        <version>1.7.1</version>
-        <scope>test</scope>
       </dependency>
       
       <dependency>
@@ -129,7 +85,7 @@
       </dependency>
       
       <dependency>
-        <groupId>globus</groupId>
+        <groupId>org.globus</groupId>
         <artifactId>cog-jglobus</artifactId>
         <version>1.4</version>
         <type>jar</type>
@@ -145,27 +101,40 @@
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-registry-client-lite</artifactId>
-        <version>2008.0.04</version>
+        <version>2008.2.01</version>
       </dependency>
       
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-registry-common</artifactId>
-        <version>2008.0.04</version>
+        <version>2008.2.01</version>
       </dependency>
       
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-contracts</artifactId>
-        <version>2008.0a2</version>
+        <version>2008.2</version>
         <type>jar</type>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.2.1</version>
+        <scope>test</scope>
       </dependency>
       
       <dependency>
         <groupId>servletapi</groupId>
         <artifactId>servletapi</artifactId>
         <version>2.4</version>
-        <scope>compile</scope>
+        <scope>provided</scope>
       </dependency>
       
       <dependency>
@@ -238,6 +207,7 @@
       	<directory>test/keystore</directory>
         <includes>
       	  <include>tester.jks</include>
+          <include>tester.p12</include>
        </includes>
       </testResource>
       <testResource>

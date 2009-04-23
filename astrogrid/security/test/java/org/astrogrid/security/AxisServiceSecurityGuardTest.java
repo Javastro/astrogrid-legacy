@@ -3,7 +3,6 @@ package org.astrogrid.security;
 import java.security.Principal;
 import javax.security.auth.x500.X500Principal;
 import junit.framework.TestCase;
-import org.apache.axis.Message;
 import org.apache.axis.MessageContext;
 import org.apache.axis.server.AxisServer;
 

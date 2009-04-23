@@ -2,10 +2,9 @@ package org.astrogrid.security.community;
 
 import java.security.cert.X509Certificate;
 import java.io.InputStream;
+import java.security.AccessControlException;
 import java.security.cert.CertPath;
 import junit.framework.TestCase;
-import org.astrogrid.community.server.sso.AccountServlet;
-import org.astrogrid.community.server.sso.PondLifeDb;
 import org.astrogrid.security.SecurityGuard;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
@@ -20,11 +19,8 @@ public class SsoClientTest extends TestCase {
   
   private Server jetty;
 
+  @Override
   protected void setUp() throws Exception {
-    
-    // Pre-load the community database with a test account.
-    PondLifeDb pond = new PondLifeDb();
-    pond.initialize();
     
     // Run the community service in an embedded copy of Jetty.
     jetty = new Server(6666);
@@ -32,7 +28,8 @@ public class SsoClientTest extends TestCase {
     c.addServlet(new ServletHolder(new AccountServlet()), "/accounts/*");
     jetty.start();
   }
-  
+
+  @Override
   protected void tearDown() throws Exception {
     jetty.stop();
   }
@@ -42,6 +39,13 @@ public class SsoClientTest extends TestCase {
     SecurityGuard g = new SecurityGuard();
     sut.changePassword("frog", "croakcroak", "ribbitribbit", g);
     sut.authenticate("frog", "ribbitribbit", 3600, g);
+    try {
+      sut.authenticate("frog", "croakcroak", 3600, g);
+      fail("Sign-on with old password should fail after password change.");
+    }
+    catch (AccessControlException e) {
+      // Expected.
+    }
   }
   
   public void testHome() throws Exception {

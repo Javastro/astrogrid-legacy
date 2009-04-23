@@ -9,19 +9,27 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import junit.framework.TestCase;
 import org.apache.axis.client.Call;
+//import org.astrogrid.community.resolver.CommunityPasswordResolver;
 import org.astrogrid.security.sample.SampleDelegate;
 
 
 /**
- * JUnit tests for the bwhaviour of the handlers when no trust anchors are
- * configured. Axis' "loop-back" mode is used, in
- * which all parts of the Axis handler-chain are exercised, but there
+ * JUnit tests for end-to-end operation of the security facade in
+ * a simulated web-service. Axis' "loop-back" mode is used, in
+ * which all parts of the Axis handler-chain are exercise, but there
  * is no HTTP communication and hence no need to deploy the SUT
  * into a web-container.
  *
  * @author Guy Rixon
  */
-public class UnknownCaTest extends TestCase {
+public class SoapSignatureEndToEndTest extends TestCase {
+  
+  @Override
+  public void setUp() throws Exception {
+    TestUtilities.copyResourceToFile(this.getClass(),
+                                     "/server-config.wsdd",
+                                     "server-config.wsdd");
+  }
 
   public void testGoodCredentials() throws Exception {
 
@@ -70,9 +78,7 @@ public class UnknownCaTest extends TestCase {
   }
   
   public SecurityGuard loadCredentials() throws Exception {
-    File pem = File.createTempFile("no-pem", null);
-    pem.delete();
-    pem.mkdir();
+    File pem = new File("pem");
     System.out.println("Looking for trust anchors as PEM files in "
                        + pem.getAbsolutePath());
     System.setProperty("X509_CERT_DIR", pem.getAbsolutePath());
