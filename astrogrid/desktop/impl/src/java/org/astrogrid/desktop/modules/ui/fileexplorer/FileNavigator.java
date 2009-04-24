@@ -28,6 +28,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.provider.FileProvider;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -42,6 +43,8 @@ import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.matchers.MatcherEditor;
+import org.astrogrid.desktop.modules.ag.vfs.ActivatableVfsFileProvider;
+import org.astrogrid.desktop.modules.system.HivemindFileSystemManager;
 
 /** 'controller' object that allows navigation around a filesystem; manages changes to a file model and a history.
  * 
@@ -136,13 +139,14 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
     private final UIComponent parent;
     private final EventList<UpMenuItem> upList;
 
-    private final FileSystemManager vfs;
+    private final HivemindFileSystemManager vfs;
 
     private final IconFinder icons;
-    public FileNavigator(final UIComponent parent,final FileSystemManager vfs, final MatcherEditor<FileObjectView> ed, final ActivitiesManager activities, final IconFinder icons) {
+    public FileNavigator(final UIComponent parent,final HivemindFileSystemManager vfs, final MatcherEditor<FileObjectView> ed, final ActivitiesManager activities, final IconFinder icons) {
         super();
         this.parent = parent;
         this.vfs = vfs;
+        goExamplesAction =  new GoExamplesAction(vfs);
         this.icons = icons;
         this.model = Filemodel.newInstance(ed,activities,icons,new VFSOperationsImpl(parent,this,vfs));
         this.history = new History<Location>();
@@ -533,7 +537,7 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
     private final Action backAction = new BackAction();
     private final Action forwardAction = new ForwardAction();
 
-    private final Action goExamplesAction= new GoExamplesAction();
+    private final Action goExamplesAction;
 
     private class GoHomeAction extends AbstractAction {
 
@@ -563,11 +567,16 @@ public class FileNavigator implements HistoryListener<FileNavigator.Location>, V
     
     private class GoExamplesAction extends AbstractAction {
         
-        public GoExamplesAction() {
+        public GoExamplesAction(HivemindFileSystemManager vfs) {
             super("Examples",IconHelper.loadIcon("folder_examples16.png"));
             putValue(SHORT_DESCRIPTION,"Go to examples directory");
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_W,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
-             
+            // find examples provider.
+            FileProvider exam = vfs.getProvidermap().get("examples");
+            setEnabled(exam != null
+                    && exam instanceof ActivatableVfsFileProvider
+                    && ((ActivatableVfsFileProvider)exam).isActive()
+                    );
         }
         public void actionPerformed(final ActionEvent e) {
             move("examples:/");

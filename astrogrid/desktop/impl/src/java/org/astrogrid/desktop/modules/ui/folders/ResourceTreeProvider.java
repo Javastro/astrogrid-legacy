@@ -147,88 +147,86 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
                     ) //@todo need to find a way to avoid caching - or to control the caching period of this entry.
                     // I suppose default cache is 3 days - that's not too bad.
                     , new StaticList("VO taster list", new String[]{
-                            "ivo://irsa.ipac/2MASS-PSC"
-                            ,"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
-                                ,"ivo://mast.stsci/siap-cutout/goods.hst" //??
-                              //  ,"ivo://wfau.roe.ac.uk/ukidssWorld-dsa/wsa"
-                              // Richard's amendment  
-                                ,"ivo://wfau.roe.ac.uk/ukidssDR1-dsa/wsa" // check
-                                ,"ivo://wfau.roe.ac.uk/xmm_dsa/wsa"
-                                ,"ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR"
-                                ,"ivo://uk.ac.cam.ast/IPHAS/images/SIAP"
-                                ,"ivo://stecf.euro-vo/siap/hst/preview"
-                                ,"ivo://wfau.roe.ac.uk/schlegeldustmaps"    //?  
-                                ,"ivo://nasa.heasarc/skyview/sdss"            
-                                ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
-                                ,"ivo://org.astrogrid/MERLINImager" 
-                                ,"ivo://uk.ac.starlink/stilts"
-                                ,"ivo://stecf.euro-vo/SSA/HST/FOS"//?
-                                ,"ivo://nasa.heasarc/rc3"                                                        
+      "ivo://org.astrogrid/MERLINImager"
+      ,"ivo://wfau.roe.ac.uk/ukidssDR2-dsa/wsa/ceaApplication"
+      ,"ivo://irsa.ipac/2MASS-PSC"
+      ,"ivo://nasa.heasarc/fermilbsl"
+      ,"ivo://wfau.roe.ac.uk/xmm_dsa/wsa"
+      ,"ivo://stecf.euro-vo/SSA/HST/FOS"
+      ,"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
+      ,"ivo://stecf.euro-vo/siap/hst/preview"
+      ,"ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR"
+      ,"ivo://uk.ac.starlink/stilts"
+      ,"ivo://sdss.jhu/services/DR5CONE"
+      ,"ivo://nasa.heasarc/rc3"
+      ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
+      ,"ivo://uk.ac.cam.ast/IPHAS/images/SIAP"
+      ,"ivo://mast.stsci/siap-cutout/goods.hst"
                     })
                     // examples by service type
                     , new StaticList("Cone search examples", new String[]{
-                                "ivo://irsa.ipac/2MASS-XSC"
+                                "ivo://fs.usno/cat/usnob"
                                 , "ivo://irsa.ipac/2MASS-PSC"
-                                , "ivo://wfau.roe.ac.uk/6df-dsa/cone"
-                                , "ivo://wfau.roe.ac.uk/first-dsa/cone"
+                                , "ivo://nasa.heasarc/first"
+                                , "ivo://sdss.jhu/services/DR5CONE"
                                 , "ivo://nasa.heasarc/iraspsc"
-                                , "ivo://wfau.roe.ac.uk/rosat-dsa/cone"
-                                , "ivo://wfau.roe.ac.uk/sdssdr5-dsa/cone"
-                                , "ivo://wfau.roe.ac.uk/ssa-dsa/cone"
+                                , "ivo://irsa.ipac/2MASS-XSC"
+                                , "ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
                                 , "ivo://nasa.heasarc/rc3"
-                                , "ivo://fs.usno/cat/usnob"  
+                                , "ivo://wfau.roe.ac.uk/rosat-dsa/wsa"
+                                ,"ivo://nasa.heasarc/xmmssc"
+                                ,"ivo://wfau.roe.ac.uk/ukidssDR2-dsa/wsa/ceaApplication"
                     })
                     , new StaticList("Image access examples",new String[]{
-                            "ivo://irsa.ipac/2MASS-ASKYW-AT"
-                                ,"ivo://nasa.heasarc/skyview/dss2"
-                                ,"ivo://nasa.heasarc/skyview/first"
-                                ,"ivo://mast.stsci/siap-cutout/goods.hst"
-                                ,"ivo://nasa.heasarc/skyview/halpha"
-                                ,"ivo://uk.ac.cam.ast/IPHAS/images/SIAP"
-                                ,"ivo://nasa.heasarc/skyview/nvss"
-                                ,"ivo://nasa.heasarc/skyview/rass"
-                                ,"ivo://nasa.heasarc/skyview/sdss"
-                                ,"ivo://org.astrogrid/HDFImager"
-                                ,"ivo://org.astrogrid/MERLINImager"
+       "ivo://wfau.roe.ac.uk/sss-siap"
+      ,"ivo://nasa.heasarc/skyview/rass"
+      ,"ivo://mast.stsci/siap/vla-first"
+      ,"ivo://cadc.nrc.ca/siap/jcmt"
+       ,"ivo://cadc.nrc.ca/siap/hst"
+      ,"ivo://org.astrogrid/HDFImager"
+      ,"ivo://irsa.ipac/2MASS-ASKYW-AT"
+      ,"ivo://nasa.heasarc/skyview/nvss"
+      ,"ivo://uk.ac.cam.ast/IPHAS/images/SIAP"
+      ,"ivo://mast.stsci/siap-cutout/goods.hst"
+     ,"ivo://wfau.roe.ac.uk/ukidssdr2-siap"
                     })
                     , new SmartList("Spectrum access examples","capability = Spectral")
                     ,new SmartList("Remote applications","resourcetype = CeaApplication")
                     ,new StaticList("Queryable database examples",new String[]{
-                            "ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
-                                ,"ivo://wfau.roe.ac.uk/6df-dsa/wsa"
-                                ,"ivo://wfau.roe.ac.uk/ukidssDR3-v1/wsa"
-                                ,"ivo://wfau.roe.ac.uk/iras-dsa/wsa"
-                                ,"ivo://wfau.roe.ac.uk/rosat-dsa/wsa"
-                                ,"ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR"
-                                ,"ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa"
-                                ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
-                                ,"ivo://wfau.roe.ac.uk/twomass-dsa/wsa"
-                                ,"ivo://uk.ac.ucl.star/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED"
-                                ,"ivo://uk.ac.cam.ast/INT-WFS/observation-catalogue/INT_WFS_DQC"
-                                ,"ivo://uk.ac.cam.ast/INT-WFS/merged-object-catalogue/INT_WFS_Merged_Object_catalogue"
-                                ,"ivo://wfau.roe.ac.uk/glimpse-dsa/wsa"
-                                ,"ivo://wfau.roe.ac.uk/first-dsa/wsa" 
-                                ,"ivo://wfau.roe.ac.uk/xmm_dsa/wsa"
-                                ,"ivo://wfau.roe.ac.uk/ukidssDR1-dsa/wsa"
+  "ivo://wfau.roe.ac.uk/ukidssDR2-dsa/wsa"
+      ,"ivo://wfau.roe.ac.uk/xmm_dsa/wsa"
+      ,"ivo://wfau.roe.ac.uk/iras-dsa/wsa"
+      ,"ivo://wfau.roe.ac.uk/6df-dsa/wsa"
+      ,"ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED"
+      ,"ivo://uk.ac.cam.ast/INT-WFS/merged-object-catalogue/INT_WFS_Merged_Object_catalogue"
+      ,"ivo://wfau.roe.ac.uk/ukidssDR4-v1/wsa"
+      ,"ivo://wfau.roe.ac.uk/first-dsa/wsa"
+      ,"ivo://uk.ac.cam.ast/INT-WFS/observation-catalogue/INT_WFS_DQC"
+      ,"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
+      ,"ivo://wfau.roe.ac.uk/rosat-dsa/wsa"
+      ,"ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR"
+      ,"ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa"
+      ,"ivo://wfau.roe.ac.uk/glimpse-dsa/wsa"
+      ,"ivo://wfau.roe.ac.uk/twomass-dsa/wsa"
+      ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
                     })
                     
                     // examples by wavelength / field.
                     ,new SmartList("IR redshift","(ucd = REDSHIFT) AND (waveband = Infrared)")
                     ,new SmartList("Solar services","subject=solar")
                     , new StaticList("SWIFT follow up",new String[]{
-                            "ivo://sdss.jhu/openskynode/PSCZ"
-                                ,"ivo://nasa.heasarc/rassvars"
-                                ,"ivo://nasa.heasarc/rassbsc"
-                                ,"ivo://nasa.heasarc/rassfsc"
-                                ,"ivo://wfau.roe.ac.uk/sdssdr5-dsa/TDB"
-                                ,"ivo://wfau.roe.ac.uk/ssa-dsa/cone"
-                                ,"ivo://CDS/VizieR/I/267/out"
-                                ,"ivo://ned.ipac/Basic_Data_Near_Position"
-                                ,"ivo://fs.usno/cat/usnob"
-                                ,"ivo://nasa.heasarc/xmmssc"                        
+        "ivo://fs.usno/cat/usnob"
+      ,"ivo://nasa.heasarc/rassvars"
+      ,"ivo://nasa.heasarc/rassbsc"
+      ,"ivo://nasa.heasarc/iraspsc"
+      ,"ivo://nasa.heasarc/rassfsc"
+      ,"ivo://sdss.jhu/services/DR5CONE"
+      ,"ivo://ned.ipac/Basic_Data_Near_Position"
+      ,"ivo://nasa.heasarc/xmmssc"
+      ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
                     })
                     , new SmartList("Radio images","(waveband = Radio) and (capability = Image)")
-                    ,new SmartList("Vizier AGN tables","(publisher = CDS) and (subject = agn)") 
+                    ,new SmartList("Vizier AGN tables","(publisher = CDS) and (subject = agn) and (subject = not magnetic")
                     ,new SmartList("VOEvent services","default=voevent")
                     
             };

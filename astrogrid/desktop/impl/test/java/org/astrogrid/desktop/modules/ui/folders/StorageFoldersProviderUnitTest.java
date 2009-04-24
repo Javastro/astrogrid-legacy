@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ui.folders;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +12,14 @@ import javax.swing.SwingUtilities;
 
 import junit.framework.TestCase;
 
+import org.astrogrid.Fixture;
 import org.astrogrid.desktop.alternatives.InThreadExecutor;
 import org.astrogrid.desktop.modules.system.XStreamXmlPersist;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
+import org.astrogrid.test.AstrogridAssert;
 
 /** unit test for storage folders - check that we can at least
  * initialize, and persist the initialized contents to disk.
@@ -56,8 +59,9 @@ public class StorageFoldersProviderUnitTest extends TestCase {
         // do it in the EDT, so that the write-out to file happens without a racecondition.
         SwingUtilities.invokeAndWait(new Runnable() {
 
-            public void run() {        
-                final StorageFoldersProvider prov = new StorageFoldersProvider(ui,pref,xml);
+            public void run() {
+                try {
+                final StorageFoldersProvider prov = new StorageFoldersProvider(ui,pref,xml, Fixture.createVFS());
                 assertNotNull(prov.getList());
                 assertTrue(prov.getList().size() > 2); // there's some stuff in the list.
                 assertTrue(prov.getList().get(0) instanceof StorageFolder);
@@ -76,7 +80,11 @@ public class StorageFoldersProviderUnitTest extends TestCase {
                 prov.load(prov.getStorageLocation(),candidate);
                 assertEquals(prov.getList().size(),candidate.size());
                 
-                assertEquals(prov.getList().get(0),candidate.get(0));                  
+                assertEquals(prov.getList().get(0),candidate.get(0));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    fail(e.getMessage());
+                }
             }
         });
     }

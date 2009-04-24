@@ -568,6 +568,7 @@ FILE EXPLORER
 				<service>system.ui</service>
 				<object>preference:astrogrid.workdir</object>
                 <service>system.xmlPersist</service>
+                <service>system.vfs</service>
                 <event-listener service-id="astrogrid.community" />                
 			</construct>
 		</invoke-factory>

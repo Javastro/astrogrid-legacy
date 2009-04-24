@@ -369,7 +369,8 @@ public class MultiConeImpl extends UIComponentImpl {
                 );
         raCol = new JComboBox(new EventComboBoxModel(raColList));
         raCol.setEditable(true);
-        raCol.setToolTipText("The name of the RA column in the Table");
+        raCol.setSelectedItem("$1");
+        raCol.setToolTipText("Select the RA column in the Table: either by its name, or by its index (preceeded by $)");
 
         // ditto for dec
         decColList = new SortedList<String>(new BasicEventList<String>()
@@ -382,7 +383,8 @@ public class MultiConeImpl extends UIComponentImpl {
                 );        
         decCol = new JComboBox(new EventComboBoxModel(decColList));
         decCol.setEditable(true);
-        decCol.setToolTipText("The name of the Dec column in the Table");
+        decCol.setSelectedItem("$2");
+        decCol.setToolTipText("Select the Dec column in the Table: either by its name, or by its index (preceeded by $)");
 
         
         builder.addLabel("RA Column",cc.xy(labelCol,row));
@@ -454,7 +456,7 @@ public class MultiConeImpl extends UIComponentImpl {
         builder.add(ivoScroll,cc.xy(fieldCol,row));
         row++;
                 
-        builder.addLabel("Capability",cc.xy(labelCol,row));
+        builder.addLabel("Table",cc.xy(labelCol,row));
         final EventComboBoxModel<ConeCapability> capModel = new EventComboBoxModel<ConeCapability>(model.getCapabilities());        
         capability = new JComboBox(capModel);
         capability.setEnabled(false);
@@ -474,7 +476,7 @@ public class MultiConeImpl extends UIComponentImpl {
             
         });
         
-        capability.setToolTipText("Some services have more than one cone-search capability. Select which capability to query here");
+        capability.setToolTipText("Some services offer more than one cone-search capability. Select which table to search");
         builder.add(capability,cc.xy(fieldCol,row));
         
         row++;

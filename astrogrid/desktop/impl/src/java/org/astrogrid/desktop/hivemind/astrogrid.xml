@@ -91,17 +91,23 @@ MYSPACE
 	</service-point>
 
     <contribution configuration-id="hivemind.FactoryDefaults">                  
-        <default symbol="astrogrid.examples.url" value="vos://org.astrogrid!examples/"/> 
+        <default symbol="astrogrid.examples.url"          value="vos://org.astrogrid!examples/"/>
+     <!--   value="vos://org.astrogrid.test!cambridge-test-vospace/public" /> -->ß
     </contribution>
 
-    <service-point id="examplevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider"  visibility="private">
-        VFS protocol provider for workspace://
+    <service-point id="examplevfs" interface="org.astrogrid.desktop.modules.ag.vfs.ActivatableVfsFileProvider"  visibility="public">
+        VFS protocol provider for examples:/
         <invoke-factory model="primitive">
             <construct class="org.astrogrid.desktop.modules.ag.vfs.ExampleProvider">
                 <string>${astrogrid.examples.url}</string>
+                <service>ivoa.registry</service>
             </construct>
         </invoke-factory>
     </service-point>
+
+   <contribution configuration-id="hivemind.EagerLoad">
+		<load service-id="examplevfs" /> <!-- eager load to determine whether activated or not -->
+	</contribution>
 
 
 
@@ -112,9 +118,12 @@ MYSPACE
 			implementation="service:workspacevfs" />
         <provider scheme="examples"
             implementation="service:examplevfs"/>
-	</contribution><!-- 
+	</contribution>
+<!-- 
 ==========================
-COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.modules.auth.CommunityInternal">		Community and login service	
+COMMUNITY -->
+	<service-point id="community" interface="org.astrogrid.desktop.modules.auth.CommunityInternal">
+		Community and login service	
         <interceptor service-id="system.edt" >
             <exclude method="addUserLoginListener" />
             <exclude method="removeUserLoginListener" />

@@ -84,6 +84,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.l2fprod.common.swing.BaseDialog;
 import com.l2fprod.common.swing.JDirectoryChooser;
+import org.astrogrid.desktop.modules.system.HivemindFileSystemManager;
 /** Main Pane of FileExplorer.
  * 
  * Uses a {@link StorageFoldersList} on the left, File activities at the bottom, and on the right a
@@ -378,9 +379,9 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     private final FileSystemManager vfs;
 
 
-		public StorageView(final UIComponent parent, final ActivitiesManager actsManager,final EventList<StorageFolder> unfilteredfoldersList, final FileSystemManager vfs, final IconFinder iconFinder, final Community comm) {
+		public StorageView(final UIComponent parent, final ActivitiesManager actsManager,final EventList<StorageFolder> unfilteredfoldersList, final HivemindFileSystemManager hvfs, final IconFinder iconFinder, final Community comm) {
     		this.parent = parent;
-            this.vfs = vfs;
+            this.vfs = hvfs;
     		foldersListFilter = new MutableMatcherEditor<StorageFolder>();
             this.foldersList = new FilterList<StorageFolder>(unfilteredfoldersList,foldersListFilter);
     		
@@ -393,7 +394,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             final SearchField filter = new SearchField("Filter files");	
             CSH.setHelpIDString(filter,"files.filter");
             final MatcherEditor<FileObjectView> ed = new TextComponentMatcherEditor<FileObjectView>(filter.getWrappedDocument(),new FileObjectViewFilterator());
-            navigator = new FileNavigator(getParent(),vfs,ed,actsManager,iconFinder);		
+            navigator = new FileNavigator(getParent(),hvfs,ed,actsManager,iconFinder);
             comm.addUserLoginListener(this);
             navigator.addNavigationListener(this);
     	// hierarchies.

@@ -64,7 +64,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         this.fileCommand = new CopyCommand(file);
         this.nonexistentCommand = new CopyCommand(nonexistent);
         
-        // validate the file objects pointed to by these commands, and store for use in tests.
+        // validate  the file objects pointed to by these commands, and store for use in tests.
         dirFO = dirCommand.resolveSourceFileObject(vfs);        
         assertNotNull(dirFO);
         assertTrue(dirFO.exists());

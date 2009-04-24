@@ -573,15 +573,16 @@ SYSTEM TRAY
 	VFS
     NB: if the following vfs config is changed, ensure that org.astrogrid.Fixture.createVFS() is altered to match.
 	 -->
-	<service-point id="vfs" interface="org.apache.commons.vfs.FileSystemManager">
+	<service-point id="vfs" interface="org.astrogrid.desktop.modules.system.HivemindFileSystemManager">
 		Uniform access to all kinds of filesystems.
         <interceptor service-id="system.edt" ><!-- doesn't give much protection, but might identify some problems. -->
             <exclude method="createVirtualFileSystem" />
             <exclude method="closeFileSystem" /> <!--  only strictly correect for virtual file systems. -->
-        </interceptor>        
+            <exclude method="getProvidermap" />
+       </interceptor>
 		<invoke-factory> <!-- should maybe be session later -->
 			<construct 
-			class="org.astrogrid.desktop.modules.system.HivemindFileSystemManager"
+			class="org.astrogrid.desktop.modules.system.HivemindFileSystemManagerImpl"
 			initialize-method="init"
 			log-property="logger">
 				<service>tmpFileStore</service>

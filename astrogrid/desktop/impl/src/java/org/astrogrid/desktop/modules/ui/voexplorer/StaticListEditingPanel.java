@@ -189,7 +189,7 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 	@Override
     public void loadEdits() {
 		super.loadEdits();
-		final StaticList sl = (StaticList)getCurrentlyEditing();
+		final StaticList sl = (StaticList)getCurrentlyEditing();		
 		sl.setResourceSet(ids);
 	}
 // responds to button clicks.

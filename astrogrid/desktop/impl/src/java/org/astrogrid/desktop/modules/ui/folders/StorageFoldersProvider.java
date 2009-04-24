@@ -7,6 +7,7 @@ import java.io.File;
 import java.net.URI;
 
 import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.vfs.provider.FileProvider;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.desktop.modules.system.XmlPersist;
@@ -14,6 +15,8 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 import ca.odell.glazedlists.EventList;
+import org.astrogrid.desktop.modules.ag.vfs.ActivatableVfsFileProvider;
+import org.astrogrid.desktop.modules.system.HivemindFileSystemManager;
 
 /** Provider for Storage Folders.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -22,7 +25,7 @@ import ca.odell.glazedlists.EventList;
 public class StorageFoldersProvider extends AbstractListProvider<StorageFolder> implements UserLoginListener {
 
 
-	public StorageFoldersProvider(final UIContext parent, final Preference workdirPreference, final XmlPersist xml) {
+	public StorageFoldersProvider(final UIContext parent, final Preference workdirPreference, final XmlPersist xml, HivemindFileSystemManager hvfs) {
 		super(parent,new File(new File(workdirPreference.getValue()),"storageFolders.xml"), xml);
 		logger.info("Reading/Writing storage folders to " + getStorageLocation());
 		
@@ -37,12 +40,24 @@ public class StorageFoldersProvider extends AbstractListProvider<StorageFolder> 
         if (! list.contains(workspace)) {
             list.add(workspace);
         }
-        
+        FileProvider prov  = hvfs.getProvidermap().get("examples");
+        examplesActive = prov != null
+                && prov instanceof ActivatableVfsFileProvider
+                && ((ActivatableVfsFileProvider)prov).isActive()
+                ;
         final StorageFolder examples = createExamples();
-        if (!list.contains(examples)) {
-            getList().add(examples);
+        if (examplesActive) {
+            if (!list.contains(examples)) {
+                getList().add(examples);
+            }
+        } else {
+            if (list.contains(examples)) {
+                getList().remove(examples);
+            }
         }
 	}
+
+    private final boolean examplesActive;
 
 	@Override
     protected void initializeFolderList() {
@@ -52,10 +67,10 @@ public class StorageFoldersProvider extends AbstractListProvider<StorageFolder> 
 		
 		final StorageFolder workspace = createWorkspace();
         getList().add(workspace);
-        
-        final StorageFolder examples = createExamples();
-        getList().add(examples);
-		
+        if (examplesActive) {
+            final StorageFolder examples = createExamples();
+            getList().add(examples);
+        }
 		final File[] fileRoots = File.listRoots();
         for ( int i = 0; i < fileRoots.length; i++ ) {
             final File fileRoot = fileRoots[ i ];

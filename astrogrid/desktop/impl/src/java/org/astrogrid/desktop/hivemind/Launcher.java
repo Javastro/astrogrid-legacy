@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.30 2009/04/08 12:40:55 nw Exp $
+/*$Id: Launcher.java,v 1.31 2009/04/24 17:00:33 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ import org.apache.hivemind.impl.XmlModuleDescriptorProvider;
 import org.apache.hivemind.util.AbstractResource;
 import org.apache.hivemind.util.ClasspathResource;
 import org.apache.hivemind.util.URLResource;
+import org.astrogrid.desktop.modules.system.HivemindFileSystemManager;
 import org.astrogrid.desktop.modules.system.pref.WorkaroundTransformerFactory;
 
 /**
@@ -224,7 +225,7 @@ public class Launcher implements Runnable {
         
         // extract vfs, and splice into stream handler..
         logger.info("Setting vfs as url protocol handler");
-        final FileSystemManager vfs = (FileSystemManager) reg.getService(FileSystemManager.class);
+        final FileSystemManager vfs = (FileSystemManager) reg.getService(HivemindFileSystemManager.class);
         extensibleStreamHandler.setFollowOnHandler(vfs.getURLStreamHandlerFactory());
     }
 
@@ -254,6 +255,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.31  2009/04/24 17:00:33  nw
+release candidate fixes
+
 Revision 1.30  2009/04/08 12:40:55  nw
 samp configuraiton fix.
 
@@ -355,7 +359,8 @@ Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 
 Revision 1.1.2.4  2006/04/14 02:45:01  nw
-finished code.extruded plastic hub.
+finished code.
+extruded plastic hub.
 
 Revision 1.1.2.3  2006/04/04 10:31:25  nw
 preparing to move to mac.

@@ -41,13 +41,14 @@ import org.astrogrid.desktop.alternatives.InThreadExecutor;
 import org.astrogrid.desktop.modules.ag.vfs.DesktopFilesCache;
 import org.astrogrid.desktop.modules.system.AugmentedFileContentInfoFilenameFactory;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
-import org.astrogrid.desktop.modules.system.HivemindFileSystemManager;
+import org.astrogrid.desktop.modules.system.HivemindFileSystemManagerImpl;
 import org.astrogrid.desktop.modules.system.QueryRespectingUrlFileProvider;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import org.astrogrid.desktop.modules.system.HivemindFileSystemManager;
 /** class of static assertions and helper methods to create test fixtures.
  * @author Noel Winstanley
  * @since Jun 14, 20065:22:53 PM
@@ -108,8 +109,8 @@ public class Fixture {
 	 * @return
 	 * @throws IOException 
 	 */
-	public static FileSystemManager createVFS() throws IOException {
-	    final HivemindFileSystemManager vfs = new HivemindFileSystemManager();
+	public static HivemindFileSystemManager createVFS() throws IOException {
+	    final HivemindFileSystemManagerImpl vfs = new HivemindFileSystemManagerImpl();
 	    final DefaultFileReplicator replicator = new DefaultFileReplicator();
         vfs.setTemporaryFileStore(replicator );
 	    vfs.addProvider("file",new DefaultLocalFileProvider());
