@@ -13,6 +13,21 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="1.2.3.rc1" date="2009-4-24">
+    <action dev="nw" type="update">
+        VOExplorer: Updated example resource lists.
+    </action>
+    <action dev="nw" type="remove">
+        FileExplorer: Removed links to 'examples'. Will re-appear once an examples
+        vospace is registered under ivo://org.astrogrid/examples
+    </action>
+    <action dev="nw" type="update">
+        Multi Cone: minor changes to UI labels.
+    </action>
+    <action dev="dave" type="update">
+        Updated VOSpace plugin.
+    </action>
+</release>
 <release version="1.2.3.beta4" date="2009-4-17">
 
     <action dev="nw" type="add">
