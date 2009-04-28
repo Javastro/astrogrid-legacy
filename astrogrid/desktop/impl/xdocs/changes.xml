@@ -13,6 +13,8 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="1.2.3" date="2009-4-28">
+</release>
 <release version="1.2.3.rc1" date="2009-4-24">
     <action dev="nw" type="update">
         VOExplorer: Updated example resource lists.
