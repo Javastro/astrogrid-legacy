@@ -13,7 +13,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="1.2.3" date="2009-4-28">
+<release version="1.2.3" date="2009-5-1">
+    <action dev="mbt" type="update">
+        Preferences: alt registry endpoint changed to match new service
+        (context now consistent between alt and main reg services).
+    </action>
 </release>
 <release version="1.2.3.rc1" date="2009-4-24">
     <action dev="nw" type="update">
