@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- $id:$ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -7,31 +7,31 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-common</artifactId>
   <name>Common classes</name>
-  <version>2008.2</version>
+  <version>2009.1-SNAPSHOT</version>
+  <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+  </parent>
   
   <packaging>jar</packaging>
   <description>Classes used across the components.</description>
-
+  <properties>
+   <astrogrid.name>common</astrogrid.name>
+  </properties>
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  
+ </build>
   <dependencies>
      <dependency>
         <groupId>org.apache.axis</groupId>
         <type>jar</type>
         <artifactId>axis</artifactId>
-        <version>1.3</version>
+        <version>1.4</version>
+        <scope>provided</scope>
+     </dependency>
+     <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
      </dependency>
      <dependency>
         <groupId>jconfig</groupId>
@@ -41,22 +41,15 @@
      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>3.8.2</version>
+        <version>3.8.2</version><!-- this is overriding the default of Junit 4 in mavenbase -->
      </dependency>
      <dependency>
         <groupId>xmlunit</groupId>
         <artifactId>xmlunit</artifactId>
-        <version>1.0</version>
-     </dependency>
-     <dependency>
-       <groupId>common-logging</groupId>
-       <artifactId>commmons-logging</artifactId>
-       <version>1.0.3</version>
      </dependency>
      <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
-        <version>2.8.1</version>
      </dependency>
      <dependency>
         <groupId>commons-discovery</groupId>
@@ -69,20 +62,24 @@
         <version>1.1</version>
      </dependency>
      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+     </dependency>
+     <dependency>
         <artifactId>hsqldb</artifactId>
         <groupId>hsqldb</groupId>
         <version>1.7.1</version>
      </dependency>
+     <!-- pico container -->
      <dependency>
         <groupId>picocontainer</groupId>
         <artifactId>picocontainer</artifactId>
-        <version>1.0</version>
      </dependency>
      <!-- transactions lib - for unique number source -->
      <dependency>
         <groupId>commons-transaction</groupId>
         <artifactId>commons-transaction</artifactId>
-        <version>1.0.1</version>
+        <version>1.1</version>
      </dependency>
      <dependency>
         <groupId>commons-httpclient</groupId>
@@ -91,23 +88,18 @@
      </dependency>
      <dependency>
         <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
+        <artifactId>servletapi</artifactId>
         <version>2.4</version>
+        <scope>provided</scope>
      </dependency>
   </dependencies>
 
-  <distributionManagement>
-    <repository>
-      <id>ag-m2</id>
-      <name>AstroGrid's Maven-2 repository</name>
-      <url>scp://katatjuta.star.le.ac.uk/maven2</url>
-      <layout>default</layout>
-    </repository>
+    <distributionManagement>
     <site>
-      <id>ag-deployer</id>
-      <name>deployer.astrogrid.org</name>
-      <url>scp://terror.star.le.ac.uk/software_docs/common-${pom.version}</url>
+      <id>agsite</id>
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/${pom.artifactId}/${pom.version}</url>
+      <!-- terror.star.le.ac.uk/ -->
     </site>
-  </distributionManagement>
-
+   </distributionManagement>
  </project>
