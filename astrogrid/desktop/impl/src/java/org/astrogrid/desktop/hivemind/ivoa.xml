@@ -125,7 +125,6 @@
 				<ui-name>Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
                 <alternative>http://alt.registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0</alternative>
-                 <alternative>http://alt.registry.astrogrid.org/astrogrid-registry_v1_0/services/RegistryQueryv1_0</alternative>
                 <alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0</alternative>
 				<alternative>http://harvesting-registry.roe.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
                 <alternative>http://rakaposhi.star.le.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
@@ -138,7 +137,7 @@
 		</preference>
 		<preference name="org.astrogrid.registry.query.altendpoint"
 			advanced="false" requires-restart="true" propagate-to-config="true"
-            default-value="http://alt.registry.astrogrid.org/astrogrid-registry_v1_0/services/RegistryQueryv1_0">		
+            default-value="http://alt.registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0">		
 				<ui-name>Fallback Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
                 <alternative>http://registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0</alternative>
