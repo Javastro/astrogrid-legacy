@@ -1,6 +1,7 @@
 .DS_Store
 .classpath
-velocity.log
-.project
-target
 .settings
+velocity.log
+target
+nbproject
+.project

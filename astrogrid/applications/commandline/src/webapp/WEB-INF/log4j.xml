@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-<!-- $Id: log4j.xml,v 1.1 2008/10/08 14:53:57 pah Exp $ -->
+<!-- $Id: log4j.xml,v 1.2 2009/05/01 17:34:38 pah Exp $ -->
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
@@ -8,7 +8,7 @@
         <param name="Threshold" value="DEBUG"/>        
         
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{dd-MM-yy HH:mm:ss} CL-CEC: %p %m%n"/>
+            <param name="ConversionPattern" value="%d{dd-MM-yy HH:mm:ss} [%t] CL-CEC: %c{1} %p %m%n"/>
         </layout>
     </appender>
 
@@ -52,17 +52,17 @@
     -->
   
     <category name="org.chiba">
-        <priority value="INFO"/>
+        <priority value="WARN"/>
     </category>
    <category name="org.apache.axis">
         <priority value="WARN"/>
     </category>
    <category name="org.chiba">
-        <priority value="INFO"/>
+        <priority value="WARN"/>
     </category>
 
    <root>
-        <priority value="DEBUG"/>
+        <priority value="INFO"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="DEBUGLOG"/>
         <appender-ref ref="LONGLOG"/>

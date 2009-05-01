@@ -12,7 +12,7 @@
       <version>2009.1-SNAPSHOT</version>
    </parent>
    <name>CEA Client</name>
-   <version>2008.2-SNAPSHOT</version>
+   <version>2009.1-SNAPSHOT</version>
    <description>Client library for communicating with CEA services.</description>
    <properties>
       <astrogrid.name>cea/client</astrogrid.name>
@@ -21,7 +21,7 @@
    
    <build>
       <sourceDirectory>src/java</sourceDirectory>
-      <testSourceDirectory>test/java</testSourceDirectory>
+      <testSourceDirectory>integration</testSourceDirectory>
       <resources>
          <resource>
             <directory>${basedir}/src/java</directory>
