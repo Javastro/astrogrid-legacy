@@ -1,5 +1,7 @@
 package org.astrogrid.desktop.modules.ui.folders;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -50,6 +52,13 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
         this.examplesLocation = examplesPreference.getValue();
         logger.info("Examples will be read from " +this.examplesLocation);
         init(new ResourceTreeModel(parent, persister));
+        // listen to the examples preference..
+        examplesPreference.addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(final PropertyChangeEvent evt) {
+                refreshExamples((DefaultMutableTreeNode)getDefaultTreeModel().getRoot());
+            }
+        });
     }
 
     /**
@@ -64,18 +73,26 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
     public DefaultMutableTreeNode load() throws IOException, ServiceException {
         final DefaultMutableTreeNode root = super.load();
         if (root != null && root.getAllowsChildren()) {
-            final DefaultMutableTreeNode examplesNode = findExamples(root);
-            if (examplesNode == null) { // no examples node
-                root.insert(createExamplesNode(), 0);
-            } else { // an obsolete examples note - either no subscription, or pointing to a different location than current preference.
-                final ResourceFolder examplesFolder = (ResourceFolder) examplesNode.getUserObject();                
-                if (examplesFolder.getSubscription() == null || ! examplesLocation.equals(examplesFolder.getSubscription())) {
-                root.remove(examplesNode);
-                root.insert(createExamplesNode(),0);
-                }
-            }
+            refreshExamples(root);
         }
         return root;
+    }
+
+    /** adjusts tree to remove any obselete examples nodes,
+     * and ensures that a current exammples node is present.
+     * @param root
+     */
+    private void refreshExamples(final DefaultMutableTreeNode root) {
+        final DefaultMutableTreeNode examplesNode = findExamples(root);
+        if (examplesNode == null) { // no examples node
+            root.insert(createExamplesNode(), 0);
+        } else { // an obsolete examples note - either no subscription, or pointing to a different location than current preference.
+            final ResourceFolder examplesFolder = (ResourceFolder) examplesNode.getUserObject();                
+            if (examplesFolder.getSubscription() == null || ! examplesLocation.equals(examplesFolder.getSubscription())) {
+            root.remove(examplesNode);
+            root.insert(createExamplesNode(),0);
+            }
+        }
     }
 
     @Override
