@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-vospace-delegate</artifactId>
+  <version>${astrogrid_vospace_version}</version>
+  <name>AstroGrid VoSpace-1.1 delegate</name>
+   <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+  </parent>
+  <description>
+                This component provides a wrapper for the VOSpace-1.1 client to integrate it into the AstroGrid code base.
+                
+                AstroGrid specific changes are added here, and then folded back into the main VOSpace client code later.
+           </description>
+  <inceptionYear>2006</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>IVOA VOSpace specification discussion</name>
+      <archive>http://ivoa.net/forum/vospace/index.htm</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>dmorris</id>
+      <name>Dave Morris</name>
+      <email>dave[at]ast.cam.ac.uk</email>
+      <organization>University of Cambridge</organization>
+      <timezone>0</timezone>
+    </developer>
+    <developer>
+      <id>clq</id>
+      <name>Catherine Qin</name>
+      <email>catherine.qin[at]star.le.ac.uk</email>
+      <organization>University of Leicester</organization>
+      <timezone>0</timezone>
+    </developer>
+    <developer>
+      <id>gtr</id>
+      <name>Guy Rixon</name>
+      <email>gtr[at]ast.cam.ac.uk</email>
+      <organization>University of Cambridge</organization>
+      <timezone>0</timezone>
+    </developer>
+    <developer>
+      <id>kea</id>
+      <name>Kona Andrews</name>
+      <email>kea[at]roe.ac.uk</email>
+      <organization>The Royal Observatory, Edinburgh</organization>
+      <timezone>0</timezone>
+    </developer>
+    <developer>
+      <id>pharrison</id>
+      <name>Paul Harrison</name>
+      <email>paul.harrison[at]manchester.ac.uk</email>
+      <organization>University of Manchester</organization>
+      <timezone>0</timezone>
+    </developer>
+    <developer>
+      <id>jeff</id>
+      <name>Jeff Lusted</name>
+      <email>jl99[at]star.le.ac.uk</email>
+      <organization>University of Leicester</organization>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+  <issueManagement>
+    <url>http://esavo02.esac.esa.int/trac/VOSpace/</url>
+  </issueManagement>
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>src/junit</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/config</directory>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/config</directory>
+        <includes>
+          <include>log4j.properties</include>
+        </includes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>-ea</argLine>
+          <systemProperties>
+            <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+            <org.astrogrid.junit.temp>${maven.build.dir}/temp/</org.astrogrid.junit.temp>
+            <org.astrogrid.junit.repo>${maven.build.dir}/repo/</org.astrogrid.junit.repo>
+            <org.astrogrid.junit.data.file>${basedir}/src/data/</org.astrogrid.junit.data.file>
+            <org.astrogrid.junit.data.http>http://www.astrogrid.org/maven/</org.astrogrid.junit.data.http>
+            <org.astrogrid.junit.vospace.ivorn>ivo://test.metagrid.co.uk/vospace-one</org.astrogrid.junit.vospace.ivorn>
+            <org.astrogrid.junit.vospace.vosrn>vos://test.metagrid.co.uk!vospace-one/</org.astrogrid.junit.vospace.vosrn>
+            <org.astrogrid.junit.registry.query.endpoint>http://valine.metagrid.co.uk:8080/astrogrid-registry/services/RegistryQueryv1_0</org.astrogrid.junit.registry.query.endpoint>
+            <org.astrogrid.junit.dsa.adql.endpoint>http://srif112.roe.ac.uk/mysql-first/services/CommonExecutionConnectorService</org.astrogrid.junit.dsa.adql.endpoint>
+            <org.astrogrid.junit.dsa.cert.endpoint>http://srif112.roe.ac.uk/mysql-first/delegations</org.astrogrid.junit.dsa.cert.endpoint>
+          </systemProperties>
+          <testFailureIgnore>true</testFailureIgnore>
+          <excludes>
+            <exclude>**/DSAQueryTestCase.java</exclude>
+          </excludes>
+          <includes>
+            <include>**/*TestCase.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links>http://java.sun.com/javase/6/docs/api/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/util/apidocs/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/junit/apidocs/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/server/apidocs/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/servlet/apidocs/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/myspace-1.0/schema/apidocs/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/myspace-1.0/service/apidocs/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/vospace-1.0/schema/apidocs/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/vospace-1.0/service/apidocs/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/vospace-1.1/schema/apidocs/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/vospace-1.1/service/apidocs/,http://deployer.astrogrid.org/software/vospace-2009.0.01.alpha/vospace-1.1/client/apidocs/,http://deployer.astrogrid.org/software/security-2008.2.02/apidocs/,http://deployer.astrogrid.org/software/registry-2008.2/</links>
+          <source>1.5</source>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <showDeprecation>true</showDeprecation>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>astrogrid-vospace-junit</artifactId>
+      <version>${astrogrid_vospace_version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>astrogrid-vospace-util</artifactId>
+      <version>${astrogrid_vospace_version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>astrogrid-vospace-1.1-schema</artifactId>
+      <version>${astrogrid_vospace_version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>astrogrid-vospace-1.1-client</artifactId>
+      <version>${astrogrid_vospace_version}</version>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis</artifactId>
+      <version>1.3</version>
+    </dependency>
+     <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-security</artifactId>
+    </dependency>
+  <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-registry-client-lite</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-registry-common</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>org.astrogrid</groupId>
+    	<artifactId>astrogrid-cea-client</artifactId>
+    	<version>${astrogrid_cea_version}</version>
+    	<scope>test</scope>
+    </dependency>
+ </dependencies>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <configuration>
+          <tags>@TODO</tags>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>
