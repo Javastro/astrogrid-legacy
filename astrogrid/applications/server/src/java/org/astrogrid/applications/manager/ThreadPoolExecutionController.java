@@ -1,4 +1,4 @@
-/*$Id: ThreadPoolExecutionController.java,v 1.5 2008/09/13 09:51:05 pah Exp $
+/*$Id: ThreadPoolExecutionController.java,v 1.6 2009/05/05 19:25:27 pah Exp $
  * Created on 14-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.AbstractApplication.ApplicationTask;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
+import org.astrogrid.security.authorization.AccessPolicy;
 
 /** implementation of {@link org.astrogrid.applications.manager.ExecutionController} that manages a pool of workr threads.
  * @author Noel Winstanley nw@jb.man.ac.uk 14-Sep-2004
@@ -42,8 +43,12 @@ public class ThreadPoolExecutionController extends DefaultExecutionController {
      * @param library
      * @param executionHistory
      */
-    public ThreadPoolExecutionController(ApplicationDescriptionLibrary library, ExecutionHistory executionHistory, ExecutionPolicy policy, ThreadPoolExecutor executor) {
-        super(library, executionHistory, policy);
+    public ThreadPoolExecutionController( ApplicationDescriptionLibrary library
+    		                            , ExecutionHistory executionHistory
+    		                            , ExecutionPolicy policy
+    		                            , ThreadPoolExecutor executor
+    		                            , AccessPolicy authorizationPolicy ) {
+        super(library, executionHistory, policy, authorizationPolicy );
         this.executor = executor;
         
 	scheduler = Executors.newScheduledThreadPool(1);
@@ -135,6 +140,12 @@ public class ThreadPoolExecutionController extends DefaultExecutionController {
 
 /* 
 $Log: ThreadPoolExecutionController.java,v $
+Revision 1.6  2009/05/05 19:25:27  pah
+result of merge with 2882 - Jeffs AGAST stuff
+
+Revision 1.5.4.1  2009/02/17 12:13:41  jl99
+Using Spring for one-time initialization qadi
+
 Revision 1.5  2008/09/13 09:51:05  pah
 code cleanup
 

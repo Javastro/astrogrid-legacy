@@ -15,12 +15,15 @@ import org.astrogrid.applications.Status;
 import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.manager.agast.PolicyDecisionPoint;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.PersistenceException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.security.authorization.AccessPolicy;
 import org.astrogrid.applications.description.execution.Tool;
 
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -54,16 +57,22 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 
     protected  Set<Application> currentlyRunning = new HashSet<Application>(); //IMPL should it be synchronized?
     protected final ExecutionPolicy policy;
+    protected AccessPolicy authorizationPolicy ;
+    
     /**
      *  Construct a new DefaultExecutionController
-     * @param library collection of available appliation descriptions
+     * @param library collection of available application descriptions
      * @param executionHistory store of applications currently running, and archive of previous executions.
      */
-    public DefaultExecutionController(final ApplicationDescriptionLibrary library, ExecutionHistory executionHistory, ExecutionPolicy policy ) {
+    public DefaultExecutionController( final ApplicationDescriptionLibrary library
+    		                         , ExecutionHistory executionHistory
+    		                         , ExecutionPolicy policy
+    		                         , AccessPolicy authorizationPolicy) {
 	logger.info("initializing application controller");
 	this.applicationDescriptions = library;
 	this.policy = policy;
 	this.executionHistory = executionHistory;
+	this.authorizationPolicy = authorizationPolicy ;
     }
 
     public  boolean execute(String executionId) throws CeaException {
@@ -97,7 +106,7 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 	logger.debug("Initializing application " + jobstepID);
 	int idx;
 	String toolname = tool.getId();
-
+	logger.debug( "toolname: " + toolname ) ;
 	try {
 	    ApplicationDescription descr = applicationDescriptions.getDescription(toolname);
 	    Application app = descr.initializeApplication(jobstepID,securityGuard,tool); 
@@ -107,6 +116,9 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 	    app.checkParameterValues();          
 	    executionHistory.addApplicationToCurrentSet(app);          
 	    app.addObserver(this);
+	    //
+	    // JBL: Think this is the place to retrieve the SecurityGuard and check authorization.
+	    vetAuthorization( app.getId(), toolname, securityGuard ) ;
 	    return app.getId();
 	} catch (CeaException e) {
 	    throw e;
@@ -114,6 +126,22 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 	    logger.error("Could not execute " + toolname,e);
 	    throw new CeaException("Could not execute " + toolname,e);
 	}
+    }
+    
+    private void vetAuthorization( String executionId
+    		                     , String toolName
+    		                     , SecurityGuard securityGuard ) throws CeaException {
+    	if( logger.isDebugEnabled() ) logger.debug( "vetAuthorization()" ) ;
+    	HashMap<String, String> request = new HashMap<String, String>() ;
+	    request.put( "executionId", executionId ) ;
+	    request.put( "application", toolName ) ;
+	    securityGuard.setAccessPolicy( authorizationPolicy ) ;
+	    try {
+	    	securityGuard.decide( request ) ;
+	    }
+	    catch ( Exception ex ) {
+	    	throw new CeaException( "Access denied.", ex ) ;
+	    }	
     }
 
     public boolean abort(String executionId) {

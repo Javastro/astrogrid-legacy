@@ -1,0 +1,15 @@
+@prefix : <http://www.astrogrid.org/agast/ontologies/applications-policy.owl#> .
+
+#
+# These are our known communities...
+:uk.ac.le.star a :LocalCommunity .
+:uk.ac.roe.wfau a :DelegateCommunity .
+
+#
+# These are our known applications...
+:testapp a :LowUsageApplication .
+:appX a :LowUsageApplication .
+:appXX a :MediumUsageApplication .
+:appXXX a :HighUsageApplication .
+
+

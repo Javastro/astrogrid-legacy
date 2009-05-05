@@ -3,6 +3,8 @@
     <title>Changes since previous release</title>
   </properties>
   <body>
+    <release version="2009.1">
+    </release>
     <release version="2008.2" date="15/09/2008" description="UWS support + Schema updates">
       <action dev="pah" type="add" issue="2825">Add VOSpace support</action>
       <action dev="pah" type="add" issue="1611">

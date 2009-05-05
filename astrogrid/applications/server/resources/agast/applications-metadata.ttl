@@ -1,0 +1,10 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
+
+<> dc:description "A PDP for Astrogrid CEA/CEC";
+   dc:creator "Jeff Lusted";
+   a quaestor:TransientModel;
+    quaestor:requiredReasoner [
+        quaestor:level "defaultOWL"
+    ].
+

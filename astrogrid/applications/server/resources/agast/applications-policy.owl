@@ -1,0 +1,396 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY applications-policy "http://www.astrogrid.org/agast/ontologies/applications-policy.owl#" >
+    <!ENTITY uk2 "http://www.astrogrid.org/agast/ontologies/applications-policy.owl#ivo://uk.ac.cam.ast/" >
+    <!ENTITY uk "http://www.astrogrid.org/agast/ontologies/applications-policy.owl#ivo://uk.ac.le.star/" >
+    <!ENTITY wfau "http://www.astrogrid.org/agast/ontologies/applications-policy.owl#ivo://wfau.roe.ac.uk/" >
+]>
+
+
+<rdf:RDF xmlns="http://www.astrogrid.org/agast/ontologies/applications-policy.owl#"
+     xml:base="http://www.astrogrid.org/agast/ontologies/applications-policy.owl"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:uk2="&applications-policy;ivo://uk.ac.cam.ast/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:applications-policy="http://www.astrogrid.org/agast/ontologies/applications-policy.owl#"
+     xmlns:wfau="&applications-policy;ivo://wfau.roe.ac.uk/"
+     xmlns:uk="&applications-policy;ivo://uk.ac.le.star/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#">
+    <owl:Ontology rdf:about=""/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#hasApplication -->
+
+    <owl:ObjectProperty rdf:about="#hasApplication">
+        <rdfs:range rdf:resource="#Application"/>
+        <rdfs:domain rdf:resource="#Job"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#hasUser -->
+
+    <owl:ObjectProperty rdf:about="#hasUser">
+        <rdfs:domain rdf:resource="#Job"/>
+        <rdfs:range rdf:resource="#User"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#inCommunity -->
+
+    <owl:ObjectProperty rdf:about="#inCommunity">
+        <rdfs:range rdf:resource="#Community"/>
+        <rdfs:domain rdf:resource="#User"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#Application -->
+
+    <owl:Class rdf:about="#Application">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="#HighUsageApplication"/>
+                    <rdf:Description rdf:about="#LowUsageApplication"/>
+                    <rdf:Description rdf:about="#MediumUsageApplication"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <owl:disjointWith rdf:resource="#Community"/>
+        <owl:disjointWith rdf:resource="#Job"/>
+        <owl:disjointWith rdf:resource="#User"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#Community -->
+
+    <owl:Class rdf:about="#Community">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <owl:disjointWith rdf:resource="#Job"/>
+        <owl:disjointWith rdf:resource="#User"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#DelegateCommunity -->
+
+    <owl:Class rdf:about="#DelegateCommunity">
+        <rdfs:subClassOf rdf:resource="#Community"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#HighUsageApplication -->
+
+    <owl:Class rdf:about="#HighUsageApplication">
+        <rdfs:subClassOf rdf:resource="#Application"/>
+        <owl:disjointWith rdf:resource="#LowUsageApplication"/>
+        <owl:disjointWith rdf:resource="#MediumUsageApplication"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#HighUsageJob -->
+
+    <owl:Class rdf:about="#HighUsageJob">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#hasApplication"/>
+                        <owl:someValuesFrom rdf:resource="#HighUsageApplication"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#hasUser"/>
+                        <owl:someValuesFrom rdf:resource="#HighUsageUser"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Job"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#HighUsageUser -->
+
+    <owl:Class rdf:about="#HighUsageUser">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#inCommunity"/>
+                <owl:someValuesFrom>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="#DelegateCommunity"/>
+                            <rdf:Description rdf:about="#LocalCommunity"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#User"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#Job -->
+
+    <owl:Class rdf:about="#Job">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="#HighUsageJob"/>
+                    <rdf:Description rdf:about="#LowUsageJob"/>
+                    <rdf:Description rdf:about="#MediumUsageJob"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <owl:disjointWith rdf:resource="#User"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#LocalCommunity -->
+
+    <owl:Class rdf:about="#LocalCommunity">
+        <rdfs:subClassOf rdf:resource="#Community"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#LowUsageApplication -->
+
+    <owl:Class rdf:about="#LowUsageApplication">
+        <rdfs:subClassOf rdf:resource="#Application"/>
+        <owl:disjointWith rdf:resource="#MediumUsageApplication"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#LowUsageJob -->
+
+    <owl:Class rdf:about="#LowUsageJob">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#hasApplication"/>
+                        <owl:someValuesFrom rdf:resource="#LowUsageApplication"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#hasUser"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:unionOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="#HighUsageUser"/>
+                                    <rdf:Description rdf:about="#LowUsageUser"/>
+                                    <rdf:Description rdf:about="#MediumUsageUser"/>
+                                </owl:unionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Job"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#LowUsageUser -->
+
+    <owl:Class rdf:about="#LowUsageUser">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#inCommunity"/>
+                <owl:someValuesFrom rdf:resource="#Public"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#User"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#MediumUsageApplication -->
+
+    <owl:Class rdf:about="#MediumUsageApplication">
+        <rdfs:subClassOf rdf:resource="#Application"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#MediumUsageJob -->
+
+    <owl:Class rdf:about="#MediumUsageJob">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#hasApplication"/>
+                        <owl:someValuesFrom rdf:resource="#MediumUsageApplication"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#hasUser"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:unionOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="#HighUsageUser"/>
+                                    <rdf:Description rdf:about="#MediumUsageUser"/>
+                                </owl:unionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Job"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#MediumUsageUser -->
+
+    <owl:Class rdf:about="#MediumUsageUser">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#inCommunity"/>
+                <owl:someValuesFrom rdf:resource="#RemoteCommunity"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#User"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#Public -->
+
+    <owl:Class rdf:about="#Public">
+        <rdfs:subClassOf rdf:resource="#Community"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#RemoteCommunity -->
+
+    <owl:Class rdf:about="#RemoteCommunity">
+        <rdfs:subClassOf rdf:resource="#Community"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#User -->
+
+    <owl:Class rdf:about="#User">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="#HighUsageUser"/>
+                    <rdf:Description rdf:about="#LowUsageUser"/>
+                    <rdf:Description rdf:about="#MediumUsageUser"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <owl:Class rdf:about="&owl;Thing"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.astrogrid.org/agast/ontologies/applications-policy.owl#public -->
+
+    <Public rdf:about="#public"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="#DelegateCommunity"/>
+            <rdf:Description rdf:about="#LocalCommunity"/>
+            <rdf:Description rdf:about="#Public"/>
+            <rdf:Description rdf:about="#RemoteCommunity"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="#HighUsageUser"/>
+            <rdf:Description rdf:about="#LowUsageUser"/>
+            <rdf:Description rdf:about="#MediumUsageUser"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="#HighUsageJob"/>
+            <rdf:Description rdf:about="#LowUsageJob"/>
+            <rdf:Description rdf:about="#MediumUsageJob"/>
+        </owl:members>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 2.2.1.914) http://owlapi.sourceforge.net -->
+
