@@ -23,7 +23,7 @@ public class Upgrade implements Runnable {
 
 	private final ConfigurationInternal conf;
 	private static final String ALT_REGISTRY_ENDPOINT_1_2_3 = "upgrade.1.2.3.alt-registry-endpoint";
-	private static final String RESOURCETREE_EXAMPLES_1_2_3 = "upgrade.1.2.3.resourcetree-examples.test1";
+	private static final String RESOURCETREE_EXAMPLES_1_2_3 = "upgrade.1.2.3.resourcetree-examples";
 	
 	public void run() {
 	    
