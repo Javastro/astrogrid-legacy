@@ -17,16 +17,7 @@
       </license>
    </licenses>
 
- <resources>
-    <resource>
-      <directory>${basedir}</directory>
-      <includes>
-        <include>src/webapp/WEB-INF/server-config.wsdd</include>
-      </includes>
-    </resource>
-  </resources>
-  
-  
+   
   <dependencies>
 
     <!-- HSQLDB for sample & temporary dbs -->
@@ -59,6 +50,12 @@
            <include>**/*.xsl</include>
          </includes>
        </resource>
+    <resource>
+      <directory>${basedir}</directory>
+      <includes>
+        <include>src/webapp/WEB-INF/server-config.wsdd</include>
+      </includes>
+    </resource>
      </resources>
     </build>
 
