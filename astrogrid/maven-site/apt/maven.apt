@@ -34,3 +34,6 @@ Building with Maven
 +------+        
        
        where the artifactId and the name should be set to something appropriate for your component, and the version of the astrogrid-base POM that is used depends on which astrogrid release is being worked towards.
+
+       
+* Maven Repositories

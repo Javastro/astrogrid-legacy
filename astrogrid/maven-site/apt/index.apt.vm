@@ -8,7 +8,8 @@
          
 Astrogrid Software Documentation for developers ${project.version}
 
-   This site has the detailed documentation for each of the components that make up the AstroGrid software suite.
+   This site has the detailed documentation for each of the components that make up the AstroGrid software suite and contains information useful to the developers of this software. If you are an astronomer who simply wants to program
+   at the "user" level then it is probably best to start with {{{http://www.astrogrid.org/wiki/Help/IntroScripting}scripting}} using the {{{http://www.astrogrid.org/wiki/Help/AstroRuntime}AstroRuntime}} rather than looking at the detailed documentation on this site.
    
    This release is known as ${project.version} and the versions of the individual components that make up this release can be found in the {{{dependency-management.html}dependency management}} page and 
    important changes are summarised in the {{{changes-report.html}changes report}}
