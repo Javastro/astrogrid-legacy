@@ -17,8 +17,14 @@
   <packaging>jar</packaging>
   <description>Classes used across the components.</description>
   <properties>
-   <astrogrid.name>common</astrogrid.name>
+   <astrogrid_name>common</astrogrid_name>
   </properties>
+   <scm>
+      <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/${astrogrid_name}/</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid_name}/</developerConnection>
+      <url>http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid_name}/</url>
+   </scm>
+  
   <build>
  </build>
   <dependencies>
@@ -94,12 +100,13 @@
      </dependency>
   </dependencies>
 
-    <distributionManagement>
+    <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url>  
+   <distributionManagement>
     <site>
-      <id>agsite</id>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
       <name>Default Site</name>
-      <url>${astrogrid_doc_server_root}/p/${pom.artifactId}/${pom.version}</url>
+      <url>${astrogrid_doc_server_root}/p/${astrogrid_name}/${project.version}</url>
       <!-- terror.star.le.ac.uk/ -->
     </site>
-   </distributionManagement>
+ </distributionManagement>
  </project>
