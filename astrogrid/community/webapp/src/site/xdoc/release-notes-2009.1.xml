@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>Release notes: version 2009.1</title>
+    </properties>
+    <body>
+    <section name="Release notes">
+      <p>
+        These notes cover 2009.1 and all sub-versions, including pre-release
+        versions. Changes are relative to the last version of the 2008.2
+        series.
+      </p>
+
+      <subsection name="Integration with VOSpace">
+      <p><em>Since v2009.1.a01.</em></p>
+      <p>
+        This release can use a VOSpace-1.1 web-service to create home-spaces;
+        previous versions could only create home-spaces in a MySpace service.
+      </p>
+      <p>
+        To use this feature, set the configuration property
+        <i>org.astrogrid.community.default.vospace</i> to the folder
+        in your VOSpace that is to contain homespaces. E.g.:
+        <i>vos://org.astrogrid.test!cambridge-test-vospace/home</i>.
+        If the value of this property is a VOSpace locator
+        (beginning <i>vos://</i>), then the community will use the VOSpace
+        interface. If you enter instead an IVORN (a URI beginning
+        <i>ivo://</i>), then the community will assume that it points to
+        a MySpace service.
+      </p>
+      <p>
+        An AstroGrid VOSpace deployment
+        offers both MySpace and VOSpace interfaces on the same file-tree.
+        Therefore, it is possible to switch a user-account from MySpace
+        to VOSpace access by changing the URI of the home-space. However,
+        the structure of the URIs differs so you can't just change the
+        scheme prefix. Consult your VOSpace operator for possible
+        translations.
+      </p>
+      <p>
+        You can have some accounts with MySpace home-spaces and some
+        with VOSpace home-spaces. Therefore, you can convert your
+        user-accounts progressively.
+      </p>
+      </subsection>
+
+      <subsection name="MySpace deprecated">
+      <p><em>Since v2009.1.a01</em></p>
+      <p>
+        The MySpace interface to the storage is now deprecated and will
+        be discontinued soon. All new account should use the VOSpace
+        interface. and old accounts should be converted as soon as
+        possible.
+      </p>
+      </subsection>
+
+      <subsection name="Changes to administration controls">
+      <p><em>Since v2009.1.a01.</em></p>
+      <p>
+        When a basic account is created, no home-space is now
+        allocated. You have to allocate the home-space as a
+        separate operation.
+      </p>
+      <p>
+        In order to allocate a home-space via the VOSpace interface,
+        the user must first be issued with credentials. The home-space
+        is then formally owned by the identity in those credentials.
+      </p>
+      </subsection>
+
+      <subsection name="Uploading credentials">
+      <p><em>Since v2009.1.a01</em></p>
+      <p>
+        Users with credentials from external certificate-authorities
+        may now upload them to the community. The controls for this
+        are on the community web-browser interface; they are public,
+        protected by the account password. The credentials must be
+        presented in a PKCS#12 key-store file.
+      </p>
+      </subsection>
+
+      <subsection name="Web-browser interface">
+      <p><em>Since v2009.1.a01</em></p>
+      <p>
+        The web-browser interface to the community, for administration,
+        changing passwords and uploading credentials, is now registered
+        in the IVOA registry.
+      </p>
+      </subsection>
+      
+    </section>
+    </body>
+</document>
