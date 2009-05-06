@@ -43,7 +43,7 @@ public class NewAccountServlet extends HttpServlet {
     ad.setHomeSpace(homeSpace);
     
     try {
-      AccountManagerImpl ami = new AccountManagerImpl();
+      AccountManagerImpl ami = AccountManagerImpl.getDefault();
       ami.addAccount(ad);
     } catch (Exception ex) {
       ex.printStackTrace();

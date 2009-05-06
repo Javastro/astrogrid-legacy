@@ -192,12 +192,14 @@ public class AccountBean {
     this.homeSpace = homeSpace;
     System.out.println("Setting homespace " + homeSpace);
     if (this.stored) {
-      AccountManagerImpl ami = new AccountManagerImpl();
+      AccountManagerImpl ami = AccountManagerImpl.getDefault();
       if ("new".equals(homeSpace)) {
         try {
           AccountData ad = getBasicAccount(this.userName);
-          ad.setHomeSpace(null);
-          ami.allocateSpace(ad);
+          CredentialStore cs = new CredentialStore();
+          homeSpace =
+              ami.allocateHomespace(ad.getIdent(), userName, cs.getPassword(userName));
+          ad.setHomeSpace(homeSpace);
           ami.setAccount(ad);
         }
         catch (Exception e) {
@@ -224,7 +226,7 @@ public class AccountBean {
    */
   protected AccountData getBasicAccount(String userName) {
     String accountIvorn = "ivo://" + this.community + "/" + userName;
-    AccountManagerImpl ami = new AccountManagerImpl();
+    AccountManagerImpl ami = AccountManagerImpl.getDefault();
     try {
       return ami.getAccount(accountIvorn);
     }
@@ -237,7 +239,7 @@ public class AccountBean {
    * Updates the basic account data in the community database.
    */
   protected void setBasicAccount(AccountData ad) {
-    AccountManagerImpl ami = new AccountManagerImpl();
+    AccountManagerImpl ami = AccountManagerImpl.getDefault();
     try {
       ami.setAccount(ad);
     }

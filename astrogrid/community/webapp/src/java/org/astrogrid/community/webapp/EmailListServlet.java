@@ -40,7 +40,7 @@ public class EmailListServlet extends HttpServlet {
     // Iterate over user-names, print the email addresses where available.
     // Names for which the account records are unavailable are logged and
     // skipped; the client does not learn of these.
-    AccountManagerImpl ami = new AccountManagerImpl();
+    AccountManagerImpl ami = AccountManagerImpl.getDefault();
     String[] userNames = ami.getUserNames();
     for(int i = 0;i < userNames.length; i++) {
       try {

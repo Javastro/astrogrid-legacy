@@ -1,6 +1,7 @@
 package org.astrogrid.community.webapp;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,20 @@ import org.astrogrid.community.server.sso.CredentialStore;
  * @author Guy Rixon
  */
 public class AccountAdminServlet extends HttpServlet {
+
+  private CredentialStore credentialStore;
+
+  private AccountManagerImpl accountManager;
+
+  @Override
+  public void init() {
+    try {
+      credentialStore = new CredentialStore();
+      accountManager = AccountManagerImpl.getDefault();
+    } catch (GeneralSecurityException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
   
   /** Handles the HTTP <code>POST</code> method.
    * @param request servlet request
@@ -41,10 +56,9 @@ public class AccountAdminServlet extends HttpServlet {
                         String              userName,
                         HttpServletResponse response) throws ServletException, 
                                                              IOException {
-    AccountManagerImpl ami = new AccountManagerImpl();
     AccountData ad = getBasicAccount(userName);
     try {
-      ami.delAccount(ad.getIdent());
+      accountManager.delAccount(ad.getIdent());
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -70,28 +84,27 @@ public class AccountAdminServlet extends HttpServlet {
     // a new homeSpace. This distinguishes between recording
     // a homeSpace in the community database and getting the
     // VOSpace itself to allocate a new one.
-    AccountManagerImpl ami = new AccountManagerImpl();
-    AccountData ad = getBasicAccount(userName);
-    if (hasContent(commonName)) {
-      ad.setDisplayName(commonName);
-    }
-    if (hasContent(description)) {
-      ad.setDescription(description);
-    }
-    if (hasContent(email)) {
-      ad.setEmailAddress(email);
-    }
-    if ("new".equals(homeSpace)) {
-      ad.setHomeSpace(null);
-    }
-    else if (hasContent(homeSpace)) {
-      ad.setHomeSpace(homeSpace);
-    }
     try {
-      if ("new".equals(homeSpace)) {
-        ami.allocateSpace(ad);
+      AccountData ad = getBasicAccount(userName);
+      if (hasContent(commonName)) {
+        ad.setDisplayName(commonName);
       }
-      ami.setAccount(ad);
+      if (hasContent(description)) {
+        ad.setDescription(description);
+      }
+      if (hasContent(email)) {
+        ad.setEmailAddress(email);
+      }
+      if ("new".equals(homeSpace)) {
+        password = credentialStore.getPassword(userName);
+        homeSpace = 
+            accountManager.allocateHomespace(ad.getIdent(), userName, password);
+        ad.setHomeSpace(homeSpace);
+      }
+      else if (hasContent(homeSpace)) {
+        ad.setHomeSpace(homeSpace);
+      }
+      accountManager.setAccount(ad);
       System.out.println("The details for " + userName + " are updated.");
     }
     catch (Exception e) {
@@ -103,10 +116,7 @@ public class AccountAdminServlet extends HttpServlet {
     // Update the passwords table of the community database.
     if (hasContent(password)) {
       try {
-        CredentialStore cs = new CredentialStore();
-        
-        String oldPassword = cs.getPassword(userName);
-        cs.resetDbPassword(userName, password);
+        credentialStore.resetDbPassword(userName, password);
         System.out.println("The password for " + userName + " is updated.");
       }
       catch (Exception e) {
@@ -130,9 +140,8 @@ public class AccountAdminServlet extends HttpServlet {
     String authority = new CommunityConfiguration().getPublishingAuthority();
     String accountIvorn = "ivo://" + authority + "/" + userName;
     
-    AccountManagerImpl ami = new AccountManagerImpl();
     try {
-      return ami.getAccount(accountIvorn);
+      return accountManager.getAccount(accountIvorn);
     }
     catch (Exception e) {
       return new AccountData(accountIvorn);

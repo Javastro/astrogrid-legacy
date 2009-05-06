@@ -68,11 +68,19 @@
         <servlet-name>BackUpServlet</servlet-name>
         <servlet-class>org.astrogrid.community.server.backup.BackUpServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Delegation servlet</servlet-name>
+        <servlet-class>org.astrogrid.security.delegation.DelegationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CredentialUploadServlet</servlet-name>
+        <servlet-class>org.astrogrid.community.webapp.CredentialUploadServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
     <servlet-name>AccountServlet</servlet-name>
     <url-pattern>/accounts/*</url-pattern>
   </servlet-mapping>
-    
+
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/servlet/AxisServlet</url-pattern>
@@ -82,12 +90,12 @@
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/services/*</url-pattern>
   </servlet-mapping>
-  
+
   <servlet-mapping>
     <servlet-name>VosiServlet</servlet-name>
     <url-pattern>/VOSI/capabilities</url-pattern>
   </servlet-mapping>
-  
+
   <servlet-mapping>
     <servlet-name>VosiServlet</servlet-name>
     <url-pattern>/VOSI/availability</url-pattern>
@@ -97,27 +105,27 @@
     <servlet-name>PasswordChangeServlet</servlet-name>
     <url-pattern>/password</url-pattern>
   </servlet-mapping>
-  
+
   <servlet-mapping>
     <servlet-name>CaServlet</servlet-name>
     <url-pattern>/admin/ca</url-pattern>
   </servlet-mapping>
-  
+
   <servlet-mapping>
     <servlet-name>CaServlet</servlet-name>
     <url-pattern>/admin/ca/passphrase</url-pattern>
   </servlet-mapping>
-  
+
   <servlet-mapping>
     <servlet-name>DatabaseServlet</servlet-name>
     <url-pattern>/admin/database</url-pattern>
   </servlet-mapping>
-    
+
   <servlet-mapping>
     <servlet-name>JUnitEETestServlet</servlet-name>
     <url-pattern>/admin/test/*</url-pattern>
   </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>AccountAdminServlet</servlet-name>
         <url-pattern>/admin/account-update</url-pattern>
@@ -133,6 +141,18 @@
     <servlet-mapping>
         <servlet-name>BackUpServlet</servlet-name>
         <url-pattern>/admin/backup/community.zip</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Delegation servlet</servlet-name>
+        <url-pattern>/delegations/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Delegation servlet</servlet-name>
+        <url-pattern>/delegations</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CredentialUploadServlet</servlet-name>
+        <url-pattern>/user-credential-upload</url-pattern>
     </servlet-mapping>
     <mime-mapping>
     <extension>wsdl</extension>

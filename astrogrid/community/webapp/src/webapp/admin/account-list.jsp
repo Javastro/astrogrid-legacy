@@ -66,7 +66,7 @@
     
       <table border="1">
       <tr>
-        <th>User name</td>
+        <th>User name</th>
         <th>Common Name</th>    
         <th>Description</th>          
         <th>e-mail</th>
@@ -75,7 +75,7 @@
       </tr>
     
       <%
-      List<Account> accounts = new AccountManagerImpl().getAccountsList();
+      List<Account> accounts = AccountManagerImpl.getDefault().getAccountsList();
       for (Account a : accounts) {
       %>
       <tr>

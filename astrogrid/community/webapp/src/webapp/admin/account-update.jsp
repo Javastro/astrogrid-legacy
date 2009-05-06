@@ -79,7 +79,6 @@
           The user must have a common name and password, and the certificate authority
           must be enabled, before you can allocate a certificate.
         </p>
-      </table>
       
       <h2>VOSpace</h2>
       <form action="account-update" method="post">

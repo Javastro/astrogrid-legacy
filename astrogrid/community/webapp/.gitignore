@@ -2,6 +2,7 @@
 maven.log
 .classpath
 velocity.log
+profiles.xml
 target
 build.properties
 .project

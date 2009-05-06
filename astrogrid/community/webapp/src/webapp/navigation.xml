@@ -11,6 +11,7 @@
     <h5>For community members</h5>
     <ul>
       <li><a href="UserPasswordChangeForm.jsp">Change your password</a></li>
+      <li><a href="user-credential-upload-form.jsp">Upload your credentials</a></li>
     </ul>
     <h5>For community managers</h5>
     <ul>
