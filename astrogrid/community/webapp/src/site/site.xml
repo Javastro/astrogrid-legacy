@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AstroGrid">
+<project >
 
-  <title>AstroGrid Project - Community</title>
+ <!--   <title>AstroGrid Project - Community</title> -->
 
   <body>
+    <breadcrumbs>
+       <item name="Community Webapp " href="${astrogrid_doc_URL_root}/p/community/${project.version}/webapp/"/>
+    </breadcrumbs>
+  
     <menu name="Documents">  
       <item name="Overview" href="overview.html"/>
       <item name="Release notes" href="release-notes.html"/>
