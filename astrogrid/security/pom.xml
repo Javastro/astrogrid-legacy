@@ -8,28 +8,17 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <packaging>jar</packaging>
+  <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+   </parent>
+  
   <version>2009.1.a04</version>
 
-  <distributionManagement>
-    <site>
-      <id>ag.deployer.security</id>
-      <name>Security on deployer, version ${pom.version}</name>
-      <url>scp://terror.star.le.ac.uk//software_docs/security-${pom.version}</url>
-    </site>
-    <!-- Only one of these can be active at a time.
-    <repository>
-      <id>ag-m1</id>
-      <name>AstroGrid Maven-1 repository</name>
-      <url>scp://maven.astrogrid.org/maven</url>
-    </repository>
-    -->
-    <repository>
-      <id>ag-m2</id>
-      <name>AstroGrid Maven-2 repository</name>
-      <url>scp://maven.astrogrid.org/maven2</url>
-    </repository>
-  </distributionManagement>
-  
+  <properties>
+    <astrogrid_name>security</astrogrid_name>
+  </properties>
   <dependencies>
         
       <dependency>
@@ -101,20 +90,16 @@
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-registry-client-lite</artifactId>
-        <version>2008.2.01</version>
       </dependency>
       
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-registry-common</artifactId>
-        <version>2008.2.01</version>
       </dependency>
       
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-contracts</artifactId>
-        <version>2008.2</version>
-        <type>jar</type>
       </dependency>
 
       <dependency>
@@ -268,5 +253,14 @@
       </plugin>
     </plugins>
   </reporting>
+    <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url>  --> 
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/${astrogrid_name}/${project.version}</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+ </distributionManagement>
 
 </project>

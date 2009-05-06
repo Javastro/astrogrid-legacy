@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
-  <title>AstroGrid security facade</title>
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <body>
+    <breadcrumbs>
+       <item name="Security " href="${astrogrid_doc_URL_root}/p/security/${project.version}/"/>
+    </breadcrumbs>
     <menu name="Security facade">
       <item name="Security facade home page" href="index.html"/>
       <item name="Background" href="background.html"/>
