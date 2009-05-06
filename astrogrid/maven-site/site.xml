@@ -1,51 +1,65 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: site.xml,v 1.2 2008/11/19 14:47:21 pah Exp $ -->
-<project>
+<!-- $Id: site.xml,v 1.3 2009/05/06 23:22:14 pah Exp $ -->
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
     <name>AstroGrid</name>
     <src>http://www.astrogrid.org/images/AGlogo.png</src>
     <href>http://www.astrogrid.org/</href>
   </bannerRight>
-  <version position="left"/>
+   
+<publishDate position="navigation-top" format="yyyy-MM-dd"/> 
+<version position="left"/>
+ <!-- need to get a nicer powered by logo... -->
+  <poweredBy>
+    <logo name="Astrogrid" href="http://www.astrogrid.org/"
+          img="http://www.astrogrid.org/images/AGlogo.png"/>
+  </poweredBy>
   <body>
     <links>
       <item name="Astrogrid" href="http://www.astrogrid.org/" />
-      <item name="Software" href="http://software.astrogrid.org/doc/${project.version}/index.html"/>
-      <item name="Deploying" href="http://deployer.astrogrid.org/"/>
+      <item name="IVOA" href="http://www.ivoa.net/"/>
+      <item name="Developing" href="${astrogrid_doc_URL_root}/${astrogrid_release}/devel/index.html"/>
+      <item name="Deploying" href="${astrogrid_doc_URL_root}/${astrogrid_release}/deploy/index.html"/>
     </links>
+    <breadcrumbs>
+       <item name="Software Home " href="${astrogrid_doc_URL_root}/${astrogrid_release}/devel/index.html"/>
+    </breadcrumbs>
     <menu name="Deployable Components">
-       <item name="CEA" href="cea/"/>
-       <item name="Community" href="community"/>
-       <item name="Registry" href="registry"/>
-       <item name="DSA" href="dsa"/>
-       <item name="VOSpace" href="release"/>
-       <item name="VOExplorer" href="desktop"/>
+       <item name="CEA" href="${astrogrid_doc_URL_root}/p/cea/${astrogrid_cea_version}/"/>
+       <item name="Community" href="${astrogrid_doc_URL_root}/p/community/${astrogrid_community_version}/"/>
+       <item name="Registry" href="${astrogrid_doc_URL_root}/p/registry/${astrogrid_registry_version}/"/>
+       <item name="DSA" href="${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/"/>
+       <item name="VOSpace" href="${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/"/>
+       <item name="VOExplorer" href="${astrogrid_doc_URL_root}/p/desktop"/>
     </menu>
    
     <menu name="Libraries">
-	     <item name="Contracts" href="contracts"/>
-         <item name="Common" href="common" />
-         <item name="Security" href="security"/>
-         <item name="AR" href="desktop/api"/>
-         <item name="SAMP" href="samp"/>
-         <item name="ADQL" href="adql"/>
+	     <item name="Contracts" href="${astrogrid_doc_URL_root}/p/contracts/${astrogrid_contracts_version}/"/>
+         <item name="Common" href="${astrogrid_doc_URL_root}/p/common/${astrogrid_common_version}/" />
+         <item name="Security" href="${astrogrid_doc_URL_root}/p/security/${astrogrid_security_version}/"/>
+         <item name="AR" href="${astrogrid_doc_URL_root}/p/desktop/api"/>
+         <item name="SAMP" href="${astrogrid_doc_URL_root}/p/samp/"/>
+         <item name="ADQL" href="${astrogrid_doc_URL_root}/p/adql"/>
+         <item name="IVOA Objects" href="${astrogrid_doc_URL_root}/p/ivoa-objects"/>
     </menu>
     <menu name="Webservice clients">
     </menu>
     <menu name="Developing">
          <item name="Working with Maven" href="maven.html" collapse="true">
            <item name="maven base" href="maven-base"></item>
+           <item name="Documenting" href="documenting.html"/>
          </item>
          <item name="Releasing" href="release.html"/>
     </menu>
     <menu name="Miscellaneous">
          <item name="Acknowledging Astrogrid" href="acknowledge.html" />
          <item name="Deprecated Components" href="deprecated.html" collapse="true">
-            <item name="workflow objects" href="workflow-objects"/>
+            <item name="workflow objects" href="${astrogrid_doc_URL_root}/p/workflow-objects/2007.2wo/"/>
          </item>
          <item name="Obsolete Components" href="obsolete.html" collapse="true">
-            <item name="JES" href="jes"/>
-            <item name="Portal" href="portal"/>
+            <item name="JES" href="${astrogrid_doc_URL_root}/p/jes/2007.1/"/>
+            <item name="Portal" href="${astrogrid_doc_URL_root}/p/portal/2007.1/"/>
          </item>
     </menu>
     <menu name="Other Versions">
