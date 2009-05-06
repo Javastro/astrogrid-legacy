@@ -1,12 +1,9 @@
 package org.astrogrid.community.server.ca;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
