@@ -12,6 +12,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import org.apache.log4j.Logger;
+import org.astrogrid.community.server.subprocess.Subprocess;
 
 /**
  * A certificate authority (CA) for AstroGrid communities.
@@ -77,6 +78,8 @@ public class CertificateAuthority {
    * This is only useful for unit tests.
    */
   protected CertificateAuthority() {}
+
+  
   
   /**
    * Constructs a CertificateAuthority. This constructor creates the CA files,
@@ -178,7 +181,9 @@ public class CertificateAuthority {
         cp            // ...to this file
     };
     
-    this.runCommandWithStdinPassword(command, this.caKeyPassphrase);
+    Subprocess p = new Subprocess(command);
+    p.sendToStdin(caKeyPassphrase);
+    p.waitForEnd();
     
     // Create and write the serial-number record for the CA.
     // The file contains a serial number written out as an even number
@@ -250,7 +255,9 @@ public class CertificateAuthority {
         "-out",       // Write out the request...
         rp            // ...to this file
     };
-    this.runCommandWithStdinPassword(reqCommand, password);
+    Subprocess p1 = new Subprocess(reqCommand);
+    p1.sendToStdin(password);
+    p1.waitForEnd();
     
     // Sign the certificate request.
     String ckp = this.caKeyFile.getAbsolutePath();
@@ -276,7 +283,9 @@ public class CertificateAuthority {
         "-out",       // Write out the new certificate...
         cp            // ...to this file
     };
-    this.runCommandWithStdinPassword(signCommand, this.caKeyPassphrase); 
+    Subprocess p2 = new Subprocess(signCommand);
+    p2.sendToStdin(caKeyPassphrase);
+    p2.waitForEnd();
   }
   
   /**
@@ -310,7 +319,8 @@ public class CertificateAuthority {
         "-l",                            // Make the user-name for MyProxy...
         loginName                        // ...this
     };
-    this.runCommandWithoutPassword(command);
+    Subprocess p = new Subprocess(command);
+    p.waitForEnd();
   }
   
   /**
@@ -333,7 +343,9 @@ public class CertificateAuthority {
         kp,                         // ...to this file
         "2048"                      // Make the key this many bits long
     };
-    this.runCommandWithStdinPassword(command, password);
+    Subprocess p = new Subprocess(command);
+    p.sendToStdin(password);
+    p.waitForEnd();
   }
   
   /**
@@ -354,93 +366,9 @@ public class CertificateAuthority {
     
     // The command takes the current password (to unlock the private key)
     // plus the new password, on two sucessive lines of input.
-    String passwords = oldPassword + "\n" + newPassword;
-    this.runCommandWithStdinPassword(command, passwords);
-  }
-  
-  /**
-   * Runs a command in a sub-process and writes the password to
-   * that process' standard input.
-   *
-   * The command is given as an array of words. This approach is required 
-   * because some of the arguments may contain white space; forming the
-   * command as a single string doesn't work. Adding quotes around the
-   * arguments with white space doesn't work either, as there is no shell
-   * to process the quotes; Java tokenization can't cope.
-   * 
-   * @param command - The command with argument list; zeroth element is command name.
-   * @param password - The passphrase.
-   * @throws Exception - If OpenSSL goes wrong.
-   */
-  protected void runCommandWithStdinPassword(String[] command, 
-                                             String password) throws Exception {
-    // Start the command in a sub-process.
-    Process p = Runtime.getRuntime().exec(command);
-    
-    // Send the password to the standard input of the sub-process.
-    OutputStream os = p.getOutputStream();
-    os.write(password.getBytes());
-    os.flush();
-    os.close();
-    
-    // Wait for the OpenSSL command to finish.
-    p.waitFor();
-    
-    // Check for failure.
-    if (p.exitValue() != 0) {
-      InputStream is = p.getErrorStream();
-      BufferedReader br = new BufferedReader(new InputStreamReader(is));
-      StringBuffer whinge = new StringBuffer();
-      whinge.append(command[0]);
-      whinge.append(" failed:");
-      while(true) {
-        String line = br.readLine();
-        if (line == null) {
-          break;
-        }
-        whinge.append("\n");
-        whinge.append(line);
-      }
-      throw new Exception(whinge.toString());
-    }
-  }
-  
-   /**
-   * Runs a command in a sub-process.
-   *
-   * The command is given as an array of words. This approach is required 
-   * because some of the arguments may contain white space; forming the
-   * command as a single string doesn't work. Adding quotes around the
-   * arguments with white space doesn't work either, as there is no shell
-   * to process the quotes; Java tokenization can't cope.
-   * 
-   * @param command - The command with argument list; zeroth element is command name.
-   * @throws Exception - If the command goes wrong.
-   */
-  protected void runCommandWithoutPassword(String[] command) throws Exception {
-    // Start the command in a sub-process.
-    Process p = Runtime.getRuntime().exec(command);
-    
-    // Wait for the OpenSSL command to finish.
-    p.waitFor();
-    
-    // Check for failure.
-    if (p.exitValue() != 0) {
-      InputStream is = p.getErrorStream();
-      BufferedReader br = new BufferedReader(new InputStreamReader(is));
-      StringBuffer whinge = new StringBuffer();
-      whinge.append(command[0]);
-      whinge.append(" failed:");
-      while(true) {
-        String line = br.readLine();
-        if (line == null) {
-          break;
-        }
-        whinge.append("\n");
-        whinge.append(line);
-      }
-      throw new Exception(whinge.toString());
-    }
+    Subprocess p = new Subprocess(command);
+    p.sendToStdin(oldPassword + "\n" + newPassword);
+    p.waitForEnd();
   }
   
   /**
@@ -498,10 +426,11 @@ public class CertificateAuthority {
         ckp,          // ...from this PEM file.
         "-passin",    // Read the passphrase for the CA key...
         "stdin",      // ...from standard input.
-    };    
-    this.runCommandWithStdinPassword(rsaCommand, this.caKeyPassphrase); 
-    
-    
+    };
+
+    Subprocess p = new Subprocess(rsaCommand);
+    p.sendToStdin(caKeyPassphrase);
+    p.waitForEnd();
   }
   
 }

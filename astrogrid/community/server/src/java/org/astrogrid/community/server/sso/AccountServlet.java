@@ -74,6 +74,7 @@ public class AccountServlet extends HttpServlet {
    *
    * @throws RuntimeException If the reusuable objects cannot be set up.
    */
+  @Override
   public void init() {
     
     // Have to use this JCE provider otherwise PEMReader fails.
@@ -96,6 +97,7 @@ public class AccountServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
+  @Override
   protected void doPost(HttpServletRequest  request, 
                         HttpServletResponse response) throws IOException {
 
@@ -264,6 +266,7 @@ public class AccountServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
+  @Override
   protected void doGet(HttpServletRequest  request, 
                        HttpServletResponse response) throws ServletException, 
                                                             IOException {
@@ -295,9 +298,10 @@ public class AccountServlet extends HttpServlet {
       response.sendError(response.SC_INTERNAL_SERVER_ERROR);
       return;
     }   
-    AccountManagerImpl ami = new AccountManagerImpl();
+    
     AccountData account = null;
     try {
+      AccountManagerImpl ami = AccountManagerImpl.getDefault();
       account = ami.getAccount(accountName.toString());
     } catch (Exception ex) {
       ex.printStackTrace();

@@ -2,6 +2,7 @@ package org.astrogrid.community.server.policy.manager ;
 
 import java.rmi.RemoteException ;
 
+import java.security.GeneralSecurityException;
 import org.astrogrid.community.common.policy.data.GroupData ;
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.data.ResourceData;
@@ -17,6 +18,8 @@ import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
 import org.astrogrid.community.common.exception.CommunityResourceException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+import org.astrogrid.community.server.CommunityConfiguration;
+import org.astrogrid.community.server.sso.CredentialStore;
 
 /**
  * Server side implementation of the PolicyManager service.
@@ -24,39 +27,46 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
  */
 public class PolicyManagerImpl extends CommunityServiceImpl implements PolicyManager {
 
-    /**
-     * Public constructor, using default database configuration.
-     *
-     */
-    public PolicyManagerImpl()
-        {
-        super() ;
-        //
-        // Initialise our local managers.
-        initManagers() ;
-        }
+  /**
+   * Public constructor, using default database configuration.
+   */
+  public PolicyManagerImpl() throws CommunityServiceException {
+    super();
+    initManagers(new VOSpace());
+  }
 
-    /**
-     * Public constructor, using specific database configuration.
-     *
-     */
-    public PolicyManagerImpl(DatabaseConfiguration config)
-        {
-        super(config) ;
-        //
-        // Initialise our local managers.
-        initManagers() ;
-        }
+  /**
+   * Public constructor, using specific database configuration.
+   */
+  public PolicyManagerImpl(DatabaseConfiguration config) throws CommunityServiceException {
+    super(config);
+    initManagers(new VOSpace());
+  }
+
+  /**
+   * Public constructor, using specific database configuration and VOSpace.
+   */
+  public PolicyManagerImpl(DatabaseConfiguration config, VOSpace vospace) {
+    super(config);
+    initManagers(vospace);
+  }
 
     /**
      * Initialise our local managers, passing a reference to 'this' as their parent.
      * @todo Refactor this into default initialiser.
      *
      */
-    private void initManagers()
-        {
-        accountManager    = new AccountManagerImpl(this.getDatabaseConfiguration());
-        }
+    private void initManagers(VOSpace vospace) {
+      try {
+        DatabaseConfiguration dbConfig = this.getDatabaseConfiguration();
+        accountManager = new AccountManagerImpl(new CommunityConfiguration(),
+                                                dbConfig,
+                                                new CredentialStore(dbConfig),
+                                                vospace);
+      } catch (GeneralSecurityException ex) {
+        throw new RuntimeException("Failed to construct a PolicymanagerImpl", ex);
+      }
+    }
 
     /**
      * Our AccountManager.
@@ -461,13 +471,6 @@ public class PolicyManagerImpl extends CommunityServiceImpl implements PolicyMan
         throw new CommunityServiceException("This operation is not supported.");
         }
 
-    /**
-     * Instructs the manager to simulate a VOSpace service.
-     * This should only be done for testing.
-     */
-    public void useMockVoSpace() {
-      this.accountManager.useMockNodeDelegate();
-    }
  }
 
 

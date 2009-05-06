@@ -33,7 +33,8 @@ public class CredentialStoreTest extends TestCase {
 
     config.setPublishingAuthority("pond/community");
     
-    File testCredentialStore = new File(".");
+    File testCredentialStore = new File("target");
+    testCredentialStore.mkdirs();
     config.setCredentialDirectory(testCredentialStore);
     this.testUserCredentialDir = new File(testCredentialStore, "frog");
     this.testUserCredentialDir.mkdir();
@@ -146,6 +147,28 @@ public class CredentialStoreTest extends TestCase {
     CredentialStore sut = new CredentialStore(this.dbConfiguration);
     sut.resetDbPassword("frog", "woofwoofwoof");
     sut.authenticate("frog", "woofwoofwoof");
+  }
+
+  public void testLoadPkcs12() throws Exception {
+    CredentialStore sut = new CredentialStore(this.dbConfiguration);
+    InputStream is = this.getClass().getResourceAsStream("/tester.p12");
+    assertNotNull(is);
+    File f = File.createTempFile("tester", "p12");
+    f.deleteOnExit();
+    OutputStream os = new FileOutputStream(f);
+    while (true) {
+      int c = is.read();
+      if (c == -1) {
+        break;
+      }
+      else {
+        os.write(c);
+      }
+    }
+    sut.loadPkcs12(f.getAbsolutePath(), "tester", "testing", "tester", "testing");
+    List l = sut.getCertificateChain("tester", "testing");
+    assertTrue(l.size() == 1);
+    assertNotNull(sut.getPrivateKey("tester", "testing"));
   }
   
 }

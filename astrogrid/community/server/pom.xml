@@ -92,6 +92,12 @@
           <include>*.pem</include>
         </includes>
       </testResource>
+      <testResource>
+      	<directory>src/keystore</directory>
+        <includes>
+          <include>tester.p12</include>
+       </includes>
+      </testResource>
     </testResources>
     <plugins>
       <plugin>
@@ -128,6 +134,11 @@
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-contracts</artifactId>
+      <version>2008.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
       <version>2007.2.01</version>
     </dependency>
@@ -150,6 +161,26 @@
       <groupId>bouncycastle</groupId>
       <artifactId>bcprov-jdk15</artifactId>
       <version>140</version>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-vospace-delegate</artifactId>
+      <version>2009.0.02.alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-vospace-1.1-client</artifactId>
+      <version>2009.0.02.alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-vospace-1.1-schema</artifactId>
+      <version>2009.0.02.alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-vospace-util</artifactId>
+      <version>2009.0.02.alpha</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>

@@ -1,5 +1,7 @@
 package org.astrogrid.community.server.policy.manager ;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import junit.framework.TestCase;
@@ -12,6 +14,7 @@ import org.astrogrid.community.common.ivorn.CommunityIvornParser;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
+import org.astrogrid.community.server.sso.CredentialStore;
 import org.astrogrid.store.Ivorn;
 
 /**
@@ -22,7 +25,10 @@ public class AccountManagerImplTestCase extends TestCase {
     
   private static Log log = LogFactory.getLog(AccountManagerImplTestCase.class);
     
-    private DatabaseConfiguration config;
+    private DatabaseConfiguration dbConfig;
+    private VOSpace vospace;
+    private CredentialStore store;
+    private CommunityConfiguration comConfig;
 
     /**
      * Setup our test.
@@ -32,10 +38,14 @@ public class AccountManagerImplTestCase extends TestCase {
     @Override
     public void setUp() throws Exception {
       URL u = this.getClass().getResource("/test-database-001.xml");
-      this.config = new DatabaseConfiguration("test-database-001", u);
-      this.config.resetDatabaseTables();
-      new CommunityConfiguration().setVoSpaceIvorn("ivo://foo/bar");
-      new CommunityConfiguration().setPublishingAuthority("org.astrogrid.local.community/community");
+      dbConfig = new DatabaseConfiguration("test-database-001", u);
+      dbConfig.resetDatabaseTables();
+      comConfig = new CommunityConfiguration();
+      comConfig.setPublishingAuthority("org.astrogrid.local.community/community");
+      comConfig.setVoSpaceIvorn("ivo://pond/vospace");
+      comConfig.setCredentialDirectory(new File("target"));
+      this.vospace = new VOSpace(new MockNodeDelegate());
+      this.store = new MockCredentialStore(dbConfig);
     }
     
     /**
@@ -49,7 +59,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testCreateNull()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
+        AccountManagerImpl sut = 
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try creating an Account.
@@ -88,8 +99,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testCreateValid()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try creating an Account.
@@ -111,8 +122,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testCreateData()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try creating an Account.
@@ -136,8 +147,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testCreateDuplicate()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try creating an Account.
@@ -173,7 +184,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testGetNull()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try getting the details.
@@ -200,7 +212,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testGetUnknown()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try getting the details.
@@ -229,8 +242,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testGetValid()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try creating an Account.
@@ -260,8 +273,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testGetLocalAccounts()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try creating some Accounts.
@@ -290,8 +303,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testGetValid()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try creating an Account.
@@ -323,7 +336,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testSetNull()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         try {
             sut.setAccount(null) ;
@@ -348,8 +362,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testSetUnknown()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try setting an unknown account.
@@ -380,8 +394,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testSetValid()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         //
         // Try creating an Account.
@@ -430,7 +444,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testDeleteNull()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         try {
             sut.delAccount((String)null) ;
@@ -455,8 +470,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testDeleteUnknown()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         try {
             sut.delAccount(
@@ -483,8 +498,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testDeleteValid()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         
         Ivorn originalAccountIvorn = createLocal("test-account");
         
@@ -517,8 +532,8 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testDeleteTwice()") ;
         
-        AccountManagerImpl sut = new AccountManagerImpl(this.config);
-        sut.useMockNodeDelegate();
+        AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
         //
         // Try creating the Account.
         AccountData created = sut.addAccount(
@@ -551,7 +566,8 @@ public class AccountManagerImplTestCase extends TestCase {
         }
 
   public void testPrimaryKey() throws Exception {
-    AccountManagerImpl sut = new AccountManagerImpl(this.config);
+    AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
     
     String s1 = sut.primaryKey(new CommunityIvornParser("ivo://frog@foo.bar/baz"));
     assertEquals("ivo://foo.bar/frog", s1);
@@ -561,7 +577,8 @@ public class AccountManagerImplTestCase extends TestCase {
   }
   
   public void testAccountIvorn() throws Exception {
-    AccountManagerImpl sut = new AccountManagerImpl(this.config);
+    AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
     
     String s1 = sut.accountIvorn("ivo://foo.bar/frog");
     assertEquals("ivo://frog@foo.bar/community", s1);
@@ -573,8 +590,8 @@ public class AccountManagerImplTestCase extends TestCase {
   public void testRoundTrip() throws Exception {
     System.out.println("Begin testRoundTrip()");
     
-    AccountManagerImpl sut = new AccountManagerImpl(this.config);
-    sut.useMockNodeDelegate();
+    AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
     
     AccountData accountIn = new AccountData("ivo://frog@org.astrogrid.regtest/community");
     sut.addAccount(accountIn);
@@ -590,8 +607,8 @@ public class AccountManagerImplTestCase extends TestCase {
   public void testRoundTripHeadless() throws Exception {
     System.out.println("Begin testRoundTrip()");
     
-    AccountManagerImpl sut = new AccountManagerImpl(this.config);
-    sut.useMockNodeDelegate();
+    AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
     
     AccountData accountIn = new AccountData("ivo://frog@org.astrogrid.regtest/community");
     sut.addAccount(accountIn);
@@ -603,6 +620,15 @@ public class AccountManagerImplTestCase extends TestCase {
     System.out.println("testRoundTripHeadless: in: " + accountIn.getIdent() + " out: " + accountOut.getIdent());
     
     assertEquals(accountIn.getIdent(), accountOut.getIdent());
+  }
+
+  public void testAllocateSpace() throws Exception {
+    AccountManagerImpl sut =
+            new AccountManagerImpl(comConfig, dbConfig, store, vospace);
+    AccountData account = new AccountData(createLocal("frog").toString());
+    sut.addAccount(account);
+    
+    sut.allocateHomespace("ivo://frog@pond/community", "frog", "croakcroak");
   }
   
   /**

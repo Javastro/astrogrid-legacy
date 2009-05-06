@@ -1,7 +1,9 @@
 package org.astrogrid.community.server.ca;
 
+import java.io.IOException;
 import junit.framework.*;
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * JUnit tests for org.astrogrid.community.server.ca.CertificateAuthority.
@@ -181,9 +183,36 @@ public class CertificateAuthorityTest extends TestCase {
     this.createUser(instance, "fred");
     instance.changePasswordInMyProxy("fred", "fredfred", "frederick");
   }
+/*
+  public void testLoadPkcs12() throws Exception {
+    UserFiles tester = new UserFiles(new File("target"), "tester");
+    tester.deleteUserFiles();
+    tester.deleteUserDirectory();
+    assertFalse(tester.getUserDirectory().exists());
+    assertFalse(tester.getCertificateFile().exists());
+    assertFalse(tester.getKeyFile().exists());
 
+    InputStream is = this.getClass().getResourceAsStream("/tester.p12");
+    assertNotNull(is);
+
+    CertificateAuthority.loadPkcs12(is, "tester", "testing", "tester", "testing");
+
+    assertTrue(tester.getUserDirectory().exists());
+    assertTrue(tester.getCertificateFile().exists());
+    assertTrue(tester.getKeyFile().exists());
+  }
+*/
+
+  /**
+   * Adds a user to the credential-collection of the CA under test.
+   *
+   * @param instance The CA
+   * @param commonName The CN part of the user's desired DN.
+   * @throws IOException If the redential files cannot be written.
+   * @throws Exception If the files cannot be pused to MyProxy.
+   */
   private void createUser(CertificateAuthority instance,
-                          String commonName) throws Exception {
+                          String commonName) throws IOException, Exception {
     
     String loginName = commonName;
     String password = commonName + commonName;
@@ -198,6 +227,5 @@ public class CertificateAuthorityTest extends TestCase {
     assertTrue(userFiles.getKeyFile().exists());
     assertTrue(userFiles.getCertificateFile().exists());
   }
-
   
 }

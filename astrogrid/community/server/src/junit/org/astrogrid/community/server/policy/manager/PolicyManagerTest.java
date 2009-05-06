@@ -34,22 +34,6 @@ public class PolicyManagerTest
     }
 
     /**
-     * Check we can create a manager, using default database configuration.
-     * Note, this won't do much because there isn't a default database in the test environment.
-     *
-     */
-    public void testCreateDefaultManager()
-        throws Exception
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("PolicyManagerTest:testCreateDefaultManager()") ;
-        //
-        // Try creating a default manager.
-        assertNotNull("Null policy manager", new PolicyManagerImpl());
-        }
-
-    /**
      * Check we can create a manager, using test database configuration.
      *
      */
@@ -116,8 +100,8 @@ public class PolicyManagerTest
     private PolicyManager getSut() throws Exception {
       DatabaseConfiguration c = new DatabaseConfiguration("test-database-001");
       c.resetDatabaseTables();
-      PolicyManagerImpl m = new PolicyManagerImpl(c);
-      m.useMockVoSpace();
+      VOSpace v = new VOSpace(new MockNodeDelegate());
+      PolicyManagerImpl m = new PolicyManagerImpl(c, v);
       return m;
     }
 }

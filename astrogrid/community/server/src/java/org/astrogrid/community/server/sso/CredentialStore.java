@@ -4,27 +4,39 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.security.AccessControlException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.security.UnrecoverableEntryException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertPath;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.server.CommunityConfiguration;
+import org.astrogrid.community.server.subprocess.Subprocess;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
 import org.astrogrid.community.server.security.data.PasswordData;
 import org.astrogrid.community.server.service.CommunityServiceImpl;
-//import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.security.rfc3820.ProxyCertificateFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
@@ -451,7 +463,178 @@ public class CredentialStore extends CommunityServiceImpl {
                     String            password,
                     PrivateKey        key,
                     X509Certificate[] chain) {
-    // Not implemented yet.
+    
+    // Find where the key ought to go on disc.
+    File f1 = new File(this.storeLocation, userName);
+    f1.mkdir();
+    File f2 = new File(f1, "key.pem");
+
+    // Write the key to the file, protecting it with encryption based on
+    // the given password.
+    try {
+      FileWriter fos = new FileWriter(f2);
+      PEMWriter pw = new PEMWriter(fos);
+      pw.writeObject(key, "DESede", password.toCharArray(), new SecureRandom());
+      pw.close();
+    }
+    catch (Exception e) {
+      throw new AccessControlException("Failed to store the private key: " + e);
+    }
+
+    // Find where the certificates ought to go on disc.
+    File f3 = new File(f1, "certificate.pem");
+
+     // Write the certificates to the file.
+    try {
+      FileWriter fos = new FileWriter(f3);
+      PEMWriter pw = new PEMWriter(fos);
+      for (int i = 0; i < chain.length; i++) {
+        pw.writeObject(chain[i]);
+      }
+      pw.close();
+    }
+    catch (Exception e) {
+      throw new AccessControlException("Failed to store the certificates: " + e);
+    }
+  }
+
+  /**
+   * Loads credentials from a PKCS#12 store.
+   */
+  public void loadPkcs12(InputStream storeStream,
+                         String      accountName,
+                         String      accountPassword,
+                         String      storeAlias,
+                         String      storePassword) throws IOException,
+                                                      KeyStoreException,
+                                                      NoSuchAlgorithmException,
+                                                      CertificateException,
+                                                      UnrecoverableKeyException,
+                                                      UnrecoverableEntryException {
+    System.out.println("Store alias: " + storeAlias);
+    System.out.println("Store password: " + storePassword);
+    System.out.println("Account name: " + accountName);
+    System.out.println("Account password: " + accountPassword);
+    KeyStore store = KeyStore.getInstance("PKCS12");
+    store.load(storeStream, storePassword.toCharArray());
+    Enumeration<String> aliases = store.aliases();
+    while (aliases.hasMoreElements()) {
+      String alias = aliases.nextElement();
+      System.out.println("alias: " + alias);
+      System.out.println("Is private key entry? " + store.entryInstanceOf(alias, PrivateKeyEntry.class));
+    }
+
+    PrivateKey key =
+        (PrivateKey) store.getKey(storeAlias, storePassword.toCharArray());
+    if (key == null) {
+      throw new IOException("No private key");
+    }
+    Certificate[] chain1 = store.getCertificateChain(accountName);
+    if (chain1 == null) {
+      throw new IOException("No certificate chain");
+    }
+    X509Certificate[] chain2 = new X509Certificate[chain1.length];
+    for (int i = 0; i < chain2.length; i++) {
+      chain2[i] = (X509Certificate) chain1[i];
+    }
+    
+    store(accountName, accountPassword, key, chain2);
+  }
+
+  public void loadPkcs12(String storeFileName,
+                         String storeAlias,
+                         String storePassword,
+                         String accountName,
+                         String accountPassword) {
+
+    try {
+
+      // Work out where the credential files should be kept.
+      File f1 = new File(this.storeLocation, accountName);
+      f1.mkdir();
+      File f2 = new File(f1, "key.pem");
+      File f3 = new File(f1, "certificate.pem");
+      File f4 = new File(f1, "temp.pem");
+      String keyFileName = f2.getAbsolutePath();
+      String certFileName = f3.getAbsolutePath();
+      String tempFileName = f4.getAbsolutePath();
+
+      // Copy the certificate out of the store into a temporary
+      // file. Openssl writes junk before the certificate data
+      // which Java can't read.
+      String[] command1 = {
+        "openssl",     // Invoke openssl
+        "pkcs12",      // Use the PKCS#12 command
+        "-in",         // Read the key-store...
+        storeFileName, // ...from here.
+        "-nokeys",      // Copy only certificates on this pass.
+        "-clcerts",    // Copy only the client certificate.
+        "-passin",     // Read the store password...
+        "stdin",        // From standard input
+        "-out",        // Write the certificate PEM-file...
+        tempFileName   // ...here.
+      };
+      Subprocess p1 = new Subprocess(command1);
+      p1.sendToStdin(storePassword);
+      p1.waitForEnd();
+
+      // Copy the private key out of the store into a file.
+      String[] command2 = {
+        "openssl",     // Invoke openssl
+        "pkcs12",      // Use the PKCS#12 command
+        "-in",         // Read the key-store...
+        storeFileName, // ...from here.
+        "-passin",     // Read the store password...
+        "stdin",        // From standard input.
+        "-nocerts",    // Copy only the private key on this pass
+        "-out",        // Write the key PEM-file...
+        keyFileName,   // ...here.
+        "-passout",    // Read the password for the key file...
+        "stdin"        // ...from standard input.
+      };
+      Subprocess p2 = new Subprocess(command2);
+      p2.sendToStdin(storePassword + "\n" + accountPassword);
+      p2.waitForEnd();
+
+      // Copy the certificate from the temporary file to the proper file.
+      // This command in openssl strips out the junk so Java can read the result.
+      String[] command3 = {
+        "openssl",     // Invoke openssl
+        "x509",        // Use the X.509-parsing command
+        "-in",         // Read the certificate...
+        tempFileName,  // ...from here.
+        "-out",        // Write the certificate PEM-file...
+        certFileName   // ...here.
+      };
+      Subprocess p3 = new Subprocess(command3);
+      p3.waitForEnd();
+    }
+    catch (Exception e) {
+      throw new RuntimeException("Failed to read a PKCS#12 store", e);
+    }
+  }
+
+  /**
+   * Supplies the named user's credentials in one object.
+   *
+   */
+  public SecurityGuard getCredentials(String userName, String password) {
+    SecurityGuard sg = new SecurityGuard();
+
+    sg.setPrivateKey(getPrivateKey(userName, password));
+
+    List<X509Certificate> l = getCertificateChain(userName, password);
+    try {
+      CertPath p = certificateFactory.generateCertPath(l);
+      sg.setCertificateChain(p);
+    }
+    catch (Exception e) {
+      throw new AccessControlException(userName + " has no valid certificate-chain");
+    }
+
+    sg.setX500PrincipalFromCertificateChain();
+
+    return sg;
   }
 
   /**

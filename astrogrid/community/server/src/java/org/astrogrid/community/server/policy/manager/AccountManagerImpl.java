@@ -17,13 +17,8 @@ import org.astrogrid.community.common.policy.manager.AccountManager;
 import org.astrogrid.community.server.CommunityConfiguration;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
 import org.astrogrid.community.server.service.CommunityServiceImpl;
-import org.astrogrid.filemanager.common.NodeIvorn;
-import org.astrogrid.filemanager.common.AccountIdent;
-import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.filemanager.client.delegate.NodeDelegate;
-import org.astrogrid.filemanager.resolver.FileManagerResolverException;
-import org.astrogrid.filemanager.resolver.NodeDelegateResolver;
-import org.astrogrid.filemanager.resolver.NodeDelegateResolverImpl;
+import org.astrogrid.community.server.sso.CredentialStore;
+import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.store.Ivorn;
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.OQLQuery;
@@ -39,13 +34,7 @@ public class AccountManagerImpl
     extends CommunityServiceImpl
     implements AccountManager
     {
-    /**
-     * Our debug logger.
-     *
-     */
     private static Log log = LogFactory.getLog(AccountManagerImpl.class);
-
-    protected boolean useMockNodeDelegate = false;
 
     /**
      * The community's publishing authority. This is used to construct
@@ -54,22 +43,50 @@ public class AccountManagerImpl
     protected String authority;
 
     /**
-     * Public constructor, using default database configuration.
-     *
+     * A manager for the community's VOSpace service.
      */
-    public AccountManagerImpl() {
-      super();
-      this.authority = new CommunityConfiguration().getPublishingAuthority();
+    private VOSpace vospace;
+
+    /**
+     * The credentials for all registered users.
+     */
+    private CredentialStore credentialStore;
+
+    /**
+     * Supplies a manager constructed with default database-configuration and
+     * VOSpace. This is a convenience method to hide the checked exceptions
+     * on the no-argument contstructor.
+     *
+     * @return The manager.
+     * @throws RuntimeException If the manager cannot be constructed.
+     */
+    public static AccountManagerImpl getDefault() {
+      try {
+        return new AccountManagerImpl(
+           new CommunityConfiguration(),
+           new DatabaseConfiguration(DEFAULT_DATABASE_NAME),
+           new CredentialStore(),
+           new VOSpace()
+        );
+      }
+      catch (Exception e) {
+        throw new RuntimeException("Failed to construct an account manager", e);
+      }
     }
 
     /**
-     * Public constructor, using specific database configuration.
+     * Public constructor, with explicit dependencies.
      * @param config A specific DatabaseConfiguration.
      *
      */
-    public AccountManagerImpl(DatabaseConfiguration config) {
-      super(config);
-      this.authority = new CommunityConfiguration().getPublishingAuthority();
+    public AccountManagerImpl(CommunityConfiguration comConfig,
+                              DatabaseConfiguration  dbConfig,
+                              CredentialStore        credentialStore,
+                              VOSpace                vospace) {
+      super(dbConfig);
+      this.authority = comConfig.getPublishingAuthority();
+      this.vospace = vospace;
+      this.credentialStore = credentialStore;
     }
 
     /**
@@ -126,7 +143,6 @@ public class AccountManagerImpl
         database = this.getDatabase() ;
         database.begin();
         database.create(account);
-        allocateSpace(account);
         database.commit() ;
       }
       catch (DuplicateIdentityException ouch) {
@@ -488,109 +504,6 @@ public class AccountManagerImpl
   }
 
   /**
-   * Tells the manager to use a mock object for its VOSpace.
-   * This should be set only for unit testing.
-   */
-  public void useMockNodeDelegate() {
-    this.useMockNodeDelegate = true;
-  }
-    
-    /**
-     * Allocates home space in MySpace for an Account.
-     * If a home space for the given account already exists then it is 
-     * destroyed and a new, empty space is created.
-     *
-     * @param account The AccountData to update.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     * @throws CommunityServiceException If the service is unable to allocate the space.
-     */
-    public void allocateSpace(AccountData account)
-        throws CommunityServiceException, CommunityIdentifierException {
-      System.out.println("") ;
-      System.out.println("----\"----") ;
-      System.out.println("AccountManagerImpl.allocateSpace()") ;
-      System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
-        
-      // Check for null account.
-      if (null == account) {
-        throw new CommunityIdentifierException("Null account");
-      }
-        
-      // Do nothing if this account already has a homespace.
-      if (account.getHomeSpace() != null) {
-        return;
-      }
-            
-      // Check for null identifier.
-      if (null == account.getIdent()) {
-        throw new CommunityIdentifierException("Null account identifier");
-      }
-      
-      // Get the IVORN for the VOSpace service in which we create
-      // the homespace. This call will throw an exception if
-      // the VOSpace isn't configured.
-      Ivorn ivorn = this.getDefaultVoSpace();
-      
-      // Call FileManager client to create the space.
-      try {
-        NodeDelegate delegate = getFileManagerDelegate(ivorn);
-                    
-        // Make an identity object out of the account IVORN.
-        AccountIdent fmAccount = new AccountIdent(account.getIdent());
-                    
-        /*
-                    // Delete any previous home-space for the account.
-                    // If the file manager can't find that account, then it
-                    // throws; but this is expected in most cases so we discard
-                    // the exception.
-                    try {
-                      FileManagerNode node = delegate.getAccount(fmAccount);
-                      System.out.println("Deleting");
-                      node.delete();
-                      log.info("The homespace for account " + 
-                               account.getIdent() +
-                               " in " +
-                               ivorn +
-                               " has been deleted and can now be recreated.");
-                    }
-                    catch (Exception e) {
-                      log.info("The account " + 
-                               account.getIdent() +
-                               " did not have a home space in " +
-                               ivorn);
-                    }
-                    */
-        
-        // Ask the degagate to create a new account.
-        FileManagerNode node = delegate.addAccount(fmAccount);
-        log.info("Home space for account " + 
-                 account.getIdent() +
-                 " has been created in " +
-                 ivorn);
-                    
-        // Recover the concrete IVORN for the created space.
-        NodeIvorn home = node.getMetadata().getNodeIvorn();
-        log.info("The new space is at " + home);
-        account.setHomeSpace(home.toString());
-                    
-      }
-      
-      // If the homespace was not created.
-      catch (Exception ouch) {
-        logException(ouch, "AccountManagerImpl.allocateSpace()");
-        throw new CommunityServiceException("Unable to create VoSpace",
-                                            ouch);
-      }
-    
-    }
-
-    /**
-     * The config property key for our default VoSpace ivorn.
-     *
-     */
-    protected static final String DEFAULT_VOSPACE_PROPERTY = "org.astrogrid.community.default.vospace" ;
-
-  /**
    * Get the IVORN for the configured, default VOSpace.
    *
    * @return An Ivorn for the default VoSpace service.
@@ -698,25 +611,22 @@ public class AccountManagerImpl
     System.out.println("External account is named " + externalAccount.getIdent());
     return externalAccount;
   }
-  
+
   /**
-   * Supplies a file-manager delegate for a given MySpace service.
-   * May supply a mock delegate if the object s set up correctly.
+   * Allocates a user's home-space in a VOSpace or MySpace service.
    *
-   * @param fileManagerService The IVORN for the file manager service.
-   * @return The delegate - never null.
-   * @throws FileManagerResolverException If the file-manager service cannot be found.
+   * @param ivorn The IVORN representing the user account (used for MySpace)
+   * @param userName The name of the account (used for VOSpace).
+   * @param password The account password.
+   * @return The URI for the home-space.
+   * @throws org.astrogrid.community.common.exception.CommunityServiceException
    */
-  protected NodeDelegate getFileManagerDelegate(Ivorn fileManagerService) 
-      throws FileManagerResolverException {
-    if (this.useMockNodeDelegate) {
-      System.out.println("using a mock delegate");
-      return new MockNodeDelegate();
-    }
-    else {
-      NodeDelegateResolver resolver = new NodeDelegateResolverImpl(null);
-      return resolver.resolve(fileManagerService);
-    }
+  public String allocateHomespace(String ivorn,
+                                  String userName,
+                                  String password) throws CommunityServiceException{
+    SecurityGuard sg = credentialStore.getCredentials(userName, password);
+    return vospace.allocateSpace(ivorn, userName, sg);
   }
+  
   
 }
