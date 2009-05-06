@@ -325,8 +325,8 @@
       <layout>default</layout>
     </repository>
     <site>
-      <id>default</id>
-      <name>Default Site</name>
+      <id>ag-deployer</id>
+      <name>Deployer site</name>
       <url>scp://terror.star.le.ac.uk/software_docs/community-server-${pom.version}</url>
     </site>
   </distributionManagement>
