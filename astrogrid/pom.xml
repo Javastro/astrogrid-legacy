@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: pom.xml,v 1.1 2009/05/06 23:26:46 pah Exp $ --><!--
+      This is the pom for generating the overall AG Software site documentation
+   --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.astrogrid</groupId>
+   <artifactId>developer-site</artifactId>
+   <name>Astrogrid for Developers</name>
+   <version>2009.1-SNAPSHOT</version>
+   <packaging>pom</packaging>
+      <parent>
+      <artifactId>astrogrid-versions</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>  
+    </parent>
+   
+   <modules>
+ 
+      <module>applications</module> 
+      <module>common</module>
+      <module>contracts</module>
+      <module>security</module>
+      <module>samp</module>
+      <module>community</module>
+      <module>pal</module>
+      <module>workflow-objects</module>
+   <!--   <module>registry</module> 
+   
+    -->   
+	
+  <!--  <module>site-skin</module>  -->   
+  </modules>
+   <url>http://software.astrogrid.org/doc/${project.version}/devel</url>
+   <description>This is the developer level description of the AstroGrid Software</description>
+   <!-- do not really need the developers section -->
+   <properties>
+      <astrogrid.name>software</astrogrid.name>
+   </properties>
+   <build>
+    <plugins>
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-antrun-plugin</artifactId>
+         <executions>
+           <execution>
+             <id>ftp</id>
+             <phase>pre-site</phase>
+             <configuration>
+               <tasks>
+
+               <echo>should generate appropriate site.xml with xslt here...</echo>
+
+               </tasks>
+             </configuration>
+             <goals>
+               <goal>run</goal>
+             </goals>
+           </execution>
+         </executions>
+         <dependencies>
+           <dependency>
+             <groupId>net.sf.saxon</groupId>
+             <artifactId>saxon</artifactId>
+             <version>9.0</version>
+           </dependency>
+          
+         </dependencies>
+       </plugin>
+    </plugins>
+  </build>
+   <reporting>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changes-plugin</artifactId>
+            <configuration>
+               <xmlPath>maven-site/changes.xml</xmlPath>
+               <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+        </configuration>
+      </plugin>
+      <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+         <siteDirectory>maven-site</siteDirectory>
+       </configuration>
+      </plugin>
+
+<!-- 
+       <plugin>
+       	<groupId>org.apache.maven.plugins</groupId>
+       	<artifactId>maven-changelog-plugin</artifactId>
+         <version>2.1</version>this version avoids http://jira.codehaus.org/browse/MCHANGELOG-56 - was not automatically being picked up for me...
+        <configuration>
+          <type>range</type>
+          <range>30</range>
+          <connectionType>developerConnection</connectionType>           
+         </configuration>
+       </plugin> -->     
+       <!-- 
+       <plugin>
+        <groupId>statcvs</groupId>
+        <artifactId>maven-statcvs-plugin</artifactId>
+      </plugin>
+       -->
+       
+      </plugins>
+   </reporting>
+  <distributionManagement>
+   <site>
+      <id>agsite</id>
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/${astrogrid_release}/devel</url>
+    </site>
+    </distributionManagement>
+   
+</project>
