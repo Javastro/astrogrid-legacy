@@ -9,7 +9,7 @@
     <mapping href="astrogrid-community-mapping.xml"/>
   </database>
     <database name="org.astrogrid.community.database" engine="hsql">
-    <driver class-name="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:mem:org.astrogrid.community.database">
+    <driver class-name="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:target/org.astrogrid.community.database">
       <param name="user" value="sa"/>
       <param name="password" value=""/>
     </driver>

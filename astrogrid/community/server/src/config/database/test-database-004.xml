@@ -2,7 +2,7 @@
 
 <jdo-conf>
   <database name="test-database-004" engine="hsql">
-    <driver class-name="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:mem:test-database-004">
+    <driver class-name="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:target/test-database-004">
       <param name="user" value="sa"/>
       <param name="password" value=""/>
     </driver>
