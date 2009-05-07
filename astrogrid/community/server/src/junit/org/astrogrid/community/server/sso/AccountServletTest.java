@@ -7,11 +7,13 @@
 
 package org.astrogrid.community.server.sso;
 
+import java.io.File;
 import java.io.StringWriter;
 import java.net.URLEncoder;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import junit.framework.TestCase;
+import org.astrogrid.community.server.CommunityConfiguration;
 import org.bouncycastle.openssl.PEMWriter;
 import org.mortbay.jetty.testing.HttpTester;
 import org.mortbay.jetty.testing.ServletTester;
@@ -28,12 +30,16 @@ public class AccountServletTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
+    File here = new File("target");
+    new CommunityConfiguration().setCredentialDirectory(here);
+
     PondLifeDb pond = new PondLifeDb();
     pond.initialize();
     
     // Start the embedded Jetty server with the SUT in its context.
     // The servlet is bound to the path /community/accounts/*.
     tester = new ServletTester();
+    tester.setAttribute(AccountServlet.CREDENTIAL_DIR_ATTR, here.toString());
     tester.setContextPath("/community");
     tester.addServlet(AccountServlet.class, "/accounts/*");
     tester.start();

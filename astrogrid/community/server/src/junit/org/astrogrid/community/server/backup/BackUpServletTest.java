@@ -21,7 +21,7 @@ public class BackUpServletTest extends TestCase {
     PondLifeDb pond = new PondLifeDb();
     pond.initialize();
     
-    File here = new File(".");
+    File here = new File("target");
     new CommunityConfiguration().setCredentialDirectory(here);
     
     // Start the embedded Jetty server with the SUT in its context.

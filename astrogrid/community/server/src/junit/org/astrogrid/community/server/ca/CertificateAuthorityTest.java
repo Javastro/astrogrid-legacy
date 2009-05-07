@@ -140,7 +140,7 @@ public class CertificateAuthorityTest extends TestCase {
    * Deletes any file with that name.
    */
   private File createFreshFile(String fileName) throws Exception {
-    File f = new File(fileName);
+    File f = new File("target", fileName);
     if (f.exists()) {
       f.delete();
     }
@@ -159,9 +159,9 @@ public class CertificateAuthorityTest extends TestCase {
     CertificateAuthority instance = 
         new CertificateAuthority("/O=foo/OU=bar baz", 
                                  "fubar",
-                                 new File("ca.key"),
-                                 new File("ca.crt"),
-                                 new File("ca.srl"),
+                                 new File("target/ca.key"),
+                                 new File("target/ca.crt"),
+                                 new File("target/ca.srl"),
                                  new File("/tmp"));
     instance.generateCa();
     
@@ -174,9 +174,9 @@ public class CertificateAuthorityTest extends TestCase {
     CertificateAuthority instance = 
         new CertificateAuthority("/O=foo/OU=bar baz", 
                                  "fubar",
-                                 new File("ca.key"),
-                                 new File("ca.crt"),
-                                 new File("ca.srl"),
+                                 new File("target/ca.key"),
+                                 new File("target/ca.crt"),
+                                 new File("target/ca.srl"),
                                  new File("/opt/globus4.0.2/var/myproxy"));
     instance.generateCa();
     
@@ -216,7 +216,7 @@ public class CertificateAuthorityTest extends TestCase {
     
     String loginName = commonName;
     String password = commonName + commonName;
-    UserFiles userFiles = new UserFiles(new File("."), loginName);
+    UserFiles userFiles = new UserFiles(new File("target"), loginName);
     userFiles.deleteUserFiles();
     
     instance.setUserCredentialsInMyProxy(loginName, 

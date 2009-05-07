@@ -43,11 +43,11 @@ public class PondLifeDb {
     // Copying the mapping files out of the jar is an act of desparation.
     // The comsuming software should be able to read them straight from the
     // jar, but this seems to fail.
-    copyResourceToFile("/account-servlet-test.xml", ".", "account-servlet-test.xml");
-    File f1 = new File(".", "account-servlet-test.xml");
+    copyResourceToFile("/account-servlet-test.xml", "target", "account-servlet-test.xml");
+    File f1 = new File("target", "account-servlet-test.xml");
     URL u2 = f1.toURL();
     config.setDatabaseConfigurationUrl(u2);
-    copyResourceToFile("/astrogrid-community-mapping.xml", ".", "astrogrid-community-mapping.xml");
+    copyResourceToFile("/astrogrid-community-mapping.xml", "target", "astrogrid-community-mapping.xml");
     
     // Initialize the database with the account frog.
     DatabaseConfiguration dbc = new DatabaseConfiguration("org.astrogrid.community.database", u2);
@@ -59,8 +59,8 @@ public class PondLifeDb {
                                             ".");
     
     // Copy in credentials files for the account frog.
-    copyResourceToFile("/frog-certificate.pem", "./frog", "certificate.pem");
-    copyResourceToFile("/frog-key.pem",         "./frog", "key.pem");
+    copyResourceToFile("/frog-certificate.pem", "target/frog", "certificate.pem");
+    copyResourceToFile("/frog-key.pem",         "target/frog", "key.pem");
   }
   
   /**

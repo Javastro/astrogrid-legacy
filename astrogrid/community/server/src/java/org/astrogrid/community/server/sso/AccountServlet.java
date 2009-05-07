@@ -13,6 +13,7 @@ import java.security.cert.CertPath;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateFactory;
 import java.util.List;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
+import org.astrogrid.config.SimpleConfig;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 
@@ -65,6 +67,8 @@ import org.bouncycastle.openssl.PEMReader;
  */
 public class AccountServlet extends HttpServlet {
   static private Log log = LogFactory.getLog(AccountServlet.class);
+
+  protected static  String CREDENTIAL_DIR_ATTR = "org.astrogrid.community.myproxy";
   
   private CredentialStore store;
   
@@ -74,7 +78,18 @@ public class AccountServlet extends HttpServlet {
    * @throws RuntimeException If the reusuable objects cannot be set up.
    */
   @Override
-  public void init() {
+  public void init(ServletConfig config) {
+    
+    // If the name of the directory holding the credentials is set as a
+    // servlet attribute, transcribe it to the AstroGrid configuration.
+    // This feature is for unit testing; the attributes should not be used
+    // in production.
+
+    String credentialDirectoryName = 
+        (String) config.getServletContext().getAttribute(CREDENTIAL_DIR_ATTR);
+    if (credentialDirectoryName != null) {
+      SimpleConfig.setProperty(CREDENTIAL_DIR_ATTR, credentialDirectoryName);
+    }
     
     // Have to use this JCE provider otherwise PEMReader fails.
     if (Security.getProvider("BC") == null) {
@@ -82,6 +97,7 @@ public class AccountServlet extends HttpServlet {
     }
     
     try {
+      System.out.println("Credential directory: " + credentialDirectoryName);
       this.store = new CredentialStore();
     }
     catch (Exception e) {
