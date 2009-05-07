@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Page Title</title>
+    <author email="paul.harrison@manchester.ac.uk">Paul Harrison</author>
+  </properties>
+ <body>
+        
+	<p>
+		The Common area are what is common between both the Client and Server areas.
+	</p>
+	<section name="Builds">
+		<p>			
+			Here are the maven goals for building the registry, it has a one extra goal compared to the other sub-projects.
+			<ul>
+				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
+				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-install-artifact - Builds all the necessry jar and war files.</li>    	
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+		
+ </body>
+</document>

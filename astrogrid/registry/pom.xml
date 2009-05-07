@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>registry-base</artifactId>
+  <packaging>pom</packaging>
+  <version>2009.1-SNAPSHOT</version>
+  <description>Project that aggregates the necessary registry modules</description>
+  <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+  </parent>
+  <url>${astrogrid_doc_URL_root}/p/registry/${astrogrid_release}</url>
+  <modules>
+    <module>server</module>
+    <module>common</module>
+    <module>client-lite</module>
+    <module>webapp</module>
+  </modules>
+</project>

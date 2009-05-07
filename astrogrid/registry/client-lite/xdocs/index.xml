@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Page Title</title>
+    <author email="paul.harrison@manchester.ac.uk">Paul Harrison</author>
+  </properties>
+ <body>
+ <section>
+ 	<p>
+		The Client area's main purpose is to give the users a delegate to go by
+		and to interact with a Registry server or cache.  The Client section
+		will read in a config file and determine to use a Registry server which
+		will be the most common or use a a local cache through it's config file.
+		It determines rather to use a server or local config file by simply determining
+		if the endpoints are in the config file.  It should be noted current 
+		implementation only queries based on identifiers when using the local config
+		cache.  The current client is now associated with the ivoa standard now of
+    	querying via ADQL and is OAI conformed on the web service interface.
+	</p>
+	</section>
+	<section name="Builds">
+		<p>
+			The registry allows you to build at the top level or at it's sub-project level.  
+			Here are the maven goals for building the registry.
+			<ul>
+				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
+				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+	<section name="Deployment/Installation">
+		<p>
+			It is expected that this jar will be bunded with an appropriate
+			war file for use with other components.  There is no seperate 
+			installation just for the client itself.  After a build a jar
+			file is produced in the "target" directory.  When ever it is 
+			bundled with another component, it is expected to have in the
+			System properties or JNDI a key value of "org.astrogrid.config.url"
+			pointing to a config file.  An example config file is given in
+			cvs under the config directory for this client area.
+			Current config properties needed to use a server:			
+			<ul>
+				<li>org.astrogrid.registry.admin.endpoint - administration endpoint for updates.</li>
+				<li>org.astrogrid.registry.query.endpoint - query endpoint.</li>
+			</ul>
+			<i>just define no properties and define an identifier pointing
+			   to a xml file of the Resource for that identifier when using the local
+			   config cache.
+			</i>
+		</p>
+	</section>
+	<section name="How to Use for Other Components">
+		<p>
+		Once the configuration is complete and ready for another component
+		to use.  It may use the various delegates with the delegate factory.
+		<br /><strong>The Query:</strong><br />
+		Instantiate with: 
+		org.astrogrid.registry.client.query.RegistryService rs = org.astrogrid.registry.client.RegistryDelegateFactory.createQuery()
+		<br />From there you have access to all the delegate methods 
+		mentioned below for the Query section.  It is of course advisable to
+		use import statements at the top of your code to make things easier.
+		<strong>Still need to put some examples of the query schema/string here</strong>
+		</p>	
+	</section>
+	<section name="Delegate - Helper methods to the Interface">
+		<p>
+			This section is a quick description of what delegate methods can be used for
+			other components to take advantage of. This is not necessarily the actual web
+			service interface methods on the server side registry.
+			<br />
+			<strong>First the Query:</strong>
+			<ul>
+				<li>submitQuery - 
+				  Queries the Registry. Examples of the queries can be found in config/junitcache,
+				  but will add a section here soon.
+				  There are various submitQueries that can be used.
+				</li>
+				<li>getResourceByIdentifier - returns a Document DOM object of this one resource entry.</li>
+				<li>getEndPointByIdentifier - returns a string which is a endpoint of a Service entry by looking at the WSDL if it is a Web service.</li>
+				<li>getBasicWSDLInformation - returns a WSDLBasicInformation object containting a targetNamespace and endpoints found in a WSDL.</li>
+				<li>loadRegistry - returns a Document DOM object of just the registry resource entry.</li>
+    			<li>search - A query based on ADQL.</li>
+    			<li>listRecords - OAI list records.</li>
+    			<li>getRecord - OAI getRecord.</li>
+    			<li>listmetadataprefix - OAI listmetadataprefix.</li>
+    			<li>listidentifiers - OAI listidentifiers.</li>
+    			<li>identify - OAI  identify.</li>
+			</ul>
+			<strong>The Update:</strong>
+			<ul>
+				<li>update(Document) - updates a resource entries in the registry given a one or more Resources from a Document DOM object.</li>
+				<li>updateFromUrl(URL url) - Not yet implemented.</li>
+				<li>updateFromFile(File fi) - Not Yet imnplemented.</li>
+			</ul>
+		</p>
+	</section>
+	<section name="More on Queries">
+    	<p>
+    		The queries should be done in ADQL now, but current components still use an old style xml, look below on more 
+    		information about that.
+    	</p>
+		<p>
+			Currently the queries conform to an old style xml schema and syntax and will be changed shortly in itn06 to 
+			conform to the IVOA schema.  The schema can be found: <a href="..">Registry ~Query Schema</a>, but look at the
+			examples below to see basic syntax of the queries, it is very SQL like and easy to understand.
+			In the current iteration the parsing looks for all namespaces "*", and the current sectionOp values are "AND|OR".
+			The section items can be set to any text node or attribute, and finally for itemOp is much like the Xquery syntax see the itemOp list.
+			<br />
+			<i>ItemOp List:</i>
+			<ul>
+				<li>CONTAINS - constains or substring</li>
+				<li>EQ - equals</li>
+				<li>NE - not equals</li>
+				<li>GE - greater-than-or-equals</li>
+				<li>LE - less-than-or-equals</li>
+				<li>GT - greater-than</li>
+				<li>LT - less-than</li>
+			</ul>			
+			<br />
+			<i>Examples:</i><br />
+			<i>			
+				<query>
+					<selectionSequence>
+					    <selection item='searchElements' itemOp='EQ' value='Resource'/>
+        		        <selectionOp op='$and$'/> <!-- this is a dummy ob for the searchElements item hoped to be removed soon, but neeed now -->
+						<selection item='AuthorityID' itemOp='EQ' value='" + authorityID + "'/>
+        		        <selectionOp op='AND'/>
+		                <selection item='@type' itemOp='EQ' value='RegistryType'/>
+        	        </selectionSequence>
+        	    </query>
+			</i>
+		</p>
+	</section>
+ 
+ 
+ </body>
+</document>
