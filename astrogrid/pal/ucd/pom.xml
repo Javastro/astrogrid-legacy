@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>astrogrid-pal-ucd</groupId>
+  <artifactId>astrogrid-pal-ucd</artifactId>
+  <version>${astrogrid_dsa_version}</version>
+  <name>Astrogrid UCD Library</name>
+  <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+  </parent>
+
+  <description>Library for UCDs</description>
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-config</artifactId>
+    </dependency>
+  </dependencies>
+      <url>${astrogrid_doc_URL_root}/p/dsa/${project.version}/ucd</url>
+    <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+ 
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/dsa/${project.version}/ucd</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+    
+ </distributionManagement>
+  
+</project>

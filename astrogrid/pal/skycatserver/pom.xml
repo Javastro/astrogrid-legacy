@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+   <artifactId>astrogrid-dsa-catalog</artifactId>
+   <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+  </parent>
+  <version>${astrogrid.pal.latest}</version>
+  <packaging>war</packaging>
+  <name>Astrogrid DSA/Catalog WebApp</name>
+  <description>Webapplication for serving astronomical catalogues in RDBMs</description>
+  <licenses>
+    <license>
+      <name>The AstroGrid Software License, Version 1.2</name>
+      <url>http://www.astrogrid.org</url>
+    </license>
+  </licenses>
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>test/java</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.xsl</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}/test/java/</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.xsl</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}</directory>
+        <includes>
+          <include>src/webapp/WEB-INF/server-config.wsdd</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <testFailureIgnore>false</testFailureIgnore>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+      <url>${astrogrid_doc_URL_root}/p/dsa/${project.version}/catalog</url>
+    <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+ 
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/dsa/${project.version}/catalog</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+    
+ </distributionManagement>
+  
+</project>

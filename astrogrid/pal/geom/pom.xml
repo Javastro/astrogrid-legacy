@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>astrogrid-pal-geom</artifactId>
+  <version>${astrogrid.pal.latest}</version>
+  <name>Astrogrid Geometry Library</name>
+    <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+  </parent>
+ 
+  <description>Geometry classes for helping deal with polar coordinates, solar coordinates etc.
+    At some point should look at replacing with an existing library; I looked at jSky but it's rather
+    specific to world coordinates and images; here I want something that can translate and transform
+    spherical coordinates and use the existing java 2d library for 'flat' ones.</description>
+      <url>${astrogrid_doc_URL_root}/p/dsa/${project.version}/geom</url>
+    <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+ 
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/dsa/${project.version}/geom</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+    
+ </distributionManagement>
+  
+ </project>
