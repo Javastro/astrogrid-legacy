@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.11 2009/05/06 16:42:13 pah Exp $ -->
+<!-- $Id: pom.xml,v 1.12 2009/05/07 09:41:39 pah Exp $ -->
    <!--
       This pom is intended to contain the "version" information for the astrogrid (and other commonly used) components.
       In addition it contains the basic project information - however it *must not* contain any specific build information - this is contained in the
@@ -28,7 +28,7 @@
      <astrogrid_dsa_version>2009.1-SNAPSHOT</astrogrid_dsa_version>
      <astrogrid_registry_version>2008.2.01</astrogrid_registry_version>
      <astrogrid_vospace_version>2009.0.02.alpha</astrogrid_vospace_version>
-     <astrogrid_community_version>2009.1-SNAPSHOT</astrogrid_community_version>
+     <astrogrid_community_version>2009.1.a02</astrogrid_community_version>
      <astrogrid_security_version>2009.1.a04</astrogrid_security_version>
    </properties>
    
@@ -58,7 +58,12 @@
       <name>AstroGrid</name>
       <url>http://www.astrogrid.org</url>
    </organization>
-   
+   <licenses>
+      <license><name>Academic Free License version 2.1</name>
+        <distribution>repo</distribution>
+        <url>http://www.astrogrid.org/viewcvs/astrogrid/maven-base/LICENSE.txt?view=co</url>
+      </license>
+   </licenses>
    <!-- versions below represent the "release" version of the particular component - note that some of these are quite old now -->
    <dependencyManagement>
       <dependencies>
@@ -151,6 +156,11 @@
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-security</artifactId>
             <version>${astrogrid_security_version}</version>
+         </dependency>
+         <dependency>
+	        <groupId>org.astrogrid</groupId>
+	        <artifactId>jsamp</artifactId>
+            <version>0.3-1</version>
          </dependency>
          <dependency>
             <groupId>net.ivoa</groupId>
