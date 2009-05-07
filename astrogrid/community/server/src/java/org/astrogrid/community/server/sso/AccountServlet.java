@@ -287,22 +287,11 @@ public class AccountServlet extends HttpServlet {
     // Get the user's account-record from the community DB.
     // Note that the API for the DB accepts new-style
     // account-IVORNs.
-    StringBuilder accountName;
-    try {
-      accountName = new StringBuilder("ivo://");
-      accountName.append(userName);
-      accountName.append('@');
-      accountName.append(CommunityIvornParser.getLocalIdent());
-    } catch (Exception ex) {
-      ex.printStackTrace();
-      response.sendError(response.SC_INTERNAL_SERVER_ERROR);
-      return;
-    }   
-    
     AccountData account = null;
     try {
+      log.info("Looking for the account named" + userName);
       AccountManagerImpl ami = AccountManagerImpl.getDefault();
-      account = ami.getAccount(accountName.toString());
+      account = ami.getAccountByUserName(userName);
     } catch (Exception ex) {
       ex.printStackTrace();
       response.sendError(response.SC_INTERNAL_SERVER_ERROR);
@@ -312,7 +301,7 @@ public class AccountServlet extends HttpServlet {
     // If a homespace is recorded for this user, redirect the
     // client to that URI. Otherwise, treat the current resource
     // as not found.
-    if (account.getHomeSpace() == null) {
+    if (account == null || account.getHomeSpace() == null) {
       response.sendError(response.SC_NOT_FOUND);
     }
     else {
