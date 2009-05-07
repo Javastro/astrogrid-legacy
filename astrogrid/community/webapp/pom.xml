@@ -6,12 +6,7 @@
   <artifactId>astrogrid-community</artifactId>
   <packaging>war</packaging>
   <name>Community Web Application</name>
-  <version>2009.1.a02</version>
-  <parent>
-      <artifactId>astrogrid-base</artifactId>
-      <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
-  </parent>
+  <version>2009.1.a03</version>
 
   <description>Community is a AstroGrid web-application to manage user accounts.</description>
   <inceptionYear>2003</inceptionYear>
@@ -129,7 +124,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-server</artifactId>
-      <version>2009.1.a02</version>
+      <version>2009.1.a03</version>
     </dependency>
     <dependency>
       <groupId>commons-fileupload</groupId>
