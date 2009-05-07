@@ -30,7 +30,7 @@ public class PolicyManagerTest
     public void setUp() throws Exception {
       CommunityConfiguration c = new CommunityConfiguration();
       c.setVoSpaceIvorn("ivo://foo.bar/vospace");
-      c.setDatabaseConfigurationUrl(this.getClass().getResource("/test-database-001.xml"));
+      c.setDatabaseConfigurationUrl(this.getClass().getResource("/test-database-004.xml"));
     }
 
     /**
