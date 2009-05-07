@@ -219,15 +219,15 @@
             <resources>
                 <resource>
                   <directory>src/config</directory>
-                  <includes>registry.properties</includes>
+                  <includes><include>registry.properties</include></includes>
                 </resource>
                 <resource>
                   <directory>src/pem</directory>
-                  <includes>*</includes>
+                  <includes><include>*</include></includes>
                 </resource>
                 <resource>
                   <directory>src/pkipath</directory>
-                  <includes>*</includes>
+                  <includes><include>*</include></includes>
                 </resource>
             </resources>
         </unitTest>
