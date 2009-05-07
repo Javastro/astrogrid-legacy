@@ -32,10 +32,11 @@ public class CommunityServiceTest
      * Our default database name.
      *
      */
-    public static final String DEFAULT_DATABASE_NAME = "test-database-001" ;
+    public static final String DEFAULT_DATABASE_NAME = "test-database-003" ;
 
+    @Override
     public void setUp() throws Exception {
-      URL u = this.getClass().getResource("/test-database-001.xml");
+      URL u = this.getClass().getResource("/test-database-003.xml");
       this.dbConfiguration = new DatabaseConfiguration(DEFAULT_DATABASE_NAME, u);
       this.dbConfiguration.resetDatabaseTables();
       assertNotNull("Null database connection", this.getDatabase());
