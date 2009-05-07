@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id: site.xml,v 1.1 2009/05/07 10:19:55 pah Exp $ -->
+<!--   Note also for projects that specify their own, they should really only specify the menus within the body and allow the rest to be inherited -->
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+   <body>
+     <breadcrumbs>
+       <item name="Community Server " href="${astrogrid_doc_URL_root}/p/community/${project.version}/server/"/>
+    </breadcrumbs>
+    <menu ref="reports"/>
+   </body>
+   </project>

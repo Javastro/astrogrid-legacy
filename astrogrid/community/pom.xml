@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>community-site</artifactId>
+  <packaging>pom</packaging>
+  <name>Community</name>
+  <version>${astrogrid_community_version}</version>
+  <description>Project that aggregates the necessary community modules</description>
+  <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+  </parent>
+  <modules>
+    <module>server</module>
+ <!--    <module>client</module> this has too much axis mucking around - do later --> 
+    <module>webapp</module>
+  </modules>
+     <url>${astrogrid_doc_URL_root}/p/community/${project.version}</url>  
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/community/${project.version}</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+ </distributionManagement>
+  
+</project>

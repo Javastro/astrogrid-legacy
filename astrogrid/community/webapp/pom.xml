@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-community</artifactId>
   <packaging>war</packaging>
   <name>Community Web Application</name>
   <version>2009.1.a02</version>
+  <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+  </parent>
 
   <description>Community is a AstroGrid web-application to manage user accounts.</description>
   <inceptionYear>2003</inceptionYear>
@@ -57,8 +63,6 @@
     </contributor>
   </contributors>
   <scm>
-    <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community/webapp</connection>
-    <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/webapp</developerConnection>
   </scm>
   <organization>
     <name>AstroGrid</name>
@@ -180,18 +184,15 @@
       </plugin>
     </plugins>
   </reporting>
-  <distributionManagement>
-    <repository>
-      <id>ag-m2</id>
-      <name>AstroGrid's Maven-2 repository</name>
-      <url>scp://katatjuta.star.le.ac.uk/maven2</url>
-      <layout>default</layout>
-    </repository>
+   <url>${astrogrid_doc_URL_root}/p/community/${project.version}/webapp</url> 
+   <distributionManagement>
     <site>
-      <id>ag-deployer</id>
-      <name>deployer.astrogrid.org</name>
-      <url>scp://terror.star.le.ac.uk/software_docs/community-${pom.version}</url>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/community/${project.version}/webapp</url>
+      <!-- terror.star.le.ac.uk/ -->
     </site>
+
   </distributionManagement>
   <properties>
         <netbeans.hint.deploy.server>gfv3</netbeans.hint.deploy.server>

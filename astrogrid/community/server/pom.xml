@@ -9,6 +9,11 @@
   <artifactId>astrogrid-community-server</artifactId>
   <name>Community service library</name>
   <version>2009.1.a02</version>
+    <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+  </parent>
   <description>This project builds the jar of classes needed for the community web-application.</description>
   <inceptionYear>2003</inceptionYear>
 
@@ -156,11 +161,6 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.14</version>
-    </dependency>
-    <dependency>
-      <groupId>bouncycastle</groupId>
-      <artifactId>bcprov-jdk15</artifactId>
-      <version>140</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
@@ -316,18 +316,13 @@
       </plugin>
     </plugins>
   </reporting>
-  <distributionManagement>
-    <repository>
-      <uniqueVersion>true</uniqueVersion>
-      <id>ag-m2</id>
-      <name>AstroGrid's Maven-2 repository</name>
-      <url>scp://katatjuta.star.le.ac.uk/maven2</url>
-      <layout>default</layout>
-    </repository>
+     <url>${astrogrid_doc_URL_root}/p/community/${project.version}/server</url>  --> 
+   <distributionManagement>
     <site>
-      <id>ag-deployer</id>
-      <name>Deployer site</name>
-      <url>scp://terror.star.le.ac.uk/software_docs/community-server-${pom.version}</url>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/community/${project.version}/server</url>
+      <!-- terror.star.le.ac.uk/ -->
     </site>
-  </distributionManagement>
+ </distributionManagement>
 </project>
