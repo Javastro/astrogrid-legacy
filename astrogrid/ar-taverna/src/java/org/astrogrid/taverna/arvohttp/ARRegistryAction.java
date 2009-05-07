@@ -3,6 +3,7 @@ package org.astrogrid.taverna.arvohttp;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+//import javax.annotation.Resource;
 import javax.swing.ImageIcon;
 import java.net.URI;
 import org.astrogrid.acr.ivoa.resource.*;
@@ -48,16 +49,17 @@ public class ARRegistryAction implements ProcessorActionSPI
 				return;
 			}
 			
-			/*
+			
 			if(res.length > 0) {
-				String []ivorns = new String[res.length];
-				for(int i = 0;i < res.length;i++) {
-					ivorns[i] = res[i].getId().toString();
+				String ivorns = "";
+				for(int i = 0;i < (res.length-1);i++) {
+					//ivorns[i] = res[i].getId().toString();
+					ivorns += res[i].getId().toString() + ",";
 				}
-				ARScavenger.saveProperties(ivorns);
-				//processor.setRegId(res[0].getId().toString());
+				ivorns += res[(res.length-1)].getId().toString();
+				processor.setChosenResources(ivorns);
 			}
-			*/
+			
 			//processor.setChosenDirectoryURI(chosenRes.toString());
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -71,7 +73,7 @@ public class ARRegistryAction implements ProcessorActionSPI
 	}
 
 	public String getDescription() {
-		return "Find Cea from Registry";
+		return "Find Service from Registry";
 	}
 
 	public ImageIcon getIcon() {

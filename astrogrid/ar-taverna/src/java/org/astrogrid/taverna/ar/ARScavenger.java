@@ -34,7 +34,7 @@ public class ARScavenger extends Scavenger {
 	 */
 	public ARScavenger() throws ScavengerCreationException {
 		super("Astro Runtime");
-		logger.info("start constructor in ARScavenger");
+		logger.error("22start constructor in ARScavenger for Astro Runtime");
 		listApi();
 	}
 	
@@ -42,7 +42,6 @@ public class ARScavenger extends Scavenger {
 	/** alternate implementation of listApi */
 	private void listApi() throws ScavengerCreationException {
 		try {
-			logger.info("start listApi in ARScavenger");
 			ModuleDescriptor[] modules = SingletonACR.listModules();
 			for (int i =0 ; i < modules.length; i++) {
 				DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode(modules[i].getName());
@@ -60,7 +59,6 @@ public class ARScavenger extends Scavenger {
 					}								
 					}					
 			}
-			logger.info("end listApi successful ARScavenger");
 		} catch (ACRException x) {
 			throw new ScavengerCreationException("Failed to list components of AR" + x.getMessage());
 		}	

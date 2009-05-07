@@ -355,7 +355,8 @@ public class ARTask implements ProcessorTaskWorker {
 	    ACR acr = SingletonACR.getACR();
 		Applications apps = (Applications)acr.getService(Applications.class);
 		
-		Map toolStruct = apps.createTemplateStruct(ceaAppIvorn,ceaInterfaceName);
+		//CeaApplication
+		Map toolStruct = apps.createTemplateStruct(ceaAppIvorn,ceaInterfaceName.toUpperCase());
 		
 		Hashtable inputFromCEATemplate = (Hashtable)toolStruct.get("input");
 		

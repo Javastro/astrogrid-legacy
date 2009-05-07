@@ -186,7 +186,7 @@ public class ARProcessor extends Processor implements Serializable {
 		inputInterface.setOptional(true);
 		inputInterface.getMetadata().setMIMETypes(mimesText);
 		inputInterface.setSyntacticType(computeType(java.lang.String.class,mimesText));
-		inputInterface.setDefaultValue("adql");
+		inputInterface.setDefaultValue("ADQL");
 		this.addPort(inputInterface);		
 		
 		InputPort input = new InputPort(this,"Query");

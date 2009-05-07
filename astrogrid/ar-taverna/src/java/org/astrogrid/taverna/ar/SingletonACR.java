@@ -9,6 +9,10 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.ModuleDescriptor;
 import org.astrogrid.acr.system.ApiHelp;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.VODesktop;
+
 /** Singleton static that contains a reference to ACR.
  * seems only way to share context object between processor / factory / etc.
  * @todo replace with a better-architected solution - in particular, something
@@ -17,6 +21,8 @@ import org.astrogrid.acr.system.ApiHelp;
  * @since May 30, 20064:36:02 PM
  */
 public class SingletonACR {
+	
+	private static final Log logger = LogFactory.getLog(SingletonACR.class);
 
 	private SingletonACR() {
 	}
@@ -24,9 +30,20 @@ public class SingletonACR {
 	private static ACR theInstance;
 	private static ModuleDescriptor[] modules;
 	public static synchronized ACR getACR() throws ACRException {
+		logger.warn("2222in getACR()");
 		if (theInstance== null) {
 			Finder f = new Finder();
-			theInstance = f.find();
+			try {
+				theInstance = f.find();
+			}catch(ACRException ae) {
+				logger.warn("Cannot find a connection to Astro Runtime Library");
+				/*
+				VODesktop.main(null);
+				logger.warn("now try the find.");
+				f = new Finder();
+				theInstance = f.find();
+				*/
+			}
 		}
 		return theInstance;
 	}

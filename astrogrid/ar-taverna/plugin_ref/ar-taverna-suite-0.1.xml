@@ -1,0 +1,16 @@
+<plugin>
+  <name>Astrogrid Taverna Suite</name>
+  <description>Astrogrid Taverna (1.6.2.x) to be used with VOExplorer</description>
+  <identifier>uk.org.mygrid.taverna.plugins.astrogrid-taverna-suite-voexplorer</identifier>
+  <version>0.1</version>
+  <provider>astrogrid.org</provider>
+  <repositories>
+    <repository>http://www.astrogrid.org/maven/</repository>
+  </repositories>
+  <profile>	
+    <artifact groupId="taverna_plugins" artifactId="ar-taverna-suite" version="0.1" />
+  </profile>
+  <taverna>
+	<version>1.6.2</version>
+  </taverna>
+</plugin>

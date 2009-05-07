@@ -65,9 +65,11 @@ try{
 		logger.info("finished setting Outoput and Inputports successfully");
 } catch (PortCreationException e) {
 	e.printStackTrace();
+	logger.error(e);
 	throw new ProcessorCreationException(e);
 } catch (DuplicatePortNameException e) {
 	e.printStackTrace();
+	logger.error(e);
 	throw new ProcessorCreationException(e);
 }
 	logger.info("done with constructor of ARProcessor");

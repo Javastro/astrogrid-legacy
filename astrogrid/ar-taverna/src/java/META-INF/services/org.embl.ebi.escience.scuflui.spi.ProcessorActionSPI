@@ -3,4 +3,5 @@ org.astrogrid.taverna.armyspace.ARMyspaceFolderAction
 org.astrogrid.taverna.arcea.ARMyspaceActionResult
 org.astrogrid.taverna.arcea.ARRegistryAction
 org.astrogrid.taverna.arcea_app.ARRegistryAction
+org.astrogrid.taverna.arvohttp.ARRegistryAction
 org.astrogrid.taverna.armyspace.ARMyspaceAction

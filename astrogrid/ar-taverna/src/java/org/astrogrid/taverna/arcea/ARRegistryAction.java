@@ -35,9 +35,13 @@ public class ARRegistryAction implements ProcessorActionSPI
 		try {
 			ACR acr = SingletonACR.getACR();
 			RegistryGoogle reg = (RegistryGoogle)acr.getService(RegistryGoogle.class);
-			Resource []res = reg.selectResourcesXQueryFilter("Find DSA-CeaApplication", false, " //vor:Resource[applicationDefinition/parameters/parameterDefinition/@id='Query']");
+			//Resource []res = reg.selectResourcesXQueryFilter("Find DSA", false, " //vor:Resource[applicationDefinition/parameters/parameterDefinition/@id='Query']");
+			
+			Resource []res = reg.selectResourcesXQueryFilter("Find DSA", false, " //vor:Resource[capability/@standardID='ivo://org.astrogrid/std/CEA/v1.0' and table]");
 			if(res.length > 0) {
-				processor.setRegId(res[0].getId().toString());
+				
+				//processor.setRegId(res[0].getId().toString());
+				processor.setRegId(res[0].getContent().getRelationships()[0].getRelatedResources()[0].getValue());
 			}
 			//processor.setChosenDirectoryURI(chosenRes.toString());
 		}catch(Exception e) {

@@ -102,13 +102,13 @@ public class ARProcessor extends Processor implements Serializable {
 		return this.commonName;
 	}
 	
-	public void setChosenResources(Resource []res) {
+	public void setChosenResources(String ivorns) {
 		//this.chosenDirectoryURI = dirURI;
 		InputPort []ips =  this.getInputPorts();
 		for(int j = 0;j < ips.length;j++) {
 			if(ips[j].getName().equals("Ivorns")) {
 				logger.warn("try setting the new defaultvalue for input port");
-				//ips[j].setDefaultValue(chosenDirectoryURI);
+				ips[j].setDefaultValue(ivorns);
 				j = ips.length;
 			}
 		}
@@ -190,6 +190,7 @@ public class ARProcessor extends Processor implements Serializable {
 		InputPort input = new InputPort(this,"Only URLS Needed");
 		List mimes = new ArrayList();
 		mimes.add("text/plain");
+		input.setDefaultValue("true");
 		input.getMetadata().setMIMETypes(mimes);
 		input.setSyntacticType(computeType(java.lang.String.class,mimes));
 		this.addPort(input);

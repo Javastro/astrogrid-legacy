@@ -1,0 +1,6 @@
+<plugins>
+  <plugin>ar-taverna-suite-0.2.xml</plugin>
+  <plugin>ar-taverna-suite-0.3.xml</plugin>
+  <plugin>ar-taverna-suite-2008.1.xml</plugin>
+  <plugin>ar-taverna-suite-2008.1.1.xml</plugin>
+</plugins>

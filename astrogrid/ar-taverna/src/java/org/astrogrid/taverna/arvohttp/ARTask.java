@@ -77,18 +77,36 @@ public class ARTask implements ProcessorTaskWorker {
 	private final ARProcessor processor;
 	
 	private Resource[] getResources(List ivorns, String serviceType) throws ACRException, ServiceException, NotFoundException, URISyntaxException {
-		Iterator iter = ivorns.iterator();
+		
 		String ivorn;
-		Resource []res = new Resource[ivorns.size()];
+		String []ivornList;
+		Resource []res;	
 		int i = 0;
-		while(iter.hasNext()) {
-			ivorn = ((String)iter.next()).trim();
-			if(ivorn.startsWith("ivo://")) {
-				logger.warn("in getResources(list..) ivorn = " + ivorn);
-				res[i] = getResources(ivorn,serviceType)[0];
-				i++;
-			}//if
-		}//while
+		if(ivorns.size() == 1) {
+			ivorn = (String)ivorns.get(0);
+			ivornList = ivorn.split(",");
+			res = new Resource[ivornList.length];
+			for(i = 0;i < ivornList.length;i++) {
+				if(ivornList[i].startsWith("ivo://")) {
+					res[i] = getResources(ivornList[i],serviceType)[0];	
+				}//if
+			}//for
+		}else if(ivorns.size() > 1) {
+			res = new Resource[ivorns.size()];
+			Iterator iter = ivorns.iterator();
+			ivornList = new String[ivorns.size()];
+			while(iter.hasNext()) {
+				ivorn = ((String)iter.next()).trim();
+				if(ivorn.startsWith("ivo://")) {
+					logger.warn("in getResources(list..) ivorn = " + ivorn);
+					res[i] = getResources(ivorn,serviceType)[0];
+					i++;
+				}//if
+			}//while
+		}else {
+			throw new NotFoundException("No Ivorns/Identifiers input to perform query");
+		}
+		
 		return res;
 	}
 	
@@ -157,7 +175,7 @@ public class ARTask implements ProcessorTaskWorker {
 	
 	private URL getSiapURL(Siap siap,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException, TransformerException, java.net.MalformedURLException, TransformerConfigurationException {
 		logger.warn("getSiapURL");
-		URI resURI = getResourceAccessURI(res);
+		URI resURI = getResourceAccessURI(res,"SIAP");
 
 		logger.warn("processingsiap for " + res.getId() + " and uri = " + resURI);
 		URL siapURL = siap.constructQuery(resURI,ra,dec,size);
@@ -168,7 +186,7 @@ public class ARTask implements ProcessorTaskWorker {
 	
 	private URL getStapURL(Stap stap,Resource res, Calendar start, Calendar end) throws InvalidArgumentException, NotFoundException, ServiceException, TransformerException, java.net.MalformedURLException, TransformerConfigurationException {
 		logger.warn("getStapURL");
-		URI resURI = getResourceAccessURI(res);
+		URI resURI = getResourceAccessURI(res,"STAP");
 
 		logger.warn("processingstap for " + res.getId() + " and uri = " + resURI);
 		URL stapURL = stap.constructQuery(resURI,start.getTime(), end.getTime());
@@ -203,7 +221,7 @@ public class ARTask implements ProcessorTaskWorker {
 	}	
 	
 	private URL getConeURL(Cone cone,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException,  TransformerException, TransformerConfigurationException {
-		URI resURI = getResourceAccessURI(res);
+		URI resURI = getResourceAccessURI(res,"CONE");
 		URL coneURL = cone.constructQuery(resURI,ra,dec,size);
 		logger.warn("url for coneURL to call = " + coneURL);
 		urlMap.put(res.getId().toString(), coneURL.toString());
@@ -221,7 +239,7 @@ public class ARTask implements ProcessorTaskWorker {
 	}	
 	
 	private URL getSSAPURL(Ssap ssap,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException,  TransformerException, TransformerConfigurationException {
-		URI resURI = getResourceAccessURI(res);
+		URI resURI = getResourceAccessURI(res,"SSAP");
 		URL ssapURL = ssap.constructQuery(resURI,ra,dec,size);
 		logger.warn("url for coneURL to call = " + ssapURL);
 		urlMap.put(res.getId().toString(), ssapURL.toString());
@@ -423,9 +441,19 @@ public class ARTask implements ProcessorTaskWorker {
 		    logger.warn("lets make the Ivorns and URLs list the size = " + urlMap.size());
 		    outputMap.put("Ivorns",DataThingFactory.bake(new ArrayList(urlMap.keySet())));
 		    outputMap.put("URLs",DataThingFactory.bake(new ArrayList(urlMap.values())));
+			if(urlMap.size() > 0) {
+				logger.warn("3333 urlmap key of 0 = " + urlMap.keySet().toArray()[0].toString() );
+				logger.warn("3333 urlmap value of 0 = " + urlMap.values().toArray()[0].toString());
+			}		    
 		    outputMap.put("ErrorList", DataThingFactory.bake(errorList));
     		if(saveURLS == null || !saveURLS.equals("true") ) {
-    		    outputMap.put("ResultList",DataThingFactory.bake(new ArrayList(resultMap.values())));    			
+    		    outputMap.put("ResultList",DataThingFactory.bake(new ArrayList(resultMap.values())));   
+    			if(resultMap.size() > 0) {
+    				logger.warn("3333 resultmap value of 0 = " + resultMap.values().toArray()[0].toString());
+    			}
+
+    		}else {
+    			outputMap.put("ResultList",DataThingFactory.bake(new ArrayList().add("No Result List, only urls are saved as determed by your input")));
     		}
 		    logger.warn("end execute in ARTask");
 		    return outputMap;
@@ -437,16 +465,36 @@ public class ARTask implements ProcessorTaskWorker {
 		} 
 	}
 	
-	private URI getResourceAccessURI(Resource r) throws InvalidArgumentException {
+	private URI getResourceAccessURI(Resource r,String serviceType) throws InvalidArgumentException {
         // hope for now we've only got one service capability.
         if (! (r instanceof Service)) {
         	throw new InvalidArgumentException("Resouce found is not a known type of 'Service' id = " + r.getId());
         }
         Service s = (Service)r;
-        if (s.getCapabilities().length == 0 || s.getCapabilities()[0].getInterfaces().length == 0 || s.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length == 0){
-        	throw new InvalidArgumentException("Resource does not provide an access URL.  id = " + r.getId());
+        if (s.getCapabilities().length == 0) { 
+        	// || s.getCapabilities()[0].getInterfaces().length == 0 || s.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length == 0){
+        	throw new InvalidArgumentException("Resource does not provide a Capability.  id = " + r.getId());
         }
-        return s.getCapabilities()[0].getInterfaces()[0].getAccessUrls()[0].getValueURI();
+        for(int i = 0;i < s.getCapabilities().length;i++) {
+        	if(serviceType.equals("SIAP") && s.getCapabilities()[i] instanceof SiapCapability) {
+        		if(s.getCapabilities()[i].getInterfaces().length > 0 || s.getCapabilities()[i].getInterfaces()[0].getAccessUrls().length > 0){
+        			return s.getCapabilities()[i].getInterfaces()[0].getAccessUrls()[0].getValueURI(); 
+        		}        		
+        	}else if(serviceType.equals("CONE") && s.getCapabilities()[i] instanceof ConeCapability) {
+        		if(s.getCapabilities()[i].getInterfaces().length > 0 || s.getCapabilities()[i].getInterfaces()[0].getAccessUrls().length > 0){
+        			return s.getCapabilities()[i].getInterfaces()[0].getAccessUrls()[0].getValueURI(); 
+        		}        
+        	}else if(serviceType.equals("SSAP") && s.getCapabilities()[i] instanceof SsapCapability) {
+        		if(s.getCapabilities()[i].getInterfaces().length > 0 || s.getCapabilities()[i].getInterfaces()[0].getAccessUrls().length > 0){
+        			return s.getCapabilities()[i].getInterfaces()[0].getAccessUrls()[0].getValueURI(); 
+        		}        
+        	}else if(serviceType.equals("STAP") && s.getCapabilities()[i] instanceof StapCapability) {
+        		if(s.getCapabilities()[i].getInterfaces().length > 0 || s.getCapabilities()[i].getInterfaces()[0].getAccessUrls().length > 0){
+        			return s.getCapabilities()[i].getInterfaces()[0].getAccessUrls()[0].getValueURI(); 
+        		}        
+        	}
+        }
+        throw new InvalidArgumentException("Resource does not provide a Capability and URL for " + serviceType + " the  identifier = " + r.getId());        
 	}
 	//returns true if c is some kind of AR bean - various heuristics used.
 	// pity we've not got a marker interface.
