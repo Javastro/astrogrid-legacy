@@ -25,7 +25,7 @@
   <packaging>jar</packaging>
   <description>A class library from which CEA services may be made.</description>
   <properties>
-   <astrogrid.name>applications</astrogrid.name>
+     <astrogrid_name>server</astrogrid_name>
   </properties>
   <build>
     <plugins>
@@ -83,21 +83,20 @@
  </dependencyManagement>
  <dependencies>
  
- 	<dependency>
-       <groupId>qadi-client</groupId>
+ 	<dependency> <!-- for AGAST  -->
+       <groupId>qadi</groupId>
        <artifactId>qadi-client</artifactId>
        <version>2009.1</version>
     </dependency>
            <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-common</artifactId>
-            <version>2009.1-SNAPSHOT</version>
+            <version>${project.version}</version>
           </dependency>
   
     <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-common</artifactId>
-       <version>2009.1-SNAPSHOT</version>
        <exclusions>
           <exclusion><artifactId>picocontainer</artifactId><groupId>picocontainer</groupId></exclusion>
        </exclusions>
@@ -110,7 +109,7 @@
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-registry-common</artifactId>
     </dependency>
-    <!-- used to implement a weak-reference cache in the registry -->
+    <!-- used to implement a weak-reference cache in the registry? -->
     <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-pal-oldquery</artifactId>
@@ -189,31 +188,7 @@
     <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-vospace-delegate</artifactId>
-       <version>2008.2.01</version>
     </dependency>
-    <!-- VOSpace requirements - should be just transitive -->
-    <dependency>
-       <groupId>org.astrogrid</groupId>
-       <artifactId>astrogrid-vospace-1.1-client</artifactId>
-       <version>2008.2.01</version>
-    </dependency>
-        <dependency>
-       <groupId>org.astrogrid</groupId>
-       <artifactId>astrogrid-vospace-util</artifactId>
-       <version>2008.2.01</version>
-    </dependency>
-    <dependency>
-       <groupId>org.astrogrid</groupId>
-       <artifactId>astrogrid-vospace-delegate</artifactId>
-       <version>2008.2.01</version>
-    </dependency>
-        <dependency>
-       <groupId>org.astrogrid</groupId>
-       <artifactId>astrogrid-vospace-1.1-schema</artifactId>
-       <version>2008.2.01</version>
-    </dependency>
-     
-    <!-- end VOSpace -->
 
 
     
@@ -363,4 +338,14 @@
         </repositories>
      </profile>
   </profiles>
+    <url>${astrogrid_doc_URL_root}/p/cea/${project.version}/server</url>  --> 
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/cea/${project.version}/server</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+ </distributionManagement>
+
  </project>
