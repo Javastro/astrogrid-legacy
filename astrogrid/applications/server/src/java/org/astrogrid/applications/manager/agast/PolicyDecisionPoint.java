@@ -3,30 +3,20 @@
  */
 package org.astrogrid.applications.manager.agast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URL;
 import java.security.GeneralSecurityException;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.Random;
 
-// import org.bouncycastle.openssl.PEMWriter; 
-
 import javax.security.auth.x500.X500Principal;
 
-import org.astrogrid.applications.Application;
-import org.astrogrid.security.AccountIvorn;
+import org.agastpdp.qadi.client.QadiClient;
+import org.agastpdp.qadi.client.QadiClientException;
+import org.agastpdp.qadi.client.QadiPDPClientImpl;
+import org.apache.log4j.Logger;
 import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.security.authorization.AccessPolicy;
-import org.agastpdp.qadi.client.*;
-import org.apache.log4j.Logger ;
 
 /**
  * @author jl99

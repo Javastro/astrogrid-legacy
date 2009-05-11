@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.16 2009/02/26 12:47:04 pah Exp $
+/*$Id: SystemTest.java,v 1.17 2009/05/11 10:50:44 pah Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import org.astrogrid.applications.description.execution.MessageType;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.environment.DefaultExecutionEnvRetriever;
 import org.astrogrid.applications.javainternal.BuiltInApplicationDescriptionTest;
+import org.astrogrid.applications.manager.agast.NullPolicyDecisionPoint;
 import org.astrogrid.applications.test.MockMonitor;
 import org.astrogrid.jes.delegate.Delegate;
 import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
@@ -45,7 +46,7 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        controller = new DefaultExecutionController(lib,history, new DefaultExecutionPolicy());
+        controller = new DefaultExecutionController(lib,history, new DefaultExecutionPolicy(), new NullPolicyDecisionPoint());
         ApplicationEnvironmentRetriver executionRetriever = new DefaultExecutionEnvRetriever(history, conf);
         querier = new DefaultQueryService(history, executionRetriever);
         
@@ -135,6 +136,11 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.17  2009/05/11 10:50:44  pah
+ASSIGNED - bug 2911: improve authz configuration
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+get unit test working again
+
 Revision 1.16  2009/02/26 12:47:04  pah
 separate more out into cea-common for both client and server
 

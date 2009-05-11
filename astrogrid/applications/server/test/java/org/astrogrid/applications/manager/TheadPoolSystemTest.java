@@ -1,4 +1,4 @@
-/*$Id: TheadPoolSystemTest.java,v 1.5 2008/09/13 09:51:05 pah Exp $
+/*$Id: TheadPoolSystemTest.java,v 1.6 2009/05/11 10:50:45 pah Exp $
  * Created on 14-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import net.ivoa.uws.ExecutionPhase;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
+import org.astrogrid.applications.manager.agast.NullPolicyDecisionPoint;
 import org.junit.Test;
 
 /** same as the existing system test, but using the thread pool execution controller.
@@ -39,7 +40,7 @@ public class TheadPoolSystemTest extends SystemTest {
          
         ExecutionPolicy policy = new DefaultExecutionPolicy();
         ThreadPoolExecutor pool = new CeaThreadPoolExecutor(policy);
-	threadpoolController = new ThreadPoolExecutionController(lib,history,policy, pool);
+	threadpoolController = new ThreadPoolExecutionController(lib,history,policy, pool, new NullPolicyDecisionPoint());
         controller = threadpoolController;
     }
     
@@ -109,7 +110,7 @@ public class TheadPoolSystemTest extends SystemTest {
         };
         ThreadPoolExecutor pool = new CeaThreadPoolExecutor(policy);
         
-	threadpoolController = new ThreadPoolExecutionController(lib,history,policy, pool);
+	threadpoolController = new ThreadPoolExecutionController(lib,history,policy, pool, new NullPolicyDecisionPoint());
         controller = threadpoolController;
 	String id = controller.init(tool, "abort1", secGuard );
 	controller.execute(id);
@@ -125,6 +126,11 @@ public class TheadPoolSystemTest extends SystemTest {
 
 /* 
 $Log: TheadPoolSystemTest.java,v $
+Revision 1.6  2009/05/11 10:50:45  pah
+ASSIGNED - bug 2911: improve authz configuration
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+get unit test working again
+
 Revision 1.5  2008/09/13 09:51:05  pah
 code cleanup
 

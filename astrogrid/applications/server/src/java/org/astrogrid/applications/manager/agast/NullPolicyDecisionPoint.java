@@ -17,7 +17,7 @@ public class NullPolicyDecisionPoint implements AccessPolicy {
 	
 	private static final Logger log = Logger.getLogger( NullPolicyDecisionPoint.class ) ;
 	
-	public NullPolicyDecisionPoint( String qadiUrl ) {}
+	public NullPolicyDecisionPoint(  ) {}
 	
 	/* (non-Javadoc)
 	 * @see org.astrogrid.security.authorization.AccessPolicy#decide(org.astrogrid.security.SecurityGuard, java.util.Map)

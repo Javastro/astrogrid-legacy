@@ -9,24 +9,9 @@
 
 package org.astrogrid.applications.manager;
 
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.Status;
-import org.astrogrid.applications.description.ApplicationDefinition;
-import org.astrogrid.applications.description.ApplicationDescription;
-import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
-import org.astrogrid.applications.manager.agast.PolicyDecisionPoint;
-import org.astrogrid.applications.manager.persist.ExecutionHistory;
-import org.astrogrid.applications.manager.persist.PersistenceException;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.security.SecurityGuard;
-import org.astrogrid.security.authorization.AccessPolicy;
-import org.astrogrid.applications.description.execution.Tool;
-
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
@@ -34,6 +19,18 @@ import java.util.Observer;
 import java.util.Set;
 
 import junit.framework.Test;
+
+import org.astrogrid.applications.Application;
+import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.Status;
+import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.manager.persist.ExecutionHistory;
+import org.astrogrid.applications.manager.persist.PersistenceException;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.security.authorization.AccessPolicy;
 
 /**
  * Default implementation of the {@link org.astrogrid.applications.manager.ExecutionController}
