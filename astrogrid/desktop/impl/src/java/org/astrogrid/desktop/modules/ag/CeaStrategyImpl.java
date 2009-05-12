@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.7 2009/04/17 17:01:47 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.8 2009/05/12 12:22:13 gtr Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -74,6 +74,9 @@ import org.w3c.dom.Document;
  *
  */
 public class CeaStrategyImpl extends AbstractToolBasedStrategy implements RemoteProcessStrategy{
+    
+  public static final Log log = LogFactory.getLog(CeaStrategyImpl.class);
+  
  	/** monitor for a single remote cea task */
 	private class RemoteTaskMonitor extends TimerDrivenProcessMonitor implements ProcessMonitor.Advanced {
 		
@@ -182,37 +185,49 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
                     }
                 }
             }
+                
+            if (community.isLoggedIn()) {
+              try {
+                ceaHelper.delegateCredentials(targetService);
+              }
+              catch (NotFoundException e) {
+                // If no delegation facilities found don't worry.
+                log.info("Skipping delegation because no delegation endpoint was found.");
+              }
+            }
+            
             try {
-            final JobIdentifierType jid = new JobIdentifierType(targetService.getId().toString());
-            delegate = ceaHelper.createCEADelegate(targetService);                                   
-            info("Initializing on server " + targetService.getId() );
+              final JobIdentifierType jid = new JobIdentifierType(targetService.getId().toString());
+              delegate = ceaHelper.createCEADelegate(targetService);                                   
+              info("Initializing on server " + targetService.getId() );
 
-            //make a version of the tool with concrete ivorns, just for the remote service
-            final Tool remotetool = makeMySpaceIvornsConcrete(tool);
-            ceaid = delegate.init(remotetool,jid);
-            info("Server returned taskID " + ceaid);            
-            setId(mkGlobalExecId(ceaid,targetService));
-            // kick it off.
-                if (delegate.execute(ceaid)) {
-                    info("Started application");
-                    // task has started, so register this monitor with the scheduler...
-                    sched.schedule(this);
-                } else {
-                    error("Failed to execute application");
-                    throw new ServiceException("Failed to execute application");
-                }
+              //make a version of the tool with concrete ivorns, just for the remote service
+              final Tool remotetool = makeMySpaceIvornsConcrete(tool);
+              ceaid = delegate.init(remotetool,jid);
+              info("Server returned taskID " + ceaid);            
+              setId(mkGlobalExecId(ceaid,targetService));
+              // kick it off.
+              if (delegate.execute(ceaid)) {
+                info("Started application");
+                // task has started, so register this monitor with the scheduler...
+                sched.schedule(this);
+              } else {
+                error("Failed to execute application");
+                throw new ServiceException("Failed to execute application");
+              }
             } catch (final CEADelegateException x) {
-                error("Failed to execute application ",x);
-                Throwable e = x; // get to the core of the problem - too much wrapping here.
-                while (e.getCause() != null) {
-                    e = e.getCause();
-                }
-                throw new ServiceException(e.getMessage()); 
-            } catch (final InvalidArgumentException x) {
-                error("Failed to execute application ",x);
-                throw new ServiceException(x);
+              error("Failed to execute application ",x);
+              Throwable e = x; // get to the core of the problem - too much wrapping here.
+              while (e.getCause() != null) {
+                e = e.getCause();
+              }
+              throw new ServiceException(e.getMessage()); 
+            }
+            catch (final InvalidArgumentException x) {
+              error("Failed to execute application ",x);
+              throw new ServiceException(x);
 	    }       
-        }
+          }
 	
         
         /**
@@ -543,9 +558,21 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.8  2009/05/12 12:22:13  gtr
+Branch ar-gtr-2909 is merged.
+
+<<<<<<< CeaStrategyImpl.java
 Revision 1.7  2009/04/17 17:01:47  nw
 MultiCone.
 
+=======
+Revision 1.6.2.2  2009/05/05 16:11:18  gtr
+It now attempts delegation only if the user is logged in.
+
+Revision 1.6.2.1  2009/05/05 12:06:35  gtr
+Delegation is supported.
+
+>>>>>>> 1.6.2.2
 Revision 1.6  2009/04/06 11:32:46  nw
 Complete - taskConvert all to generics.
 

@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.18 2008/11/04 14:35:47 nw Exp $
+/*$Id: CeaHelper.java,v 1.19 2009/05/12 12:19:56 gtr Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,12 @@ package org.astrogrid.desktop.modules.ag;
 
 import java.net.URI;
 import java.net.URL;
+import java.security.Security;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
@@ -26,6 +29,8 @@ import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.security.delegation.DelegationClient;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /** Helper object for working with cea services.
  *<p>
@@ -43,6 +48,9 @@ public class CeaHelper {
         super();
         this.reg = reg;
         this.community = community;
+        if (Security.getProvider("BC") == null) {
+          Security.addProvider(new BouncyCastleProvider());
+        }
     }
     private final CommunityInternal community;
     private final Registry reg;
@@ -111,6 +119,51 @@ public class CeaHelper {
       }
       return del;
    }
+    
+    
+  /**
+   * Delegates the user's credentials to the service.
+   * This uses the registered IVOA-delegation-service if such is known.
+   *
+   * @param service The registration details of the service.
+   * @throws NotFoundException If the service has no delegation endpoint.
+   * @throws ServiceException If the endpoint is present but delegation fails.
+   */
+  public void delegateCredentials(CeaService service) throws NotFoundException,
+                                                             ServiceException {
+      
+    // Go through the registered capabilities of the service looking for delegation.
+    URI endpoint = null;
+    Capability[] capabilities = service.getCapabilities();
+    for (int i = 0; i < capabilities.length; i++) {
+      if (capabilities[i].getStandardID().toString().equals("ivo://ivoa.net/std/Delegation")) {
+        Interface[] interfaces = capabilities[i].getInterfaces();
+        if (interfaces.length > 0) {
+          AccessURL[] urls = interfaces[0].getAccessUrls();
+          if (urls.length > 0) {
+            endpoint = urls[0].getValueURI();
+          }
+        }
+      }
+    }
+    if (endpoint == null) {
+      throw new NotFoundException(
+        String.format("%s does not have a delegation endpoint", service.getId())
+      );
+    }
+    
+    // Delegate to the service the current user's credentials.
+    DelegationClient client = 
+        new DelegationClient(endpoint, community.getSecurityGuard());
+    try {
+      client.delegate();
+      log.info(String.format("Credentials were delegated to %s.", service.getId()));
+    }
+    catch (Exception e) {
+      log.warn("Failed to delegate credentials: " + e);
+      throw new ServiceException("Failed to delegate credentials", e);
+    }
+  }
     
 
 
