@@ -1,1 +1,1 @@
-AstroGrid Community web-application version ${pom.version}
+DSA/Catalog web-application version ${pom.version}
