@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
-    "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
 <web-app>
 
   <display-name>Astrogrid Sky Catalog Server</display-name>
@@ -17,7 +13,7 @@
         <listener-class>org.astrogrid.dataservice.servlet.ContainerListener</listener-class>
     </listener>
     -->
-    
+
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>
@@ -31,7 +27,7 @@
     <description>JUnitEE test runner</description>
     <servlet-class>org.junitee.servlet.JUnitEEThreadedServlet</servlet-class>
   </servlet>
-  
+
    <!-- Query-managing servlets -->
   <servlet>
     <servlet-name>SubmitCone</servlet-name>
@@ -126,7 +122,7 @@
   </servlet>
 
   <!-- Query Managing tasks -->
-  <servlet-mapping>
+  <servlet><servlet-name>DelegationServlet</servlet-name><servlet-class>org.astrogrid.security.delegation.DelegationServlet</servlet-class></servlet><servlet-mapping>
     <servlet-name>BrowserAskQuery</servlet-name>
     <url-pattern>/admin/BrowserAskQuery</url-pattern>
   </servlet-mapping>
@@ -166,7 +162,7 @@
     <servlet-name>GetLog</servlet-name>
     <url-pattern>/admin/GetLog</url-pattern>
   </servlet-mapping>
-  
+
   <!--
   <servlet-mapping>
     <servlet-name>Register</servlet-name>
@@ -213,7 +209,15 @@
     <!-- currently the W3C havent settled on a media type for WSDL;
     http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
     for now we go with the basic 'it's XML' response -->
-  <mime-mapping>
+    <servlet-mapping>
+        <servlet-name>DelegationServlet</servlet-name>
+        <url-pattern>/delegations/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DelegationServlet</servlet-name>
+        <url-pattern>/delegations</url-pattern>
+    </servlet-mapping>
+    <mime-mapping>
     <extension>wsdl</extension>
      <mime-type>text/xml</mime-type>
   </mime-mapping>
@@ -233,7 +237,7 @@
   <!-- agWebAdminUser is a role often used with Registry.-->
   <security-constraint>
       <web-resource-collection>
-          <web-resource-name></web-resource-name>
+          <web-resource-name/>
           <url-pattern>/admin/*</url-pattern>
       </web-resource-collection>
       <auth-constraint>
@@ -245,7 +249,7 @@
 
   <security-constraint>
       <web-resource-collection>
-          <web-resource-name></web-resource-name>
+          <web-resource-name/>
           <url-pattern>/setup/*</url-pattern>
       </web-resource-collection>
       <auth-constraint>
