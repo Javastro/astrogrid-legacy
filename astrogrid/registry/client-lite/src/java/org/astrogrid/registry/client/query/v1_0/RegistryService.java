@@ -170,12 +170,50 @@ public interface RegistryService extends org.astrogrid.registry.client.query.Reg
    public Document keywordSearch(String keywords, int from, int max, boolean identifiersOnly) throws RegistryException;
    
 
+   /**
+    * Method: getEndpointsByIdentifier
+    * Description: Get all the endpoint (urls) for an identifier for this particular standardID defined on
+    * the capability element.  Normally suspect just 1 url will be returned but could be many.
+    * @param identifier  resource identifier 
+    * @param capabilityStandardID standard ivo id defined on the capability
+    * @return String array of url(s)
+    * @throws RegistryException
+    */   
    public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID) throws RegistryException;
    
+   /**
+    * Method: getEndpointsByIdentifier
+    * Description: Get all the endpoint (urls) for an identifier for this particular standardID defined on
+    * the capability element and for a particular version on the interface.  Normally suspect just 1 url will be returned but could be many.
+    * @param identifier  resource identifier 
+    * @param capabilityStandardID standard ivo id defined on the capability
+    * @interfaceVersion interface version.
+    * @return String array of url(s)
+    * @throws RegistryException
+    */      
    public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID, String interfaceVersion) throws RegistryException;
    
+   /**
+    * Method: getEndpointByIdentifier
+    * Description: Get the first endpoint (url) for an identifier for this particular standardID defined on
+    * the capability element.
+    * @param identifier  resource identifier 
+    * @param capabilityStandardID standard ivo id defined on the capability
+    * @return String array of url(s)
+    * @throws RegistryException
+    */   
    public String getEndpointByIdentifier(String identifier, String capabilityStandardID) throws RegistryException;
    
+   /**
+    * Method: getEndpointByIdentifier
+    * Description: Get the first endpoint (urls) for an identifier for this particular standardID defined on
+    * the capability element and for a particular version on the interface.  Normally suspect just 1 url will be returned but could be many.
+    * @param identifier  resource identifier 
+    * @param capabilityStandardID standard ivo id defined on the capability
+    * @interfaceVersion interface version.
+    * @return String array of url(s)
+    * @throws RegistryException
+    */         
    public String getEndpointByIdentifier(String identifier, String capabilityStandardID, String interfaceVersion) throws RegistryException;
    
    public String[] getEndpoints(String capabilityStandardID) throws RegistryException;
