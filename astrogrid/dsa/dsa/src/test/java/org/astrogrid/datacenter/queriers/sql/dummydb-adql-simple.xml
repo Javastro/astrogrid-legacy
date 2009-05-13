@@ -1,0 +1,11 @@
+<!-- ADQL generated from SQL: SELECT * from SAMPLESTARS  -->
+<Select xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
+   <SelectionList>
+    <Item xsi:type="allSelectionItemType" />
+   </SelectionList>
+   <From>
+      <Table xsi:type='tableType' Name='TabName_SampleStars' Alias='SampleStars' ></Table>
+   </From>
+</Select>
+
+

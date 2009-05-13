@@ -1,0 +1,205 @@
+<DatasetDescription xmlns='urn:astrogrid:schema:dsa:TableMetaDoc:v1.1'
+                     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+
+   <!-- Note that this is in TWO places - in the classes directory for deployment, and
+   also the package with SampleStarsMetaServer in, for unit tests -->
+<Catalog ID="SampleStarsCat">
+   <Name>CatName_SampleStarsCat</Name>
+   <Table ID="SampleStars">
+      <Name>TabName_SampleStars</Name>
+      <Description>A table of artifically placed stars.  There is a general spread of background
+      stars, and a smiley face around where the pleidies are on the real sky</Description>
+      <ConeSettings>
+         <RAColName>ColName_RA</RAColName>
+         <DecColName>ColName_DEC</DecColName>
+      </ConeSettings>
+      <Column ID="ID" indexed="false">
+         <Name>ColName_ID</Name>
+         <Datatype>int</Datatype>
+         <Description>IDENTITY</Description>
+         <UCD version='1'>ID_MAIN</UCD>
+         <UCD version='1+'>meta.id</UCD>
+      </Column>
+      <Column  ID="NAME" indexed="false">
+         <Name>ColName_Name</Name>
+         <Datatype>string</Datatype>
+         <Description>Made up name</Description>
+         <UCD version='1'> </UCD>
+         <UCD version='1+'> </UCD>
+      </Column>
+      <Column  ID="RA" indexed="false">
+         <Name>ColName_RA</Name>
+         <Datatype>float</Datatype>
+         <Description>Right Ascension (left-rightness)</Description>
+         <Units>deg</Units>
+         <UCD version='1'>POS_EQ_RA_MAIN</UCD>
+         <UCD version='1+'>pos.eq.ra</UCD>
+         <ErrorColumn> </ErrorColumn>
+         <SkyPolarCoord>RA</SkyPolarCoord>
+      </Column>
+      <Column  ID="DEC" indexed="false">
+         <Name>ColName_DEC</Name>
+         <Datatype>float</Datatype>
+         <Description>Declination (up-downness)</Description>
+         <Units>deg</Units>
+         <UCD version='1'>POS_EQ_DEC_MAIN</UCD>
+         <UCD version='1+'>pos.eq.dec</UCD>
+         <ErrorColumn> </ErrorColumn>
+         <SkyPolarCoord>DEC</SkyPolarCoord>
+      </Column>
+      <Column  ID="MAG" indexed="false">
+         <Name>ColName_Mag</Name>
+         <Datatype>float</Datatype>
+         <Description>Magnitude at some arbitrary wavelength</Description>
+         <Units>mag</Units>
+         <UCD version='1'>PHOT_MAG</UCD>
+         <UCD version='1+'> </UCD>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column  ID="FLAG" indexed="false">
+         <Name>ColName_Flag</Name>
+         <Datatype>boolean</Datatype>
+         <Description>Test field of boolean type</Description>
+         <Units></Units>
+         <UCD version='1'></UCD>
+         <UCD version='1+'> </UCD>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+   </Table>
+   <Table ID="SampleGalaxies">
+      <Name>TabName_SampleGalaxies</Name>
+      <Description>A table of artifically placed galaxies</Description>
+      <Column  ID="ID" indexed="false">
+         <Name>ColName_ID</Name>
+         <Datatype>int</Datatype>
+         <Description>IDENTITY</Description>
+         <UCD version='1'>ID_CATALOG</UCD>
+         <UCD version='1+'>meta.id</UCD>
+      </Column>
+      <Column  ID="RA" indexed="false">
+         <Name>ColName_RA</Name>
+         <Datatype>float</Datatype>
+         <Description>Right Ascension (left-rightness)</Description>
+         <Units>deg</Units>
+         <UCD version='1'>POS_EQ_RA_MAIN</UCD>
+         <UCD version='1+'>pos.eq.ra</UCD>
+         <ErrorColumn> </ErrorColumn>
+         <SkyPolarCoord>RA</SkyPolarCoord>
+      </Column>
+      <Column  ID="DEC" indexed="false">
+         <Name>ColName_DEC</Name>
+         <Datatype>float</Datatype>
+         <Description>Declination (up-downness)</Description>
+         <Units>deg</Units>
+         <UCD version='1'>POS_EQ_DEC_MAIN</UCD>
+         <UCD version='1+'>pos.eq.dec</UCD>
+         <ErrorColumn> </ErrorColumn>
+         <SkyPolarCoord>DEC</SkyPolarCoord>
+      </Column>
+      <Column  ID="SHAPE" indexed="false">
+         <Name>ColName_Shape</Name>
+         <Datatype>string</Datatype>
+         <Description>Rough shape (type) of galaxy; eg elliptical, spherical, barred etc </Description>
+         <UCD version='1'>MORPH</UCD>
+         <UCD version='1+'>src.morph</UCD>
+      </Column>
+   </Table>
+   <Table ID="Plates">
+      <Name>TabName_Plates</Name>
+      <Description>Details of the plates behind the observations</Description>
+      <Column  ID="ID" indexed="false">
+         <Name>ColName_ID</Name>
+         <Datatype>int</Datatype>
+         <Description>IDENTITY</Description>
+         <UCD version='1'>ID_CATALOG</UCD>
+         <UCD version='1+'>meta.id</UCD>
+      </Column>
+      <Column ID="CENTERRA" indexed="false">
+         <Name>ColName_CENTERRA</Name>
+         <Datatype>float</Datatype>
+         <Description>Right Ascension (left-rightness)</Description>
+         <Units>deg</Units>
+         <UCD version='1'>POS_EQ_RA_MAIN</UCD>
+         <UCD version='1+'>pos.eq.ra</UCD>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column ID="CENTERDEC" indexed="false" >
+         <Name>ColName_CENTERDEC</Name>
+         <Datatype>float</Datatype>
+         <Description>Declination (up-downness)</Description>
+         <Units>deg</Units>
+         <UCD version='1'>POS_EQ_DEC_MAIN</UCD>
+         <UCD version='1+'>pos.eq.dec</UCD>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column ID="ObsTime" indexed="false">
+         <Name>ColName_ObsTime</Name>
+         <Datatype>dateTime</Datatype>
+         <Description>Date plate was taken</Description>
+         <UCD version='1'></UCD>
+      </Column>
+   </Table>
+   <Table ID="SampleStars2">
+      <Name>TabName_SampleStars2</Name>
+      <Description>A table of artifically placed stars.  There is a general spread of background
+      stars, and a smiley face around where the pleidies are on the real sky</Description>
+      <ConeSettings>
+         <RAColName>ColName_RA</RAColName>
+         <DecColName>ColName_DEC</DecColName>
+      </ConeSettings>
+      <Column ID="ID" indexed="false">
+         <Name>ColName_ID</Name>
+         <Datatype>int</Datatype>
+         <Description>IDENTITY</Description>
+         <UCD version='1'>ID_MAIN</UCD>
+         <UCD version='1+'>meta.id</UCD>
+      </Column>
+      <Column  ID="NAME" indexed="false">
+         <Name>ColName_Name</Name>
+         <Datatype>string</Datatype>
+         <Description>Made up name</Description>
+         <UCD version='1'> </UCD>
+         <UCD version='1+'> </UCD>
+      </Column>
+      <Column  ID="RA" indexed="false">
+         <Name>ColName_RA</Name>
+         <Datatype>float</Datatype>
+         <Description>Right Ascension (left-rightness)</Description>
+         <Units>deg</Units>
+         <UCD version='1'>POS_EQ_RA_MAIN</UCD>
+         <UCD version='1+'>pos.eq.ra</UCD>
+         <ErrorColumn> </ErrorColumn>
+         <SkyPolarCoord>RA</SkyPolarCoord>
+      </Column>
+      <Column  ID="DEC" indexed="false">
+         <Name>ColName_DEC</Name>
+         <Datatype>float</Datatype>
+         <Description>Declination (up-downness)</Description>
+         <Units>deg</Units>
+         <UCD version='1'>POS_EQ_DEC_MAIN</UCD>
+         <UCD version='1+'>pos.eq.dec</UCD>
+         <ErrorColumn> </ErrorColumn>
+         <SkyPolarCoord>DEC</SkyPolarCoord>
+      </Column>
+      <Column  ID="MAG" indexed="false">
+         <Name>ColName_Mag</Name>
+         <Datatype>float</Datatype>
+         <Description>Magnitude at some arbitrary wavelength</Description>
+         <Units>mag</Units>
+         <UCD version='1'>PHOT_MAG</UCD>
+         <UCD version='1+'> </UCD>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+      <Column  ID="FLAG" indexed="false">
+         <Name>ColName_Flag</Name>
+         <Datatype>boolean</Datatype>
+         <Description>Test field of boolean type</Description>
+         <Units></Units>
+         <UCD version='1'></UCD>
+         <UCD version='1+'> </UCD>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
+   </Table>
+</Catalog>
+</DatasetDescription>
+

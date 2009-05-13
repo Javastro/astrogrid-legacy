@@ -1,0 +1,24 @@
+cone_greatcircle_deg_deg.sql
+ - Conesearch template for large search radii, trig in degrees, cols in degrees
+
+cone_greatcircle_deg_rad.sql
+ - Conesearch template for large search radii, trig in degrees, cols in radians
+
+cone_greatcircle_rad_deg.sql
+ - Conesearch template for large search radii, trig in radians, cols in degrees
+
+cone_greatcircle_rad_rad.sql
+ - Conesearch template for large search radii, trig in radians, cols in degrees
+
+cone_haversine_deg_deg.sql
+ - Conesearch template for small search radii, trig in degrees, cols in degrees
+
+cone_haversine_deg_rad.sql
+ - Conesearch template for small search radii, trig in degrees, cols in radians
+
+cone_haversine_rad_deg.sql
+ - Conesearch template for small search radii, trig in radians, cols in degrees
+
+cone_haversine_rad_rad.sql
+ - Conesearch template for small search radii, trig in radians, cols in degrees
+

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <Restrict xsi:type="selectionLimitType" Top="100"/>
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="mathFunctionType" Name="ABS">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+
+        <Item xsi:type="mathFunctionType" Name="CEILING">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+
+        <Item xsi:type="mathFunctionType" Name="FLOOR">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+
+        <Item xsi:type="mathFunctionType" Name="ROUND">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+
+        <Item xsi:type="mathFunctionType" Name="TRUNCATE">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+    </SelectionList>
+    <From xsi:type="fromType">
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
+    </From>
+</Select>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <Restrict Top="100"/>
+    <SelectionList>
+        <Item xsi:type="trigonometricFunctionType" Name="SIN">
+            <Arg xsi:type="mathFunctionType" Name="DEGREES">
+                <Arg xsi:type="mathFunctionType" Name="RADIANS">
+                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                </Arg>
+            </Arg>
+        </Item>
+        <Item xsi:type="trigonometricFunctionType" Name="COS">
+            <Arg xsi:type="mathFunctionType" Name="DEGREES">
+                <Arg xsi:type="mathFunctionType" Name="RADIANS">
+                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                </Arg>
+            </Arg>
+        </Item>
+        <Item xsi:type="trigonometricFunctionType" Name="TAN">
+            <Arg xsi:type="mathFunctionType" Name="DEGREES">
+                <Arg xsi:type="mathFunctionType" Name="RADIANS">
+                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                </Arg>
+            </Arg>
+        </Item>
+        <Item xsi:type="trigonometricFunctionType" Name="COT">
+            <Arg xsi:type="mathFunctionType" Name="DEGREES">
+                <Arg xsi:type="mathFunctionType" Name="RADIANS">
+                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                </Arg>
+            </Arg>
+        </Item>
+        <Item xsi:type="trigonometricFunctionType" Name="ASIN">
+            <Arg xsi:type="mathFunctionType" Name="DEGREES">
+                <Arg xsi:type="mathFunctionType" Name="RADIANS">
+                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                </Arg>
+            </Arg>
+        </Item>
+        <Item xsi:type="trigonometricFunctionType" Name="ACOS">
+            <Arg xsi:type="mathFunctionType" Name="DEGREES">
+                <Arg xsi:type="mathFunctionType" Name="RADIANS">
+                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                </Arg>
+            </Arg>
+        </Item>
+        <Item xsi:type="trigonometricFunctionType" Name="ATAN">
+            <Arg xsi:type="mathFunctionType" Name="DEGREES">
+                <Arg xsi:type="mathFunctionType" Name="RADIANS">
+                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                </Arg>
+            </Arg>
+        </Item>
+        <Item xsi:type="trigonometricFunctionType" Name="ATAN2">
+            <Arg xsi:type="mathFunctionType" Name="DEGREES">
+                <Arg xsi:type="mathFunctionType" Name="RADIANS">
+                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                </Arg>
+            </Arg>
+            <Arg xsi:type="mathFunctionType" Name="DEGREES">
+                <Arg xsi:type="mathFunctionType" Name="RADIANS">
+                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_DEC"/>
+                </Arg>
+            </Arg>
+        </Item>
+    </SelectionList>
+    <From xsi:type="fromType">
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
+    </From>
+    <Where>
+        <Condition xsi:type="intersectionSearchType">
+            <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+                <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                <Arg xsi:type="atomType">
+                    <Literal xsi:type="realType" Value="0.0"/>
+                </Arg>
+
+            </Condition>
+            <Condition xsi:type="comparisonPredType" Comparison="&lt;">
+                <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                <Arg xsi:type="atomType">
+                    <Literal xsi:type="realType" Value="1.0"/>
+                </Arg>
+            </Condition>
+        </Condition>
+    </Where>
+</Select>

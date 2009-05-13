@@ -1,0 +1,46 @@
+<html>
+<body>
+<h1>Classes to execute a {@link org.astrogrid.datacenter.axisdataserver.types.Query}</h1>
+
+The classes in this package handles the translation between the query submitted
+to the server and the
+backend database, and in reverse between the results returned by the database
+and the VOTable (or other 'VO-agreed standard') format to be returned by the
+server.
+<p>
+Note that both ways then are many/many; the query language could be SQL, or a newer language such
+as ADQL that is  likely to go through different
+versions; there will be many different backends, some databases, some of which may be bespoke
+(rather than JDBC/SQL variants).  Similarly the return may be JDBC ResultSet, but
+may be some other bespoke format, to be translated to VOTable or FITS or
+whatever.
+<p>
+The querier must also be able to cope with both synchronous (blocking) and
+asynchronous (spawned, or separately threaded) queries.
+<p>
+<h2>Classes</h2>
+The {@link org.astrogrid.datacenter.queriers.Querier} class is an abstraction of executing a query
+Concrete subclasses extend this class with the specifics of performing a query over a particular
+datastore - whether that is some flavour of JDBC database, or something more exotic.
+<p>
+
+The {@link org.astrogrid.datacenter.queriers.QuerierManager} is a factory responsible for
+instantiating  <tt>Querier</tt> instances that are appropriate
+for a particular datacenter installation. The subclass of <tt>Querier</tt> that the factory
+produces is determined by settings in an external configuration file.
+
+<h2>QueryTranslator</h2>
+This package also provides a framework for writing translators between ADQL and SQL.
+This feels like its in the wrong package now. See subpackages for database-specific
+implementations.
+
+<p>
+The base translator class - {@link org.astrogrid.datacenter.queriers.QueryTranslator} 
+- provides the machinery to traverse the object tree (using the dynamic 
+visitor pattern implemented in the {@link org.astrogrid.datacenter.adql} package). 
+It maintains a {@link org.astrogrid.datacenter.queriers.TranslationFrame.Stack} 
+of {@link org.astrogrid.datatacenter.queriers.TranslationFrame} objects. These store the intermediate results of the translation
+process.
+
+</body>
+</html>

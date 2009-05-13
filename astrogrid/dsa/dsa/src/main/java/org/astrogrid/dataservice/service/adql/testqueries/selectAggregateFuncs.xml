@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <Restrict Top="100"/>
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="aggregateFunctionType" Name="AVG">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+        <Item xsi:type="aggregateFunctionType" Name="MIN">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+        <Item xsi:type="aggregateFunctionType" Name="MAX">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+        <Item xsi:type="aggregateFunctionType" Name="SUM">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+        <Item xsi:type="aggregateFunctionType" Name="COUNT">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+    </SelectionList>
+    <From>
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
+    </From>
+    <Where>
+         <!-- Choose restrictive condition to limit no. of entries
+         aggregated, otherwise this query will be massively slow -->
+         <Condition xsi:type="comparisonPredType" Comparison="=">
+             <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+             <Arg xsi:type="atomType">
+                <Literal xsi:type="realType" Value="0.0"/>
+             </Arg>
+         </Condition>
+    </Where>
+</Select>

@@ -1,0 +1,21 @@
+<html>
+
+<body>
+<h1>Datacenter Server</h1>
+
+
+<h2>Back-end Plugin Interface</h2>
+The service provider interface is defined in the {@link org.astrogrid.datacenter.queriers.spi} package.
+The classes and interfaces in that package, and other classes used by them, form the public api.
+<p>
+This classes in this package won't change. much.
+<p>
+Any other classes are liable to change. Lots. Hence its not such a good idea to implement a plugin by extending 
+{@link org.astrogrid.datacenter.queriers.Querier} - this is the old way of doing things.
+
+<h2>Plugin Implementations</h2>
+The datacenter server comes bundled with backend implementations for a range of databases - if your target database isn't available, try
+the vanilla SQL package ({@link org.astrogrid.datacenter.queriers.sql}) .
+
+</body>
+</html>

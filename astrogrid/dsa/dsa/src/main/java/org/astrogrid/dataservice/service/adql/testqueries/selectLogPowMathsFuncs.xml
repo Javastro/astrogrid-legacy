@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <Restrict xsi:type="selectionLimitType" Top="100"/>
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="mathFunctionType" Name="EXP">
+           <Arg xsi:type="closedExprType">
+               <Arg xsi:type="binaryExprType" Oper="+">
+                  <Arg xsi:type="mathFunctionType" Name="ABS">
+                     <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                  </Arg>
+                  <Arg xsi:type="atomType">
+                      <Literal xsi:type="realType" Value="1.0"/>
+                  </Arg>
+               </Arg>
+           </Arg>
+        </Item>
+        <Item xsi:type="mathFunctionType" Name="LOG">
+            <Arg xsi:type="mathFunctionType" Name="ABS">
+               <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+            </Arg>
+        </Item>
+
+        <Item xsi:type="mathFunctionType" Name="SQRT">
+           <Arg xsi:type="closedExprType">
+              <Arg xsi:type="binaryExprType" Oper="*">
+                 <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                 <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+              </Arg>
+           </Arg>
+        </Item>
+
+        <Item xsi:type="mathFunctionType" Name="SQUARE">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+        </Item>
+
+        <Item xsi:type="mathFunctionType" Name="LOG10">
+           <Arg xsi:type="closedExprType">
+               <Arg xsi:type="binaryExprType" Oper="+">
+                  <Arg xsi:type="mathFunctionType" Name="ABS">
+                     <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                  </Arg>
+                  <Arg xsi:type="atomType">
+                      <Literal xsi:type="realType" Value="1.0"/>
+                  </Arg>
+               </Arg>
+           </Arg>
+        </Item>
+    </SelectionList>
+    <From>
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
+    </From>
+    <Where>
+       <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+          <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+          <Arg xsi:type="atomType">
+             <Literal xsi:type="realType" Value="0.0"/>
+          </Arg>
+       </Condition>
+    </Where>
+</Select>

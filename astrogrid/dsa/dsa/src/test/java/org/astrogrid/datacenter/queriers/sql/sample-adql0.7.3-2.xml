@@ -1,0 +1,32 @@
+<!-- Select t.a, g.d from Tab a, Tab d where a.d < d.e and a.f < d.f order by t.f, g.b -->
+<Select  xmlns="http://adql.ivoa.net/v0.73">
+   <SelectionList>
+      <Column Table="Ford" Name="a"/>
+      <Column Table="Prefect" Name="d"/>
+   </SelectionList>
+   <From>
+      <Table Name="Arthur" Alias="a"/>
+      <Table Name="Dent" Alias="d"/>
+   </From>
+   <Where>
+      <And>
+         <Compare Comparison="&lt;">
+            <Column Table="a" Name="d"/>
+            <Column Table="d" Name="e"/>
+         </Compare>
+         <Compare Comparison="&lt;">
+            <Column Table="a" Name="f"/>
+            <Column Table="d" Name="f"/>
+         </Compare>
+      </And>
+   </Where>
+   <OrderBy>
+      <Item>
+         <Column Table="t" Name="f"/>
+      </Item>
+      <Item>
+         <Column Table="g" Name="b"/>
+      </Item>
+   </OrderBy>
+</Select>
+

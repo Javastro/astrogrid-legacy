@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <Restrict xsi:type="selectionLimitType" Top="100"/>
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="allSelectionItemType"/>
+    </SelectionList>
+    <From>
+        <Table xsi:type="tableType" Alias="b" Name="INSERT_TABLE" INSERT_CATALOG/>
+    </From>
+    <OrderBy>
+        <Item>
+            <Expression xsi:type="columnReferenceType" Table="b" Name="INSERT_DEC"/>
+        </Item>
+    </OrderBy>
+</Select>

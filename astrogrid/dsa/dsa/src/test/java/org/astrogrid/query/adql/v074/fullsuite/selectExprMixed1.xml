@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v0.7.4">
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="binaryExprType" Oper="/">
+            <Arg xsi:type="closedExprType">
+                <Arg xsi:type="binaryExprType" Oper="+">
+                    <Arg xsi:type="trigonometricFunctionType" Name="SIN">
+                        <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_RA"/>
+                    </Arg>
+                    <Arg xsi:type="trigonometricFunctionType" Name="COS">
+                        <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_DEC"/>
+                    </Arg>
+                </Arg>
+            </Arg>
+            <Arg xsi:type="closedExprType">
+                <Arg xsi:type="binaryExprType" Oper="-">
+                    <Arg xsi:type="mathFunctionType" Name="SQRT">
+                        <Arg xsi:type="mathFunctionType" Name="ABS">
+                            <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_RA"/>
+                        </Arg>
+                    </Arg>
+                    <Arg xsi:type="mathFunctionType" Name="LOG">
+                        <Arg xsi:type="mathFunctionType" Name="ABS">
+                            <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_DEC"/>
+                        </Arg>
+                    </Arg>
+                </Arg>
+            </Arg>
+        </Item>
+    </SelectionList>
+    <From xsi:type="fromType">
+        <Table xsi:type="tableType" Alias="a" Name="catalogue"/>
+    </From>
+</Select>

@@ -1,0 +1,81 @@
+/*
+ * $Id: SimpleAxisDataServer.jws,v 1.1 2009/05/13 13:20:29 gtr Exp $
+ *
+ * (C) Copyright Astrogrid...
+ */
+
+import java.io.IOException;
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.QueryConverter;
+import org.astrogrid.datacenter.queriers.QuerierStatus;
+import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.datacenter.service.AxisDataServer;
+import org.astrogrid.datacenter.snippet.ResponseHelper;
+import org.astrogrid.store.Agsl;
+import java.rmi.RemoteException;
+import org.w3c.dom.Element;
+
+/**
+ * A Simple Axis Web Service for conversion to .jws.  This exists so that I
+ * have a non-WSDL way of deploying a datacenter until I can get to grips
+ * with WSDL and WSDDs etcc.
+ * <p>
+ * To deploy this, copy it to the ../webapps/axis/ directory under Tomcat with
+ * the extension .jws.
+ * <p>
+ * It must have no package so that it doesn't get compiled into some subdirectory...
+ *
+ * Axis will compile it on the fly and you will be able to access it as, eg,
+ * http://localhost:8080/axis/SimpleAxisDataServer.jws.
+ *
+ * Also useful for seeing what WSDL you get out of a class...
+ * <p>
+ * @author M Hill
+ *
+ */
+
+public class SimpleAxisDataServer  extends AxisDataServer {
+   
+   /**
+    * Carries out a full synchronous (ie non-blocking) adql query.  Returns
+    * string containing votable of results
+    */
+   public String searchCone(double ra, double dec, double sr) throws RemoteException {
+      try {
+         return server.searchCone(Account.ANONYMOUS, ra, dec, sr);
+      } catch (Exception e) {
+         throw makeFault(SERVERFAULT, "searchCone("+ra+", "+dec+", "+sr+") failed", e);
+      }
+   }
+   
+   
+}
+
+/*
+$Log: SimpleAxisDataServer.jws,v $
+Revision 1.1  2009/05/13 13:20:29  gtr
+*** empty log message ***
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
+
+Revision 1.1.1.1  2005/02/16 17:11:24  mch
+Initial checkin
+
+Revision 1.1  2004/09/28 15:02:13  mch
+Merged PAL and server packages
+
+Revision 1.2  2004/03/08 23:58:20  mch
+Made use of server searchCone
+
+Revision 1.1  2004/03/08 00:31:28  mch
+Split out webservice implementations for versioning
+
+
+ */
+

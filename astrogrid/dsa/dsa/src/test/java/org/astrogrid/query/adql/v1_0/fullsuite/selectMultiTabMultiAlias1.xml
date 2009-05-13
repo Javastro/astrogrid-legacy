@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="columnReferenceType" Table="a1" Name="POS_EQ_RA"/>
+        <Item xsi:type="columnReferenceType" Table="a2" Name="POS_EQ_DEC"/>
+        <Item xsi:type="columnReferenceType" Table="b1" Name="ID_FIELD"/>
+        <Item xsi:type="columnReferenceType" Table="b2" Name="CODE_QUALITY"/>
+    </SelectionList>
+    <From xsi:type="fromType">
+        <Table xsi:type="tableType" Alias="a1" Name="catalogueA"/>
+        <Table xsi:type="tableType" Alias="a2" Name="catalogueA"/>
+        <Table xsi:type="tableType" Alias="b1" Name="catalogueB"/>
+        <Table xsi:type="tableType" Alias="b2" Name="catalogueB"/>
+    </From>
+</Select>

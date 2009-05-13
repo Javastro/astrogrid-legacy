@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0"> 
+  <SelectionList> 
+    <Item
+      xsi:type="columnReferenceType" Table="a" Name="ColName_RA" /> 
+    <Item
+      xsi:type="columnReferenceType" Table="a" Name="ColName_DEC" /> 
+  </SelectionList> 
+  <From>
+    <Table xsi:type="tableType" Name="TabName_SampleStars" Alias="a" /> 
+  </From> 
+  <Where> 
+    <Condition xsi:type="regionSearchType"> 
+      <Region xmlns:q1="http://www.ivoa.net/xml/STC/STCregion/v1.10" xsi:type="q1:circleType" unit="deg" coord_system_id="???"> 
+        <q1:Center>181.3 -0.76 </q1:Center> 
+        <q1:Radius>6.5 </q1:Radius>
+      </Region> 
+    </Condition> 
+  </Where>
+</Select>

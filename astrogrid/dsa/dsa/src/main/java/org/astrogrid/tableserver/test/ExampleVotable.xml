@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.1/VOTable.xsd'  version='1.1'>
+  <RESOURCE>
+    <TABLE>
+      <FIELD name='ID' ID='SampleStars.ID'  ucd='ID_CATALOG' datatype='long'/>
+      <FIELD name='Name' ID='SampleStars.Name'  ucd=' ' datatype='char' arraysize='*'/>
+      <FIELD name='RA' ID='SampleStars.RA'  ucd='POS_EQ_RA_MAIN' datatype='float' unit='deg' />
+      <FIELD name='DEC' ID='SampleStars.DEC'  ucd='POS_EQ_DEC_MAIN' datatype='float' unit='deg' />
+      <FIELD name='Mag' ID='SampleStars.Mag'  ucd='PHOT_MAG' datatype='float' unit='mag' />
+      <DATA>
+        <TABLEDATA>
+          <TR><TD>0</TD><TD>A star</TD><TD>30.0</TD><TD>30.0</TD><TD>0.0</TD></TR>
+
+          <TR><TD>1</TD><TD>A star</TD><TD>32.0</TD><TD>28.0</TD><TD>1.0</TD></TR>
+          <TR><TD>2</TD><TD>A star</TD><TD>34.0</TD><TD>26.0</TD><TD>2.0</TD></TR>
+          <TR><TD>3</TD><TD>A star</TD><TD>36.0</TD><TD>24.0</TD><TD>3.0</TD></TR>
+
+          <TR><TD>4</TD><TD>A star</TD><TD>38.0</TD><TD>22.0</TD><TD>4.0</TD></TR>
+          <TR><TD>5</TD><TD>A star</TD><TD>40.0</TD><TD>20.0</TD><TD>5.0</TD></TR>
+          <TR><TD>6</TD><TD>A star</TD><TD>42.0</TD><TD>18.0</TD><TD>6.0</TD></TR>
+
+          <TR><TD>7</TD><TD>A star</TD><TD>44.0</TD><TD>16.0</TD><TD>7.0</TD></TR>
+          <TR><TD>8</TD><TD>A star</TD><TD>46.0</TD><TD>14.0</TD><TD>8.0</TD></TR>
+          <TR><TD>9</TD><TD>A star</TD><TD>48.0</TD><TD>12.0</TD><TD>9.0</TD></TR>
+
+          <TR><TD>10</TD><TD>A star</TD><TD>50.0</TD><TD>10.0</TD><TD>10.0</TD></TR>
+          <TR><TD>11</TD><TD>A star</TD><TD>52.0</TD><TD>8.0</TD><TD>11.0</TD></TR>
+          <TR><TD>12</TD><TD>A star</TD><TD>54.0</TD><TD>6.0</TD><TD>12.0</TD></TR>
+
+          <TR><TD>13</TD><TD>A star</TD><TD>56.0</TD><TD>4.0</TD><TD>13.0</TD></TR>
+          <TR><TD>14</TD><TD>A star</TD><TD>58.0</TD><TD>2.0</TD><TD>14.0</TD></TR>
+          <TR><TD>15</TD><TD>A star</TD><TD>60.0</TD><TD>0.0</TD><TD>15.0</TD></TR>
+
+          <TR><TD>16</TD><TD>A star</TD><TD>62.0</TD><TD>-2.0</TD><TD>16.0</TD></TR>
+          <TR><TD>17</TD><TD>A star</TD><TD>64.0</TD><TD>-4.0</TD><TD>17.0</TD></TR>
+          <TR><TD>18</TD><TD>A star</TD><TD>66.0</TD><TD>-6.0</TD><TD>18.0</TD></TR>
+
+          <TR><TD>19</TD><TD>A star</TD><TD>68.0</TD><TD>-8.0</TD><TD>19.0</TD></TR>
+          <TR><TD>21</TD><TD>Pleidies LE</TD><TD>56.6</TD><TD>23.65</TD><TD>10.0</TD></TR>
+          <TR><TD>22</TD><TD>Pleidies RE</TD><TD>56.9</TD><TD>23.65</TD><TD>10.0</TD></TR>
+
+          <TR><TD>23</TD><TD>Pleidies Nose</TD><TD>56.75</TD><TD>23.87</TD><TD>8.0</TD></TR>
+          <TR><TD>24</TD><TD>Pleidies Grin</TD><TD>56.5</TD><TD>23.9</TD><TD>12.0</TD></TR>
+          <TR><TD>25</TD><TD>Pleidies Grin</TD><TD>56.7</TD><TD>24.0</TD><TD>12.0</TD></TR>
+
+          <TR><TD>26</TD><TD>Pleidies Grin</TD><TD>56.8</TD><TD>24.0</TD><TD>12.0</TD></TR>
+          <TR><TD>27</TD><TD>Pleidies Grin</TD><TD>57.0</TD><TD>23.9</TD><TD>12.0</TD></TR>
+          <TR><TD>28</TD><TD>Not Pleidies</TD><TD>56.6</TD><TD>23.6</TD><TD>10.0</TD></TR>
+
+          <TR><TD>29</TD><TD>Not Pleidies</TD><TD>56.0</TD><TD>23.0</TD><TD>5.0</TD></TR>
+          <TR><TD>30</TD><TD>Not Pleidies</TD><TD>58.0</TD><TD>24.5</TD><TD>5.0</TD></TR>
+          <TR><TD>31</TD><TD>Not Pleidies</TD><TD>56.0</TD><TD>24.5</TD><TD>5.0</TD></TR>
+
+          <TR><TD>32</TD><TD>Not Pleidies</TD><TD>58.0</TD><TD>23.0</TD><TD>5.0</TD></TR>
+          <TR><TD>33</TD><TD>Background</TD><TD>0.0</TD><TD>-90.0</TD><TD>20.0</TD></TR>
+          <TR><TD>34</TD><TD>Background</TD><TD>0.0</TD><TD>-88.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>35</TD><TD>Background</TD><TD>0.0</TD><TD>-86.0</TD><TD>20.0</TD></TR>
+          <TR><TD>36</TD><TD>Background</TD><TD>0.0</TD><TD>-84.0</TD><TD>20.0</TD></TR>
+          <TR><TD>37</TD><TD>Background</TD><TD>0.0</TD><TD>-82.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>38</TD><TD>Background</TD><TD>0.0</TD><TD>-80.0</TD><TD>20.0</TD></TR>
+          <TR><TD>39</TD><TD>Background</TD><TD>0.0</TD><TD>-78.0</TD><TD>20.0</TD></TR>
+          <TR><TD>40</TD><TD>Background</TD><TD>0.0</TD><TD>-76.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>41</TD><TD>Background</TD><TD>0.0</TD><TD>-74.0</TD><TD>20.0</TD></TR>
+          <TR><TD>42</TD><TD>Background</TD><TD>0.0</TD><TD>-72.0</TD><TD>20.0</TD></TR>
+          <TR><TD>43</TD><TD>Background</TD><TD>0.0</TD><TD>-70.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>44</TD><TD>Background</TD><TD>0.0</TD><TD>-68.0</TD><TD>20.0</TD></TR>
+          <TR><TD>45</TD><TD>Background</TD><TD>0.0</TD><TD>-66.0</TD><TD>20.0</TD></TR>
+          <TR><TD>46</TD><TD>Background</TD><TD>0.0</TD><TD>-64.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>47</TD><TD>Background</TD><TD>0.0</TD><TD>-62.0</TD><TD>20.0</TD></TR>
+          <TR><TD>48</TD><TD>Background</TD><TD>0.0</TD><TD>-60.0</TD><TD>20.0</TD></TR>
+          <TR><TD>49</TD><TD>Background</TD><TD>0.0</TD><TD>-58.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>50</TD><TD>Background</TD><TD>0.0</TD><TD>-56.0</TD><TD>20.0</TD></TR>
+          <TR><TD>51</TD><TD>Background</TD><TD>0.0</TD><TD>-54.0</TD><TD>20.0</TD></TR>
+          <TR><TD>52</TD><TD>Background</TD><TD>0.0</TD><TD>-52.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>53</TD><TD>Background</TD><TD>0.0</TD><TD>-50.0</TD><TD>20.0</TD></TR>
+          <TR><TD>54</TD><TD>Background</TD><TD>0.0</TD><TD>-48.0</TD><TD>20.0</TD></TR>
+          <TR><TD>55</TD><TD>Background</TD><TD>0.0</TD><TD>-46.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>56</TD><TD>Background</TD><TD>0.0</TD><TD>-44.0</TD><TD>20.0</TD></TR>
+          <TR><TD>57</TD><TD>Background</TD><TD>0.0</TD><TD>-42.0</TD><TD>20.0</TD></TR>
+          <TR><TD>58</TD><TD>Background</TD><TD>0.0</TD><TD>-40.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>59</TD><TD>Background</TD><TD>0.0</TD><TD>-38.0</TD><TD>20.0</TD></TR>
+          <TR><TD>60</TD><TD>Background</TD><TD>0.0</TD><TD>-36.0</TD><TD>20.0</TD></TR>
+          <TR><TD>61</TD><TD>Background</TD><TD>0.0</TD><TD>-34.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>62</TD><TD>Background</TD><TD>0.0</TD><TD>-32.0</TD><TD>20.0</TD></TR>
+          <TR><TD>63</TD><TD>Background</TD><TD>0.0</TD><TD>-30.0</TD><TD>20.0</TD></TR>
+          <TR><TD>64</TD><TD>Background</TD><TD>0.0</TD><TD>-28.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>65</TD><TD>Background</TD><TD>0.0</TD><TD>-26.0</TD><TD>20.0</TD></TR>
+          <TR><TD>66</TD><TD>Background</TD><TD>0.0</TD><TD>-24.0</TD><TD>20.0</TD></TR>
+          <TR><TD>67</TD><TD>Background</TD><TD>0.0</TD><TD>-22.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>68</TD><TD>Background</TD><TD>0.0</TD><TD>-20.0</TD><TD>20.0</TD></TR>
+          <TR><TD>69</TD><TD>Background</TD><TD>0.0</TD><TD>-18.0</TD><TD>20.0</TD></TR>
+          <TR><TD>70</TD><TD>Background</TD><TD>0.0</TD><TD>-16.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>71</TD><TD>Background</TD><TD>0.0</TD><TD>-14.0</TD><TD>20.0</TD></TR>
+          <TR><TD>72</TD><TD>Background</TD><TD>0.0</TD><TD>-12.0</TD><TD>20.0</TD></TR>
+          <TR><TD>73</TD><TD>Background</TD><TD>0.0</TD><TD>-10.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>74</TD><TD>Background</TD><TD>0.0</TD><TD>-8.0</TD><TD>20.0</TD></TR>
+          <TR><TD>75</TD><TD>Background</TD><TD>0.0</TD><TD>-6.0</TD><TD>20.0</TD></TR>
+          <TR><TD>76</TD><TD>Background</TD><TD>0.0</TD><TD>-4.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>77</TD><TD>Background</TD><TD>0.0</TD><TD>-2.0</TD><TD>20.0</TD></TR>
+          <TR><TD>78</TD><TD>Background</TD><TD>0.0</TD><TD>0.0</TD><TD>20.0</TD></TR>
+          <TR><TD>79</TD><TD>Background</TD><TD>0.0</TD><TD>2.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>80</TD><TD>Background</TD><TD>0.0</TD><TD>4.0</TD><TD>20.0</TD></TR>
+          <TR><TD>81</TD><TD>Background</TD><TD>0.0</TD><TD>6.0</TD><TD>20.0</TD></TR>
+          <TR><TD>82</TD><TD>Background</TD><TD>0.0</TD><TD>8.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>83</TD><TD>Background</TD><TD>0.0</TD><TD>10.0</TD><TD>20.0</TD></TR>
+          <TR><TD>84</TD><TD>Background</TD><TD>0.0</TD><TD>12.0</TD><TD>20.0</TD></TR>
+          <TR><TD>85</TD><TD>Background</TD><TD>0.0</TD><TD>14.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>86</TD><TD>Background</TD><TD>0.0</TD><TD>16.0</TD><TD>20.0</TD></TR>
+          <TR><TD>87</TD><TD>Background</TD><TD>0.0</TD><TD>18.0</TD><TD>20.0</TD></TR>
+          <TR><TD>88</TD><TD>Background</TD><TD>0.0</TD><TD>20.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>89</TD><TD>Background</TD><TD>0.0</TD><TD>22.0</TD><TD>20.0</TD></TR>
+          <TR><TD>90</TD><TD>Background</TD><TD>0.0</TD><TD>24.0</TD><TD>20.0</TD></TR>
+          <TR><TD>91</TD><TD>Background</TD><TD>0.0</TD><TD>26.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>92</TD><TD>Background</TD><TD>0.0</TD><TD>28.0</TD><TD>20.0</TD></TR>
+          <TR><TD>93</TD><TD>Background</TD><TD>0.0</TD><TD>30.0</TD><TD>20.0</TD></TR>
+          <TR><TD>94</TD><TD>Background</TD><TD>0.0</TD><TD>32.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>95</TD><TD>Background</TD><TD>0.0</TD><TD>34.0</TD><TD>20.0</TD></TR>
+          <TR><TD>96</TD><TD>Background</TD><TD>0.0</TD><TD>36.0</TD><TD>20.0</TD></TR>
+          <TR><TD>97</TD><TD>Background</TD><TD>0.0</TD><TD>38.0</TD><TD>20.0</TD></TR>
+
+          <TR><TD>98</TD><TD>Background</TD><TD>0.0</TD><TD>40.0</TD><TD>20.0</TD></TR>
+          <TR><TD>99</TD><TD>Background</TD><TD>0.0</TD><TD>42.0</TD><TD>20.0</TD></TR>
+          <TR><TD>100</TD><TD>Background</TD><TD>0.0</TD><TD>44.0</TD><TD>20.0</TD></TR>
+
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>

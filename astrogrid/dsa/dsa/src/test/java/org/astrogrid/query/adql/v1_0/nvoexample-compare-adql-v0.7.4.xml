@@ -1,0 +1,32 @@
+<!-- From SQL: Select t.a, g.d from Tab as a, Tab as d where a.d < 4 and a.f < (d.f - e.g) -->
+<?xml version="1.0" encoding="utf-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+  <SelectionList xsi:type="selectionListType">
+    <Item xsi:type="columnReferenceType" Table="t" Name="a" />
+    <Item xsi:type="columnReferenceType" Table="g" Name="d" />
+  </SelectionList>
+  <From xsi:type="fromType">
+    <Table xsi:type="tableType" Name="Tab" Alias="a" />
+    <Table xsi:type="tableType" Name="Tab" Alias="d" />
+  </From>
+  <Where xsi:type="whereType">
+    <Condition xsi:type="intersectionSearchType">
+      <Condition xsi:type="comparisonPredType" Comparison="&lt;">
+        <Arg xsi:type="columnReferenceType" Table="a" Name="d" />
+        <Arg xsi:type="atomType">
+          <Literal xsi:type="integerType" Value="4" />
+        </Arg>
+      </Condition>
+      <Condition xsi:type="comparisonPredType" Comparison="&lt;">
+        <Arg xsi:type="columnReferenceType" Table="a" Name="f" />
+        <Arg xsi:type="closedExprType">
+          <Arg xsi:type="binaryExprType" Oper="-">
+            <Arg xsi:type="columnReferenceType" Table="d" Name="f" />
+            <Arg xsi:type="columnReferenceType" Table="e" Name="g" />
+          </Arg>
+        </Arg>
+      </Condition>
+    </Condition>
+  </Where>
+</Select>
+

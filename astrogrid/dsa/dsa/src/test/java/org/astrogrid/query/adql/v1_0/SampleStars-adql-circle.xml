@@ -1,0 +1,32 @@
+<!-- ADQL generated from: {Query: In scope samplestars,look for where [FUNC 'circle'  [StringLiteral] J2000, [Integer] 30, [Integer] 30, [Integer] 6],  returning [Results: target=null, cols=[ColRef samplestars.ra], [ColRef samplestars.dec], ]} -->
+<!-- ADQL generated from SQL: SELECT s.ra, s.dec from samplestars as s where circle(J2000, 30, 30, 6)
+ -->
+<Select xsi:type="selectType" xmlns='http://www.ivoa.net/xml/ADQL/v1.0'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
+   <SelectionList xsi:type="selectionListType">
+      <Item xsi:type='columnReferenceType' Table='samplestars' Name='ra' ></Item>
+      <Item xsi:type='columnReferenceType' Table='samplestars' Name='dec' ></Item>
+   </SelectionList>
+   <From xsi:type="fromType">
+      <Table xsi:type='tableType' Name='samplestars' Alias='samplestars' ></Table>
+   </From>
+   <Where xsi:type="whereType">
+      <Condition xsi:type='regionSearchType' >
+         <Region xmlns:q1='urn:nvo-region' xsi:type='q1:circleType' coord_system_id='' >
+            <q1:Center ID='' coord_system_id='' >
+               <Pos2Vector xmlns='urn:nvo-coords' >
+                  <Name>Ra Dec</Name>
+                  <CoordValue>
+                     <Value>
+                        <double>30</double>
+                        <double>30</double>
+                     </Value>
+                  </CoordValue>
+               </Pos2Vector>
+            </q1:Center>
+            <q1:Radius>6</q1:Radius>
+         </Region>
+      </Condition>
+   </Where>
+</Select>
+
+

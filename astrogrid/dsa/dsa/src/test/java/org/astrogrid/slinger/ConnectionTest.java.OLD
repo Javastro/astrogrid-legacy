@@ -1,0 +1,104 @@
+/*
+ * $Id: ConnectionTest.java.OLD,v 1.1 2009/05/13 13:21:04 gtr Exp $
+ *
+ * (C) Copyright Astrogrid...
+ */
+
+package org.astrogrid.slinger;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.slinger.sources.StringSource;
+import org.astrogrid.slinger.sourcetargets.UrlSourceTarget;
+import org.astrogrid.slinger.targets.WriterTarget;
+import org.astrogrid.slinger.homespace.HomespaceName;
+
+
+/**
+ * Naughty 'real connection' tests.   It's hard to test a package that provides
+ * connections to services without actually connecting to services; mocks are
+ * all very well for ensuring that the applications work with clients, but here
+ * I want to test the clients, their resolving, etc.  So here are some naughty
+ * tests that depend on actualy deployed services.
+ *
+ * TESTS DISABLED BY KEA - out of date.  Better to have integration tests
+ * for testing against live services.
+ *
+ * @author M Hill
+ */
+
+public class ConnectionTest extends TestCase {
+
+   public void setUp() {
+      ConfigFactory.getCommonConfig().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
+   }
+   
+   /** Tests homepsace resolving using config shortcut */
+   /*
+   public void testHomespaceShortcut()  throws IOException {
+      ConfigFactory.getCommonConfig().setProperty("homespace.agdemo1@org.astrogrid","ivo://astrogrid.org/myspace");
+
+      URL id = new URL("homespace:DSATEST1@uk.ac.le.star/MartinsTestTree2.txt");
+      System.out.println("Testing out...");
+      Slinger.sling(new StringSource("Some text"), new UrlSourceTarget(id));
+      System.out.println("...Reading back...");
+      StringWriter sw = new StringWriter();
+      Slinger.sling(new UrlSourceTarget(id), new WriterTarget(sw));
+      System.out.println("...Done: "+sw.toString());
+   }
+   */
+   
+   /** Tests complete homepsace remote resolving to registry/community */
+   /*
+   public void testHomespaceResolving()  {
+      try {
+         URL id = new URL("homespace:DSATEST1@uk.ac.le.star/MartinsTestTree2.txt");
+         System.out.println("Testing out...");
+         Slinger.sling(new StringSource("Some text"), new UrlSourceTarget(id));
+         System.out.println("...Reading back...");
+         StringWriter sw = new StringWriter();
+         Slinger.sling(new UrlSourceTarget(id), new WriterTarget(sw));
+         System.out.println("...Done: "+sw.toString());
+      }
+      catch (IOException ioe) {
+         fail("Naughty unit test for MySpace connection - ignore if appropriate: "+ioe);
+      }
+         
+   }
+   */
+   
+
+   
+   /**
+    * Assembles and returns a test suite made up of all the testXxxx() methods
+    * of this class.
+    */
+   /*
+   public static Test suite() {
+      // Reflection is used here to add all the testXXX() methods to the suite.
+      return new TestSuite(ConnectionTest .class);
+   }
+   */
+
+  
+   /**
+    * Runs the test case.
+    */
+   /*
+   public static void main(String args[]) {
+      junit.textui.TestRunner.run(suite());
+   }
+   */
+
+}
+
+
+

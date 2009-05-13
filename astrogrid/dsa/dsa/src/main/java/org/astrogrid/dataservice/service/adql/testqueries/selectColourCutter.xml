@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!-- NB THIS IS A REALLY UTTERLY NONSENSICAL QUERY - JUST FOR SYNTAX CHECKS -->
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+   <Restrict xsi:type="selectionLimitType" Top="100"/>
+   <SelectionList>
+      <Item xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+      <Item xsi:type="columnReferenceType" Table="a" Name="INSERT_DEC"/>
+   </SelectionList>
+   <From>
+      <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
+   </From>
+   <Where>
+      <Condition xsi:type="intersectionSearchType">
+         <Condition xsi:type="closedSearchType">
+            <Condition xsi:type="unionSearchType">
+               <Condition xsi:type="closedSearchType">
+                  <Condition xsi:type="intersectionSearchType">
+                     <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+                        <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                        <Arg xsi:type="atomType">
+                           <Literal xsi:type="realType" Value="56.0"/>
+                        </Arg>
+                     </Condition>
+                     <Condition xsi:type="comparisonPredType" Comparison="&lt;">
+                        <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                        <Arg xsi:type="atomType">
+                           <Literal xsi:type="realType" Value="57.0"/>
+                        </Arg>
+                     </Condition>
+                  </Condition>
+               </Condition>
+               <Condition xsi:type="unionSearchType">
+                  <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+                     <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                     <Arg xsi:type="atomType">
+                        <Literal xsi:type="realType" Value="360.0"/>
+                     </Arg>
+                  </Condition>
+                  <Condition xsi:type="comparisonPredType" Comparison="&lt;">
+                     <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                     <Arg xsi:type="atomType">
+                        <Literal xsi:type="realType" Value="0.0"/>
+                     </Arg>
+                  </Condition>
+               </Condition>
+            </Condition>
+         </Condition>
+         <Condition xsi:type="intersectionSearchType">
+            <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+               <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_DEC"/>
+               <Arg xsi:type="atomType">
+                  <Literal xsi:type="realType" Value="22.0"/>
+               </Arg>
+            </Condition>
+            <Condition xsi:type="intersectionSearchType">
+               <Condition xsi:type="comparisonPredType" Comparison="&lt;">
+                  <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_DEC"/>
+                  <Arg xsi:type="atomType">
+                     <Literal xsi:type="realType" Value="23.0"/>
+                  </Arg>
+               </Condition>
+               <Condition xsi:type="intersectionSearchType">
+                  <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+                     <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                     <Arg xsi:type="atomType">
+                        <Literal xsi:type="realType" Value="0.0"/>
+                     </Arg>
+                  </Condition>
+                  <Condition xsi:type="intersectionSearchType">
+                     <Condition xsi:type="comparisonPredType" Comparison="&lt;">
+                        <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_DEC"/>
+                        <Arg xsi:type="atomType">
+                           <Literal xsi:type="realType" Value="0.5"/>
+                        </Arg>
+                     </Condition>
+                     <Condition xsi:type="closedSearchType">
+                        <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+                           <Arg xsi:type="binaryExprType" Oper="-">
+                              <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                              <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_DEC"/>
+                           </Arg>
+                           <Arg xsi:type="atomType">
+                              <Literal xsi:type="realType" Value="1.0"/>
+                           </Arg>
+                        </Condition>
+                     </Condition>
+                  </Condition>
+               </Condition>
+            </Condition>
+         </Condition>
+      </Condition>
+   </Where>
+</Select>

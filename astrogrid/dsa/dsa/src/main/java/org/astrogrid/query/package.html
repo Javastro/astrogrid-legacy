@@ -1,0 +1,19 @@
+<html>
+<body>
+The internal Query model that is the '1' in the n->1->n translations of queries
+for datacenters.
+<p>
+The Query package includes parsers and writers, but the core is the Query model
+that includes the match criteria and a definition of what results to return.
+<p>
+The model is manipulated and read by using a 'traverser' (one of them design
+pattern things) see QueryTraverser, QueryVisitor and DefaultQueryTraverser.
+<p>
+The model is meant to be 'self-contained'.  We could make parsing easier by looking
+up information in whatever metadata there is on the data being queried, but this
+can be tricky because (1) the wide variety of data that could be queried, (2) it
+might not be readily available and (3) I specifically want to avoid it so that
+we can be sure the query itself is unambiguous, and can be represented explicitly and
+clearly so to the user.
+</body>
+</html>

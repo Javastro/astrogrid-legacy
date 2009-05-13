@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <Restrict xsi:type="selectionLimitType" Top="100"/>
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="binaryExprType" Oper="/">
+            <Arg xsi:type="closedExprType">
+                <Arg xsi:type="binaryExprType" Oper="+">
+                    <Arg xsi:type="trigonometricFunctionType" Name="SIN">
+                        <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                    </Arg>
+                    <Arg xsi:type="trigonometricFunctionType" Name="COS">
+                        <Arg xsi:type="columnReferenceType" Table="b" Name="INSERT_DEC"/>
+                    </Arg>
+                </Arg>
+            </Arg>
+            <Arg xsi:type="closedExprType">
+                <Arg xsi:type="binaryExprType" Oper="-">
+                    <Arg xsi:type="mathFunctionType" Name="SQRT">
+                        <Arg xsi:type="mathFunctionType" Name="ABS">
+                            <Arg xsi:type="columnReferenceType" Table="c" Name="INSERT_RA"/>
+                        </Arg>
+                    </Arg>
+                    <Arg xsi:type="mathFunctionType" Name="LOG">
+                        <Arg xsi:type="mathFunctionType" Name="ABS">
+                            <Arg xsi:type="columnReferenceType" Table="d" Name="INSERT_DEC"/>
+                        </Arg>
+                    </Arg>
+                </Arg>
+            </Arg>
+        </Item>
+    </SelectionList>
+    <From xsi:type="fromType">
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
+        <Table xsi:type="tableType" Alias="b" Name="INSERT_TABLE" INSERT_CATALOG/>
+        <Table xsi:type="tableType" Alias="c" Name="INSERT_TABLE" INSERT_CATALOG/>
+        <Table xsi:type="tableType" Alias="d" Name="INSERT_TABLE" INSERT_CATALOG/>
+    </From>
+    <Where>
+        <Condition xsi:type="intersectionSearchType">
+           <Condition xsi:type="intersectionSearchType">
+               <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+                   <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
+                   <Arg xsi:type="atomType">
+                       <Literal xsi:type="realType" Value="0.0"/>
+                   </Arg>
+               </Condition>
+               <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+                   <Arg xsi:type="columnReferenceType" Table="b" Name="INSERT_DEC"/>
+                   <Arg xsi:type="atomType">
+                       <Literal xsi:type="realType" Value="0.0"/>
+                   </Arg>
+               </Condition>
+           </Condition>
+           <Condition xsi:type="intersectionSearchType">
+               <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+                   <Arg xsi:type="columnReferenceType" Table="c" Name="INSERT_RA"/>
+                   <Arg xsi:type="atomType">
+                       <Literal xsi:type="realType" Value="0.0"/>
+                   </Arg>
+               </Condition>
+               <Condition xsi:type="comparisonPredType" Comparison="&gt;">
+                   <Arg xsi:type="columnReferenceType" Table="d" Name="INSERT_DEC"/>
+                   <Arg xsi:type="atomType">
+                       <Literal xsi:type="realType" Value="0.0"/>
+                   </Arg>
+               </Condition>
+           </Condition>
+       </Condition>
+    </Where>
+</Select>

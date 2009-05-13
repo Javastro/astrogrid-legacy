@@ -1,0 +1,25 @@
+<!-- ADQL generated from: {Query: In scope Tab,Tab,look for where (([ColRef Tab.d]) < ([ColRef Tab.e])) AND (([ColRef Tab.f]) < ([ColRef Tab.f])),  returning [Results: target=null, cols=[ColRef t.a], [ColRef g.d], ]} -->
+<!-- ADQL generated from SQL: SELECT t.a, g.d FROM Tab AS a, Tab AS d WHERE a.d < d.e AND a.f < d.f ORDER BY t.f , g.b -->
+<Select xsi:type="selectType" xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
+   <SelectionList xsi:type="selectionListType">
+      <Item xsi:type='columnReferenceType' Table='t' Name='a' ></Item>
+      <Item xsi:type='columnReferenceType' Table='g' Name='d' ></Item>
+   </SelectionList>
+   <From xsi:type="fromType">
+      <Table xsi:type='tableType' Name='Tab' Alias='Tab' ></Table>
+      <Table xsi:type='tableType' Name='Tab' Alias='Tab' ></Table>
+   </From>
+   <Where xsi:type="whereType">
+      <Condition xsi:type='intersectionSearchType' >
+         <Condition xsi:type='comparisonPredType' Comparison='&lt;' >
+            <Arg xsi:type='columnReferenceType'  Table='Tab'  Name='d' ></Arg>
+            <Arg xsi:type='columnReferenceType'  Table='Tab'  Name='e' ></Arg>
+         </Condition>
+         <Condition xsi:type='comparisonPredType' Comparison='&lt;' >
+            <Arg xsi:type='columnReferenceType'  Table='Tab'  Name='f' ></Arg>
+            <Arg xsi:type='columnReferenceType'  Table='Tab'  Name='f' ></Arg>
+         </Condition>
+      </Condition>
+   </Where>
+</Select>
+

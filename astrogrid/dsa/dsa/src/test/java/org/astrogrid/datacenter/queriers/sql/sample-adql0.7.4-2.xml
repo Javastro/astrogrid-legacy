@@ -1,0 +1,24 @@
+<!-- ADQL generated from SQL: sample2=SELECT Ford.a, Prefect.d FROM Arthur AS a, Daley AS d WHERE a.d < d.e AND a.f < d.f -->
+<Select xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
+   <SelectionList>
+      <Item xsi:type='columnReferenceType' Table='s' Name='ColName_RA' ></Item>
+      <Item xsi:type='columnReferenceType' Table='p' Name='ColName_CENTERRA' ></Item>
+   </SelectionList>
+   <From>
+      <Table xsi:type='tableType' Name='TabName_SampleStars' Alias='s' ></Table>
+      <Table xsi:type='tableType' Name='TabName_Plates' Alias='p' ></Table>
+   </From>
+   <Where>
+      <Condition xsi:type='intersectionSearchType' >
+         <Condition xsi:type='comparisonPredType' Comparison='&lt;' >
+            <Arg xsi:type='columnReferenceType'  Table='p'  Name='ColName_CENTERRA' ></Arg>
+            <Arg xsi:type='columnReferenceType'  Table='p'  Name='ColName_CENTERDEC' ></Arg>
+         </Condition>
+         <Condition xsi:type='comparisonPredType' Comparison='&lt;' >
+            <Arg xsi:type='columnReferenceType'  Table='s'  Name='ColName_RA' ></Arg>
+            <Arg xsi:type='columnReferenceType'  Table='s'  Name='ColName_DEC' ></Arg>
+         </Condition>
+      </Condition>
+   </Where>
+</Select>
+
