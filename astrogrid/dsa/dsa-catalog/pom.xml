@@ -17,6 +17,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-security</artifactId>
+      <version>2009.1.a01</version>
+    </dependency>
+
+    <dependency>
       <groupId>junitee</groupId>
       <artifactId>junitee</artifactId>
       <version>1.11</version>
