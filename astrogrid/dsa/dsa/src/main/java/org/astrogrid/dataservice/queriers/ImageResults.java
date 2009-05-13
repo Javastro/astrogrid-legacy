@@ -1,5 +1,5 @@
 /*
- * $Id: ImageResults.java,v 1.1 2009/05/13 13:20:25 gtr Exp $
+ * $Id: ImageResults.java,v 1.1.1.1 2009/05/13 13:20:25 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */

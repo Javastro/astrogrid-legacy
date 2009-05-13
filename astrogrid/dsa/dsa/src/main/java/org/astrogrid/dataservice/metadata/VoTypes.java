@@ -1,5 +1,5 @@
 /*
- * $Id: VoTypes.java,v 1.1 2009/05/13 13:20:24 gtr Exp $
+ * $Id: VoTypes.java,v 1.1.1.1 2009/05/13 13:20:24 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -207,8 +207,8 @@ public class VoTypes  {
 
 /*
  $Log: VoTypes.java,v $
- Revision 1.1  2009/05/13 13:20:24  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:24  gtr
+
 
  Revision 1.8  2008/10/13 10:51:35  clq2
  PAL_KEA_2799

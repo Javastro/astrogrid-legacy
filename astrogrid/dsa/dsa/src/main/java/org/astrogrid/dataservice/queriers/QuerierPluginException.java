@@ -59,8 +59,8 @@ public class QuerierPluginException extends IOException
 
 /*
 $Log: QuerierPluginException.java,v $
-Revision 1.1  2009/05/13 13:20:26  gtr
-*** empty log message ***
+Revision 1.1.1.1  2009/05/13 13:20:26  gtr
+
 
 Revision 1.1.1.1  2005/02/17 18:37:35  mch
 Initial checkin

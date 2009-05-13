@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTestHelper.java,v 1.1 2009/05/13 13:21:01 gtr Exp $
+ * $Id: AdqlTestHelper.java,v 1.1.1.1 2009/05/13 13:21:01 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -237,8 +237,8 @@ public class AdqlTestHelper    {
 
 /*
  $Log: AdqlTestHelper.java,v $
- Revision 1.1  2009/05/13 13:21:01  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:21:01  gtr
+
 
  Revision 1.4  2006/06/15 16:50:09  clq2
  PAL_KEA_1612

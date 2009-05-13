@@ -1,5 +1,5 @@
 /*
- * $Id: ReaderSource.java,v 1.1 2009/05/13 13:20:41 gtr Exp $
+ * $Id: ReaderSource.java,v 1.1.1.1 2009/05/13 13:20:41 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -54,8 +54,8 @@ public class ReaderSource implements SourceIdentifier {
 }
 /*
  $Log: ReaderSource.java,v $
- Revision 1.1  2009/05/13 13:20:41  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:41  gtr
+
 
  Revision 1.2  2006/09/26 15:34:42  clq2
  SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal

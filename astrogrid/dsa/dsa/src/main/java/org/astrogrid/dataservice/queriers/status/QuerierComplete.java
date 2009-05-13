@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierComplete.java,v 1.1 2009/05/13 13:20:26 gtr Exp $
+ * $Id: QuerierComplete.java,v 1.1.1.1 2009/05/13 13:20:26 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,8 +24,8 @@ public class QuerierComplete extends QuerierStatus implements QuerierClosed
 
 /*
 $Log: QuerierComplete.java,v $
-Revision 1.1  2009/05/13 13:20:26  gtr
-*** empty log message ***
+Revision 1.1.1.1  2009/05/13 13:20:26  gtr
+
 
 Revision 1.2  2007/03/21 18:59:41  kea
 Preparatory work for v1.0 resources (not yet supported);  and also

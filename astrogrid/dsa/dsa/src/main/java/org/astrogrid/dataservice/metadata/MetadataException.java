@@ -51,8 +51,8 @@ public class MetadataException extends IOException
 
 /*
 $Log: MetadataException.java,v $
-Revision 1.1  2009/05/13 13:20:23  gtr
-*** empty log message ***
+Revision 1.1.1.1  2009/05/13 13:20:23  gtr
+
 
 Revision 1.1.1.1  2005/02/17 18:37:34  mch
 Initial checkin

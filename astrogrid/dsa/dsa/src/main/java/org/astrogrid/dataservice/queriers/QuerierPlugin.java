@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.1 2009/05/13 13:20:26 gtr Exp $
+ * $Id: QuerierPlugin.java,v 1.1.1.1 2009/05/13 13:20:26 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -42,8 +42,8 @@ public interface QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
- Revision 1.1  2009/05/13 13:20:26  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:26  gtr
+
 
  Revision 1.2  2006/06/15 16:50:08  clq2
  PAL_KEA_1612

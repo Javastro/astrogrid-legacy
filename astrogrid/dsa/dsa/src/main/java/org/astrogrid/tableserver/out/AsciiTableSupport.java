@@ -1,5 +1,5 @@
 /*
- * $Id: AsciiTableSupport.java,v 1.1 2009/05/13 13:20:50 gtr Exp $
+ * $Id: AsciiTableSupport.java,v 1.1.1.1 2009/05/13 13:20:50 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,8 +44,8 @@ public abstract class AsciiTableSupport implements TableWriter {
 
 /*
  $Log: AsciiTableSupport.java,v $
- Revision 1.1  2009/05/13 13:20:50  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:50  gtr
+
 
  Revision 1.1  2005/03/21 18:45:55  mch
  Naughty big lump of changes

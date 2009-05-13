@@ -1,5 +1,5 @@
 /*
- * $Id: PluginListener.java,v 1.1 2009/05/13 13:20:25 gtr Exp $
+ * $Id: PluginListener.java,v 1.1.1.1 2009/05/13 13:20:25 gtr Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -24,8 +24,8 @@ public interface PluginListener
 
 /*
 $Log: PluginListener.java,v $
-Revision 1.1  2009/05/13 13:20:25  gtr
-*** empty log message ***
+Revision 1.1.1.1  2009/05/13 13:20:25  gtr
+
 
 Revision 1.1.1.1  2005/02/17 18:37:34  mch
 Initial checkin

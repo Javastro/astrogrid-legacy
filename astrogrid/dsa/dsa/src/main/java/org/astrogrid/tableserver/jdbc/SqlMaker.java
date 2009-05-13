@@ -1,4 +1,4 @@
-/*$Id: SqlMaker.java,v 1.1 2009/05/13 13:20:44 gtr Exp $
+/*$Id: SqlMaker.java,v 1.1.1.1 2009/05/13 13:20:44 gtr Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,8 +31,8 @@ public interface SqlMaker  {
 
 /*
 $Log: SqlMaker.java,v $
-Revision 1.1  2009/05/13 13:20:44  gtr
-*** empty log message ***
+Revision 1.1.1.1  2009/05/13 13:20:44  gtr
+
 
 Revision 1.2  2006/06/15 16:50:09  clq2
 PAL_KEA_1612

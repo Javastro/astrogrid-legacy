@@ -1,5 +1,5 @@
 /*
- * $Id: StdDataTypes.java,v 1.1 2009/05/13 13:20:23 gtr Exp $
+ * $Id: StdDataTypes.java,v 1.1.1.1 2009/05/13 13:20:23 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -84,8 +84,8 @@ public class StdDataTypes  {
 
 /*
  $Log: StdDataTypes.java,v $
- Revision 1.1  2009/05/13 13:20:23  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:23  gtr
+
 
  Revision 1.4  2008/10/13 10:51:35  clq2
  PAL_KEA_2799

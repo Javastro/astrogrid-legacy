@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConeSearcher.java,v 1.1 2009/05/13 13:20:23 gtr Exp $
+ * $Id: NvoConeSearcher.java,v 1.1.1.1 2009/05/13 13:20:23 gtr Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -92,8 +92,8 @@ public class NvoConeSearcher
 
 /*
 $Log: NvoConeSearcher.java,v $
-Revision 1.1  2009/05/13 13:20:23  gtr
-*** empty log message ***
+Revision 1.1.1.1  2009/05/13 13:20:23  gtr
+
 
 Revision 1.2  2005/02/28 19:36:39  mch
 Fixes to tests

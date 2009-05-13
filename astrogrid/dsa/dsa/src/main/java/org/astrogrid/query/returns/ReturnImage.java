@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnImage.java,v 1.1 2009/05/13 13:20:40 gtr Exp $
+ * $Id: ReturnImage.java,v 1.1.1.1 2009/05/13 13:20:40 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,8 +55,8 @@ public class ReturnImage  extends ReturnSpec {
 }
 /*
  $Log: ReturnImage.java,v $
- Revision 1.1  2009/05/13 13:20:40  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:40  gtr
+
 
  Revision 1.1.1.1  2005/02/17 18:37:34  mch
  Initial checkin

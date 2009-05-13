@@ -1,5 +1,5 @@
 /*
- * $Id: WriterStream.java,v 1.1 2009/05/13 13:20:35 gtr Exp $
+ * $Id: WriterStream.java,v 1.1.1.1 2009/05/13 13:20:35 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -46,8 +46,8 @@ public class WriterStream extends OutputStream {
 
 /*
  $Log: WriterStream.java,v $
- Revision 1.1  2009/05/13 13:20:35  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:35  gtr
+
 
  Revision 1.2  2006/09/26 15:34:42  clq2
  SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal

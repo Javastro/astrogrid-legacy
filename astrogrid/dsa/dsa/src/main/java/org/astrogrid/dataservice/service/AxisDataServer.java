@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.1 2009/05/13 13:20:27 gtr Exp $
+ * $Id: AxisDataServer.java,v 1.1.1.1 2009/05/13 13:20:27 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -138,8 +138,8 @@ public class AxisDataServer extends DataServer {
 
 /*
 $Log: AxisDataServer.java,v $
-Revision 1.1  2009/05/13 13:20:27  gtr
-*** empty log message ***
+Revision 1.1.1.1  2009/05/13 13:20:27  gtr
+
 
 Revision 1.3  2005/05/27 16:21:02  clq2
 mchv_1

@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableFitsWriter.java,v 1.1 2009/05/13 13:20:51 gtr Exp $
+ * $Id: VoTableFitsWriter.java,v 1.1.1.1 2009/05/13 13:20:51 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -69,8 +69,8 @@ public class VoTableFitsWriter extends VoTableWriter {
 
 /*
  $Log: VoTableFitsWriter.java,v $
- Revision 1.1  2009/05/13 13:20:51  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:51  gtr
+
 
  Revision 1.6  2007/06/08 13:16:12  clq2
  KEA-PAL-2169

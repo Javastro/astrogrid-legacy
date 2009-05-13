@@ -1,4 +1,4 @@
-/*$Id: QuerierPluginFactory.java,v 1.1 2009/05/13 13:20:26 gtr Exp $
+/*$Id: QuerierPluginFactory.java,v 1.1.1.1 2009/05/13 13:20:26 gtr Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -108,8 +108,8 @@ public class QuerierPluginFactory {
 
 /*
  $Log: QuerierPluginFactory.java,v $
- Revision 1.1  2009/05/13 13:20:26  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:26  gtr
+
 
  Revision 1.2  2005/03/21 18:45:55  mch
  Naughty big lump of changes

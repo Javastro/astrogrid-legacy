@@ -1,5 +1,5 @@
 /*
- * $Id: XsvTableWriter.java,v 1.1 2009/05/13 13:20:52 gtr Exp $
+ * $Id: XsvTableWriter.java,v 1.1.1.1 2009/05/13 13:20:52 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -183,8 +183,8 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 /*
  $Log: XsvTableWriter.java,v $
- Revision 1.1  2009/05/13 13:20:52  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:52  gtr
+
 
  Revision 1.10  2008/04/02 14:20:44  clq2
  KEA_PAL2654

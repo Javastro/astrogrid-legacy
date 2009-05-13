@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierAborted.java,v 1.1 2009/05/13 13:20:26 gtr Exp $
+ * $Id: QuerierAborted.java,v 1.1.1.1 2009/05/13 13:20:26 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,8 +20,8 @@ public class QuerierAborted extends QuerierStatus implements QuerierClosed {
 
 /*
 $Log: QuerierAborted.java,v $
-Revision 1.1  2009/05/13 13:20:26  gtr
-*** empty log message ***
+Revision 1.1.1.1  2009/05/13 13:20:26  gtr
+
 
 Revision 1.1.1.1  2005/02/17 18:37:35  mch
 Initial checkin

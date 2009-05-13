@@ -30,8 +30,8 @@ public class DatacenterException extends RemoteException
 
 /*
 $Log: DatacenterException.java,v $
-Revision 1.1  2009/05/13 13:20:23  gtr
-*** empty log message ***
+Revision 1.1.1.1  2009/05/13 13:20:23  gtr
+
 
 Revision 1.2  2005/02/28 19:36:39  mch
 Fixes to tests

@@ -1,5 +1,5 @@
 /*
- * $Id: TaskStatus.java,v 1.1 2009/05/13 13:20:42 gtr Exp $
+ * $Id: TaskStatus.java,v 1.1.1.1 2009/05/13 13:20:42 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -67,8 +67,8 @@ public interface TaskStatus
 
 /*
 $Log: TaskStatus.java,v $
-Revision 1.1  2009/05/13 13:20:42  gtr
-*** empty log message ***
+Revision 1.1.1.1  2009/05/13 13:20:42  gtr
+
 
 Revision 1.1  2006/06/16 14:50:06  kea
 Moving code from astrogrid/status project back into pal, and updating

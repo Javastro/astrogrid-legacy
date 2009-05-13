@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultPlugin.java,v 1.1 2009/05/13 13:20:25 gtr Exp $
+ * $Id: DefaultPlugin.java,v 1.1.1.1 2009/05/13 13:20:25 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -54,8 +54,8 @@ public abstract class DefaultPlugin implements QuerierPlugin {
 }
 /*
  $Log: DefaultPlugin.java,v $
- Revision 1.1  2009/05/13 13:20:25  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:25  gtr
+
 
  Revision 1.4  2006/06/15 16:50:08  clq2
  PAL_KEA_1612

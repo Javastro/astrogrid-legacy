@@ -1,5 +1,5 @@
 /*
- * $Id: ColumnInfo.java,v 1.1 2009/05/13 13:20:49 gtr Exp $
+ * $Id: ColumnInfo.java,v 1.1.1.1 2009/05/13 13:20:49 gtr Exp $
  */
 package org.astrogrid.tableserver.metadata;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StilStarTableWriter.java.NOTUSED,v 1.1 2009/05/13 13:20:51 gtr Exp $
+ * $Id: StilStarTableWriter.java.NOTUSED,v 1.1.1.1 2009/05/13 13:20:51 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -188,8 +188,8 @@ public class StilStarTableWriter extends AbstractStarTable implements TableWrite
 
 /*
  $Log: StilStarTableWriter.java.NOTUSED,v $
- Revision 1.1  2009/05/13 13:20:51  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:51  gtr
+
 
  Revision 1.2  2007/02/20 12:22:15  clq2
  PAL_KEA_2062

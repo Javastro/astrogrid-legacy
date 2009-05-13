@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.1 2009/05/13 13:20:51 gtr Exp $
+ * $Id: HtmlTableWriter.java,v 1.1.1.1 2009/05/13 13:20:51 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -261,8 +261,8 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
- Revision 1.1  2009/05/13 13:20:51  gtr
- *** empty log message ***
+ Revision 1.1.1.1  2009/05/13 13:20:51  gtr
+
 
  Revision 1.11  2008/05/27 11:07:38  clq2
  merged PAL_KEA_2715
