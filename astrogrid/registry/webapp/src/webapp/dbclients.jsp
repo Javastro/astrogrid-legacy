@@ -109,12 +109,6 @@ All of this can be setup and is explained on the following link:
 Which means for validation and to make an easy to use Interface with Oxygen or XMLSpy you will
 need to set the schemalocation yourself.  Down below are a list of various places to obtain
 the schemaLocation.<br />
-<font color='red'>
-0.10 Only - Editing 0.10 via WebDav <br />
-If you use WebDav for editing 0.10 data because of a problem dealing with not able to reach the Resource element in the 0.1 
-Registry Interface official ivoa schema, 2 unofficial schemas were created.<br />
-Located <a hefef="unoffical_schema">here</a>.  The RegistryInterfaceUnofficial.xsd is equivelant to the official ivoa schema, but the Resource element can now be reached and the RegistryDBStore simply references this unofficial RegistryInterface.xsd.
-</font>
 <hr /> 
 
 </p>
@@ -139,15 +133,6 @@ ex: http://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.g
 /schema/vo-resource-types/SIA/v1.0/SIA.xsd<br />
 /schema/registry/RegistryUpdate/v1.0/RegistryDBStore.xsd<br />
 .<br />
-0.10 schemas.<br />
-/schema/vo-resource-types/VOResource/v0.10/VOResource.xsd<br />
-/schema/vo-resource-types/VORegistry/v0.3/VORegistry.xsd<br />
-/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd<br />
-/schema/vo-resource-types/ConeSearch/v0.3/ConeSearch.xsd<br />
-/schema/vo-resource-types/SIA/v0.7/SIA.xsd<br />
-/schema/vo-resource-types/TabularDB/v0.3/TabularDB.xsd<br />
-/schema/vo-resource-types/OpenSkyNode/v0.1/OpenSkyNode.xsd<br />
-/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd<br />
 <br />
 At the time of this writing these schemas were not published.<br />
 /schema/vo-resource-types/OpenSkyNode/v1.0/OpenSkyNode.xsd<br />

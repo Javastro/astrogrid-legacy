@@ -3,6 +3,8 @@ package org.astrogrid.registry.server.query.v1_0;
 import org.astrogrid.registry.server.query.RegistryXMLStreamDelegate;
 import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceSet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Class: ResultStreamer
@@ -15,6 +17,12 @@ import org.xmldb.api.base.ResourceSet;
  *
  */
 public class ResultStreamer extends RegistryXMLStreamDelegate {
+	
+    /**
+     * Logging variable for writing information to the logs
+     */
+     private static final Log log = LogFactory.getLog(ResultStreamer.class);    
+
 	
 
 	/**

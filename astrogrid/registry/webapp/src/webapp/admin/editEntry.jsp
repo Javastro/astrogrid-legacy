@@ -60,7 +60,6 @@
 <h1>Add/Update Entry</h1>
 <p>
 Here you can update the resources in various ways. If the Resources are already there then it will be updated, 
-Be sure your on the correct 'Contract' version (see menu).
 Validation is now always turned on and checked before going into the Registry.<br />
 You may checkmark the 'Validate' box to have it validated before it is ever sent and checked at the Server.
 <i>schemaLocations are not particularly needed for known ivoa schemas, but they will be preserved if in the XML and may be required for
@@ -68,17 +67,12 @@ validation on extensions. schemaLocations may also be desirable if you use other
 </p>
 
 <p>
-There is a range of various ways to insert or update records.  
-At the bottom of this page are various way of submitting towards Update web service calls.<br />
+There is a range of various ways to insert or update records.  Mainly this jsp page or update web service calls.  Both take XML in a particular way
+and the xml samples are at the bottomo of this page.
 <b>
-For jsp pages the version number is used from your current contract session settings.
-See menu 'Current Contract' to make sure your on the correct version. <br />
 </b>
 </p>
 <br />
-<p>
-<i>Warning for 0.10 Resources: You may have a created or updated date on the Resource element that is a dateTime, it should be a 'date' i.e. 2004-04-28</i>
-</p>
 
 Upload from a local file:
 <form enctype="multipart/form-data" method="post" action="addResourceEntry.jsp">
@@ -112,32 +106,23 @@ Upload from text:<br />
 </form>
 
 <p>
-The samples below are more for updating/inserting entries via the Update web service call.
+Sample of xml that can be placed on this page or via web service call.  
+Note it is normally better to save xml in a file and upload the file via this jsp page.  The html box to paste xml is good but requires
+escaping certain characters hence a text file can be more of an advantage.
 <br />
 </p>
 <pre>
-Multiple Resources (1.0): <br />
+Multiple Resources: <br />
 &lt;ri:VOResources xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" from="1" numberReturned="5" more="false" &gt;
 &lt;!-- You can place as many ri:Resource elements --&gt;
 &lt;ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" .....
 &lt;ri:Resource%gt;
 &lt;/ri:VOResources&gt;
 <br />
-Singe Resource (1.0)  - (Remember you can use the Multiple Resources way as well):
+Singe Resource  - (Remember you can use the Multiple Resources way as well):
 &lt;ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" .....
 &lt;ri:Resource%gt;
-<br />
-Multiple Resources (0.10):
-&lt;ri:VOResource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v0.1" .....
-&lt;!-- Now place 1 to many 'Resource' elements here, Notice the ri namespace only Resource element has this. --&gt;
-&lt;ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v0.1" .....
-&lt;ri:Resource%gt;
-&lt;ri:VOResources%gt;
-<br />
-Singe Resource (0.10) - (Remember you can use the Multiple Resources way as well):
-&lt;ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v0.1" .....
-&lt;ri:Resource%gt;
-<br />
+
 
 </pre>
 

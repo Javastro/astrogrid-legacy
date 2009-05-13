@@ -33,22 +33,19 @@
 <div id='bodyColumn'>
 <h1>Get Registry Type Resource From Harvest URL</h1>
 <p>
-<font color='blue'>Be sure your Contract Version is set correctly.  Check Menu for current contract status.</font><br />
 Normally you only need to use this page one time for the RofR, because all Registry Type Resources are listed in what is known as the 
-Registry of Registries (RofR).  But occasionally on private registries not known to the RofR or other situations which may cause
-a registry to not be in the RofR.  You may use this JSP to add the Registry Type Resource to 'this' Registry.  Once that
+Registry of Registries (RofR).  By simply hitting Submit below will put the RofR record into  your Registry whereby you can go to the Harvest jsp page
+to pick up all the known Registries to be harvestes (or let the automatic harvester pick it up).
+
+Advanced: Occasionally on private registries not known to the RofR or other situations which may cause
+a registry to not be in the RofR. Hence you as the admin may wish to only harvest certain registries.  
+You may use this JSP to add the Registry Type Resource to 'this' Registry.  Once that
 is done then you may go and harvest it via the harvestResource page on the menu or let the automatic harvest pick it up. 
-A default url of the current RofR is below just click Submit to pick up the RofR.  For other registries put in the OAI harvest url below.<br /><br />
-For astrogrid registries this is typcially:<br /> http://{server}:{port}/{context}/OAIHandlerv{contractversion ex:1_0}?verb=Identify  this will 
-get the 1 (and only 1) Registry type entry to be harvested.  To get all Registries then '?verb=ListRecords&set=ivo_Registry&metadataPrefix=ivo_vor'
+For other registries put in the OAI harvest url below.<br /><br />
+For astrogrid registries this is typcially:<br /> http://{server}:{port}/{context}/OAIHandlerv{contractversion ex:1_0}  this will 
+get the 1 (and only 1) Registry type entry to be harvested then the harvester or harvest.jsp page to actually harvest the contens.
 <br />
-<p>
-If you are trying to harvest 0.10 entries then suggest this:
-http://galahad.star.le.ac.uk:8080/astrogrid-registry/OAIHandlerv0_1?verb=ListRecords&set=Registry&metadataPrefix=ivo_vor
-<br />
-This will get all the Registry types that the full registry galahad has and allow you to start harvesting those 
-registries.  Alterntatively you can do verb=Identify to get just the singly Registry type Resource to harvest that particular registry.
-</p>
+
 <form name="harvestURL" method="post">
 URL:
 <input type="text" width=500 name="harvesturl" value="http://rofr.ivoa.net/cgi-bin/oai.pl"></input>

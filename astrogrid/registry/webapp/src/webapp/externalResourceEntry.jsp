@@ -32,12 +32,6 @@ html>
 
 <h1>Get Resource</h1>
 
-
-<p>
-<font color='blue'>Current Contract Version <%=JSPHelper.getContractVersion(request)%></font>
-<br />
-</p>
-
 <form method="post">
 <p>
 <br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQueryv<%= JSPHelper.getContractVersion(request).replace('.','_') %>"/><br />

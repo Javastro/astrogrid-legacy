@@ -114,13 +114,5 @@ are available.
    
 %>
 	<br />
-	<p>
-	  <i>This is a new Registry and is in a transition state to 1.0 type Resources.  By default this registry is set to 1.0 Resource (and Contract).  But can handle multiple versions
-	  including the older 0.10 Resources.  Before 1.0 there was a 0.10 version of the Resource schema but the query&harvest interface specification was much further behind and its version was 0.1 a.k.a 0.1 contract version.
-	  As noted this registry can handle both (0.10 and 1.0 Resource versions) hence (0.1 and 1.0 contract versions).  Quite simply 0.1,0.10 go together and 1.0,1.0 go together.
-	  There are a few new features to this registry and its jsp pages to help you manage the registry.  
-	  <b>Note the 'Current Contracts' in the menu</b>  this will allow you to switch between different Resource versions in case you need to query, update or manage the other version of Resources.  By default this is
-	  only set for the session of your browser.  So be sure you are on the correct version.
-	</p>
 </body>
 </html>

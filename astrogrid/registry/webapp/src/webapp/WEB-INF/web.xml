@@ -22,23 +22,7 @@
         <filter-class>org.astrogrid.registry.server.http.filters.RestrictFilterUpdate</filter-class>       
     </filter>    
 
-    <filter>
-        <filter-name>ContractsQueryFilterv0_1</filter-name>
-        <filter-class>org.astrogrid.contracts.http.filters.ContractsFilter</filter-class>
-         <init-param>
-            <param-name>wsdlFile</param-name>
-            <param-value>schema/registry/RegistrySearch/v0.1/RegistrySearch.wsdl</param-value>
-         </init-param>        
-    </filter>
 
-    <filter>
-        <filter-name>ContractsQueryFilterv0_9</filter-name>
-        <filter-class>org.astrogrid.contracts.http.filters.ContractsFilter</filter-class>
-         <init-param>
-            <param-name>wsdlFile</param-name>
-            <param-value>schema/registry/RegistrySearch/v0.9/RegistrySearch.wsdl</param-value>
-         </init-param>        
-    </filter>
 
     <filter>
         <filter-name>ContractsQueryFilterv1_0</filter-name>
@@ -58,14 +42,7 @@
          </init-param>        
     </filter>
 
-    <filter>
-        <filter-name>ContractsPublishFilterv0_1</filter-name>
-        <filter-class>org.astrogrid.contracts.http.filters.ContractsFilter</filter-class>
-         <init-param>
-            <param-name>wsdlFile</param-name>
-            <param-value>schema/registry/RegistryPublish/v0.1/RegistryPublish.wsdl</param-value>
-         </init-param>        
-    </filter>
+    
 
     <filter>
         <filter-name>ContractsPublishFilterv1_0</filter-name>
@@ -91,34 +68,10 @@
 		<url-pattern>/services/RegistryUpdat*</url-pattern>
     </filter-mapping>    
 
-    <filter-mapping>
-        <filter-name>ContractsQueryFilterv0_1</filter-name>
-		<url-pattern>/services/RegistryQuery</url-pattern>
-    </filter-mapping>
-    
- <filter-mapping>
-        <filter-name>ContractsQueryFilterv0_1</filter-name>
-		<url-pattern>/services/RegistryQueryv0_1</url-pattern>
-    </filter-mapping>    
-
-    <filter-mapping>
-        <filter-name>ContractsQueryFilterv0_9</filter-name>
-		<url-pattern>/services/RegistryQueryv0_9</url-pattern>
-    </filter-mapping>
-
+  
     <filter-mapping>
         <filter-name>ContractsQueryFilterv1_0</filter-name>
 		<url-pattern>/services/RegistryQueryv1_0</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>ContractsPublishFilterv0_1</filter-name>
-		<url-pattern>/services/RegistryHarvest</url-pattern>
-    </filter-mapping>
-    
-    <filter-mapping>
-        <filter-name>ContractsPublishFilterv0_1</filter-name>
-		<url-pattern>/services/RegistryHarvestv0_1</url-pattern>
     </filter-mapping>
     
 
@@ -130,11 +83,6 @@
     <filter-mapping>
         <filter-name>ContractsUpdateFilter</filter-name>
 		<url-pattern>/services/RegistryUpdat*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>ContractsQueryFilterv0_1</filter-name>
-		<url-pattern>/schema/*</url-pattern>
     </filter-mapping>
 
 
@@ -173,15 +121,6 @@
     	<servlet-class>org.astrogrid.registry.server.http.servlets.SoapServlet</servlet-class>
   	</servlet>
   	
-	<servlet>
-   		<servlet-name>RegistryHarvest0_1</servlet-name>
-   		<servlet-class>org.astrogrid.registry.server.http.servlets.HarvestDaemon</servlet-class>
-     	<init-param>
-        <param-name>registry_contract_version</param-name>
-         <param-value>0.1</param-value>
-      	</init-param>
-   		<load-on-startup>200</load-on-startup>
-	</servlet>
 	
 	<servlet>
 		<servlet-name>EnvironmentServlet</servlet-name>
@@ -226,22 +165,7 @@
         </init-param>
     </servlet>
    
-    <servlet>
-      <servlet-name>OAIHandlerv0_1</servlet-name>
-      <description>
-        This servlet processes OAI verbs.
-
-        The initialization parameter names for this servlet are the
-        "servlet path" that will be received by this servlet (after the
-        filename extension is removed).  The corresponding value is the
-        name of the action class that will be used to process this request.
-      </description>
-      <servlet-class>astrogrid.registry.oai.OAIHandler</servlet-class>
-     <init-param>
-        <param-name>registry_contract_version</param-name>
-         <param-value>0.1</param-value>
-      </init-param>
-    </servlet>
+ 
 
     <servlet>
       <servlet-name>OAIHandlerv1_0</servlet-name>
@@ -348,15 +272,7 @@
     </servlet-mapping>    
     -->
 
-    <servlet-mapping>
-      <servlet-name>OAIHandlerv0_1</servlet-name>
-      <url-pattern>/OAIHandlerv0_1</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>OAIHandlerv0_1</servlet-name>
-        <url-pattern>/servlet/OAIHandlerv0_1</url-pattern>
-    </servlet-mapping>
+    
 
     <servlet-mapping>
       <servlet-name>OAIHandlerv1_0</servlet-name>
@@ -585,12 +501,6 @@
 	</env-entry>	
 
 
-	<env-entry>
-		<description>The url to the oai publishing url for 0.1 (contract version) hence 0.10 resources, default is set to astrogrid servlet change if your context is not astrogrid-registry.</description>
-		<env-entry-name>reg.amend.oaipublish.0.1</env-entry-name>
-		<env-entry-value>http://localhost:8080/astrogrid-registry/OAIHandlerv0_1</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
 
 	<env-entry>
 		<description>The url to the oai publishing url for 1.0 (contract version) hence 1.0 resources, default is set to astrogrid servlet change if your context is not astrogrid-registry.</description>

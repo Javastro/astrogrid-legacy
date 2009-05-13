@@ -35,7 +35,7 @@
 
 <h1>Query Registry</h1>
 <p>
-<font color='blue'>Current Contract Version <%=JSPHelper.getContractVersion(request)%></font>
+
 <br />
 </p>
 <p>

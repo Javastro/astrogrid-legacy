@@ -1,4 +1,4 @@
-<%@ page import="org.astrogrid.config.SimpleConfig,
+<%@ page import="org.astrogrid.config.SimpleConfig, java.io.File,
       			 org.astrogrid.registry.server.http.servlets.helper.JSPHelper"
    isThreadSafe="false"
    session="false"

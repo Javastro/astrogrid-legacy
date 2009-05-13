@@ -31,9 +31,8 @@ your browser on the site you have installed the WAR file on.
 <h2>Indexes</h2>
 <p>
 Located here is something new whereby you can manage the indexes in the database.  
-This page will allow you to
-add Indexes to your database, again there is a different index page for different "Contract" versions such
-as the 1.0 and 0.10 Resources.<br />
+This page will allow you to add Indexes to your database, by default only indexes on text is done.  Click on this
+link to add more indexes and a default set of indexes are shown that is commonly added to the astrogrid full registries.<br />
 <a href="addIndexCheck.jsp">Click here</a> to add or update indexes.<br />
 </p>
 
@@ -49,16 +48,17 @@ an autmoated creator which is the first link.</p>
 </ul>
 
 <h2>Getting your Registry known</h2>
-<p><font color='blue'>Warning</font> At this time RofR has only recently came up in the last month and currently has no interface for submitting your Registry Type.
-Currently suggest e-mailing the url to your OAI Identify to the <a href='mailto:registry@ivoa.net'>registry@ivoa.net</a>.  <br />
-Your HTTP-GET OAI url corresponding to Registry Interface version 1.0 is: <br />
+<p>
+To get your registry known to the world you must register it with the 'Registry of Registries' (RofR) by placing in a url to what is known as a OAI
+interface.  Go to: <br />
+<a href="http://rofr.ivoa.net/regvalidate/regvalidate.html">RofR Validation and Registration</a>
+
+All astrogrid registries have an OAI interface url and for this registry it should be 
+(Note if your on a proxy system the below url might not be correct please correct it to the correct url/domain):
+<br />
 <%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/OAIHandlerv1_0
 <br /><br />
-<font color='red'>For 0.10 only</font>To have your registry harvested by other registries you must copy
-your registryType entry into those registries. (This is optional)</p>
-<ul>
-<li><a href="registerSelfInExternalRegistry.jsp">Register with other Registries</a></li>
-</ul>
+
 
 <h2>Harvesting other Registries</h2>
 <p>To make your registry harvest other registries - you must get the other known Registry type Resources.
@@ -66,8 +66,6 @@ This is typically done by getting all the Registry Type Resources from Registry 
 <ul>
 <li><a href="getRegistryFromHarvest.jsp">Harvesting other Registries</a></li>
 </ul>
-
-
 
 </body>
 </html>

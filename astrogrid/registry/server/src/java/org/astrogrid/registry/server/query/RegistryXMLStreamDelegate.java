@@ -148,6 +148,8 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
   	}
   	
 	}catch(XMLDBException xdbe) {
+		log.error("xmldbexception + " + xdbe);
+		log.error(xdbe);
 		throw new XMLStreamException(xdbe.getMessage());
 	}
   	
@@ -205,6 +207,8 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
     }//if
     
   	}catch(XMLDBException xdbe) {
+		log.error("xmldbexception + " + xdbe);
+		log.error(xdbe);
   		throw new XMLStreamException(xdbe.getMessage());
   	}
     //okay either  no resourceset or finished with it.  Must

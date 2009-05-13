@@ -24,9 +24,7 @@
 <h1>Self-registration</h1>
 
 <p>
-This page is new and only for the 1.0 Resources.  Though adding Authority Types in other VOResource versions such as
-0.10 will do the same logic.<br />
-Logic:  This page is for adding a new authority id to be managed by your registry hence no other registry
+This page is for adding a new authority id to be managed by your registry hence no other registry
 can manage this authority id, 'only this registry'.  By filling in the form and hitting submit will create
 an Authority type xml to be sent to the Registry which in turn will cause it to add to the 'Registry'
 type managedAuthority element.
