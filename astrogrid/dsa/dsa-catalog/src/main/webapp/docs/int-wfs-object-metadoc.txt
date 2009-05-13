@@ -1,0 +1,956 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasetDescription xmlns="urn:astrogrid:schema:dsa:TableMetaDoc:v1.1" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Catalog ID="wfsobj">
+  <Name>INT-WFS merged object-catalogue</Name>
+  <Description>Parameters of objects found in CCD images of the INT-WFS. The objects have been cross-matched between images. Each row of the catalogue describes one object but may include data from more than one image.</Description>
+  <Table ID="obj">
+    <Name>obj</Name>
+    <Description>The object catalogue itself.</Description>
+    <Column ID="objID" indexed="false">
+      <Name>objID</Name>
+      <Datatype>int</Datatype>
+      <Description>Some index number for the celestial object</Description>
+      <UCD version="1">ID_NUMBER</UCD>
+    </Column>
+    <Column ID="ra" indexed="true">
+      <Name>ra</Name>
+      <Datatype>float</Datatype>
+      <Description>Right ascension of celestial object</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_EQ_RA_MAIN</UCD>
+      <SkyPolarCoord>RA</SkyPolarCoord>
+    </Column>
+    <Column ID="dec" indexed="true">
+      <Name>dec</Name>
+      <Datatype>float</Datatype>
+      <Description>Declination of celestial object</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_EQ_DEC_MAIN</UCD>
+      <SkyPolarCoord>DEC</SkyPolarCoord>
+    </Column>
+    <Column ID="htmID" indexed="false">
+      <Name>htmID</Name>
+      <Datatype>int</Datatype>
+      <Description>Hierarchical Triangular Mesh Index</Description>
+      <UCD version="1+">meta.cryptic</UCD><!-- No UCD for HTM index yet! -->
+    </Column>
+    <Column ID="cx" indexed="false">
+      <Name>cx</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD><!-- No UCD for HTM index yet! -->
+    </Column>
+    <Column ID="cy" indexed="false">
+      <Name>cy</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD><!-- No UCD for HTM index yet! -->
+    </Column>
+    <Column ID="cz" indexed="false">
+      <Name>cz</Name>
+      <Datatype>float</Datatype>
+      <Description>Dunno</Description>
+      <UCD version="1+">meta.cryptic</UCD><!-- No UCD for HTM index yet! -->
+    </Column>
+    <Column ID="run_U" indexed="false">
+      <Name>run_U</Name>
+      <Datatype>int</Datatype>
+      <Description>INT run-number of observation yielding U-band photometry</Description>
+      <UCD version="1">ID_EXPOSURE</UCD>
+    </Column>
+    <Column ID="ccd_U" indexed="false">
+      <Name>ccd_U</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of CCD chip in the camera on which the object falls, U-band observation</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="number_U" indexed="false">
+      <Name>number_U</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of object in catalogue for single observation, U band</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="offsetRa_U" indexed="false">
+      <Name>offsetRa_U</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of RA measured in U-band observation from that in ra column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="offsetDec_U" indexed="false">
+      <Name>offsetDec_U</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of declination measured in U-band observation from that in dec column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="x_U" indexed="false">
+      <Name>x_U</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, x coordinate, U-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_X</UCD>
+    </Column>
+    <Column ID="y_U" indexed="false">
+      <Name>y_U</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, y coordinate, U-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_Y</UCD>
+    </Column>
+    <Column ID="flux_U" indexed="false">
+      <Name>flux_U</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric flux in U band (instrumental scale)</Description>
+      <UCD version="1">ERROR</UCD>
+      <ErrorColumn>fluxErr_U</ErrorColumn>
+    </Column>
+    <Column ID="fluxErr_U" indexed="false">
+      <Name>fluxErr_U</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric flux, U band (instrumental scale)</Description>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="U" indexed="false">
+      <Name>U</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric magnitude in U band</Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_MAG_U</UCD>
+      <ErrorColumn>Err_U</ErrorColumn>
+    </Column>
+    <Column ID="Err_U" indexed="false">
+      <Name>Err_U</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric magnitude, U band</Description>
+      <Units>mag</Units>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="type_U" indexed="false">
+      <Name>type_U</Name>
+      <Datatype>int</Datatype>
+      <Description>Star/galaxy/noise classification-code, derived from U-band observation</Description>
+      <UCD version="1">CLASS_OBJECT</UCD>
+    </Column>
+    <Column ID="stellar_U" indexed="false">
+      <Name>stellar_U</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoA_U" indexed="false">
+      <Name>isoA_U</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoB_U" indexed="false">
+      <Name>isoB_U</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoPhi_U" indexed="false">
+      <Name>isoPhi_U</Name>
+      <Datatype>float</Datatype>
+      <Description>Position angle of isophotes of object, derived from U-band observation</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_POS-ANG</UCD>
+    </Column>
+    <Column ID="run_g" indexed="false">
+      <Name>run_g</Name>
+      <Datatype>int</Datatype>
+      <Description>INT run-number of observation yielding g-band photometry</Description>
+      <UCD version="1">ID_EXPOSURE</UCD>
+    </Column>
+    <Column ID="ccd_g" indexed="false">
+      <Name>ccd_g</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of CCD chip in the camera on which the object falls, g-band observation</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="number_g" indexed="false">
+      <Name>number_g</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of object in catalogue for single observation, g band</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="offsetRa_g" indexed="false">
+      <Name>offsetRa_g</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of RA measured in g-band observation from that in ra column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="offsetDec_g" indexed="false">
+      <Name>offsetDec_g</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of declination measured in g-band observation from that in dec column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="x_g" indexed="false">
+      <Name>x_g</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, x coordinate, g-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_X</UCD>
+    </Column>
+    <Column ID="y_g" indexed="false">
+      <Name>y_g</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, y coordinate, g-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_Y</UCD>
+    </Column>
+    <Column ID="flux_g" indexed="false">
+      <Name>flux_g</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric flux in g band (instrumental scale)</Description>
+      <UCD version="1">PHOT_FLUX_NORM</UCD>
+      <ErrorColumn>fluxErr_g</ErrorColumn>
+    </Column>
+    <Column ID="fluxErr_g" indexed="false">
+      <Name>fluxErr_g</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric flux, g band (instrumental scale)</Description>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="g" indexed="false">
+      <Name>g</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric magnitude in g band</Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_SDSS_G</UCD>
+    </Column>
+    <Column ID="Err_g" indexed="false">
+      <Name>Err_g</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric magnitude, g band</Description>
+      <Units>mag</Units>
+      <UCD version="1">ERROR</UCD>
+      <ErrorColumn>Err_g</ErrorColumn>
+    </Column>
+    <Column ID="type_g" indexed="false">
+      <Name>type_g</Name>
+      <Datatype>int</Datatype>
+      <Description>Star/galaxy/noise classification-code, derived from g-band observation</Description>
+      <UCD version="1">CLASS_OBJECT</UCD>
+    </Column>
+    <Column ID="stellar_g" indexed="false">
+      <Name>stellar_g</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoA_g" indexed="false">
+      <Name>isoA_g</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoB_g" indexed="false">
+      <Name>isoB_g</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoPhi_g" indexed="false">
+      <Name>isoPhi_g</Name>
+      <Datatype>float</Datatype>
+      <Description>Position angle of isophotes of object, derived from g-band observation</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_POS-ANG</UCD>
+    </Column>
+    <Column ID="run_r" indexed="false">
+      <Name>run_r</Name>
+      <Datatype>int</Datatype>
+      <Description>INT run-number of observation yielding r-band photometry</Description>
+      <UCD version="1">ID_EXPOSURE</UCD>
+    </Column>
+    <Column ID="ccd_r" indexed="false">
+      <Name>ccd_r</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of CCD chip in the camera on which the object falls, r-band observation</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="number_r" indexed="false">
+      <Name>number_r</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of object in catalogue for single observation, r band</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="offsetRa_r" indexed="false">
+      <Name>offsetRa_r</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of RA measured in r-band observation from that in ra column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="offsetDec_r" indexed="false">
+      <Name>offsetDec_r</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of declination measured in r-band observation from that in dec column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="x_r" indexed="false">
+      <Name>x_r</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, x coordinate, r-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_X</UCD>
+    </Column>
+    <Column ID="y_r" indexed="false">
+      <Name>y_r</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, y coordinate, r-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_Y</UCD>
+    </Column>
+    <Column ID="flux_r" indexed="false">
+      <Name>flux_r</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric flux in r band (instrumental scale)</Description>
+      <UCD version="1">PHOT_FLUX_NORM</UCD>
+      <ErrorColumn>fluxErr_r</ErrorColumn>
+    </Column>
+    <Column ID="fluxErr_r" indexed="false">
+      <Name>fluxErr_r</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric flux, r band (instrumental scale)</Description>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="r" indexed="false">
+      <Name>r</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric magnitude in r band</Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_SDSS_R</UCD>
+    </Column>
+    <Column ID="Err_r" indexed="false">
+      <Name>Err_r</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric magnitude, r band</Description>
+      <Units>mag</Units>
+      <UCD version="1">ERROR</UCD>
+      <ErrorColumn>Err_r</ErrorColumn>
+    </Column>
+    <Column ID="type_r" indexed="false">
+      <Name>type_r</Name>
+      <Datatype>int</Datatype>
+      <Description>Star/galaxy/noise classification-code, derived from r-band observation</Description>
+      <UCD version="1">CLASS_OBJECT</UCD>
+    </Column>
+    <Column ID="stellar_r" indexed="false">
+      <Name>stellar_r</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoA_r" indexed="false">
+      <Name>isoA_r</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoB_r" indexed="false">
+      <Name>isoB_r</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoPhi_r" indexed="false">
+      <Name>isoPhi_r</Name>
+      <Datatype>float</Datatype>
+      <Description>Position angle of isophotes of object, derived from r-band observation</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_POS-ANG</UCD>
+    </Column>
+    <Column ID="run_i" indexed="false">
+      <Name>run_i</Name>
+      <Datatype>int</Datatype>
+      <Description>INT run-number of observation yielding i-band photometry</Description>
+      <UCD version="1">ID_EXPOSURE</UCD>
+    </Column>
+    <Column ID="ccd_i" indexed="false">
+      <Name>ccd_i</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of CCD chip in the camera on which the object falls, i-band observation</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="number_i" indexed="false">
+      <Name>number_i</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of object in catalogue for single observation, i band</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="offsetRa_i" indexed="false">
+      <Name>offsetRa_i</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of RA measured in i-band observation from that in ra column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="offsetDec_i" indexed="false">
+      <Name>offsetDec_i</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of declination measured in i-band observation from that in dec column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="x_i" indexed="false">
+      <Name>x_i</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, x coordinate, i-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_X</UCD>
+    </Column>
+    <Column ID="y_i" indexed="false">
+      <Name>y_i</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, y coordinate, i-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_</UCD>
+    </Column>
+    <Column ID="flux_i" indexed="false">
+      <Name>flux_i</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric flux in i band (instrumental scale)</Description>
+      <UCD version="1">PHOT_FLUX_NORM</UCD>
+      <ErrorColumn>fluxErr_i</ErrorColumn>
+    </Column>
+    <Column ID="fluxErr_i" indexed="false">
+      <Name>fluxErr_i</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric flux, i band (instrumental scale)</Description>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="i" indexed="false">
+      <Name>i</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric magnitude in i band</Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_SDSS_I</UCD>
+      <ErrorColumn>Err_i</ErrorColumn>
+    </Column>
+    <Column ID="Err_i" indexed="false">
+      <Name>Err_i</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric magnitude, i band</Description>
+      <Units>mag</Units>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="type_i" indexed="false">
+      <Name>type_i</Name>
+      <Datatype>int</Datatype>
+      <Description>Star/galaxy/noise classification-code, derived from i-band observation</Description>
+      <UCD version="1">CLASS_OBJECT</UCD>
+    </Column>
+    <Column ID="stellar_i" indexed="false">
+      <Name>stellar_i</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoA_i" indexed="false">
+      <Name>isoA_i</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoB_i" indexed="false">
+      <Name>isoB_i</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoPhi_i" indexed="false">
+      <Name>isoPhi_i</Name>
+      <Datatype>float</Datatype>
+      <Description>Position angle of isophotes of object, derived from i-band observation</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_POS-ANG</UCD>
+    </Column>
+    <Column ID="run_z" indexed="false">
+      <Name>run_z</Name>
+      <Datatype>int</Datatype>
+      <Description>INT run-number of observation yielding z-band photometry</Description>
+      <UCD version="1">ID_EXPOSURE</UCD>
+    </Column>
+    <Column ID="ccd_z" indexed="false">
+      <Name>ccd_z</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of CCD chip in the camera on which the object falls, z-band observation</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="number_z" indexed="false">
+      <Name>number_z</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of object in catalogue for single observation, z band</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="offsetRa_z" indexed="false">
+      <Name>offsetRa_z</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of RA measured in z-band observation from that in ra column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="offsetDec_z" indexed="false">
+      <Name>offsetDec_z</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of declination measured in z-band observation from that in dec column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="x_z" indexed="false">
+      <Name>x_z</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, x coordinate, z-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_X</UCD>
+    </Column>
+    <Column ID="y_z" indexed="false">
+      <Name>y_z</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, y coordinate, z-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_Y</UCD>
+    </Column>
+    <Column ID="flux_z" indexed="false">
+      <Name>flux_z</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric flux in z band (instrumental scale)</Description>
+      <UCD version="1">PHOT_FLUX_NORM</UCD>
+      <ErrorColumn>fluxErr_z</ErrorColumn>
+    </Column>
+    <Column ID="fluxErr_z" indexed="false">
+      <Name>fluxErr_z</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric flux, z band (instrumental scale)</Description>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="z" indexed="false">
+      <Name>z</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric magnitude in z band</Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_MAG_z</UCD>
+      <ErrorColumn>Err_z</ErrorColumn>
+    </Column>
+    <Column ID="Err_z" indexed="false">
+      <Name>Err_z</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric magnitude, z band</Description>
+      <Units>mag</Units>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="type_z" indexed="false">
+      <Name>type_z</Name>
+      <Datatype>int</Datatype>
+      <Description>Star/galaxy/noise classification-code, derived from z-band observation</Description>
+      <UCD version="1">CLASS_OBJECT</UCD>
+    </Column>
+    <Column ID="stellar_z" indexed="false">
+      <Name>stellar_z</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoA_z" indexed="false">
+      <Name>isoA_z</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoB_z" indexed="false">
+      <Name>isoB_z</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoPhi_z" indexed="false">
+      <Name>isoPhi_z</Name>
+      <Datatype>float</Datatype>
+      <Description>Position angle of isophotes of object, derived from z-band observation</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_POS-ANG</UCD>
+    </Column>
+    <Column ID="run_B" indexed="false">
+      <Name>run_B</Name>
+      <Datatype>int</Datatype>
+      <Description>INT run-number of observation yielding B-band photometry</Description>
+      <UCD version="1">ID_EXPOSURE</UCD>
+    </Column>
+    <Column ID="ccd_B" indexed="false">
+      <Name>ccd_B</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of CCD chip in the camera on which the object falls, B-band observation</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="number_B" indexed="false">
+      <Name>number_B</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of object in catalogue for single observation, B band</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="offsetRa_B" indexed="false">
+      <Name>offsetRa_B</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of RA measured in B-band observation from that in ra column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="offsetDec_B" indexed="false">
+      <Name>offsetDec_B</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of declination measured in B-band observation from that in dec column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="x_B" indexed="false">
+      <Name>x_B</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, x coordinate, B-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_X</UCD>
+    </Column>
+    <Column ID="y_B" indexed="false">
+      <Name>y_B</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, y coordinate, B-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_Y</UCD>
+    </Column>
+    <Column ID="flux_B" indexed="false">
+      <Name>flux_B</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric flux in B band (instrumental scale)</Description>
+      <UCD version="1">PHOT_FLUX_NORM</UCD>
+      <ErrorColumn>fluxErr_B</ErrorColumn>
+    </Column>
+    <Column ID="fluxErr_B" indexed="false">
+      <Name>fluxErr_B</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric flux, B band (instrumental scale)</Description>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="B" indexed="false">
+      <Name>B</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric magnitude in B band</Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_MAG_B</UCD>
+      <ErrorColumn>Err_B</ErrorColumn>
+    </Column>
+    <Column ID="Err_B" indexed="false">
+      <Name>Err_B</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric magnitude, B band</Description>
+      <Units>mag</Units>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="type_B" indexed="false">
+      <Name>type_B</Name>
+      <Datatype>int</Datatype>
+      <Description>Star/galaxy/noise classification-code, derived from B-band observation</Description>
+      <UCD version="1">CLASS_OBJECT</UCD>
+    </Column>
+    <Column ID="stellar_B" indexed="false">
+      <Name>stellar_B</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoA_B" indexed="false">
+      <Name>isoA_B</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoB_B" indexed="false">
+      <Name>isoB_B</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoPhi_B" indexed="false">
+      <Name>isoPhi_B</Name>
+      <Datatype>float</Datatype>
+      <Description>Position angle of isophotes of object, derived from B-band observation</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_POS-ANG</UCD>
+    </Column>
+    <Column ID="run_V" indexed="false">
+      <Name>run_V</Name>
+      <Datatype>int</Datatype>
+      <Description>INT run-number of observation yielding V-band photometry</Description>
+      <UCD version="1">ID_EXPOSURE</UCD>
+    </Column>
+    <Column ID="ccd_V" indexed="false">
+      <Name>ccd_V</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of CCD chip in the camera on which the object falls, V-band observation</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="number_V" indexed="false">
+      <Name>number_V</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of object in catalogue for single observation, V band</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="offsetRa_V" indexed="false">
+      <Name>offsetRa_V</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of RA measured in V-band observation from that in ra column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="offsetDec_V" indexed="false">
+      <Name>offsetDec_V</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of declination measured in V-band observation from that in dec column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="x_V" indexed="false">
+      <Name>x_V</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, x coordinate, V-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_X</UCD>
+    </Column>
+    <Column ID="y_V" indexed="false">
+      <Name>y_V</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, y coordinate, V-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_Y</UCD>
+    </Column>
+    <Column ID="flux_V" indexed="false">
+      <Name>flux_V</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric flux in V band (instrumental scale)</Description>
+      <UCD version="1">PHOT_FLUX_NORM</UCD>
+      <ErrorColumn>fluxErr_V</ErrorColumn>
+    </Column>
+    <Column ID="fluxErr_V" indexed="false">
+      <Name>fluxErr_V</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric flux, V band (instrumental scale)</Description>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="V" indexed="false">
+      <Name>V</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric magnitude in V band</Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_MAG_V</UCD>
+      <ErrorColumn>Err_V</ErrorColumn>
+    </Column>
+    <Column ID="Err_V" indexed="false">
+      <Name>Err_V</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric magnitude, V band</Description>
+      <Units>mag</Units>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="type_V" indexed="false">
+      <Name>type_V</Name>
+      <Datatype>int</Datatype>
+      <Description>Star/galaxy/noise classification-code, derived from V-band observation</Description>
+      <UCD version="1">CLASS_OBJECT</UCD>
+    </Column>
+    <Column ID="stellar_V" indexed="false">
+      <Name>stellar_V</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoA_V" indexed="false">
+      <Name>isoA_V</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoB_V" indexed="false">
+      <Name>isoB_V</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoPhi_V" indexed="false">
+      <Name>isoPhi_V</Name>
+      <Datatype>float</Datatype>
+      <Description>Position angle of isophotes of object, derived from V-band observation</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_POS-ANG</UCD>
+    </Column>
+    <Column ID="run_Harris_R" indexed="false">
+      <Name>run_Harris_R</Name>
+      <Datatype>int</Datatype>
+      <Description>INT run-number of observation yielding Harris-R-band photometry</Description>
+      <UCD version="1">ID_EXPOSURE</UCD>
+    </Column>
+    <Column ID="ccd_Harris_R" indexed="false">
+      <Name>ccd_Harris_R</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of CCD chip in the camera on which the object falls, Harris-R-band observation</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="number_Harris_R" indexed="false">
+      <Name>number_Harris_R</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of object in catalogue for single observation, Harris-R band</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="offsetRa_Harris_R" indexed="false">
+      <Name>offsetRa_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of RA measured in Harris-R-band observation from that in ra column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="offsetDec_Harris_R" indexed="false">
+      <Name>offsetDec_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of declination measured in Harris-R-band observation from that in dec column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="x_Harris_R" indexed="false">
+      <Name>x_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, x coordinate, Harris-R-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_X</UCD>
+    </Column>
+    <Column ID="y_Harris_R" indexed="false">
+      <Name>y_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, y coordinate, Harris-R-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_Y</UCD>
+    </Column>
+    <Column ID="flux_Harris_R" indexed="false">
+      <Name>flux_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric flux in Harris-R band (instrumental scale)</Description>
+      <UCD version="1">PHOT_FLUX_NORM</UCD>
+      <ErrorColumn>fluxErr_Harris_R</ErrorColumn>
+    </Column>
+    <Column ID="fluxErr_Harris_R" indexed="false">
+      <Name>fluxErr_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric flux, Harris-R band (instrumental scale)</Description>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="Harris_R" indexed="false">
+      <Name>Harris_R</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric magnitude in Harris-R band</Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_MAG_R</UCD>
+      <ErrorColumn>Err_Harris_R</ErrorColumn>
+    </Column>
+    <Column ID="Err_Harris_R" indexed="false">
+      <Name>Err_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric magnitude, Harris-R band</Description>
+      <Units>mag</Units>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="type_Harris_R" indexed="false">
+      <Name>type_Harris_R</Name>
+      <Datatype>int</Datatype>
+      <Description>Star/galaxy/noise classification-code, derived from Harris-R-band observation</Description>
+      <UCD version="1">CLASS_OBJECT</UCD>
+    </Column>
+    <Column ID="stellar_Harris_R" indexed="false">
+      <Name>stellar_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoA_Harris_R" indexed="false">
+      <Name>isoA_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoB_Harris_R" indexed="false">
+      <Name>isoB_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoPhi_Harris_R" indexed="false">
+      <Name>isoPhi_Harris_R</Name>
+      <Datatype>float</Datatype>
+      <Description>Position angle of isophotes of object, derived from Harris-R-band observation</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_POS-ANG</UCD>
+    </Column>
+    <Column ID="run_RGO_I" indexed="false">
+      <Name>run_RGO_I</Name>
+      <Datatype>int</Datatype>
+      <Description>INT run-number of observation yielding RGO-I-band photometry</Description>
+      <UCD version="1">ID_EXPOSURE</UCD>
+    </Column>
+    <Column ID="ccd_RGO_I" indexed="false">
+      <Name>ccd_RGO_I</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of CCD chip in the camera on which the object falls, RGO-I-band observation</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="number_RGO_I" indexed="false">
+      <Name>number_RGO_I</Name>
+      <Datatype>int</Datatype>
+      <Description>Number of object in catalogue for single observation, RGO-I band</Description>
+      <UCD version="1">ID_IDENTIFIER</UCD>
+    </Column>
+    <Column ID="offsetRa_RGO_I" indexed="false">
+      <Name>offsetRa_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of RA measured in RGO-I-band observation from that in ra column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="offsetDec_RGO_I" indexed="false">
+      <Name>offsetDec_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <Description>Offset of declination measured in RGO-I-band observation from that in dec column</Description>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+    </Column>
+    <Column ID="x_RGO_I" indexed="false">
+      <Name>x_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, x coordinate, RGO-I-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_X</UCD>
+    </Column>
+    <Column ID="y_RGO_I" indexed="false">
+      <Name>y_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <Description>Position of object on CCD, y coordinate, RGO-I-band observation</Description>
+      <Units>pix</Units>
+      <UCD version="1">POS_CCD_Y</UCD>
+    </Column>
+    <Column ID="flux_RGO_I" indexed="false">
+      <Name>flux_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric flux in RGO-I band (instrumental scale)</Description>
+      <UCD version="1">PHOT_FLUX_NORM</UCD>
+      <ErrorColumn>fluxErr_RGO_I</ErrorColumn>
+    </Column>
+    <Column ID="fluxErr_RGO_I" indexed="false">
+      <Name>fluxErr_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric flux, RGO-I band (instrumental scale)</Description>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="RGO_I" indexed="false">
+      <Name>RGO_I</Name>
+      <Datatype>float</Datatype>
+      <Description>Photometric magnitude in RGO-I band</Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_MAG_I</UCD>
+      <ErrorColumn>Err_RGO_I</ErrorColumn>
+    </Column>
+    <Column ID="Err_RGO_I" indexed="false">
+      <Name>Err_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <Description>Uncertainty in photometric magnitude, RGO-I band</Description>
+      <Units>mag</Units>
+      <UCD version="1">ERROR</UCD>
+    </Column>
+    <Column ID="type_RGO_I" indexed="false">
+      <Name>type_RGO_I</Name>
+      <Datatype>int</Datatype>
+      <Description>Star/galaxy/noise classification-code, derived from RGO-I-band observation</Description>
+      <UCD version="1">CLASS_OBJECT</UCD>
+    </Column>
+    <Column ID="stellar_RGO_I" indexed="false">
+      <Name>stellar_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoA_RGO_I" indexed="false">
+      <Name>isoA_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoB_RGO_I" indexed="false">
+      <Name>isoB_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <UCD version="1+">meta.cryptic</UCD>
+    </Column>
+    <Column ID="isoPhi_RGO_I" indexed="false">
+      <Name>isoPhi_RGO_I</Name>
+      <Datatype>float</Datatype>
+      <Description>Position angle of isophotes of object, derived from RGO-I-band observation</Description>
+      <Units>deg</Units>
+      <UCD version="1">POS_POS-ANG</UCD>
+    </Column>
+  </Table>
+</Catalog>
+</DatasetDescription>

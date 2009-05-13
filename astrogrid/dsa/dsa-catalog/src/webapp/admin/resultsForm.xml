@@ -1,0 +1,25 @@
+<!-- Include this file in JSPs that require the results to be specified -->
+<!-- The parameters (input field names) should match the ServletHelper.makeReturnSpec -->
+<div id='resultsSpec'>
+        <p>
+          Results Format
+          <select name='Format'>
+             <%= ServletHelper.getFormatOptions() %>
+          </select>
+          Compression
+          <select name='Compression'>
+             <option value="NONE">None</option>
+          </select>
+			 <!--
+			 <br/>
+			 Destination:  (blank for browser)
+			 <input type='text' name='TargetURI' value=""/>
+			 <br/>
+          <table>
+             <tr><td>Send them to</td><td><input type='radio' name='TargetResponse' value='false' checked='false'/>Browser</tr>
+
+          </table>
+			 -->
+        </p>
+</div>
+

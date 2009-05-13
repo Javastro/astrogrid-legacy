@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasetDescription xmlns="urn:astrogrid:schema:dsa:TableMetaDoc:v1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Catalog ID="wfsobs">
+    <Name>INT-WFS catalogue of observations</Name>
+    <Description>This is the "Data Quality Control" catalogue. It lists details of INT-WFS observations and data-reductions.</Description>
+    <Table ID="dqc">
+      <Name>dqc</Name>
+      <Column ID="cd" indexed="false">
+        <Name>cd</Name>
+        <Datatype>string</Datatype>
+        <Description>Linear-transformation matrix for WCS</Description>
+        <UCD version="1+">meta.cryptic</UCD>
+      </Column>
+      <Column ID="crpix" indexed="false">
+        <Name>crpix</Name>
+        <Datatype>string</Datatype>
+        <Description>Reference pixel for WCS</Description>
+        <UCD version="1+">meta.cryptic</UCD>
+      </Column>
+      <Column ID="crval" indexed="false">
+        <Name>crval</Name>
+        <Datatype>string</Datatype>
+        <Description>Celestial reference position for WCS</Description>
+        <UCD version="1+">meta.cryptic</UCD>
+      </Column>
+      <Column ID="cat_ramas" indexed="false">
+        <Name>cat_ramas</Name>
+        <Datatype>float</Datatype>
+        <Description>Right ascension; exact context unknown</Description>
+        <Units>mas</Units>
+        <UCD version="1">POS_EQ_RA</UCD>
+      </Column>
+      <Column ID="cat_decmas" indexed="false">
+        <Name>cat_decmas</Name>
+        <Datatype>float</Datatype>
+        <Description>Declination; exact context unknown</Description>
+        <Units>mas</Units>
+        <UCD version="1">POS_EQ_DEC</UCD>
+      </Column>
+      <Column ID="id" indexed="false">
+        <Name>id</Name>
+        <Datatype>int</Datatype>
+        <Description>Internal index-number for this catalogue</Description>
+        <UCD version="1">ID_EXPOSURE</UCD>
+      </Column>
+      <Column ID="radeg" indexed="false">
+        <Name>radeg</Name>
+        <Datatype>float</Datatype>
+        <Description>Right ascension of centre of CCD image</Description>
+        <Units>deg</Units>
+        <UCD version="1">POS_EQ_RA_MAIN</UCD>
+        <SkyPolarCoord>RA</SkyPolarCoord>
+      </Column>
+      <Column ID="decdeg" indexed="false">
+        <Name>decdeg</Name>
+        <Datatype>float</Datatype>
+        <Description>Declination of centre of CCD image</Description>
+        <Units>deg</Units>
+        <UCD version="1">POS_EQ_DEC_MAIN</UCD>
+        <SkyPolarCoord>DEC</SkyPolarCoord>
+      </Column>
+      <Column ID="ramas" indexed="false">
+        <Name>ramas</Name>
+        <Datatype>int</Datatype>
+        <Description>Right ascension of celestial object</Description>
+        <Units>mas</Units>
+        <UCD version="1">POS_EQ_RA</UCD>
+      </Column>
+      <Column ID="decmas" indexed="false">
+        <Name>decmas</Name>
+        <Datatype>int</Datatype>
+        <Description>Declination of celestial object</Description>
+        <Units>mas</Units>
+        <UCD version="1">POS_EQ_DEC</UCD>
+      </Column>
+      <Column ID="equinox" indexed="false">
+        <Name>equinox</Name>
+        <Datatype>string</Datatype>
+        <Description>Equinox of the coordinates in columns ramas and decmas.</Description>
+        <UCD version="1">TIME_EQUINOX</UCD>
+      </Column>
+      <Column ID="objname" indexed="false">
+        <Name>objname</Name>
+        <Datatype>string</Datatype>
+        <Description>name of the target of the observation. May be the name of a celestial object or of a survey field.</Description>
+        <UCD version="1">ID_TARGET</UCD>
+      </Column>
+      <Column ID="am" indexed="false">
+        <Name>am</Name>
+        <Datatype>float</Datatype>
+        <Description>Characteristic airmass of the observation.</Description>
+        <UCD version="1">PHOT_ATM_AIRMASS</UCD>
+      </Column>
+      <Column ID="pa" indexed="false">
+        <Name>pa</Name>
+        <Datatype>float</Datatype>
+        <Description>Position angle of the camera at observation.</Description>
+        <Units>deg</Units>
+        <UCD version="1">POS_POS-ANG</UCD>
+      </Column>
+      <Column ID="run" indexed="false">
+        <Name>run</Name>
+        <Datatype>int</Datatype>
+        <Description>Number of exposure (run number in ING archive)</Description>
+        <UCD version="1">ID_EXPOSURE</UCD>
+      </Column>
+      <Column ID="ccd" indexed="false">
+        <Name>ccd</Name>
+        <Datatype>int</Datatype>
+        <Description>Number of the CCD (1..4) which generated the image described in this record.  The nominal centre of the camera is on CCD number 4.</Description>
+        <UCD version="1">ID_EXPOSURE</UCD>
+      </Column>
+      <Column ID="obsdate" indexed="false">
+        <Name>obsdate</Name>
+        <Datatype>string</Datatype>
+        <Description>Date of observation</Description>
+        <UCD version="1">TIME_DATE</UCD>
+      </Column>
+      <Column ID="obsut" indexed="false">
+        <Name>obsut</Name>
+        <Datatype>string</Datatype>
+        <Description>Time of observation (UTC) in the format hh:mm:ss.</Description>
+        <UCD version="1">TIME_DATE</UCD>
+      </Column>
+      <Column ID="exptime" indexed="false">
+        <Name>exptime</Name>
+        <Datatype>float</Datatype>
+        <Description>Exposure time</Description>
+        <Units>s</Units>
+        <UCD version="1">TIME_EXPTIME</UCD>
+      </Column>
+      <Column ID="filter" indexed="false">
+        <Name>filter</Name>
+        <Datatype>string</Datatype>
+        <Description>name of filter passband. This seems to be always the short name of the band, e.g., R, g, i or z, without distinctions of photometric system.</Description>
+        <UCD version="1">OBS_BAND</UCD>
+      </Column>
+      <Column ID="seeing" indexed="false">
+        <Name>seeing</Name>
+        <Datatype>float</Datatype>
+        <Description>Seeing: FWHM of the average, measured point-spread function in this image.</Description>
+        <Units>arcsec</Units>
+        <UCD version="1">INST_SEEING</UCD>
+      </Column>
+      <Column ID="sky" indexed="false">
+        <Name>sky</Name>
+        <Datatype>float</Datatype>
+        <Description>k-sigma clipped estimate of the &quot;median&quot; sky brightness for the frame after removing background gradients.</Description>
+        <Units>ct/pix</Units>
+        <UCD version="1">INST_SKY-LEVEL</UCD>
+      </Column>
+      <Column ID="noise" indexed="false">
+        <Name>noise</Name>
+        <Datatype>float</Datatype>
+        <Description>k-sigma clipped MAD (Median of the Absolute Deviation from the median) estimate for the sky noise after removing background gradients. Scaled (ie. x 1.48) to an equivalent Gaussian RMS value.</Description>
+        <Units>ct</Units>
+        <UCD version="1">ERROR</UCD>
+      </Column>
+      <Column ID="ellipt" indexed="false">
+        <Name>ellipt</Name>
+        <Datatype>float</Datatype>
+        <Description>Average ellipticity of star images. The ellipticity indicates slight trailing of the image during observation; a perfect image has zero ellipticity.</Description>
+        <UCD version="1">INST_PSF</UCD>
+      </Column>
+      <Column ID="apcor" indexed="false">
+        <Name>apcor</Name>
+        <Datatype>float</Datatype>
+        <Description>Stellar image aperture correction for the default recommended aperture measure, diameter =2*FWHM, employed in WFS object catalogues.</Description>
+        <Units>mag</Units>
+        <UCD version="1">INST_CORR-FACTOR</UCD>
+      </Column>
+      <Column ID="stdrms" indexed="false">
+        <Name>stdrms</Name>
+        <Datatype>float</Datatype>
+        <Description>RMS error in astrometric fit error either single CCD or average of the four CCDs.</Description>
+        <Units>arcsec</Units>
+        <UCD version="1">ERROR</UCD>
+      </Column>
+      <Column ID="magzpt" indexed="false">
+        <Name>magzpt</Name>
+        <Datatype>float</Datatype>
+        <Description>Photometric zero point for magnitude calculations assuming default extinction, based on a combination of nightly measures from photometric standards and trend over the appropriate WFC run.</Description>
+        <Units>mag</Units>
+        <UCD version="1">PHOT_ZP</UCD>
+        <ErrorColumn>magzrr</ErrorColumn>
+      </Column>
+      <Column ID="magzrr" indexed="false">
+        <Name>magzrr</Name>
+        <Datatype>float</Datatype>
+        <Description>Photometric zero point error estimated from a combination of nightly measures of photometric standards and trend over the WFC run.</Description>
+        <Units>mag</Units>
+        <UCD version="1">ERROR</UCD>
+      </Column>
+      <Column ID="maglim" indexed="false">
+        <Name>maglim</Name>
+        <Datatype>float</Datatype>
+        <Description>Magnitude corresponding to the 5-sigma flux limit for the standard aperture photometry measure.</Description>
+        <Units>mag</Units>
+        <UCD version="1">OBS_DETECT-LIMIT</UCD>
+      </Column>
+      <Column ID="proposal" indexed="false">
+        <Name>proposal</Name>
+        <Datatype>string</Datatype>
+        <Description>name of the observing proposal under which the data were taken.</Description>
+        <UCD version="1">ID_HUMAN</UCD>
+      </Column>
+      <Column ID="Comments" indexed="false">
+        <Name>Comments</Name>
+        <Datatype>string</Datatype>
+        <Description>Comments on the data, generated both automatically to flag problems in the FITS header information used to generate the tables, and in some cases manually to provide additional quality control information.</Description>
+        <UCD version="1">REMARKS</UCD>
+      </Column>
+    </Table>
+  </Catalog>
+</DatasetDescription>

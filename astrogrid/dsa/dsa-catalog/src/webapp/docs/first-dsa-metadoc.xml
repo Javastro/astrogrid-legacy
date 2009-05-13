@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasetDescription xmlns="urn:astrogrid:schema:dsa:TableMetaDoc:v1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Catalog ID="first">
+    <Name>FIRST</Name>
+    <Description>This is the object catalogue from the FIRST survey at the VLA.</Description>
+    <Table ID="catalogue">
+      <Name>catalogue</Name>
+      <Column ID="POS_EQ_RA" indexed="true">
+        <Name>POS_EQ_RA</Name>
+        <Datatype>float</Datatype>
+        <Description>Right ascension</Description>
+        <Units>deg</Units>
+        <UCD version="1">POS_EQ_RA_MAIN</UCD>
+        <UCD version="1+">pos.eq.ra;meta.main</UCD>
+        <SkyPolarCoord>RA</SkyPolarCoord>
+      </Column>
+      <Column ID="POS_EQ_DEC" indexed="true">
+        <Name>POS_EQ_DEC</Name>
+        <Datatype>float</Datatype>
+        <Description>Declination</Description>
+        <Units>deg</Units>
+        <UCD version="1">POS_EQ_DEC_MAIN</UCD>
+        <UCD version="1+">pos.eq.dec;meta.main</UCD>
+        <SkyPolarCoord>DEC</SkyPolarCoord>
+      </Column>
+      <Column ID="CODE_QUALITY" indexed="false">
+        <Name>CODE_QUALITY</Name>
+        <Datatype>string</Datatype>
+        <Description>Quality flag; non-null => possible artefact from sidelobes</Description>
+        <UCD version="1">CODE_QUALITY</UCD>
+        <UCD version="1+">meta.code.qual</UCD>
+      </Column>
+      <Column ID="PHOT_FLUX_PEAK" indexed="false">
+        <Name>PHOT_FLUX_PEAK</Name>
+        <Datatype>float</Datatype>
+        <Description>Peak flux-density of object</Description>
+        <Units>mJy</Units>
+        <UCD version="1">PHOT_FLUX_RADIO_1.4G</UCD>
+        <UCD version="1+">phot.flux;em.radio.750-1500MHz</UCD>
+      </Column>
+      <Column ID="PHOT_FLUX_INT" indexed="false">
+        <Name>PHOT_FLUX_INT</Name>
+        <Datatype>float</Datatype>
+        <Description>Integrated flux-density of object</Description>
+        <Units>mJy</Units>
+        <UCD version="1">PHOT_FLUX_RADIO_1.4G</UCD>
+        <UCD version="1+">phot.flux;em.radio.750-1500MHz</UCD>
+      </Column>
+      <Column ID="PHOT_FLUX_ERROR" indexed="false">
+        <Name>PHOT_FLUX_ERROR</Name>
+        <Datatype>float</Datatype>
+        <Description>Uncertainty in flux-density of object</Description>
+        <Units>mJy</Units>
+        <UCD version="1">ERROR</UCD>
+        <UCD version="1+">stat.error;phot.flux</UCD>
+      </Column>
+      <Column ID="EXTENSION_FWHM_MAJ" indexed="false">
+        <Name>EXTENSION_FWHM_MAJ</Name>
+        <Datatype>float</Datatype>
+        <Description>Extent of major axis of object, FWHM (after beam deconvolution).</Description>
+        <Units>arcsec</Units>
+        <UCD version="1">EXTENSION_FWHM_MAJ</UCD>
+        <UCD version="1+">src.fwhm;src.morph.param;meta.main</UCD>
+      </Column>
+      <Column ID="EXTENSION_FWHM_MIN" indexed="false">
+        <Name>EXTENSION_FWHM_MIN</Name>
+        <Datatype>float</Datatype>
+        <Description>Extent of minor axis of object, FWHM (after beam deconvolution).</Description>
+        <Units>arcsec</Units>
+        <UCD version="1">EXTENSION_FWHM_MIN</UCD>
+        <UCD version="1+">src.fwhm;src.morph.param;meta.main</UCD>
+      </Column>
+      <Column ID="POS_POSANG" indexed="false">
+        <Name>POS_POSANG</Name>
+        <Datatype>float</Datatype>
+        <Description>Position angle of major axis of source (after beam deconvolution).</Description>
+        <Units>deg</Units>
+        <UCD version="1">POS_POSANG</UCD>
+        <UCD version="1+">pos.posAng;src.morph.param;meta.main</UCD>
+      </Column>
+      <Column ID="EXTENSION_FWHM_MAJ_FIT" indexed="false">
+        <Name>EXTENSION_FWHM_MAJ_FIT</Name>
+        <Datatype>float</Datatype>
+        <Description>Extent of major axis of object, FWHM (before beam deconvolution).</Description>
+        <Units>arcsec</Units>
+        <UCD version="1">EXTENSION_FWHM_MAJ</UCD>
+        <UCD version="1+">src.fwhm;src.morph.param;meta.main</UCD>
+      </Column>
+      <Column ID="EXTENSION_FWHM_MIN_FIT" indexed="false">
+        <Name>EXTENSION_FWHM_MIN_FIT</Name>
+        <Datatype>float</Datatype>
+        <Description>Extent of minor axis of object, FWHM (before beam deconvolution).</Description>
+        <Units>arcsec</Units>
+        <UCD version="1">EXTENSION_FWHM_MIN</UCD>
+        <UCD version="1+">src.fwhm;src.morph.param</UCD>
+      </Column>
+      <Column ID="POS_POSANG_FIT" indexed="false">
+        <Name>POS_POSANG_FIT</Name>
+        <Datatype>float</Datatype>
+        <Description>Position angle of major axis of source (before beam deconvolution).</Description>
+        <Units>deg</Units>
+        <UCD version="1">POS_POSANG</UCD>
+        <UCD version="1+">pos.posAng;src.morph.param</UCD>
+      </Column>
+      <Column ID="ID_FIELD" indexed="false">
+        <Name>ID_FIELD</Name>
+        <Datatype>string</Datatype>
+        <Description>Name of field in which the object was observed.</Description>
+        <UCD version="1">ID_FIELD</UCD>
+        <UCD version="1+">meta.id;obs.field</UCD>
+      </Column>
+    </Table>
+  </Catalog>
+</DatasetDescription>

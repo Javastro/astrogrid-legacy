@@ -1,0 +1,1 @@
+DSA/Catalog web-application version ${pom.version}

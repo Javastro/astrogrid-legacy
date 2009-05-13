@@ -1,0 +1,93 @@
+<div id='leftColumn'>
+<div id='navcolumn'>
+   <div id='menuInstall'>
+      <h5>Installation notes</h5>
+      <ul>
+         <li><a href="<%=pathPrefix%>/index.jsp">Welcome page</a></li>
+         <li><a href="<%=pathPrefix%>/release.jsp">Release notes</a></li>
+         <li><a href="<%=pathPrefix%>/configure.jsp">Configuring your DSA/catalog</a></li>
+         <li><a href="<%=pathPrefix%>/docs/version.txt">Version information</a></li>
+      </ul>
+   </div>
+
+   <div id='menuServer'>
+   <h5>Self-tests</h5>
+     <ul>
+        <li><a href="<%=pathPrefix%>/admin/happyaxis.jsp">Apache Axis self-check</a></li>
+        <li><a href="<%=pathPrefix%>/admin/TestServlet?suite=org.astrogrid.dataservice.service.InstallationPropertiesCheck">Initial properties check</a></li>
+        <li><a href="<%=pathPrefix%>/admin/TestServlet?suite=org.astrogrid.dataservice.service.InstallationSelfCheck">Installation self-test</a></li>
+        <li><a href="<%=pathPrefix%>/admin/TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" >CEA interface self-test</a></li>
+        <li><a href="<%=pathPrefix%>/admin/sqlSyntaxTests.jsp">SQL syntax test</a> (SLOW!)</li>
+     </ul>
+   </div>
+
+   <div id='menuServer'>
+    <h5>Server administration</h5>
+      <ul>
+         <li><a href="<%=pathPrefix%>/admin/GenerateMetaDoc">Generate template metadoc</a></li>
+         <li><a href="<%=pathPrefix%>/viewMetadata.jsp">View metadata table</a></li>
+         <li><a href="<%=pathPrefix%>/admin/resources.jsp">View XML resources</a></li>
+       <%
+           // Optionally enable registration (DISABLED when SampleStarsPlugin in use)
+           String querierPlugin = ConfigFactory.getCommonConfig().getString(
+                   "datacenter.querier.plugin");
+           if ( (querierPlugin != null) && (!querierPlugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) ) {
+           out.write("<li><a href=\""+pathPrefix+"/admin/register.jsp\">Manage registrations</a></li>");
+           }
+           else {
+           out.write("<li><font color=\"#999999\">Register/Manage registrations</font></li>");
+           }
+       %>
+       <li><a href="<%=pathPrefix%>/admin/serverStatus.jsp">View server status</a></li>
+     </ul>
+   </div>
+
+   <div id='menuFingerprints'>
+      <h5>Service fingerprints</h5>
+     <ul>
+        <li><a href="<%=pathPrefix%>/admin/fingerprint.jsp">General service fingerprint</a></li>
+        <li><a href="<%=pathPrefix%>/admin/cea-fingerprint.jsp" >CEA interface fingerprint</a></li>
+        <li><a href="<%=pathPrefix%>/servlet/AxisServlet">Axis Webservice WSDLs</a></li>
+      </ul>
+   </div>
+   <div id='menuQuery'>
+
+   <h5>Self-query interface</h5>
+     <ul>
+        <li><a  href="<%=pathPrefix%>/admin/adqlXmlForm.jsp">Run an ADQL/xml query</a></li>
+       <%
+           // Optionally enabled coneSearch and multicone interface
+           String coneEnabled = "false";
+           String multiEnabled = "false";
+           try {
+              coneEnabled = ConfigFactory.getCommonConfig().getString(
+                      "datacenter.implements.conesearch");
+              multiEnabled = ConfigFactory.getCommonConfig().getString(
+                      "datacenter.implements.multicone");
+           }
+           catch (Exception e) {
+           // Assume no if these properties aren't set
+           }
+           boolean hasCone = "true".equalsIgnoreCase(coneEnabled);
+           boolean hasMulti = hasCone && "true".equalsIgnoreCase(multiEnabled);
+           if (hasCone) {
+           out.write("<li><a href=\""+pathPrefix+"/admin/coneForm.jsp\">Run a cone search</a></li>");
+           }
+           else {
+               out.write("<li><font color=\"#999999\">Run a cone search</font></li>");
+           }
+           if (hasMulti) {
+           out.write("<li><a href='"+pathPrefix+"/admin/multiconeForm.jsp'>Run a multiple cone search</a></li>");
+           }
+           else {
+               out.write("<li><font color='#999999'>Run a multiple cone search</font></li>");
+           }
+       %>
+     </ul>
+   </div>
+
+</div>
+</div>
+</div>
+</div>
+

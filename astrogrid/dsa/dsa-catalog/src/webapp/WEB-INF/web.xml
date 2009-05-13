@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+    "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
+
+<web-app>
+
+  <display-name>Astrogrid Sky Catalog Server</display-name>
+  <description>
+    SOAP service that publishes a sky catalog data set to AstroGrid.
+  </description>
+
+   <!-- Class to listen out to container events (ie startup, shutdown) -->
+   <!-- This doesn't work on tomcat 4.0...
+   <listener>
+        <listener-class>org.astrogrid.dataservice.servlet.ContainerListener</listener-class>
+    </listener>
+    -->
+    
+  <servlet>
+    <servlet-name>AxisServlet</servlet-name>
+    <display-name>Apache-Axis Servlet</display-name>
+    <servlet-class>
+        org.apache.axis.transport.http.AxisServlet
+    </servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>JUnitEETestServlet</servlet-name>
+    <description>JUnitEE test runner</description>
+    <servlet-class>org.junitee.servlet.JUnitEEThreadedServlet</servlet-class>
+  </servlet>
+  
+   <!-- Query-managing servlets -->
+  <servlet>
+    <servlet-name>SubmitCone</servlet-name>
+    <description>Servlet for submitting simple (NVO compatible) cone searches via POST or GET</description>
+    <servlet-class>org.astrogrid.dataservice.service.cone.SubmitCone</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>TapServlet</servlet-name>
+    <description>Servlet for managing asynchronous TAP queries</description>
+    <servlet-class>org.astrogrid.dataservice.service.tap.TapServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SubmitSimpleQuery</servlet-name>
+    <description>Servlet for submitting simple ADQL/s queries via POST or GET</description>
+    <servlet-class>org.astrogrid.dataservice.service.simplequery.SubmitSimpleQuery</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>MultiCone</servlet-name>
+    <description>Servlet for performing local-remote crossmatches implemented as a sequence of server-side cone searches.
+      The input table is submitted vi HTTP POST.
+      This service is not currently defined by a standard protocol.
+    </description>
+    <servlet-class>org.astrogrid.dataservice.service.multicone.MulticoneServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>BrowserAskQuery</servlet-name>
+    <description>Servlet for asking (synchronous) queries via POST or GET suitable for browsers</description>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.BrowserAskQuery</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>AttemptAbort</servlet-name>
+    <description>Servlet for attempting to abort a query</description>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.AttemptAbort</servlet-class>
+  </servlet>
+
+  <!-- VOSI servlets -->
+  <servlet>
+    <servlet-name>VosiServlet</servlet-name>
+    <description>Handles VOSI methods</description>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.VosiServlet</servlet-class>
+  </servlet>
+
+  <!-- Admin servlets -->
+  <servlet>
+    <servlet-name>GetLog</servlet-name>
+    <description>Returns the log</description>
+    <servlet-class>org.astrogrid.webapp.GetLog</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>GetMetadata</servlet-name>
+    <description>serves the datacenter's metadata</description>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.GetMetadata</servlet-class>
+  </servlet>
+
+  <!--
+  <servlet>
+    <servlet-name>Register</servlet-name>
+    <description>(re)Registers the service (sends the metadata to the configured Registries)</description>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.Register</servlet-class>
+  </servlet>
+  -->
+
+  <servlet>
+    <servlet-name>MetaDocGenerator</servlet-name>
+    <description>Generates the Metadata Document(s) that describe the data</description>
+    <servlet-class>org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator</servlet-class>
+  </servlet>
+
+  <!-- CEA -->
+  <servlet>
+      <servlet-name>cec-http</servlet-name>
+      <description>
+        a small servlet that helps cea by
+    * querying servlet context - find out where it is, set keys in config from this
+    (keys used to generate VODescription for this CEA service)
+    * provides http-get access to some of the cec methods (call by HTTP-GET with no params for usage info)
+      </description>
+      <servlet-class>org.astrogrid.applications.component.InitServlet</servlet-class>
+
+  </servlet>
+
+  <!-- Custom default servlet -->
+  <servlet>
+     <servlet-name>DsaDefault</servlet-name>
+     <servlet-class> org.astrogrid.dataservice.service.servlet.DsaDefaultServlet</servlet-class>
+  </servlet>
+
+  <!-- Query Managing tasks -->
+  <servlet-mapping>
+    <servlet-name>BrowserAskQuery</servlet-name>
+    <url-pattern>/admin/BrowserAskQuery</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SubmitCone</servlet-name>
+    <url-pattern>SubmitCone</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>TapServlet</servlet-name>
+	 <url-pattern>tapservice/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SubmitSimpleQuery</servlet-name>
+    <url-pattern>SubmitSimpleQuery</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>MultiCone</servlet-name>
+    <url-pattern>MultiCone</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AttemptAbort</servlet-name>
+    <url-pattern>/admin/AttemptAbort</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AttemptAbort</servlet-name>
+    <url-pattern>/admin/Abort</url-pattern>
+  </servlet-mapping>
+
+  <!-- Administration type stuff -->
+  <servlet-mapping>
+    <servlet-name>GetLog</servlet-name>
+    <url-pattern>/admin/GetLog</url-pattern>
+  </servlet-mapping>
+  
+  <!--
+  <servlet-mapping>
+    <servlet-name>Register</servlet-name>
+    <url-pattern>/admin/Register</url-pattern>
+  </servlet-mapping>
+  -->
+
+  <servlet-mapping>
+    <servlet-name>GetMetadata</servlet-name>
+    <url-pattern>/GetMetadata</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>MetaDocGenerator</servlet-name>
+    <url-pattern>/admin/GenerateMetaDoc</url-pattern>
+  </servlet-mapping>
+
+  <!-- Axis -->
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/servlet/AxisServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+
+ <servlet-mapping>
+    <servlet-name>JUnitEETestServlet</servlet-name>
+    <url-pattern>/admin/TestServlet/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+        <servlet-name>cec-http</servlet-name>
+        <url-pattern>/cec-http</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DsaDefault</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+    <!-- currently the W3C havent settled on a media type for WSDL;
+    http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
+    for now we go with the basic 'it's XML' response -->
+  <mime-mapping>
+    <extension>wsdl</extension>
+     <mime-type>text/xml</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+
+  <welcome-file-list id="WelcomeFileList">
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <!-- Security stuff - ensure admin & setup pages are not readily available -->
+  <!-- paladmin is a legacy role, dsaadmin is used in dsa/catalog -->
+  <!-- agWebAdminUser is a role often used with Registry.-->
+  <security-constraint>
+      <web-resource-collection>
+          <web-resource-name></web-resource-name>
+          <url-pattern>/admin/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+          <role-name>paladmin</role-name>
+          <role-name>dsaadmin</role-name>
+          <role-name>agWebAdminUser</role-name>
+      </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+      <web-resource-collection>
+          <web-resource-name></web-resource-name>
+          <url-pattern>/setup/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+          <role-name>paladmin</role-name>
+          <role-name>dsaadmin</role-name>
+          <role-name>agWebAdminUser</role-name>
+      </auth-constraint>
+  </security-constraint>
+   
+  <!-- Use basic http authentication rather than custom form, for 
+   consistency with other AG webapps. -->
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>AstroGrid</realm-name>
+  </login-config>
+
+  <security-role>
+    <role-name>manager</role-name>
+  </security-role>
+
+  <security-role>
+     <role-name>paladmin</role-name>
+  </security-role>
+  <security-role>
+     <role-name>dsaadmin</role-name>
+  </security-role>
+  <security-role>
+     <role-name>agWebAdminUser</role-name>
+  </security-role>
+
+  <!-- This one is required for the CEA server in DSA/catalog.
+       Don't change or remove it. -->
+  <env-entry>
+     <description>Class name of the component manager implementation to use. Don't change this during deployment!</description>
+     <env-entry-name>cea.component.manager.class</env-entry-name>
+     <env-entry-value>org.astrogrid.dataservice.service.cea.DatacenterCEAComponentManager</env-entry-value>
+     <env-entry-type>java.lang.String</env-entry-type>
+  </env-entry>
+
+</web-app>
