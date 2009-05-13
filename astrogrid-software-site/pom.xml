@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: pom.xml,v 1.1 2009/05/13 15:31:43 pah Exp $ --><!--
+      This is the pom for generating the overall AG Software site documentation
+   -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.astrogrid</groupId>
+   <artifactId>deployer-site</artifactId>
+   <name>Astrogrid for Deployers</name>
+   <version>2009.1-SNAPSHOT</version>
+   <packaging>pom</packaging>
+      <parent>
+      <artifactId>astrogrid-versions</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>  
+    </parent>
+    <url>${astrogrid_doc_URL_root}/${astrogrid_release}/deploy</url>
+    <build>
+    </build>
+    <reporting>
+    <plugins>
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-site-plugin</artifactId>
+       <version>2.0</version>
+        <configuration>
+         <siteDirectory>site</siteDirectory>
+       </configuration>
+      </plugin>
+   
+    
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>project-team</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+   </plugins>
+    </reporting>
+     <distributionManagement>
+    <site>
+      <id>agsite</id>
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/${astrogrid_release}/deploy</url>
+    </site>
+    
+    </distributionManagement>
+    
+</project>

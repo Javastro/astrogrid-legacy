@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id: site.xml,v 1.1 2009/05/13 15:31:26 pah Exp $ -->
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+  <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
+    <name>AstroGrid</name>
+    <src>http://www.astrogrid.org/images/AGlogo.png</src>
+    <href>http://www.astrogrid.org/</href>
+  </bannerRight>
+   
+<publishDate position="navigation-top" format="yyyy-MM-dd"/> 
+<version position="left"/>
+ <!-- need to get a nicer powered by logo... -->
+  <poweredBy>
+    <logo name="Astrogrid" href="http://www.astrogrid.org/"
+          img="http://www.astrogrid.org/images/AGlogo.png"/>
+  </poweredBy>
+  <body>
+    <links>
+      <item name="Astrogrid" href="http://www.astrogrid.org/" />
+      <item name="IVOA" href="http://www.ivoa.net/"/>
+      <item name="Developing" href="${astrogrid_doc_URL_root}/${astrogrid_release}/devel/index.html"/>
+      <item name="Deploying" href="${astrogrid_doc_URL_root}/${astrogrid_release}/deploy/index.html"/>
+    </links>
+    <breadcrumbs>
+       <item name="Deployment Home " href="${astrogrid_doc_URL_root}/${astrogrid_release}/deploy/index.html"/>
+    </breadcrumbs>
+     <menu name="Deploying">
+       <item name="download" href="index.html"/>
+       <item name="architecture" href="architecture.html"/>
+       <item name="installing" href="installation.html"/>
+       <item name="other releases" href="releases.html"/>
+       <item name="acknowledging" href="acknowledge.html" />
+     </menu>
+     <menu ref="reports"/>
+   </body>
+</project>

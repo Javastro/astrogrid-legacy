@@ -1,0 +1,25 @@
+         --- 
+         AstroGrid Architecture 
+         --- 
+         Paul Harrison	
+         --- 
+         03-Oct-2008 
+         --- 
+
+Astrogrid Architecture
+
+    Astrogrid provides software to fully participate in the Virtual Observatory both as a user (which is documented on {{http://www.astrogrid.org}}) and
+    as a data publisher. This site describes the architecture from the point of view of a data publisher with information about the server-side
+    components in the Astrogrid Software Suite.
+    
+
+* Registry
+
+* Community
+
+* VOSpace
+
+* DSA
+
+* CEA
+
