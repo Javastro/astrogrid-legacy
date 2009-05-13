@@ -1,31 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project 
-    xmlns="http://maven.apache.org/POM/4.0.0" 
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                         http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <packaging>jar</packaging>
-  <parent>
-      <artifactId>astrogrid-base</artifactId>
-      <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
-   </parent>
-  
-  <version>2009.1.a04</version>
+  <version>2009.1.a05</version>
 
-  <properties>
-    <astrogrid_name>security</astrogrid_name>
-  </properties>
+  <parent>
+    <groupId>org.astrogrid</groupId>
+    <artifactId>astrogrid-base</artifactId>
+    <version>2009.1-SNAPSHOT</version>
+  </parent>
+
   <dependencies>
-        
-      <dependency>
-        <groupId>org.astrogrid</groupId>
-        <artifactId>astrogrid-common</artifactId>
-        <version>2007.2.01</version>
-      </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>2007.2.01</version>
+    </dependency>
 
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
@@ -45,61 +42,65 @@
       <version>6.1.11</version>
       <scope>test</scope>
     </dependency>
-      
+
       <dependency>
         <groupId>axis</groupId>
         <type>jar</type>
         <artifactId>axis</artifactId>
         <version>1.3</version>
       </dependency>
-      
+
       <dependency>
         <groupId>xalan</groupId>
         <artifactId>xalan</artifactId>
         <version>2.7.0</version>
       </dependency>
-      
+
       <dependency>
         <groupId>xml-security</groupId>
         <type>jar</type>
         <artifactId>xmlsec</artifactId>
         <version>1.3.0</version>
       </dependency>
-      
+
       <dependency>
         <groupId>bouncycastle</groupId>
         <type>jar</type>
         <artifactId>bcprov-jdk15</artifactId>
         <version>140</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.globus</groupId>
         <artifactId>cog-jglobus</artifactId>
         <version>1.4</version>
         <type>jar</type>
       </dependency>
-      
+
       <dependency>
         <groupId>tomcat</groupId>
         <artifactId>tomcat-util</artifactId>
         <type>jar</type>
         <version>5.5.20</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-registry-client-lite</artifactId>
+        <version>2008.2.01</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-registry-common</artifactId>
+        <version>2008.2.01</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-contracts</artifactId>
+        <version>2008.2</version>
+        <type>jar</type>
       </dependency>
 
       <dependency>
@@ -114,14 +115,14 @@
         <version>3.2.1</version>
         <scope>test</scope>
       </dependency>
-      
+
       <dependency>
         <groupId>servletapi</groupId>
         <artifactId>servletapi</artifactId>
         <version>2.4</version>
         <scope>provided</scope>
       </dependency>
-      
+
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
@@ -129,53 +130,25 @@
         <type>jar</type>
         <scope>test</scope>
       </dependency>
-      
+
     </dependencies>
-  
+
   <name>Security Facade</name>
   <description>
     The security-facade implements IVOA's security model together with AstroGrid
     and EuroVO extensions. The facade consists in a class library for use in
     VO services and clients. It is used in most AstroGrid service-components
-    and in the Astro Runtime. The facade presents a common API to classes from 
-    different sources. These are some of the main features available from the 
-    security facade: validation of digital signatures on requests to a SOAP 
-    service; signature of requests sent from a SOAP client; an SSL 
-    implementation for Apache Tomcat that allows authentication of clients using 
-    proxy certificates; classes to generate and validate certificate chains 
-    containing proxy certificates; client code to sign on a user using either 
-    MyProxy or the AstroGrid accounts service; a client and servlet implementing 
+    and in the Astro Runtime. The facade presents a common API to classes from
+    different sources. These are some of the main features available from the
+    security facade: validation of digital signatures on requests to a SOAP
+    service; signature of requests sent from a SOAP client; an SSL
+    implementation for Apache Tomcat that allows authentication of clients using
+    proxy certificates; classes to generate and validate certificate chains
+    containing proxy certificates; client code to sign on a user using either
+    MyProxy or the AstroGrid accounts service; a client and servlet implementing
     the IVOA delegation protocol.
   </description>
-  
-  <!--<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>-->
-  
-  <inceptionYear>2003</inceptionYear>
-  
-  <developers>
-    <developer>
-      <name>Guy Rixon</name>
-      <id>gtr</id>
-      <email>gtr@ast.cam.ac.uk</email>
-      <organization>University of Cambridge</organization>
-      <timezone>0</timezone>
-    </developer>
- </developers>
- 
- <licenses>
-  <license>
-    <name>Academic Free License v2.1</name>
-    <url>http://opensource-definition.org/licenses/afl-2.1.html</url>
-    <distribution>manual</distribution>
-  </license>
-</licenses>
-  
-  <organization>
-    <name>AstroGrid</name>
-    <url>http://www.astrogrid.org/</url>
-    <!--<logo>http://www.astrogrid.org/images/AGlogo.png</logo>-->
-  </organization>
-  
+
   <build>
     <defaultGoal>install</defaultGoal>
     <directory>${basedir}/target</directory>
@@ -215,12 +188,12 @@
       </testResource>
     </testResources>
     <plugins>
-      <plugin>  
-        <artifactId>maven-compiler-plugin</artifactId>  
-        <configuration>  
-          <source>1.5</source> 
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
           <target>1.5</target>
-        </configuration>  
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -236,31 +209,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </reporting>
-    <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url>  --> 
-   <distributionManagement>
-    <site>
-      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
-      <name>Default Site</name>
-      <url>${astrogrid_doc_server_root}/p/${astrogrid_name}/${project.version}</url>
-      <!-- terror.star.le.ac.uk/ -->
-    </site>
- </distributionManagement>
 
 </project>
