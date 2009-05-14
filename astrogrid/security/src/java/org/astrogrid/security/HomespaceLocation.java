@@ -1,5 +1,7 @@
 package org.astrogrid.security;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.Principal;
 
 /**
@@ -31,6 +33,20 @@ public class HomespaceLocation implements Principal {
    */
   public String getName() {
     return this.uri;
+  }
+
+  /**
+   * Reveals the URI for the homespace. This is normally an abstract URI in the
+   * vos scheme (for IVOA VOSpace) or the ivo scheme (for AstroGrid MySpace).
+   *
+   * @return The URI.
+   */
+  public URI getUri() {
+    try {
+      return (uri == null) ? null : new URI(this.uri);
+    } catch (URISyntaxException ex) {
+      return null;
+    }
   }
   
 }

@@ -384,7 +384,18 @@ public class SecurityGuard implements X509KeyManager {
         this.subject.getPrincipals(HomespaceLocation.class).iterator();
     return (homes.hasNext())? homes.next().getName() : null;
   }
-  
+
+  /**
+   * Reveals the location of the user's home space, if known.
+   *
+   * @return The URI for the homespace (null if not known).
+   */
+  public URI getHomespaceLocation() {
+    Iterator<HomespaceLocation> homes =
+        this.subject.getPrincipals(HomespaceLocation.class).iterator();
+    return (homes.hasNext())? homes.next().getUri() : null;
+  }
+
   /**
    * Sets the home-space location. The home-space URI is recorded as a 
    * principal of type {@link HomespaceLocation}.
