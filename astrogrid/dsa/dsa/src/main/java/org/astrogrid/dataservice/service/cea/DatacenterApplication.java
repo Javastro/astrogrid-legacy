@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.1 2009/05/13 13:20:31 gtr Exp $
+/*$Id: DatacenterApplication.java,v 1.2 2009/05/15 16:28:23 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,17 +18,10 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.security.Principal;
-import java.util.StringTokenizer;
+import javax.security.auth.x500.X500Principal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.cfg.PropertyNotFoundException;
-
-import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
-import org.astrogrid.store.Ivorn;
 
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
@@ -39,7 +32,9 @@ import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
-
+import org.astrogrid.applications.service.v1.cea.CeaSecurityGuard;
+import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.cfg.PropertyNotFoundException;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierListener;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
@@ -58,28 +53,21 @@ import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.QueryState;
-import org.astrogrid.slinger.sourcetargets.HomespaceSourceTarget;
+import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.slinger.CredentialCache;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
-import org.astrogrid.slinger.agfm.FileManagerConnection;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.xml.sax.SAXException;
 import org.astrogrid.slinger.homespace.HomespaceName;
-import org.astrogrid.slinger.ivo.IVORN;
-
-// For the multicone stuff
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StarTableWriter;
 import uk.ac.starlink.votable.VOTableWriter;
 import uk.ac.starlink.votable.DataFormat;
-import uk.ac.starlink.table.JoinFixAction;
-import uk.ac.starlink.task.TaskException;
 import uk.ac.starlink.ttools.cone.ConeMatcher;
 import uk.ac.starlink.ttools.cone.ConeSearcher;
 import uk.ac.starlink.ttools.task.TableProducer;
-import uk.ac.starlink.util.DataSource;
 import uk.ac.starlink.table.OnceRowPipe;
 import uk.ac.starlink.table.TableBuilder;
 import uk.ac.starlink.votable.VOTableBuilder;
@@ -170,7 +158,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             
             setStatus(Status.INITIALIZED);
             querierID = serv.submitQuerier(querier,false);
-            logger.info("assigned QuerierID " + querierID);
+            logger.debug("assigned QuerierID " + querierID);
          }
       }
       catch (Throwable e) {
@@ -243,39 +231,52 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    }
    
    /**
+    * Tells the CEA library to use this object as the Runnable for executing
+    * the job.
+    *
     * @see org.astrogrid.applications.Application#createExecutionTask()
     */
+   @Override
    public Runnable createExecutionTask() throws CeaException {
      return this;
    }
-   
 
-   protected TargetIdentifier getResultTargetIdentifier() throws CeaException
-   {
-      try {
-         ParameterValue resultTarget = findOutputParameter(DatacenterApplicationDescription.RESULT);
-         if (resultTarget.getIndirect()==true) {
-            //results will go to the URI given in the parameter
-            if ((resultTarget.getValue() == null) || (resultTarget.getValue().trim().length() == 0)) {
-               throw new CeaException("Query parameter error: ResultTarget is indirect but value is empty");
-            }
+   /**
+    * Creates the "target identifier" which controls disposition of the
+    * query results. Handles credentials for authentication where appropriate.
+    *
+    * @return The identifier
+    * @throws CeaException For any failure.
+    */
+   protected TargetIdentifier getResultTargetIdentifier() throws CeaException {
+     try {
+       ParameterValue resultTarget = findOutputParameter(DatacenterApplicationDescription.RESULT);
+
+       // Results will be written to the URI given as the parameter value.
+       // The transaction with that URI may be authenticated; the passed
+       // principal can identify a named user or an anonymous call.
+       if (resultTarget.getIndirect()==true) {
+         if ((resultTarget.getValue() == null) ||
+             (resultTarget.getValue().trim().length() == 0)) {
+           throw new CeaException("Query parameter error: ResultTarget is indirect but value is empty");
          }
-         if (resultTarget.getIndirect()==true) {
-            return URISourceTargetMaker.makeSourceTarget(resultTarget.getValue());
-         } else {
-            //direct-to-cea target, so results must get written to a string 
-            //to be inserted into the parametervalue when complete.  
-            //See queryStatusChanged for what happens to the results
-            //when the query is complete
-            //close stream when finished writing to it
-            return new WriterTarget(new StringWriter(), true); 
-         }
-      }
-      catch (Exception ex) {
-         throw new CeaException(
-               "Query parameter error: couldn't process results destination: "+
-               ex.getMessage());
-      }
+         return URISourceTargetMaker.makeSourceTarget(resultTarget.getValue(), getPrincipal());
+       }
+       
+       // Results will be kept in the server and called out thence by the client.
+       // Hence, results must be written to the parameter value as a string.
+       // See queryStatusChanged for what happens to the results when the query 
+       // is complete.
+       else {
+         return new WriterTarget(new StringWriter(), true); 
+       }
+     }
+     catch (Exception ex) {
+       throw new CeaException(
+           "Query parameter error: couldn't process results destination: "+
+           ex.getMessage()
+       );
+     }
    }
 
    protected String getResultsFormat() throws CeaException
@@ -445,7 +446,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          boolean bestOnly = false;
          String findMode = null;
          ParameterAdapter findAdapter = findInputParameterAdapter(DatacenterApplicationDescription.FIND_MODE);
-         if ((findAdapter == null) || ("".equals(findAdapter))) {
+         if (findAdapter == null) {
             // Shouldn't get here
             bestOnly = false;
          }
@@ -532,6 +533,28 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          return;
       }
    }
+
+  /**
+   * Determines the results of authentication.
+   * Checks for the results of authentication in CEA's cache; these include any
+   * delegated credentials. If the caller is authenticated, copies the details 
+   * to DSA's cache and returns the authenticated principal; otherewise returns 
+   * a principal representing an anonymous caller.
+   * 
+   * @return The principal (never null, even for anonymous callers).
+   */
+  private Principal getPrincipal() {
+    SecurityGuard sg = CeaSecurityGuard.getInstanceFromContext();
+    X500Principal p = (sg == null)? null : sg.getX500Principal();
+    if (p == null) {
+      return LoginAccount.ANONYMOUS;
+    }
+    else {
+      CredentialCache.put(p, sg);
+      return p;
+    }
+  }
+
    private void reportFailure(String message) {
       try {
          // Make a value object to carry the report as a parameter.
@@ -686,8 +709,11 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
- Revision 1.1  2009/05/13 13:20:31  gtr
- *** empty log message ***
+ Revision 1.2  2009/05/15 16:28:23  gtr
+ I added the security wiring to the CEA interface. Authenticated calls to the CEC should now supply credentials for us in the call to VOSpace.
+
+ Revision 1.1.1.1  2009/05/13 13:20:31  gtr
+
 
  Revision 1.19  2008/10/14 12:28:51  clq2
  PAL_KEA_2804

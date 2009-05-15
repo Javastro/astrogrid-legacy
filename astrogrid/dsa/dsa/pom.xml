@@ -168,7 +168,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-security</artifactId>
-      <version>2008.2.02</version>
+      <version>2009.1.a05</version>
     </dependency>
 
     <dependency>

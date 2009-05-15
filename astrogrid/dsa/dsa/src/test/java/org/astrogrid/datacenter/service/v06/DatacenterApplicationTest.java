@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.1 2009/05/13 13:20:59 gtr Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.2 2009/05/15 16:28:23 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,6 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
@@ -158,16 +157,16 @@ public class DatacenterApplicationTest extends TestCase {
    
    public void testRun() throws Exception {
 
-      //starts application (submits query)
-      //assertTrue(app.execute());
-      app.createExecutionTask().run();
+     //starts application (submits query)
+     app.createExecutionTask().run();
+     String qid = app.getQuerierId();
+     assertNotNull(qid);
+     System.out.println("Running querier " + qid);
 
       // wait for app to finish,
       long endTime = System.currentTimeMillis() + 60 * 1000; // i.e. now plus 60 seconds
       while (notFinished(app.getStatus()) ) {
-         Thread.currentThread().sleep(1000); //give everything else a chance for a whole second
-         Thread.yield(); // give everything else a chance.
-         
+         Thread.sleep(1000); //give everything else a chance for a whole second
          if (System.currentTimeMillis() > endTime) {
             fail("Query still running after 60 seconds, status: "+getQueryStatus());
          }
@@ -316,8 +315,11 @@ public class DatacenterApplicationTest extends TestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
- Revision 1.1  2009/05/13 13:20:59  gtr
- *** empty log message ***
+ Revision 1.2  2009/05/15 16:28:23  gtr
+ I added the security wiring to the CEA interface. Authenticated calls to the CEC should now supply credentials for us in the call to VOSpace.
+
+ Revision 1.1.1.1  2009/05/13 13:20:59  gtr
+
 
  Revision 1.13  2008/10/13 10:51:35  clq2
  PAL_KEA_2799
