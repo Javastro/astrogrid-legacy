@@ -8,16 +8,17 @@
   <artifactId>astrogrid-cea-cec</artifactId>
   <packaging>war</packaging>
     <parent>
-      <artifactId>astrogrid-cea-base</artifactId>
+      <artifactId>astrogrid-cea-site</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>  
+      <version>2009.1-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>  
     </parent>
   <name>CEA CEC web server</name>
-  <version>2009.1-SNAPSHOT</version>
+  <version>${astrogrid_cea_version}</version>
   <description>A CEA application-server for running applications. The service provides
     CEA's standard SOAP interface, "CommonExecutionController" and a UWS interface.</description>
   <properties>
-   <astrogrid.name>cea/cec</astrogrid.name>
+   <astrogrid_name>cea/cec</astrogrid_name>
   </properties>
   
 <!--  <url>http://software.astrogrid.org/doc/${astrogrid_release}/cea/commandline</url>  -->
@@ -110,7 +111,7 @@
                     <tstamp>
     <format property="TODAY_UK" pattern="d-MMMM-yyyy" locale="en,UK"/>
   </tstamp>
-                  <echo message="${pom.name} version:${pom.version} built:${TODAY_UK}" file="${project.build.directory}/about.txt" level="error" />
+                  <echo message="${pom.name} version:${project.version} built:${TODAY_UK}" file="${project.build.directory}/about.txt" level="error" />
                   <available 
                     file="${project.build.directory}/${project.build.finalName}.war" 
                     property="file.exists" value="true" /> 
@@ -132,6 +133,7 @@
         <groupId>taglibs</groupId>
         <artifactId>standard</artifactId>
         <version>1.1.2</version>
+        
      </dependency>
      <dependency>
         <groupId>javax.servlet</groupId>
@@ -141,13 +143,13 @@
      <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-cea-server</artifactId>
-        <version>2009.1-SNAPSHOT</version>
+        <version>${project.version}</version>
      </dependency>
  
      <dependency><!-- these are the test classes - needed for the self tests -->
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-cea-server</artifactId>
-        <version>2009.1-SNAPSHOT</version>
+        <version>${project.version}</version>
         <classifier>tests</classifier>
      </dependency>
      
@@ -281,5 +283,14 @@
     </repositories>
   </profile>
   </profiles>
-  
+    <url>${astrogrid_doc_URL_root}/p/cea/${project.version}/cec</url> 
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/cea/${project.version}/cec</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+ </distributionManagement>
+
 </project>
