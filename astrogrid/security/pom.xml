@@ -16,6 +16,9 @@
     <version>2009.1-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <astrogrid_name>security</astrogrid_name>
+  </properties>
   <dependencies>
 
     <dependency>
@@ -209,5 +212,14 @@
       </plugin>
     </plugins>
   </build>
+
+   <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url>  --> 
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/${astrogrid_name}/${project.version}</url>
+     </site>
+ </distributionManagement>
 
 </project>
