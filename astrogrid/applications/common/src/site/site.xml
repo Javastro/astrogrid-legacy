@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <body>
+   <breadcrumbs>
+  <item  name="CEA Client" href="${astrogrid_doc_URL_root}/p/cea/${project.version}/common" />
+  </breadcrumbs>
+  
+     <menu ref="reports"/>
+  </body>
+</project>

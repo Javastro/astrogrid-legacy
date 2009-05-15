@@ -10,12 +10,10 @@
   <name>CEA common library</name>
   <version>2009.1-SNAPSHOT</version>
   <parent>
-      <artifactId>astrogrid-cea-base</artifactId>
+      <artifactId>astrogrid-cea-site</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>2009.1-SNAPSHOT</version>
   </parent>
-    <!--  <url>http://software.astrogrid.org/doc/${astrogrid_release}/cea/common/</url> -->
-  
   <scm>
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/applications/common/</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/applications/common/</developerConnection>
@@ -58,7 +56,16 @@
    </dependencies>
  </dependencyManagement>
  <properties>
-   <astrogrid.name>cea/common</astrogrid.name>
+   <astrogrid_name>cea/common</astrogrid_name>
  </properties>
- 
+   <url>${astrogrid_doc_URL_root}/p/cea/${project.version}/common</url>  --> 
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/cea/${project.version}/common</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+ </distributionManagement>
+
  </project>
