@@ -71,7 +71,7 @@
 	</interface>
   </capability>
   
-  <capability standardID="ivo://net.ivoa/std/Delegation/1.0">
+  <capability standardID="ivo://net.ivoa/std/Delegation">
 	<interface xsi:type="vs:ParamHTTP">
 	<!--FIXME - needs to have HTTPS defintion-->
 	  <accessURL use="full"><%=base%>delegation</accessURL>
