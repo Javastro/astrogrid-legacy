@@ -6,20 +6,21 @@
    <groupId>net.ivoa</groupId>
    <artifactId>ivoa-objects</artifactId>
    <name>IVOA objects</name>
-   <description>IVOA schema</description>
-   <version>2008.2</version>
+   <description>JAXB Based objects for IVOA schema</description>
+   <version>2009.1-SNAPSHOT</version>
    <scm>
-      <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/ivoa/ivoa-objects/</connection>
-      <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:ivoa/ivoa-objects/</developerConnection>
-      <url>http://www.astrogrid.org/viewcvs/astrogrid/ivoa/ivoa-objects/</url>
-      <tag>ivoa_2008_2</tag>
+      <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/ivoa-objects/</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/ivoa-objects/</developerConnection>
+      <url>http://www.astrogrid.org/viewcvs/astrogrid/ivoa-objects/</url>
    </scm>
-   
+   <properties>
+    <astrogrid_name>ivoa-objects</astrogrid_name>
+   </properties>
    <packaging>jar</packaging>
    <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2008.2</version>
+      <version>2009.1-SNAPSHOT</version>
     </parent>
  	<dependencies>
      <dependency>
@@ -84,12 +85,12 @@
 	      <plugin> <!-- invoke with  jaxb2:xjc--><!-- alternative at  https://maven-jaxb2-plugin.dev.java.net/-->
 	         <groupId>org.codehaus.mojo</groupId>
 	         <artifactId>jaxb2-maven-plugin</artifactId>
-	         <configuration>
-                <schemaDirectory>${basedir}/../../ag/src/contracts/src/schema/</schemaDirectory>
+	         <configuration> <!-- should really download the schema as a dependency -->
+                <schemaDirectory>${basedir}/../contracts/src/schema/</schemaDirectory>
                 <!-- CEABase.xsd, VOCEA-v1.0.xsd, should perhaps be put back...-->
                 <schemaFiles>registry/RegistryInterface/v1.0/RegistryInterface.xsd,vo-resource-types/VORegistry/v1.0/VORegistry.xsd,vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd,vo-resource-types/SIA/v1.0/SIA.xsd,vo-resource-types/VOApplication/v1.0rc1/VOApplication.xsd,vo-resource-types/VOStandard/v0.2beta1/VOStandard.xsd,cea/CEAImplementation/v2.0/CEAImplementation.xsd,cea/CEATypes/v1.1/CEATypes.xsd</schemaFiles>
                 <outputDirectory>${basedir}/jaxb</outputDirectory>
-                <bindingDirectory>${basedir}/../../ag/src/contracts/build/</bindingDirectory>
+                <bindingDirectory>${basedir}/../contracts/build/</bindingDirectory>
                  <bindingFiles>xjb-binding.xml</bindingFiles>
                  <verbose>true</verbose>
                 <extension>true</extension>
@@ -117,5 +118,14 @@
 	      </plugin>
 	   </plugins>
 	</build>
+    <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url>  --> 
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/${astrogrid_name}/${project.version}</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+ </distributionManagement>
     
 </project>
