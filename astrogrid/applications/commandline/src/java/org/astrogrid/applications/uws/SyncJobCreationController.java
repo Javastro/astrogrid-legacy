@@ -1,5 +1,5 @@
 /*
- * $Id: SyncJobCreationController.java,v 1.1 2008/09/25 23:16:44 pah Exp $
+ * $Id: SyncJobCreationController.java,v 1.2 2009/05/15 23:12:48 pah Exp $
  * 
  * Created on 9 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -63,7 +63,7 @@ public class SyncJobCreationController extends AbstractAccessProtocolController 
         secGuard = UWSUtils.createSecurityGuard(request);
         String jobid = manager.getExecutionController().init(tool,
                 "job from simple post interface", secGuard);
-        manager.getExecutionController().execute(jobid);
+        manager.getExecutionController().execute(jobid, secGuard);
         StringBuffer redirURL = new StringBuffer("/sync/");
         redirURL.append(parsAppName(request));
         redirURL.append("/");
@@ -81,14 +81,14 @@ public class SyncJobCreationController extends AbstractAccessProtocolController 
         String jobId = pathWithinServletMapping.substring(appidx
                 + appName.length() + 1);
         
-        ExecutionSummaryType exSummary = manager.getQueryService().getSummary(jobId);
+        ExecutionSummaryType exSummary = manager.getQueryService().getSummary(jobId, secGuard);
         if (!manager.getApplicationDescriptionLibrary().getDescription(exSummary.getApplicationName()).getName().equals(appName))
         {
             throw new CeaException("application name does not match jobid");
         }
         //Block here wait for job to finish
         //IMPL would be better to attach as a listener to the executing application
-        while(UWSUtils.notFinished(manager.getQueryService().queryExecutionStatus(jobId).getPhase()))
+        while(UWSUtils.notFinished(manager.getQueryService().queryExecutionStatus(jobId, secGuard).getPhase()))
         {
             try {
                 Thread.sleep(1000);
@@ -96,7 +96,7 @@ public class SyncJobCreationController extends AbstractAccessProtocolController 
                 break;
             }
         }
-        String result = manager.getQueryService().getResults(jobId).getResult().get(0).getId();
+        String result = manager.getQueryService().getResults(jobId, secGuard).getResult().get(0).getId();
         StringBuffer redirURL = new StringBuffer("/jobs/");
         redirURL.append(jobId);
         redirURL.append("/results/");
@@ -108,6 +108,13 @@ public class SyncJobCreationController extends AbstractAccessProtocolController 
 
 /*
  * $Log: SyncJobCreationController.java,v $
+ * Revision 1.2  2009/05/15 23:12:48  pah
+ * ASSIGNED - bug 2911: improve authz configuration
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+ * combined agast and old stuff
+ * refactored to a more specific CEA policy interface
+ * made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+ *
  * Revision 1.1  2008/09/25 23:16:44  pah
  * synchronous application execution
  * Revision 1.4 2008/09/15 17:19:05 pah

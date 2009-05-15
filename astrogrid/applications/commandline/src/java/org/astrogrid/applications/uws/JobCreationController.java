@@ -1,5 +1,5 @@
 /*
- * $Id: JobCreationController.java,v 1.6 2009/03/07 09:40:14 pah Exp $
+ * $Id: JobCreationController.java,v 1.7 2009/05/15 23:12:48 pah Exp $
  * 
  * Created on 9 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -14,6 +14,7 @@ package org.astrogrid.applications.uws;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class JobCreationController {
 	    SecurityGuard secGuard = UWSUtils.createSecurityGuard(request);
 	    String jobid = cec.init(tool, arg1, secGuard);
 	    if (request.getParameter("AUTORUN")!=null) {
-		cec.execute(jobid);
+		cec.execute(jobid, secGuard);
 		Thread.sleep(300);
 	    }
 	    UWSUtils.redirectToJobSummary(request, response, jobid);
@@ -103,7 +104,7 @@ public class JobCreationController {
     }
 
     @RequestMapping(method=RequestMethod.GET)
-    public ModelAndView listJobs(HttpServletRequest request, HttpServletResponse response) throws CeaException
+    public ModelAndView listJobs(HttpServletRequest request, HttpServletResponse response) throws CeaException, CertificateException
     {
 	ExecutionHistory eh = manager.getExecutionHistoryService();
 	QueryService qs = manager.getQueryService();
@@ -114,11 +115,12 @@ public class JobCreationController {
             modelAndView = new ModelAndView("listjobs");
         }
 	 
-	List<JobOverview> jobs = new ArrayList<JobOverview>();
+        SecurityGuard secGuard = UWSUtils.createSecurityGuard(request);
+        	List<JobOverview> jobs = new ArrayList<JobOverview>();
 	String[] jobids = eh.getExecutionIDs();
 	for (int i = 0; i < jobids.length; i++) {
 	    if (eh.isCached(jobids[i])) {
-	           ExecutionSummaryType job = qs.getSummary(jobids[i]);
+           ExecutionSummaryType job = qs.getSummary(jobids[i], secGuard);
 	           jobs.add(new JobOverview(job.getJobId(), job.getPhase().toString()));
                
             } else {
@@ -158,6 +160,13 @@ public class JobCreationController {
 
 /*
  * $Log: JobCreationController.java,v $
+ * Revision 1.7  2009/05/15 23:12:48  pah
+ * ASSIGNED - bug 2911: improve authz configuration
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+ * combined agast and old stuff
+ * refactored to a more specific CEA policy interface
+ * made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+ *
  * Revision 1.6  2009/03/07 09:40:14  pah
  * RESOLVED - bug 2891: upgrade performance of record keeping
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2891

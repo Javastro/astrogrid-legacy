@@ -1,5 +1,5 @@
 /*
- * $Id: SiapController.java,v 1.5 2008/10/20 10:35:41 pah Exp $
+ * $Id: SiapController.java,v 1.6 2009/05/15 23:12:48 pah Exp $
  * 
  * Created on 13 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -58,14 +58,14 @@ public class SiapController extends AbstractAccessProtocolController {
 	    String jobid = executionController.init(tool,
 		    "job from siap interface", secGuard);
 	    //directly run the job
-	    executionController.execute(jobid);
+	    executionController.execute(jobid, secGuard);
 	    QueryService qs = manager.getQueryService();
 	    //TODO improve this so that it does not use polling.
-	    ExecutionPhase phase = qs.queryExecutionStatus(jobid).getPhase();
+	    ExecutionPhase phase = qs.queryExecutionStatus(jobid, secGuard).getPhase();
 	    while (phase.equals(ExecutionPhase.EXECUTING) || phase.equals(ExecutionPhase.QUEUED) || phase.equals(ExecutionPhase.PENDING)) {
 		try {
 		    Thread.sleep(1000);
-		    phase = qs.queryExecutionStatus(jobid).getPhase();
+		    phase = qs.queryExecutionStatus(jobid, secGuard).getPhase();
 		} catch (InterruptedException e) {
 		    continue; // exit this thread if interrupted - stop deadlock...
 		} 
@@ -80,6 +80,13 @@ public class SiapController extends AbstractAccessProtocolController {
 
 /*
  * $Log: SiapController.java,v $
+ * Revision 1.6  2009/05/15 23:12:48  pah
+ * ASSIGNED - bug 2911: improve authz configuration
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+ * combined agast and old stuff
+ * refactored to a more specific CEA policy interface
+ * made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+ *
  * Revision 1.5  2008/10/20 10:35:41  pah
  * pull functioality up
  *

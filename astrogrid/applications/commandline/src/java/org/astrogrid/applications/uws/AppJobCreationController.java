@@ -1,5 +1,5 @@
 /*
- * $Id: AppJobCreationController.java,v 1.5 2008/09/25 23:13:45 pah Exp $
+ * $Id: AppJobCreationController.java,v 1.6 2009/05/15 23:12:48 pah Exp $
  * 
  * Created on 9 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -54,7 +54,7 @@ public class AppJobCreationController extends AbstractAccessProtocolController {
         secGuard = UWSUtils.createSecurityGuard(request);
 	String jobid = manager.getExecutionController().init(tool,
 		"job from simple post interface", secGuard);
-	manager.getExecutionController().execute(jobid);
+	manager.getExecutionController().execute(jobid, secGuard);
 	UWSUtils.redirectToJobSummary(request, response, jobid);
 //	response.sendRedirect(rURL.toString());
 //	response.setContentType("text/plain");
@@ -68,6 +68,13 @@ public class AppJobCreationController extends AbstractAccessProtocolController {
 
 /*
  * $Log: AppJobCreationController.java,v $
+ * Revision 1.6  2009/05/15 23:12:48  pah
+ * ASSIGNED - bug 2911: improve authz configuration
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+ * combined agast and old stuff
+ * refactored to a more specific CEA policy interface
+ * made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+ *
  * Revision 1.5  2008/09/25 23:13:45  pah
  * new redirect functions
  *

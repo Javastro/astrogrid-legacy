@@ -62,7 +62,7 @@
 		executionId = cec.init(tool, jobstepid, sec);
 		
 		//out.print("Execution Id: "+executionId+"<br/>");
-		boolean started = cec.execute(executionId);
+		boolean started = cec.execute(executionId, sec);
 		executing="true";
 		//out.print((started ? "Started OK" : "Failed to start") + "<br/>");
 		}
