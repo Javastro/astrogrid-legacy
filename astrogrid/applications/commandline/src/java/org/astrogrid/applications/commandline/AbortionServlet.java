@@ -8,14 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.component.CEAComponentContainer;
 import org.astrogrid.applications.uws.UWSController;
+import org.astrogrid.applications.uws.UWSUtils;
 import org.astrogrid.component.ComponentManagerException;
+import org.astrogrid.security.SecurityGuard;
 
 /**
  * A servlet to abort CEA jobs.
  *
  * @author Guy Rixon
  * @version
- * @deprecated now handled by the {@link UWSController}
+ * @deprecated now handled by the {@link UWSController} should be removed soon..
  */
 public class AbortionServlet extends HttpServlet {
   
@@ -31,7 +33,8 @@ public class AbortionServlet extends HttpServlet {
     }
     else {
       try {
-        CEAComponentContainer.getInstance().getExecutionController().abort(job);
+        SecurityGuard secGuard = UWSUtils.createSecurityGuard(request);
+        CEAComponentContainer.getInstance().getExecutionController().abort(job, secGuard);
         response.sendRedirect("queue.jsp");
       } catch (Exception ex) {
         response.sendError(response.SC_INTERNAL_SERVER_ERROR, 
