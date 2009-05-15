@@ -9,9 +9,9 @@
 
 package org.astrogrid.applications.manager;
 
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
@@ -23,6 +23,8 @@ import junit.framework.Test;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
+import org.astrogrid.applications.authorization.AuthorizationPolicy;
+import org.astrogrid.applications.authorization.CEAOperation;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.execution.Tool;
@@ -30,7 +32,6 @@ import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.PersistenceException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.security.SecurityGuard;
-import org.astrogrid.security.authorization.AccessPolicy;
 
 /**
  * Default implementation of the {@link org.astrogrid.applications.manager.ExecutionController}
@@ -54,7 +55,7 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 
     protected  Set<Application> currentlyRunning = new HashSet<Application>(); //IMPL should it be synchronized?
     protected final ExecutionPolicy policy;
-    protected AccessPolicy authorizationPolicy ;
+    protected AuthorizationPolicy authorizationPolicy ;
     
     /**
      *  Construct a new DefaultExecutionController
@@ -64,7 +65,7 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
     public DefaultExecutionController( final ApplicationDescriptionLibrary library
     		                         , ExecutionHistory executionHistory
     		                         , ExecutionPolicy policy
-    		                         , AccessPolicy authorizationPolicy) {
+    		                         , AuthorizationPolicy authorizationPolicy) {
 	logger.info("initializing application controller");
 	this.applicationDescriptions = library;
 	this.policy = policy;
@@ -72,12 +73,18 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 	this.authorizationPolicy = authorizationPolicy ;
     }
 
-    public  boolean execute(String executionId) throws CeaException {
+    public  boolean execute(String executionId, SecurityGuard secGuard) throws CeaException {
 	logger.info("Executing " + executionId);
 
 	if (executionHistory.isApplicationInCurrentSet(executionId)) {
 	    Application app = executionHistory.getApplicationFromCurrentSet(executionId);
+	    try {
+            authorizationPolicy.decide(CEAOperation.EXECUTE, executionId, app.getApplicationDescription().getId(), secGuard);
+        } catch (GeneralSecurityException e) {
+            throw new CeaException("execution not allowed", e);
+        }
 	    assert app != null;
+	    
 	    app.setRunTimeLimit(policy.getMaxRunTime()*1000);
 	    return startRunnable(app);
 	}
@@ -100,12 +107,14 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 	return true;
     }
     public String init(Tool tool, String jobstepID, SecurityGuard securityGuard) throws CeaException {
-	logger.debug("Initializing application " + jobstepID);
+	if(logger.isDebugEnabled())logger.debug("Initializing application " + jobstepID);
 	int idx;
 	String toolname = tool.getId();
 	logger.debug( "toolname: " + toolname ) ;
 	try {
 	    ApplicationDescription descr = applicationDescriptions.getDescription(toolname);
+	    authorizationPolicy.decide(CEAOperation.INIT, null, descr.getId(), securityGuard);
+	    
 	    Application app = descr.initializeApplication(jobstepID,securityGuard,tool); 
 	    Calendar now = Calendar.getInstance();
 	    now.add(Calendar.SECOND, policy.getDefaultLifetime());
@@ -113,9 +122,7 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 	    app.checkParameterValues();          
 	    executionHistory.addApplicationToCurrentSet(app);          
 	    app.addObserver(this);
-	    //
-	    // JBL: Think this is the place to retrieve the SecurityGuard and check authorization.
-	    vetAuthorization( app.getId(), toolname, securityGuard ) ;
+	  
 	    return app.getId();
 	} catch (CeaException e) {
 	    throw e;
@@ -125,35 +132,23 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 	}
     }
     
-    private void vetAuthorization( String executionId
-    		                     , String toolName
-    		                     , SecurityGuard securityGuard ) throws CeaException {
-    	if( logger.isDebugEnabled() ) logger.debug( "vetAuthorization()" ) ;
-    	HashMap<String, String> request = new HashMap<String, String>() ;
-	    request.put( "executionId", executionId ) ;
-	    request.put( "application", toolName ) ;
-	    securityGuard.setAccessPolicy( authorizationPolicy ) ;
-	    try {
-	    	securityGuard.decide( request ) ;
-	    }
-	    catch ( Exception ex ) {
-	    	throw new CeaException( "Access denied.", ex ) ;
-	    }	
-    }
 
-    public boolean abort(String executionId) {
-	logger.debug("aborting " + executionId);
-	if(!   executionHistory.isApplicationInCurrentSet(executionId)) {
-	    return false; // its already dead.
-	}
-	try {
-	    Application app = executionHistory.getApplicationFromCurrentSet(executionId);
-	    return app.attemptAbort(true);
-	} catch (PersistenceException e) {
-	    // oh well
-	    logger.error("Could not abort application, due to persistence error",e);
-	    return false;
-	}
+    public boolean abort(String executionId, SecurityGuard secGuard) throws CeaException {
+        if(logger.isDebugEnabled())logger.debug("aborting " + executionId);
+        if(!   executionHistory.isApplicationInCurrentSet(executionId)) {
+            return false; // its already dead.
+        }
+        try {
+            Application app = executionHistory.getApplicationFromCurrentSet(executionId);
+            authorizationPolicy.decide(CEAOperation.ABORT, executionId, app.getApplicationDescription().getId(), secGuard);
+            return app.attemptAbort(true);
+        } catch (PersistenceException e) {
+            // oh well
+            logger.error("Could not abort application, due to persistence error",e);
+            return false;
+        } catch (GeneralSecurityException e) {
+            throw new CeaException("Abort not authorized", e);
+        }
     }
 
     /** This component is itself an observer. it watches all applications, move them to the archive once they've completed.

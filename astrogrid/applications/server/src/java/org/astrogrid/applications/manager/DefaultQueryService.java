@@ -1,4 +1,4 @@
-/*$Id: DefaultQueryService.java,v 1.9 2008/09/03 14:18:56 pah Exp $
+/*$Id: DefaultQueryService.java,v 1.10 2009/05/15 22:51:19 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.security.GeneralSecurityException;
 import java.util.Observer;
 
 import javax.xml.rpc.ServiceException;
@@ -25,6 +26,8 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.ApplicationStillRunningException;
 import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.authorization.AuthorizationPolicy;
+import org.astrogrid.applications.authorization.CEAOperation;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.LogLevel;
 import org.astrogrid.applications.description.execution.MessageType;
@@ -35,6 +38,7 @@ import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.PersistenceException;
 import org.astrogrid.applications.manager.persist.SummaryHelper;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.security.SecurityGuard;
 import org.joda.time.DateTime;
 
 /** Default implementation of the {@link org.astrogrid.applications.manager.QueryService}
@@ -46,31 +50,39 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(DefaultQueryService.class);
-  
+    private final AuthorizationPolicy authzPolicy;
     /** Construct a new DefaultQueryService
      * @param eh the store to use to service queries
+     * @param authPolicy 
      */
-    public DefaultQueryService(ExecutionHistory eh, ApplicationEnvironmentRetriver envret) {
+    public DefaultQueryService(ExecutionHistory eh, ApplicationEnvironmentRetriver envret, AuthorizationPolicy authPolicy) {
         super();
         this.executionHistory = eh;
         this.environmentRetriever = envret;
+        this.authzPolicy = authPolicy;
     }
     protected final ExecutionHistory executionHistory;
     protected final ApplicationEnvironmentRetriver environmentRetriever;
   
     
-    public MessageType queryExecutionStatus(String executionId) throws CeaException {     
+    public MessageType queryExecutionStatus(String executionId, SecurityGuard secGuard) throws CeaException {     
         logger.debug("Getting execution status for " +executionId);
         MessageType retval = null;
         if (executionHistory.isApplicationInCurrentSet(executionId)) {
            Application app = executionHistory.getApplicationFromCurrentSet(executionId);
-            retval = app.createTemplateMessage();
+           try {
+            authzPolicy.decide(CEAOperation.QUERY, executionId, app.getApplicationDescription().getId(), secGuard);
+        } catch (GeneralSecurityException e) {
+            throw new CeaException("not authorized to query", e);
+        }
+           retval = app.createTemplateMessage();
            retval.setContent(app.getStatus().toString());
            retval.setLevel(LogLevel.INFO);
            retval.setPhase(app.getStatus().toExecutionPhase());
         }
         else // look in the persistance store
         {
+            //FIXME authorization not happening for results from storage
            ExecutionSummaryType summary = executionHistory.getApplicationFromArchive(executionId);
            retval = new MessageType();           
            retval.setContent("The application is no longer running" + summary.getPhase().toString());
@@ -83,22 +95,34 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
 
      }
 
-     public org.astrogrid.applications.description.execution.ResultListType getResults(String executionId) throws CeaException {
+     public org.astrogrid.applications.description.execution.ResultListType getResults(String executionId, SecurityGuard secGuard) throws CeaException {
          logger.debug("Getting results for " + executionId);
          if (executionHistory.isApplicationInCurrentSet(executionId)) {
-             return executionHistory.getApplicationFromCurrentSet(executionId).getResult();
+             try {
+                 authzPolicy.decide(CEAOperation.GETRESULTS, executionId, null, secGuard);
+             } catch (GeneralSecurityException e) {
+                 throw new CeaException("not authorized to query", e);
+             }
+                  return executionHistory.getApplicationFromCurrentSet(executionId).getResult();
          } else { //look in the store
+           //FIXME authorization not happening for results from storage
              return executionHistory.getApplicationFromArchive(executionId).getResultList();
          }
     
      }
 
-     public ExecutionSummaryType getSummary(String executionId) throws CeaException {
+     public ExecutionSummaryType getSummary(String executionId, SecurityGuard secGuard) throws CeaException {
          logger.debug("Getting summary for " + executionId);
          if (executionHistory.isApplicationInCurrentSet(executionId)) {
              Application app = executionHistory.getApplicationFromCurrentSet(executionId);
-             return SummaryHelper.summarize(executionId,app);
+             try {
+                 authzPolicy.decide(CEAOperation.QUERY, executionId, app.getApplicationDescription().getId(), secGuard);
+             } catch (GeneralSecurityException e) {
+                 throw new CeaException("not authorized to query", e);
+             }
+                  return SummaryHelper.summarize(executionId,app);
          } else {
+           //FIXME authorization not happening for results from storage
              return executionHistory.getApplicationFromArchive(executionId);
          }
      }
@@ -180,6 +204,13 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
 
 /* 
 $Log: DefaultQueryService.java,v $
+Revision 1.10  2009/05/15 22:51:19  pah
+ASSIGNED - bug 2911: improve authz configuration
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+combined agast and old stuff
+refactored to a more specific CEA policy interface
+made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+
 Revision 1.9  2008/09/03 14:18:56  pah
 result of merge of pah_cea_1611 branch
 

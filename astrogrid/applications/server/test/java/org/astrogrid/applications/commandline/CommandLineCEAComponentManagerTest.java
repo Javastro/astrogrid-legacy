@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManagerTest.java,v 1.3 2008/09/13 09:51:04 pah Exp $
+/*$Id: CommandLineCEAComponentManagerTest.java,v 1.4 2009/05/15 22:51:19 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -117,7 +117,7 @@ public class CommandLineCEAComponentManagerTest
       // not see the intermediate states. Therefore, we can only test to
       // see that it changes from INITIALIZED.
       assertEquals(Status.INITIALIZED, app.getStatus());
-      assertTrue(ec.execute(exid));
+      assertTrue(ec.execute(exid, secGuard));
       assertFalse(app.getStatus().equals(Status.INITIALIZED));
       
       // The execution controller should move the application from current set
@@ -154,6 +154,13 @@ public class CommandLineCEAComponentManagerTest
 
 /* 
 $Log: CommandLineCEAComponentManagerTest.java,v $
+Revision 1.4  2009/05/15 22:51:19  pah
+ASSIGNED - bug 2911: improve authz configuration
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+combined agast and old stuff
+refactored to a more specific CEA policy interface
+made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+
 Revision 1.3  2008/09/13 09:51:04  pah
 code cleanup
 

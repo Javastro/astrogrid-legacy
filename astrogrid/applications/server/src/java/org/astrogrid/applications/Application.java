@@ -103,7 +103,7 @@ public interface Application  {
     * @return the inputs to this execution*/
     public ParameterValue[] getInputParameters();
 
-    /** access the cea-id for this application. will be unique on this server, possibly worldwide 
+    /** access the executionId for this application. will be unique on this server, possibly worldwide 
      * @return unique cea-id*/
     public String getId();
     /** access the user this application is running for 

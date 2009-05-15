@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.18 2008/09/13 09:51:06 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.19 2009/05/15 22:51:19 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -113,7 +113,6 @@ protected void onInit() {//IMPL can this be done in the constructor?
                sb.append(ctool.getId());
                ctool.setId(sb.toString());
            }
-           this.decide("init", ctool);
            return cec.init(ctool, jobstepID.toString(), CeaSecurityGuard.getInstanceFromContext());
          }
          catch (Exception e) {
@@ -134,9 +133,8 @@ protected void onInit() {//IMPL can this be done in the constructor?
     */
    public boolean execute(String job) throws RemoteException, CeaFault {
      try {
-       this.cacheSecurityGuard();
-       this.decide("execute", job);
-       return cec.execute(job);
+      
+       return cec.execute(job, this.cacheSecurityGuard());
      } catch (Exception e) {
        logger.error("Operation execute("+ job + ") failed", e);
        throw AxisFault.makeFault(e);
@@ -151,9 +149,8 @@ protected void onInit() {//IMPL can this be done in the constructor?
     */
    public boolean abort(String executionId) throws RemoteException, CeaFault {
       try {
-        this.cacheSecurityGuard();
-        this.decide("abort", executionId);
-        return cec.abort(executionId);
+        
+        return cec.abort(executionId, this.cacheSecurityGuard());
       } catch (Exception e) {
         logger.error("abort(" + executionId + ")", e);
           throw AxisFault.makeFault(e);
@@ -170,9 +167,8 @@ protected void onInit() {//IMPL can this be done in the constructor?
    public MessageType queryExecutionStatus(String executionId)
       throws RemoteException, CeaFault {
          try {
-           this.cacheSecurityGuard();
-           this.decide("queryExecutionStatus", executionId);
-           org.astrogrid.applications.description.execution.MessageType mess = query.queryExecutionStatus(executionId);
+           
+           org.astrogrid.applications.description.execution.MessageType mess = query.queryExecutionStatus(executionId, this.cacheSecurityGuard());
            return  JAXB2Axis.convert(mess);
          }
          catch (Exception e) {
@@ -222,9 +218,7 @@ public boolean registerProgressListener(String arg0, URI arg1) throws RemoteExce
  */
 public ExecutionSummaryType getExecutionSummary(String arg0) throws RemoteException, CeaFault {
     try {
-        this.cacheSecurityGuard();
-        this.decide("getExecutionSummary", arg0);
-        return JAXB2Axis.convert(query.getSummary(arg0));
+        return JAXB2Axis.convert(query.getSummary(arg0, this.cacheSecurityGuard()));
     } catch (Exception e) {
         logger.error("getExecutionSummary("+arg0+")", e);
         throw AxisFault.makeFault(e);
@@ -238,9 +232,7 @@ public ExecutionSummaryType getExecutionSummary(String arg0) throws RemoteExcept
  */
 public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
     try {
-        this.cacheSecurityGuard();
-        this.decide("getResults", arg0);
-        return JAXB2Axis.convert(query.getResults(arg0));
+        return JAXB2Axis.convert(query.getResults(arg0, this.cacheSecurityGuard()));
     } catch (Exception e) {
         logger.error("getResults("+arg0+")", e);
         throw AxisFault.makeFault(e);
@@ -274,43 +266,20 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
    * the authenticated identity, if any, are loaded. If the request has not
    * been authenticated, this method stores a security guard with no
    * principals or credentials.
+ * @return 
    * @TODO review all this caching business - I think it it broken and not needed anyway as he securityGuard is passed into the {@link Application} (which represents an applicaiton execution) at creation time.
    */
-   private void cacheSecurityGuard() throws ClassNotFoundException, 
+   private CeaSecurityGuard cacheSecurityGuard() throws ClassNotFoundException, 
                                             InstantiationException, 
                                             IllegalAccessException, 
                                             CertificateException {
      AxisServiceSecurityGuard g = AxisServiceSecurityGuard.getInstanceFromContext();
      g.loadDelegation();
      CeaSecurityGuard.setInstanceInContext(g);
+     return CeaSecurityGuard.getInstanceFromContext();
    }
 
-  /**
-   * Checks the requested action against the access policy.
-   * This form of the overloaded method is called from init(), where the
-   * Tool is available.
-   */
-  private void decide(String operationName, Tool tool) throws GeneralSecurityException, Exception {
-    HashMap h = new HashMap();
-    h.put("cea.soap.operation", operationName);
-    h.put("cec.tool", tool);
-    CeaSecurityGuard.getInstanceFromContext().decide(h);
-  }
-  
-  /**
-   * Checks the requested action against the access policy.
-   * This form of the overloaded method is called from methods other than 
-   * init(), where the ownership of the execution is already established.
-   */
-  private void decide(String operationName, String job) throws GeneralSecurityException, Exception {
-    Application a = this.getApplication(job);
-    HashMap h = new HashMap();
-    h.put("cea.soap.operation", operationName);
-    h.put("cea.application", a);
-    h.put("cea.job.owner", (a == null)? null : a.getSecurityGuard().getAccountIvorn());//FIXME is the account ivorn appropriate here...
-    CeaSecurityGuard.getInstanceFromContext().decide(h);
-  }
-  
+ 
   /**
    * Retrives the Application object for a named execution.
    *

@@ -6,7 +6,6 @@ package org.astrogrid.applications.manager.agast;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
-import java.util.Map;
 import java.util.Random;
 
 import javax.security.auth.x500.X500Principal;
@@ -15,14 +14,19 @@ import org.agastpdp.qadi.client.QadiClient;
 import org.agastpdp.qadi.client.QadiClientException;
 import org.agastpdp.qadi.client.QadiPDPClientImpl;
 import org.apache.log4j.Logger;
+import org.astrogrid.applications.authorization.AuthorizationPolicy;
+import org.astrogrid.applications.authorization.CEAOperation;
+import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.security.SecurityGuard;
-import org.astrogrid.security.authorization.AccessPolicy;
 
 /**
+ * An Authorization policy that uses the AGAST service to decide.
+ * 
  * @author jl99
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 15 May 2009 - changed to use different more CEA specific {@link AuthorizationPolicy}
  *
  */
-public class PolicyDecisionPoint implements AccessPolicy {
+public class PolicyDecisionPoint implements AuthorizationPolicy {
 	
 	private static final Logger log = Logger.getLogger( PolicyDecisionPoint.class ) ;
 		
@@ -71,7 +75,6 @@ public class PolicyDecisionPoint implements AccessPolicy {
 	
 	private QadiClient qadi ;
 	private SecurityGuard securityGuard ;
-	private Map<String, String> request ;
 	private String qadiUrl ;
 	private String pdpEndpoint ;
 	private String decider ;
@@ -79,9 +82,11 @@ public class PolicyDecisionPoint implements AccessPolicy {
 	private String user ;
 	private String application ;
 	private String job ;
+	private final ExecutionHistory eh;
 	
-	public PolicyDecisionPoint( String qadiUrl ) {
+	public PolicyDecisionPoint( String qadiUrl, ExecutionHistory executionHistory ) {
 		
+	       eh = executionHistory;
 		try {
 			this.qadi = new QadiPDPClientImpl() ;
 			//
@@ -93,6 +98,7 @@ public class PolicyDecisionPoint implements AccessPolicy {
 			// Add all the information we have regarding the local community, any delegate communities
 			// and the names of all applications that are controlled by this cea...
 			addKnownCommunitiesAndApplications() ;
+			
 		}
 		catch( QadiClientException qcex ) {
 			this.qadi = null ;
@@ -104,14 +110,15 @@ public class PolicyDecisionPoint implements AccessPolicy {
 	/* (non-Javadoc)
 	 * @see org.astrogrid.security.authorization.AccessPolicy#decide(org.astrogrid.security.SecurityGuard, java.util.Map)
 	 */
-	public Map decide( SecurityGuard securityGuard, Map request ) 
-	                   throws SecurityException,
-			                  GeneralSecurityException, 
-			                  Exception {
+	   public void decide(CEAOperation op, String executionID,
+	            String applicationID, SecurityGuard caller)
+	            throws GeneralSecurityException {
 		//
 		// Retrieve the user's runtime data (ie: name, community, the application to run, and it's job id).
 		// Incidentally, we check here for anonymous access (ie: no user, no community)...
-		retrieveRuntimeData( securityGuard, request ) ;
+	        job = executionID;
+	        application = applicationID;
+		retrieveRuntimeData( securityGuard ) ;
 		//
 		try {
 			//
@@ -142,25 +149,23 @@ public class PolicyDecisionPoint implements AccessPolicy {
 				throw new GeneralSecurityException( 
 						application + " exceeds your authorised level of resource usage." ) ;
 			}
-			return null;
-		}
+			return ;
+		} catch (QadiClientException e) {
+            throw new GeneralSecurityException("problem communicating with policy server", e);
+        }
 		finally {
 //			cleanup() ;
 		}
 		
 	}
 	
-	private void retrieveRuntimeData( SecurityGuard securityGuard, Map request ) {	
+	private void retrieveRuntimeData( SecurityGuard securityGuard) {	
 		this.securityGuard = securityGuard ;
-		this.request = (Map<String,String>)request ;
-		application = this.request.get( "application" ) ;
 		//
 		// If the application name is its ivorn, just use the name.
 		if( application.contains( "://" ) ) {
 			application = application.substring( application.lastIndexOf( "/" )+1 ) ;
 		}
-
-		job = (String)request.get( "executionId" ) ; 
 
 		//
 		// Check for anonymous access...
@@ -289,4 +294,5 @@ public class PolicyDecisionPoint implements AccessPolicy {
 		return Boolean.valueOf( b ).booleanValue() ;
 	}
 
+ 
 }

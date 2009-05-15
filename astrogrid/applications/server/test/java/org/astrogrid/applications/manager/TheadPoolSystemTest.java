@@ -1,4 +1,4 @@
-/*$Id: TheadPoolSystemTest.java,v 1.6 2009/05/11 10:50:45 pah Exp $
+/*$Id: TheadPoolSystemTest.java,v 1.7 2009/05/15 22:51:20 pah Exp $
  * Created on 14-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,8 +18,8 @@ import net.ivoa.uws.ExecutionPhase;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
+import org.astrogrid.applications.authorization.NullPolicyDecisionPoint;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
-import org.astrogrid.applications.manager.agast.NullPolicyDecisionPoint;
 import org.junit.Test;
 
 /** same as the existing system test, but using the thread pool execution controller.
@@ -51,7 +51,7 @@ public class TheadPoolSystemTest extends SystemTest {
 	    id[i] = controller.init(tool, "job"+i, secGuard);
 	}
 	for (int i = 0; i < id.length; i++) {
-	  boolean ok = controller.execute(id[i]);
+	  boolean ok = controller.execute(id[i], secGuard);
 	  assertTrue("job did not start", ok);
 	}
 	assertEquals("first job should be executing by now - might just be a timing issue - rerun test", Status.RUNNING, history.getApplicationFromCurrentSet(id[0]).getStatus());
@@ -75,8 +75,8 @@ public class TheadPoolSystemTest extends SystemTest {
     @Test
     public void testAbort() throws CeaException, InterruptedException {
 	String id = controller.init(tool, "abort1", secGuard );
-	controller.execute(id);
-	boolean abort = controller.abort(id);
+	controller.execute(id, secGuard);
+	boolean abort = controller.abort(id, secGuard);
 	assertTrue("unsuccessful abort", abort);
     }
     
@@ -113,7 +113,7 @@ public class TheadPoolSystemTest extends SystemTest {
 	threadpoolController = new ThreadPoolExecutionController(lib,history,policy, pool, new NullPolicyDecisionPoint());
         controller = threadpoolController;
 	String id = controller.init(tool, "abort1", secGuard );
-	controller.execute(id);
+	controller.execute(id, secGuard);
 	Thread.sleep(6000); // wait long enough for the abort to happen;
 	assertTrue("application should not be in current set", !history.isApplicationInCurrentSet(id));
 	ExecutionSummaryType eh = history.getApplicationFromArchive(id);
@@ -126,6 +126,13 @@ public class TheadPoolSystemTest extends SystemTest {
 
 /* 
 $Log: TheadPoolSystemTest.java,v $
+Revision 1.7  2009/05/15 22:51:20  pah
+ASSIGNED - bug 2911: improve authz configuration
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+combined agast and old stuff
+refactored to a more specific CEA policy interface
+made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+
 Revision 1.6  2009/05/11 10:50:45  pah
 ASSIGNED - bug 2911: improve authz configuration
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911

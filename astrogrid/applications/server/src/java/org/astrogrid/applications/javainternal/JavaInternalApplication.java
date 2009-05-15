@@ -1,5 +1,5 @@
 /*
- * $Id: JavaInternalApplication.java,v 1.3 2008/09/13 09:51:06 pah Exp $
+ * $Id: JavaInternalApplication.java,v 1.4 2009/05/15 22:51:20 pah Exp $
  * 
  * Created on 21 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
+import org.astrogrid.security.SecurityGuard;
 
 public abstract class JavaInternalApplication extends AbstractApplication implements Runnable {
 
@@ -35,7 +36,7 @@ public abstract class JavaInternalApplication extends AbstractApplication implem
        * containing object as the execution task: i.e. the class containing this
        * method must implement Runnable.
        * @todo bug here - we assume our parameters are in the correct order to pass to the java method. should sort them into correct order first.
-       * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
+       * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor, SecurityGuard)
        */
     @Override
     public FutureTask<String> createExecutionTask() throws CeaException {
@@ -59,6 +60,13 @@ public abstract class JavaInternalApplication extends AbstractApplication implem
 
 /*
  * $Log: JavaInternalApplication.java,v $
+ * Revision 1.4  2009/05/15 22:51:20  pah
+ * ASSIGNED - bug 2911: improve authz configuration
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+ * combined agast and old stuff
+ * refactored to a more specific CEA policy interface
+ * made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+ *
  * Revision 1.3  2008/09/13 09:51:06  pah
  * code cleanup
  *

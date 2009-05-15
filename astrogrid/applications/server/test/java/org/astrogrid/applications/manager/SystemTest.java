@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.17 2009/05/11 10:50:44 pah Exp $
+/*$Id: SystemTest.java,v 1.18 2009/05/15 22:51:19 pah Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,8 @@ import java.net.URI;
 import net.ivoa.uws.ExecutionPhase;
 
 import org.astrogrid.applications.Application;
+import org.astrogrid.applications.authorization.AuthorizationPolicy;
+import org.astrogrid.applications.authorization.NullPolicyDecisionPoint;
 import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
@@ -30,7 +32,6 @@ import org.astrogrid.applications.description.execution.MessageType;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.environment.DefaultExecutionEnvRetriever;
 import org.astrogrid.applications.javainternal.BuiltInApplicationDescriptionTest;
-import org.astrogrid.applications.manager.agast.NullPolicyDecisionPoint;
 import org.astrogrid.applications.test.MockMonitor;
 import org.astrogrid.jes.delegate.Delegate;
 import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
@@ -48,7 +49,8 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
         super.setUp();
         controller = new DefaultExecutionController(lib,history, new DefaultExecutionPolicy(), new NullPolicyDecisionPoint());
         ApplicationEnvironmentRetriver executionRetriever = new DefaultExecutionEnvRetriever(history, conf);
-        querier = new DefaultQueryService(history, executionRetriever);
+        AuthorizationPolicy policy = new NullPolicyDecisionPoint();
+        querier = new DefaultQueryService(history, executionRetriever, policy);
         
         // construct the tool object
         ApplicationDefinition sum = lib.getDescription("ivo://org.astrogrid.unregistered/default");
@@ -70,24 +72,24 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
     //    querier.registerResultsListener(id,testURI);
         
         // do a bit of querying
-        MessageType message = querier.queryExecutionStatus(id);
+        MessageType message = querier.queryExecutionStatus(id, secGuard);
         assertNotNull(message);
         assertEquals(ExecutionPhase.PENDING,message.getPhase());
-        ExecutionSummaryType summary = querier.getSummary(id);
+        ExecutionSummaryType summary = querier.getSummary(id, secGuard);
         assertEquals(ExecutionPhase.PENDING,summary.getPhase());
-        org.astrogrid.applications.description.execution.ResultListType results = querier.getResults(id);
+        org.astrogrid.applications.description.execution.ResultListType results = querier.getResults(id, secGuard);
         assertNotNull(results);
         assertEquals(0,results.getResult().size()); // nothing been computed yet.
         // set the thing running.
-        assertTrue(controller.execute(id));
+        assertTrue(controller.execute(id, secGuard));
         monitor.waitFor(20);
         assertTrue(monitor.sawExit);
-        message = querier.queryExecutionStatus(id);
+        message = querier.queryExecutionStatus(id, secGuard);
         assertNotNull(message);        
         assertEquals(ExecutionPhase.COMPLETED, message.getPhase());
-        summary =  querier.getSummary(id);
+        summary =  querier.getSummary(id, secGuard);
         assertEquals(ExecutionPhase.COMPLETED,summary.getPhase());
-         results = querier.getResults(id);
+         results = querier.getResults(id, secGuard);
         assertNotNull(results);
         assertEquals(1,results.getResult().size());
         ParameterValue r1 = results.getResult().get(1);//todo or 0
@@ -102,13 +104,13 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
     
     public void testAbortBeforeExecute() throws Exception {
         String id = controller.init(tool,"jobStep", secGuard);
-        controller.abort(id); // don't care if we can't abort, just as long as it doesn't throw.
+        controller.abort(id, secGuard); // don't care if we can't abort, just as long as it doesn't throw.
     }
     public void testAbortAfterExecute() throws Exception {
 
         String id = controller.init(tool,"jobStep", secGuard);
-        controller.execute(id);
-        controller.abort(id); // don't care if we can't abort, just as long as it doesn't throw.
+        controller.execute(id, secGuard);
+        controller.abort(id, secGuard); // don't care if we can't abort, just as long as it doesn't throw.
         
     }
 
@@ -136,6 +138,13 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.18  2009/05/15 22:51:19  pah
+ASSIGNED - bug 2911: improve authz configuration
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+combined agast and old stuff
+refactored to a more specific CEA policy interface
+made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+
 Revision 1.17  2009/05/11 10:50:44  pah
 ASSIGNED - bug 2911: improve authz configuration
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911

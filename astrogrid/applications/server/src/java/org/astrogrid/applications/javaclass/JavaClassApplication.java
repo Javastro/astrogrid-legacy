@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.11 2009/04/04 20:41:54 pah Exp $
+/*$Id: JavaClassApplication.java,v 1.12 2009/05/15 22:51:20 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
+import org.astrogrid.security.SecurityGuard;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,7 +59,7 @@ public class JavaClassApplication extends AbstractApplication {
     /** Starts the application executing.
      * standard pattern - processes all input parameters, then starts a background thread to perform the execution itself.
      * @todo bug here - we assume our parameters are in the correct order to pass to the java method. should sort them into correct order first.
-     * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
+     * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor, SecurityGuard)
      */
     @Override
     public FutureTask<String> createExecutionTask() throws CeaException {
@@ -131,6 +132,13 @@ public class JavaClassApplication extends AbstractApplication {
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.12  2009/05/15 22:51:20  pah
+ASSIGNED - bug 2911: improve authz configuration
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+combined agast and old stuff
+refactored to a more specific CEA policy interface
+made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+
 Revision 1.11  2009/04/04 20:41:54  pah
 ASSIGNED - bug 2113: better configuration for java CEC
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2113

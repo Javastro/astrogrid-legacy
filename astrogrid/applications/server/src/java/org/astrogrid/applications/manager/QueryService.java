@@ -1,4 +1,4 @@
-/*$Id: QueryService.java,v 1.6 2008/09/03 14:18:56 pah Exp $
+/*$Id: QueryService.java,v 1.7 2009/05/15 22:51:19 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,11 @@
 package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.authorization.AuthorizationPolicy;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.MessageType;
 import org.astrogrid.applications.description.execution.ResultListType;
+import org.astrogrid.security.SecurityGuard;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +23,14 @@ import java.net.URI;
 
 /** Defines a component used to query status of applications, access results, etc. 
  * This is primarily the interface that external queries about progress are made.
+ * This interface contains {@link SecurityGuard}s in some of the methods - the implementations are expected to do something with this information, - i.e. implement policy decision points using an {@link AuthorizationPolicy}.
+  
+  @TODO would be better to do the authentication stuff with aspect oriented programming.
+  @TODO make sure all methods covered by security.
+  @TODO make sure that this is actually used in UWS facing parts.
+
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 15 May 2009
  *
  */
 public interface QueryService {
@@ -48,22 +57,25 @@ public interface QueryService {
     // direct query methods
     /** query the status of a running application 
      * @param executionId the (cea-assigned) id of the application to query.
+     * @param secGuard TODO
      * @return a message containing information about the status of the application.
      * @throws CeaException if owt goes wrong.*/
-    public MessageType queryExecutionStatus(String executionId) throws CeaException;
+    public MessageType queryExecutionStatus(String executionId, SecurityGuard secGuard) throws CeaException;
 
      /** get results from an application - list will be empty / semi-blank if the application hasn't finished producing results yet 
      * @param executionId the (cea-assigned) id of the application to query.
+     * @param secGuard TODO
      * @return a list of resuls.
      * @throws CeaException*/     
-     public ResultListType getResults(String executionId) throws CeaException;
+     public ResultListType getResults(String executionId, SecurityGuard secGuard) throws CeaException;
     
      /** get summary of an application execution 
      * @param executionId the (cea-assigned) id of the application to query.
+     * @param secGuard TODO
      * @return an executioin summary for this application.
      * @throws CeaException*/
      
-     public ExecutionSummaryType getSummary(String executionId) throws CeaException;
+     public ExecutionSummaryType getSummary(String executionId, SecurityGuard secGuard) throws CeaException;
     /**
      * Return a log file. This really only applies to the commandline case.
      * @TODO think of more general way of expressing this - or refactor into sub interface.
@@ -78,6 +90,13 @@ public interface QueryService {
 
 /* 
 $Log: QueryService.java,v $
+Revision 1.7  2009/05/15 22:51:19  pah
+ASSIGNED - bug 2911: improve authz configuration
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+combined agast and old stuff
+refactored to a more specific CEA policy interface
+made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+
 Revision 1.6  2008/09/03 14:18:56  pah
 result of merge of pah_cea_1611 branch
 

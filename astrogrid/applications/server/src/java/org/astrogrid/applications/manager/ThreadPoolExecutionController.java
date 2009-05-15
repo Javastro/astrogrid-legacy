@@ -1,4 +1,4 @@
-/*$Id: ThreadPoolExecutionController.java,v 1.6 2009/05/05 19:25:27 pah Exp $
+/*$Id: ThreadPoolExecutionController.java,v 1.7 2009/05/15 22:51:19 pah Exp $
  * Created on 14-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import junit.framework.Test;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.AbstractApplication.ApplicationTask;
+import org.astrogrid.applications.authorization.AuthorizationPolicy;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.security.authorization.AccessPolicy;
@@ -47,7 +48,7 @@ public class ThreadPoolExecutionController extends DefaultExecutionController {
     		                            , ExecutionHistory executionHistory
     		                            , ExecutionPolicy policy
     		                            , ThreadPoolExecutor executor
-    		                            , AccessPolicy authorizationPolicy ) {
+    		                            , AuthorizationPolicy authorizationPolicy ) {
         super(library, executionHistory, policy, authorizationPolicy );
         this.executor = executor;
         
@@ -140,6 +141,13 @@ public class ThreadPoolExecutionController extends DefaultExecutionController {
 
 /* 
 $Log: ThreadPoolExecutionController.java,v $
+Revision 1.7  2009/05/15 22:51:19  pah
+ASSIGNED - bug 2911: improve authz configuration
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911
+combined agast and old stuff
+refactored to a more specific CEA policy interface
+made sure that there are decision points nearly everywhere necessary  - still needed on the saved history
+
 Revision 1.6  2009/05/05 19:25:27  pah
 result of merge with 2882 - Jeffs AGAST stuff
 
