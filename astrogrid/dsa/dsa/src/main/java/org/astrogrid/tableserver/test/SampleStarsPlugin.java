@@ -1,10 +1,12 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.1 2009/05/13 13:20:53 gtr Exp $
+ * $Id: SampleStarsPlugin.java,v 1.2 2009/05/15 10:54:22 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.tableserver.test;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -13,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.astrogrid.cfg.ConfigReader;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.tableserver.jdbc.JdbcConnections;
@@ -74,15 +75,15 @@ public class SampleStarsPlugin extends JdbcPlugin
       //
       ConfigFactory.getCommonConfig().setProperty(
           JdbcConnections.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver");
-      //in memory db - doesn't seem to persist between calls...
-      //ConfigFactory.getCommonConfig().setProperty(
-      //       JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:."); 
-      
-      // This creates db on disk
-      // Need "shutdown=true" to force the DB to shut down when no 
-      // active connections exist (required from v1.7.2 onwards) 
+    //in memory db - doesn't seem to persist between calls...
+    //ConfigFactory.getCommonConfig().setProperty(
+    //       JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:.");
+    // This creates db on disk
+    // Need "shutdown=true" to force the DB to shut down when no
+    // active connections exist (required from v1.7.2 onwards)
+      new File("target").mkdir();
       ConfigFactory.getCommonConfig().setProperty(
-          JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:dummydb;shutdown=true"); 
+          JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:target/dummydb;shutdown=true");
       ConfigFactory.getCommonConfig().setProperty(
           JdbcConnections.JDBC_USER_KEY, "sa");
       ConfigFactory.getCommonConfig().setProperty(
