@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
-  <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
-    <name>Astrogrid</name>
-    <src>http://www.astrogrid.org/images/AGlogo.png</src>
-    <href>http://www.astrogrid.org/</href>
-  </bannerRight>
-  <version position="left"/>
-  
+   
   <body>
-    <links>
-      <item name="Astrogrid" href="http://www.astrogrid.org/" />
-      <item name="IVOA" href="http://www.ivoa.net/"/>
-      <item name="Deploying" href="http://deployer.astrogrid.org"/>
-      <item name="${astrogrid_release} Home" href="http://software.astrgrid.org/doc/${astrogrid_release}/index.html"/>
-      <item name="Software Home" href="http://software.astrgrid.org/"/>
-    </links>
-
+ <breadcrumbs>
+   <item  name="CEA CEC" href="${astrogrid_doc_URL_root}/p/cea/${project.version}/cec"/>
+  </breadcrumbs>
+ 
     <menu name="Administrator Quickstart">
        <item name="Overview" href="index.html"/>
        <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-cec-${project.version}.war"/>
