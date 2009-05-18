@@ -71,18 +71,9 @@
         +-->
     <dependencies>
 
-        <dependency>
-            <id>axis</id>
-            <version>1.1</version>
-        </dependency>
         
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-common</artifactId>
-	        <version>${astrogrid.common.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
+
+       <!-- Removing trying to straigten up these depends
     	
             <dependency>
                 <groupId>exist</groupId>
@@ -149,10 +140,110 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
     	
+    	
         <dependency>
            <id>jaxrpc</id>
            <version>unknown</version>
            <jar>jaxrpc.jar</jar>
+        </dependency>
+-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-common</artifactId>
+	        <version>${astrogrid.common.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+
+        <dependency>
+            <id>axis</id>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>xmlrpc</groupId>
+            <artifactId>xmlrpc</artifactId>
+	        <version>1.2-patched</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+
+        <dependency>
+            <groupId>exist</groupId>
+            <artifactId>exist</artifactId>
+        	 <version>1.1.1-newcore</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+	
+    	<dependency>
+        	<groupId>exist</groupId>
+	        <artifactId>exist-optional</artifactId>
+    		 <version>1.1.1-newcore</version>
+        	<type>jar</type>
+	        <url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>	        
+    	</dependency>
+
+    	<dependency>
+        	<groupId>exist</groupId>
+	        <artifactId>exist-modules</artifactId>
+    		 <version>1.1.1-newcore</version>
+        	<type>jar</type>
+	        <url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>	        
+    	</dependency>
+    	
+        	<dependency>
+            	<groupId>exist</groupId>
+    	        <artifactId>libreadline</artifactId>
+        	    <version>java-20030725</version>
+            	<type>jar</type>
+    	        <url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>    	        
+        	</dependency>
+    	
+    	
+    	<dependency>
+        	<groupId>jedit</groupId>
+	        <artifactId>jedit-syntax</artifactId>
+    	    <version>0.1-20031129</version>
+        	<type>jar</type>
+	        <url>http://www.astrogrid.org/</url>
+    	</dependency>
+    	
+        	<dependency>
+            	<groupId>jgroups</groupId>
+    	        <artifactId>jgroups</artifactId>
+        	    <version>2.2.6</version>
+            	<type>jar</type>
+    	        <url>http://www.astrogrid.org/</url>
+        	</dependency>
+
+<dependency>
+            	<groupId>xmldb-api</groupId>
+    	        <artifactId>xmldb</artifactId>
+    	        <type>jar</type>
+        		<version>20040708</version>
+            	<url>http://www.astrogrid.org/</url>
+    	    </dependency>   
+    	    
+        <dependency>
+           <id>jaxrpc</id>
+           <version>05102005</version>
+           <type>jar</type>
         </dependency>
 
         <dependency>
