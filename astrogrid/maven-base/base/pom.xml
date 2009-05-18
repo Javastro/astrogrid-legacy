@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-   <!-- $Id: pom.xml,v 1.7 2009/05/12 13:41:21 pah Exp $ -->
+   <!-- $Id: pom.xml,v 1.8 2009/05/18 16:54:29 pah Exp $ -->
    <!--
-      this is an unofficial maven 2 pom to make my maven2 builds easier
+           This is the official maven 2 base pom - use as a parent pom in components
       pah
    -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -18,18 +18,20 @@
       <artifactId>astrogrid-versions</artifactId>
       <version>2009.1-SNAPSHOT</version>
    </parent>
-   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
-    <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url>
-
-   	<scm>
+   <!--
+      this is the desired layout of the site and - will have to be
+      repeated in the projects unfortunately until fixes to
+      http://jira.codehaus.org/browse/MNG-2915 are available
+   -->
+   <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url>
+   <scm>
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/${astrogrid_name}/</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid_name}/</developerConnection>
       <url>http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid_name}/</url>
    </scm>
-   
    <build>
-   <defaultGoal>install</defaultGoal>
-   <sourceDirectory>src/java</sourceDirectory>
+      <defaultGoal>install</defaultGoal>
+      <sourceDirectory>src/java</sourceDirectory>
       <testSourceDirectory>test/java</testSourceDirectory>
       <resources>
          <resource>
@@ -71,14 +73,13 @@
                <verbose>false</verbose>
             </configuration>
          </plugin>
-               <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-          <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
-         
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <configuration>
+               <encoding>UTF-8</encoding>
+            </configuration>
+         </plugin>
          <plugin>
             <artifactId>maven-war-plugin</artifactId>
             <configuration>
@@ -114,9 +115,9 @@
             </executions>
          </plugin>
          <plugin>
-         	<groupId>org.apache.maven.plugins</groupId>
-         	<artifactId>maven-site-plugin</artifactId>
-         	<version>2.0</version>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>2.0</version>
          </plugin>
          <!--
             need to create a tomcat config first (as in instructions for
@@ -143,23 +144,23 @@
       </plugins>
    </build>
    <repositories>
-   	<repository>
-   		<id>agMaven2</id>
-   		<name>Astrogrid Maven 2 repository</name>
-   		<url>http://www.astrogrid.org/maven2</url>
-   		<snapshots>
-   			<enabled>false</enabled>
-   		</snapshots>
-   	</repository>
-   	<repository> <!-- this should be retired once we have migrated fully to maven 2 -->
-   		<id>agMaven1</id>
-   		<name>Astrogrid Maven1 repository</name>
-   		<url>http://www.astrogrid.org/maven/onlyastrogrid/</url>
-   		<layout>legacy</layout>
+      <repository>
+         <id>agMaven2</id>
+         <name>Astrogrid Maven 2 repository</name>
+         <url>http://www.astrogrid.org/maven2</url>
          <snapshots>
             <enabled>false</enabled>
          </snapshots>
-   	</repository>
+      </repository>
+      <repository> <!-- this should be retired once we have migrated fully to maven 2 -->
+         <id>agMaven1</id>
+         <name>Astrogrid Maven1 repository</name>
+         <url>http://www.astrogrid.org/maven/onlyastrogrid/</url>
+         <layout>legacy</layout>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
    </repositories>
    <dependencies>
       <dependency>
@@ -190,17 +191,7 @@
         
       </plugin>
       
-       <plugin>
-       	<groupId>org.apache.maven.plugins</groupId>
-       	<artifactId>maven-changelog-plugin</artifactId>
-         <version>2.1</version><!-- this version avoids http://jira.codehaus.org/browse/MCHANGELOG-56 - was not automatically being picked up for me...-->
-         <configuration>
-          <type>range</type>
-          <range>30</range>
-          <connectionType>developerConnection</connectionType>           
-         </configuration>
-       </plugin>
-<plugin>
+ <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
             <!-- reintroduce later perhaps
@@ -243,7 +234,7 @@
        <plugin>
             <artifactId>maven-checkstyle-plugin</artifactId>
             <configuration>
-               <configLocation>
+               <configLocation> <!-- TODO probably nicer to refer to fixed url - but where-->
                   ${maven.base.dir}/checkstyle.xml
                </configLocation>
             </configuration>
@@ -285,6 +276,24 @@
             <astrogrid.server>software.astrogrid.org</astrogrid.server>
             <maven.base.dir>/this/needs/to/be set to directory containing this pom in your settings.xml</maven.base.dir>
          </properties>
+      </profile>
+      <profile>
+        <id>fullsite</id>
+        <activation><activeByDefault>false</activeByDefault></activation>
+      <reporting>
+      <plugins>
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-changelog-plugin</artifactId>
+         <version>2.1</version><!-- this version avoids http://jira.codehaus.org/browse/MCHANGELOG-56 - was not automatically being picked up for me...-->
+         <configuration>
+          <type>range</type>
+          <range>30</range>
+          <connectionType>developerConnection</connectionType>           
+         </configuration>
+       </plugin>
+       </plugins>
+        </reporting>
       </profile>
       
    </profiles>
