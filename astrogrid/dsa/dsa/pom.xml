@@ -232,7 +232,7 @@
     </dependency>
 
     <dependency>
-      <groupId>gnu</groupId>
+      <groupId>gnu.jel</groupId>
       <artifactId>jel</artifactId>
       <version>0.9.11</version>
     </dependency>
