@@ -70,7 +70,7 @@
 <bean id="ExecutionPolicy" class="org.astrogrid.applications.manager.ConfigurableExecutionPolicy">
 <property name="killPeriod" value="3600" /> <!-- 1 hr -->
 <property name="maxRunTime" value="86400" /> <!-- 1 day -->  
-<property name="defaultLifetime" value="300" /> <!-- 100 days -->
+<property name="defaultLifetime" value="864000" /> <!-- 100 days -->
 <property name="destroyPeriod" value="600" /> <!-- 1 hr -->
 <property name="maxConcurrent" value="4"/>
 </bean>
