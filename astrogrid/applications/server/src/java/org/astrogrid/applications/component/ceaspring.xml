@@ -75,8 +75,8 @@
 </constructor-arg>
 </bean>
 
-<!-- AGAST Policy Decision Point, uses the QADI service -->
-<bean id="AccessPolicy" class="org.astrogrid.applications.authorization.NullPolicyDecisionPoint">
+<!-- A passall AuthorizationPolicy - override this if necessary -->
+<bean id="AuthorizationPolicy" class="org.astrogrid.applications.authorization.NullPolicyDecisionPoint">
 </bean>
 
 </beans>
