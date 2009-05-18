@@ -1,5 +1,5 @@
 /*
- * $Id: VosProtocol.java,v 1.3 2008/09/15 19:26:18 pah Exp $
+ * $Id: VosProtocol.java,v 1.4 2009/05/18 09:19:47 pah Exp $
  * 
  * Created on 3 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -47,32 +47,43 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
     
     public ExternalValue createIndirectValue(final URI reference, final SecurityGuard secGuard)
 	    throws InaccessibleExternalValueException {
-       	return new ExternalValue(){
-            AGVOSpaceDelegate delegate = resolver.resolve(secGuard);
-          	 
-	    public InputStream read() throws InaccessibleExternalValueException {
-		try {
-		    return  delegate.read(reference);
-		} catch (Exception e) { 
-		   throw new InaccessibleExternalValueException("Error communicating with VOSpace", e);
-		} 
-		
-	    }
-
-	    public OutputStream write()
-		    throws InaccessibleExternalValueException {
-		try {
-		    return delegate.write(reference);
-		} catch (Exception e) {
-		    throw new InaccessibleExternalValueException("Error communicating with VOSpace", e);
-		}
-		
-		
-	    }
-       	    
-       	};
+       	return new VOSExternalValue(secGuard,reference);
    }
 
+    
+    private class VOSExternalValue implements ExternalValue {
+        private final AGVOSpaceDelegate delegate;
+        private final URI reference;
+        VOSExternalValue(SecurityGuard secGuard, URI ref){
+            this.reference = ref;
+            if(secGuard.isSignedOn()){
+                delegate = resolver.resolve(secGuard);
+            }
+            else {
+                delegate = resolver.resolve();
+            }
+        }
+        public InputStream read() throws InaccessibleExternalValueException {
+            try {
+                return  delegate.read(reference);
+            } catch (Exception e) { 
+               throw new InaccessibleExternalValueException("Error communicating with VOSpace", e);
+            } 
+            
+        }
+
+        public OutputStream write()
+                throws InaccessibleExternalValueException {
+            try {
+                return delegate.write(reference);
+            } catch (Exception e) {
+                throw new InaccessibleExternalValueException("Error communicating with VOSpace", e);
+            }
+            
+            
+        }
+        
+    }
     public String getProtocolName() {
 	return "vos";
     }
@@ -93,6 +104,12 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
 
 /*
  * $Log: VosProtocol.java,v $
+ * Revision 1.4  2009/05/18 09:19:47  pah
+ * NEW - bug 2903: update to latest VOSpace client
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2903
+ *
+ * only use the secure vospace delegate if the securityGuard is signed on.
+ *
  * Revision 1.3  2008/09/15 19:26:18  pah
  * remove unused imports
  *
