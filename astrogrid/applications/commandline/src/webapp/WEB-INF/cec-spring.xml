@@ -40,11 +40,12 @@
                   <entry key="registry.endpoint.url"  >
                      <jee:jndi-lookup resource-ref="true" jndi-name="org.astrogrid.registry.query.endpoint" expected-type="java.lang.String" />                      
                   </entry>
+                  <!--  for AGAST
                   <entry key="qadi.endpoint.url" > 
                      <jee:jndi-lookup resource-ref="true"  
                                       jndi-name="org.astrogrid.qadi.endpoint" 
                                       expected-type="java.lang.String" /> 
-                  </entry>
+                  </entry>  -->
                 </map>
             </constructor-arg>
          </bean>
@@ -73,6 +74,13 @@
 <property name="destroyPeriod" value="600" /> <!-- 1 hr -->
 <property name="maxConcurrent" value="4"/>
 </bean>
+
+<!-- Authorization policy - note that the bean must be called AuthorizationPolicy
+this policy when uncommented will make the CEA server only respond to authenticated requests, and only the owner of a job is able to steer that particular job.
+<bean id="AuthorizationPolicy" class="org.astrogrid.applications.authorization.CeaAuthenticatedAccessPolicy">
+</bean>
+
+-->
 
 <bean id="ApplicationDescriptionLibrary" class="org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary" autowire="no" >
 <!-- this bean gathers together all of the different types of application description library-->
