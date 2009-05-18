@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.2 2009/05/08 16:38:06 pah Exp $ --><!--
+<!-- $Id: pom.xml,v 1.3 2009/05/18 20:58:13 pah Exp $ --><!--
       This is the pom for generating the overall AG Software site documentation
    --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
@@ -19,12 +19,18 @@
       <module>applications</module> 
       <module>common</module>
       <module>contracts</module>
+      <module>ivoa-objects</module>
       <module>security</module>
       <module>samp</module>
       <module>community</module>
-      <module>workflow-objects</module>
+      <module>vospace/delegate</module>
+      <!-- <module>workflow-objects</module> do this manually because it has 1.4 code and is deprecated anyway -->
    <!--   <module>registry</module> 
+<<<<<<< pom.xml
+      <module>pal</module>
+=======
        <module>pal</module>
+>>>>>>> 1.2
    
     -->   
 	
@@ -82,7 +88,7 @@
       <plugin>
        <groupId>org.apache.maven.plugins</groupId>
        <artifactId>maven-site-plugin</artifactId>
-       <version>2.1</version>
+       <version>2.0</version>
         <configuration>
          <siteDirectory>maven-site</siteDirectory>
        </configuration>
@@ -103,6 +109,7 @@
        <plugin>
         <groupId>statcvs</groupId>
         <artifactId>maven-statcvs-plugin</artifactId>
+        <version>3.0</version>
       </plugin>
        
        
