@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.3 2008/11/04 14:01:43 pah Exp $ -->
+<!-- $Id: pom.xml,v 1.4 2009/05/18 14:46:13 pah Exp $ -->
 	<!--
 		this is an unofficial maven 2 pom to make my maven2 builds easier pah
 	-->
@@ -7,8 +7,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.astrogrid</groupId>
-	<artifactId>astrogrid-cea-base</artifactId>
-	<name>CEA Master POM</name>
+	<artifactId>astrogrid-cea-site</artifactId>
+	<name>Common Execution Architecture (CEA)</name>
 	<version>2009.1-SNAPSHOT</version>
       <parent>
       <artifactId>astrogrid-base</artifactId>
@@ -23,7 +23,7 @@
      <module>common</module>
 	<module>server</module>
 	</modules> 
-    <url>http://software.astrogrid.org/doc/${astrogrid_release}/cea</url> 
+    <url>${astrogrid_doc_URL_root}/p/cea/${project.version}</url> 
 	<description>The base project that contains other projects that make
 		up the Common Execution Architecture implementation. </description>
    <!-- do not really need the developers section -->
@@ -32,7 +32,7 @@
 			<name>Paul Harrison</name>
 			<id>pah</id>
 			<email>pah@jb.man.ac.uk</email>
-			<organization>ESO</organization>
+			<organization>JBCA, University of Manchester</organization>
 		</developer>
 		<developer>
 			<name>Guy Rixon</name>
@@ -54,7 +54,7 @@
        </developer>
 	</developers>
 	<properties>
-		<astrogrid.name>applications</astrogrid.name>
+		<astrogrid_name>cea</astrogrid_name>
 	</properties>
 	   <scm>
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/applications/</connection>
@@ -67,33 +67,15 @@
 		</plugins>
 	</build>
 	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changes-plugin</artifactId>
-				<configuration>
-					<issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
-        </configuration>
-        
-      </plugin>
-      
-       <plugin>
-       	<groupId>org.apache.maven.plugins</groupId>
-       	<artifactId>maven-changelog-plugin</artifactId>
-         <version>2.1</version><!-- this version avoids http://jira.codehaus.org/browse/MCHANGELOG-56 - was not automatically being picked up for me...-->
-         <configuration>
-          <type>range</type>
-          <range>30</range>
-          <connectionType>developerConnection</connectionType>           
-         </configuration>
-       </plugin>
-       <!-- 
-       <plugin>
-        <groupId>statcvs</groupId>
-        <artifactId>maven-statcvs-plugin</artifactId>
-      </plugin>
-       -->
-       
-      </plugins>
    </reporting>
+ <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+ 
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/cea/${project.version}</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+    
+ </distributionManagement>
 </project>

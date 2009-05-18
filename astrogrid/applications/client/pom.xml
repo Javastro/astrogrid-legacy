@@ -7,17 +7,17 @@
    <artifactId>astrogrid-cea-client</artifactId>
    <packaging>jar</packaging>
    <parent>
-      <artifactId>astrogrid-cea-base</artifactId>
+      <artifactId>astrogrid-cea-site</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>2009.1-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>
    </parent>
    <name>CEA Client</name>
    <version>2009.1-SNAPSHOT</version>
    <description>Client library for communicating with CEA services.</description>
    <properties>
-      <astrogrid.name>cea/client</astrogrid.name>
+      <astrogrid_name>client</astrogrid_name>
    </properties>
- <!--    <url>http://software.astrogrid.org/doc/${astrogrid_release}/cea/client</url>  --> 
    
    <build>
       <sourceDirectory>src/java</sourceDirectory>
@@ -98,24 +98,14 @@
          <version>2009.1-SNAPSHOT</version>
       </dependency>
    </dependencies>
-   <developers>
-      <developer>
-         <name>Guy Rixon</name>
-         <id>gtr</id>
-         <email>gtr@ast.cam.ac.uk</email>
-         <organization>University of Cambridge</organization>
-      </developer>
-      <developer>
-         <name>Noel Winstanley</name>
-         <id>nw</id>
-         <email>Noel.Winstanley@manchester.ac.uk</email>
-         <organization>University of Manchester</organization>
-      </developer>
-      <developer>
-         <name>Paul Harrison</name>
-         <id>pah</id>
-         <email>pah@jb.man.ac.uk</email>
-         <organization>University of Manchester</organization>
-      </developer>
-   </developers>
+   
+   <url>${astrogrid_doc_URL_root}/p/cea/${project.version}/client</url>  --> 
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/cea/${project.version}/client</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+ </distributionManagement>
 </project>
