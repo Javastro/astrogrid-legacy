@@ -179,15 +179,4 @@
     	<scope>test</scope>
     </dependency>
  </dependencies>
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-        <configuration>
-          <tags>@TODO</tags>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
 </project>
