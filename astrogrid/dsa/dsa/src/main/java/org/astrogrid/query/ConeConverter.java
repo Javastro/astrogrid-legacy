@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConverter.java,v 1.1 2009/05/13 13:20:37 gtr Exp $
+ * $Id: ConeConverter.java,v 1.2 2009/05/18 09:09:22 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -330,7 +330,7 @@ public class ConeConverter  {
     * Extracts the XML template file resources for use in constructing
     * conesearch queries.
     */
-   protected static String getConeTemplate(String filename) throws QueryException
+   public static String getConeTemplate(String filename) throws QueryException
    {
       InputStream templateIn = null;
       if ((filename == null) || (filename.trim().equals(""))) {
