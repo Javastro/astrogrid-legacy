@@ -99,7 +99,8 @@ function refresh()
    <%
 
 		QueryService qs =  pcontainer.getQueryService();
-		MessageType message = qs.queryExecutionStatus(executionId);
+	    SecurityGuard sec = UWSUtils.createSecurityGuard(request);
+		MessageType message = qs.queryExecutionStatus(executionId,sec);
 		ExecutionPhase phase = message.getPhase();
 		out.print(phase +"...");
 
