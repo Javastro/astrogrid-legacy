@@ -26,6 +26,17 @@
    </scm>
   
   <build>
+   <resources>
+         <resource>
+            <directory>${basedir}/src/java</directory>
+            <includes>
+               <include>**/*.properties</include>
+               <include>**/*.xml</include>
+               <include>**/*.xsl</include>
+                <include>**/*.dtd</include>
+            </includes>
+         </resource>
+      </resources>
  </build>
   <dependencies>
      <dependency>
