@@ -89,9 +89,9 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
 
 	
   <!-- a small servlet that will invoke the CommonExecutionController to make sure that it registers itself on statup -->
-  <servlet>
+  <servlet> <!-- deprecated -->
       <servlet-name>CommonExecutionControllerInitializer</servlet-name>
-      <servlet-class>org.astrogrid.applications.component.InitServlet</servlet-class>
+      <servlet-class>org.astrogrid.applications.uws.InitServlet</servlet-class>
       <load-on-startup>200</load-on-startup>	
   </servlet>
 
@@ -101,7 +101,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
    <load-on-startup>500</load-on-startup>    
   </servlet>
   
-    <servlet>
+    <servlet> <!-- deprecated -->
         <servlet-name>AbortionServlet</servlet-name>
         <servlet-class>org.astrogrid.applications.commandline.AbortionServlet</servlet-class>
     </servlet>
