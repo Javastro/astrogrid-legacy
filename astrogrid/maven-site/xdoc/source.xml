@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>Working with AstroGrid Source</title>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+    </properties>
+    <body>
+
+                <section name="Practices"><p>
+AstroGrid components must be buildable and executable on Windows and GNU/Linux platforms.   Eclipse is the recommended
+IDE.
+All code in CVS <em>must</em> be buildable by <a href="http://maven.apache.org">Maven</a>. It
+is strongly recommended that developers install a copy of Maven and build using it regularly.
+                </p></section>
+
+        <section name="Building AstroGrid with Maven">
+<p>  AstroGrid
+components can to be built using Maven via the normal goals
+These may be executed from the command line by typing <br/>
+<span style="font-family: monospace;">
+mvn {goal} </span><br/>
+while in the project's root directory.</p>
+<p>For example, to build the
+"common" library,</p>
+<ol>
+  <li>checkout astrogrid/common
+into (for example) working/common</li>
+  <li>checkout
+astrogrid/maven-base into working/maven-base</li>
+  <li><span style="font-family: monospace;">cd</span>
+to working/common</li>
+  <li>execute <span style="font-family: monospace;">maven
+astrogrid-install-snapshot</span></li>
+</ol>
+<p>Maven will build the
+appropriate jars and wars and place them in your local repository
+(typically under ~user/.m2/repository).</p>
+</section>
+<section name="The AstroGrid Custom Goals"><p>
+All AstroGrid components should implement the following goals. A simple
+example of how to do this may be found <a
+ href="http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject/maven.xml?rev=1.2&amp;content-type=text/vnd.viewcvs-markup">here.</a></p>
+
+<subsection name="Build artifacts">
+
+</subsection>
+
+<subsection name="Documentation">
+<p> <tt>astrogrid-build-site</tt>:
+generate documentation site<br/>
+<tt>astrogrid-deploy-site</tt>: generate documentation site and publish it on our webserver<br/>
+</p>
+</subsection>
+
+<subsection name="Cleanup">
+<p> <tt>astrogrid-clean</tt>: delete all
+local build products </p>
+</subsection>
+        </section>
+
+
+    </body>
+</document>

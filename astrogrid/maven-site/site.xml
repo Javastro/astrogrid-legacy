@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: site.xml,v 1.3 2009/05/06 23:22:14 pah Exp $ -->
+<!-- $Id: site.xml,v 1.4 2009/05/18 20:44:34 pah Exp $ -->
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
@@ -7,7 +7,7 @@
     <src>http://www.astrogrid.org/images/AGlogo.png</src>
     <href>http://www.astrogrid.org/</href>
   </bannerRight>
-   
+ <!-- PAH- it would be nice to get the individual component versions from the POM dependency management for these links - cannot see how to do that at moment, so have introduced variables in the top level POM for the versions -->
 <publishDate position="navigation-top" format="yyyy-MM-dd"/> 
 <version position="left"/>
  <!-- need to get a nicer powered by logo... -->
@@ -38,10 +38,10 @@
 	     <item name="Contracts" href="${astrogrid_doc_URL_root}/p/contracts/${astrogrid_contracts_version}/"/>
          <item name="Common" href="${astrogrid_doc_URL_root}/p/common/${astrogrid_common_version}/" />
          <item name="Security" href="${astrogrid_doc_URL_root}/p/security/${astrogrid_security_version}/"/>
-         <item name="AR" href="${astrogrid_doc_URL_root}/p/desktop/api"/>
+         <item name="AR" href="${astrogrid_doc_URL_root}/p/astro-runtime/${astrogrid_desktop_version}"/>
          <item name="SAMP" href="${astrogrid_doc_URL_root}/p/samp/"/>
          <item name="ADQL" href="${astrogrid_doc_URL_root}/p/adql"/>
-         <item name="IVOA Objects" href="${astrogrid_doc_URL_root}/p/ivoa-objects"/>
+         <item name="IVOA Objects" href="${astrogrid_doc_URL_root}/p/ivoa-objects/${astrogrid_release}"/>
     </menu>
     <menu name="Webservice clients">
     </menu>
@@ -66,5 +66,8 @@
        <item name="Nightly build" href="http://software.astrogrid.org/doc/HEAD"></item>
     </menu>
     <menu ref="reports"></menu>
+    <menu ref="Global Reports" href="global.html" collapse="true">
+       <item name="Javadoc" href="apidoc/"/>
+    </menu>
   </body>
 </project>
