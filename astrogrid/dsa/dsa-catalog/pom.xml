@@ -4,16 +4,22 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>dsa-catalog</artifactId>
   <packaging>war</packaging>
-  <version>2009.1.a01</version>
+  <version>2009.1.a02</version>
   <name>AstroGrid DSA/Catalog web-application</name>
   <url>http://maven.apache.org</url>
+
+  <parent>
+    <groupId>org.astrogrid</groupId>
+    <artifactId>astrogrid-base</artifactId>
+    <version>2009.1-SNAPSHOT</version>
+  </parent>
 
   <dependencies>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-dsa</artifactId>
-      <version>2009.1.a01</version>
+      <version>2009.1.a02</version>
     </dependency>
 
     <dependency>
@@ -22,10 +28,30 @@
       <version>2009.1.a01</version>
     </dependency>
 
+    <!-- Junk dependency: stops Maven POM inheritence breaking -->
     <dependency>
-      <groupId>junitee</groupId>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>2008.2</version>
+    </dependency>
+
+    <!-- Junk dependency: stops Maven POM inheritence breaking -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-contracts</artifactId>
+      <version>2008.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junitee</groupId>
       <artifactId>junitee</artifactId>
       <version>1.11</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
     </dependency>
 
     <dependency>
