@@ -1,4 +1,4 @@
-/*$Id: SampleJavaClassApplications.java,v 1.7 2009/04/04 20:41:54 pah Exp $
+/*$Id: SampleJavaClassApplications.java,v 1.8 2009/05/19 15:12:03 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.applications.service.v1.cea.CeaSecurityGuard;
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 3 Apr 2009 refactor to new behaviour with annotations.
  *
  */
-@CEAApplication(id="ivo://local.test/sampleJavaApp", description="an example of a java application", referenceURL="http://www.astrogrid.org/")
+@CEAApplication(id="ivo://org.astrogrid.test/sampleJavaApp", description="an example of a java application", referenceURL="http://www.astrogrid.org/")
 public class SampleJavaClassApplications {
     /**
      * Commons Logger for this class
@@ -79,6 +79,9 @@ public class SampleJavaClassApplications {
 
 /* 
 $Log: SampleJavaClassApplications.java,v $
+Revision 1.8  2009/05/19 15:12:03  pah
+change the identifier to be in the org.astrogrid.test authority
+
 Revision 1.7  2009/04/04 20:41:54  pah
 ASSIGNED - bug 2113: better configuration for java CEC
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2113
