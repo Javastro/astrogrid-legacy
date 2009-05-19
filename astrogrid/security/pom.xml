@@ -8,7 +8,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <packaging>jar</packaging>
-  <version>2009.1.a05</version>
+  <version>2009.1.a06</version>
 
   <parent>
     <groupId>org.astrogrid</groupId>
@@ -19,6 +19,7 @@
   <properties>
     <astrogrid_name>security</astrogrid_name>
   </properties>
+
   <dependencies>
 
     <dependency>
@@ -83,8 +84,8 @@
       <dependency>
         <groupId>tomcat</groupId>
         <artifactId>tomcat-util</artifactId>
-        <type>jar</type>
         <version>5.5.20</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
