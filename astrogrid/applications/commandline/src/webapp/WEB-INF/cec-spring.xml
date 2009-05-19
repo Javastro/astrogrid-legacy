@@ -93,9 +93,10 @@ this policy when uncommented will make the CEA server only respond to authentica
   <bean class="org.astrogrid.applications.description.SimpleApplicationDescriptionLibrary">
     <property name="applications">
        <list>
+       <!-- 
          <bean class="org.astrogrid.applications.dal.stap.STAPApplicationDescription">
            <constructor-arg type="javax.sql.DataSource" index="1"><jee:jndi-lookup jndi-name="jdbc/STAP" resource-ref="true" expected-type="javax.sql.DataSource"></jee:jndi-lookup></constructor-arg>
-         </bean>
+         </bean> -->
          <!-- example java class application -->
          <bean class="org.astrogrid.applications.javaclass.JavaClassApplicationDescription">
             <constructor-arg index="0">
