@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>dsa-catalog</artifactId>
   <packaging>war</packaging>
-  <version>2009.1.a03</version>
+  <version>2009.1.a04</version>
   <name>AstroGrid DSA/Catalog web-application</name>
   <url>http://maven.apache.org</url>
 
@@ -19,13 +19,13 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-dsa</artifactId>
-      <version>2009.1.a02</version>
+      <version>2009.1.a03</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-security</artifactId>
-      <version>2009.1.a01</version>
+      <version>2009.1.a06</version>
     </dependency>
 
     <!-- Junk dependency: stops Maven POM inheritence breaking -->
