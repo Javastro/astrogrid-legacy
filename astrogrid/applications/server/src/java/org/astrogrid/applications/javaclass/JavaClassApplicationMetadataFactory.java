@@ -1,5 +1,5 @@
 /*
- * $Id: JavaClassApplicationMetadataFactory.java,v 1.6 2009/04/04 20:41:54 pah Exp $
+ * $Id: JavaClassApplicationMetadataFactory.java,v 1.7 2009/05/19 15:10:24 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -83,6 +83,7 @@ public class JavaClassApplicationMetadataFactory {
             Content content = new Content();
             content.addSubject("???");//TODO get subject from somewhere
             content.setDescription(ann.description());
+            content.setReferenceURL(ann.referenceURL());
             ceaapp.setContent(content);
             // curation information assumed to be just the same as for the service.
             ceaapp.setCuration(sf.getCECDescription().getCuration());
@@ -203,6 +204,9 @@ public class JavaClassApplicationMetadataFactory {
 
 /*
  * $Log: JavaClassApplicationMetadataFactory.java,v $
+ * Revision 1.7  2009/05/19 15:10:24  pah
+ * make sure that the referenceURL gets set
+ *
  * Revision 1.6  2009/04/04 20:41:54  pah
  * ASSIGNED - bug 2113: better configuration for java CEC
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2113
