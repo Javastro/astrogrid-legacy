@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.2 2009/05/15 16:28:23 gtr Exp $
+/*$Id: DatacenterApplication.java,v 1.3 2009/05/19 20:18:27 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 
 import java.net.URISyntaxException;
 import java.security.Principal;
+import java.security.cert.CertificateException;
 import javax.security.auth.x500.X500Principal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -538,18 +539,19 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    * Determines the results of authentication.
    * Checks for the results of authentication in CEA's cache; these include any
    * delegated credentials. If the caller is authenticated, copies the details 
-   * to DSA's cache and returns the authenticated principal; otherewise returns 
+   * to DSA's cache and returns the authenticated principal; otherwise returns 
    * a principal representing an anonymous caller.
    * 
    * @return The principal (never null, even for anonymous callers).
    */
-  private Principal getPrincipal() {
+  private Principal getPrincipal() throws CertificateException {
     SecurityGuard sg = CeaSecurityGuard.getInstanceFromContext();
     X500Principal p = (sg == null)? null : sg.getX500Principal();
     if (p == null) {
       return LoginAccount.ANONYMOUS;
     }
     else {
+      sg.loadDelegation();
       CredentialCache.put(p, sg);
       return p;
     }
@@ -570,7 +572,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       // If the error reporting fails, then there's nothing to do but log it and
       // go on.
       catch (Exception ex) {
-         this.logger.error("Failed to make an error report to the client: ", ex);
+         logger.error("Failed to make an error report to the client: ", ex);
       }
    }
 
@@ -620,6 +622,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    /** Implemented by calling abot on the querier object - so if the underlyng database back end supports abort, the cec does too
     * @see org.astrogrid.applications.Application#attemptAbort()
     */
+   @Override
    public boolean attemptAbort() {
       try {
          QuerierStatus stat = serv.abortQuery(acc,querierID);
@@ -700,6 +703,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    /** overridden, to return instances of datacenter parameter adapter.
     * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
     */
+   @Override
    protected ParameterAdapter instantiateAdapter(ParameterValue pval,
         ParameterDescription descr, ExternalValue indirectVal) {
       return new DatacenterParameterAdapter(pval, descr, indirectVal);
@@ -709,6 +713,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.3  2009/05/19 20:18:27  gtr
+ Delegations are now included in the cached credentials.
+
  Revision 1.2  2009/05/15 16:28:23  gtr
  I added the security wiring to the CEA interface. Authenticated calls to the CEC should now supply credentials for us in the call to VOSpace.
 
