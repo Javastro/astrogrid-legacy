@@ -1,0 +1,12 @@
+         --- 
+         Editing this site
+         --- 
+         Paul Harrison	
+         --- 
+         03-Oct-2008 
+         --- 
+
+How to change these documents
+	These documents are stored in the Astrogrid CVS repository under astrogrid/maven-site.  To add a document simply drop a simple html file or xdoc
+into this folder.
+	
