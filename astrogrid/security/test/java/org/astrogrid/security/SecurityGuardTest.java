@@ -4,6 +4,9 @@ package org.astrogrid.security;
 import java.io.File;
 import java.net.URI;
 import java.security.AccessControlException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
 import javax.security.auth.x500.X500Principal;
 import junit.framework.TestCase;
 import org.astrogrid.config.SimpleConfig;
@@ -215,11 +218,17 @@ public class SecurityGuardTest extends TestCase {
   }
 
   public void testIsSignedOn() throws Exception {
-    SecurityGuard sut = new SecurityGuard();
-    assertFalse(sut.isSignedOn());
-    sut.signOn("tester", "testing", 36000,
+    SecurityGuard sut1 = new SecurityGuard();
+    assertFalse(sut1.isSignedOn());
+    sut1.signOn("tester", "testing", 36000,
                 this.getClass().getResource("/tester.jks").toURI());
-    assertTrue(sut.isSignedOn());
+    assertTrue(sut1.isSignedOn());
+
+    SecurityGuard sut2 = new SecurityGuard();
+    assertFalse(sut2.isSignedOn());
+    sut2.getSubject().getPrincipals(X500Principal.class).add(new X500Principal("cn=foo"));
+    assertFalse(sut2.isSignedOn());
   }
+  
   
 }

@@ -227,9 +227,10 @@ public class SecurityGuard implements X509KeyManager {
    * @return true If the guard is correctly signed on.
    */
   public boolean isSignedOn() {
-    // Assume that any X500Principal in the guard results from
-    // a proper sign-on.
-    return (getX500Principal() != null);
+    return (getX500Principal() != null &&
+            getPrivateKey() != null &&
+            getCertificateChain() != null &&
+            getCertificateChain().length > 0);
   }
   
   /**
