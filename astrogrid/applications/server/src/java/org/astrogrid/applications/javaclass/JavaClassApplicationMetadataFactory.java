@@ -1,5 +1,5 @@
 /*
- * $Id: JavaClassApplicationMetadataFactory.java,v 1.7 2009/05/19 15:10:24 pah Exp $
+ * $Id: JavaClassApplicationMetadataFactory.java,v 1.8 2009/05/19 15:11:31 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -66,6 +66,7 @@ public class JavaClassApplicationMetadataFactory {
      * 
      * @throws ServiceDescriptionException
      * @todo improve handling to parameter types
+     * @todo need unit test for annotation metadata generation
      * */
     protected final CeaApplication createMetadata(
             )
@@ -204,6 +205,9 @@ public class JavaClassApplicationMetadataFactory {
 
 /*
  * $Log: JavaClassApplicationMetadataFactory.java,v $
+ * Revision 1.8  2009/05/19 15:11:31  pah
+ * make sure that the referenceURL gets set
+ *
  * Revision 1.7  2009/05/19 15:10:24  pah
  * make sure that the referenceURL gets set
  *
