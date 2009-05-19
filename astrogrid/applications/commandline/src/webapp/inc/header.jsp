@@ -43,25 +43,32 @@ perhaps do this via spring -->
         <li class="none"><a href="<%=contextPath%>/doc/REFERENCE.jsp">Reference manual</a></li>
       </ul>
     </div>
-    <div id="menuLocal_controls_for_server">
-      <h5>Local controls for server</h5>
+    <div id="self tests">
+      <h5>Self tests</h5>
       <ul>
         <li class="none"><a href="<%=contextPath%>/happyaxis.jsp">Axis test</a></li>
         <li class="none"><a href="<%=contextPath%>/TestServlet?suite=org.astrogrid.applications.component.ContainerInstallationTestSuite">Installation test</a></li>
         <li class="none"><a href="<%=contextPath%>/fingerprint.jsp">Fingerprint</a></li>
-        <li class="none"><a href="<%=contextPath%>/uws/reg">Show registration documents</a></li>
+<!--
+        <li class="none"><a href="../admin/clean.jsp">Clean old run files</a></li>
+-->
+      </ul>
+    </div>
+    <div id="menuLocal_controls_for_server">
+      <h5>Configuration Control</h5>
+      <ul>
+        <li class="none"><a href="<%=contextPath%>/uws/reg">Manage Registrations</a></li>
         <li class="none"><a href="<%=contextPath%>/VOSI/capabilities">Show service capabilities</a></li>
         <li class="none"><a href="<%=contextPath%>/VOSI/availability">Show service availability</a></li>
 <!--  
         <li class="none"><a href="../admin/RegistrationInstructions.jsp">Register</a></li>
 -->
         <li class="none"><a href="<%=contextPath%>/admin/configuration-describe.jsp">Show current configuration</a></li>
+        <li class="none"><a href="<%=contextPath%>/servlet/AxisServlet">WSDL</a></li>
+        
         <li class="none"><a href="<%=contextPath%>/xforms/apptpl.xml">define application</a></li>
-<!--
-        <li class="none"><a href="../admin/clean.jsp">Clean old run files</a></li>
--->
       </ul>
-    </div>
+     </div>
     <div>
       <h5>Application Execution</h5>
       <ul>
