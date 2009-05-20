@@ -304,6 +304,12 @@ public class WsseSignature {
     
     // Parse the KeyInfo and recover the X.509 certificate-chain in the message.
     X509Certificate[] chain = this.getCredentialsFromMessage(info, element);
+    log.debug("Subjects from certificate chain read from message:");
+    for (int i = 0; i < chain.length; i ++) {
+      log.debug(String.format("%s signed by %s",
+                chain[i].getSubjectX500Principal(),
+                chain[i].getIssuerX500Principal()));
+    }
 
     // Check the signature using the certificate at the
     // head of the chain recovered from the security token.
