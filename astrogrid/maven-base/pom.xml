@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.14 2009/05/18 17:00:13 pah Exp $ -->
+<!-- $Id: pom.xml,v 1.15 2009/05/20 09:36:48 pah Exp $ -->
    <!--
       This pom is intended to contain the "version" information for the astrogrid (and other commonly used) components.
       In addition it contains the basic project information - however it *must not* contain any specific build information - this is contained in the
@@ -37,10 +37,7 @@
    <modules>
       <module>ws</module>
       <module>base</module>
-      <!--
-         <module>site-skin</module> site skin not any different from
-         default yet.
-      -->
+      <module>site-skin</module> 
    </modules>
    <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${astrogrid_release}</url>
    <issueManagement>
