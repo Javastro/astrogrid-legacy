@@ -1,27 +1,23 @@
-/*
- * $Id: SubmitCone.java,v 1.1 2009/05/13 13:20:32 gtr Exp $
- */
-
 package org.astrogrid.dataservice.service.cone;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.dataservice.metadata.queryable.SearchGroup;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
-import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnSpec;
+import org.astrogrid.security.authorization.AccessPolicy;
+import org.astrogrid.security.HttpsServiceSecurityGuard;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.webapp.DefaultServlet;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.dataservice.queriers.DatabaseAccessException;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.io.mime.MimeTypes;
 
 
@@ -32,13 +28,26 @@ import org.astrogrid.io.mime.MimeTypes;
  *
  * @author M Hill
  * @author K Andrews
+ * @author G Rixon
  */
 public class SubmitCone extends DefaultServlet {
    
    DataServer server = new DataServer();
- 
+
+   /**
+    * Handles an HTTP GET request.
+    * Returns a representation of a table query results. If the query fails,
+    * returns a VOTable as an error document.
+    *
+    * @param request The HTTP request.
+    * @param response The HTTP response.
+    * @throws IOException If cone search is not enabled.
+    * @throws IOException If the test database is needed and not available.
+    * @throws IOException If an error document cannot be sent.
+    */
+   @Override
    public void doGet(HttpServletRequest request,
-                     HttpServletResponse response) throws ServletException, IOException {
+                     HttpServletResponse response) throws IOException {
 
       // Initialise SampleStars plugin if required (may not be initialised
       // if admin has not run the self-tests)
@@ -49,7 +58,7 @@ public class SubmitCone extends DefaultServlet {
          SampleStarsPlugin.initialise();  // Just in case
       }
 
-      // Check that conesearch interface is not enabled
+      // Check that conesearch interface is enabled
       String coneEnabled = ConfigFactory.getCommonConfig().getString(
          "datacenter.implements.conesearch");
       if ( (coneEnabled == null) || 
@@ -60,6 +69,21 @@ public class SubmitCone extends DefaultServlet {
          doTypedError(request, response, 
            "Conesearch interface is disabled in DSA/catalog configuration", ioe);
          throw ioe;
+      }
+      
+      // Check authorization.
+      try {
+        HttpsServiceSecurityGuard sg = new HttpsServiceSecurityGuard();
+        sg.loadHttpsAuthentication(request);
+        String policyClassName =
+            SimpleConfig.getSingleton().getString("cone.search.access.policy");
+        Class policyClass = Class.forName(policyClassName);
+        sg.setAccessPolicy((AccessPolicy)policyClass.newInstance());
+        sg.decide(null);
+      }
+      catch (Exception e) {
+        doTypedError(request, response, "Access denied", e);
+        return;
       }
 
       // Extract the query parameters
@@ -174,7 +198,7 @@ public class SubmitCone extends DefaultServlet {
 
    protected void doTypedError(HttpServletRequest request, HttpServletResponse response, String title, Throwable th) throws IOException {
       String format = request.getParameter("Format");
-      if ( (format == null) || (format.trim() == "") ||
+      if ( (format == null) || (format.trim().length() == 0) ||
          (format.toLowerCase().equals("votable")) ) {
          try {
            response.setContentType(MimeTypes.VOTABLE);
