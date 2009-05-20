@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConverter.java,v 1.2 2009/05/18 09:09:22 gtr Exp $
+ * $Id: ConeConverter.java,v 1.3 2009/05/20 19:06:45 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -326,65 +326,28 @@ public class ConeConverter  {
       return adqlString;
    }
 
-   /** 
-    * Extracts the XML template file resources for use in constructing
-    * conesearch queries.
-    */
-   public static String getConeTemplate(String filename) throws QueryException
-   {
-      InputStream templateIn = null;
-      if ((filename == null) || (filename.trim().equals(""))) {
-         throw new QueryException(
-             "Null/empty name specified for test query to run");
-      }
-      //find specified sheet as resource of this class
-      templateIn = ConeConverter.class.getResourceAsStream(
-          "./" + filename);
-      String whereIsDoc = ConeConverter.class+" resource " +
-          "./" + filename;
-      //System.out.println("Trying to load test query as resource of class: " +whereIsDoc);
+  /**
+   * Extracts the XML template file resources for use in constructing
+   * conesearch queries.
+   */
+  public static String getConeTemplate(String filename) throws QueryException {
 
-      //if above doesn't work, try doing by hand for Tomcat ClassLoader
-      if (templateIn == null) {
-         // Extract the package name, turn it into a filesystem path by 
-         // replacing .'s with /'s, and append the path to the xslt.
-         // Hopefully this will mean tomcat can locate the file within
-         // the bundled jar file.  
-         String path = "java/" + 
-           ConeConverter.class.getPackage().getName().replace('.', '/')
-               + "/" + filename;
-         templateIn = ConeConverter.class.getClassLoader().getResourceAsStream(path);
-         //System.out.println("Trying to load test query via classloader : " +path);
-      }
+    // Find the template as a resource of this class.
+    if ((filename == null) || (filename.trim().equals(""))) {
+      throw new QueryException("No name was specified for the cone-search template");
+    }
+    InputStream templateIn = ConeConverter.class.getResourceAsStream(filename);
 
-      //Last ditch, look in class path.  
-      if (templateIn == null) {
-         //System.out.println("Could not find test query '"
-          //   +whereIsDoc+"', looking in classpath...");
-         templateIn = 
-           ConeConverter.class.getClassLoader().getResourceAsStream(filename);
-         whereIsDoc = filename+" in classpath at "+
-           ConeConverter.class.getClassLoader().getResource(filename);
-         //System.out.println("Trying to load test query  via classpath : " +whereIsDoc);
-      }
-      if (templateIn == null) {
-          throw new QueryException(
-              "Could not find conesearch template "+filename);
-      }
-      // Now we have the query, let's get it as a string.
-      String adqlString = null;
-      try {
-         StringWriter sw = new StringWriter();
-         Piper.bufferedPipe(new InputStreamReader(templateIn), sw);
-         adqlString = sw.toString();
-      }
-      catch (IOException e) {
-        throw new QueryException(
-            "Couldn't load conesearch template " + filename +
-            ": " + e.getMessage(), e);
-      }
-      return adqlString;
-   }
+    // Now we have the query, let's get it as a string.
+    try {
+      StringWriter sw = new StringWriter();
+      Piper.bufferedPipe(new InputStreamReader(templateIn), sw);
+      return sw.toString();
+    }
+    catch (IOException e) {
+      throw new QueryException("Couldn't load cone-search template", e);
+    }
+  }
 
 
     /**
