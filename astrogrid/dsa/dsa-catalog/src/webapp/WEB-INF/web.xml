@@ -129,7 +129,7 @@
 
   <servlet-mapping>
     <servlet-name>SubmitCone</servlet-name>
-    <url-pattern>SubmitCone</url-pattern>
+    <url-pattern>/SubmitCone</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
