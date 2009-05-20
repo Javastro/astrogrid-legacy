@@ -1,5 +1,6 @@
 package org.astrogrid.security;
 
+import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import org.apache.axis.MessageContext;
 import org.apache.axis.handlers.BasicHandler;
@@ -38,7 +39,7 @@ public class AxisServiceCredentialHandler extends BasicHandler {
   
   private static Log log = LogFactory.getLog(AxisServiceCredentialHandler.class);
   
-  private static TrustedCertificates trustAnchors;
+  private TrustedCertificates trustAnchors;
   
   /**
    * The URI for the XML namespace for WS-Security v1.0.
@@ -49,6 +50,7 @@ public class AxisServiceCredentialHandler extends BasicHandler {
   /**
    * Initializes the handler.
    */
+  @Override
   public void init() {
     // Initialize the XML-security library
     Init.init();
