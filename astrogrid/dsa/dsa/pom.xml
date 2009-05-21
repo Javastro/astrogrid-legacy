@@ -12,6 +12,10 @@
     <artifactId>astrogrid-base</artifactId>
     <version>2009.1-SNAPSHOT</version>
   </parent>
+
+  <properties>
+    <astrogrid_name>dsa</astrogrid_name>
+  </properties>
   
   <build>
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
@@ -298,7 +302,15 @@
       <scope>provided</scope>
     </dependency>
 
-    
-
   </dependencies>
+
+  <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url> 
+  <distributionManagement>
+    <site>
+      <id>agsite</id>
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/${astrogrid_name}/${project.version}</url>
+    </site>
+ </distributionManagement>
+
 </project>
