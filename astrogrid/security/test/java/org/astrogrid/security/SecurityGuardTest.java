@@ -5,6 +5,8 @@ import java.io.File;
 import java.net.URI;
 import java.security.AccessControlException;
 import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import junit.framework.TestCase;
@@ -218,17 +220,36 @@ public class SecurityGuardTest extends TestCase {
     sut.signOn("frog", "ribbitribbit", 36000, community);
   }
 
-  public void testIsSignedOn() throws Exception {
-    SecurityGuard sut1 = new SecurityGuard();
-    assertFalse(sut1.isSignedOn());
-    sut1.signOn("tester", "testing", 36000,
+  public void testIsSignedOnAfterSignOn() throws Exception {
+    SecurityGuard sut = new SecurityGuard();
+    assertFalse(sut.isSignedOn());
+    sut.signOn("tester", "testing", 36000,
                 this.getClass().getResource("/tester.jks").toURI());
-    assertTrue(sut1.isSignedOn());
+    assertTrue(sut.isSignedOn());
+  }
 
-    SecurityGuard sut2 = new SecurityGuard();
-    assertFalse(sut2.isSignedOn());
-    sut2.getSubject().getPrincipals(X500Principal.class).add(new X500Principal("cn=foo"));
-    assertFalse(sut2.isSignedOn());
+  public void testIsSignedOnIrregular() throws Exception {
+    SecurityGuard sut = new SecurityGuard();
+    assertFalse(sut.isSignedOn());
+
+    sut.setX500Principal(new X500Principal("CN=foo"));
+    assertFalse(sut.isSignedOn());
+
+    KeyPair keys = KeyPairGenerator.getInstance("RSA").generateKeyPair();
+    sut.setPrivateKey(keys.getPrivate());
+    assertFalse(sut.isSignedOn());
+
+    sut.setCertificateChain(new X509Certificate[0]);
+    assertFalse(sut.isSignedOn());
+
+    SelfSignedCertificateFactory sscf = new SelfSignedCertificateFactory();
+    X509Certificate x509 = sscf.generateCertificate(keys,
+                                                    "CN=foo",
+                                                    200000);
+    X509Certificate[] chain = new X509Certificate[1];
+    chain[0] = x509;
+    sut.setCertificateChain(chain);
+    assertTrue(sut.isSignedOn());
   }
 
 
@@ -266,6 +287,87 @@ public class SecurityGuardTest extends TestCase {
     assertEquals(1, sut.getCertificateChain().length);
     assertTrue(sut.isSignedOn());
   }
-  
+
+  public void testSetUniquePrincipal() throws Exception {
+    SecurityGuard sut = new SecurityGuard();
+    assertEquals(0, sut.getSubject().getPrincipals().size());
+    assertEquals(0, sut.getSubject().getPrincipals(X500Principal.class).size());
+
+    sut.setUniquePrincipal(new HomespaceLocation("http://where/ever"));
+    assertEquals(1, sut.getSubject().getPrincipals().size());
+
+    X500Principal p1 = new X500Principal("CN=foo");
+    sut.setUniquePrincipal(p1);
+    assertEquals(p1, sut.getX500Principal());
+    assertEquals(1, sut.getSubject().getPrincipals(X500Principal.class).size());
+    assertEquals(2, sut.getSubject().getPrincipals().size());
+
+    X500Principal p2 = new X500Principal("CN=foo");
+    sut.setUniquePrincipal(p2);
+    assertEquals(p2, sut.getX500Principal());
+    assertEquals(1, sut.getSubject().getPrincipals(X500Principal.class).size());
+    assertEquals(2, sut.getSubject().getPrincipals().size());
+
+    assertEquals(1, sut.getSubject().getPrincipals(HomespaceLocation.class).size());
+  }
+
+  public void testSetUniquePrivateCredential() throws Exception {
+    SecurityGuard sut = new SecurityGuard();
+    assertEquals(0, sut.getSubject().getPrivateCredentials().size());
+
+    sut.setUniquePrivateCredential("secret");
+    assertEquals(1, sut.getSubject().getPrivateCredentials(String.class).size());
+
+    KeyPair k1 = KeyPairGenerator.getInstance("RSA").generateKeyPair();
+    sut.setUniquePrivateCredential(k1.getPrivate());
+    assertEquals(k1.getPrivate(), sut.getPrivateKey());
+    assertEquals(1, sut.getSubject().getPrivateCredentials(PrivateKey.class).size());
+    assertEquals(1, sut.getSubject().getPrivateCredentials(String.class).size());
+
+    KeyPair k2 = KeyPairGenerator.getInstance("RSA").generateKeyPair();
+    sut.setUniquePrivateCredential(k2.getPrivate());
+    assertEquals(k2.getPrivate(), sut.getPrivateKey());
+    assertEquals(1, sut.getSubject().getPrivateCredentials(PrivateKey.class).size());
+    assertEquals(1, sut.getSubject().getPrivateCredentials(String.class).size());
+  }
+
+  public void testSetUniquePublicCredential() throws Exception {
+    SecurityGuard sut = new SecurityGuard();
+    assertEquals(0, sut.getSubject().getPublicCredentials().size());
+
+    sut.setUniquePublicCredential("public");
+    assertEquals(1, sut.getSubject().getPublicCredentials(String.class).size());
+
+    sut.setUniquePublicCredential(new AccountName("foo"));
+    assertEquals("foo", sut.getSsoUsername());
+    assertEquals(1, sut.getSubject().getPublicCredentials(AccountName.class).size());
+    assertEquals(1, sut.getSubject().getPublicCredentials(String.class).size());
+
+    sut.setUniquePublicCredential(new AccountName("bar"));
+    assertEquals("bar", sut.getSsoUsername());
+    assertEquals(1, sut.getSubject().getPublicCredentials(AccountName.class).size());
+    assertEquals(1, sut.getSubject().getPublicCredentials(String.class).size());
+  }
+
+  public void testSetX500PrincipalFromCertificateChain() throws Exception {
+    SecurityGuard sut = new SecurityGuard();
+
+    // When there is no chain, there should be no principal.
+    sut.setX500PrincipalFromCertificateChain();
+    assertNull(sut.getX500Principal());
+
+    // When there is a chain, the principal is predictable.
+    SelfSignedCertificateFactory sscf = new SelfSignedCertificateFactory();
+    KeyPair keys = sscf.generateKeyPair();
+    X509Certificate x509 = sscf.generateCertificate(keys,
+                                                    "CN=foo",
+                                                    200000);
+    X509Certificate[] chain = new X509Certificate[1];
+    chain[0] = x509;
+    sut.setCertificateChain(chain);
+    sut.setX500PrincipalFromCertificateChain();
+    assertNotNull(sut.getX500Principal());
+    assertEquals(1, sut.getSubject().getPrincipals().size());
+  }
   
 }

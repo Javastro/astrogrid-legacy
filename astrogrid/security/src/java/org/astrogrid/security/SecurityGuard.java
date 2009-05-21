@@ -139,28 +139,6 @@ public class SecurityGuard implements X509KeyManager {
   public Subject getSubject() {
     return this.subject;
   }
-
-  /**
-   * Retrieves the entire JAAS subject.
-   * Provided only for backward compatibility with the workbench.
-   * 
-   * @return - the subject (never null).
-   * @deprecated - Use {@link #getSubject()} instead.
-   */
-  public Subject getSsoSubject() {
-    return this.subject;
-  }
-  
-  /**
-   * Retrieves the entire JAAS subject.
-   * Provided only for backward compatibility with the workbench.
-   * 
-   * @return - the subject (never null).
-   * @deprecated - Use {@link #getSubject()} instead.
-   */
-  public Subject getGridSubject() {
-    return this.subject;
-  }
   
   /**
    * Sets the account name credential for single sign-on.
@@ -171,9 +149,8 @@ public class SecurityGuard implements X509KeyManager {
    *
    * @param name The account name.
    */
-  public void setSsoUsername (String name) {
-    AccountName account = new AccountName(name);
-    this.subject.getPublicCredentials().add(account);
+  public void setSsoUsername(String name) {
+    setUniquePublicCredential(new AccountName(name));
   }
 
   /**
@@ -199,8 +176,8 @@ public class SecurityGuard implements X509KeyManager {
    *
    * @param word the password
    */
-  public void setSsoPassword (String word) {
-    this.subject.getPrivateCredentials().add(word);
+  public void setSsoPassword(String word) {
+    setUniquePrivateCredential(word);
   }
 
   /**
@@ -212,7 +189,7 @@ public class SecurityGuard implements X509KeyManager {
    *
    * @return the password
    */
-  public String getSsoPassword () {
+  public String getSsoPassword() {
     Set passwords = this.subject.getPrivateCredentials(String.class);
     if (passwords.size() == 0) {
       return null;
@@ -233,7 +210,6 @@ public class SecurityGuard implements X509KeyManager {
   public boolean isSignedOn() {
     return (getX500Principal() != null &&
             getPrivateKey() != null &&
-            getCertificateChain() != null &&
             getCertificateChain().length > 0);
   }
   
@@ -255,7 +231,7 @@ public class SecurityGuard implements X509KeyManager {
    * @param p The distinguished name.
    */
   public void setX500Principal(X500Principal p) {
-    this.subject.getPrincipals().add(p);
+    setUniquePrincipal(p);
   }
   
   /**
@@ -298,7 +274,7 @@ public class SecurityGuard implements X509KeyManager {
       l.add(chain[i]);
     }
     CertPath p = f.generateCertPath(l);
-    this.subject.getPublicCredentials().add(p);
+    setCertificateChain(p);
   }
   
   /**
@@ -307,7 +283,7 @@ public class SecurityGuard implements X509KeyManager {
    * @param chain The chain (never null; may be empty of certificates).
    */
   public void setCertificateChain(CertPath chain) {
-    this.subject.getPublicCredentials().add(chain);
+    setUniquePublicCredential(chain);
   }
   
   /**
@@ -320,7 +296,12 @@ public class SecurityGuard implements X509KeyManager {
   public void setX500PrincipalFromCertificateChain() {
     X509Certificate x = getIdentityCertificate();
     if (x != null) {
-      this.subject.getPrincipals().add(x.getSubjectX500Principal());
+      X500Principal p = x.getSubjectX500Principal();
+      setX500Principal(p);
+      log.debug(String.format("Recorded X500Principal %s", p));
+    }
+    else {
+      log.debug("Failed to set the X500Principal because there is no identity certificate.");
     }
   }
   
@@ -336,19 +317,12 @@ public class SecurityGuard implements X509KeyManager {
   
   /**
    * Defines the private key for signing messages. If a private key
-   * was previously set, then it is replaced by this key. Setting a
-   * null key removes the previous key.
+   * was previously set, then it is replaced by this key.
    *
    * @param newKey - the new key.
    */
-  public void setPrivateKey(PrivateKey newKey) {
-    PrivateKey oldKey = this.getPrivateKey();
-    if (oldKey != null) {
-      this.subject.getPrivateCredentials().remove(oldKey);
-    }
-    if (newKey != null) {
-      this.subject.getPrivateCredentials().add(newKey);
-    }
+  public void setPrivateKey(PrivateKey key) {
+    setUniquePrivateCredential(key);
   }
   
   /**
@@ -498,7 +472,7 @@ public class SecurityGuard implements X509KeyManager {
     s.home(ivorn.getUserName(), this);
     
     // Record the account IVORN as a principal.
-    this.subject.getPrincipals().add(ivorn);
+    setUniquePrincipal(ivorn);
   }
   
   /**
@@ -561,7 +535,7 @@ public class SecurityGuard implements X509KeyManager {
                        '@' + 
                        source.getAuthority() +
                        source.getPath();
-      this.subject.getPrincipals().add(new AccountIvorn(account));
+      setUniquePrincipal(new AccountIvorn(account));
     }
   }
   
@@ -826,5 +800,33 @@ public class SecurityGuard implements X509KeyManager {
   }
 
     
-  
+  /**
+   * Adds a principal, deleting all others of that type.
+   *
+   * @param p The principal to be added.
+   */
+  protected void setUniquePrincipal(Principal p) {
+    subject.getPrincipals().removeAll(subject.getPrincipals(p.getClass()));
+    subject.getPrincipals().add(p);
+  }
+
+  /**
+   * Adds a private credential, deleting all others of that type.
+   *
+   * @param o The credential to be added.
+   */
+  protected void setUniquePrivateCredential(Object o) {
+    subject.getPrivateCredentials().removeAll(subject.getPrivateCredentials(o.getClass()));
+    subject.getPrivateCredentials().add(o);
+  }
+
+  /**
+   * Adds a public credential, deleting all others of that type.
+   *
+   * @param o The credential to be added.
+   */
+  protected void setUniquePublicCredential(Object o) {
+    subject.getPublicCredentials().removeAll(subject.getPublicCredentials(o.getClass()));
+    subject.getPublicCredentials().add(o);
+  }
 }
