@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.3 2009/05/19 20:18:27 gtr Exp $
+/*$Id: DatacenterApplication.java,v 1.4 2009/05/21 15:13:57 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import java.security.cert.CertificateException;
-import javax.security.auth.x500.X500Principal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -55,7 +54,6 @@ import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.QueryState;
 import org.astrogrid.security.SecurityGuard;
-import org.astrogrid.slinger.CredentialCache;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.sources.SourceIdentifier;
@@ -261,7 +259,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
              (resultTarget.getValue().trim().length() == 0)) {
            throw new CeaException("Query parameter error: ResultTarget is indirect but value is empty");
          }
-         return URISourceTargetMaker.makeSourceTarget(resultTarget.getValue(), getPrincipal());
+         return URISourceTargetMaker.makeSourceTarget(resultTarget.getValue(), getGuard());
        }
        
        // Results will be kept in the server and called out thence by the client.
@@ -537,24 +535,16 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
   /**
    * Determines the results of authentication.
-   * Checks for the results of authentication in CEA's cache; these include any
-   * delegated credentials. If the caller is authenticated, copies the details 
-   * to DSA's cache and returns the authenticated principal; otherwise returns 
-   * a principal representing an anonymous caller.
+   * The results are returned packed in a security-guard object. If the
+   * caller is authenticated, this contains the authenticated principal and
+   * any delegated credentials; otherwise, an empty guard is returned.
    * 
-   * @return The principal (never null, even for anonymous callers).
+   * @return The guard (never null, even for anonymous callers).
    */
-  private Principal getPrincipal() throws CertificateException {
+  private SecurityGuard getGuard() throws CertificateException {
     SecurityGuard sg = CeaSecurityGuard.getInstanceFromContext();
-    X500Principal p = (sg == null)? null : sg.getX500Principal();
-    if (p == null) {
-      return LoginAccount.ANONYMOUS;
-    }
-    else {
-      sg.loadDelegation();
-      CredentialCache.put(p, sg);
-      return p;
-    }
+    sg.loadDelegation();
+    return sg;
   }
 
    private void reportFailure(String message) {
@@ -713,6 +703,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.4  2009/05/21 15:13:57  gtr
+ Refactored: SecurityGuard instances are now passed down instead of Principals.
+
  Revision 1.3  2009/05/19 20:18:27  gtr
  Delegations are now included in the cached credentials.
 

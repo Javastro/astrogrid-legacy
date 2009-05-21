@@ -1,5 +1,5 @@
 /*
- * $Id: URISourceTargetMaker.java,v 1.1 2009/05/13 13:20:41 gtr Exp $
+ * $Id: URISourceTargetMaker.java,v 1.2 2009/05/21 15:13:57 gtr Exp $
  */
 package org.astrogrid.slinger.sourcetargets;
 
@@ -9,12 +9,12 @@ package org.astrogrid.slinger.sourcetargets;
  * tomcat
  */
 
-import java.security.Principal;
-import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.slinger.homespace.HomespaceName;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URI;
+import org.astrogrid.security.SecurityGuard;
 
 public class URISourceTargetMaker {
   
@@ -29,18 +29,18 @@ public class URISourceTargetMaker {
     */
    public static SourceTargetIdentifier makeSourceTarget(String uri) throws URISyntaxException, 
                                                                             MalformedURLException {
-     return makeSourceTarget(uri, LoginAccount.ANONYMOUS);
+     return makeSourceTarget(uri, new SecurityGuard());
    }
-   
+
    /**
-    * Creates a SourceTargetIdentifier for a given location and an
-    * identified user. 
+    * Creates a SourceTargetIdentifier for a given location and identity. If
+    * an security-guard object empty of credentials and principals is passed,
+    * then the request is annonymous.
     * <p>
-    * This method will work with secured VOSpace under two
-    * conditions: the user has previously delegated credentials to the service
-    * calling this method; the given identity is an X500Principal and matches
-    * the identity under which the credentials were delegated. It is a bad
-    * breach of security to pass an identity that has not been authenticated.
+    * This method will work with secured VOSpace if the identity managed by the
+    * security-guard object is capable of signing messages to the space. This
+    * implies that the user has previously delegated credentials to the service
+    * calling this method.
     *
     * @param uri The URI for the location.
     * @param user The authenticated identity of the user.
@@ -48,25 +48,27 @@ public class URISourceTargetMaker {
     * @throws URISyntaxException If the location is no good.
     * @throws MalformedURLException If the location is no good.
     */
-   public static SourceTargetIdentifier makeSourceTarget(String uri,
-                                                         Principal user) throws URISyntaxException, 
-                                                                                MalformedURLException {
-   
-      if (uri.startsWith("vos://")) {
+   public static SourceTargetIdentifier makeSourceTarget(String        location,
+                                                         SecurityGuard guard) throws URISyntaxException,
+                                                                                     MalformedURLException {
+
+     URI u = new URI(location);
+
+      if (u.getScheme().equals("vos")) {
          // Assume this is a VOSpace URI
-         return new VOSpaceSourceTarget(uri, user);
+         return new VOSpaceSourceTarget(u, guard);
       }
-		
+
       // The homespace stuff below should become redundant when VOSpace
       // fully replaces AstroGrid MySpace (FileManager/FileStore)
-      if (HomespaceName.isMyspaceIvorn(uri)) {
-         return new MyspaceSourceTarget(uri);
+      if (HomespaceName.isMyspaceIvorn(location)) {
+         return new MyspaceSourceTarget(location);
       }
-      if (HomespaceName.isHomespaceName(uri)) {
-         return new HomespaceSourceTarget(uri);
+      if (HomespaceName.isHomespaceName(location)) {
+         return new HomespaceSourceTarget(location);
       }
       else {
-         return new UrlSourceTarget(new URL(uri));
+         return new UrlSourceTarget(new URL(location));
       }
    }
 }

@@ -1,11 +1,10 @@
 /*
- * $Id: SubmitQuery.java,v 1.1 2009/05/13 13:20:34 gtr Exp $
+ * $Id: SubmitQuery.java,v 1.2 2009/05/21 15:13:57 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.security.Principal;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +15,7 @@ import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
+import org.astrogrid.security.HttpsServiceSecurityGuard;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.webapp.DefaultServlet;
@@ -33,7 +33,8 @@ import org.xml.sax.SAXException;
 public class SubmitQuery extends DefaultServlet {
    
    DataServer server = new DataServer();
-   
+
+   @Override
    public void doGet(HttpServletRequest request,
                      HttpServletResponse response) throws ServletException, IOException {
 
@@ -70,10 +71,17 @@ public class SubmitQuery extends DefaultServlet {
       
       //has the adql been given as a URI to read?
       if (adqlUri != null) {
-         SourceIdentifier source = 
-             URISourceTargetMaker.makeSourceTarget(adqlUri, 
-                                                   ServletHelper.getUser(request));
-         query = new Query(source.openInputStream());
+        HttpsServiceSecurityGuard sg = new HttpsServiceSecurityGuard();
+        try {
+          sg.loadHttpsAuthentication(request);
+          sg.loadDelegation();
+        }
+        catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+        SourceIdentifier source = 
+             URISourceTargetMaker.makeSourceTarget(adqlUri, sg);
+        query = new Query(source.openInputStream());
       }
       else if (adqlSql != null) {
          throw new QueryException("Query creation from adql/sql is not supported");
