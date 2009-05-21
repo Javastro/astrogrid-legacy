@@ -66,6 +66,14 @@ public class Delegations {
     return Integer.toString(principal.hashCode());
   }
 
+  /**
+   * Erases all delegations.
+   * This method is intended for unit testing only.
+   */
+  public void erase() {
+    this.identities = new HashMap();
+  }
+
 
   /**
    * Initializes a group of credentials for one identity.
