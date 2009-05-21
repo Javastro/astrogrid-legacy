@@ -270,7 +270,6 @@ public class SecurityGuard implements X509KeyManager {
     CertificateFactory f = CertificateFactory.getInstance("X509");
     List l = new ArrayList(chain.length);
     for (int i = 0; i < chain.length; i++) {
-      assert chain[i] != null;
       l.add(chain[i]);
     }
     CertPath p = f.generateCertPath(l);
