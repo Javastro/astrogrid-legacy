@@ -604,6 +604,8 @@ public class SecurityGuard implements X509KeyManager {
         }
         setCertificateChain(chain2);
         setPrivateKey(delegations.getPrivateKey(hashKey));
+        log.debug(String.format("Certificate in the name %s was added to the chain.",
+                                chain2[0].getSubjectX500Principal()));
       }
       else {
          log.debug("No certificate was delegated for " + principal);
