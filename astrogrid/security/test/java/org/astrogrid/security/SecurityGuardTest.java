@@ -5,8 +5,7 @@ import java.io.File;
 import java.net.URI;
 import java.security.AccessControlException;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import junit.framework.TestCase;
 import org.astrogrid.config.SimpleConfig;
@@ -14,6 +13,8 @@ import org.astrogrid.security.community.MockRegistry;
 import org.astrogrid.security.authorization.AuthenticatedAccessPolicy;
 import org.astrogrid.security.community.AccountServlet;
 import org.astrogrid.security.community.MockRegistryClient;
+import org.astrogrid.security.delegation.Delegations;
+import org.astrogrid.security.delegation.SelfSignedCertificateFactory;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
@@ -228,6 +229,42 @@ public class SecurityGuardTest extends TestCase {
     assertFalse(sut2.isSignedOn());
     sut2.getSubject().getPrincipals(X500Principal.class).add(new X500Principal("cn=foo"));
     assertFalse(sut2.isSignedOn());
+  }
+
+
+  public void testLoadDelegation() throws Exception {
+    Delegations delegations = Delegations.getInstance();
+    delegations.erase();
+    SecurityGuard sut = new SecurityGuard();
+    assertFalse(sut.isSignedOn());
+
+    // The guard should not be signed on if there are no delegations.
+    sut.loadDelegation();
+    assertFalse(sut.isSignedOn());
+
+    // The guard should not be signed on if there is a delgated identity
+    // and key but no certificate
+    X500Principal p = new X500Principal("O=foo, CN=bar");
+    String hash = delegations.initializeIdentity(p);
+    sut.setX500Principal(p);
+    sut.loadDelegation();
+    assertFalse(sut.isSignedOn());
+    assertTrue(delegations.isKnown(hash));
+
+    // The guard should be signed on if there is a delegated identity,
+    // key and proxy certificate.
+    SelfSignedCertificateFactory sscf = new SelfSignedCertificateFactory();
+    KeyPair keys = sscf.generateKeyPair();
+    X509Certificate c1 = sscf.generateCertificate(keys,
+                                                  delegations.getName(hash),
+                                                  200000);
+    delegations.setCertificate(hash, c1);
+    assertNotNull(delegations.getCertificate(hash));
+    sut.loadDelegation();
+    assertNotNull(sut.getCertificateChain());
+    System.out.println(String.format("%d certificates", sut.getCertificateChain().length));
+    assertEquals(1, sut.getCertificateChain().length);
+    assertTrue(sut.isSignedOn());
   }
   
   
