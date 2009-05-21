@@ -30,6 +30,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509KeyManager;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.security.authorization.AccessPolicy;
 import org.astrogrid.security.community.RegistryClient;
@@ -66,6 +68,8 @@ import org.astrogrid.security.keystore.KeyStoreClient;
  * @author Guy Rixon
  */
 public class SecurityGuard implements X509KeyManager {
+
+  private static final Log log = LogFactory.getLog(SecurityGuard.class);
   
   /**
    * The JAAS Subject for all credentials and principals.
@@ -601,6 +605,12 @@ public class SecurityGuard implements X509KeyManager {
         setCertificateChain(chain2);
         setPrivateKey(delegations.getPrivateKey(hashKey));
       }
+      else {
+         log.debug("No certificate was delegated for " + principal);
+      }
+    }
+    else {
+      log.debug("No principal to use for loading delegations");
     }
   }
   
