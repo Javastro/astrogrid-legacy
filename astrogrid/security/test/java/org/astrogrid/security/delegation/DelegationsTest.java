@@ -7,21 +7,10 @@
 
 package org.astrogrid.security.delegation;
 
-import java.math.BigInteger;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
-import java.security.SignatureException;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import junit.framework.TestCase;
-import org.astrogrid.security.delegation.*;
-import org.bouncycastle.jce.PKCS10CertificationRequest;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  *
@@ -57,10 +46,11 @@ public class DelegationsTest extends TestCase {
     Delegations instance = Delegations.getInstance();
     
     X500Principal p = new X500Principal(identity);
-    String expResult = Integer.toString(p.hashCode());
+    String expResult = instance.hash(p);
     String result = instance.initializeIdentity(identity);
     assertEquals(expResult, result);
   }
+
 
   /**
    * Test of getCsr method, of class org.astrogrid.security.delegation.DelegationRecords.
@@ -78,7 +68,7 @@ public class DelegationsTest extends TestCase {
     
     System.out.println(result.getCertificationRequestInfo().getSubject());
     X500Principal p2 = new X500Principal(result.getCertificationRequestInfo().getSubject().toString());
-    assertEquals(p1.getName(p1.CANONICAL), p2.getName(p2.CANONICAL));
+    assertEquals(p1.getName(X500Principal.CANONICAL), p2.getName(X500Principal.CANONICAL));
   }
 
   /**
