@@ -44,7 +44,7 @@ public class Delegations {
     
     this.identities = new HashMap();
     try {
-      this.keyPairGenerator = keyPairGenerator.getInstance("RSA");
+      this.keyPairGenerator = KeyPairGenerator.getInstance("RSA");
     } catch (NoSuchAlgorithmException ex) {
       ex.printStackTrace();
       throw new RuntimeException("The JCE doesn't do RSA! Game over.");
@@ -55,6 +55,17 @@ public class Delegations {
   static public Delegations getInstance() {
     return Delegations.instance;
   }
+
+  /**
+   * Determines the hash-key corresponding to a principal.
+   *
+   * @param principal The identity to be hashed.
+   * @return The hash.
+   */
+  public String hash(X500Principal principal) {
+    return Integer.toString(principal.hashCode());
+  }
+
 
   /**
    * Initializes a group of credentials for one identity.
@@ -85,12 +96,12 @@ public class Delegations {
                                                                    NoSuchAlgorithmException, 
                                                                    NoSuchProviderException {
     DelegatedIdentity id = new DelegatedIdentity();
-    id.dn = principal.getName(principal.CANONICAL);
+    id.dn = principal.getName(X500Principal.CANONICAL);
     id.keys = this.keyPairGenerator.generateKeyPair();
     id.certificate = null;
     id.csr = new CertificateSigningRequest(id.dn, id.keys);
     
-    String hashKey = Integer.toString(principal.hashCode());
+    String hashKey = this.hash(principal);
     this.identities.put(hashKey, id);
     
     return hashKey;
