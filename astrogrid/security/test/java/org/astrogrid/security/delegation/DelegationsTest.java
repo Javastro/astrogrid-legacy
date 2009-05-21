@@ -1,26 +1,29 @@
-/*
- * DelegationsTest.java
- * JUnit based test
- *
- * Created on March 18, 2007, 5:20 PM
- */
-
 package org.astrogrid.security.delegation;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
- *
- * @author guy
+ * JUnit-4 tests for {@link Delegations}.
+ * @author Guy Rixon
  */
-public class DelegationsTest extends TestCase {
+public class DelegationsTest {
   
   private String testIdentity;
-  
-  protected void setUp() throws Exception {
+
+  @BeforeClass public static void erase() {
+    System.out.println("erasing");
+    Delegations.getInstance().erase();
+  }
+
+  @Before public void identity() throws Exception {
+    System.out.println("Initializing identity");
     String i = "C=UK,O=AstroGrid,OU=Cambridge,CN=Fred Hoyle";
     this.testIdentity = Delegations.getInstance().initializeIdentity(i);
   }
@@ -28,10 +31,9 @@ public class DelegationsTest extends TestCase {
   /**
    * Test of getInstance method, of class org.astrogrid.security.delegation.DelegationRecords.
    */
-  public void testGetInstance() {
+  @Test public void testGetInstance() {
     System.out.println("getInstance");
     
-    Delegations expResult = null;
     Delegations result = Delegations.getInstance();
     assertNotNull(result);
   }
@@ -39,7 +41,7 @@ public class DelegationsTest extends TestCase {
   /**
    * Test of initializeIdentity method, of class org.astrogrid.security.delegation.DelegationRecords.
    */
-  public void testInitializeIdentity() throws Exception {
+  @Test public void testInitializeIdentity() throws Exception {
     System.out.println("initializeIdentity");
     
     String identity = "C=UK,O=AstroGrid,OU=Cambridge,CN=Guy Rixon";
@@ -55,7 +57,7 @@ public class DelegationsTest extends TestCase {
   /**
    * Test of getCsr method, of class org.astrogrid.security.delegation.DelegationRecords.
    */
-  public void testGetCsr() throws Exception {
+  @Test public void testGetCsr() throws Exception {
     System.out.println("getCsr");
     
     String identity = "C=UK,O=AstroGrid,OU=Cambridge,CN=Guy Rixon";
@@ -74,18 +76,18 @@ public class DelegationsTest extends TestCase {
   /**
    * Test of getPrivateKey method, of class org.astrogrid.security.delegation.DelegationRecords.
    */
-  public void testGetPrivateKey() {
+  @Test public void testGetPrivateKey() {
     System.out.println("getPrivateKey");
     
     Delegations instance = Delegations.getInstance();
     Object result = instance.getPrivateKey(this.testIdentity);
-    assertNotNull("Private key exists", result);
+    assertNotNull("Private key missing", result);
   }
 
   /**
    * Test of getCertificate method, of class org.astrogrid.security.delegation.DelegationRecords.
    */
-  public void testCertificate() throws Exception {
+  @Test public void testCertificate() throws Exception {
     System.out.println("getCertificate");
     
     // Initially, there should be no certificate.
@@ -109,19 +111,20 @@ public class DelegationsTest extends TestCase {
   /**
    * Test of getPrincipals method, of class org.astrogrid.security.delegation.DelegationRecords.
    */
-  public void testGetPrincipals() {
+  @Test public void testGetPrincipals() {
     System.out.println("getPrincipals");
     
     Delegations instance = Delegations.getInstance();
     Object[] result = instance.getPrincipals();
     assertNotNull(result);
+    System.out.println(String.format("%d principals", result.length));
     assertTrue(result.length == 2);
   }
   
   /**
    * Test of isKnown method, of class org.astrogrid.security.delegation.DelegationRecords.
    */
-  public void testIsKnownAndRemove() {
+  @Test public void testIsKnownAndRemove() {
     System.out.println("isKnown and remove");
     
     String bogusIdentity = "C=NG,O=Dodgy,CN=Bogus";
