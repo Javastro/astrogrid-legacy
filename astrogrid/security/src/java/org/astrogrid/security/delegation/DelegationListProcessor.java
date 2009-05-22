@@ -26,6 +26,7 @@ public class DelegationListProcessor extends ResourceProcessor {
    * Responds to HTTP GET and POST requests.
    * Other HTTP requests are rejected.
    */
+  @Override
   public void service(HttpServletRequest  request,
                       DelegationUri       path,
                       HttpServletResponse response) throws IOException {
