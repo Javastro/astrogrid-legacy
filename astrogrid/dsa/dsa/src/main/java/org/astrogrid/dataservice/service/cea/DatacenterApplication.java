@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.4 2009/05/21 15:13:57 gtr Exp $
+/*$Id: DatacenterApplication.java,v 1.5 2009/05/22 19:58:49 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,8 @@ import java.io.ByteArrayInputStream;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import javax.security.auth.x500.X500Principal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -54,6 +56,7 @@ import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.QueryState;
 import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.security.delegation.Delegations;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.sources.SourceIdentifier;
@@ -542,8 +545,20 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    * @return The guard (never null, even for anonymous callers).
    */
   private SecurityGuard getGuard() throws CertificateException {
-    SecurityGuard sg = CeaSecurityGuard.getInstanceFromContext();
+    SecurityGuard sg = new SecurityGuard(CeaSecurityGuard.getInstanceFromContext());
+    X509Certificate[] chain1 = sg.getCertificateChain();
+	  for (int i = 0; i < chain1.length; i++) {
+			X509Certificate c = chain1[i];
+			logger.debug(c.getSubjectDN() + " issued by " + c.getIssuerDN());
+		}
+    X500Principal p = sg.getX500Principal();
+    String hash = Integer.toString(p.hashCode());
     sg.loadDelegation();
+    X509Certificate[] chain2 = sg.getCertificateChain();
+	  for (int i = 0; i < chain2.length; i++) {
+			X509Certificate c = chain2[i];
+			logger.debug(c.getSubjectDN() + " issued by " + c.getIssuerDN());
+		}
     return sg;
   }
 
@@ -699,267 +714,3 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       return new DatacenterParameterAdapter(pval, descr, indirectVal);
    }
 }
-
-
-/*
- $Log: DatacenterApplication.java,v $
- Revision 1.4  2009/05/21 15:13:57  gtr
- Refactored: SecurityGuard instances are now passed down instead of Principals.
-
- Revision 1.3  2009/05/19 20:18:27  gtr
- Delegations are now included in the cached credentials.
-
- Revision 1.2  2009/05/15 16:28:23  gtr
- I added the security wiring to the CEA interface. Authenticated calls to the CEC should now supply credentials for us in the call to VOSpace.
-
- Revision 1.1.1.1  2009/05/13 13:20:31  gtr
-
-
- Revision 1.19  2008/10/14 12:28:51  clq2
- PAL_KEA_2804
-
- Revision 1.17.12.1  2008/10/13 10:57:35  kea
- Updating prior to maintenance merge.
-
- Revision 1.17  2008/03/14 16:09:21  clq2
- PAL_KEA_2619
-
- Revision 1.16.2.1  2008/03/11 15:29:50  kea
- Tweaks for multicone, and conesearch compulsory UCDs.
-
- Revision 1.16  2008/03/06 14:46:45  clq2
- PAL_KEA_2588
-
- Revision 1.15.4.1  2008/03/06 13:01:52  kea
- Tweaks.
-
- Revision 1.15  2008/02/07 17:27:45  clq2
- PAL_KEA_2518
-
- Revision 1.13.8.1  2008/02/07 16:36:15  kea
- Further fixes for 1.0 support, and also MBT's changes merged into my branch.
-
- Revision 1.14  2008/02/06 14:10:41  clq2
- pal-mbt-multicone2 merged
-
- Revision 1.13.4.4  2008/01/29 14:06:47  mbt
- Use a direct JDBC connection for efficiency
-
- Revision 1.13.4.3  2008/01/25 13:29:41  mbt
- Name and slight functionality change from SkyConeMh2Producer to ConeMatcher
-
- Revision 1.13.4.2  2008/01/23 14:44:27  mbt
- SkyConeMatch2Producer constructor changed again
-
- Revision 1.13.4.1  2008/01/15 15:50:20  mbt
- SkyConeMatch2Producer constructor signature changed
-
- Revision 1.13  2007/12/04 17:31:39  clq2
- PAL_KEA_2378
-
- Revision 1.11.2.1  2007/11/15 18:19:15  kea
- Multicone fixes, various bugzilla ticket fixes, tweaks after profiling.
-
- Revision 1.12  2007/11/01 11:25:46  kea
- Merging MBT's branch pal-mbt-multicone1.
-
- Revision 1.11.4.1  2007/10/25 14:26:59  mbt
- Fixed to match modified multicone interface
-
- Revision 1.11  2007/10/17 09:58:20  clq2
- PAL_KEA-2314
-
- Revision 1.10.2.2  2007/10/11 13:53:19  kea
- Still working on multicone stuff.
-
- Revision 1.10.2.1  2007/09/25 17:17:29  kea
- Working on CEA interface for multicone service.
-
- Revision 1.10  2007/09/07 09:30:51  clq2
- PAL_KEA_2235
-
- Revision 1.9.4.3  2007/09/04 12:27:03  kea
- Tweaks
-
- Revision 1.9.4.1  2007/08/10 14:13:28  kea
- Work-in-progress update.
-
- Revision 1.9  2007/06/12 12:12:00  kea
- Adding cone cea interface back.
-
- Revision 1.7.2.3  2007/06/12 11:54:08  kea
- Putting back CEA conesearch.
-
- Revision 1.7.2.2  2007/05/18 16:34:12  kea
- Still working on new metadoc / multi conesearch.
-
- Revision 1.7.2.1  2007/05/16 11:03:52  kea
- Removing siap stuff, not in use.
-
- Revision 1.7  2007/03/14 16:26:49  kea
- Work in progress re VOResource v1.0 registrations, and re out-of-memory
- error (now cleaning up Query inside Querier once query has been run to
- conserve memory - but need to do something more sensible with the
- completed jobs queue too).
-
- Revision 1.6  2007/03/02 13:49:09  kea
- Syntactic changes only.
-
- Revision 1.5  2007/02/20 12:22:14  clq2
- PAL_KEA_2062
-
- Revision 1.4.20.2  2007/02/13 15:58:59  kea
- Added proper OptionList for supported output types (including new
- support for binary VOTable).
-
- Revision 1.4.20.1  2007/01/18 13:15:33  kea
- Checking in current state of project files to get help with debugging.
- Also made changes to DatacenterApplication re bug 2064 (but not
- fully tested this yet).
-
- Revision 1.4  2006/06/15 16:50:08  clq2
- PAL_KEA_1612
-
- Revision 1.3.64.3  2006/05/10 13:25:22  kea
- Conesearch and HSQLDB fixes/enhancements;  moving properties to web.xml
- like other AG services.
-
- Revision 1.3.64.2  2006/04/21 11:54:05  kea
- Changed QueryException from a RuntimeException to an Exception.
-
- Revision 1.3.64.1  2006/04/19 13:57:31  kea
- Interim checkin.  All source is now compiling, using the new Query model
- where possible (some legacy classes are still using OldQuery).  Unit
- tests are broken.  Next step is to move the legacy classes sideways out
- of the active tree.
-
- Revision 1.3  2005/05/27 16:21:08  clq2
- mchv_1
-
- Revision 1.2.16.4  2005/05/16 14:10:54  mch
- use new fromIvorn method
-
- Revision 1.2.16.3  2005/05/13 16:56:31  mch
- 'some changes'
-
- Revision 1.2.16.2  2005/04/25 14:41:14  mch
- better comment
-
- Revision 1.2.16.1  2005/04/21 17:20:51  mch
- Fixes to output types
-
- Revision 1.2  2005/03/21 18:45:55  mch
- Naughty big lump of changes
-
- Revision 1.1.1.1  2005/02/17 18:37:35  mch
- Initial checkin
-
- Revision 1.1.1.1  2005/02/16 17:11:24  mch
- Initial checkin
-
- Revision 1.12.2.11  2005/02/11 15:58:27  mch
- Some fixes before split
-
- Revision 1.12.2.10  2004/12/08 18:36:40  mch
- Added Vizier, rationalised SqlWriters etc, separated out TableResults from QueryResults
-
- Revision 1.12.2.9  2004/12/07 21:21:09  mch
- Fixes after a days integration testing
-
- Revision 1.12.2.8  2004/12/07 00:02:17  mch
- added tentative ivorn->homespace converter
-
- Revision 1.12.2.7  2004/11/30 01:04:02  mch
- Rationalised tablewriters, reverted AxisDataService06 to string
-
- Revision 1.12.2.6  2004/11/29 21:52:18  mch
- Fixes to skynode, log.error(), getstem, status logger, etc following tests on grendel
-
- Revision 1.12.2.5  2004/11/25 08:29:41  mch
- added table writers modelled on STIL
-
- Revision 1.12.2.4  2004/11/23 17:46:52  mch
- Fixes etc
-
- Revision 1.12.2.3  2004/11/23 12:34:01  mch
- renamed to makeTarget
-
- Revision 1.12.2.2  2004/11/23 11:55:06  mch
- renamved makeTarget methods
-
- Revision 1.12.2.1  2004/11/22 00:57:16  mch
- New interfaces for SIAP etc and new slinger package
-
- Revision 1.12  2004/11/11 20:42:50  mch
- Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
-
- Revision 1.11  2004/11/10 22:01:50  mch
- skynode starts and some fixes
-
- Revision 1.10  2004/11/09 17:42:22  mch
- Fixes to tests after fixes for demos, incl adding closable to targetIndicators
-
- Revision 1.9  2004/11/08 02:58:44  mch
- Various fixes and better error messages
-
- Revision 1.8  2004/11/03 00:17:56  mch
- PAL_MCH Candidate 2 merge
-
- Revision 1.3.8.4  2004/11/02 21:51:54  mch
- Replaced AgslTarget with UrlTarget and MySpaceTarget
-
- Revision 1.3.8.3  2004/11/02 19:48:43  mch
- Split TargetIndicator to indicator and maker
-
- Revision 1.3.8.2  2004/11/02 19:41:26  mch
- Split TargetIndicator to indicator and maker
-
- Revision 1.3.8.1  2004/10/20 18:12:45  mch
- CEA fixes, resource tests and fixes, minor navigation changes
-
- Revision 1.4.2.1  2004/10/20 12:43:28  mch
- Fixes to CEA interface to write directly to target
-
- Revision 1.4  2004/10/20 08:10:55  pah
- taken Principal of new backend phase and tidied up some logging
-
- Revision 1.3  2004/10/07 10:34:44  mch
- Fixes to Cone maker functions and reading/writing String comparisons from Query
-
- Revision 1.2  2004/10/06 21:12:17  mch
- Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
-
- Revision 1.1  2004/09/28 15:02:13  mch
- Merged PAL and server packages
-
- Revision 1.8  2004/09/17 01:27:21  nw
- added thread management.
-
- Revision 1.7  2004/09/06 15:20:47  mch
- Added logger message for execute()
-
- Revision 1.6  2004/08/25 23:38:34  mch
- (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
-
- Revision 1.5  2004/08/17 20:19:36  mch
- Moved TargetIndicator to client
-
- Revision 1.4  2004/07/27 13:48:33  nw
- renamed indirect package to protocol,
- renamed classes and methods within protocol package
-
- Revision 1.3  2004/07/22 16:31:22  nw
- cleaned up application / parameter adapter interface.
-
- Revision 1.2  2004/07/20 02:14:48  nw
- final implementaiton of itn06 Datacenter CEA interface
-
- Revision 1.1  2004/07/13 17:11:09  nw
- first draft of an itn06 CEA implementation for datacenter
- 
- */
-
-
-
-
-
