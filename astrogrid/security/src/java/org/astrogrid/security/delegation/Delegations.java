@@ -2,6 +2,7 @@ package org.astrogrid.security.delegation;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -12,7 +13,7 @@ import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.security.auth.x500.X500Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMWriter;
@@ -20,14 +21,28 @@ import org.bouncycastle.openssl.PEMWriter;
 /**
  * A collection of delegated credentials. For each key there is a private key,
  * a certificate-signing request (CSR) and, optionally, a certificate.
+ * <p>
+ * This class is thread safe. Initializing an identity is idempotent. The
+ * name, keys and CSR for each identity are immutable, and access to the
+ * certificate is synchronized. Further, the class will reject an attempt
+ * to set a certificate whose public key does not match that set for the
+ * identity at initialization; therefore, if two threads delegate to the
+ * same identity concurrently, the credentials held are not disrupted.
  *
  * @author Guy Rixon
  */
 public class Delegations {
   
   static private Delegations instance = new Delegations();
-  
-  private Map identities;
+
+  /**
+   * All the delegations, partial or complete, known to this
+   * object. The key-pairs for delegated credentials live here.
+   * The keys are hashes of the delegated principals: see
+   * {@link #hash} for details.
+   */
+  private Map<String, DelegatedIdentity> identities;
+
   private KeyPairGenerator keyPairGenerator;
   
   /**
@@ -42,14 +57,15 @@ public class Delegations {
       Security.addProvider(new BouncyCastleProvider());
     }
     
-    this.identities = new HashMap();
+    erase();
+
     try {
-      this.keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+      keyPairGenerator = KeyPairGenerator.getInstance("RSA");
     } catch (NoSuchAlgorithmException ex) {
       ex.printStackTrace();
       throw new RuntimeException("The JCE doesn't do RSA! Game over.");
     }
-    this.keyPairGenerator.initialize(1024);
+    keyPairGenerator.initialize(1024);
   }
   
   static public Delegations getInstance() {
@@ -68,87 +84,91 @@ public class Delegations {
 
   /**
    * Erases all delegations.
-   * This method is intended for unit testing only.
    */
   public void erase() {
-    this.identities = new HashMap();
+    identities = new ConcurrentHashMap<String, DelegatedIdentity>();
   }
 
 
   /**
    * Initializes a group of credentials for one identity.
-   * This sets the private key and CSR properties for that identity, 
-   * overwriting any credentials that were previously there. The certificate
-   * property for the identity is made null.
+   * If there were already credentials for that identity, nothing is changed.
+   * If not, a key pair and a CSR are generated and stored; the certificate
+   * property is set to null.
    *
    * @return The hash of the distinguished name.
    */
-  public String initializeIdentity(String identity)
-      throws InvalidKeyException, 
-             SignatureException, NoSuchAlgorithmException, NoSuchProviderException {
+  public String initializeIdentity(String identity) throws GeneralSecurityException {
     X500Principal p = new X500Principal(identity);
     return initializeIdentity(p);
   }
   
   /**
    * Initializes a group of credentials for one identity.
-   * This sets the private key and CSR properties for that identity, 
-   * overwriting any credentials that were previously there. The certificate
-   * property for the identity is made null.
+   * If there were already credentials for that identity, nothing is changed.
+   * If not, a key pair and a CSR are generated and stored; the certificate
+   * property is set to null.
    *
    * @param principal The distinguished name on which to base the identity.
    * @return The hash key corresponding to the distinguished name.
    */
-  public String initializeIdentity(X500Principal principal) throws InvalidKeyException, 
-                                                                   SignatureException, 
-                                                                   NoSuchAlgorithmException, 
-                                                                   NoSuchProviderException {
-    DelegatedIdentity id = new DelegatedIdentity();
-    id.dn = principal.getName(X500Principal.CANONICAL);
-    id.keys = this.keyPairGenerator.generateKeyPair();
-    id.certificate = null;
-    id.csr = new CertificateSigningRequest(id.dn, id.keys);
-    
-    String hashKey = this.hash(principal);
-    this.identities.put(hashKey, id);
-    
+  public String initializeIdentity(X500Principal principal) throws GeneralSecurityException {
+    String hashKey = hash(principal);
+    if (!identities.containsKey(hashKey)) {
+      DelegatedIdentity id = 
+          new DelegatedIdentity(principal.getName(X500Principal.CANONICAL),
+                                this.keyPairGenerator.generateKeyPair());
+      identities.put(hashKey, id);
+    }
     return hashKey;
   }
   
-  public CertificateSigningRequest getCsr(String hashKey) 
-      throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException {
-    DelegatedIdentity id = this.getIdentity(hashKey);
+  public CertificateSigningRequest getCsr(String hashKey) {
+    DelegatedIdentity id = identities.get(hashKey);
     return (id == null)? null : id.csr;
   }
   
   public PrivateKey getPrivateKey(String hashKey) { 
-    DelegatedIdentity id = this.getIdentity(hashKey);
+    DelegatedIdentity id = identities.get(hashKey);
     return (id == null)? null: (PrivateKey) id.keys.getPrivate();
   }
   
   public X509Certificate getCertificate(String hashKey) {
-    DelegatedIdentity id = this.getIdentity(hashKey);
-    return (id == null)? null : id.certificate;
+    DelegatedIdentity id = identities.get(hashKey);
+    if (id == null) {
+      return null;
+    }
+    else {
+      synchronized(id) {
+        return id.certificate;
+      }
+    }
   }
   
   public void remove(String hashKey) {
-    this.identities.remove(hashKey);
+    identities.remove(hashKey);
   }
   
   /**
    * Reveals whether an identity is known from the delegation records.
    */
   public boolean isKnown(String hashKey) {
-    return this.identities.containsKey(hashKey);
+    return identities.containsKey(hashKey);
   }
   
   /**
    * Stores a certificate for the given identity.
    * Any previous certificate is overwritten.
+   * This operation is thread-safe against concurrent reading of the certificate.
    */
-  public void setCertificate(String hashKey, X509Certificate certificate) {
-    DelegatedIdentity id = this.getIdentity(hashKey);
-    id.certificate = certificate;
+  public void setCertificate(String          hashKey,
+                             X509Certificate certificate) throws InvalidKeyException {
+    DelegatedIdentity id = identities.get(hashKey);
+    if (id == null) {
+      throw new InvalidKeyException("No identity matches the hash key " + hashKey);
+    } else {
+      id.setCertificate(certificate);
+    }
   }
   
   public Object[] getPrincipals() {
@@ -156,8 +176,19 @@ public class Delegations {
   }
   
   public String getName(String hashKey) {
-    DelegatedIdentity id = this.getIdentity(hashKey);
+    DelegatedIdentity id = identities.get(hashKey);
     return (id == null)? null : id.dn;
+  }
+
+  /**
+   * Reveals the keys held for an identity.
+   *
+   * @param hashKey The hash of the identity.
+   * @return The keys (null if identity not known).
+   */
+  public KeyPair getKeys(String hashKey) {
+    DelegatedIdentity id = identities.get(hashKey);
+    return (id == null)? null : id.getKeys();
   }
   
   /**
@@ -181,16 +212,39 @@ public class Delegations {
   public boolean hasCertificate(String hashKey) {
     return (this.getCertificate(hashKey) != null);
   }
-  
-  private DelegatedIdentity getIdentity(String hashKey) {
-    return (DelegatedIdentity) (this.identities.get(hashKey));
-  }
+
   
   protected class DelegatedIdentity {
-    protected String                    dn;
-    protected KeyPair                   keys;
-    protected X509Certificate           certificate;
-    protected CertificateSigningRequest csr;
+    protected final String                    dn;
+    protected final KeyPair                   keys;
+    protected final CertificateSigningRequest csr;
+    protected X509Certificate                 certificate;
+
+    protected DelegatedIdentity(String  dn,
+                                KeyPair keys) throws GeneralSecurityException {
+      this.dn          = dn;
+      this.keys        = keys;
+      this.csr         = new CertificateSigningRequest(dn, keys);
+      this.certificate = null;
+    }
+
+    protected synchronized X509Certificate getCertificate() {
+      return certificate;
+    }
+
+    protected synchronized void setCertificate(X509Certificate c) throws InvalidKeyException {
+      if (c.getPublicKey().equals(keys.getPublic())) {
+        certificate = c;
+      }
+      else {
+        throw new InvalidKeyException("This certificate does not match the cached private-key.");
+      }
+    }
+
+    protected KeyPair getKeys() {
+      return keys;
+    }
+
   }
   
 }
