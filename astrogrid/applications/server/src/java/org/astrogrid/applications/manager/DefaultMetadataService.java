@@ -18,10 +18,12 @@ import javax.xml.transform.TransformerConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import net.ivoa.resource.AccessURL;
+import net.ivoa.resource.Capability;
 import net.ivoa.resource.Interface;
 import net.ivoa.resource.Resource;
 import net.ivoa.resource.Service;
 import net.ivoa.resource.WebService;
+import net.ivoa.resource.dataservice.ParamHTTP;
 import net.ivoa.resource.registry.iface.VOResources;
 
 import org.apache.axis.utils.XMLUtils;
@@ -150,6 +152,19 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
 	
 	// add the service description
 	service.getCapability().add(ceaCap);
+	
+	//put in the VOSI capability itself - to allow vosi harvesting
+	Capability vosiCap = new Capability();
+	vosiCap.setStandardID("ivo://org.astrogrid/std/VOSI/v0.4#capabilities");
+	Interface vosiIntf = new ParamHTTP();
+	vosiIntf.setVersion("1.0");
+	AccessURL vosiURL = new AccessURL();
+	vosiURL.setValue(this.configuration.getServiceEndpoint().toString()+"/VOSI/capabilities");
+	vosiIntf.getAccessURL().add(vosiURL);
+	vosiCap.getInterface().add(vosiIntf);
+	service.getCapability().add(vosiCap);
+        //FIXME need to put rest of the capabilities for CEA here & then use this instead of the VOSI jsp...
+       	
 	return service;
 
     }
