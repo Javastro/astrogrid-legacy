@@ -566,7 +566,7 @@ public class SecurityGuard implements X509KeyManager {
     X500Principal principal = getX500Principal();
     if (principal != null) {
       Delegations delegations = Delegations.getInstance();
-      String hashKey = Integer.toString(principal.hashCode());
+      String hashKey = delegations.hash(principal);
       if (delegations.hasCertificate(hashKey)) {
         X509Certificate x509 = delegations.getCertificate(hashKey);
         X509Certificate[] chain1 = getCertificateChain();
