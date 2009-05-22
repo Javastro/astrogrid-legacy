@@ -35,5 +35,14 @@
          <subsection name="Trust Anchors">
          </subsection>
       </section>
+      <section name="Authorization">
+      <p>
+        The CEC can have an authorization policy applied to the job control which can specify which users are allowed to perform various operations on the CEC.
+        The policies need to implement org.astrogrid.applications.authorization.AuthorizationPolicy to allow or disallow operations. The authorization policy is configured
+        in the WEB-INF/cec-spring.xml file, and the supplied file comes with a commented out bean (id="AuthorizationPolicy") that implements a useful policy that allows only authenticated access to the CEC and only allows the job owner to manipulate a job. There are other
+        experimental policy implementations such as org.astrogrid.applications.manager.agast.PolicyDecisionPoint that use an external service to make the authentication decision.
+        
+      </p>
+      </section>
    </body>
 </document>

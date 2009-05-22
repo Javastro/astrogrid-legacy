@@ -247,7 +247,7 @@ and each parameterDefinition to be of xsi:type "ceaimp:CommandLineParameterDefin
 <p>Finally the location of the commandline executable is specified with the executionPath element which can have commandpval child elements to specify fixed parameters that always need to be passed to the application, but are not part of the application parameters.
  For example, running a java application might need a commandline <code>java -jar app.jar</code> which could be configured with</p>
  <pre>
-   &lt;executionPath&gt;java&lt;commandpval&gt;-jar &lt;/commandpval&gt;&lt;commandpval&gt;app.jar&lt;/commandpval&lg;&lt;/executionPath&gt;
+   &lt;executionPath&gt;java&lt;commandpval&gt;-jar &lt;/commandpval&gt;&lt;commandpval&gt;app.jar&lt;/commandpval&gt;&lt;/executionPath&gt;
  </pre>
  <subsubsection name="hints and tips">
  <ul>
