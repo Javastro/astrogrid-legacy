@@ -8,7 +8,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <packaging>jar</packaging>
-  <version>2009.1.a08</version>
+  <version>2009.1.a09</version>
 
   <parent>
     <groupId>org.astrogrid</groupId>
