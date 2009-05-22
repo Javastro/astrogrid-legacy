@@ -1,10 +1,12 @@
 package org.astrogrid.applications.javaclass;
 
 import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 /**
  *
  * @author gtr
+ * @deprecated this is not used anywhere - pah - use {@link SecurityGuard}
  */
 public class CeaUser {
   
