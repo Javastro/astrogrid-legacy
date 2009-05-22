@@ -42,7 +42,7 @@
     
     <managedApplications>
       <% for (int i = 0; i < apps.length; i++) { %>
-	<ApplicationReference><%=apps[i]%></ApplicationReference>
+	<applicationReference><%=apps[i]%></applicationReference>
       <%}%>
     </managedApplications>
   </capability>
