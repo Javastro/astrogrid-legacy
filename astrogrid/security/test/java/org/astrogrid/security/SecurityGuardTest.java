@@ -1,6 +1,5 @@
 package org.astrogrid.security;
 
-
 import java.io.File;
 import java.net.URI;
 import java.security.AccessControlException;
@@ -275,8 +274,7 @@ public class SecurityGuardTest extends TestCase {
     // The guard should be signed on if there is a delegated identity,
     // key and proxy certificate.
     SelfSignedCertificateFactory sscf = new SelfSignedCertificateFactory();
-    KeyPair keys = sscf.generateKeyPair();
-    X509Certificate c1 = sscf.generateCertificate(keys,
+    X509Certificate c1 = sscf.generateCertificate(delegations.getKeys(hash),
                                                   delegations.getName(hash),
                                                   200000);
     delegations.setCertificate(hash, c1);
