@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: site.xml,v 1.1 2009/05/06 16:42:13 pah Exp $ -->
+<!-- $Id: site.xml,v 1.2 2009/05/22 14:52:02 pah Exp $ -->
 <!-- this is a minimal site.xml to be inherited by projects that do not specify their own 
    Note also for projects that specify their own, they should really only specify the breadcrumb and menus within the body and allow the rest to be inherited -->
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -14,8 +14,8 @@
   <version position="left"/>
  <!-- need to get a nicer powered by logo... -->
   <poweredBy>
-    <logo name="Astrogrid" href="http://www.astrogrid.org/"
-          img="http://www.astrogrid.org/images/AGlogo.png"/>
+    <logo name="Complies with IVOA Standards" href="http://www.ivoa.net/" 
+          img="http://www.ivoa.net/icons/ivoa_logo_small.jpg"/>
   </poweredBy>
   <body>
     <links>
