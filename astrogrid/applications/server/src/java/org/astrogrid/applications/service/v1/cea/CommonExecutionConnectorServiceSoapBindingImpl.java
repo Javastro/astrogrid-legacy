@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.19 2009/05/15 22:51:19 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.20 2009/05/22 14:47:57 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -40,6 +40,7 @@ import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 import org.astrogrid.security.AxisServiceSecurityGuard;
+import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.workflow.beans.v1.axis._tool;
 
 /**
@@ -269,14 +270,14 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
  * @return 
    * @TODO review all this caching business - I think it it broken and not needed anyway as he securityGuard is passed into the {@link Application} (which represents an applicaiton execution) at creation time.
    */
-   private CeaSecurityGuard cacheSecurityGuard() throws ClassNotFoundException, 
+   private SecurityGuard cacheSecurityGuard() throws ClassNotFoundException, 
                                             InstantiationException, 
                                             IllegalAccessException, 
                                             CertificateException {
      AxisServiceSecurityGuard g = AxisServiceSecurityGuard.getInstanceFromContext();
      g.loadDelegation();
      CeaSecurityGuard.setInstanceInContext(g);
-     return CeaSecurityGuard.getInstanceFromContext();
+     return g;
    }
 
  
