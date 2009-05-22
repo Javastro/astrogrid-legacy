@@ -1,5 +1,5 @@
 /*
- * $Id: VosProtocol.java,v 1.4 2009/05/18 09:19:47 pah Exp $
+ * $Id: VosProtocol.java,v 1.5 2009/05/22 14:47:21 pah Exp $
  * 
  * Created on 3 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
+import java.security.cert.CertificateException;
 
 import junit.framework.Test;
 
@@ -36,6 +37,10 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
 
     
     private final AGVOSpaceDelegateResolver resolver;
+    /** logger for this class */
+    private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
+            .getLog(VosProtocol.class);
+    
 
     /**
      * Standard constuctor
@@ -47,16 +52,22 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
     
     public ExternalValue createIndirectValue(final URI reference, final SecurityGuard secGuard)
 	    throws InaccessibleExternalValueException {
-       	return new VOSExternalValue(secGuard,reference);
+       	try {
+            return new VOSExternalValue(secGuard,reference);
+        } catch (CertificateException e) {
+           throw new InaccessibleExternalValueException("cannot access "+ reference,e);
+        }
    }
 
     
     private class VOSExternalValue implements ExternalValue {
         private final AGVOSpaceDelegate delegate;
         private final URI reference;
-        VOSExternalValue(SecurityGuard secGuard, URI ref){
+        VOSExternalValue(SecurityGuard secGuard, URI ref) throws CertificateException{
             this.reference = ref;
+            logger.debug("secguard signedon="+secGuard.isSignedOn() +" id="+ secGuard.getX500Principal());
             if(secGuard.isSignedOn()){
+                secGuard.loadDelegation();
                 delegate = resolver.resolve(secGuard);
             }
             else {
@@ -104,6 +115,9 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
 
 /*
  * $Log: VosProtocol.java,v $
+ * Revision 1.5  2009/05/22 14:47:21  pah
+ * try to force the loaddelegation earlier
+ *
  * Revision 1.4  2009/05/18 09:19:47  pah
  * NEW - bug 2903: update to latest VOSpace client
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2903
