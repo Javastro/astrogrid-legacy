@@ -172,7 +172,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-security</artifactId>
-      <version>2009.1.a07</version>
+      <version>2009.1.a09</version>
     </dependency>
 
     <dependency>
