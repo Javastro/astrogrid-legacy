@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.security.delegation.*;
 
 /**
  *
@@ -19,6 +18,7 @@ public class IdentityProcessor extends ResourceProcessor {
   /**
    * Responds to HTTP requests.
    */
+  @Override
   public void service(HttpServletRequest  request,
                       DelegationUri       path,
                       HttpServletResponse response) throws IOException {

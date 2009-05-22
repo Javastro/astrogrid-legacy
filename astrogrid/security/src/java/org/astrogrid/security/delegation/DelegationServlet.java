@@ -5,7 +5,6 @@ import java.security.Security;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.security.delegation.*;
 
 /**
  * A servlet to handle the tree of web resources representing delegated
@@ -16,9 +15,12 @@ import org.astrogrid.security.delegation.*;
  * @author Guy Rixon
  */
 public class DelegationServlet extends HttpServlet {
-  
+
+  @Override
   public void init() {
-    Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+    if (Security.getProvider("BC") == null) {
+      Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+    }
   }
   
   /** 
@@ -26,6 +28,7 @@ public class DelegationServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
+  @Override
   protected void service(HttpServletRequest  request, 
                          HttpServletResponse response) throws IOException {
     DelegationUri path = new DelegationUri(request.getPathInfo());
