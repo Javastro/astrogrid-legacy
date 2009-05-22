@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.15 2009/05/20 09:36:48 pah Exp $ -->
+<!-- $Id: pom.xml,v 1.16 2009/05/22 14:52:23 pah Exp $ -->
    <!--
       This pom is intended to contain the "version" information for the astrogrid (and other commonly used) components.
       In addition it contains the basic project information - however it *must not* contain any specific build information - this is contained in the
@@ -29,7 +29,7 @@
      <astrogrid_registry_version>2008.2.01</astrogrid_registry_version>
      <astrogrid_vospace_version>2009.0.02.alpha</astrogrid_vospace_version>
      <astrogrid_community_version>2009.1.a02</astrogrid_community_version>
-     <astrogrid_security_version>2009.1.a04</astrogrid_security_version>
+     <astrogrid_security_version>2009.1.a08</astrogrid_security_version>
      <astrogrid_desktop_version>1.2.3</astrogrid_desktop_version>
    </properties>
    
