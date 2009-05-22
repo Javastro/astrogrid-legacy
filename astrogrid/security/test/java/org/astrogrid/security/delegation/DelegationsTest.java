@@ -49,8 +49,15 @@ public class DelegationsTest {
     
     X500Principal p = new X500Principal(identity);
     String expResult = instance.hash(p);
-    String result = instance.initializeIdentity(identity);
-    assertEquals(expResult, result);
+    String hash1 = instance.initializeIdentity(identity);
+    assertEquals(expResult, hash1);
+    KeyPair k1 = instance.getKeys(hash1);
+
+    // Initializing an identity must be idempotent.
+    String hash2 = instance.initializeIdentity(identity);
+    assertEquals(hash1, hash2);
+    KeyPair k2 = instance.getKeys(hash2);
+    assertEquals(k1, k2);
   }
 
 
@@ -92,17 +99,18 @@ public class DelegationsTest {
     
     // Initially, there should be no certificate.
     Delegations instance = Delegations.getInstance();
-    X509Certificate result = instance.getCertificate(this.testIdentity);
+    X509Certificate result = instance.getCertificate(testIdentity);
     assertNull("No certificate until client puts one.", result);
 
     SelfSignedCertificateFactory sscf = new SelfSignedCertificateFactory();
-    KeyPair keys = sscf.generateKeyPair();
-    X509Certificate c1 = sscf.generateCertificate(keys,
+    X509Certificate c1 = sscf.generateCertificate(instance.getKeys(testIdentity),
                                                   instance.getName(testIdentity),
                                                   200000);
-    
-    instance.setCertificate(this.testIdentity, c1);
-    X509Certificate c2 = instance.getCertificate(this.testIdentity);
+    assertNotNull(c1);
+    assertNotNull(testIdentity);
+    instance.setCertificate(testIdentity, c1);
+
+    X509Certificate c2 = instance.getCertificate(testIdentity);
     
     assertNotNull(c2);
     assertEquals(c1, c2);
