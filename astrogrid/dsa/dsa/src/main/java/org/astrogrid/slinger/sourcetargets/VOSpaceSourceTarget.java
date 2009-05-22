@@ -1,5 +1,5 @@
 /*
- * $Id: VOSpaceSourceTarget.java,v 1.2 2009/05/21 15:13:57 gtr Exp $ 
+ * $Id: VOSpaceSourceTarget.java,v 1.3 2009/05/22 17:52:43 gtr Exp $ 
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,16 +15,13 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.Principal;
 import java.security.cert.X509Certificate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.security.SecurityGuard;
-import org.astrogrid.slinger.CredentialCache;
-import org.astrogrid.vospace.client.delegate.AGVOSpaceDelegate;
-import org.astrogrid.vospace.client.delegate.AGVOSpaceDelegateResolver;
-import org.astrogrid.vospace.client.delegate.AGVOSpaceDelegateResolverImpl;
+import org.astrogrid.vospace.v11.client.system.SystemDelegate;
+import org.astrogrid.vospace.v11.client.system.SystemDelegateResolver;
+import org.astrogrid.vospace.v11.client.system.SystemDelegateResolverImpl;
 
 /**
  * A SourceTarget implementation to handle connections with VOSpace services.
@@ -35,7 +32,7 @@ public class VOSpaceSourceTarget implements SourceTargetIdentifier {
    private static Log log = LogFactory.getLog(VOSpaceSourceTarget.class);
 
    private URI nameUri;
-   private AGVOSpaceDelegate delegate = null;
+   private SystemDelegate delegate;
 
   /**
    * Constructs a VOSpaceSourceTarget with a given identity for the user.
@@ -53,9 +50,6 @@ public class VOSpaceSourceTarget implements SourceTargetIdentifier {
 
     this.nameUri = name;
 
-		AGVOSpaceDelegateResolver resolver =
-			new AGVOSpaceDelegateResolverImpl();
-
 		log.debug("X500Principal = " + guard.getX500Principal());
 	  log.debug("Private key = " + guard.getPrivateKey());
 		log.debug("Certificate chain = " + guard.getCertificateChain());
@@ -64,8 +58,10 @@ public class VOSpaceSourceTarget implements SourceTargetIdentifier {
 			X509Certificate c = chain[i];
 			log.debug(c.getSubjectDN() + " issued by " + c.getIssuerDN());
 		}
+    
+    SystemDelegateResolver resolver = new SystemDelegateResolverImpl();
 		if (guard.isSignedOn()) {
-      delegate = resolver.resolve(guard);
+      delegate = resolver.resolve(new CredentialResolver(guard));
 		}
 		else {
 			delegate = resolver.resolve();
@@ -94,9 +90,10 @@ public class VOSpaceSourceTarget implements SourceTargetIdentifier {
       //getConnection().setRequestProperty ("Content-Type", mimeType);
    }
 
-   public String toString() {
-      return "[VOS resource: '"+nameUri.toString()+"']";
-   }
+  @Override
+  public String toString() {
+    return "[VOS resource: '"+nameUri.toString()+"']";
+  }
 
    /** Resolves writer as a wrapper around resolved outputstream */
    public Writer openWriter() throws IOException {
