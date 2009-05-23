@@ -4,9 +4,32 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>maven-agrelease-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <name>maven-agrelease-plugin Maven Mojo</name>
-  <url>http://maven.apache.org</url>
+  
+     <issueManagement>
+      <system>Bugzilla</system>
+      <url>http://www.astrogrid.org/bugzilla/</url>
+   </issueManagement>
+   <inceptionYear>2002</inceptionYear>
+   <!--
+      DEAD <mailingLists> <mailingList> <name>Astrogrid Forum</name>
+      <subscribe>http://forum.astrogrid.org</subscribe>
+      <archive>http://forum.astrogrid.org</archive> </mailingList>
+      </mailingLists>
+   -->
+    <url>${astrogrid_doc_URL_root}/p/${project.artifactId}/${project.version}</url>
+   
+  <organization>
+      <name>AstroGrid</name>
+      <url>http://www.astrogrid.org</url>
+   </organization>
+   <licenses>
+      <license><name>Academic Free License version 2.1</name>
+        <distribution>repo</distribution>
+        <url>http://www.astrogrid.org/viewcvs/astrogrid/maven-base/LICENSE.txt?view=co</url>
+      </license>
+   </licenses>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -30,4 +53,45 @@
     	<version>2.1</version>
     </dependency>
   </dependencies>
+     <distributionManagement>
+    <repository>
+       <id>agrepo</id>
+       <name>Astrogrid Maven 2 Repository</name>
+       <url>scpexe://katatjuta.star.le.ac.uk/maven2/</url> <!-- also known as maven.astrogrid.org -->
+    </repository>
+    <snapshotRepository>
+        <id>ag-snapshot</id>
+        <name>Astrogrid Maven 2 Snapshot repository</name>
+        <url>http://agdevel.jb.man.ac.uk:8080/nexus/content/repositories/snapshots/</url>
+        <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
+     <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+ 
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/${project.artifactId}/${project.version}</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>
+    
+    
+  </distributionManagement>
+  <developers>
+       <developer>
+         <id>pah</id>
+         <name>Paul Harrison</name>
+         <email>pah@jb.man.ac.uk</email>
+         <organization>JBCA University of Manchester</organization>
+         <roles>
+            <role>Common Execution Architecture Developer</role>
+            <role>AR Developer</role>
+            <role>VOSpace Developer</role>
+         </roles>
+      </developer>
+      </developers>
+      
+        <properties>
+     <!-- note properties use _ rather than . as a word separator so that they can be used as substitution variables in velocity docs -->
+     <astrogrid_doc_server_root>scpexe://maven.astrogrid.org/software/doc/</astrogrid_doc_server_root>
+     <astrogrid_doc_URL_root>http://software.astrogrid.org/doc/</astrogrid_doc_URL_root>
+      </properties>
 </project>
