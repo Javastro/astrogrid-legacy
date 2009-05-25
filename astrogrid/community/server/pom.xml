@@ -8,64 +8,19 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-community-server</artifactId>
   <name>Community service library</name>
-  <version>2009.1.a03</version>
+  <version>2009.1.a04</version>
   <description>This project builds the jar of classes needed for the community web-application.</description>
-  <inceptionYear>2003</inceptionYear>
 
-  <licenses>
-    <license>
-      <name>Academic Free License v2.1</name>
-      <url>http://opensource-definition.org/licenses/afl-2.1.html</url>
-      <distribution>manual</distribution>
-    </license>
-  </licenses>
-  
-  <developers>
-    <developer>
-      <id>dave</id>
-      <name>Dave Morris</name>
-      <organization>IoA, Cambridge</organization>
-      <roles>
-        <role>Original developer</role>
-      </roles>
-      <timezone>0</timezone>
-    </developer>
-    <developer>
-      <id>gtr</id>
-      <name>Guy Rixon</name>
-      <organization>IoA Cambridge</organization>
-      <roles>
-        <role>Maintainer</role>
-      </roles>
-      <timezone>0</timezone>
-    </developer>
-  </developers>
-  <contributors>
-    <contributor>
-      <name>Gary Gilchrist</name>
-      <organization>University of Leicester</organization>
-      <roles>
-        <role>Tester</role>
-      </roles>
-      <timezone>0</timezone>
-    </contributor>
-    <contributor>
-      <name>Mark Holliman</name>
-      <organization>WFAU, Edinburgh</organization>
-      <roles>
-        <role>Tester</role>
-      </roles>
-      <timezone>0</timezone>
-    </contributor>
-  </contributors>
-  <scm>
-    <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community/server</connection>
-    <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/server</developerConnection>
-  </scm>
-  <organization>
-    <name>AstroGrid</name>
-    <url>http://www.astrogrid.org/</url>
-  </organization>
+  <parent>
+    <groupId>org.astrogrid</groupId>
+    <artifactId>astrogrid-base</artifactId>
+    <version>2009.1-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <astrogrid_name>community-server</astrogrid_name>
+  </properties>
+
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <testSourceDirectory>src/junit</testSourceDirectory>
@@ -145,7 +100,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-security</artifactId>
-      <version>2009.1.a02</version>
+      <version>2009.1.a09</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
@@ -180,7 +135,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filemanager-client</artifactId>
-      <version>2008.0a1</version>
+      <version>2008.0b2</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
@@ -245,22 +200,22 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-common</artifactId>
-      <version>2008.0a3r</version>
+      <version>2008.2.01</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-client-lite</artifactId>
-      <version>2008.0a3r</version>
+      <version>2008.2.01</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-resolver</artifactId>
-      <version>2008.0</version>
+      <version>2008.0.01</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-client</artifactId>
-      <version>2008.0</version>
+      <version>2008.0.01</version>
     </dependency>
     <dependency>
       <groupId>axis</groupId>
@@ -295,23 +250,9 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-jxr-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-pmd-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </reporting>
-     <url>${astrogrid_doc_URL_root}/p/community/${project.version}/server</url>  --> 
+
+   <url>${astrogrid_doc_URL_root}/p/community/${project.version}/server</url>
+   
    <distributionManagement>
     <site>
       <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
