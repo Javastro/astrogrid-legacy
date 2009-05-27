@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.5 2009/05/22 19:58:49 gtr Exp $
+/*$Id: DatacenterApplication.java,v 1.6 2009/05/27 15:25:57 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import javax.security.auth.x500.X500Principal;
+import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -34,7 +34,6 @@ import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
-import org.astrogrid.applications.service.v1.cea.CeaSecurityGuard;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
 import org.astrogrid.dataservice.queriers.Querier;
@@ -56,7 +55,6 @@ import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.QueryState;
 import org.astrogrid.security.SecurityGuard;
-import org.astrogrid.security.delegation.Delegations;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.sources.SourceIdentifier;
@@ -87,10 +85,19 @@ import uk.ac.starlink.votable.VOTableBuilder;
  */
 public class DatacenterApplication extends AbstractApplication implements QuerierListener, Runnable {
    
-   /**
-    * Commons Logger for this class
-    */
-   private static final Log logger = LogFactory.getLog(DatacenterApplication.class);
+  private static final Log logger = LogFactory.getLog(DatacenterApplication.class);
+
+  /**
+   * The credentials held for each job. Values in the map are
+   * containers of sets of matched credentials. Keys are job IDs.
+   * This cache is internally synchronized.
+   */
+  private static Hashtable<String,SecurityGuard> credentials;
+
+  /**
+   * The job identifier.
+   */
+  protected final String job;
    
    protected final Principal acc;
    /** the datacenter system object - a static, which provides access to the datacenter query framework */
@@ -115,6 +122,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       this.exec = exec;
       this.acc = new LoginAccount(ids.getUser().getUserId(),ids.getUser().getCommunity());
       logger.info("CEA DSA initialised, Job ID="+ids.getJobStepId());
+      job = ids.getId();
+      credentials = new Hashtable<String,SecurityGuard>();
    }
 
    /**
@@ -168,6 +177,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          this.reportFailure(e.getMessage());
          this.reportError(e+" executing "+this.getTool().getName(),e);
          return;
+      }
+      finally {
+        credentials.remove(job);
       }
    }
 
@@ -545,15 +557,17 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    * @return The guard (never null, even for anonymous callers).
    */
   private SecurityGuard getGuard() throws CertificateException {
-    SecurityGuard sg = new SecurityGuard(CeaSecurityGuard.getInstanceFromContext());
-    X509Certificate[] chain1 = sg.getCertificateChain();
-	  for (int i = 0; i < chain1.length; i++) {
-			X509Certificate c = chain1[i];
-			logger.debug(c.getSubjectDN() + " issued by " + c.getIssuerDN());
-		}
-    X500Principal p = sg.getX500Principal();
-    String hash = Integer.toString(p.hashCode());
-    sg.loadDelegation();
+    logger.debug(String.format("Looking for credentials for job %s", job));
+    SecurityGuard sg = credentials.get(job);
+    if (sg == null) {
+      logger.debug("Nothing found; making an empty SecurityGuard.");
+      sg = new SecurityGuard();
+    }
+    else {
+      logger.debug("Credentials found; loading delegated proxy.");
+      sg.loadDelegation();
+    }
+    
     X509Certificate[] chain2 = sg.getCertificateChain();
 	  for (int i = 0; i < chain2.length; i++) {
 			X509Certificate c = chain2[i];
@@ -713,4 +727,17 @@ public class DatacenterApplication extends AbstractApplication implements Querie
         ParameterDescription descr, ExternalValue indirectVal) {
       return new DatacenterParameterAdapter(pval, descr, indirectVal);
    }
+
+  /**
+   * Sets the credentials for a given job.
+   *
+   * @param job The job identifier.
+   * @param g1 The credentials.
+   */
+  static public void putCredentials(String job, SecurityGuard g1) {
+    SecurityGuard g2 = (g1 == null)? new SecurityGuard() : new SecurityGuard(g1);
+    credentials.put(job, g2);
+    logger.debug(String.format("Credentials are cached for job %s", job));
+  }
+
 }
