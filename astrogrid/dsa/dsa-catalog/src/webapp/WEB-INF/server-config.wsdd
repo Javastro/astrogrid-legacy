@@ -21,16 +21,6 @@
    <handler type="java:org.apache.axis.transport.local.LocalResponder" name="LocalResponder"/>
    <handler type="java:org.apache.axis.handlers.http.URLMapper" name="URLMapper"/>
    <handler type="java:org.apache.axis.handlers.SimpleAuthenticationHandler" name="Authenticate"/>
-   
-   <!-- IVO Standard SkyNode v0.7.4 : NOT SUPPORTED, LEFT FOR REFERENCE -->
-      <!-- Create one instance for the life of the service -->
-      <!--
-   <service name="SkyNode074" style="message" use='literal'>
-      <parameter name="className" value="org.astrogrid.dataservice.service.skynode.v074.SkyNodeService"/>
-      <parameter name="scope" value="Application"/>
-      <parameter name="allowedMethods" value="*"/>
-   </service>
-   -->
 
    <!-- CEA Service v1 -->
    <service name="CommonExecutionConnectorService" provider="java:RPC" style="wrapped" use="literal">
@@ -73,7 +63,7 @@
   <parameter name="allowedMethods" value="abort returnRegistryEntry init registerResultsListener queryExecutionStatus getExecutionSummary registerProgressListener execute getResults"/>
   <parameter name="wsdlPortType" value="CommonExecutionConnector"/>
   <parameter name="scope" value="Application"/>
-  <parameter name="className" value="org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceSoapBindingImpl"/>
+  <parameter name="className" value="org.astrogrid.dataservice.service.cea.CecServiceBinding"/>
   <parameter name="wsdlServicePort" value="CommonExecutionConnectorService"/>
   <parameter name="wsdlTargetNamespace" value="urn:cea.applications.astrogrid.org"/>
   <parameter name="wsdlServiceElement" value="CommonExecutionConnectorService"/>
