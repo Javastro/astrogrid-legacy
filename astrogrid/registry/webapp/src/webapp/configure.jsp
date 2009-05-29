@@ -175,10 +175,6 @@ Below you will find various configuration and installation instructions for your
 		The maximum number of results to return from queries.</li>
 			<li>reg.amend.harvest -- 
 		Does this registry need to do harvesting.</li>
-			<li>reg.oaipublish.0.9 -- 
-		The url to the oai publishing url for 0.9, default is set to astrogrid servlet, but is not required to use.</li>
-			<li>reg.amend.oaipublish.0.10 -- 
-		The url to the oai publishing url for 0.10, default is set to astrogrid servlet, but is not required to use.</li>
 			<li>reg.custom.exist.configuration -- 
 		Point to another exist configuration file on your disk hence a different data directory as well.  (only for internal db use).  This might be handly if you want to use the internal database, but not have the configuration file and data directory of eXist db with the war file so undeploying/updating wars will not lose data. Also use if servlet container does not unpack war file.</li>
 			<li>reg.custom.harvest.interval_hours -- 
@@ -191,26 +187,8 @@ Below you will find various configuration and installation instructions for your
 		Used for the Identify verb in OAI.  The earliest date stamp for records/metadata being published.</li>
 			<li>reg.custom.updatestylesheet.0.9 -- 
 		(Advanced) Specify stylesheets to be used on updates for particular versions.</li>
-			<li>reg.custom.harveststylesheet.0.9 -- 
-		(Advanced) Specify stylesheets to be used on harvest updates for particular versions.</li>
-			<li>reg.custom.harveststylesheet.0.10 -- 
-		(Advanced) Specify stylesheets to be used on harvest updates for particular versions.</li>
-			<li>reg.custom.keywordxpaths.0.9 -- 
-		(Advanced) Specify xpath for keyword search based on various versions in the registry.</li>
-			<li>reg.custom.keywordxpaths.0.10 -- 
-		(Advanced) Specify xpath for keyword search based on various versions in the registry.</li>
-			<li>reg.custom.identifier.hasauthorityid.0.9 -- 
-		(Advanced) Does the Identifier split up with an AuthorityID element based on version in registry.</li>
 			<li>reg.custom.rootNode.default -- 
 		(Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</li>
-			<li>reg.custom.rootNode.0.10 -- 
-		(Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</li>
-			<li>reg.custom.rootNode.0.9 -- 
-		(Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</li>
-			<li>reg.custom.declareNS.0.9 -- 
-		(Advanced) Declare the namespaces used on the registry, based on registry versions.</li>
-			<li>reg.custom.declareNS.0.10 --
-		(Advanced) Declare the namespaces used on the registry, based on registry versions.</li>
 	</ul>
 
 </p>

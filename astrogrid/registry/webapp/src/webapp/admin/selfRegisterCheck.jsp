@@ -37,9 +37,7 @@ changed correctly when updating.</i>
 <textarea name="Resource" cols='80' rows='20'>
 <%
 String version = request.getParameter("version");
-if(version.equals("0.10")) { %>
-<%@ include file="makeRegistryType0.10.jsp" %>
-<%}else if(version.equals("1.0")) { %>
+if(version.equals("1.0")) { %>
 <ri:VOResources
           xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"

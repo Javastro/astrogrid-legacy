@@ -41,8 +41,6 @@ sections on other certain ideas on manipulating the properties to help you in ce
 	  The logging directory where logs are placed.</li>		 
          <li>reg.amend.harvest -- 
       Does this registry need to do harvesting.</li>
-         <li>reg.amend.oaipublish.0.1 -- 
-      The url to the oai publishing url for 0.10, default is set to astrogrid servlet, needs to be changed if your context is not astrogrid-registry.</li>
          <li>reg.amend.oaipublish.1.0 -- 
       The url to the oai publishing url for 1.0, default is set to astrogrid servlet, needs to be changed if your context is not astrogrid-registry.</li>
          <li>reg.custom.exist.configuration -- 
@@ -55,16 +53,12 @@ sections on other certain ideas on manipulating the properties to help you in ce
       Used for the Identify verb in OAI.  The administration Email of this OAI repository.</li>
          <li>reg.custom.identify.earliestDatestamp -- 
       Used for the Identify verb in OAI.  The earliest date stamp for records/metadata being published.</li>
-         <li>reg.custom.keywordxpaths.0.10 -- 
-      (Advanced) Specify xpath for keyword search based on various versions in the registry.</li>
                <li>reg.custom.keywordxpaths.1.0 -- 
       (Advanced) Specify xpath for keyword search based on various versions in the registry.</li>
       
          <li>reg.custom.rootNode.default -- 
       (Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</li>
-         <li>reg.custom.declareNS.0.10 --
-      (Advanced) Declare the namespaces used on the registry queries, based on registry resource version 0.10.</li>
-         <li>reg.custom.declareNS.1.0 --
+          <li>reg.custom.declareNS.1.0 --
       (Advanced) Declare the namespaces used on the registry, based on registry resource version 1.0.</li>      
          <li> several xquery properties that can be customized.</li>
          <li>reg.custom.harvest.set-{main authority id} -- allows you to harvest only a particular set for a registry.  By default ivo_managed set is what is used.</li>
@@ -85,8 +79,8 @@ sections on other certain ideas on manipulating the properties to help you in ce
 	<p>
       This has not been tested and assumes you are an expert on this other xml database such as xhive, xindice, and others.  First it must support
  the xmldb api.  And you will need to change the "xmldb.uri" and the "xmldb.driver" to the proper settings.  A final note when something is
-performed on the database such as opening a collection it always has "/db" as part of the path hence opening a collection for updating for version 0.10 would open
-"xmldb:exist:///db/astrogridv0_10" hence you must make sure "/db" can be concatenated with your uri.  Also read the "changing queries" in the next section, most likely you will
+performed on the database such as opening a collection it always has "/db" as part of the path hence opening a collection for updating for version 1.0 would open
+"xmldb:exist:///db/astrogridv1_0" hence you must make sure "/db" can be concatenated with your uri.  Also read the "changing queries" in the next section, most likely you will
 need to change the queries up to conform to your xml database.
 </p>
    </subsection>

@@ -39,9 +39,7 @@ Resources are indexed if you make index changes with existing Resources in the d
 <textarea name="Index" cols='80' rows='20'>
 <%
 String version = org.astrogrid.registry.server.http.servlets.helper.JSPHelper.getQueryService(request).getResourceVersion();
-if(version.equals("0.10")) { %>
-<%@ include file="indexCollection0_10.jsp" %>
-<%}else if(version.equals("1.0")) { %>
+if(version.equals("1.0")) { %>
 <%@ include file="indexCollection1_0.jsp" %>
 <%} %>
 </textarea>

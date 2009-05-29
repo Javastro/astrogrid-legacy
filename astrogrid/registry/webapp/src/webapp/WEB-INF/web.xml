@@ -225,11 +225,6 @@
 
 
 	<servlet-mapping>
-   		<servlet-name>RegistryHarvest0_1</servlet-name>
-   		<url-pattern>/RegistryHarvest0_1</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
    		<servlet-name>RegistryHarvest1_0</servlet-name>
    		<url-pattern>/RegistryHarvest1_0</url-pattern>
 	</servlet-mapping>

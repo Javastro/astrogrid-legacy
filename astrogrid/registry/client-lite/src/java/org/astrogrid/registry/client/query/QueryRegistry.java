@@ -70,9 +70,9 @@ public abstract class QueryRegistry {
      */
     private static final Log logger = LogFactory.getLog(QueryRegistry.class);
     
-    private static String reg_default_version = "0.10";
+    private static String reg_default_version = "1.0";
     
-    private static String reg_transform_version = "0.10";
+    private static String reg_transform_version = "1.0";
     
     private static boolean return_soap_body = false;
     
@@ -516,9 +516,9 @@ public abstract class QueryRegistry {
        try {
            DocumentBuilder registryBuilder = null;
            registryBuilder =
-                DocumentBuilderFactory.newInstance().newDocumentBuilder();
-           doc = registryBuilder.newDocument();
-           Element root = doc.createElementNS(getSoapBodyNamespaceURI(), "reg:XQuerySearch");
+             DocumentBuilderFactory.newInstance().newDocumentBuilder();
+           	 doc = registryBuilder.newDocument();
+             Element root = doc.createElementNS(getSoapBodyNamespaceURI(), "reg:XQuerySearch");
              //String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
              //root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);       
              Element xqueryElem = doc.createElementNS(getSoapBodyNamespaceURI(),"reg:xquery");

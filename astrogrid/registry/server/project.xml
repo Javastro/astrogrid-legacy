@@ -103,12 +103,13 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
     	
+    	<!-- 
         <dependency>
            <artifactId>astrogrid-utils</artifactId>
            <groupId>org.astrogrid</groupId>
            <version>${astrogrid.utils.stable}</version>
         </dependency>
-        
+         -->
         <!-- Xfire dependencies -->
 		 <dependency>
             <groupId>xfire</groupId>
@@ -396,6 +397,7 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
     	
+    	<!-- 
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-pal-query</artifactId>
@@ -411,12 +413,12 @@
              <war.bundle>true</war.bundle>
          </properties>       	
         </dependency>
-    	
             <dependency>
                <artifactId>astrogrid-slinger-api</artifactId>
                <groupId>org.astrogrid</groupId>
                <version>${astrogrid.slinger.version}</version>
             </dependency>
+    	 -->
 	   	    	
         <dependency>
              <artifactId>servletapi</artifactId>

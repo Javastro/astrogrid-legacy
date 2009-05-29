@@ -70,7 +70,7 @@ determine what authority ids you are allowed to use.</i>
             thats sole purposes is about handling other Registry types so other Registries can discover Registries.  It is hosted by
             IVOA, read the admin/index.jsp about e-mailing the registry group the link to your Registry.</font></li>            
             <li>Now it is time to register your new Registry to the rest of the world.</li>
-            <li>3.)<font color='red'>No longer required when RofR is online and components are switched to 1.0 read admin/index.jsp, but currently 0.10 is still used</font> Do the second main link on "/admin/index.jsp" "Register with other Registries" for registering your installed registry to a known full registry.  </li>
+            <li>3.)Do the second main link on "/admin/index.jsp" "Register with other Registries" for registering your installed registry to a known full registry.  </li>
             <li>Now if your not planning on being a Full Registry then stop here.</li>
             <li>4.)Finally do the third main link on "/admin/index.jsp" to become a full registry by grabbing all the
                      registry types of a full registry.

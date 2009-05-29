@@ -44,13 +44,13 @@ public class ValidatorTest extends TestCase {
         }//for
     }
 
-    
+    /*
     public void testValidRegistry10() throws Exception {
         Document queryDoc = askQueryFromFile("ARegistryv10.xml");
         RegistryValidator.isValid(queryDoc,"VOResources");
     }
     
-    /*
+
     
     public void testValidCEAEntriesv10() throws Exception {
         Document queryDoc = askQueryFromFile("CEAEntriesv10.xml");
