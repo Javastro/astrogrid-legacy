@@ -3,6 +3,7 @@ package org.astrogrid.dataservice.service.servlet;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -195,22 +196,20 @@ public class VosiServlet extends HttpServlet {
   }
 
   protected void outputAvailability(Writer writer) throws ServletException {
+
      String schemaUrl = endpoint + "schema/Availability.xsd";
      // Let the DataServer do the testing
      boolean available = DataServer.isAvailable();
      try {
         writer.write(
           "<avail:availability\n" + 
-          "   xmlns:avail=\"http://www.ivoa.net/xml/Availability/v0.25\"\n" + 
-          "   xmlns:vr=\"http://www.ivoa.net/xml/VOresource/v1.0\"\n" + 
-          "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
-          "   xsi:schemaLocation=\"\n" + 
-          "      http://www.ivoa.net/xml/VOResource/v1.0    http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd\n" + 
-          "      http://www.ivoa.net/xml/Availability/v0.25 " + 
+          "   xmlns:avail='http://www.ivoa.net/xml/Availability/v0.4'\n" +
+          "   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'\n" +
+          "   xsi:schemaLocation='http://www.ivoa.net/xml/Availability/v0.4 " +
                  schemaUrl + 
-          "\"\n" + "\n>\n");
+          "'\n" + "\n>\n");
        writer.write("  <avail:available>");
-       if (available == true) {
+       if (available) {
           writer.write("true");
        }
        else {
@@ -218,25 +217,12 @@ public class VosiServlet extends HttpServlet {
        }
        writer.write("</avail:available>\n");
 
-       writer.write("  <uptime>");
-       if (available == false) {
-         writer.write("PT0S");
-       }
-       else {
-          // Set the up-time in the form needed for an xsd:duration element.
-          Date now = new Date();
-          long seconds = (now.getTime() - this.startTime.getTime()) / 1000;
-          writer.write("PT" + Long.toString(seconds) + "S");
-       }
-       writer.write("  </uptime>\n");
+       writer.write("  <avail:upSince>");
+       SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+       writer.write(f.format(startTime));
+       writer.write("</avail:upSince>\n");
 
-       writer.write(
-        "  <validTo nil=\"true\"/>\n" +
-        "  <avail:contact>\n" +
-        "    <vr:name>Unknown</vr:name>\n" +
-        "    <vr:email>Unknown</vr:email>\n" +
-        "  </avail:contact>\n" +
-        "</avail:availability>\n");
+       writer.write("</avail:availability>\n");
      }
      catch (Exception ex) {
         throw new ServletException(ex.getMessage());
