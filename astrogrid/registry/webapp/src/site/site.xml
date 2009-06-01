@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <body>
+   <breadcrumbs>
+  <item  name="Registry Webapp" href="${astrogrid_doc_URL_root}/p/registry/${project.version}/webapp" />
+  </breadcrumbs>
+    <menu name="Administrator Quickstart">  	
+       <item name="Home" href="../"/>
+   	   <item name="Installation/Requirements" href="installation.html"/>    	
+   	   <item name="Configuration" href="configure.html"/>    	
+   	   <item name="Self-Testing" href="self_testing.html"/>    	
+   	   <item name="External Testing" href="external_testing.html"/>    	
+   	   <item name="Upgrading" href="upgrading.html"/>
+   	   <item name="Uninstallation" href="uninstall.html"/>
+  	   <item name="Changes" href="regchanges.html"/>    	
+	</menu>
+    <menu name="Administrator Reference">  	
+    	   <item name="Registry Reference" href="registry_reference.html"/>    	
+    	   <item name="eXist for Registry" href="eXist_reference.html"/>    	
+		   <item name="Using external eXist" href="external_eXist.html"/>    	    	   
+    </menu>
+     <menu ref="reports"/>
+  </body>
+</project>

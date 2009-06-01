@@ -3,14 +3,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>astrogrid-registry-common</artifactId>
-  <version>${astrogrid_registry_version}</version>
   <name>AstroGrid registry common</name>
     <parent>
-      <artifactId>astrogrid-base</artifactId>
+      <artifactId>astrogrid-registry-base</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>2009.1-SNAPSHOT</version>
   </parent>
-  <url>${astrogrid_doc_URL_root}/p/registry/${astrogrid_release}/common</url>
   
   <description>
 		The Common area are what is common between both the Client and Server areas.
@@ -73,4 +71,12 @@
       <artifactId>astrogrid-contracts</artifactId>
     </dependency>
   </dependencies>
+ <url>${astrogrid_doc_URL_root}/p/registry/${project.version}/common</url>
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/registry/${project.version}/common</url>
+     </site>
+  </distributionManagement>
 </project>

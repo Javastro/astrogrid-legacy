@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>astrogrid-registry-server</artifactId>
     <parent>
-      <artifactId>astrogrid-base</artifactId>
+      <artifactId>astrogrid-registry-base</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>2009.1-SNAPSHOT</version>
   </parent>
@@ -290,4 +290,13 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+   <url>${astrogrid_doc_URL_root}/p/registry/${project.version}/server</url>
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/registry/${project.version}/server</url>
+     </site>
+  </distributionManagement>
+  
 </project>

@@ -3,14 +3,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>astrogrid-registry-client-lite</artifactId>
-  <version>${astrogrid_registry_version}</version>
   <name>AstroGrid registry client lite</name>
     <parent>
-      <artifactId>astrogrid-base</artifactId>
+      <artifactId>astrogrid-registry-base</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>2009.1-SNAPSHOT</version>
   </parent>
-  <url>${astrogrid_doc_URL_root}/p/registry/${astrogrid_release}/client</url>
   
   <description>
 		The Client area's main purpose is to give the users a delegate to go by
@@ -98,4 +96,12 @@
       <version>3.0</version>
     </dependency>
   </dependencies>
+ <url>${astrogrid_doc_URL_root}/p/registry/${project.version}/client</url>
+   <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/registry/${project.version}/client</url>
+     </site>
+  </distributionManagement>
 </project>
