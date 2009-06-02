@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: site.xml,v 1.4 2009/05/18 20:44:34 pah Exp $ -->
+<!-- $Id: site.xml,v 1.5 2009/06/02 17:43:43 pah Exp $ -->
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
@@ -67,7 +67,7 @@
     </menu>
     <menu ref="reports"></menu>
     <menu ref="Global Reports" href="global.html" collapse="true">
-       <item name="Javadoc" href="apidoc/"/>
+       <item name="Javadoc" href="apidocs/index.html"/>
     </menu>
   </body>
 </project>
