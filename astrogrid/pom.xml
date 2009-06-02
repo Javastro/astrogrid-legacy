@@ -1,42 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.3 2009/05/18 20:58:13 pah Exp $ --><!--
+<!-- $Id: pom.xml,v 1.4 2009/06/02 17:43:02 pah Exp $ --><!--
       This is the pom for generating the overall AG Software site documentation
    --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.astrogrid</groupId>
    <artifactId>developer-site</artifactId>
    <name>Astrogrid for Developers</name>
-   <version>2009.1-SNAPSHOT</version>
    <packaging>pom</packaging>
-      <parent>
+      <parent> 
       <artifactId>astrogrid-versions</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>2009.1-SNAPSHOT</version>  
     </parent>
    
    <modules>
- 
-      <module>applications</module> 
       <module>common</module>
       <module>contracts</module>
+      <!-- -->
+      <module>applications</module>
       <module>ivoa-objects</module>
       <module>security</module>
       <module>samp</module>
-      <module>community</module>
-      <module>vospace/delegate</module>
+      <module>community</module> 
+      <module>xmldb</module>
+      <module>registry</module>
+      
+<!-- needs svn password for trac report      <module>vospace/delegate</module>--> 
+    <!--    <module>dsa</module> -->
       <!-- <module>workflow-objects</module> do this manually because it has 1.4 code and is deprecated anyway -->
-   <!--   <module>registry</module> 
-<<<<<<< pom.xml
-      <module>pal</module>
-=======
-       <module>pal</module>
->>>>>>> 1.2
-   
-    -->   
 	
   <!--  <module>site-skin</module>  -->   
   </modules>
-   <url>${astrogrid_doc_server_root}/${project.version}/devel</url>
    <description>This is the developer level description of the AstroGrid Software</description>
    	<scm>
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/</connection>
@@ -44,6 +38,7 @@
       <url>http://www.astrogrid.org/viewcvs/astrogrid/</url>
    </scm>
   <build>
+  	<sourceDirectory>src/java</sourceDirectory>
     <plugins>
        <plugin>
          <groupId>org.apache.maven.plugins</groupId>
@@ -74,6 +69,8 @@
          </dependencies>
        </plugin>
     </plugins>
+    <extensions>
+    </extensions>
   </build>
    <reporting>
       <plugins>
@@ -95,43 +92,123 @@
       </plugin>
 
 
-       <plugin>
+    <plugin><!-- get an aggregate javadoc -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <reportSets>
+        <reportSet>
+            <id>aggregate</id>
+            <configuration>
+            <aggregate>true</aggregate> <!-- still need to set this to true for it to work - even though you deprecated -->
+           <groups>
+            <group>
+              <title>CEA</title>
+              <packages>org.astrogrid.applications.*</packages>
+            </group>
+            <group>
+              <title>Common</title>
+              <packages>org.astrogrid.common.*</packages>
+            </group>
+            <group>
+              <title>Contracts</title>
+              <packages>org.astrogrid.contracts.*</packages>
+            </group>
+             <group>
+              <title>Community</title>
+              <packages>org.astrogrid.community.*</packages>
+            </group>
+             <group>
+              <title>DSA</title>
+              <packages>org.astrogrid.dataservice.*</packages> <!-- plus more.... -->
+            </group>
+             <group>
+              <title>VOSpace</title>
+              <packages>org.astrogrid.vospace.*</packages>
+            </group>
+            <group>
+              <title>IVOA Objects</title>
+              <packages>net.ivoa.*</packages>
+            </group>
+            <group>
+              <title>Registry</title>
+              <packages>org.astrogrid.registry</packages>
+            </group>
+            <group>
+              <title>Desktop</title>
+              <packages>org.astrogrid.desktop</packages>
+            </group>
+            <group>
+              <title>Security</title>
+              <packages>org.astrogrid.security</packages><!-- add more groups.. -->
+            </group>
+          </groups>
+               <tags>
+                  <tag>
+                     <head>To Do:</head>
+                     <name>todo</name>
+                     <placement>a</placement>
+                  </tag>
+                  <tag>
+                     <head>Future:</head>
+                     <name>future</name>
+                  </tag>
+                  <tag>
+                     <head>Modified:</head>
+                     <name>modified</name>
+                     <placement>a</placement>
+                  </tag>
+                  <tag>
+                     <head>To be Refactored:</head>
+                     <name>IMPL</name>
+                  </tag>
+               </tags>
+            </configuration>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+       
+       
+      </plugins>
+      
+   </reporting>
+  <url>${astrogrid_doc_URL_root}/${project.version}/devel</url>
+  <distributionManagement>
+   <site>
+      <id>agsite</id>
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/${project.version}/devel</url>
+    </site>
+    </distributionManagement>
+    
+   <profiles>
+   <profile>
+      <id>fullsite</id>
+      <activation >
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+         <plugins>
+                <plugin>
        	<groupId>org.apache.maven.plugins</groupId>
        	<artifactId>maven-changelog-plugin</artifactId>
-         <version>2.1</version>
+        <version>2.1</version>
         <configuration>
           <type>range</type>
           <range>30</range>
           <connectionType>developerConnection</connectionType>           
          </configuration>
        </plugin>   
-      
+      <!-- uses too much memory 
        <plugin>
         <groupId>statcvs</groupId>
         <artifactId>maven-statcvs-plugin</artifactId>
         <version>3.0</version>
-      </plugin>
-       
-       
-      </plugins>
-   </reporting>
-  <distributionManagement>
-   <site>
-      <id>agsite</id>
-      <name>Default Site</name>
-      <url>${astrogrid_doc_server_root}/${astrogrid_release}/devel</url>
-    </site>
-    </distributionManagement>
-    
-    <profiles>
-      <profile>
-      <id>nonaggregate</id>
-      <activation>
-          <activeByDefault>true</activeByDefault>
-      </activation>
-      <reporting>
-      </reporting>
+      </plugin>-->
+   </plugins>
+      </build>
     </profile>
     </profiles>
-   
 </project>
