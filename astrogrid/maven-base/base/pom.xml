@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-   <!-- $Id: pom.xml,v 1.8 2009/05/18 16:54:29 pah Exp $ -->
+   <!-- $Id: pom.xml,v 1.9 2009/06/02 08:53:03 pah Exp $ -->
    <!--
            This is the official maven 2 base pom - use as a parent pom in components
       pah
@@ -118,6 +118,23 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-site-plugin</artifactId>
             <version>2.0</version>
+         </plugin>
+         <plugin> <!-- this plug-in makes appropriate links in the astrogrid doc site when a site is deployed -->
+            <groupId>org.astrogrid</groupId>
+            <artifactId>maven-agrelease-plugin</artifactId>
+            <version>0.1</version>
+            <executions>
+                <execution>
+            <id></id>
+            <phase>site-deploy</phase>
+            <goals>
+              <goal>release</goal>
+            </goals>
+            <inherited>true</inherited>
+            <configuration>
+            </configuration>
+          </execution>
+            </executions>
          </plugin>
          <!--
             need to create a tomcat config first (as in instructions for
@@ -244,13 +261,25 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>taglist-maven-plugin</artifactId>
             <configuration>
-               <tags><tag>FIXME</tag><tag>@TODO</tag></tags>
+            <tags>
+            <tag>FIXME</tag>
+            <tag>TODO</tag>
+            <tag>@todo</tag>
+            <tag>IMPL</tag>
+            <tag>@deprecated</tag>
+            </tags>
             </configuration>
          </plugin>
        <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javancss-maven-plugin</artifactId>
+        <version>2.0-beta-2</version>
+      </plugin>
+      
       
         
       </plugins>
@@ -292,6 +321,10 @@
           <connectionType>developerConnection</connectionType>           
          </configuration>
        </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jdepend-maven-plugin</artifactId>
+      </plugin>
        </plugins>
         </reporting>
       </profile>
