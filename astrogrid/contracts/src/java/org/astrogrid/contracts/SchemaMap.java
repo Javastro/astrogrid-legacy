@@ -47,7 +47,8 @@ public class SchemaMap {
         ALL.put("http://www.ivoa.net/xml/CEA/types/v1.1",SchemaMap.class.getResource("/schema/cea/CEATypes/v1.1/CEATypes.xsd"));
         ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v2.0",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"));
         ALL.put("http://www.astrogrid.org/schema/CEAExecutionRecord/v1.1",SchemaMap.class.getResource("/schema/cea/CEAExecutionRecord/v1.1/CEAExecutionRecord.xsd"));
-        ALL.put("http://www.ivoa.net/xml/UWS/v0.9.1",SchemaMap.class.getResource("/schema/cea/UWS/v0.9/UWS.xsd"));
+        ALL.put("http://www.ivoa.net/xml/UWS/v0.9.2",SchemaMap.class.getResource("/schema/cea/UWS/v0.9/UWS.xsd"));
+//        ALL.put("http://www.ivoa.net/xml/UWS/v1.0rc1",SchemaMap.class.getResource("/schema/cea/UWS/v1.0/UWS.xsd"));
         
         //obsolete CEA schemas - but still used in the original CEC interface
         ALL.put("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", SchemaMap.class.getResource("/schema/cea/CommonExecutionArchitectureBase/v1.0/CommonExecutionArchitectureBase.xsd"));        
@@ -146,6 +147,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.14  2009/06/03 16:57:02  pah
+correct UWS schema to 0.9.2
+
 Revision 1.13  2008/09/03 15:10:37  pah
 ASSIGNED - bug 1611: enhancements for stdization holding bug
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611

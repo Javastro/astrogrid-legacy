@@ -1,5 +1,5 @@
 /*
- * $Id: Namespaces.java,v 1.2 2008/09/03 15:10:37 pah Exp $
+ * $Id: Namespaces.java,v 1.3 2009/06/03 16:57:02 pah Exp $
  * 
  * Created on 17 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -46,7 +46,7 @@ public final class Namespaces {
     public static final Namespaces CEAIMPL = new Namespaces("ceaimpl","http://www.astrogrid.org/schema/CEAImplementation/v2.0");
     public static final Namespaces CEAT = new Namespaces("ceat","http://www.ivoa.net/xml/CEA/types/v1.1");
     public static final Namespaces VA = new Namespaces("va","http://www.ivoa.net/xml/VOApplication/v1.0rc1");
-    public static final Namespaces UWS = new Namespaces("uws","http://www.ivoa.net/xml/UWS/v0.9.1");
+    public static final Namespaces UWS = new Namespaces("uws","http://www.ivoa.net/xml/UWS/v0.9.2");
      
 //TODO add the other "current" ones...         
     public static String[] getNamespaceURIs()
@@ -78,6 +78,9 @@ public final class Namespaces {
 
 /*
  * $Log: Namespaces.java,v $
+ * Revision 1.3  2009/06/03 16:57:02  pah
+ * correct UWS schema to 0.9.2
+ *
  * Revision 1.2  2008/09/03 15:10:37  pah
  * ASSIGNED - bug 1611: enhancements for stdization holding bug
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
