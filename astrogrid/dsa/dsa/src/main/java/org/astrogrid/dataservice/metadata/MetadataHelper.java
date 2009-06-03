@@ -50,6 +50,24 @@ public class MetadataHelper {
 		return serverRoot;
 	}
 
+	/**
+   * Supplies the base URI of the HTTPS installation from the service
+   * configuratation. The URI always ends in a slash.
+   *
+   * @return The URI
+   */
+	public static String getInstallationSecureBaseURL() throws MetadataException {
+		String serverRoot =
+        ConfigFactory.getCommonConfig().getString("datacenter.url.secure");
+    if ((serverRoot == null) || ("".equals(serverRoot))) {
+      throw new MetadataException(errorMessage);
+    }
+		if (!serverRoot.endsWith("/")) {
+			serverRoot = serverRoot+"/";
+		}
+		return serverRoot;
+	}
+
    /** Produces an HTML table containing links for viewing the XML
     * produced by the various VOSI-style endpoints
     */
