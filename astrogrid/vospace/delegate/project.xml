@@ -456,7 +456,9 @@
             <resources>
                 <resource>
                     <directory>src/config</directory>
-                    <include>log4j.properties</include>
+                    <includes>
+                        <include>log4j.properties</include>
+                    </includes>
                 </resource>
             </resources>
         </unitTest>
