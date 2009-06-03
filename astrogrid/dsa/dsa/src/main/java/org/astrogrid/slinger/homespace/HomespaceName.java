@@ -1,5 +1,5 @@
 /*
- * $Id: HomespaceName.java,v 1.1 2009/05/13 13:20:41 gtr Exp $
+ * $Id: HomespaceName.java,v 1.2 2009/06/03 22:08:21 pah Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -16,7 +16,7 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.io.account.LoginAccount;
 
 /**
- * Homespace name, of the form homespace:<<acountname>>#path to file.
+ * Homespace name, of the form homespace:&lt;&lt;countname&gt;&gt#path to file.
  * eg homespace:mch@roe.ac.uk/queriers/6dfQuery.adql.  A 'homespace' is
  * a way of identifying a file by the user/account; so that someone can say 'in
  * my home space at this path', and the physical/net location of that homespace
@@ -177,8 +177,11 @@ public class HomespaceName
 
 /*
 $Log: HomespaceName.java,v $
-Revision 1.1  2009/05/13 13:20:41  gtr
-*** empty log message ***
+Revision 1.2  2009/06/03 22:08:21  pah
+fix doc to stop javadoc crash
+
+Revision 1.1.1.1  2009/05/13 13:20:41  gtr
+
 
 Revision 1.3  2008/02/07 17:27:45  clq2
 PAL_KEA_2518
