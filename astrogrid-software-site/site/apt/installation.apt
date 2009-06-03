@@ -1,0 +1,21 @@
+         --- 
+         AstroGrid Architecture 
+         --- 
+         Paul Harrison	
+         --- 
+         03-Oct-2008 
+         --- 
+
+General Installation Instructions
+
+   The AstroGrid services all run as {{{http://java.sun.com/javaee/}Java EE}} applications and are distributed at "war" files, 
+   which means that they need to run inside a suitable application server. AstroGrid tests its services using the {{{http://tomcat.apache.org/}Apache Tomcat}} server, however it should be 
+   possible to run the AstroGrid services on any Java EE compliant application server.
+   
+   Detailed information about installing the components can be found in the individual documentation for each component.
+   
+* Minimum Installation Requirements
+
+    * Java 1.5
+    
+    * Tomcat 5.5

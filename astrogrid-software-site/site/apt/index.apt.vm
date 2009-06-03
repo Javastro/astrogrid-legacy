@@ -19,46 +19,53 @@ Astrogrid Software Versions at a Glance ${project.version}
    To understand which components you might need please read the {{{architecture.html}architecture guide}} and the {{{installation.html}installation guide}} for general information about installation 
    prerequisites and procedures. More specific instructions for each component can be found in the documentation links in the table below.
    
+#if ($project.version.endsWith("SNAPSHOT"))
+   If the component is a "SNAPSHOT" version than the table below will take you to a directory where you can choose exactly which snapshot to download.
+#end
+   
+   
 * Deployable Web Services
 
 *-------------------------*--------------------------*----------------------*
-| <<Documentation>>       | <<Download>>||
+| <<Documentation>>       | <<Download>>|<<checksum>>|
 *-------------------------*--------------------------*----------------------*
-#if ($astrogrid_cea_version.endsWith("SNAPSHOT"))
-#set ($dlr = $m2reposnap)
+#if ($astrogrid_registry_version.endsWith("SNAPSHOT"))
+|  {{{${astrogrid_doc_URL_root}/p/registry/${astrogrid_registry_version}/webapp/}registry}} | {{{$m2reposnap/astrogrid-registry/${astrogrid_registry_version}/}astrogrid-registry-${astrogrid_registry_version}.war}} |{{{$m2repo/astrogrid-registry/${astrogrid_registry_version}/}sha1}} |
 #else
-#set ($dlr = $m2repo)
+|  {{{${astrogrid_doc_URL_root}/p/registry/${astrogrid_registry_version}/webapp/}registry}} | {{{$m2repo/astrogrid-registry/${astrogrid_registry_version}/astrogrid-registry-${astrogrid_registry_version}.war}astrogrid-registry-${astrogrid_registry_version}.war}} |{{{$m2repo/astrogrid-registry/${astrogrid_registry_version}/astrogrid-registry-${astrogrid_registry_version}.war.sha1}sha1}} |
 #end
-|  {{{${astrogrid_doc_URL_root}/p/cea/${astrogrid_cea_version}/cec}CEA}} | {{{$dlr/astrogrid-cea-cec/${astrogrid_cea_version}/astrogrid-cea-cec-${astrogrid_cea_version}.war}astrogrid-cea-cec-${astrogrid_cea_version}.war}} | {{{$dlr/astrogrid-cea-cec/${astrogrid_cea_version}/astrogrid-cea-cec-${astrogrid_cea_version}.war.sha1}sha1}} |
 *-------------------------*--------------------------*---------------------*
 #if ($astrogrid_community_version.endsWith("SNAPSHOT"))
-#set ($dlr = $m2reposnap)
+|  {{{${astrogrid_doc_URL_root}/p/community/${astrogrid_community_version}/webapp/}community}} | {{{$m2reposnap/astrogrid-community/${astrogrid_community_version}/}astrogrid-community-${astrogrid_community_version}.war}} |{{{$m2reposnap/astrogrid-community/${astrogrid_community_version}/}sha1}} |
 #else
-#set ($dlr = $m2repo)
+|  {{{${astrogrid_doc_URL_root}/p/community/${astrogrid_community_version}/webapp/}community}} | {{{$m2repo/astrogrid-community/${astrogrid_community_version}/astrogrid-community-${astrogrid_community_version}.war}astrogrid-community-${astrogrid_community_version}.war}} |{{{$m2repo/astrogrid-community/${astrogrid_community_version}/astrogrid-community-${astrogrid_community_version}.war.sha1}sha1}} |
 #end
-|  {{{${astrogrid_doc_URL_root}/p/community/${astrogrid_community_version}/webapp/}community}} | {{{$dlr/astrogrid-community/${astrogrid_community_version}/astrogrid-community-${astrogrid_community_version}.war}astrogrid-community-${astrogrid_community_version}.war}} |{{{$dlr/astrogrid-community/${astrogrid_community_version}/astrogrid-community-${astrogrid_community_version}.war}sha1}} |
-*-------------------------*--------------------------*---------------------*
-#if ($astrogrid_registry_version.endsWith("SNAPSHOT"))
-#set ($dlr = $m2reposnap)
-#else
-#set ($dlr = $m2repo)
-#end
-|  {{{${astrogrid_doc_URL_root}/p/registry/${astrogrid_registry_version}/webapp/}registry}} | {{{$dlr/astrogrid-registry/${astrogrid_registry_version}/astrogrid-registry-${astrogrid_registry_version}.war}astrogrid-registry-${astrogrid_registry_version}.war}} |{{{$dlr/astrogrid-registry/${astrogrid_registry_version}/astrogrid-registry-${astrogrid_registry_version}.war}sha1}} |
-*-------------------------*--------------------------*---------------------*
-#if ($astrogrid_dsa_version.endsWith("SNAPSHOT"))
-#set ($dlr = $m2reposnap)
-#else
-#set ($dlr = $m2repo)
-#end
-|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/webapp/}dsa}} | {{{$dlr/astrogrid-dsa/${astrogrid_dsa_version}/astrogrid-dsa-${astrogrid_dsa_version}.war}astrogrid-dsa-${astrogrid_dsa_version}.war}} |{{{$dlr/astrogrid-dsa/${astrogrid_dsa_version}/astrogrid-dsa-${astrogrid_dsa_version}.war}sha1}} |
 *-------------------------*--------------------------*---------------------*
 #if ($astrogrid_vospace_version.endsWith("SNAPSHOT"))
-#set ($dlr = $m2reposnap)
+|  {{{${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/webapp/}vospace}} | {{{$m2reposnap/astrogrid-vospace/${astrogrid_vospace_version}/}astrogrid-vospace-${astrogrid_vospace_version}.war}} |{{{$m2reposnap/astrogrid-vospace/${astrogrid_vospace_version}/}sha1}} |
 #else
-#set ($dlr = $m2repo)
+|  {{{${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/webapp/}vospace}} | {{{$m2repo/astrogrid-vospace/${astrogrid_vospace_version}/astrogrid-vospace-${astrogrid_vospace_version}.war}astrogrid-vospace-${astrogrid_vospace_version}.war}} |{{{$m2repo/astrogrid-vospace/${astrogrid_vospace_version}/astrogrid-vospace-${astrogrid_vospace_version}.war.sha1}sha1}} |
 #end
-|  {{{${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/webapp/}vospace}} | {{{$dlr/astrogrid-vospace/${astrogrid_vospace_version}/astrogrid-vospace-${astrogrid_vospace_version}.war}astrogrid-vospace-${astrogrid_vospace_version}.war}} |{{{$dlr/astrogrid-vospace/${astrogrid_vospace_version}/astrogrid-vospace-${astrogrid_vospace_version}.war}sha1}} |
+*-------------------------*--------------------------*---------------------*
+#if ($astrogrid_cea_version.endsWith("SNAPSHOT"))
+|  {{{${astrogrid_doc_URL_root}/p/cea/${astrogrid_cea_version}/cec}CEA}} | {{{$m2reposnap/astrogrid-cea-cec/${astrogrid_cea_version}/}astrogrid-cea-cec-${astrogrid_cea_version}.war}} | {{{$m2reposnap/astrogrid-cea-cec/${astrogrid_cea_version}/}sha1}} |
+#else
+|  {{{${astrogrid_doc_URL_root}/p/cea/${astrogrid_cea_version}/cec}CEA}} | {{{$m2repo/astrogrid-cea-cec/${astrogrid_cea_version}/astrogrid-cea-cec-${astrogrid_cea_version}.war}astrogrid-cea-cec-${astrogrid_cea_version}.war}} | {{{$m2repo/astrogrid-cea-cec/${astrogrid_cea_version}/astrogrid-cea-cec-${astrogrid_cea_version}.war.sha1}sha1}} |
+#end
+*-------------------------*--------------------------*---------------------*
+#if ($astrogrid_dsa_version.endsWith("SNAPSHOT"))
+|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/webapp/}dsa}} | {{{$m2reposnap/astrogrid-dsa/${astrogrid_dsa_version}/}astrogrid-dsa-${astrogrid_dsa_version}.war}} |{{{$m2reposnap/astrogrid-dsa/${astrogrid_dsa_version}/}sha1}} |
+#else
+|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/webapp/}dsa}} | {{{$m2repo/astrogrid-dsa/${astrogrid_dsa_version}/astrogrid-dsa-${astrogrid_dsa_version}.war}astrogrid-dsa-${astrogrid_dsa_version}.war}} |{{{$m2repo/astrogrid-dsa/${astrogrid_dsa_version}/astrogrid-dsa-${astrogrid_dsa_version}.war}sha1}} |
+#end
 *-------------------------*--------------------------*---------------------*
 
 
 * VODesktop
+
+## vodesktop in anomalous position at the moment
+   VODesktop is the user application for AstrogGrid, and indeed the whole of the VO. 
+   The VODesktop may be downloaded as a {{{http://www.astrogrid.org/maven/org.astrogrid/app.jars/vodesktop-${astrogrid_desktop_version}.app.jar}jar file}} or as {{{http://www.astrogrid.org/maven/org.astrogrid/dmgs/vodesktop-${astrogrid_desktop_version}.dmg} an OS X application}}. 
+   For more information on how to use VODesktop see {{http://www.astrogrid.org/wiki/Help/IntroVODesktop}}.
+   
+   

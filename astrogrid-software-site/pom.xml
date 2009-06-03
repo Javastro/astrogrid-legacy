@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.1 2009/05/13 15:31:43 pah Exp $ --><!--
+<!-- $Id: pom.xml,v 1.2 2009/06/03 15:33:00 pah Exp $ --><!--
       This is the pom for generating the overall AG Software site documentation
    -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.astrogrid</groupId>
    <artifactId>deployer-site</artifactId>
-   <name>Astrogrid for Deployers</name>
+   <name>AstroGrid for Deployers</name>
    <version>2009.1-SNAPSHOT</version>
    <packaging>pom</packaging>
       <parent>
@@ -17,6 +17,30 @@
     <url>${astrogrid_doc_URL_root}/${astrogrid_release}/deploy</url>
     <build>
     </build>
+    <!--  perhaps use dependencies to get at the snapshot versions 
+    <dependencies>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-cea-cec</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-community</artifactId>
+       <type>war</type>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-registry</artifactId>
+       <type>war</type>
+    </dependency>
+     <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-registry</artifactId>
+       <type>war</type>
+    </dependency>
+    </dependencies>
+    -->
     <reporting>
     <plugins>
      <plugin>

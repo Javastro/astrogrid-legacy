@@ -8,9 +8,34 @@
 
 Astrogrid Releases
     
-     
-   * {{{../../current/deploy/}Current 2008.2}}
+* Deployment Sites
+
+  The deployment sites represent the collection of component versions that make up the   
+
+   * {{{../../RELEASE/deploy/}Current Release}} - The latest integration-tested Release.
    
-   * {{{../../head/deploy/}Head}}
+   * {{{../../HEAD/deploy/}Head}} - The latest development releases, not necessarily integration-tested (use at your own risk).
    
-   * {{{../../2007.1/deploy}2007.1}}	
+   * {{{../../2008.2/deploy}2008.2}} - A previous integration-tested release.
+   
+* Individual Components
+
+   Each of the components can be individually released between each of the major Astrogrid release cycles - you can find documentation for the latest release of each component at
+   
+   * {{{../../registry/}Registry}}
+   
+   * {{{../../community/}Community}}
+   
+   * {{{../../vospace/}VOSpace}}
+   
+   * {{{../../cea/}CEA}}
+   
+   * {{{../../dsa/}DSA}}
+   
+   
+* Older Versions
+
+   All of the astrogrid components are distributed via the AstroGrid maven site, so it is possible to find a complete record of all the released versions by browsing this site directly at
+   {{http://www.astrogrid.org/maven2/org/astrogrid/}} 
+   
+   

@@ -8,18 +8,31 @@
 
 Astrogrid Architecture
 
-    Astrogrid provides software to fully participate in the Virtual Observatory both as a user (which is documented on {{http://www.astrogrid.org}}) and
+    Astrogrid provides software to fully participate in the Virtual Observatory (VO) both as a user (which is documented on {{http://www.astrogrid.org}}) and
     as a data publisher. This site describes the architecture from the point of view of a data publisher with information about the server-side
     components in the Astrogrid Software Suite.
     
+    Detailed information that might influence the decision to install each individual component is given on separate pages - this page gives a broad overview. In general the 
+    Astrogrid components form a coherent suite that is fully compliant with {{{http://www.ivoa.net/Documents}IVOA standards}}, and would allow a fully functional VO to be built with AstroGrid components
+    alone. However, because the components are fully standards-compliant they will interoperate properly with VO tools and services created by other organisations.
+    
 
-* Registry
-
-* Community
-
-* VOSpace
-
-* DSA
-
-* CEA
+    The first decision point comes from categorizing what you want to publish. The two components that allow you to publish to the VO are
+    
+      * {{{dsa.html}DSA}} (Data Set Access) - This component is best suited if you have tabular data stored in a database that you want to publish.
+    
+      * {{{cea.html}CEA}} (Common Execution Architecture) - This component is suited to publishing "applications" or algorithms - for example theoretical simulations, or special data processing applications.
+    
+    In order for others in the VO to be able to discover your service you need to publicise it - the component that you need to do this is the {{{registry.html}Registry}}, which acts as 
+    a sort of "yellow pages" where you can advertise properties of your service by publishing established metadata about the service. It is not always necessary to install a
+    registry if you are able to use someone else's registry to publish your service metadata, however it is often actually more convenient to have a local registry - this choice is discussed in more detail on the
+    {{{registry.html}registry page}}.
+    
+    If you have a very large data set that you intend to publish then it might be a benefit to provide a local {{{vospace.html}VOSpace}} service that might assist in reducing network traffic to your site. VOSpace is a virtualized 
+    storage system, which could be used to store intermediate results in a fashion that means that they are accessible to other VO services, as opposed to a user
+    downloading the results to their desktop computer for instance.
+    
+    Finally if the data/algorithms that you want to publish should not be publicly accessibly, but rather available only to a select group of users then you might consider installing a {{{community.html}}community}} component. This allows the 
+    administration of those users as well as providing them with the necessary security tokens (in the form of identity certificates) to interact with secured VO services.
+    
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: site.xml,v 1.1 2009/05/13 15:31:26 pah Exp $ -->
+<!-- $Id: site.xml,v 1.2 2009/06/03 15:33:00 pah Exp $ -->
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
@@ -7,7 +7,10 @@
     <src>http://www.astrogrid.org/images/AGlogo.png</src>
     <href>http://www.astrogrid.org/</href>
   </bannerRight>
-   
+  <skin><groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-site-skin</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        </skin> 
 <publishDate position="navigation-top" format="yyyy-MM-dd"/> 
 <version position="left"/>
  <!-- need to get a nicer powered by logo... -->
@@ -26,11 +29,17 @@
        <item name="Deployment Home " href="${astrogrid_doc_URL_root}/${astrogrid_release}/deploy/index.html"/>
     </breadcrumbs>
      <menu name="Deploying">
-       <item name="download" href="index.html"/>
-       <item name="architecture" href="architecture.html"/>
-       <item name="installing" href="installation.html"/>
-       <item name="other releases" href="releases.html"/>
-       <item name="acknowledging" href="acknowledge.html" />
+       <item name="Download" href="index.html"/>
+       <item name="Architecture" href="architecture.html" collapse="true">
+          <item name="Registry" href="registry.html"/>
+          <item name="Community" href="community.html"/>
+          <item name="VOSpace" href="vospace.html"/>
+          <item name="CEA" href="cea.html"/>
+          <item name="DSA" href="dsa.html"/>
+       </item>
+       <item name="Installing" href="installation.html"/>
+       <item name="Other releases" href="releases.html"/>
+       <item name="Acknowledging" href="acknowledge.html" />
      </menu>
      <menu ref="reports"/>
    </body>
