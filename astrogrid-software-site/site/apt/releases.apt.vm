@@ -10,7 +10,7 @@ Astrogrid Releases
     
 * Deployment Sites
 
-  The deployment sites represent the collection of component versions that make up the   
+  The deployment sites represent the collection of component versions that make up the regular AstroGrid release cycles.  
 
    * {{{../../RELEASE/deploy/}Current Release}} - The latest integration-tested Release.
    
@@ -20,18 +20,7 @@ Astrogrid Releases
    
 * Individual Components
 
-   Each of the components can be individually released between each of the major Astrogrid release cycles - you can find documentation for the latest release of each component at
-   
-   * {{{../../registry/}Registry}}
-   
-   * {{{../../community/}Community}}
-   
-   * {{{../../vospace/}VOSpace}}
-   
-   * {{{../../cea/}CEA}}
-   
-   * {{{../../dsa/}DSA}}
-   
+   Each of the components can be individually released between each of the major Astrogrid release cycles you can find the {{{latest.html}latest versions here}}.
    
 * Older Versions
 
