@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>maven-agrelease-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.2</version>
+  <version>0.3</version>
   <name>maven-agrelease-plugin Maven Mojo</name>
   
      <issueManagement>

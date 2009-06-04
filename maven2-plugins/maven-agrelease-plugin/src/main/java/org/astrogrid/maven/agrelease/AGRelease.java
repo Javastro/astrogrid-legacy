@@ -1,7 +1,7 @@
 package org.astrogrid.maven.agrelease;
 
 /*
- * $Id: AGRelease.java,v 1.2 2009/06/04 13:12:35 pah Exp $
+ * $Id: AGRelease.java,v 1.3 2009/06/04 15:13:09 pah Exp $
  * 
  * Created on 14 May 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -162,14 +162,24 @@ public class AGRelease
                String name = matcher.group(2);
                getLog().debug("start="+start + ", name="+name);
          
-
+           
+         
            if ( wagon instanceof CommandExecutor )
             {
                 CommandExecutor exec = (CommandExecutor) wagon;
                 
                 //TODO need to work out exactly what links are needed;
                 //make a link to the "current" version
-                exec.executeCommand( "rm -f /" + start + name +"; ln -s /"+start+"p/"+name+"/"+project.getVersion()+" /"+start+name);
+                
+                //link does not work - url redirects needed because of diffent levels and relative links
+//                exec.executeCommand( "rm -f /" + start + "latest/" + name +
+//                        "; cd /"+ start + "latest/; ln -s ../p/"+name+"/"+project.getVersion()+" "+ name);
+                final String dirname = "/"+ start + "latest/" + name + "/";
+                exec.executeCommand( "if [ ! -d "+dirname+" ]; then  mkdir "+dirname+ 
+                        ";fi;echo  'Redirect 301 /doc/latest/"+name+"/index.html http://software.astrogrid.org/doc/p/"+name+"/"+
+                        project.getVersion()+"/index.html' >" + dirname +
+                        ".htaccess;");
+
                 final String artifactname = project.getArtifactId()+"-"+project.getVersion()+"."+project.getPackaging();
                 //IMPL the quoting is rather bash dependent - perhaps better to send the command as a file - or use xsltproc...
                 exec.executeCommand(
