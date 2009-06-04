@@ -1,7 +1,7 @@
 package org.astrogrid.maven.agrelease;
 
 /*
- * $Id: AGRelease.java,v 1.1 2009/05/23 14:49:08 pah Exp $
+ * $Id: AGRelease.java,v 1.2 2009/06/04 13:12:35 pah Exp $
  * 
  * Created on 14 May 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -38,9 +38,13 @@ import org.codehaus.plexus.PlexusContainer;
 /**
  * Goal which creates appropriate site links in AG documentation.
  *
+ * @description creates appropriate site links in AG documentation.
+ * 
  * @goal release
  * 
  * @phase site-deploy
+ * 
+ * 
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 14 May 2009
  */
 public class AGRelease
@@ -166,6 +170,14 @@ public class AGRelease
                 //TODO need to work out exactly what links are needed;
                 //make a link to the "current" version
                 exec.executeCommand( "rm -f /" + start + name +"; ln -s /"+start+"p/"+name+"/"+project.getVersion()+" /"+start+name);
+                final String artifactname = project.getArtifactId()+"-"+project.getVersion()+"."+project.getPackaging();
+                //IMPL the quoting is rather bash dependent - perhaps better to send the command as a file - or use xsltproc...
+                exec.executeCommand(
+                        "perl -p -i -e '\"'\"'if(/"+project.getArtifactId()+
+                        "/){s@<a class=\"download\".+</a>@<a class=\"download\" href=\"http://www.astrogrid.org/maven2/org/astrogrid/"+
+                        project.getArtifactId()+"/"+project.getVersion()+"/"+artifactname+"\">"+artifactname+"</a>@};'\"'\"' /"+
+                        start + "/versions.html"
+                        );
             }
            }
            else {
