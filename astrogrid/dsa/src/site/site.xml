@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <body>
+   <breadcrumbs>
+  <item  name="DSA Home" href="${astrogrid_doc_URL_root}/p/dsa/${project.version}/" />
+  </breadcrumbs>
+     <menu ref="modules"/>
+     <menu ref="reports"/>
+  </body>
+</project>

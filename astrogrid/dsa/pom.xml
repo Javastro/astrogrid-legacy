@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>dsa-base</artifactId>
+  <packaging>pom</packaging>
+  <name>Data Set Access (DSA)</name>
+  <version>2009.1.a08</version>
+  <description>The Astrogrid Data Set Access (DSA) component</description>
+  <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>
+  </parent>
+  <url>${astrogrid_doc_URL_root}/p/dsa/${project.version}</url>
+    
+    <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/dsa/${project.version}</url>
+    </site>
+    
+ </distributionManagement>
+  <modules>
+    <module>dsa</module>
+    <module>dsa-catalog</module>
+   </modules>
+</project>

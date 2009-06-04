@@ -9,12 +9,12 @@
   
   <parent>
     <groupId>org.astrogrid</groupId>
-    <artifactId>astrogrid-base</artifactId>
-    <version>2009.1-SNAPSHOT</version>
+    <artifactId>dsa-base</artifactId>
+    <version>2009.1.a08</version>
   </parent>
 
   <properties>
-    <astrogrid_name>dsa</astrogrid_name>
+    <astrogrid_name>dsa/dsa</astrogrid_name>
   </properties>
   
   <build>
@@ -304,12 +304,12 @@
 
   </dependencies>
 
-  <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url> 
+  <url>${astrogrid_doc_URL_root}/p/dsa/${project.version}/dsa</url> 
   <distributionManagement>
     <site>
       <id>agsite</id>
       <name>Default Site</name>
-      <url>${astrogrid_doc_server_root}/p/${astrogrid_name}/${project.version}</url>
+      <url>${astrogrid_doc_server_root}/p/dsa/${project.version}/dsa</url>
     </site>
  </distributionManagement>
 

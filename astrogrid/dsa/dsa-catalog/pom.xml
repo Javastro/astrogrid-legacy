@@ -6,13 +6,12 @@
   <packaging>war</packaging>
   <version>2009.1.a08</version>
   <name>AstroGrid DSA/Catalog web-application</name>
-  <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url>
   
 
   <parent>
     <groupId>org.astrogrid</groupId>
-    <artifactId>astrogrid-base</artifactId>
-    <version>2009.1-SNAPSHOT</version>
+    <artifactId>dsa-base</artifactId>
+    <version>2009.1.a08</version>
   </parent>
 
   <dependencies>
@@ -88,13 +87,14 @@
 
   <properties>
     <netbeans.hint.deploy.server>gfv3</netbeans.hint.deploy.server>
-    <astrogrid.name>dsa-catalog</astrogrid.name>
+    <astrogrid.name>dsa/dsa-catalog</astrogrid.name>
   </properties>
+  <url>${astrogrid_doc_URL_root}/p/dsa/${project.version}/dsa-catalog</url>
 
   <distributionManagement>
     <site>
       <id>agsite</id>
-      <url>${astrogrid_doc_server_root}/p/${astrogrid_name}/${project.version}</url>
+      <url>${astrogrid_doc_server_root}/p/dsa/${project.version}/dsa-catalog</url>
     </site>
   </distributionManagement>
   
