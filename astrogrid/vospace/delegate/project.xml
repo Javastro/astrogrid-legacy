@@ -110,14 +110,13 @@
             <organizationUrl>http://www.star.le.ac.uk/</organizationUrl>
             <timezone>0</timezone>
         </developer>
-        <contributor>
-            <name>Guy Rixon</name>
+        <developer><name>Guy Rixon</name>
             <id>gtr</id>
             <email>gtr[at]ast.cam.ac.uk</email>
             <organization>University of Cambridge</organization>
             <organizationUrl>http://www.ast.cam.ac.uk/</organizationUrl>
             <timezone>0</timezone>
-        </contributor>
+        </developer>
         <developer>
             <name>Kona Andrews</name>
             <id>kea</id>
