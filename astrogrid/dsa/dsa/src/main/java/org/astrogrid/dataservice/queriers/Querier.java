@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.1 2009/05/13 13:20:25 gtr Exp $
+ * $Id: Querier.java,v 1.2 2009/06/05 17:46:44 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -67,6 +67,8 @@ public class Querier implements Runnable, PluginListener {
 
    /** true if abort called */
    private boolean aborted = false;
+
+   private boolean running = false;
    
    /** Represents what created this querier */
    private Object source = null;
@@ -161,20 +163,37 @@ public class Querier implements Runnable, PluginListener {
     * any error, because these won't go anywhere otherwise...
     */
    public void run() {
-      log.info("Starting Query ["+id+"] asynchronously...");
+     log.info("Starting Query ["+id+"] asynchronously...");
+     try {
+       synchronized(this) {
+         running = true;
+       }
       
-      try {
+       try {
          ask();
-      }
-      catch (Throwable th) {
+       }
+       catch (Throwable th) {
          log.error("Exception during Asynchronous Run",th);
          if (!(getStatus() instanceof QuerierError)) {
-            setStatus(new QuerierError(getStatus(), "", th));
+           setStatus(new QuerierError(getStatus(), "", th));
          }
-      }
-      log.info("...Ending asynchronous Query ["+id+"]");
+       }
+       log.info("...Ending asynchronous Query ["+id+"]");
       
+     }
+     finally {
+       synchronized(this) {
+         running = false;
+       }
+     }
    }
+
+  /**
+   * Reveals whether the querier is active.
+   */
+  public synchronized boolean isRunning() {
+    return running;
+  }
 
    /** Carries out the query via the plugin to do the query.
     * The plugin does the complete conversion, query and
