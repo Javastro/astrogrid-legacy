@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.1 2009/05/13 13:20:26 gtr Exp $
+/*$Id: QuerierManager.java,v 1.2 2009/06/05 17:47:21 gtr Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,10 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
@@ -33,8 +37,14 @@ import org.astrogrid.dataservice.queriers.status.QuerierStatus;
  */
 public class QuerierManager implements QuerierListener {
    
-   
    private static final Log log = LogFactory.getLog(QuerierManager.class);
+
+   /**
+    * The capacity of the queue for asynchronous queries. The system
+    * will hold at most this number of such queries, counting both
+    * those in the buffer and those active on servers.
+    */
+   private static final int ASYNC_QUEUE_SIZE = 50;
    
    /** Identifier for this manager/querier container */
    private String managerId;
@@ -52,19 +62,28 @@ public class QuerierManager implements QuerierListener {
    // WRITE ACCESS TO THE QUEUE VARIABLES IS SYNCHRONIZED, in methods
    // checkQueue and addQuerierToQueues
    // Note that the Hashtable class itself is synchronized.
+
+  /**
+   * An execution queue for asynchronous queries. The queue has FIFO semantics
+   * and the first n (n configurable) entries are executed in parallel by
+   * a thead pool.
+   */
+   ThreadPoolExecutor executor;
    
    /** lookup table of queued queriers.  These are queriers that are waiting on
     a 'free' spot on the asynchronous queries queue (synchronous queries are
     simply rejected if the synchronous queries queue is full.)
    */
-   private Hashtable queuedQueriers = new Hashtable();
+   private Hashtable<String, Querier> queuedQueriers =
+       new Hashtable<String, Querier>();
    
    /** priority index of queued queriers */
-   private TreeSet queuedPriorities = new TreeSet(new QuerierStartTimeComparator());
+   //private TreeSet queuedPriorities = new TreeSet(new QuerierStartTimeComparator());
 
    /** lookup table of all the current queriers indexed by their handle -
     * including both synchronous and asynchronous queriers.*/
-   private Hashtable runningQueriers = new Hashtable();
+   private Hashtable<String, Querier> runningQueriers =
+       new Hashtable<String, Querier>();
 
    /** lookup table of old queriers */
    private Hashtable closedQueriers = new Hashtable();
@@ -92,38 +111,6 @@ public class QuerierManager implements QuerierListener {
 
    /** Special ID used to create a test querier for testing getStatus,. etc */
    public final static String TEST_QUERIER_ID = "TestQuerier:";
-   
-   /** PriorityComparitor for the queue */
-   protected class QuerierStartTimeComparator implements Comparator {
-      
-      /**
-       * Compares its two arguments for order.  Returns a negative integer,
-       * zero, or a positive integer as the first argument is less than, equal
-       * to, or greater than the second.<p>
-       *
-       * @param o1 the first object to be compared.
-       * @param o2 the second object to be compared.
-       * @return a negative integer, zero, or a positive integer as the
-       *           first argument is less than, equal to, or greater than the
-       *        second.
-       * @throws ClassCastException if the arguments' types prevent them from
-       *           being compared by this Comparator.
-       */
-      public int compare(Object o1, Object o2) {
-         Querier q1 = (Querier) o1;
-         Querier q2 = (Querier) o2;
-         if (q1.getStatus().getStartTime().getTime()<q2.getStatus().getStartTime().getTime()) {
-            return -1;
-         }
-         else if (q1.getStatus().getStartTime().getTime()>q2.getStatus().getStartTime().getTime()) {
-            return 1;
-         }
-         else {
-            return 0;
-         }
-      }
-      
-   }
    
    /** Status Comparitor for displays */
    protected class StatusStartTimeComparator implements Comparator {
@@ -171,7 +158,16 @@ public class QuerierManager implements QuerierListener {
 
       queueFlushInterval = ConfigFactory.getCommonConfig().getInt("datacenter.flush.interval",queueFlushInterval);  // Default is initialised setting
 
-   }
+    // Construct the executor to have up to the configured number of server threads
+    // (10 is typical); to keep one thread ready at all times; to keep surplus
+    // threads available for a minute after they become idle; to use a bounded
+    // queue with strict FIFO semantics.
+    executor = new ThreadPoolExecutor(1,
+                                      maxSynchQueriers,
+                                      60,
+                                      TimeUnit.SECONDS,
+                                      new ArrayBlockingQueue(ASYNC_QUEUE_SIZE, true));
+  }
    
    /** Factory method - checks to see if the givenId already exists and returns that if so */
    public synchronized static QuerierManager getManager(String givenId) {
@@ -187,7 +183,7 @@ public class QuerierManager implements QuerierListener {
 
    /** Return the querier with the given id, or null if no matching querier 
 	 * could be found. */
-   public Querier getQuerier(String qid) {
+   public synchronized Querier getQuerier(String qid) {
 
       Querier q = (Querier) heldQueriers.get(qid);
       if (q != null) return q;
@@ -268,31 +264,38 @@ public class QuerierManager implements QuerierListener {
       heldQueriers.put(querier.getId(), querier);
    }
    
-   /**
-    * Adds the given querier to this manager, and starts it off on a new
-    * thread.  asynchronous.
-    */
-   public void submitQuerier(Querier querier)  {
+  /**
+   * Enqueues a querier for asynchronous execution.
+   */
+  public synchronized void submitQuerier(Querier querier)  {
 
-      //see if it's in holding queue
-      if (heldQueriers.get(querier.getId()) != null) {
-         heldQueriers.remove(querier.getId());
-      }
+    // see if it's in holding queue
+    if (heldQueriers.get(querier.getId()) != null) {
+      heldQueriers.remove(querier.getId());
+    }
       
-      //assigns handle
-      if (runningQueriers.get(querier.getId()) != null) {
-         log.error( "Handle '" + querier.getId() + "' already in use");
-         throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
-      }
-      querier.setStatus(new QuerierQueued(querier.getStatus()));
-      // Add to queuedPriorities before queuedQueriers, as the checkQueue()
-      // method expects the querier to be in queuedPriorities if it is
-      // in queuedQueriers;  previously we had a race condition here between
-      // threads.
-      addQuerierToQueues(querier);
-      querier.addListener(this);
-      checkQueue();
-   }
+    // Reject it if it's already running.
+    if (runningQueriers.get(querier.getId()) != null) {
+      log.error( "Handle '" + querier.getId() + "' already in use");
+      throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
+    }
+
+    // Tell it that it's queued.
+    querier.setStatus(new QuerierQueued(querier.getStatus()));
+
+    // Make it call back to this object when its state changes.
+    querier.addListener(this);
+
+    // Now actually enqueue it.
+    try {
+      executor.execute(querier);
+      queuedQueriers.put(querier.getId(), querier);
+    }
+    catch (RejectedExecutionException e) {
+      querier.abort();
+      closedQueriers.put(querier.getId(), querier);
+    }
+  }
 
 	public synchronized void fullyDeleteQuery(String qid) throws IOException
 	{
@@ -411,85 +414,25 @@ public class QuerierManager implements QuerierListener {
     */
    public void queryStatusChanged(Querier querier) {
 
-      //if it's changed to closed, then move to closed list
-      if (querier.getStatus().isFinished()) {
-         if (runningQueriers.containsKey(querier.getId())) {
-            runningQueriers.remove(querier.getId()); //remove if it's in running
-            decrementAsynchQueriers(); 
-         }
-         queuedQueriers.remove(querier.getId()); //remove if it's queued
-         /*
-          // This was to save memory - but flushing old jobs is better
-         if (!querier.getStatus().isError()) {
-            querier.clearStatusHistory(); // Clean up unneeded detail
-         }
-         */
-         closedQueriers.put(querier.getId(), querier); //make sure it's in closed
-         checkQueue(); //see if, if having removed it from running, we ought to start another
-      }
+     // If it just started, move it off the queued list.
+     if (querier.isRunning()) {
+       queuedQueriers.remove(querier.getId());
+       runningQueriers.put(querier.getId(), querier);
+     }
+
+     // If it's changed to closed, then move to closed list
+     if (querier.getStatus().isFinished()) {
+       queuedQueriers.remove(querier.getId());
+       runningQueriers.remove(querier.getId());
+       closedQueriers.put(querier.getId(), querier);
+       cleanupOldClosedJobs();
+     }
    }
 
-   /** Checks the queue - if there are queued queriers and not too many
-    * running, moves a queued one and starts it
-    */
-   protected synchronized void checkQueue() {
-
-      // Clean up jobs that finished > n days ago, to save memory
-      cleanupOldClosedJobs();
-
-      System.gc(); //encourage garbage collection
-
-      //have a look at the memory; if it's 'low' then reduce to one query
-      //at a time
-//      if (Runtime.getRuntime().freeMemory()<500000) {
-//         maxAsynchQueriers = 1;
-//         maxSynchQueriers = 1;
-//      }
-      boolean haveRoom = false;
-      if (
-         (maxAsynchQueriers == -1) || // No limit
-         (numAsynchQueriers < maxAsynchQueriers) // Below limit 
-      ) {
-         haveRoom = true;
-      }
-
-      /*
-      while ((queuedQueriers.size()>0) &&
-                ( (maxQueriers==-1) || (runningQueriers.size()<=maxQueriers))) {
-      */
-      while ((queuedQueriers.size()>0) && (haveRoom) ){
-         Querier first = (Querier) queuedPriorities.first();
-         queuedPriorities.remove(first);
-         queuedQueriers.remove(first.getId());
-         runningQueriers.put(first.getId(), first);
-         numAsynchQueriers = numAsynchQueriers + 1;
-         if (
-            (maxAsynchQueriers != -1) && 
-            (numAsynchQueriers >= maxAsynchQueriers) 
-         ) {
-            haveRoom = false;
-         }
-         Thread qth = new Thread(first);
-         qth.start();
-      }
-   }
-
-   /** Adds a querier to the Queued queue, and sets its priority */
-   protected synchronized void addQuerierToQueues(Querier querier)
-   {
-      queuedPriorities.add(querier);
-      queuedQueriers.put(querier.getId(), querier);
-   }
-   
-   /*
-      Clean up jobs that finished > n days ago, to save memory
-      NB This method is only (and may only be) called from a 
-		synchronized method.  It's only called from checkQueue(),
-		so it might be better just to move this code back inside
-		that function.
-    */
-   protected void cleanupOldClosedJobs() 
-   {
+  /**
+   * Purges the records of jobs older than a certain number of days.
+   */
+  protected synchronized void cleanupOldClosedJobs() {
       // Get current time
        Date now = new Date();
        GregorianCalendar nowCal = new GregorianCalendar();
@@ -534,246 +477,25 @@ public class QuerierManager implements QuerierListener {
    }
    
    /** Shut down - abort all running queries */
-   public void shutDown() {
-      //so no new ones start while we shut down
-      queuedQueriers.clear();
-      queuedPriorities.clear();
-      
-      QuerierStatus[] running = getRunning();
-      for (int i = 0; i < running.length; i++) {
-         Querier q = getQuerier(running[i].getId());
-         try {
-            q.abort();
-         }
-         catch (Throwable th) {
-            //ignore
-         }
-      }
-   }
+  public void shutDown() {
+    
+    // Close the queue to new queries.
+    executor.shutdown();
+
+    // Abort all the queued queries so their clients get notification.
+    for (Querier q: queuedQueriers.values()) {
+      q.abort();
+    }
+    queuedQueriers.clear();
+
+    // Abort the ones currently executing.
+    for (Querier q: runningQueriers.values()) {
+      q.abort();
+    }
+    runningQueriers.clear();
+  }
    
    
    
    
 }
-
-/*
- $Log: QuerierManager.java,v $
- Revision 1.1  2009/05/13 13:20:26  gtr
- *** empty log message ***
-
- Revision 1.7  2008/10/14 12:28:51  clq2
- PAL_KEA_2804
-
- Revision 1.6.40.1  2008/10/13 10:57:35  kea
- Updating prior to maintenance merge.
-
- Revision 1.6  2007/06/19 11:42:51  clq2
- KEA_2213
-
- Revision 1.5.2.1  2007/06/19 11:16:41  kea
- Bugfix to queueing.
-
- Revision 1.5  2007/06/08 13:16:12  clq2
- KEA-PAL-2169
-
- Revision 1.4.4.3  2007/06/08 13:06:40  kea
- Ready for trial merge.
-
- Revision 1.4.4.2  2007/06/07 09:16:11  kea
- Working.
-
- Revision 1.4.4.1  2007/04/10 15:16:02  kea
- Working on revised metadoc handling.
-
- Revision 1.4  2007/03/21 18:59:40  kea
- Preparatory work for v1.0 resources (not yet supported);  and also
- cleaning up details of completed jobs to save memory.
-
- Revision 1.3  2007/03/02 14:59:33  kea
- Fixed (I hope) a critical race bug (inadequate synchronization), leading
- to errors accessing jobs in the jobs queue - see bugzilla bug 2126.
-
- Revision 1.2  2005/05/27 16:21:02  clq2
- mchv_1
-
- Revision 1.1.1.1.24.1  2005/05/13 16:56:29  mch
- 'some changes'
-
- Revision 1.1.1.1  2005/02/17 18:37:35  mch
- Initial checkin
-
- Revision 1.1.1.1  2005/02/16 17:11:24  mch
- Initial checkin
-
- Revision 1.13.6.2  2004/11/25 18:33:43  mch
- more status (incl persisting) more tablewriting lots of fixes
-
- Revision 1.13.6.1  2004/11/22 00:57:16  mch
- New interfaces for SIAP etc and new slinger package
-
- Revision 1.13  2004/11/10 22:01:50  mch
- skynode starts and some fixes
-
- Revision 1.12  2004/11/09 18:27:21  mch
- added askCount
-
- Revision 1.11  2004/11/08 02:59:45  mch
- Added held queriers
-
- Revision 1.10  2004/11/03 00:17:56  mch
- PAL_MCH Candidate 2 merge
-
- Revision 1.6.10.2  2004/10/27 00:43:39  mch
- Started adding getCount, some resource fixes, some jsps
-
- Revision 1.6.10.1  2004/10/20 19:42:03  mch
- Added context listener and initalisation code
-
- Revision 1.6  2004/10/05 19:20:32  mch
- Queuing order
-
- Revision 1.5  2004/10/05 17:31:14  mch
- Fix to wrong class cast in comparator
-
- Revision 1.4  2004/10/05 15:20:03  mch
- Added starttime sort to getStatus
-
- Revision 1.3  2004/10/05 14:57:10  mch
- Added queued
-
- Revision 1.2  2004/10/01 18:04:58  mch
- Some factoring out of status stuff, added monitor page
-
- Revision 1.1  2004/09/28 15:02:13  mch
- Merged PAL and server packages
-
- Revision 1.25  2004/09/28 11:45:21  mch
- Removed thread pooling :-)
-
- Revision 1.24  2004/09/17 01:26:12  nw
- altered querier manager to use a threadpool
-
- Revision 1.23  2004/03/15 19:16:12  mch
- Lots of fixes to status updates
-
- Revision 1.22  2004/03/15 17:50:57  mch
- Added 'closed' querier queue and more published status information
-
- Revision 1.21  2004/03/13 23:38:46  mch
- Test fixes and better front-end JSP access
-
- Revision 1.20  2004/03/12 04:45:26  mch
- It05 MCH Refactor
-
- Revision 1.19  2004/03/08 15:57:42  mch
- Fixes to ensure old ADQL interface works alongside new one and with old plugins
-
- Revision 1.18  2004/03/08 00:31:28  mch
- Split out webservice implementations for versioning
-
- Revision 1.17  2004/03/07 00:33:50  mch
- Started to separate It4.1 interface from general server services
-
- Revision 1.16  2004/02/24 19:13:47  mch
- Added logging info trace
-
- Revision 1.15  2004/02/24 16:04:18  mch
- Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
-
- Revision 1.14  2004/02/17 03:38:05  mch
- Various fixes for demo
-
- Revision 1.13  2004/02/16 23:34:35  mch
- Changed to use Principal and AttomConfig
-
- Revision 1.12  2004/01/15 17:38:25  nw
- adjusted how queriers close() themselves - altered so it
- works no matter if Querier.close() or QuerierManager.closeQuerier(q)
- is called.
-
- Revision 1.11  2004/01/14 17:57:32  nw
- improved documentation
-
- Revision 1.10  2004/01/13 00:33:14  nw
- Merged in branch providing
- * sql pass-through
- * replace Certification by User
- * Rename _query as Query
-
- Revision 1.9.6.2  2004/01/08 09:43:41  nw
- replaced adql front end with a generalized front end that accepts
- a range of query languages (pass-thru sql at the moment)
-
- Revision 1.9.6.1  2004/01/07 11:51:07  nw
- found out how to get wsdl to generate nice java class names.
- Replaced _query with Query throughout sources.
-
- Revision 1.9  2003/12/03 19:37:03  mch
- Introduced DirectDelegate, fixed DummyQuerier
-
- Revision 1.8  2003/12/03 12:47:44  mch
- Better error reportiong for failed Querier instantiations
-
- Revision 1.7  2003/12/01 20:57:39  mch
- Abstracting coarse-grained plugin
-
- Revision 1.6  2003/12/01 16:43:52  nw
- dropped QueryId, back to string
-
- Revision 1.5  2003/11/28 16:10:30  nw
- finished plugin-rewrite.
- added tests to cover plugin system.
- cleaned up querier & queriermanager. tested
-
- Revision 1.4  2003/11/27 17:28:09  nw
- finished plugin-refactoring
-
- Revision 1.3  2003/11/27 00:52:58  nw
- refactored to introduce plugin-back end and translator maps.
- interfaces in place. still broken code in places.
-
- Revision 1.2  2003/11/25 18:50:06  mch
- Abstracted Querier from DatabaseQuerier
-
- Revision 1.1  2003/11/25 14:17:24  mch
- Extracting Querier from DatabaseQuerier to handle non-database backends
-
- Revision 1.5  2003/11/25 11:57:56  mch
- Added framework for SQL-passthrough queries
-
- Revision 1.4  2003/11/21 17:37:56  nw
- made a start tidying up the server.
- reduced the number of failing tests
- found commented out code
-
- Revision 1.3  2003/11/18 11:10:16  mch
- Removed client dependencies on server
-
- Revision 1.2  2003/11/17 15:41:48  mch
- Package movements
-
- Revision 1.1  2003/11/14 00:38:29  mch
- Code restructure
-
- Revision 1.5  2003/11/05 18:57:26  mch
- Build fixes for change to SOAPy Beans and new delegates
-
- Revision 1.4  2003/10/06 18:56:27  mch
- Naughtily large set of changes converting to SOAPy bean/interface-based delegates
-
- Revision 1.3  2003/09/26 11:38:00  nw
- improved documentation, fixed imports
-
- Revision 1.2  2003/09/25 01:23:28  nw
- altered visibility on generateHandle() so it can be used within DummyQuerier
-
- Revision 1.1  2003/09/24 21:02:45  nw
- Factored creation and management of database queriers
- into separate class. Simplifies DatabaseQuerier.
-
- Database Querier - added calls to timer, untagled status transitions
- 
- */
-
-
-
