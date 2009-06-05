@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTestBase.java,v 1.10 2008/12/16 19:29:38 pah Exp $
+ * $Id: RegistryEntryBuilderTestBase.java,v 1.11 2009/06/05 13:07:50 pah Exp $
  * 
  * Created on 02-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -25,6 +25,7 @@ import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ServiceDefinitionFactory;
 import org.astrogrid.applications.description.TemplatedServiceDefinition;
+import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 import org.astrogrid.applications.manager.DefaultMetadataService;
 import org.astrogrid.contracts.SchemaMap;
 import org.astrogrid.test.AstrogridAssert;
@@ -73,7 +74,7 @@ protected void setUp() throws Exception {
 protected ApplicationDescriptionLibrary lib;
    
    /** test to see if get description as objects and if castor thinks that they are valid.*/
-   public void testGetDescription() throws Exception {
+   public void testServerDescription() throws Exception {
         Document desc =  builder.getServerDescription();
         assertNotNull(desc);
         XMLUtils.PrettyDocumentToStream(desc, System.out);
@@ -82,7 +83,7 @@ protected ApplicationDescriptionLibrary lib;
     }
    
 /** test to see if get description as DOM and if XML valid from schema directly */
-   public void testDescriptionValidity() throws Exception {
+   public void testApplicationDescription() throws Exception {
        Document desc =  builder.getApplicationDescription(lib.getApplicationNames()[0]);
        assertNotNull(desc);
        //this tests xml validity via xml parser
@@ -92,7 +93,16 @@ protected ApplicationDescriptionLibrary lib;
        logger.info("pretty print of xml to be VALIDATED\n"+writer.toString());
        AstrogridAssert.assertSchemaValid(desc,"Resource",SchemaMap.ALL);
     }
-   //FIXME - will want to reimplement something like this....
+   
+   public void testCapabilitiesDescription() throws Exception {
+       Document desc = builder.getServerCapabilities();
+       assertNotNull(desc);
+       StringWriter writer = new StringWriter();
+       CEAJAXBUtils.printXML(desc,writer);
+       logger.info("pretty print of capabilities xml\n"+writer.toString());
+       
+   }
+   //TODO - will want to reimplement roundtrip like this....
 //  public void RoundTrip() throws Exception {
 //         VOResources entry = builder.makeEntry();
 //         assertNotNull(entry);
@@ -126,6 +136,12 @@ protected ApplicationDescriptionLibrary lib;
 
 /*
  * $Log: RegistryEntryBuilderTestBase.java,v $
+ * Revision 1.11  2009/06/05 13:07:50  pah
+ * RESOLVED - bug 2921: add capabilities to the automatic registration
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2921
+ *
+ * test to include capability generation
+ *
  * Revision 1.10  2008/12/16 19:29:38  pah
  * RESOLVED - bug 2875: Application registration lacks schemaLocation
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2875
