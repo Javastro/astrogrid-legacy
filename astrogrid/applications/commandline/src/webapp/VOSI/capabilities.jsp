@@ -9,10 +9,7 @@
   if(!base.endsWith("/")){
       base = base + "/";
   }
-  String[] apps = (String[]) request.getAttribute("cea.apps");
-  if (apps == null) {
-    apps = new String[0];
-  }
+  String caps = (String)request.getAttribute("cea.caps");
 %>
 
 <?xml-stylesheet type="text/xsl" href="<%=base%>/VOSI/capabilities.xsl"?>
@@ -26,58 +23,9 @@
     xsi:schemaLocation="
         http://www.ivoa.net/xml/VOResource/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd
         http://www.ivoa.net/xml/VODataService/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v1.0/VODataService.xsd
-        http://www.ivoa.net/xml/CEA/v1.0 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v1.0/CEAService.xsd
+        http://www.ivoa.net/xml/CEA/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd
         urn:astrogrid:schema:Capabilities <%=base%>VOSI/Capabilities.xsd
     "
 >
-
-  <capability xsi:type="cea:CeaCapability" standardID="ivo://org.astrogrid/std/CEA/v1.0">
-    <interface xsi:type="vr:WebService" version="1.0">
-      <accessURL use="full"><%=base%>services/CommonExecutionConnectorService</accessURL>
-    </interface>
-    <!-- would be better if this were its own interface type to make UWS -->
-    <interface xsi:type="cea:UWS-PA" version="0.9"> 
-      <accessURL use="full"><%=base%>uws/jobs</accessURL>
-    </interface>
-    
-    <managedApplications>
-      <% for (int i = 0; i < apps.length; i++) { %>
-	<applicationReference><%=apps[i]%></applicationReference>
-      <%}%>
-    </managedApplications>
-  </capability>
-
-  <capability standardID="ivo://org.astrogrid/std/VOSI/v0.4#capabilities">
-	<interface xsi:type="vs:ParamHTTP">
-	  <accessURL use="full"><%=base%>VOSI/capabilities</accessURL>
-	  <queryType>GET</queryType>
-	  <resultType>application/xml</resultType>
-	</interface>
-  </capability>
-  
-  <capability standardID="ivo://org.astrogrid/std/VOSI/v0.4#availability">
-	<interface xsi:type="vs:ParamHTTP">
-	  <accessURL use="full"><%=base%>VOSI/availability</accessURL>
-	  <queryType>GET</queryType>
-	  <resultType>application/xml</resultType>
-	</interface>
-  </capability>
-  
-   <capability standardID="ivo://org.astrogrid/std/VOSI/v0.4#applications">
-	<interface xsi:type="vs:ParamHTTP">
-	  <accessURL use="full"><%=base%>uws/reg/app</accessURL>
-	  <queryType>GET</queryType>
-	  <resultType>application/xml</resultType>
-	</interface>
-  </capability>
-  
-  <capability standardID="ivo://net.ivoa/std/Delegation">
-	<interface xsi:type="vs:ParamHTTP">
-	<!--FIXME - needs to have HTTPS defintion-->
-	  <accessURL use="full"><%=base%>delegation</accessURL>
-	  <queryType>GET</queryType>
-	  <resultType>application/xml</resultType>
-	</interface>
-   </capability>
-
+<%=caps%>
 </cap:capabilities>
