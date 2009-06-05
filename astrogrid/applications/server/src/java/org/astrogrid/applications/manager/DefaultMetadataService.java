@@ -23,6 +23,7 @@ import net.ivoa.resource.Interface;
 import net.ivoa.resource.Resource;
 import net.ivoa.resource.Service;
 import net.ivoa.resource.WebService;
+import net.ivoa.resource.dataservice.HTTPQueryType;
 import net.ivoa.resource.dataservice.ParamHTTP;
 import net.ivoa.resource.registry.iface.VOResources;
 
@@ -38,6 +39,7 @@ import org.astrogrid.applications.description.cea.CeaCapability;
 import org.astrogrid.applications.description.cea.ManagedApplications;
 import org.astrogrid.applications.description.cea.UWSPA;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
+import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.contracts.Namespaces;
 import org.astrogrid.contracts.SchemaMap;
@@ -109,7 +111,8 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
     protected Service getServer() throws Exception {
 
 	Service service = serviceFactory.getCECDescription();
-
+	String endpoint = this.configuration.getServiceEndpoint().toString();
+	if(! endpoint.endsWith("/")) endpoint = endpoint+"/";
 	CeaCapability ceaCap = new CeaCapability();
 	ManagedApplications managedApplications = ceaCap
 		.getManagedApplications();
@@ -137,16 +140,17 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
 	}
 
 	ceaCap.setStandardID(StandardIds.CEA_1_0);
-	Interface intf = new WebService();
+	WebService intf = new WebService();
 	intf.setVersion("1.0");
 	AccessURL accessURL = new AccessURL();
-	accessURL.setValue(this.configuration.getServiceEndpoint().toString()+"/services/CommonExecutionConnectorService");
+	
+        accessURL.setValue(endpoint+"services/CommonExecutionConnectorService");
 	intf.getAccessURL().add(accessURL);
 	ceaCap.getInterface().add(intf);
 	Interface uws = new UWSPA();
 	uws.setVersion("0.9");
 	AccessURL uwsURL = new AccessURL();
-	uwsURL.setValue(this.configuration.getServiceEndpoint().toString()+"uws/jobs");
+	uwsURL.setValue(endpoint+"uws/jobs");
 	uws.getAccessURL().add(uwsURL);
 	ceaCap.getInterface().add(uws);
 	
@@ -156,16 +160,62 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
 	//put in the VOSI capability itself - to allow vosi harvesting
 	Capability vosiCap = new Capability();
 	vosiCap.setStandardID("ivo://org.astrogrid/std/VOSI/v0.4#capabilities");
-	Interface vosiIntf = new ParamHTTP();
+	ParamHTTP vosiIntf = new ParamHTTP();
 	vosiIntf.setVersion("1.0");
 	AccessURL vosiURL = new AccessURL();
-	vosiURL.setValue(this.configuration.getServiceEndpoint().toString()+"/VOSI/capabilities");
+	vosiURL.setValue(endpoint+"/VOSI/capabilities");
+	vosiURL.setUse("full");
+	vosiIntf.setQueryType(HTTPQueryType.GET);
+	vosiIntf.setResultType("application/xml");
 	vosiIntf.getAccessURL().add(vosiURL);
 	vosiCap.getInterface().add(vosiIntf);
 	service.getCapability().add(vosiCap);
-        //FIXME need to put rest of the capabilities for CEA here & then use this instead of the VOSI jsp...
-       	
-	return service;
+	
+	
+	//put in the VOSI availability capability itself - to allow vosi harvesting
+        Capability availCap = new Capability();
+        availCap.setStandardID("ivo://org.astrogrid/std/VOSI/v0.4#availability");
+        ParamHTTP availInf = new ParamHTTP();
+        availInf.setVersion("1.0");
+        AccessURL availURL = new AccessURL();
+        availURL.setValue(endpoint+"VOSI/availability");
+        availURL.setUse("full");
+        availInf.setQueryType(HTTPQueryType.GET);
+        availInf.setResultType("application/xml");
+        availInf.getAccessURL().add(availURL);
+        availCap.getInterface().add(availInf);
+        service.getCapability().add(availCap);
+
+        //put in the VOSI availability capability itself - to allow vosi harvesting
+        Capability appCap = new Capability();
+        appCap.setStandardID("ivo://org.astrogrid/std/VOSI/v0.4#applications");
+        ParamHTTP appIntf = new ParamHTTP();
+        appIntf.setVersion("1.0");
+        AccessURL appURL = new AccessURL();
+        appURL.setValue(endpoint+"uws/reg/app");
+        appURL.setUse("full");
+        appIntf.setQueryType(HTTPQueryType.GET);
+        appIntf.setResultType("application/xml");
+        appIntf.getAccessURL().add(appURL);
+        appCap.getInterface().add(appIntf);
+        service.getCapability().add(appCap);
+
+        //put in the delegation capability itself 
+        Capability deleCap = new Capability();
+        deleCap.setStandardID("ivo://net.ivoa/std/Delegation");
+        ParamHTTP deleIntf = new ParamHTTP();
+        deleIntf.setVersion("1.0");
+        AccessURL deleURL = new AccessURL();
+        deleURL.setValue(endpoint+"delegation");
+        deleURL.setUse("full");
+        deleIntf.setQueryType(HTTPQueryType.GET);
+        deleIntf.setResultType("application/xml");
+        deleIntf.getAccessURL().add(deleURL);
+        deleCap.getInterface().add(deleIntf);
+        service.getCapability().add(deleCap);
+
+        
+        return service;
 
     }
 
@@ -292,6 +342,20 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
 	} catch (Exception e) {
 	    throw new MetadataException("error marshalling descriptions",e);
 	}
+    }
+
+    public Document getServerCapabilities() throws MetadataException {
+        try{
+       return marshall(getServer().getCapability());
+       
+    } catch (Exception e) {
+        throw new MetadataException("error marshalling capabilities",e);
+    }
+
+    }
+
+    private Document marshall(List<Capability> capability) throws MetadataException {
+        return CEAJAXBUtils.marshall(capability);
     }
 
 }

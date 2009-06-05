@@ -1,4 +1,4 @@
-/*$Id: MetadataService.java,v 1.10 2008/09/03 14:18:55 pah Exp $
+/*$Id: MetadataService.java,v 1.11 2009/06/05 13:07:17 pah Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,11 +52,20 @@ public interface MetadataService {
      * @throws CeaException 
      */
     public Document returnRegistryEntry() throws MetadataException;
+    
+    
+    public Document getServerCapabilities() throws MetadataException;
 }
 
 
 /* 
 $Log: MetadataService.java,v $
+Revision 1.11  2009/06/05 13:07:17  pah
+RESOLVED - bug 2921: add capabilities to the automatic registration
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2921
+
+add ability to just produce capabiliites
+
 Revision 1.10  2008/09/03 14:18:55  pah
 result of merge of pah_cea_1611 branch
 
