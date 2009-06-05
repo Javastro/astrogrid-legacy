@@ -9,8 +9,8 @@
   
   <parent>
     <groupId>org.astrogrid</groupId>
-    <artifactId>dsa-base</artifactId>
-    <version>2009.1.a08</version>
+    <artifactId>astrogrid-base</artifactId>
+    <version>2009.1-SNAPSHOT</version>
   </parent>
 
   <properties>
