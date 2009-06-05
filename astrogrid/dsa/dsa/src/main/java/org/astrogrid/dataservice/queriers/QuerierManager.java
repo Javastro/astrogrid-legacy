@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.2 2009/06/05 17:47:21 gtr Exp $
+/*$Id: QuerierManager.java,v 1.3 2009/06/05 20:28:27 gtr Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public class QuerierManager implements QuerierListener {
     * will hold at most this number of such queries, counting both
     * those in the buffer and those active on servers.
     */
-   private static final int ASYNC_QUEUE_SIZE = 50;
+   private static final int ASYNC_QUEUE_SIZE = 100;
    
    /** Identifier for this manager/querier container */
    private String managerId;
