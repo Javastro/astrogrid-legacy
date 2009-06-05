@@ -10,8 +10,8 @@
 
   <parent>
     <groupId>org.astrogrid</groupId>
-    <artifactId>dsa-base</artifactId>
-    <version>2009.1.a08</version>
+    <artifactId>astrogrid-base</artifactId>
+    <version>2009.1-SNAPSHOT</version>
   </parent>
 
   <dependencies>
@@ -19,7 +19,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-dsa</artifactId>
-      <version>2009.1.a07</version>
+      <version>2009.1.a08</version>
     </dependency>
 
     <dependency>
