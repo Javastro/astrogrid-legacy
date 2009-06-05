@@ -1,5 +1,5 @@
 /*
- * $Id: DummyVODescriptionProvider.java,v 1.13 2008/09/24 13:40:50 pah Exp $
+ * $Id: DummyVODescriptionProvider.java,v 1.14 2009/06/05 13:08:01 pah Exp $
  * Created on 02-Jun-2004
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -189,10 +189,19 @@ public class DummyVODescriptionProvider extends AbstractMetadataService
 	r.setCreated(value );
 	r.setUpdated(value);
     }
+
+    public Document getServerCapabilities() throws MetadataException {
+        // TODO Auto-generated method stub
+        throw new  UnsupportedOperationException("MetadataService.getServerCapabilities() not implemented");
+    }
 }
 
 /*
  * $Log: DummyVODescriptionProvider.java,v $
+ * Revision 1.14  2009/06/05 13:08:01  pah
+ * RESOLVED - bug 2921: add capabilities to the automatic registration
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2921
+ *
  * Revision 1.13  2008/09/24 13:40:50  pah
  * package naming changes
  *
