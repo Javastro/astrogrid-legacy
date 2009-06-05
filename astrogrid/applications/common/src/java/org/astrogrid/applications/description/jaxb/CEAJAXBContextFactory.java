@@ -1,5 +1,5 @@
 /*
- * $Id: CEAJAXBContextFactory.java,v 1.1 2008/10/06 12:12:37 pah Exp $
+ * $Id: CEAJAXBContextFactory.java,v 1.2 2009/06/05 13:06:20 pah Exp $
  * 
  * Created on 12 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -34,7 +34,8 @@ public class CEAJAXBContextFactory {
 	  		"org.astrogrid.applications.description.base:"+
 	  		"org.astrogrid.applications.description.cea:"+
 	  		"net.ivoa.uws:"+
-	  		"net.ivoa.resource.registry.iface");
+	  		"net.ivoa.resource.registry.iface:"+
+	  		"net.ivoa.resource.dataservice");
 	return jc;
 
     }
@@ -43,6 +44,11 @@ public class CEAJAXBContextFactory {
 
 /*
  * $Log: CEAJAXBContextFactory.java,v $
+ * Revision 1.2  2009/06/05 13:06:20  pah
+ * RESOLVED - bug 2921: add capabilities to the automatic registration
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2921
+ * marshalling of capabilities and namespace changes
+ *
  * Revision 1.1  2008/10/06 12:12:37  pah
  * factor out classes common to server and client
  *

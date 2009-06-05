@@ -1,5 +1,5 @@
 /*
- * $Id: NamespacePrefixMapperImpl.java,v 1.1 2008/10/06 12:12:37 pah Exp $
+ * $Id: NamespacePrefixMapperImpl.java,v 1.2 2009/06/05 13:06:20 pah Exp $
  * 
  * Created on 17 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -12,8 +12,6 @@
 
 package org.astrogrid.applications.description.jaxb;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
 import org.astrogrid.contracts.Namespaces;
 
 /**
@@ -22,33 +20,25 @@ import org.astrogrid.contracts.Namespaces;
  * @version $Name:  $
  * @since VOTech Stage 7
  */
-public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
+public class NamespacePrefixMapperImpl extends AbstractNamespaceMapper {
 
-    @Override
-    public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
-	String retval;
-	Namespaces namespace = Namespaces.getNameSpaceFromURI(namespaceUri);
-	if ((namespace != null)) {
-	    retval = namespace.getPrefix();
-	} else
-	{
-	    retval = suggestion;
-	}
-	return retval;
-    }
-
+    
+    private final static String[] uris = new String[]{
+        Namespaces.VR.getNamespace()
+        ,Namespaces.RI.getNamespace()
+        ,Namespaces.CEA.getNamespace()
+        ,Namespaces.CEAB.getNamespace()
+        ,Namespaces.UWS.getNamespace()
+        ,Namespaces.VS.getNamespace()
+        
+};
     /* (non-Javadoc)
      * @see com.sun.xml.bind.marshaller.NamespacePrefixMapper#getPreDeclaredNamespaceUris()
+     * 
      */
     @Override
     public String[] getPreDeclaredNamespaceUris() {
-	return new String[]{
-		Namespaces.VR.getNamespace(),
-		Namespaces.RI.getNamespace(),
-		Namespaces.CEA.getNamespace(),
-		Namespaces.CEAB.getNamespace()
-		
-	};
+	return uris;
     }
 
 }
@@ -56,6 +46,11 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 
 /*
  * $Log: NamespacePrefixMapperImpl.java,v $
+ * Revision 1.2  2009/06/05 13:06:20  pah
+ * RESOLVED - bug 2921: add capabilities to the automatic registration
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2921
+ * marshalling of capabilities and namespace changes
+ *
  * Revision 1.1  2008/10/06 12:12:37  pah
  * factor out classes common to server and client
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: CEAJAXBUtils.java,v 1.2 2009/02/26 12:25:48 pah Exp $
+ * $Id: CEAJAXBUtils.java,v 1.3 2009/06/05 13:06:20 pah Exp $
  * 
  * Created on 13 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,13 +13,14 @@
 package org.astrogrid.applications.description.jaxb;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringWriter;
+import java.io.StringReader;
+import java.io.Writer;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -46,15 +47,17 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import net.ivoa.resource.Capability;
 import net.ivoa.resource.Resource;
 import net.ivoa.resource.registry.iface.VOResources;
 
 import org.astrogrid.applications.description.MetadataException;
-import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.contracts.Namespaces;
 import org.astrogrid.contracts.SchemaMap;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -88,6 +91,7 @@ public class CEAJAXBUtils {
 	}
 	try {
         contextFactory = CEAJAXBContextFactory.newInstance();
+        if(logger.isDebugEnabled())logger.info(contextFactory.toString());
     } catch (JAXBException e) {
         logger.fatal("problem setting up the JAXB context", e);
     }
@@ -118,6 +122,7 @@ public class CEAJAXBUtils {
 		CEAJAXBUtils.regStylesheet, schema);
     }
 
+    @SuppressWarnings("unchecked")
     public static Document marshall(Tool tool) throws MetadataException {
 	Schema schema = findSchema(tool.getClass());
 	return CEAJAXBUtils.marshall(new JAXBElement(new QName(Namespaces.CEAT
@@ -181,6 +186,60 @@ public class CEAJAXBUtils {
 	    throw new MetadataException("problem marshalling metadata", e);
 	}
 
+    }
+    
+    /**
+     * Marshall a list of capabilities.
+     * @TODO At the moment there is no standard "wrapping" element for the list of capabilities - need to add schema for one.
+     * @param caps
+     * @return
+     * @throws MetadataException 
+     */
+    @SuppressWarnings("unchecked")
+    public static Document marshall(List<Capability> caps) throws MetadataException{
+       
+            try {
+                javax.xml.parsers.DocumentBuilderFactory dbf = DocumentBuilderFactory
+                        .newInstance();
+                dbf.setNamespaceAware(true);
+
+                 
+                String rootXML = "<cap:capabilities xmlns:cap='urn:astrogrid:schema:Capabilities' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                    + " xmlns:vr='"+Namespaces.VR.getNamespace()+"'"
+                    + " xmlns:vs='"+Namespaces.VS.getNamespace()+"'"
+                    + " xmlns:cea='"+Namespaces.CEA.getNamespace()+"'"
+                 + "></cap:capabilities>";
+                Document doc = dbf.newDocumentBuilder().parse(new InputSource(new StringReader(rootXML)));
+         
+                Marshaller m = CEAJAXBContextFactory.newInstance()
+                        .createMarshaller();
+                m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+                        new CapabilityNamespaceMapper());
+                
+                m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);//IMPL this is still putting out namespace declarations..
+                ValidationEventCollector handler  = new ValidationEventCollector();
+                m.setEventHandler(handler);
+                for (Capability capability : caps) {
+                    m.marshal(new JAXBElement(new QName("capability"), Capability.class, capability), new DOMResult(doc.getDocumentElement()));
+                    if(handler.hasEvents())
+                    {
+                      logger.error("invalid - "+capability);
+                        for (int i = 0; i < handler.getEvents().length; i++) {
+                          ValidationEvent array_element = handler.getEvents()[i];
+                      logger.error("validation error - "
+                              + array_element.toString(), null);
+                      }
+                    }
+               }
+               
+                return doc;
+            } catch (Exception e) {
+                throw new MetadataException("cannot marshall capabilities",e);
+            }
+            
+        
+
+       
     }
 
     public static <T> T unmarshall(InputStream is, Class<T> clazz) throws JAXBException, IOException, SAXException, MetadataException {
@@ -261,7 +320,7 @@ public class CEAJAXBUtils {
     }
     
     
-    public String printXML(Document doc){
+    public static void printXML(Node doc, Writer sw){
 	    try
 	          {
 	            // Set up the output transformer
@@ -272,18 +331,14 @@ public class CEAJAXBUtils {
 	      
 	           // Print the DOM node
 	     
-	           StringWriter sw = new StringWriter();
 	           StreamResult result = new StreamResult(sw);
 	           DOMSource source = new DOMSource(doc);
 	           trans.transform(source, result);
-	           String xmlString = sw.toString();
 	     
-	           return xmlString;
 	         }
 	         catch (TransformerException e)
 	         {
 	           e.printStackTrace();
-	           return null;
 	         }
     }
 
@@ -292,6 +347,11 @@ public class CEAJAXBUtils {
 
 /*
  * $Log: CEAJAXBUtils.java,v $
+ * Revision 1.3  2009/06/05 13:06:20  pah
+ * RESOLVED - bug 2921: add capabilities to the automatic registration
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2921
+ * marshalling of capabilities and namespace changes
+ *
  * Revision 1.2  2009/02/26 12:25:48  pah
  * separate more out into cea-common for both client and server
  *
