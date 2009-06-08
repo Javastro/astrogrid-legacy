@@ -1,21 +1,97 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Schema hivemind.lib.StrategyRegistry</title></head><body><div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th colspan="3" class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Schema hivemind.lib.StrategyRegistry</th></tr><tr><td colspan="3" class="description">Used with the hivemind.lib.StrategyFactory to define a set of classes and corresponding
-    strategies</td></tr><tr><td colspan="3" class="container"><table cellspacing="0" class="nested-object"><tr><th class="object-id" colspan="3"> Element &lt;strategy&gt; </th></tr><tr><th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td></tr><tr><td colspan="3" class="description">The class (or interface) to register the stategy against.</td></tr><tr><th class="sub-id">Attribute object (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">object</a></td></tr><tr><td colspan="3" class="description">The stategy instance that corresponds to objects of the given class.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;conversion
-         
-        <span class="attribute">class</span>="<span class="attribute-value">strategy.StrategyContribution</span>"
-       &gt; <ul><li>
-     &lt;map
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">registerClass</span>"
-       /&gt; </li><li>
-     &lt;map
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">object</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">strategy</span>"
-       /&gt; </li></ul> &lt;/conversion&gt; </div></td></tr><tr><th class="section" colspan="3">References</th></tr><tr><td class="container" colspan="3"><table class="layout" cellspacing="0"><tr><td><table cellspacing="0" class="summary"><tr><th> Configurations </th></tr><tr><td><a href="../config/framework.htmlResultTransformers.html">framework.htmlResultTransformers</a></td></tr><tr><td><a href="../config/framework.plainResultTransformers.html">framework.plainResultTransformers</a></td></tr><tr><td><a href="../config/framework.rpcResultTransformers.html">framework.rpcResultTransformers</a></td></tr></table></td></tr></table></td></tr></table></td></tr></table><hr/><div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Schema hivemind.lib.StrategyRegistry</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"><img src="../public.png" width="20" height="20" alt="[public]"> Schema hivemind.lib.StrategyRegistry</th>
+</tr>
+<tr>
+<td class="description" colspan="3">Used with the hivemind.lib.StrategyFactory to define a set of classes and corresponding
+    strategies</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table class="nested-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"> Element &lt;strategy&gt; </th>
+</tr>
+<tr>
+<th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The class (or interface) to register the stategy against.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute object (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">object</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The stategy instance that corresponds to objects of the given class.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;conversion <span class="attribute">class</span>="<span class="attribute-value">strategy.StrategyContribution</span>"
+       &gt; <ul>
+<li>
+     &lt;map <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">registerClass</span>"
+       /&gt; </li>
+<li>
+     &lt;map <span class="attribute">attribute</span>="<span class="attribute-value">object</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">strategy</span>"
+       /&gt; </li>
+</ul> &lt;/conversion&gt; </div>
+</td>
+</tr>
+<tr>
+<th colspan="3" class="section">References</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table cellspacing="0" class="layout">
+<tr>
+<td>
+<table class="summary" cellspacing="0">
+<tr>
+<th> Configurations </th>
+</tr>
+<tr>
+<td><a href="../config/framework.htmlResultTransformers.html">framework.htmlResultTransformers</a></td>
+</tr>
+<tr>
+<td><a href="../config/framework.plainResultTransformers.html">framework.plainResultTransformers</a></td>
+</tr>
+<tr>
+<td><a href="../config/framework.rpcResultTransformers.html">framework.rpcResultTransformers</a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

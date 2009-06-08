@@ -1,177 +1,163 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Module test</title></head><body><div class="title">Module test</div><div class="center-nav"><a href="../index.html">Back to master index</a></div><table cellspacing="0" class="top-level-object"><tr><th class="object-id">Module test</th><th>Version:</th><td>1.0.0</td></tr><tr><th colspan="2" class="object-id">Package:</th><td>org.astrogrid.acr.test</td></tr><tr><td colspan="3" class="description">Components for self-testing</td></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="layout"><tr><td/><td><table cellspacing="0" class="summary"><tr><th>Service Points</th></tr><tr><td><a href="../service/test.sessiontest.html">test.sessiontest</a></td></tr><tr><td><a href="../service/test.transporttest.html">test.transporttest</a></td></tr></table><div class="info">2 service points
-      </div></td><td/></tr></table></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">transporttest</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">TransportTest</span>"
-       /&gt; <br/>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">sessiontest</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">SessionTest</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;acr-module
-         
-        <span class="attribute">description</span>="<span class="attribute-value">services for internal testing.</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">test</span>"
-       &gt; <ul><li>
-     &lt;component
-         
-        <span class="attribute">description</span>="<span class="attribute-value">Not for normal use
- 
- provides functionality to test sessionig.</span>"
-      
-         
-        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.test.SessionTest</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">sessiontest</span>"
-       &gt; <ul><li>
-     &lt;method
-         
-        <span class="attribute">description</span>="<span class="attribute-value"/>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">get</span>"
-       &gt; <ul><li>
-     &lt;return
-         
-        <span class="attribute">description</span>="<span class="attribute-value"/>"
-      
-         
-        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
-      
-         
-        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
-       /&gt; </li></ul> &lt;/method&gt; </li><li>
-     &lt;method
-         
-        <span class="attribute">description</span>="<span class="attribute-value"/>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">put</span>"
-       &gt; <ul><li>
-     &lt;return
-         
-        <span class="attribute">description</span>="<span class="attribute-value"/>"
-      
-         
-        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
-      
-         
-        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
-       /&gt; </li><li>
-     &lt;param
-         
-        <span class="attribute">description</span>="<span class="attribute-value"/>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">o</span>"
-      
-         
-        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
-      
-         
-        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
-       /&gt; </li></ul> &lt;/method&gt; </li></ul> &lt;/component&gt; </li><li>
-     &lt;component
-         
-        <span class="attribute">description</span>="<span class="attribute-value">Not for normal use. 
- 
- Contains methods with interesting parameters and return types.
- Used to test correctness of the transport between client and AR.</span>"
-      
-         
-        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.test.TransportTest</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">transporttest</span>"
-       &gt; <ul><li>
-     &lt;method
-         
-        <span class="attribute">description</span>="<span class="attribute-value">method always throws a 'notfound' exception</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">throwCheckedException</span>"
-       &gt; <ul><li>
-     &lt;return
-         
-        <span class="attribute">description</span>="<span class="attribute-value"/>"
-      
-         
-        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
-      
-         
-        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
-       /&gt; </li></ul> &lt;/method&gt; </li><li>
-     &lt;method
-         
-        <span class="attribute">description</span>="<span class="attribute-value">method always throws a 'NullPointer' exception</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">throwUncheckedException</span>"
-       &gt; <ul><li>
-     &lt;return
-         
-        <span class="attribute">description</span>="<span class="attribute-value"/>"
-      
-         
-        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
-      
-         
-        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
-       /&gt; </li></ul> &lt;/method&gt; </li><li>
-     &lt;method
-         
-        <span class="attribute">description</span>="<span class="attribute-value">method always throws a new subtype of RuntimeException</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">throwUncheckedExceptionOfUnknownType</span>"
-       &gt; <ul><li>
-     &lt;return
-         
-        <span class="attribute">description</span>="<span class="attribute-value"/>"
-      
-         
-        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
-      
-         
-        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
-       /&gt; </li></ul> &lt;/method&gt; </li><li>
-     &lt;method
-         
-        <span class="attribute">description</span>="<span class="attribute-value">method simply echos it's parameter byte array back again</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">echoByteArray</span>"
-       &gt; <ul><li>
-     &lt;return
-         
-        <span class="attribute">description</span>="<span class="attribute-value"/>"
-      
-         
-        <span class="attribute">type</span>="<span class="attribute-value">byte[]</span>"
-      
-         
-        <span class="attribute">uitype</span>="<span class="attribute-value">List of : byte</span>"
-       /&gt; </li><li>
-     &lt;param
-         
-        <span class="attribute">description</span>="<span class="attribute-value"/>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">arr</span>"
-      
-         
-        <span class="attribute">type</span>="<span class="attribute-value">byte[]</span>"
-      
-         
-        <span class="attribute">uitype</span>="<span class="attribute-value">List of : byte</span>"
-       /&gt; </li></ul> &lt;/method&gt; </li></ul> &lt;/component&gt; </li></ul> &lt;/acr-module&gt; </div></td></tr></table><hr/><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Module test</title>
+</head>
+<body>
+<div class="title">Module test</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id">Module test</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th class="object-id" colspan="2">Package:</th><td>org.astrogrid.acr.test</td>
+</tr>
+<tr>
+<td class="description" colspan="3">Integration tests - only used within build.</td>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="layout" cellspacing="0">
+<tr>
+<td></td><td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/test.sessiontest.html">test.sessiontest</a></td>
+</tr>
+<tr>
+<td><a href="../service/test.transporttest.html">test.transporttest</a></td>
+</tr>
+</table>
+<div class="info">2 service points
+      </div>
+</td><td></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;acrService <span class="attribute">id</span>="<span class="attribute-value">transporttest</span>"
+       <span class="attribute">interface</span>="<span class="attribute-value">TransportTest</span>"
+       /&gt; <br>
+     &lt;acrService <span class="attribute">id</span>="<span class="attribute-value">sessiontest</span>"
+       <span class="attribute">interface</span>="<span class="attribute-value">SessionTest</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;acr-module <span class="attribute">description</span>="<span class="attribute-value">services for internal testing.</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">test</span>"
+       &gt; <ul>
+<li>
+     &lt;component <span class="attribute">description</span>="<span class="attribute-value">Not for normal use</span>"
+       <span class="attribute">excluded</span>="<span class="attribute-value">true</span>"
+       <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.test.SessionTest</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">sessiontest</span>"
+       &gt; <ul>
+<li>
+     &lt;method <span class="attribute">description</span>="<span class="attribute-value"></span>"
+       <span class="attribute">name</span>="<span class="attribute-value">get</span>"
+       &gt; <ul>
+<li>
+     &lt;return <span class="attribute">description</span>="<span class="attribute-value"></span>"
+       <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+       <span class="attribute">uitype</span>="<span class="attribute-value">String</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method <span class="attribute">description</span>="<span class="attribute-value"></span>"
+       <span class="attribute">name</span>="<span class="attribute-value">put</span>"
+       &gt; <ul>
+<li>
+     &lt;return <span class="attribute">description</span>="<span class="attribute-value"></span>"
+       <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+       <span class="attribute">uitype</span>="<span class="attribute-value">void</span>"
+       /&gt; </li>
+<li>
+     &lt;param <span class="attribute">description</span>="<span class="attribute-value"></span>"
+       <span class="attribute">name</span>="<span class="attribute-value">o</span>"
+       <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+       <span class="attribute">uitype</span>="<span class="attribute-value">String</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component <span class="attribute">description</span>="<span class="attribute-value">Not for normal use.</span>"
+       <span class="attribute">excluded</span>="<span class="attribute-value">true</span>"
+       <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.test.TransportTest</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">transporttest</span>"
+       &gt; <ul>
+<li>
+     &lt;method <span class="attribute">description</span>="<span class="attribute-value">method always throws a 'notfound' exception</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">throwCheckedException</span>"
+       &gt; <ul>
+<li>
+     &lt;return <span class="attribute">description</span>="<span class="attribute-value"></span>"
+       <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+       <span class="attribute">uitype</span>="<span class="attribute-value">void</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method <span class="attribute">description</span>="<span class="attribute-value">method always throws a 'NullPointer' exception</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">throwUncheckedException</span>"
+       &gt; <ul>
+<li>
+     &lt;return <span class="attribute">description</span>="<span class="attribute-value"></span>"
+       <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+       <span class="attribute">uitype</span>="<span class="attribute-value">void</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method <span class="attribute">description</span>="<span class="attribute-value">method always throws a new subtype of RuntimeException</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">throwUncheckedExceptionOfUnknownType</span>"
+       &gt; <ul>
+<li>
+     &lt;return <span class="attribute">description</span>="<span class="attribute-value"></span>"
+       <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+       <span class="attribute">uitype</span>="<span class="attribute-value">void</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method <span class="attribute">description</span>="<span class="attribute-value">method simply echos it's parameter byte array back again</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">echoByteArray</span>"
+       &gt; <ul>
+<li>
+     &lt;return <span class="attribute">description</span>="<span class="attribute-value"></span>"
+       <span class="attribute">type</span>="<span class="attribute-value">byte[]</span>"
+       <span class="attribute">uitype</span>="<span class="attribute-value">byte[]</span>"
+       /&gt; </li>
+<li>
+     &lt;param <span class="attribute">description</span>="<span class="attribute-value"></span>"
+       <span class="attribute">name</span>="<span class="attribute-value">arr</span>"
+       <span class="attribute">type</span>="<span class="attribute-value">byte[]</span>"
+       <span class="attribute">uitype</span>="<span class="attribute-value">byte[]</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+</ul> &lt;/acr-module&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

@@ -1,22 +1,84 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Service Point hivemind.lib.ChainFactory</title></head><body><div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Service Point hivemind.lib.ChainFactory</th><th> Interface: </th><td>org.apache.hivemind.ServiceImplementationFactory</td></tr><tr><td colspan="3" class="description">Service implementation factory that produces a chain of command based on a 
-    configuration point that conforms tothe hivemind.lib.ChainContribution schema.</td></tr><tr><th colspan="2"> Parameters occurs: </th><td>1</td></tr><tr><th class="section" colspan="3"> Parameters Schema </th></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="nested-object"><tr><th class="object-id" colspan="3"> Element &lt;construct&gt; </th></tr><tr><th class="sub-id">Attribute configuration-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">configuration</a></td></tr><tr><td colspan="3" class="description">The configuration (conforming to the ChainContribution schema).</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;push-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">configuration-id</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addElement</span>"
-       /&gt; </div></td></tr></table></td></tr><tr><th class="section" colspan="3">Implementation</th></tr><tr><td class="container" colspan="3"><div class="xml"><ul><li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../services/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  &gt; <ul><li>
-     &lt;construct
-         
-        <span class="attribute">class</span>="<span class="attribute-value">chain.ChainFactory</span>"
-       &gt; <ul><li>
-     &lt;set-service
-         
-        <span class="attribute">property</span>="<span class="attribute-value">chainBuilder</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ChainBuilder</span>"
-       /&gt; </li></ul> &lt;/construct&gt; </li></ul> &lt;/invoke-factory&gt; </li></ul></div></td></tr></table><hr/><div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Service Point hivemind.lib.ChainFactory</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id"><img src="../public.png" width="20" height="20" alt="[public]"> Service Point hivemind.lib.ChainFactory</th><th> Interface: </th><td>org.apache.hivemind.ServiceImplementationFactory</td>
+</tr>
+<tr>
+<td class="description" colspan="3">Service implementation factory that produces a chain of command based on a 
+    configuration point that conforms tothe hivemind.lib.ChainContribution schema.</td>
+</tr>
+<tr>
+<th colspan="2"> Parameters occurs: </th><td>1</td>
+</tr>
+<tr>
+<th colspan="3" class="section"> Parameters Schema </th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="nested-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"> Element &lt;construct&gt; </th>
+</tr>
+<tr>
+<th class="sub-id">Attribute configuration-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">configuration</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The configuration (conforming to the ChainContribution schema).</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;push-attribute <span class="attribute">attribute</span>="<span class="attribute-value">configuration-id</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">method</span>="<span class="attribute-value">addElement</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Implementation</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../services/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  &gt; <ul>
+<li>
+     &lt;construct <span class="attribute">class</span>="<span class="attribute-value">chain.ChainFactory</span>"
+       &gt; <ul>
+<li>
+     &lt;set-service <span class="attribute">property</span>="<span class="attribute-value">chainBuilder</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ChainBuilder</span>"
+       /&gt; </li>
+</ul> &lt;/construct&gt; </li>
+</ul> &lt;/invoke-factory&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

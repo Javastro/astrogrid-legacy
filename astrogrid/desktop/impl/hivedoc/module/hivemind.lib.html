@@ -1,46 +1,166 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Module hivemind.lib</title></head><body><div class="title">Module hivemind.lib</div><div class="center-nav"><a href="../index.html">Back to master index</a></div><table cellspacing="0" class="top-level-object"><tr><th class="object-id">Module hivemind.lib</th><th>Version:</th><td>1.1.0</td></tr><tr><th colspan="2" class="object-id">Package:</th><td>org.apache.hivemind.lib</td></tr><tr><td colspan="3" class="description">Standard library for HiveMind, providing commonly used services.</td></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="layout"><tr><td/><td><table cellspacing="0" class="summary"><tr><th>Service Points</th></tr><tr><td><a href="../service/hivemind.lib.BeanFactoryBuilder.html">hivemind.lib.BeanFactoryBuilder</a></td></tr><tr><td><a href="../service/hivemind.lib.BeanFactoryObjectProvider.html">hivemind.lib.BeanFactoryObjectProvider</a></td></tr><tr><td><a href="../service/hivemind.lib.ChainBuilder.html">hivemind.lib.ChainBuilder</a></td></tr><tr><td><a href="../service/hivemind.lib.ChainFactory.html">hivemind.lib.ChainFactory</a></td></tr><tr><td><a href="../service/hivemind.lib.DefaultImplementationBuilder.html">hivemind.lib.DefaultImplementationBuilder</a></td></tr><tr><td><a href="../service/hivemind.lib.DefaultSpringBeanFactory.html">hivemind.lib.DefaultSpringBeanFactory</a></td></tr><tr><td><a href="../service/hivemind.lib.DefaultSpringBeanFactoryHolder.html">hivemind.lib.DefaultSpringBeanFactoryHolder</a></td></tr><tr><td><a href="../service/hivemind.lib.EJBProxyFactory.html">hivemind.lib.EJBProxyFactory</a></td></tr><tr><td><a href="../service/hivemind.lib.MethodInterceptorFactory.html">hivemind.lib.MethodInterceptorFactory</a></td></tr><tr><td><a href="../service/hivemind.lib.NameLookup.html">hivemind.lib.NameLookup</a></td></tr><tr><td><a href="../service/hivemind.lib.PipelineFactory.html">hivemind.lib.PipelineFactory</a></td></tr><tr><td><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></td></tr><tr><td><a href="../service/hivemind.lib.RemoteExceptionCoordinator.html">hivemind.lib.RemoteExceptionCoordinator</a></td></tr><tr><td><a href="../service/hivemind.lib.ServicePropertyFactory.html">hivemind.lib.ServicePropertyFactory</a></td></tr><tr><td><a href="../service/hivemind.lib.SpringLookupFactory.html">hivemind.lib.SpringLookupFactory</a></td></tr><tr><td><a href="../service/hivemind.lib.SpringObjectProvider.html">hivemind.lib.SpringObjectProvider</a></td></tr><tr><td><a href="../service/hivemind.lib.StrategyFactory.html">hivemind.lib.StrategyFactory</a></td></tr></table><div class="info">17 service points
-      </div></td><td><table cellspacing="0" class="summary"><tr><th>Schemas</th></tr><tr><td><a href="../schema/hivemind.lib.BeanFactoryContribution.html">hivemind.lib.BeanFactoryContribution</a></td></tr><tr><td><a href="../schema/hivemind.lib.ChainContribution.html">hivemind.lib.ChainContribution</a></td></tr><tr><td><a href="../schema/hivemind.lib.Pipeline.html">hivemind.lib.Pipeline</a></td></tr><tr><td><a href="../schema/hivemind.lib.StrategyRegistry.html">hivemind.lib.StrategyRegistry</a></td></tr></table><div class="info">4 schemas
-      </div></td></tr></table></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.factory.initial</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value"/>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.factory.url.pkgs</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value"/>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.provider.url</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value"/>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">hivemind.lib.spring-bean-factory</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">service:DefaultSpringBeanFactory</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">spring</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">SpringObjectProvider</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">bean</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">BeanFactoryObjectProvider</span>"
-       /&gt; </div></td></tr></table><hr/><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Module hivemind.lib</title>
+</head>
+<body>
+<div class="title">Module hivemind.lib</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id">Module hivemind.lib</th><th>Version:</th><td>1.1.0</td>
+</tr>
+<tr>
+<th class="object-id" colspan="2">Package:</th><td>org.apache.hivemind.lib</td>
+</tr>
+<tr>
+<td class="description" colspan="3">Standard library for HiveMind, providing commonly used services.</td>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="layout" cellspacing="0">
+<tr>
+<td></td><td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.BeanFactoryBuilder.html">hivemind.lib.BeanFactoryBuilder</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.BeanFactoryObjectProvider.html">hivemind.lib.BeanFactoryObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.ChainBuilder.html">hivemind.lib.ChainBuilder</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.ChainFactory.html">hivemind.lib.ChainFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.DefaultImplementationBuilder.html">hivemind.lib.DefaultImplementationBuilder</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.DefaultSpringBeanFactory.html">hivemind.lib.DefaultSpringBeanFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.DefaultSpringBeanFactoryHolder.html">hivemind.lib.DefaultSpringBeanFactoryHolder</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.EJBProxyFactory.html">hivemind.lib.EJBProxyFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.MethodInterceptorFactory.html">hivemind.lib.MethodInterceptorFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.NameLookup.html">hivemind.lib.NameLookup</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.PipelineFactory.html">hivemind.lib.PipelineFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.RemoteExceptionCoordinator.html">hivemind.lib.RemoteExceptionCoordinator</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.ServicePropertyFactory.html">hivemind.lib.ServicePropertyFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.SpringLookupFactory.html">hivemind.lib.SpringLookupFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.SpringObjectProvider.html">hivemind.lib.SpringObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.lib.StrategyFactory.html">hivemind.lib.StrategyFactory</a></td>
+</tr>
+</table>
+<div class="info">17 service points
+      </div>
+</td><td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Schemas</th>
+</tr>
+<tr>
+<td><a href="../schema/hivemind.lib.BeanFactoryContribution.html">hivemind.lib.BeanFactoryContribution</a></td>
+</tr>
+<tr>
+<td><a href="../schema/hivemind.lib.ChainContribution.html">hivemind.lib.ChainContribution</a></td>
+</tr>
+<tr>
+<td><a href="../schema/hivemind.lib.Pipeline.html">hivemind.lib.Pipeline</a></td>
+</tr>
+<tr>
+<td><a href="../schema/hivemind.lib.StrategyRegistry.html">hivemind.lib.StrategyRegistry</a></td>
+</tr>
+</table>
+<div class="info">4 schemas
+      </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.factory.initial</span>"
+       <span class="attribute">value</span>="<span class="attribute-value"></span>"
+       /&gt; <br>
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.factory.url.pkgs</span>"
+       <span class="attribute">value</span>="<span class="attribute-value"></span>"
+       /&gt; <br>
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.provider.url</span>"
+       <span class="attribute">value</span>="<span class="attribute-value"></span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">hivemind.lib.spring-bean-factory</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">service:DefaultSpringBeanFactory</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">spring</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">SpringObjectProvider</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">bean</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">BeanFactoryObjectProvider</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

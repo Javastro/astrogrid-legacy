@@ -1,7 +1,8 @@
 .classpath
-.project
-target
+velocity.log
 javadoc*
+*.byecycle
+target
 build.properties
 .pydevproject
-*.byecycle
+.project

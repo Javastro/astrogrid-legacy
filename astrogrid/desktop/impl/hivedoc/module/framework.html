@@ -1,244 +1,311 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Module framework</title></head><body><div class="title">Module framework</div><div class="center-nav"><a href="../index.html">Back to master index</a></div><table cellspacing="0" class="top-level-object"><tr><th class="object-id">Module framework</th><th>Version:</th><td>1.0.0</td></tr><tr><th colspan="2" class="object-id">Package:</th><td>org.astrogrid.desktop.framework</td></tr><tr><td colspan="3" class="description">Base module - defines ACR configuration points, fundamental config keys, configures hivemind.</td></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="layout"><tr><td><table cellspacing="0" class="summary"><tr><th>Configuration Points</th></tr><tr><td><a href="../config/framework.acrServices.html">framework.acrServices</a></td></tr><tr><td><a href="../config/framework.converters.html">framework.converters</a></td></tr><tr><td><a href="../config/framework.descriptors.html">framework.descriptors</a></td></tr><tr><td><a href="../config/framework.htmlResultTransformers.html">framework.htmlResultTransformers</a></td></tr><tr><td><a href="../config/framework.plainResultTransformers.html">framework.plainResultTransformers</a></td></tr><tr><td><a href="../config/framework.preferenceClass.html">framework.preferenceClass</a></td></tr><tr><td><a href="../config/framework.preferences.html">framework.preferences</a></td></tr><tr><td><a href="../config/framework.rpcResultTransformers.html">framework.rpcResultTransformers</a></td></tr><tr><td><a href="../config/framework.stylesheets.html">framework.stylesheets</a></td></tr></table><div class="info">9 configuration points
-      </div></td><td><table cellspacing="0" class="summary"><tr><th>Service Points</th></tr><tr><td><a href="../service/framework.converter.html">framework.converter</a></td></tr><tr><td><a href="../service/framework.defaultHtmlTransformer.html">framework.defaultHtmlTransformer</a></td></tr><tr><td><a href="../service/framework.defaultPlainTransformer.html">framework.defaultPlainTransformer</a></td></tr><tr><td><a href="../service/framework.documentTransformer.html">framework.documentTransformer</a></td></tr><tr><td><a href="../service/framework.htmlResultTransformer.html">framework.htmlResultTransformer</a></td></tr><tr><td><a href="../service/framework.plainResultTransformer.html">framework.plainResultTransformer</a></td></tr><tr><td><a href="../service/framework.registerConverters.html">framework.registerConverters</a></td></tr><tr><td><a href="../service/framework.rpcResultTransformer.html">framework.rpcResultTransformer</a></td></tr><tr><td><a href="../service/framework.stylesheetTransformer.html">framework.stylesheetTransformer</a></td></tr><tr><td><a href="../service/framework.sysproperties.html">framework.sysproperties</a></td></tr><tr><td><a href="../service/framework.typeStructureTransformer.html">framework.typeStructureTransformer</a></td></tr></table><div class="info">11 service points
-      </div></td><td/></tr></table></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.converters.html">framework.converters</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;register
-         
-        <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.URIConverter</span>"
-      
-         
-        <span class="attribute">output</span>="<span class="attribute-value">java.net.URI</span>"
-       /&gt; <br/>
-     &lt;register
-         
-        <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.URLConvertor</span>"
-      
-         
-        <span class="attribute">output</span>="<span class="attribute-value">java.net.URL</span>"
-       /&gt; <br/>
-     &lt;register
-         
-        <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.DocumentConverter</span>"
-      
-         
-        <span class="attribute">output</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
-       /&gt; <br/>
-     &lt;register
-         
-        <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.CollectionConvertor</span>"
-      
-         
-        <span class="attribute">output</span>="<span class="attribute-value">java.util.List</span>"
-       /&gt; <br/>
-     &lt;register
-         
-        <span class="attribute">array</span>="<span class="attribute-value">true</span>"
-      
-         
-        <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.ArrayConvertor</span>"
-      
-         
-        <span class="attribute">output</span>="<span class="attribute-value">java.lang.Object</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.htmlResultTransformers.html">framework.htmlResultTransformers</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;strategy
-         
-        <span class="attribute">class</span>="<span class="attribute-value">java.lang.Object</span>"
-      
-         
-        <span class="attribute">object</span>="<span class="attribute-value">service:defaultHtmlTransformer</span>"
-       /&gt; <br/>
-     &lt;strategy
-         
-        <span class="attribute">class</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
-      
-         
-        <span class="attribute">object</span>="<span class="attribute-value">service:stylesheetTransformer</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.plainResultTransformers.html">framework.plainResultTransformers</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;strategy
-         
-        <span class="attribute">class</span>="<span class="attribute-value">java.lang.Object</span>"
-      
-         
-        <span class="attribute">object</span>="<span class="attribute-value">service:defaultPlainTransformer</span>"
-       /&gt; <br/>
-     &lt;strategy
-         
-        <span class="attribute">class</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
-      
-         
-        <span class="attribute">object</span>="<span class="attribute-value">service:documentTransformer</span>"
-       /&gt; </div></td></tr><tr><th class="object-id"> Contribution to <a href="../config/framework.preferenceClass.html">framework.preferenceClass</a></th><th>If:</th><td>property hub.mode</td></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;class &gt; <ul><li>org.astrogrid.PlasticHub</li></ul> &lt;/class&gt; </div></td></tr><tr><th class="object-id"> Contribution to <a href="../config/framework.preferenceClass.html">framework.preferenceClass</a></th><th>If:</th><td>property asr.mode</td></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;class &gt; <ul><li>org.astrogrid.HeadlessAstroRuntime</li></ul> &lt;/class&gt; </div></td></tr><tr><th class="object-id"> Contribution to <a href="../config/framework.preferenceClass.html">framework.preferenceClass</a></th><th>If:</th><td>property acr.mode</td></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;class &gt; <ul><li>org.astrogrid.AstroRuntime</li></ul> &lt;/class&gt; </div></td></tr><tr><th class="object-id"> Contribution to <a href="../config/framework.preferenceClass.html">framework.preferenceClass</a></th><th>If:</th><td>property workbench.mode</td></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;class &gt; <ul><li>org.astrogrid.Workbench</li></ul> &lt;/class&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;preference
-         
-        <span class="attribute">default-value</span>="<span class="attribute-value">false</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">acr.advanced</span>"
-       &gt; <ul><li>
-     &lt;ui-name &gt; <ul><li>Show advanced features</li></ul> &lt;/ui-name&gt; </li><li>
-     &lt;description &gt; <ul><li>Enables additional UI components for advanced use</li></ul> &lt;/description&gt; </li><li>
-     &lt;units &gt; <ul><li>boolean</li></ul> &lt;/units&gt; </li></ul> &lt;/preference&gt; <br/>
-     &lt;preference
-         
-        <span class="attribute">advanced</span>="<span class="attribute-value">true</span>"
-      
-         
-        <span class="attribute">default-value</span>="<span class="attribute-value">false</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">acr.debug</span>"
-       &gt; <ul><li>
-     &lt;ui-name &gt; <ul><li>Debugging mode</li></ul> &lt;/ui-name&gt; </li><li>
-     &lt;description &gt; <ul><li>Enables additional UI components for debugging and testing</li></ul> &lt;/description&gt; </li><li>
-     &lt;units &gt; <ul><li>boolean</li></ul> &lt;/units&gt; </li></ul> &lt;/preference&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.rpcResultTransformers.html">framework.rpcResultTransformers</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;strategy
-         
-        <span class="attribute">class</span>="<span class="attribute-value">java.lang.Object</span>"
-      
-         
-        <span class="attribute">object</span>="<span class="attribute-value">service:typeStructureTransformer</span>"
-       /&gt; <br/>
-     &lt;strategy
-         
-        <span class="attribute">class</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
-      
-         
-        <span class="attribute">object</span>="<span class="attribute-value">service:documentTransformer</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.stylesheets.html">framework.stylesheets</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;stylesheet
-         
-        <span class="attribute">regexp</span>="<span class="attribute-value">.*&lt;workflow</span>"
-      
-         
-        <span class="attribute">sheet</span>="<span class="attribute-value">workflow.xsl</span>"
-       /&gt; <br/>
-     &lt;stylesheet
-         
-        <span class="attribute">regexp</span>="<span class="attribute-value">.</span>"
-      
-         
-        <span class="attribute">sheet</span>="<span class="attribute-value">xmlverbatim.xsl</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">astrogrid.desktop.version</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">unreleased</span>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">astrogrid.build.date</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">unknown</span>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">astrogrid.build.location</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">unknown</span>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">astrogrid.build.by</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">unknown</span>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">astrogrid.build.jdk</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">unknown</span>"
-       /&gt; </div></td></tr><tr><th class="object-id"> Contribution to <a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></th><th>If:</th><td>property hub.mode</td></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">system.ui.title</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">AstroGrid PLASTIC Hub</span>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">system.rmi.disableConnectionFile</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">true</span>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">system.webserver.disableConnectionFile</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">true</span>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">app.mode</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">hub</span>"
-       /&gt; </div></td></tr><tr><th class="object-id"> Contribution to <a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></th><th>If:</th><td>property asr.mode</td></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">app.mode</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">asr</span>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">system.ui.title</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">Astro Runtime</span>"
-       /&gt; </div></td></tr><tr><th class="object-id"> Contribution to <a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></th><th>If:</th><td>property acr.mode</td></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">app.mode</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">acr</span>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">system.ui.title</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">Astro Runtime</span>"
-       /&gt; </div></td></tr><tr><th class="object-id"> Contribution to <a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></th><th>If:</th><td>property workbench.mode</td></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">app.mode</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">workbench</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">system.ui.title</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">AstroGrid Workbench</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.Startup.html">hivemind.Startup</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;startup
-         
-        <span class="attribute">object</span>="<span class="attribute-value">service:registerConverters</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.SymbolSources.html">hivemind.SymbolSources</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;source
-         
-        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">sysproperties</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">sysproperties</span>"
-       /&gt; </div></td></tr></table><hr/><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Module framework</title>
+</head>
+<body>
+<div class="title">Module framework</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id">Module framework</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th class="object-id" colspan="2">Package:</th><td>org.astrogrid.desktop.framework</td>
+</tr>
+<tr>
+<td class="description" colspan="3">Base module - defines fundamental configuration points and properties, and configures hivemind.</td>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="layout" cellspacing="0">
+<tr>
+<td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Configuration Points</th>
+</tr>
+<tr>
+<td><a href="../config/framework.acrServices.html">framework.acrServices</a></td>
+</tr>
+<tr>
+<td><a href="../config/framework.converters.html">framework.converters</a></td>
+</tr>
+<tr>
+<td><a href="../config/framework.descriptors.html">framework.descriptors</a></td>
+</tr>
+<tr>
+<td><a href="../config/framework.htmlResultTransformers.html">framework.htmlResultTransformers</a></td>
+</tr>
+<tr>
+<td><a href="../config/framework.plainResultTransformers.html">framework.plainResultTransformers</a></td>
+</tr>
+<tr>
+<td><a href="../config/framework.preferenceClass.html">framework.preferenceClass</a></td>
+</tr>
+<tr>
+<td><a href="../config/framework.preferences.html">framework.preferences</a></td>
+</tr>
+<tr>
+<td><a href="../config/framework.rpcResultTransformers.html">framework.rpcResultTransformers</a></td>
+</tr>
+<tr>
+<td><a href="../config/framework.stylesheets.html">framework.stylesheets</a></td>
+</tr>
+</table>
+<div class="info">9 configuration points
+      </div>
+</td><td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/framework.converter.html">framework.converter</a></td>
+</tr>
+<tr>
+<td><a href="../service/framework.defaultHtmlTransformer.html">framework.defaultHtmlTransformer</a></td>
+</tr>
+<tr>
+<td><a href="../service/framework.defaultPlainTransformer.html">framework.defaultPlainTransformer</a></td>
+</tr>
+<tr>
+<td><a href="../service/framework.documentTransformer.html">framework.documentTransformer</a></td>
+</tr>
+<tr>
+<td><a href="../service/framework.htmlResultTransformer.html">framework.htmlResultTransformer</a></td>
+</tr>
+<tr>
+<td><a href="../service/framework.plainResultTransformer.html">framework.plainResultTransformer</a></td>
+</tr>
+<tr>
+<td><a href="../service/framework.registerConverters.html">framework.registerConverters</a></td>
+</tr>
+<tr>
+<td><a href="../service/framework.rpcResultTransformer.html">framework.rpcResultTransformer</a></td>
+</tr>
+<tr>
+<td><a href="../service/framework.stylesheetTransformer.html">framework.stylesheetTransformer</a></td>
+</tr>
+<tr>
+<td><a href="../service/framework.sysproperties.html">framework.sysproperties</a></td>
+</tr>
+<tr>
+<td><a href="../service/framework.typeStructureTransformer.html">framework.typeStructureTransformer</a></td>
+</tr>
+</table>
+<div class="info">11 service points
+      </div>
+</td><td></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.converters.html">framework.converters</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;register <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.URIConverter</span>"
+       <span class="attribute">output</span>="<span class="attribute-value">java.net.URI</span>"
+       /&gt; <br>
+     &lt;register <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.DocumentConverter</span>"
+       <span class="attribute">output</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+       /&gt; <br>
+     &lt;register <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.CollectionConvertor</span>"
+       <span class="attribute">output</span>="<span class="attribute-value">java.util.List</span>"
+       /&gt; <br>
+     &lt;register <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.ArrayConvertor</span>"
+       <span class="attribute">output</span>="<span class="attribute-value">[Ljava.lang.Object;</span>"
+       /&gt; <br>
+     &lt;register <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.URIArrayConvertor</span>"
+       <span class="attribute">output</span>="<span class="attribute-value">[Ljava.net.URI;</span>"
+       /&gt; <br>
+     &lt;register <span class="attribute">converter</span>="<span class="attribute-value">instance:org.astrogrid.desktop.modules.system.converters.ByteArrayConvertor</span>"
+       <span class="attribute">output</span>="<span class="attribute-value">[B</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.htmlResultTransformers.html">framework.htmlResultTransformers</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;strategy <span class="attribute">class</span>="<span class="attribute-value">java.lang.Object</span>"
+       <span class="attribute">object</span>="<span class="attribute-value">service:defaultHtmlTransformer</span>"
+       /&gt; <br>
+     &lt;strategy <span class="attribute">class</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+       <span class="attribute">object</span>="<span class="attribute-value">service:stylesheetTransformer</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.plainResultTransformers.html">framework.plainResultTransformers</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;strategy <span class="attribute">class</span>="<span class="attribute-value">java.lang.Object</span>"
+       <span class="attribute">object</span>="<span class="attribute-value">service:defaultPlainTransformer</span>"
+       /&gt; <br>
+     &lt;strategy <span class="attribute">class</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+       <span class="attribute">object</span>="<span class="attribute-value">service:documentTransformer</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/framework.preferenceClass.html">framework.preferenceClass</a></th><th>If:</th><td>property workbench.mode</td>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;class &gt; <ul>
+<li>org.astrogrid.Workbench</li>
+</ul> &lt;/class&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;preference <span class="attribute">default-value</span>="<span class="attribute-value">false</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">acr.advanced</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Show advanced features</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>Enables additional UI components for advanced use</li>
+</ul> &lt;/description&gt; </li>
+<li>
+     &lt;units &gt; <ul>
+<li>boolean</li>
+</ul> &lt;/units&gt; </li>
+</ul> &lt;/preference&gt; <br>
+     &lt;preference <span class="attribute">advanced</span>="<span class="attribute-value">true</span>"
+       <span class="attribute">default-value</span>="<span class="attribute-value">false</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">acr.debug</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Debugging mode</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>Enables additional UI components for debugging and testing</li>
+</ul> &lt;/description&gt; </li>
+<li>
+     &lt;units &gt; <ul>
+<li>boolean</li>
+</ul> &lt;/units&gt; </li>
+</ul> &lt;/preference&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.rpcResultTransformers.html">framework.rpcResultTransformers</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;strategy <span class="attribute">class</span>="<span class="attribute-value">java.lang.Object</span>"
+       <span class="attribute">object</span>="<span class="attribute-value">service:typeStructureTransformer</span>"
+       /&gt; <br>
+     &lt;strategy <span class="attribute">class</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+       <span class="attribute">object</span>="<span class="attribute-value">service:documentTransformer</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.stylesheets.html">framework.stylesheets</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;stylesheet <span class="attribute">regexp</span>="<span class="attribute-value">.</span>"
+       <span class="attribute">sheet</span>="<span class="attribute-value">xmlverbatim.xsl</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">astrogrid.desktop.version</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">1.2.3</span>"
+       /&gt; <br>
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">astrogrid.build.date</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">20090608_1924</span>"
+       /&gt; <br>
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">astrogrid.build.location</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">guy-rixons-macbook-pro.local/192.168.1.2</span>"
+       /&gt; <br>
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">astrogrid.build.by</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">guy</span>"
+       /&gt; <br>
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">astrogrid.build.jdk</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">1.5.0_16</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></th><th>If:</th><td>property workbench.mode</td>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">app.mode</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">workbench</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">system.ui.title</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">AstroGrid VO Desktop</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.Startup.html">hivemind.Startup</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;startup <span class="attribute">object</span>="<span class="attribute-value">service:registerConverters</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.SymbolSources.html">hivemind.SymbolSources</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;source <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">sysproperties</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">sysproperties</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

@@ -1,26 +1,115 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Module hiveutils</title></head><body><div class="title">Module hiveutils</div><div class="center-nav"><a href="../index.html">Back to master index</a></div><table cellspacing="0" class="top-level-object"><tr><th class="object-id">Module hiveutils</th><th>Version:</th><td>1.0.0</td></tr><tr><th colspan="2" class="object-id">Package:</th><td>hiveutils</td></tr><tr><td colspan="3" class="description">Module containing various general utilities.</td></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="layout"><tr><td><table cellspacing="0" class="summary"><tr><th>Configuration Points</th></tr><tr><td><a href="../config/hiveutils.ObjectBuilderObjects.html">hiveutils.ObjectBuilderObjects</a></td></tr></table><div class="info">1 configuration points
-      </div></td><td><table cellspacing="0" class="summary"><tr><th>Service Points</th></tr><tr><td><a href="../service/hiveutils.EventLinker.html">hiveutils.EventLinker</a></td></tr><tr><td><a href="../service/hiveutils.LiteralObjectProvider.html">hiveutils.LiteralObjectProvider</a></td></tr><tr><td><a href="../service/hiveutils.ObjectBuilder.html">hiveutils.ObjectBuilder</a></td></tr><tr><td><a href="../service/hiveutils.ObjectBuilderObjectProvider.html">hiveutils.ObjectBuilderObjectProvider</a></td></tr><tr><td><a href="../service/hiveutils.ObjectTranslator.html">hiveutils.ObjectTranslator</a></td></tr></table><div class="info">5 service points
-      </div></td><td><table cellspacing="0" class="summary"><tr><th>Schemas</th></tr><tr><td><a href="../schema/hiveutils.ObjectBuilderSchema.html">hiveutils.ObjectBuilderSchema</a></td></tr></table><div class="info">1 schemas
-      </div></td></tr></table></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">object</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ObjectBuilderObjectProvider</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">literal</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">LiteralObjectProvider</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.Translators.html">hivemind.Translators</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.DeferredObjectTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">hiveutils-deferred-object</span>"
-       /&gt; </div></td></tr></table><hr/><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Module hiveutils</title>
+</head>
+<body>
+<div class="title">Module hiveutils</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id">Module hiveutils</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th class="object-id" colspan="2">Package:</th><td>hiveutils</td>
+</tr>
+<tr>
+<td class="description" colspan="3">Module containing various general utilities.</td>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="layout" cellspacing="0">
+<tr>
+<td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Configuration Points</th>
+</tr>
+<tr>
+<td><a href="../config/hiveutils.ObjectBuilderObjects.html">hiveutils.ObjectBuilderObjects</a></td>
+</tr>
+</table>
+<div class="info">1 configuration points
+      </div>
+</td><td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/hiveutils.EventLinker.html">hiveutils.EventLinker</a></td>
+</tr>
+<tr>
+<td><a href="../service/hiveutils.LiteralObjectProvider.html">hiveutils.LiteralObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="../service/hiveutils.ObjectBuilder.html">hiveutils.ObjectBuilder</a></td>
+</tr>
+<tr>
+<td><a href="../service/hiveutils.ObjectBuilderObjectProvider.html">hiveutils.ObjectBuilderObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="../service/hiveutils.ObjectTranslator.html">hiveutils.ObjectTranslator</a></td>
+</tr>
+</table>
+<div class="info">5 service points
+      </div>
+</td><td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Schemas</th>
+</tr>
+<tr>
+<td><a href="../schema/hiveutils.ObjectBuilderSchema.html">hiveutils.ObjectBuilderSchema</a></td>
+</tr>
+</table>
+<div class="info">1 schemas
+      </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">object</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ObjectBuilderObjectProvider</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">literal</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">LiteralObjectProvider</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.Translators.html">hivemind.Translators</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.DeferredObjectTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">hiveutils-deferred-object</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

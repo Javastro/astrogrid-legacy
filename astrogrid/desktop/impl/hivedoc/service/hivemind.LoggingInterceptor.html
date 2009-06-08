@@ -1,15 +1,58 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Service Point hivemind.LoggingInterceptor</title></head><body><div class="title"> Module <a href="../module/hivemind.html">hivemind</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Service Point hivemind.LoggingInterceptor</th><th> Interface: </th><td>org.apache.hivemind.ServiceInterceptorFactory</td></tr><tr><td colspan="3" class="description">An interceptor factory for adding method-level logging to a service. 
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Service Point hivemind.LoggingInterceptor</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id"><img src="../public.png" width="20" height="20" alt="[public]"> Service Point hivemind.LoggingInterceptor</th><th> Interface: </th><td>org.apache.hivemind.ServiceInterceptorFactory</td>
+</tr>
+<tr>
+<td class="description" colspan="3">An interceptor factory for adding method-level logging to a service. 
     Logging occurs at level DEBUG and uses the service id as the logger. 
-    Method entry (with parameters) and method exit (with return value) are logged, as are any exceptions.</td></tr><tr><th colspan="2"> Parameters Schema: </th><td><a href="../schema/hivemind.MethodFilter.html">hivemind.MethodFilter</a></td></tr><tr><th colspan="2"> Parameters occurs: </th><td>1</td></tr><tr><th class="section" colspan="3">Implementation</th></tr><tr><td class="container" colspan="3"><div class="xml"><ul><li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../services/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">primitive</a></span>"  &gt; <ul><li>
-     &lt;construct
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.LoggingInterceptorFactory</span>"
-       &gt; <ul><li>
-     &lt;set-service
-         
-        <span class="attribute">property</span>="<span class="attribute-value">factory</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ClassFactory</span>"
-       /&gt; </li></ul> &lt;/construct&gt; </li></ul> &lt;/invoke-factory&gt; </li></ul></div></td></tr></table><hr/><div class="title"> Module <a href="../module/hivemind.html">hivemind</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+    Method entry (with parameters) and method exit (with return value) are logged, as are any exceptions.</td>
+</tr>
+<tr>
+<th colspan="2"> Parameters Schema: </th><td><a href="../schema/hivemind.MethodFilter.html">hivemind.MethodFilter</a></td>
+</tr>
+<tr>
+<th colspan="2"> Parameters occurs: </th><td>1</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Implementation</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../services/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">primitive</a></span>"  &gt; <ul>
+<li>
+     &lt;construct <span class="attribute">class</span>="<span class="attribute-value">service.impl.LoggingInterceptorFactory</span>"
+       &gt; <ul>
+<li>
+     &lt;set-service <span class="attribute">property</span>="<span class="attribute-value">factory</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ClassFactory</span>"
+       /&gt; </li>
+</ul> &lt;/construct&gt; </li>
+</ul> &lt;/invoke-factory&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

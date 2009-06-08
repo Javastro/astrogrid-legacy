@@ -1,728 +1,874 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Service Point hivemind.BuilderFactory</title></head><body><div class="title"> Module <a href="../module/hivemind.html">hivemind</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Service Point hivemind.BuilderFactory</th><th> Interface: </th><td>org.apache.hivemind.ServiceImplementationFactory</td></tr><tr><td colspan="3" class="description">Used to construct a service from a class name and optional constructor parameters and properties.</td></tr><tr><th colspan="2"> Parameters occurs: </th><td>1</td></tr><tr><th class="section" colspan="3"> Parameters Schema </th></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="nested-object"><tr><th class="object-id" colspan="3"> Element &lt;construct&gt; </th></tr><tr><td colspan="3" class="description">A single construct element identifies the class to instantiate.</td></tr><tr><th class="sub-id">Attribute autowire-services</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean,default=true</a></td></tr><tr><td colspan="3" class="description">If true (the default), the BuilderFactory will attempt to connect unclaimed properties to services.</td></tr><tr><th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of the class to instantiate.</td></tr><tr><th class="sub-id">Attribute class-resolver-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign the module's ClassResolver to.</td></tr><tr><th class="sub-id">Attribute error-handler-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign the module's ErrorHandler to.</td></tr><tr><th class="sub-id">Attribute error-log-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign the service's ErrorLog to.</td></tr><tr><th class="sub-id">Attribute initialize-method</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a public instance method (taking no parameters) to be invoked after the service is constructed.</td></tr><tr><th class="sub-id">Attribute log-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign the Log instance for the service to. The Log instance is built from the service configuration point id.</td></tr><tr><th class="sub-id">Attribute messages-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign invoking module's messages to.</td></tr><tr><th class="sub-id">Attribute service-id-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign the configuration point id of the service to.</td></tr><tr><th class="section" colspan="3">Nested Elements</th></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="nested-object">A single construct element identifies the class to instantiate.<tr><th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of the class to instantiate.</td></tr><tr><th class="sub-id">Attribute messages-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign invoking module's messages to.</td></tr><tr><th class="sub-id">Attribute log-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign the Log instance for the service to. The Log instance is built from the service configuration point id.</td></tr><tr><th class="sub-id">Attribute service-id-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign the configuration point id of the service to.</td></tr><tr><th class="sub-id">Attribute initialize-method</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a public instance method (taking no parameters) to be invoked after the service is constructed.</td></tr><tr><th class="sub-id">Attribute error-handler-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign the module's ErrorHandler to.</td></tr><tr><th class="sub-id">Attribute class-resolver-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign the module's ClassResolver to.</td></tr><tr><th class="sub-id">Attribute autowire-services</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean,default=true</a></td></tr><tr><td colspan="3" class="description">If true (the default), the BuilderFactory will attempt to connect unclaimed properties to services.</td></tr><tr><th class="sub-id">Attribute error-log-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property to assign the service's ErrorLog to.</td></tr><tr><th class="object-id" colspan="3"> Element &lt;string&gt; </th></tr><tr><td colspan="3" class="description">A string value constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">null</span>"
-       /&gt; <br/>
-     &lt;read-content
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;int&gt; </th></tr><tr><td colspan="3" class="description">An integer value constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">int</span>"
-       /&gt; <br/>
-     &lt;read-content
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;long&gt; </th></tr><tr><td colspan="3" class="description">A long (64-bit) integer value constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">long</span>"
-       /&gt; <br/>
-     &lt;read-content
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;boolean&gt; </th></tr><tr><td colspan="3" class="description">A boolean value constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">enumeration,java.lang.Boolean,true=TRUE,false=FALSE</span>"
-       /&gt; <br/>
-     &lt;read-content
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;service&gt; </th></tr><tr><td colspan="3" class="description">A constructor parameter providing the identified HiveMind service.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">service</span>"
-       /&gt; <br/>
-     &lt;read-content
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;configuration&gt; </th></tr><tr><td colspan="3" class="description">A constructor parameter providing a HiveMind configuration point (as a List).</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">configuration</span>"
-       /&gt; <br/>
-     &lt;read-content
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;resource&gt; </th></tr><tr><td colspan="3" class="description">A Resource constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">resource</span>"
-       /&gt; <br/>
-     &lt;read-content
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;log&gt; </th></tr><tr><td colspan="3" class="description">Placeholder for a Log instance for the constructed service as constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderLogFacet</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;error-handler&gt; </th></tr><tr><td colspan="3" class="description">Placeholder for the module's ErrorHandler instance passed in as a constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorHandlerFacet</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;error-log&gt; </th></tr><tr><td colspan="3" class="description">Placeholder for the service's ErrorLog instance passed in as a constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorLogFacet</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;class-resolver&gt; </th></tr><tr><td colspan="3" class="description">Placeholder for the module's ClassResolver instance passed in as a constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderClassResolverFacet</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;messages&gt; </th></tr><tr><td colspan="3" class="description">Placeholder for a Messages object (from the invoking module) as constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderMessagesFacet</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;service-id&gt; </th></tr><tr><td colspan="3" class="description">Placeholder for the service id (of the constructed service) as constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderServiceIdFacet</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;object&gt; </th></tr><tr><td colspan="3" class="description">Placeholder for an object provided by the object translator as a constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">object</span>"
-       /&gt; <br/>
-     &lt;read-content
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;null&gt; </th></tr><tr><td colspan="3" class="description">Placeholder for a null object provided by the object translator as a constructor parameter.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">object</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;set&gt; </th></tr><tr><td colspan="3" class="description">Configures a property of the service instance.</td></tr><tr><th class="sub-id">Attribute property (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property of the service instance to configure.</td></tr><tr><th class="sub-id">Attribute value (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The value to set the property to. The value will be converted to the type of the property.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">smart</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">value</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;set-object&gt; </th></tr><tr><td colspan="3" class="description">Configures a property of the service instance using an object.</td></tr><tr><th class="sub-id">Attribute property (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of a property of the service instance to configure.</td></tr><tr><th class="sub-id">Attribute value (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The value to set the property to, in the form of a prefix and a locator for that prefix. Prefixes are defined by the ObjectProviders configuration point. Each prefix provides a different interpretation for the locator, such as a service id or class name.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">object</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">value</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;set-service&gt; </th></tr><tr><td colspan="3" class="description">Configures a property of the service instance to another service.</td></tr><tr><th class="sub-id">Attribute property (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of the property of the service instance to configure.</td></tr><tr><th class="sub-id">Attribute service-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The id of the service.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">service</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">service-id</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;set-configuration&gt; </th></tr><tr><td colspan="3" class="description">Configures a property of the service instance to the elements contributed to an configuration point.</td></tr><tr><th class="sub-id">Attribute configuration-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The id of the configuration point to access.</td></tr><tr><th class="sub-id">Attribute property (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of the property of the service instance to configure.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">configuration</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">configuration-id</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;set-resource&gt; </th></tr><tr><td colspan="3" class="description">Configures a property of the service instance to a resource.</td></tr><tr><th class="sub-id">Attribute path (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The path, relative to the module's deployment descriptor, of the resource.</td></tr><tr><th class="sub-id">Attribute property (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The name of the property of the service instance to configure.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
-       /&gt; <br/>
-     &lt;set-property
-         
-        <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">resource</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">path</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">value</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;event-listener&gt; </th></tr><tr><td colspan="3" class="description">Registers the new services as an event listener for events produced by the specified service.</td></tr><tr><th class="sub-id">Attribute event-set</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">If given, the name of an event set for which the service will be registered. If omitted, the service will be registered for all events sets for which it implements the necessary listener interfaces.</td></tr><tr><th class="sub-id">Attribute service-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">service</a></td></tr><tr><td colspan="3" class="description">The service which will produce events.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.EventRegistration</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">service-id</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">producer</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">event-set</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">eventSetName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addEventRegistration</span>"
-       /&gt; </div></td></tr><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderParameter</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">className</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">initialize-method</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">initializeMethod</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">autowire-services</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">autowireServices</span>"
-      
-         
-        <span class="attribute">skip-if-null</span>="<span class="attribute-value">false</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addElement</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderMessagesFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">messages-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderLogFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">log-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">2</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderServiceIdFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">service-id-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">3</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorHandlerFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">error-handler-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">4</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderClassResolverFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">class-resolver-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">5</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorLogFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">error-log-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">6</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; </div></table></td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderParameter</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">className</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">initialize-method</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">initializeMethod</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">autowire-services</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">autowireServices</span>"
-      
-         
-        <span class="attribute">skip-if-null</span>="<span class="attribute-value">false</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addElement</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderMessagesFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">messages-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderLogFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">log-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">2</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderServiceIdFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">service-id-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">3</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorHandlerFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">error-handler-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">4</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderClassResolverFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">class-resolver-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">5</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; <br/>
-     &lt;create-object
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorLogFacet</span>"
-       /&gt; <br/>
-     &lt;read-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">error-log-property</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">depth</span>="<span class="attribute-value">6</span>"
-      
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
-       /&gt; </div></td></tr></table></td></tr><tr><th class="section" colspan="3">Implementation</th></tr><tr><td class="container" colspan="3"><div class="xml"><ul><li>
-     &lt;create-instance
-         
-        <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderFactory</span>"
-      
-         
-        <span class="attribute">model</span>="<span class="attribute-value">primitive</span>"
-       /&gt; </li></ul></div></td></tr></table><hr/><div class="title"> Module <a href="../module/hivemind.html">hivemind</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Service Point hivemind.BuilderFactory</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id"><img src="../public.png" width="20" height="20" alt="[public]"> Service Point hivemind.BuilderFactory</th><th> Interface: </th><td>org.apache.hivemind.ServiceImplementationFactory</td>
+</tr>
+<tr>
+<td class="description" colspan="3">Used to construct a service from a class name and optional constructor parameters and properties.</td>
+</tr>
+<tr>
+<th colspan="2"> Parameters occurs: </th><td>1</td>
+</tr>
+<tr>
+<th colspan="3" class="section"> Parameters Schema </th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="nested-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"> Element &lt;construct&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">A single construct element identifies the class to instantiate.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute autowire-services</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean,default=true</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">If true (the default), the BuilderFactory will attempt to connect unclaimed properties to services.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of the class to instantiate.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute class-resolver-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign the module's ClassResolver to.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute error-handler-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign the module's ErrorHandler to.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute error-log-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign the service's ErrorLog to.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute initialize-method</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a public instance method (taking no parameters) to be invoked after the service is constructed.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute log-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign the Log instance for the service to. The Log instance is built from the service configuration point id.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute messages-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign invoking module's messages to.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute service-id-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign the configuration point id of the service to.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Nested Elements</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="nested-object" cellspacing="0">A single construct element identifies the class to instantiate.<tr>
+<th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of the class to instantiate.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute messages-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign invoking module's messages to.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute log-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign the Log instance for the service to. The Log instance is built from the service configuration point id.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute service-id-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign the configuration point id of the service to.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute initialize-method</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a public instance method (taking no parameters) to be invoked after the service is constructed.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute error-handler-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign the module's ErrorHandler to.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute class-resolver-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign the module's ClassResolver to.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute autowire-services</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean,default=true</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">If true (the default), the BuilderFactory will attempt to connect unclaimed properties to services.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute error-log-property</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property to assign the service's ErrorLog to.</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;string&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">A string value constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">null</span>"
+       /&gt; <br>
+     &lt;read-content <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;int&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">An integer value constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">int</span>"
+       /&gt; <br>
+     &lt;read-content <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;long&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">A long (64-bit) integer value constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">long</span>"
+       /&gt; <br>
+     &lt;read-content <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;boolean&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">A boolean value constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">enumeration,java.lang.Boolean,true=TRUE,false=FALSE</span>"
+       /&gt; <br>
+     &lt;read-content <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;service&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">A constructor parameter providing the identified HiveMind service.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">service</span>"
+       /&gt; <br>
+     &lt;read-content <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;configuration&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">A constructor parameter providing a HiveMind configuration point (as a List).</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">configuration</span>"
+       /&gt; <br>
+     &lt;read-content <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;resource&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">A Resource constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">resource</span>"
+       /&gt; <br>
+     &lt;read-content <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;log&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Placeholder for a Log instance for the constructed service as constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderLogFacet</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;error-handler&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Placeholder for the module's ErrorHandler instance passed in as a constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorHandlerFacet</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;error-log&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Placeholder for the service's ErrorLog instance passed in as a constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorLogFacet</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;class-resolver&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Placeholder for the module's ClassResolver instance passed in as a constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderClassResolverFacet</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;messages&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Placeholder for a Messages object (from the invoking module) as constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderMessagesFacet</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;service-id&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Placeholder for the service id (of the constructed service) as constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderServiceIdFacet</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;object&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Placeholder for an object provided by the object translator as a constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">object</span>"
+       /&gt; <br>
+     &lt;read-content <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;null&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Placeholder for a null object provided by the object translator as a constructor parameter.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">object</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;set&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Configures a property of the service instance.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute property (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property of the service instance to configure.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute value (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The value to set the property to. The value will be converted to the type of the property.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">smart</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">value</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;set-object&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Configures a property of the service instance using an object.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute property (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of a property of the service instance to configure.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute value (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The value to set the property to, in the form of a prefix and a locator for that prefix. Prefixes are defined by the ObjectProviders configuration point. Each prefix provides a different interpretation for the locator, such as a service id or class name.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">object</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">value</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;set-service&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Configures a property of the service instance to another service.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute property (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of the property of the service instance to configure.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute service-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The id of the service.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">service</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">service-id</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;set-configuration&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Configures a property of the service instance to the elements contributed to an configuration point.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute configuration-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The id of the configuration point to access.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute property (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of the property of the service instance to configure.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">configuration</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">configuration-id</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;set-resource&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Configures a property of the service instance to a resource.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute path (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The path, relative to the module's deployment descriptor, of the resource.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute property (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The name of the property of the service instance to configure.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderPropertyFacet</span>"
+       /&gt; <br>
+     &lt;set-property <span class="attribute">property</span>="<span class="attribute-value">translator</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">resource</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">path</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;event-listener&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Registers the new services as an event listener for events produced by the specified service.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute event-set</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">If given, the name of an event set for which the service will be registered. If omitted, the service will be registered for all events sets for which it implements the necessary listener interfaces.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute service-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">service</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The service which will produce events.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.EventRegistration</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">service-id</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">producer</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">event-set</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">eventSetName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">7</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addEventRegistration</span>"
+       /&gt; </div>
+</td>
+</tr>
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderParameter</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">className</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">initialize-method</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">initializeMethod</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">autowire-services</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">autowireServices</span>"
+       <span class="attribute">skip-if-null</span>="<span class="attribute-value">false</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">method</span>="<span class="attribute-value">addElement</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderMessagesFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">messages-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderLogFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">log-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">2</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderServiceIdFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">service-id-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">3</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorHandlerFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">error-handler-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">4</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderClassResolverFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">class-resolver-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">5</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorLogFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">error-log-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">6</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; </div>
+</table>
+</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderParameter</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">className</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">initialize-method</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">initializeMethod</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">autowire-services</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">autowireServices</span>"
+       <span class="attribute">skip-if-null</span>="<span class="attribute-value">false</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">method</span>="<span class="attribute-value">addElement</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderMessagesFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">messages-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderLogFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">log-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">2</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderServiceIdFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">service-id-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">3</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorHandlerFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">error-handler-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">4</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderClassResolverFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">class-resolver-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">5</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; <br>
+     &lt;create-object <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderErrorLogFacet</span>"
+       /&gt; <br>
+     &lt;read-attribute <span class="attribute">attribute</span>="<span class="attribute-value">error-log-property</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">propertyName</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">depth</span>="<span class="attribute-value">6</span>"
+       <span class="attribute">method</span>="<span class="attribute-value">addProperty</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Implementation</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+<ul>
+<li>
+     &lt;create-instance <span class="attribute">class</span>="<span class="attribute-value">service.impl.BuilderFactory</span>"
+       <span class="attribute">model</span>="<span class="attribute-value">primitive</span>"
+       /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

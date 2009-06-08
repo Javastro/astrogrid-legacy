@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.19 2009/04/06 11:39:07 nw Exp $
+/*$Id: CommunityImpl.java,v 1.20 2009/06/08 18:29:08 gtr Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -229,7 +229,8 @@ public class CommunityImpl implements CommunityInternal {
         return new UserInformation(accountUri,
                                    this.guard.getSsoUsername(),
                                    this.guard.getSsoPassword(),
-                                   community);
+                                   community,
+                                   this.guard.getHomespaceLocation());
     }
     
     
@@ -266,6 +267,12 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.20  2009/06/08 18:29:08  gtr
+Branches ar-gtr-2909 and ar-gtr-2913 are merged.
+
+Revision 1.19.8.1  2009/05/14 11:16:57  gtr
+getUserInformation() now sets the home-space location.
+
 Revision 1.19  2009/04/06 11:39:07  nw
 Complete - taskConvert all to generics.
 

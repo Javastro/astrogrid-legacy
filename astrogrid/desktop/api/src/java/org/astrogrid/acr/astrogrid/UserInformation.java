@@ -1,4 +1,4 @@
-/*$Id: UserInformation.java,v 1.6 2008/09/25 16:02:04 nw Exp $
+/*$Id: UserInformation.java,v 1.7 2009/06/08 18:29:05 gtr Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,11 +31,33 @@ public class UserInformation extends AbstractInformation {
         super(username, id);
         this.password = password;
         this.community = community;
+        this.homeSpace = null;
+    }
+    
+    /** 
+     * Constructs a new UserInformation with a specified home-space location.
+     *
+     * @param id The account IVORN, e.g. ivo://FredHoyle@IoA/community.
+     * @param username The name of the account, e.g. FredHoyle.
+     * @param password The sign-on password for the account.
+     * @param community The name of the community - exact format unspecified.
+     * @param homeSpace The location of the account' home-space, e.g. vos://IoA!vospace/accounts/FH.
+     */
+    public UserInformation(final URI    id, 
+                           final String username, 
+                           final String password, 
+                           final String community,
+                           final URI    homeSpace) {
+        super(username, id);
+        this.password = password;
+        this.community = community;
+        this.homeSpace = homeSpace;
     }
     
     static final long serialVersionUID = -6197661977180232772L;
     protected transient final String password;
     protected final String community;
+    protected final URI homeSpace;
     
     
     /** the community the logged in user belongs to */
@@ -49,13 +71,26 @@ public class UserInformation extends AbstractInformation {
         return this.password;
     }
     
-
+    /**
+     * Reveals the location of the account's home-space.
+     *
+     * @return The location (null if not known).
+     */
+    public URI getHome() {
+        return this.homeSpace;
+    }
 
 }
 
 
 /* 
 $Log: UserInformation.java,v $
+Revision 1.7  2009/06/08 18:29:05  gtr
+Branches ar-gtr-2909 and ar-gtr-2913 are merged.
+
+Revision 1.6.6.1  2009/05/14 10:16:45  gtr
+I added the getHome() method.
+
 Revision 1.6  2008/09/25 16:02:04  nw
 documentation overhaul
 

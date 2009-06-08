@@ -1,58 +1,96 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Configuration Point hivemind.FactoryDefaults</title></head><body><div class="title"> Module <a href="../module/hivemind.html">hivemind</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Configuration Point hivemind.FactoryDefaults</th><th>Occurs:</th><td> unbounded </td></tr><tr><th colspan="2">Schema:</th><td><a href="../schema/hivemind.Defaults.html">hivemind.Defaults</a></td></tr><tr><td colspan="3" class="description">Extension point for setting "factory defaults" for symbol values.</td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/builtin.html">builtin</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">builtin.shutdown.exit</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">true</span>"
-       /&gt; </div></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/framework.html">framework</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">system.ui.title</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">AstroGrid Workbench</span>"
-       /&gt; </div></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/hivelock.core.html">hivelock.core</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">auto-disconnect-timeout</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">172800</span>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">scavenger-period</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">3600</span>"
-       /&gt; </div></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.lib.html">hivemind.lib</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.factory.initial</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value"/>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.factory.url.pkgs</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value"/>"
-       /&gt; <br/>
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.provider.url</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value"/>"
-       /&gt; </div></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.lib.html">hivemind.lib</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;default
-         
-        <span class="attribute">symbol</span>="<span class="attribute-value">hivemind.lib.spring-bean-factory</span>"
-      
-         
-        <span class="attribute">value</span>="<span class="attribute-value">service:DefaultSpringBeanFactory</span>"
-       /&gt; </div></td></tr></table><hr/><div class="title"> Module <a href="../module/hivemind.html">hivemind</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Configuration Point hivemind.FactoryDefaults</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id"><img src="../public.png" width="20" height="20" alt="[public]"> Configuration Point hivemind.FactoryDefaults</th><th>Occurs:</th><td> unbounded </td>
+</tr>
+<tr>
+<th colspan="2">Schema:</th><td><a href="../schema/hivemind.Defaults.html">hivemind.Defaults</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">Extension point for setting "factory defaults" for symbol values.</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/builtin.html">builtin</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">builtin.shutdown.exit</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">true</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/framework.html">framework</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">system.ui.title</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">AstroGrid VO Desktop</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/hivelock.core.html">hivelock.core</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">auto-disconnect-timeout</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">172800</span>"
+       /&gt; <br>
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">scavenger-period</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">3600</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.lib.html">hivemind.lib</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.factory.initial</span>"
+       <span class="attribute">value</span>="<span class="attribute-value"></span>"
+       /&gt; <br>
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.factory.url.pkgs</span>"
+       <span class="attribute">value</span>="<span class="attribute-value"></span>"
+       /&gt; <br>
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">java.naming.provider.url</span>"
+       <span class="attribute">value</span>="<span class="attribute-value"></span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.lib.html">hivemind.lib</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;default <span class="attribute">symbol</span>="<span class="attribute-value">hivemind.lib.spring-bean-factory</span>"
+       <span class="attribute">value</span>="<span class="attribute-value">service:DefaultSpringBeanFactory</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

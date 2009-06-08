@@ -1,65 +1,132 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Configuration Point hivemind.SymbolSources</title></head><body><div class="title"> Module <a href="../module/hivemind.html">hivemind</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Configuration Point hivemind.SymbolSources</th><th>Occurs:</th><td> unbounded </td></tr><tr><td colspan="3" class="description">Provides a list of sources for values of substitution symbols.</td></tr><tr><th class="section" colspan="3">Schema</th></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="nested-object"><tr><th class="object-id" colspan="3"> Element &lt;source&gt; </th></tr><tr><td colspan="3" class="description">Describes a single source of symbol values.</td></tr><tr><th class="sub-id">Attribute after</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">A list of the names of other sources this source should 
-          follow.</td></tr><tr><th class="sub-id">Attribute before</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">A list of the names of other sources this source should 
-          precede.</td></tr><tr><th class="sub-id">Attribute class</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">instance</a></td></tr><tr><td colspan="3" class="description">Name of a class implementing the SymbolSource interface.</td></tr><tr><th class="sub-id">Attribute name (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">A unique name used 
-          to identify the source, used when ordering the sources.</td></tr><tr><th class="sub-id">Attribute service-id</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">service</a></td></tr><tr><td colspan="3" class="description">Service configuration id for a service which implements the SymbolSource 
-          interface.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;conversion
-         
-        <span class="attribute">class</span>="<span class="attribute-value">SymbolSourceContribution</span>"
-       &gt; <ul><li>
-     &lt;map
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">source</span>"
-       /&gt; </li><li>
-     &lt;map
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">service-id</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">source</span>"
-       /&gt; </li><li>
-     &lt;map
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">before</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">followingNames</span>"
-       /&gt; </li><li>
-     &lt;map
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">after</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">precedingNames</span>"
-       /&gt; </li></ul> &lt;/conversion&gt; </div></td></tr></table></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/framework.html">framework</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;source
-         
-        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">sysproperties</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">sysproperties</span>"
-       /&gt; </div></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.html">hivemind</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;source
-         
-        <span class="attribute">before</span>="<span class="attribute-value">hivemind.FactoryDefaults</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">hivemind.ApplicationDefaults</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ApplicationDefaultsSymbolSource</span>"
-       /&gt; <br/>
-     &lt;source
-         
-        <span class="attribute">name</span>="<span class="attribute-value">hivemind.FactoryDefaults</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">FactoryDefaultsSymbolSource</span>"
-       /&gt; </div></td></tr></table><hr/><div class="title"> Module <a href="../module/hivemind.html">hivemind</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Configuration Point hivemind.SymbolSources</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id"><img src="../public.png" width="20" height="20" alt="[public]"> Configuration Point hivemind.SymbolSources</th><th>Occurs:</th><td> unbounded </td>
+</tr>
+<tr>
+<td class="description" colspan="3">Provides a list of sources for values of substitution symbols.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Schema</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="nested-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"> Element &lt;source&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Describes a single source of symbol values.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute after</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">A list of the names of other sources this source should 
+          follow.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute before</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">A list of the names of other sources this source should 
+          precede.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute class</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">instance</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">Name of a class implementing the SymbolSource interface.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute name (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">A unique name used 
+          to identify the source, used when ordering the sources.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute service-id</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">service</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">Service configuration id for a service which implements the SymbolSource 
+          interface.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;conversion <span class="attribute">class</span>="<span class="attribute-value">SymbolSourceContribution</span>"
+       &gt; <ul>
+<li>
+     &lt;map <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">source</span>"
+       /&gt; </li>
+<li>
+     &lt;map <span class="attribute">attribute</span>="<span class="attribute-value">service-id</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">source</span>"
+       /&gt; </li>
+<li>
+     &lt;map <span class="attribute">attribute</span>="<span class="attribute-value">before</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">followingNames</span>"
+       /&gt; </li>
+<li>
+     &lt;map <span class="attribute">attribute</span>="<span class="attribute-value">after</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">precedingNames</span>"
+       /&gt; </li>
+</ul> &lt;/conversion&gt; </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/framework.html">framework</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;source <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">sysproperties</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">sysproperties</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.html">hivemind</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;source <span class="attribute">before</span>="<span class="attribute-value">hivemind.FactoryDefaults</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">hivemind.ApplicationDefaults</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ApplicationDefaultsSymbolSource</span>"
+       /&gt; <br>
+     &lt;source <span class="attribute">name</span>="<span class="attribute-value">hivemind.FactoryDefaults</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">FactoryDefaultsSymbolSource</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

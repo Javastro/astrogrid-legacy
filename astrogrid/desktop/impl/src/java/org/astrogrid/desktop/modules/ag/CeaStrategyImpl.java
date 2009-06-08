@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.8 2009/05/12 12:22:13 gtr Exp $
+/*$Id: CeaStrategyImpl.java,v 1.9 2009/06/08 18:29:08 gtr Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,8 +70,6 @@ import org.w3c.dom.Document;
  * see RemoteProcessManagerImpl
  * periodically poll remote cea servers, injjct messages into the system
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-Nov-2005
- * @TODO remove the concrete myspace ivorn hack
- *
  */
 public class CeaStrategyImpl extends AbstractToolBasedStrategy implements RemoteProcessStrategy{
     
@@ -201,9 +199,7 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
               delegate = ceaHelper.createCEADelegate(targetService);                                   
               info("Initializing on server " + targetService.getId() );
 
-              //make a version of the tool with concrete ivorns, just for the remote service
-              final Tool remotetool = makeMySpaceIvornsConcrete(tool);
-              ceaid = delegate.init(remotetool,jid);
+              ceaid = delegate.init(tool,jid);
               info("Server returned taskID " + ceaid);            
               setId(mkGlobalExecId(ceaid,targetService));
               // kick it off.
@@ -223,10 +219,6 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
               }
               throw new ServiceException(e.getMessage()); 
             }
-            catch (final InvalidArgumentException x) {
-              error("Failed to execute application ",x);
-              throw new ServiceException(x);
-	    }       
           }
 	
         
@@ -558,6 +550,13 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.9  2009/06/08 18:29:08  gtr
+Branches ar-gtr-2909 and ar-gtr-2913 are merged.
+
+<<<<<<< CeaStrategyImpl.java
+Revision 1.8.2.1  2009/05/14 16:38:31  gtr
+I removed the call to make MySpace IVORNs concrete. It is now longer needed now that concrete IVORNs are always read from the community, and it can breaks if asked to resolve an IVORN that is already concrete.
+
 Revision 1.8  2009/05/12 12:22:13  gtr
 Branch ar-gtr-2909 is merged.
 
@@ -565,6 +564,14 @@ Branch ar-gtr-2909 is merged.
 Revision 1.7  2009/04/17 17:01:47  nw
 MultiCone.
 
+=======
+Revision 1.6.2.2  2009/05/05 16:11:18  gtr
+It now attempts delegation only if the user is logged in.
+
+Revision 1.6.2.1  2009/05/05 12:06:35  gtr
+Delegation is supported.
+
+>>>>>>> 1.6.2.2
 =======
 Revision 1.6.2.2  2009/05/05 16:11:18  gtr
 It now attempts delegation only if the user is logged in.

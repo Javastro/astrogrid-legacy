@@ -1,75 +1,229 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Schema hiveutils.ObjectBuilderSchema</title></head><body><div class="title"> Module <a href="../module/hiveutils.html">hiveutils</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th colspan="3" class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Schema hiveutils.ObjectBuilderSchema</th></tr><tr><td colspan="3" class="container"><table cellspacing="0" class="nested-object"><tr><th class="object-id" colspan="3"> Element &lt;object&gt; </th></tr><tr><th class="sub-id">Attribute cached</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td></tr><tr><td colspan="3" class="description">true indicates that each call to get this object from the 
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Schema hiveutils.ObjectBuilderSchema</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hiveutils.html">hiveutils</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"><img src="../public.png" width="20" height="20" alt="[public]"> Schema hiveutils.ObjectBuilderSchema</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table class="nested-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"> Element &lt;object&gt; </th>
+</tr>
+<tr>
+<th class="sub-id">Attribute cached</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">true indicates that each call to get this object from the 
 					ObjectBuilder will always return the same object.
 					false means that each call creates a new object.
-					Default is false.</td></tr><tr><th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td></tr><tr><td colspan="3" class="description">The class of the object to instantiate.</td></tr><tr><th class="sub-id">Attribute eager-load</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td></tr><tr><td colspan="3" class="description">true means that the ObjectBuilder should instantiate this object
+					Default is false.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The class of the object to instantiate.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute eager-load</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">true means that the ObjectBuilder should instantiate this object
 					eagerly (ie, at ObjectBuilder construction time). If true, then
 					the object will be cached whatever the value of "cache"
 					attribute.
 					false means the object will be created only when required.
 					Default is false.
 					Important Note: As of versions 0.4, this attribute has in fact
-					no effect at all and should be considered as being always false.</td></tr><tr><th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">Unique name of the object to created. This name is used as an
+					no effect at all and should be considered as being always false.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">Unique name of the object to created. This name is used as an
 					object identifier when calling the ObjectBuilder service.
 					Note that object names are NOT module-scoped, so you must be 
-					very careful not to define duplicate names.</td></tr><tr><th class="section" colspan="3">Nested Elements</th></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="nested-object"><tr><th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">Unique name of the object to created. This name is used as an
+					very careful not to define duplicate names.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Nested Elements</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="nested-object" cellspacing="0">
+<tr>
+<th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">Unique name of the object to created. This name is used as an
 					object identifier when calling the ObjectBuilder service.
 					Note that object names are NOT module-scoped, so you must be 
-					very careful not to define duplicate names.</td></tr><tr><th class="sub-id">Attribute cached</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td></tr><tr><td colspan="3" class="description">true indicates that each call to get this object from the 
+					very careful not to define duplicate names.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute cached</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">true indicates that each call to get this object from the 
 					ObjectBuilder will always return the same object.
 					false means that each call creates a new object.
-					Default is false.</td></tr><tr><th class="sub-id">Attribute eager-load</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td></tr><tr><td colspan="3" class="description">true means that the ObjectBuilder should instantiate this object
+					Default is false.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute eager-load</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">true means that the ObjectBuilder should instantiate this object
 					eagerly (ie, at ObjectBuilder construction time). If true, then
 					the object will be cached whatever the value of "cache"
 					attribute.
 					false means the object will be created only when required.
 					Default is false.
 					Important Note: As of versions 0.4, this attribute has in fact
-					no effect at all and should be considered as being always false.</td></tr><tr><th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td></tr><tr><td colspan="3" class="description">The class of the object to instantiate.</td></tr><tr><th class="object-id" colspan="3"> Element &lt;inject&gt; </th></tr><tr><td colspan="3" class="description">Defines one dependency to inject for this object. If "name"
+					no effect at all and should be considered as being always false.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The class of the object to instantiate.</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;inject&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Defines one dependency to inject for this object. If "name"
 					is provided, then setter-injection will be used, else 
-					constructor injection will be used.</td></tr><tr><th class="sub-id">Attribute name</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><th class="sub-id">Attribute object (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">hiveutils-deferred-object</a></td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;conversion
-         
-        <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.InjectContribution</span>"
-      
-         
-        <span class="attribute">parent-method</span>="<span class="attribute-value">addInjection</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;listener&gt; </th></tr><tr><td colspan="3" class="description">Defines one EventListener to add to this object.</td></tr><tr><th class="sub-id">Attribute event (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><th class="sub-id">Attribute object (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">hiveutils-deferred-object</a></td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;conversion
-         
-        <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.ListenerContribution</span>"
-      
-         
-        <span class="attribute">parent-method</span>="<span class="attribute-value">addListener</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Element &lt;inject-arg&gt; </th></tr><tr><td colspan="3" class="description">Defines one dependency that needs to be passed by the ObjectBuilder
+					constructor injection will be used.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute name</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<th class="sub-id">Attribute object (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">hiveutils-deferred-object</a></td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;conversion <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.InjectContribution</span>"
+       <span class="attribute">parent-method</span>="<span class="attribute-value">addInjection</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;listener&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Defines one EventListener to add to this object.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute event (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<th class="sub-id">Attribute object (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">hiveutils-deferred-object</a></td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;conversion <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.ListenerContribution</span>"
+       <span class="attribute">parent-method</span>="<span class="attribute-value">addListener</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;inject-arg&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Defines one dependency that needs to be passed by the ObjectBuilder
 					caller (in create() method) that will be injected "as is" to the
-					constructor of the built object, at the same position as the tag</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;conversion
-         
-        <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.InjectContribution</span>"
-      
-         
-        <span class="attribute">parent-method</span>="<span class="attribute-value">addInjection</span>"
-       /&gt; </div></td></tr><div class="xml">
-     &lt;conversion
-         
-        <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.ObjectContribution</span>"
-       &gt; <ul><li>
-     &lt;map
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">objectClass</span>"
-       /&gt; </li></ul> &lt;/conversion&gt; </div></table></td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;conversion
-         
-        <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.ObjectContribution</span>"
-       &gt; <ul><li>
-     &lt;map
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">objectClass</span>"
-       /&gt; </li></ul> &lt;/conversion&gt; </div></td></tr><tr><th class="section" colspan="3">References</th></tr><tr><td class="container" colspan="3"><table class="layout" cellspacing="0"><tr><td><table cellspacing="0" class="summary"><tr><th> Configurations </th></tr><tr><td><a href="../config/hiveutils.ObjectBuilderObjects.html">hiveutils.ObjectBuilderObjects</a></td></tr></table></td></tr></table></td></tr></table></td></tr></table><hr/><div class="title"> Module <a href="../module/hiveutils.html">hiveutils</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+					constructor of the built object, at the same position as the tag</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;conversion <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.InjectContribution</span>"
+       <span class="attribute">parent-method</span>="<span class="attribute-value">addInjection</span>"
+       /&gt; </div>
+</td>
+</tr>
+<div class="xml">
+     &lt;conversion <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.ObjectContribution</span>"
+       &gt; <ul>
+<li>
+     &lt;map <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">objectClass</span>"
+       /&gt; </li>
+</ul> &lt;/conversion&gt; </div>
+</table>
+</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;conversion <span class="attribute">class</span>="<span class="attribute-value">net.sourceforge.hiveutils.service.impl.ObjectContribution</span>"
+       &gt; <ul>
+<li>
+     &lt;map <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">objectClass</span>"
+       /&gt; </li>
+</ul> &lt;/conversion&gt; </div>
+</td>
+</tr>
+<tr>
+<th colspan="3" class="section">References</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table cellspacing="0" class="layout">
+<tr>
+<td>
+<table class="summary" cellspacing="0">
+<tr>
+<th> Configurations </th>
+</tr>
+<tr>
+<td><a href="../config/hiveutils.ObjectBuilderObjects.html">hiveutils.ObjectBuilderObjects</a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hiveutils.html">hiveutils</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

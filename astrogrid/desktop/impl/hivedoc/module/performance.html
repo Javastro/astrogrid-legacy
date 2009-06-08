@@ -1,57 +1,116 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Module performance</title></head><body><div class="title">Module performance</div><div class="center-nav"><a href="../index.html">Back to master index</a></div><table cellspacing="0" class="top-level-object"><tr><th class="object-id">Module performance</th><th>Version:</th><td>1.0.0</td></tr><tr><th colspan="2" class="object-id">Package:</th><td>org.astrogrid.acr.system</td></tr><tr><td colspan="3" class="description">Performance Configuration</td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;preference
-         
-        <span class="attribute">advanced</span>="<span class="attribute-value">false</span>"
-      
-         
-        <span class="attribute">default-value</span>="<span class="attribute-value">20</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">performance.maxWorkerThreads</span>"
-      
-         
-        <span class="attribute">requires-restart</span>="<span class="attribute-value">true</span>"
-       &gt; <ul><li>
-     &lt;ui-name &gt; <ul><li>Maximum background threads</li></ul> &lt;/ui-name&gt; </li><li>
-     &lt;description &gt; <ul><li>&lt;html&gt;Maximum number of background threads to run simultaneously.
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Module performance</title>
+</head>
+<body>
+<div class="title">Module performance</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id">Module performance</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th class="object-id" colspan="2">Package:</th><td>org.astrogrid.acr.system</td>
+</tr>
+<tr>
+<td class="description" colspan="3">Configuration of performance parameters.</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;preference <span class="attribute">advanced</span>="<span class="attribute-value">false</span>"
+       <span class="attribute">default-value</span>="<span class="attribute-value">20</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">performance.maxWorkerThreads</span>"
+       <span class="attribute">requires-restart</span>="<span class="attribute-value">true</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Maximum background threads</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>&lt;html&gt;Maximum number of background threads to run simultaneously.
                 &lt;br&gt;If the number of background processes exceed this number, the excess are queued until a 
                 &lt;br&gt;runningprocess completes. 
-                &lt;br&gt;Reduce this number if running on a low-bandwidth network, but not below 2</li></ul> &lt;/description&gt; </li><li>
-     &lt;units &gt; <ul><li>number</li></ul> &lt;/units&gt; </li></ul> &lt;/preference&gt; <br/>
-     &lt;preference
-         
-        <span class="attribute">advanced</span>="<span class="attribute-value">false</span>"
-      
-         
-        <span class="attribute">default-value</span>="<span class="attribute-value">5</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">performance.timeoutFactor</span>"
-      
-         
-        <span class="attribute">requires-restart</span>="<span class="attribute-value">false</span>"
-       &gt; <ul><li>
-     &lt;ui-name &gt; <ul><li>Timeout Scaling Factor</li></ul> &lt;/ui-name&gt; </li><li>
-     &lt;description &gt; <ul><li>&lt;html&gt;A value used to linearly scale application timeouts.
+                &lt;br&gt;Reduce this number if running on a low-bandwidth network, but not below 2</li>
+</ul> &lt;/description&gt; </li>
+<li>
+     &lt;units &gt; <ul>
+<li>number</li>
+</ul> &lt;/units&gt; </li>
+</ul> &lt;/preference&gt; <br>
+     &lt;preference <span class="attribute">advanced</span>="<span class="attribute-value">false</span>"
+       <span class="attribute">default-value</span>="<span class="attribute-value">5</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">performance.timeoutFactor</span>"
+       <span class="attribute">requires-restart</span>="<span class="attribute-value">false</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Timeout Scaling Factor</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>&lt;html&gt;A value used to linearly scale application timeouts.
                 &lt;br&gt;(default is 5). Increase this number if running on a low-bandwidth network. 
-                &lt;br&gt;Must always be greater than 0</li></ul> &lt;/description&gt; </li><li>
-     &lt;units &gt; <ul><li>number</li></ul> &lt;/units&gt; </li></ul> &lt;/preference&gt; <br/>
-     &lt;preference
-         
-        <span class="attribute">advanced</span>="<span class="attribute-value">false</span>"
-      
-         
-        <span class="attribute">default-value</span>="<span class="attribute-value">5</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">performance.showProgressDialogueAfter</span>"
-      
-         
-        <span class="attribute">requires-restart</span>="<span class="attribute-value">true</span>"
-       &gt; <ul><li>
-     &lt;ui-name &gt; <ul><li>Show progress dialogues after</li></ul> &lt;/ui-name&gt; </li><li>
-     &lt;description &gt; <ul><li>&lt;html&gt;Show progress dialogues for important processes
+                &lt;br&gt;Must always be greater than 0</li>
+</ul> &lt;/description&gt; </li>
+<li>
+     &lt;units &gt; <ul>
+<li>number</li>
+</ul> &lt;/units&gt; </li>
+</ul> &lt;/preference&gt; <br>
+     &lt;preference <span class="attribute">advanced</span>="<span class="attribute-value">false</span>"
+       <span class="attribute">default-value</span>="<span class="attribute-value">5</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">performance.showProgressDialogueAfter</span>"
+       <span class="attribute">requires-restart</span>="<span class="attribute-value">true</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Show progress dialogues after</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>&lt;html&gt;Show progress dialogues for important processes
                 after they have been running for a certain amount of seconds.
-                &lt;br&gt;(default is 5 seconds). Set to 0 to always show progress dialogues, -1 to never show progress dialogues.</li></ul> &lt;/description&gt; </li><li>
-     &lt;units &gt; <ul><li>seconds</li></ul> &lt;/units&gt; </li></ul> &lt;/preference&gt; </div></td></tr></table><hr/><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+                &lt;br&gt;(default is 5 seconds). Set to 0 to always show progress dialogues, -1 to never show progress dialogues.</li>
+</ul> &lt;/description&gt; </li>
+<li>
+     &lt;units &gt; <ul>
+<li>seconds</li>
+</ul> &lt;/units&gt; </li>
+</ul> &lt;/preference&gt; <br>
+     &lt;preference <span class="attribute">advanced</span>="<span class="attribute-value">false</span>"
+       <span class="attribute">default-value</span>="<span class="attribute-value">true</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">performance.prevent.oversize.registry.query</span>"
+       <span class="attribute">requires-restart</span>="<span class="attribute-value">false</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Prevent oversized registry queries</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>&lt;html&gt;Prevent the execution of registry queries that will return huge numbers of matches.
+                    &lt;br&gt;Recommended to prevent user error from overloading the registry service or user interface.</li>
+</ul> &lt;/description&gt; </li>
+<li>
+     &lt;units &gt; <ul>
+<li>boolean</li>
+</ul> &lt;/units&gt; </li>
+</ul> &lt;/preference&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

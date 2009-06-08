@@ -1,15 +1,76 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Schema hivemind.lib.BeanFactoryContribution</title></head><body><div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th colspan="3" class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Schema hivemind.lib.BeanFactoryContribution</th></tr><tr><td colspan="3" class="description">Schema used with the hivemind.lib.BeanFactoryBuilder service, to define configuration that accepts definitions of classes 
-    that may be vended by the generated BeanFactory.</td></tr><tr><td colspan="3" class="container"><table cellspacing="0" class="nested-object"><tr><th class="object-id" colspan="3"> Element &lt;bean&gt; </th></tr><tr><td colspan="3" class="description">Define one class of bean that may be vended.  Beans must have either a public constructor that takes no arguments, 
-      or a public constructor that takes a single string argument (or both).</td></tr><tr><th class="sub-id">Attribute cacheable</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td></tr><tr><td colspan="3" class="description">Defines whether instances of the bean may be cached; the default is specified by the factory.</td></tr><tr><th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td></tr><tr><td colspan="3" class="description">The bean class that will be instantiated by the factory.</td></tr><tr><th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">A unique name for the bean.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;conversion
-         
-        <span class="attribute">class</span>="<span class="attribute-value">factory.BeanFactoryContribution</span>"
-       &gt; <ul><li>
-     &lt;map
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">beanClass</span>"
-       /&gt; </li></ul> &lt;/conversion&gt; </div></td></tr></table></td></tr></table><hr/><div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Schema hivemind.lib.BeanFactoryContribution</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"><img src="../public.png" width="20" height="20" alt="[public]"> Schema hivemind.lib.BeanFactoryContribution</th>
+</tr>
+<tr>
+<td class="description" colspan="3">Schema used with the hivemind.lib.BeanFactoryBuilder service, to define configuration that accepts definitions of classes 
+    that may be vended by the generated BeanFactory.</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table class="nested-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"> Element &lt;bean&gt; </th>
+</tr>
+<tr>
+<td class="description" colspan="3">Define one class of bean that may be vended.  Beans must have either a public constructor that takes no arguments, 
+      or a public constructor that takes a single string argument (or both).</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute cacheable</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">Defines whether instances of the bean may be cached; the default is specified by the factory.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute class (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The bean class that will be instantiated by the factory.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">A unique name for the bean.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;conversion <span class="attribute">class</span>="<span class="attribute-value">factory.BeanFactoryContribution</span>"
+       &gt; <ul>
+<li>
+     &lt;map <span class="attribute">attribute</span>="<span class="attribute-value">class</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">beanClass</span>"
+       /&gt; </li>
+</ul> &lt;/conversion&gt; </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

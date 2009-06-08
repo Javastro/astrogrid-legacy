@@ -1,17 +1,93 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Service Point hivemind.lib.BeanFactoryBuilder</title></head><body><div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Service Point hivemind.lib.BeanFactoryBuilder</th><th> Interface: </th><td>org.apache.hivemind.ServiceImplementationFactory</td></tr><tr><td colspan="3" class="description">A service which builds Object Factories.  Factories are driven by a configuration that conforms to the hivemind.lib.BeanFactoryContribution schema.</td></tr><tr><th colspan="2"> Parameters occurs: </th><td>1</td></tr><tr><th class="section" colspan="3"> Parameters Schema </th></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="nested-object"><tr><th class="object-id" colspan="3"> Element &lt;factory&gt; </th></tr><tr><th class="sub-id">Attribute configuration-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">configuration</a></td></tr><tr><td colspan="3" class="description">The configuration containing the contributions that define what classes are actually vended. The configuration must use the hivemind.lib.BeanFactoryContribution schema.</td></tr><tr><th class="sub-id">Attribute default-cacheable</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td></tr><tr><td colspan="3" class="description">The default value for cacheable for any contributions that are not more specific. The default value is true.</td></tr><tr><th class="sub-id">Attribute vend-class</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td></tr><tr><td colspan="3" class="description">The class (or interface) vended by this factory. Contributions must be assignable to this type, or will be ignored. The default value is java.lang.Object.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;conversion
-         
-        <span class="attribute">class</span>="<span class="attribute-value">factory.BeanFactoryParameter</span>"
-       &gt; <ul><li>
-     &lt;map
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">configuration-id</span>"
-      
-         
-        <span class="attribute">property</span>="<span class="attribute-value">contributions</span>"
-       /&gt; </li></ul> &lt;/conversion&gt; </div></td></tr></table></td></tr><tr><th class="section" colspan="3">Implementation</th></tr><tr><td class="container" colspan="3"><div class="xml"><ul><li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../services/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  &gt; <ul><li>
-     &lt;construct
-         
-        <span class="attribute">class</span>="<span class="attribute-value">factory.BeanFactoryBuilder</span>"
-       /&gt; </li></ul> &lt;/invoke-factory&gt; </li></ul></div></td></tr></table><hr/><div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Service Point hivemind.lib.BeanFactoryBuilder</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id"><img src="../public.png" width="20" height="20" alt="[public]"> Service Point hivemind.lib.BeanFactoryBuilder</th><th> Interface: </th><td>org.apache.hivemind.ServiceImplementationFactory</td>
+</tr>
+<tr>
+<td class="description" colspan="3">A service which builds Object Factories.  Factories are driven by a configuration that conforms to the hivemind.lib.BeanFactoryContribution schema.</td>
+</tr>
+<tr>
+<th colspan="2"> Parameters occurs: </th><td>1</td>
+</tr>
+<tr>
+<th colspan="3" class="section"> Parameters Schema </th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="nested-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"> Element &lt;factory&gt; </th>
+</tr>
+<tr>
+<th class="sub-id">Attribute configuration-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">configuration</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The configuration containing the contributions that define what classes are actually vended. The configuration must use the hivemind.lib.BeanFactoryContribution schema.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute default-cacheable</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">boolean</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The default value for cacheable for any contributions that are not more specific. The default value is true.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute vend-class</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The class (or interface) vended by this factory. Contributions must be assignable to this type, or will be ignored. The default value is java.lang.Object.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;conversion <span class="attribute">class</span>="<span class="attribute-value">factory.BeanFactoryParameter</span>"
+       &gt; <ul>
+<li>
+     &lt;map <span class="attribute">attribute</span>="<span class="attribute-value">configuration-id</span>"
+       <span class="attribute">property</span>="<span class="attribute-value">contributions</span>"
+       /&gt; </li>
+</ul> &lt;/conversion&gt; </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Implementation</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../services/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  &gt; <ul>
+<li>
+     &lt;construct <span class="attribute">class</span>="<span class="attribute-value">factory.BeanFactoryBuilder</span>"
+       /&gt; </li>
+</ul> &lt;/invoke-factory&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hivemind.lib.html">hivemind.lib</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

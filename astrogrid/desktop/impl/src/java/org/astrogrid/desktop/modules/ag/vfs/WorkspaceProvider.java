@@ -55,7 +55,7 @@ public class WorkspaceProvider extends AbstractFileProvider implements VfsFilePr
 	// at the moment, requests a login, and then rewrites to the users myspace home.
 	public FileObject findFile(final FileObject baseFile, String uri,
 			final FileSystemOptions fileSystemOptions) throws FileSystemException  {
-          final String homespace = getMySpaceHome(comm.getUserInformation());
+          final String homespace = getHome(comm.getUserInformation());
 	  try {
 	    if (uri.equals("workspace:") || 
                 uri.equals("workspace://") ||
@@ -83,20 +83,12 @@ public class WorkspaceProvider extends AbstractFileProvider implements VfsFilePr
          * @return The IVORN for the homespace in string form.
          * @throws FileSystemException If the community information is insufficient.
          */
-        private String getMySpaceHome(final UserInformation user) throws FileSystemException {
-          
-          // Extract the IVOA authority of the community in which 
-          // the user is registered.
-          final String c1 = user.getCommunity();
-          if (c1 == null || !c1.startsWith("ivo://")) {
-            throw new FileSystemException("Community name " + c1 + " is invalid");
+        private String getHome(final UserInformation user) throws FileSystemException {
+          URI home = user.getHome();
+          if (home == null) {
+            throw new FileSystemException("User's home-space is unknown");
           }
-          final String c2 = c1.substring(6); // Strip ivo://
-          final int slash = c2.indexOf('/');
-          final String authority = (slash == -1)? c2 : c2.substring(0,slash);
-          
-          // Form the old-style IVORN for the home space.
-          return "ivo://" + authority + '/' + user.getName() + '#';
+          return home.toString();
         }
 
 }

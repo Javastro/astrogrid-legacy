@@ -1,173 +1,260 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Module hivemind</title></head><body><div class="title">Module hivemind</div><div class="center-nav"><a href="../index.html">Back to master index</a></div><table cellspacing="0" class="top-level-object"><tr><th class="object-id">Module hivemind</th><th>Version:</th><td>1.1.0</td></tr><tr><th colspan="2" class="object-id">Package:</th><td>org.apache.hivemind</td></tr><tr><td colspan="3" class="description">The master module for HiveMind, defining core, universal functionality.</td></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="layout"><tr><td><table cellspacing="0" class="summary"><tr><th>Configuration Points</th></tr><tr><td><a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></td></tr><tr><td><a href="../config/hivemind.EagerLoad.html">hivemind.EagerLoad</a></td></tr><tr><td><a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></td></tr><tr><td><a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></td></tr><tr><td><a href="../config/hivemind.ServiceModels.html">hivemind.ServiceModels</a></td></tr><tr><td><a href="../config/hivemind.Startup.html">hivemind.Startup</a></td></tr><tr><td><a href="../config/hivemind.SymbolSources.html">hivemind.SymbolSources</a></td></tr><tr><td><a href="../config/hivemind.Translators.html">hivemind.Translators</a></td></tr></table><div class="info">8 configuration points
-      </div></td><td><table cellspacing="0" class="summary"><tr><th>Service Points</th></tr><tr><td><a href="../service/hivemind.ApplicationDefaultsSymbolSource.html">hivemind.ApplicationDefaultsSymbolSource</a></td></tr><tr><td><a href="../service/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></td></tr><tr><td><a href="../service/hivemind.ClassFactory.html">hivemind.ClassFactory</a></td></tr><tr><td><a href="../service/hivemind.ClassObjectProvider.html">hivemind.ClassObjectProvider</a></td></tr><tr><td><a href="../service/hivemind.ConfigurationObjectProvider.html">hivemind.ConfigurationObjectProvider</a></td></tr><tr><td><a href="../service/hivemind.EagerLoad.html">hivemind.EagerLoad</a></td></tr><tr><td><a href="../service/hivemind.FactoryDefaultsSymbolSource.html">hivemind.FactoryDefaultsSymbolSource</a></td></tr><tr><td><a href="../service/hivemind.InterfaceSynthesizer.html">hivemind.InterfaceSynthesizer</a></td></tr><tr><td><a href="../service/hivemind.LoggingInterceptor.html">hivemind.LoggingInterceptor</a></td></tr><tr><td><a href="../service/hivemind.ObjectInstanceObjectProvider.html">hivemind.ObjectInstanceObjectProvider</a></td></tr><tr><td><a href="../service/hivemind.ObjectTranslator.html">hivemind.ObjectTranslator</a></td></tr><tr><td><a href="../service/hivemind.ServiceObjectProvider.html">hivemind.ServiceObjectProvider</a></td></tr><tr><td><a href="../service/hivemind.ServicePropertyObjectProvider.html">hivemind.ServicePropertyObjectProvider</a></td></tr><tr><td><a href="../service/hivemind.ShutdownCoordinator.html">hivemind.ShutdownCoordinator</a></td></tr><tr><td><a href="../service/hivemind.Startup.html">hivemind.Startup</a></td></tr><tr><td><a href="../service/hivemind.ThreadEventNotifier.html">hivemind.ThreadEventNotifier</a></td></tr><tr><td><a href="../service/hivemind.ThreadLocale.html">hivemind.ThreadLocale</a></td></tr><tr><td><a href="../service/hivemind.ThreadLocaleFactory.html">hivemind.ThreadLocaleFactory</a></td></tr><tr><td><a href="../service/hivemind.ThreadLocalStorage.html">hivemind.ThreadLocalStorage</a></td></tr></table><div class="info">19 service points
-      </div></td><td><table cellspacing="0" class="summary"><tr><th>Schemas</th></tr><tr><td><a href="../schema/hivemind.Defaults.html">hivemind.Defaults</a></td></tr><tr><td><a href="../schema/hivemind.MethodFilter.html">hivemind.MethodFilter</a></td></tr></table><div class="info">2 schemas
-      </div></td></tr></table></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">service</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ServiceObjectProvider</span>"
-       /&gt; <br/>
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">configuration</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ConfigurationObjectProvider</span>"
-       /&gt; <br/>
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">instance</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ObjectInstanceObjectProvider</span>"
-       /&gt; <br/>
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">service-property</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ServicePropertyObjectProvider</span>"
-       /&gt; <br/>
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">class</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ClassObjectProvider</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ServiceModels.html">hivemind.ServiceModels</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;service-model
-         
-        <span class="attribute">class</span>="<span class="attribute-value">impl.servicemodel.PrimitiveServiceModelFactory</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">primitive</span>"
-       /&gt; <br/>
-     &lt;service-model
-         
-        <span class="attribute">class</span>="<span class="attribute-value">impl.servicemodel.SingletonServiceModelFactory</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">singleton</span>"
-       /&gt; <br/>
-     &lt;service-model
-         
-        <span class="attribute">class</span>="<span class="attribute-value">impl.servicemodel.ThreadedServiceModelFactory</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">threaded</span>"
-       /&gt; <br/>
-     &lt;service-model
-         
-        <span class="attribute">class</span>="<span class="attribute-value">impl.servicemodel.PooledServiceModelFactory</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">pooled</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.Startup.html">hivemind.Startup</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;startup
-         
-        <span class="attribute">object</span>="<span class="attribute-value">service:EagerLoad</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.SymbolSources.html">hivemind.SymbolSources</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;source
-         
-        <span class="attribute">before</span>="<span class="attribute-value">hivemind.FactoryDefaults</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">hivemind.ApplicationDefaults</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ApplicationDefaultsSymbolSource</span>"
-       /&gt; <br/>
-     &lt;source
-         
-        <span class="attribute">name</span>="<span class="attribute-value">hivemind.FactoryDefaults</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">FactoryDefaultsSymbolSource</span>"
-       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.Translators.html">hivemind.Translators</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.BooleanTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">boolean</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.IntTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">int</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.EnumerationTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">enumeration</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.ConfigurationTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">configuration</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.ResourceTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">resource</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.LongTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">long</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.DoubleTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">double</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.ServicePointTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">service-point</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.QualifiedIdTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">qualified-id</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.IdListTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">id-list</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">name</span>="<span class="attribute-value">object</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ObjectTranslator</span>"
-       /&gt; <br/>
-     &lt;translator
-         
-        <span class="attribute">class</span>="<span class="attribute-value">schema.rules.NullTranslator</span>"
-      
-         
-        <span class="attribute">name</span>="<span class="attribute-value">null</span>"
-       /&gt; </div></td></tr></table><hr/><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Module hivemind</title>
+</head>
+<body>
+<div class="title">Module hivemind</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id">Module hivemind</th><th>Version:</th><td>1.1.0</td>
+</tr>
+<tr>
+<th class="object-id" colspan="2">Package:</th><td>org.apache.hivemind</td>
+</tr>
+<tr>
+<td class="description" colspan="3">The master module for HiveMind, defining core, universal functionality.</td>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="layout" cellspacing="0">
+<tr>
+<td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Configuration Points</th>
+</tr>
+<tr>
+<td><a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></td>
+</tr>
+<tr>
+<td><a href="../config/hivemind.EagerLoad.html">hivemind.EagerLoad</a></td>
+</tr>
+<tr>
+<td><a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></td>
+</tr>
+<tr>
+<td><a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></td>
+</tr>
+<tr>
+<td><a href="../config/hivemind.ServiceModels.html">hivemind.ServiceModels</a></td>
+</tr>
+<tr>
+<td><a href="../config/hivemind.Startup.html">hivemind.Startup</a></td>
+</tr>
+<tr>
+<td><a href="../config/hivemind.SymbolSources.html">hivemind.SymbolSources</a></td>
+</tr>
+<tr>
+<td><a href="../config/hivemind.Translators.html">hivemind.Translators</a></td>
+</tr>
+</table>
+<div class="info">8 configuration points
+      </div>
+</td><td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ApplicationDefaultsSymbolSource.html">hivemind.ApplicationDefaultsSymbolSource</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ClassFactory.html">hivemind.ClassFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ClassObjectProvider.html">hivemind.ClassObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ConfigurationObjectProvider.html">hivemind.ConfigurationObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.EagerLoad.html">hivemind.EagerLoad</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.FactoryDefaultsSymbolSource.html">hivemind.FactoryDefaultsSymbolSource</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.InterfaceSynthesizer.html">hivemind.InterfaceSynthesizer</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.LoggingInterceptor.html">hivemind.LoggingInterceptor</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ObjectInstanceObjectProvider.html">hivemind.ObjectInstanceObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ObjectTranslator.html">hivemind.ObjectTranslator</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ServiceObjectProvider.html">hivemind.ServiceObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ServicePropertyObjectProvider.html">hivemind.ServicePropertyObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ShutdownCoordinator.html">hivemind.ShutdownCoordinator</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.Startup.html">hivemind.Startup</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ThreadEventNotifier.html">hivemind.ThreadEventNotifier</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ThreadLocale.html">hivemind.ThreadLocale</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ThreadLocaleFactory.html">hivemind.ThreadLocaleFactory</a></td>
+</tr>
+<tr>
+<td><a href="../service/hivemind.ThreadLocalStorage.html">hivemind.ThreadLocalStorage</a></td>
+</tr>
+</table>
+<div class="info">19 service points
+      </div>
+</td><td>
+<table class="summary" cellspacing="0">
+<tr>
+<th>Schemas</th>
+</tr>
+<tr>
+<td><a href="../schema/hivemind.Defaults.html">hivemind.Defaults</a></td>
+</tr>
+<tr>
+<td><a href="../schema/hivemind.MethodFilter.html">hivemind.MethodFilter</a></td>
+</tr>
+</table>
+<div class="info">2 schemas
+      </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">service</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ServiceObjectProvider</span>"
+       /&gt; <br>
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">configuration</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ConfigurationObjectProvider</span>"
+       /&gt; <br>
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">instance</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ObjectInstanceObjectProvider</span>"
+       /&gt; <br>
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">service-property</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ServicePropertyObjectProvider</span>"
+       /&gt; <br>
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">class</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ClassObjectProvider</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.ServiceModels.html">hivemind.ServiceModels</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;service-model <span class="attribute">class</span>="<span class="attribute-value">impl.servicemodel.PrimitiveServiceModelFactory</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">primitive</span>"
+       /&gt; <br>
+     &lt;service-model <span class="attribute">class</span>="<span class="attribute-value">impl.servicemodel.SingletonServiceModelFactory</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">singleton</span>"
+       /&gt; <br>
+     &lt;service-model <span class="attribute">class</span>="<span class="attribute-value">impl.servicemodel.ThreadedServiceModelFactory</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">threaded</span>"
+       /&gt; <br>
+     &lt;service-model <span class="attribute">class</span>="<span class="attribute-value">impl.servicemodel.PooledServiceModelFactory</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">pooled</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.Startup.html">hivemind.Startup</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;startup <span class="attribute">object</span>="<span class="attribute-value">service:EagerLoad</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.SymbolSources.html">hivemind.SymbolSources</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;source <span class="attribute">before</span>="<span class="attribute-value">hivemind.FactoryDefaults</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">hivemind.ApplicationDefaults</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ApplicationDefaultsSymbolSource</span>"
+       /&gt; <br>
+     &lt;source <span class="attribute">name</span>="<span class="attribute-value">hivemind.FactoryDefaults</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">FactoryDefaultsSymbolSource</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.Translators.html">hivemind.Translators</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.BooleanTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">boolean</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.IntTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">int</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.EnumerationTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">enumeration</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.ConfigurationTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">configuration</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.ResourceTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">resource</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.LongTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">long</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.DoubleTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">double</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.ServicePointTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">service-point</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.QualifiedIdTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">qualified-id</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.IdListTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">id-list</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">name</span>="<span class="attribute-value">object</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ObjectTranslator</span>"
+       /&gt; <br>
+     &lt;translator <span class="attribute">class</span>="<span class="attribute-value">schema.rules.NullTranslator</span>"
+       <span class="attribute">name</span>="<span class="attribute-value">null</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

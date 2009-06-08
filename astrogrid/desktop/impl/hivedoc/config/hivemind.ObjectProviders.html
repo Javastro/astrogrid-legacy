@@ -1,73 +1,132 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Configuration Point hivemind.ObjectProviders</title></head><body><div class="title"> Module <a href="../module/hivemind.html">hivemind</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Configuration Point hivemind.ObjectProviders</th><th>Occurs:</th><td> unbounded </td></tr><tr><td colspan="3" class="description">Services that can provide objects for the object translator.</td></tr><tr><th class="section" colspan="3">Schema</th></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="nested-object"><tr><th class="object-id" colspan="3"> Element &lt;provider&gt; </th></tr><tr><th class="sub-id">Attribute prefix</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td></tr><tr><td colspan="3" class="description">The prefix used to identify the provider.</td></tr><tr><th class="sub-id">Attribute service-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">service</a></td></tr><tr><td colspan="3" class="description">The object providing service.</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;push-attribute
-         
-        <span class="attribute">attribute</span>="<span class="attribute-value">service-id</span>"
-       /&gt; <br/>
-     &lt;invoke-parent
-         
-        <span class="attribute">method</span>="<span class="attribute-value">addElement</span>"
-       /&gt; </div></td></tr></table></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.html">hivemind</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">service</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ServiceObjectProvider</span>"
-       /&gt; <br/>
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">configuration</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ConfigurationObjectProvider</span>"
-       /&gt; <br/>
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">instance</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ObjectInstanceObjectProvider</span>"
-       /&gt; <br/>
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">service-property</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ServicePropertyObjectProvider</span>"
-       /&gt; <br/>
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">class</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ClassObjectProvider</span>"
-       /&gt; </div></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.lib.html">hivemind.lib</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">spring</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">SpringObjectProvider</span>"
-       /&gt; </div></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.lib.html">hivemind.lib</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">bean</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">BeanFactoryObjectProvider</span>"
-       /&gt; </div></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/hiveutils.html">hiveutils</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">object</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">ObjectBuilderObjectProvider</span>"
-       /&gt; </div></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/hiveutils.html">hiveutils</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
-     &lt;provider
-         
-        <span class="attribute">prefix</span>="<span class="attribute-value">literal</span>"
-      
-         
-        <span class="attribute">service-id</span>="<span class="attribute-value">LiteralObjectProvider</span>"
-       /&gt; </div></td></tr></table><hr/><div class="title"> Module <a href="../module/hivemind.html">hivemind</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../hivemind.css">
+<title>HiveMind Registry -  Configuration Point hivemind.ObjectProviders</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table class="top-level-object" cellspacing="0">
+<tr>
+<th class="object-id"><img src="../public.png" width="20" height="20" alt="[public]"> Configuration Point hivemind.ObjectProviders</th><th>Occurs:</th><td> unbounded </td>
+</tr>
+<tr>
+<td class="description" colspan="3">Services that can provide objects for the object translator.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Schema</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<table class="nested-object" cellspacing="0">
+<tr>
+<th class="object-id" colspan="3"> Element &lt;provider&gt; </th>
+</tr>
+<tr>
+<th class="sub-id">Attribute prefix</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The prefix used to identify the provider.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute service-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">service</a></td>
+</tr>
+<tr>
+<td class="description" colspan="3">The object providing service.</td>
+</tr>
+<tr>
+<th colspan="3" class="section">Conversion Rules</th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;push-attribute <span class="attribute">attribute</span>="<span class="attribute-value">service-id</span>"
+       /&gt; <br>
+     &lt;invoke-parent <span class="attribute">method</span>="<span class="attribute-value">addElement</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.html">hivemind</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">service</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ServiceObjectProvider</span>"
+       /&gt; <br>
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">configuration</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ConfigurationObjectProvider</span>"
+       /&gt; <br>
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">instance</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ObjectInstanceObjectProvider</span>"
+       /&gt; <br>
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">service-property</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ServicePropertyObjectProvider</span>"
+       /&gt; <br>
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">class</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ClassObjectProvider</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.lib.html">hivemind.lib</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">spring</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">SpringObjectProvider</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/hivemind.lib.html">hivemind.lib</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">bean</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">BeanFactoryObjectProvider</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/hiveutils.html">hiveutils</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">object</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">ObjectBuilderObjectProvider</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/hiveutils.html">hiveutils</a></th>
+</tr>
+<tr>
+<td colspan="3" class="container">
+<div class="xml">
+     &lt;provider <span class="attribute">prefix</span>="<span class="attribute-value">literal</span>"
+       <span class="attribute">service-id</span>="<span class="attribute-value">LiteralObjectProvider</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>
