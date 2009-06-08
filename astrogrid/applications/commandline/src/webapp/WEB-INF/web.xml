@@ -159,6 +159,15 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
       <servlet-name>Delegation</servlet-name>
       <servlet-class>org.astrogrid.security.delegation.DelegationServlet</servlet-class>
     </servlet>
+    <servlet>
+    	<description>
+    	servlet to reuse xdoc</description>
+    	<display-name>
+    	DocServlet</display-name>
+    	<servlet-name>DocServlet</servlet-name>
+    	<servlet-class>
+    	org.astrogrid.applications.docs.DocServlet</servlet-class>
+    </servlet>
 
    <servlet-mapping>
         <servlet-name>Flux</servlet-name>
@@ -242,6 +251,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
     <servlet-mapping>
         <servlet-name>Delegation</servlet-name>
         <url-pattern>/delegation/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>DocServlet</servlet-name>
+    	<url-pattern>/doc/*</url-pattern>
     </servlet-mapping>
 <!--     <servlet-mapping>
         <servlet-name>AbortionServlet</servlet-name>
