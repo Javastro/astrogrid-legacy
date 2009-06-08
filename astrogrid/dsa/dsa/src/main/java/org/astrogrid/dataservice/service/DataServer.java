@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.1 2009/05/13 13:20:27 gtr Exp $
+ * $Id: DataServer.java,v 1.2 2009/06/08 16:27:04 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,15 +22,12 @@ import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
-import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
-import org.astrogrid.status.TaskStatus;
 
 
 /**
@@ -174,14 +171,6 @@ public class DataServer
    }
 
    /**
-    * @deprecated convenience method
-    * NO LONGER DEPRECATED, NOW REMOVED - DON'T SUPPORT CONDITION ANYMORE
-   public void askQuery(Principal user, Condition condition, ReturnSpec returns) throws Throwable {
-      askQuery(user, new Query(condition, returns), null);
-   }
-    */
-
-   /**
     * Returns the status object */
    public static DataServiceStatus getStatus() {
       return status;
@@ -247,19 +236,7 @@ public class DataServer
 	 * depends on the back end.  NB the id given is the *datacenters* id.
     */
    public void startPendingQuery(Principal user, String queryId) throws IOException {
-      Querier querier = querierManager.getQuerier(queryId);
-      if (querier == null) {
-         throw new DatacenterException("No query found for ID="+queryId+" on this server");
-      }
-		if (querier.getStatus().getStage().equals(TaskStatus.INITIALISED)) {
-			querierManager.submitQuerier(querier); // Will remove from holding queue if present
-		}
-		else {
-      	log.error("Could not start query with ID " + queryId + 
-					" as its status was " + querier.getStatus().getStage());
-         throw new DatacenterException("Query with ID="+queryId+" cannot be started as it is not pending - its current status is " + querier.getStatus().getStage());
-		}
-      //return querier.start();
+     querierManager.releaseQuerier(queryId);
    }
 
    /**

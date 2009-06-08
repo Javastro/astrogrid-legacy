@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.3 2009/06/05 20:28:27 gtr Exp $
+/*$Id: QuerierManager.java,v 1.4 2009/06/08 16:27:04 gtr Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,13 +11,10 @@
 package org.astrogrid.dataservice.queriers;
 
 import java.io.IOException;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.TreeSet;
-import java.util.Iterator;
-import java.util.Vector;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.ListIterator;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -25,19 +22,30 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierQueued;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 
-/** Manages the construction and initialization of Queriers, and maintains a
- * collection of current Queriers. It might run queues or something... later...
- *
+/**
+ * Manages the collection of queriers.
+ * <p>
+ * Maintains a list, in order of submissions, of known queriers, including
+ * queued, active and "closed" (completed or failed) instances. Closed queriers
+ * are kept in the list for a configurable time, typically a few days.
+ * <p>
+ * Maintains a bounded, blocking queue for execution of queriers. Queriers
+ * recorded in the job list as being in the "queued" state may be on the
+ * execution queue or may be held for later released to the queue.
  * <p>
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Sep-2003
  * @author mch
+ * @author Guy Rixon June 2009
  */
-public class QuerierManager implements QuerierListener {
+public class QuerierManager {
    
    private static final Log log = LogFactory.getLog(QuerierManager.class);
+
+   private static final long ONE_DAY_IN_MS = 86400000L;
 
    /**
     * The capacity of the queue for asynchronous queries. The system
@@ -48,20 +56,11 @@ public class QuerierManager implements QuerierListener {
    
    /** Identifier for this manager/querier container */
    private String managerId;
+
+   private ArrayList<Querier> jobs;
    
    /** List of managers */
    private static Hashtable managers = new Hashtable();
-   
-   /** Lookup table of initialised queriers.  These are queriers that have been
-    * created but aren't yet 'complete', or have not yet been told to run.  For
-    * example, the CEA architecture has an 'init' which creates a query, and a
-    * 'execute' which will kick it to the queue
-    */
-   private Hashtable heldQueriers = new Hashtable();
-   
-   // WRITE ACCESS TO THE QUEUE VARIABLES IS SYNCHRONIZED, in methods
-   // checkQueue and addQuerierToQueues
-   // Note that the Hashtable class itself is synchronized.
 
   /**
    * An execution queue for asynchronous queries. The queue has FIFO semantics
@@ -69,37 +68,13 @@ public class QuerierManager implements QuerierListener {
    * a thead pool.
    */
    ThreadPoolExecutor executor;
-   
-   /** lookup table of queued queriers.  These are queriers that are waiting on
-    a 'free' spot on the asynchronous queries queue (synchronous queries are
-    simply rejected if the synchronous queries queue is full.)
-   */
-   private Hashtable<String, Querier> queuedQueriers =
-       new Hashtable<String, Querier>();
-   
-   /** priority index of queued queriers */
-   //private TreeSet queuedPriorities = new TreeSet(new QuerierStartTimeComparator());
-
-   /** lookup table of all the current queriers indexed by their handle -
-    * including both synchronous and asynchronous queriers.*/
-   private Hashtable<String, Querier> runningQueriers =
-       new Hashtable<String, Querier>();
-
-   /** lookup table of old queriers */
-   private Hashtable closedQueriers = new Hashtable();
 
    /** Maximum number of simultaneous asynchronous queriers allowed */
    private int maxAsynchQueriers = 5;  // Default to 5
 
    /** Maximum number of simultaneous blocking queriers allowed */
    private int maxSynchQueriers = 5;  // Default to 5
-
-   /** We need to keep track of the number of synch and asynch 
-    * queriers because in practice they share the same active queriers
-    * queue and we don't want one to swamp the other in the queue 
-    */
-   /** How many asynchronous queriers are currently active */
-   private int numAsynchQueriers = 0;  
+ 
    /** How many blocking queriers are currently active */
    private int numSynchQueriers = 0;  
    
@@ -111,41 +86,11 @@ public class QuerierManager implements QuerierListener {
 
    /** Special ID used to create a test querier for testing getStatus,. etc */
    public final static String TEST_QUERIER_ID = "TestQuerier:";
-   
-   /** Status Comparitor for displays */
-   protected class StatusStartTimeComparator implements Comparator {
-      
-      /**
-       * Compares its two arguments for order.  Returns a negative integer,
-       * zero, or a positive integer as the first argument is less than, equal
-       * to, or greater than the second.<p>
-       *
-       * @param o1 the first object to be compared.
-       * @param o2 the second object to be compared.
-       * @return a negative integer, zero, or a positive integer as the
-       *           first argument is less than, equal to, or greater than the
-       *        second.
-       * @throws ClassCastException if the arguments' types prevent them from
-       *           being compared by this Comparator.
-       */
-      public int compare(Object o1, Object o2) {
-         QuerierStatus q1 = (QuerierStatus) o1;
-         QuerierStatus q2 = (QuerierStatus) o2;
-         if (q1.getStartTime().getTime()<q2.getStartTime().getTime()) {
-            return 1;
-         }
-         else if (q1.getStartTime().getTime()>q2.getStartTime().getTime()) {
-            return -1;
-         }
-         else {
-            return 0;
-         }
-      }
-      
-   }
 
    /** Constructor. Protected because we want to force people to use the factory method   */
    protected QuerierManager(String givenId) {
+     jobs = new ArrayList(ASYNC_QUEUE_SIZE*10);
+
       this.managerId = givenId;
 
       // Try the old property first 
@@ -158,12 +103,14 @@ public class QuerierManager implements QuerierListener {
 
       queueFlushInterval = ConfigFactory.getCommonConfig().getInt("datacenter.flush.interval",queueFlushInterval);  // Default is initialised setting
 
-    // Construct the executor to have up to the configured number of server threads
-    // (10 is typical); to keep one thread ready at all times; to keep surplus
-    // threads available for a minute after they become idle; to use a bounded
-    // queue with strict FIFO semantics.
-    executor = new ThreadPoolExecutor(1,
-                                      maxSynchQueriers,
+    // Construct the executor to have a fixed-size pool of worker threads with
+    // the configured maximum-size. It has to be this way, because the executor
+    // will only start threads in addition to the minimum, "core" pool if its
+    // queue fills and we expect the queue never to fill in normal operation.
+    // Given this use, the keep-alive details for surplus worker-threads are
+    // irrelevant. The queue is a fixed-size, blocking queue.
+    executor = new ThreadPoolExecutor(maxAsynchQueriers,
+                                      maxAsynchQueriers,
                                       60,
                                       TimeUnit.SECONDS,
                                       new ArrayBlockingQueue(ASYNC_QUEUE_SIZE, true));
@@ -181,150 +128,92 @@ public class QuerierManager implements QuerierListener {
       }
    }
 
-   /** Return the querier with the given id, or null if no matching querier 
+ /**
+    * Return the querier with the given id, or null if no matching querier
 	 * could be found. */
-   public synchronized Querier getQuerier(String qid) {
-
-      Querier q = (Querier) heldQueriers.get(qid);
-      if (q != null) return q;
-
-      q = (Querier) queuedQueriers.get(qid);
-      if (q != null) return q;
-
-      q = (Querier) runningQueriers.get(qid);
-      if (q != null) return q;
-
-      q = (Querier) closedQueriers.get(qid);
-      return q;
+  public synchronized Querier getQuerier(String qid) {
+   for (Querier q : jobs) {
+     if (qid.equals(q.getId())) {
+       return q;
+     }
    }
-   
-   /** Returns a list of all the queued (initialised but not started) queriers - including
-    * those that are on the active queue and those just initialised waiting on some external push
+   return null;
+ }
+
+  /**
+   * Records a querier for later, asynchronous execution, but does
+   * not enqueue it.
+   */
+   public synchronized void holdQuerier(Querier querier) {
+     querier.setStatus(new QuerierQueued(querier.getStatus()));
+     jobs.add(querier);
+   }
+
+   /**
+    * Releases a held querier. The querier is enqueued for later execution.
+    *
+    * @param id The ID of the querier to be unleashed.
+    * @throws java.io.IOException If there is no querier with the given ID.
     */
-   public QuerierStatus[] getQueued() {
-      Querier[] initialised = (Querier[]) heldQueriers.values().toArray(new Querier[] {} );
-      Querier[] queued = (Querier[]) queuedQueriers.values().toArray(new Querier[] {} );
-      QuerierStatus[] statuses = new QuerierStatus[queued.length+initialised.length];
-      for (int i = 0; i < queued.length; i++) {
-         statuses[i] = queued[i].getStatus();
-      }
-      for (int j = 0; j < initialised.length; j++) {
-         statuses[j+queued.length] = initialised[j].getStatus();
-      }
-      return statuses;
-   }
-
-   /** Returns a list of all the currently running queriers
-    */
-   public QuerierStatus[] getRunning() {
-      Querier[] running = (Querier[]) runningQueriers.values().toArray(new Querier[] {} );
-      QuerierStatus[] statuses = new QuerierStatus[running.length];
-      for (int i = 0; i < running.length; i++) {
-         statuses[i] = running[i].getStatus();
-      }
-      return statuses;
-   }
-   
-   /** Returns a list of all the ids of the currently running queriers
-    */
-   public QuerierStatus[] getClosed() {
-      Querier[] closed = (Querier[]) closedQueriers.values().toArray(new Querier[] {} );
-      QuerierStatus[] statuses = new QuerierStatus[closed.length];
-      for (int i = 0; i < closed.length; i++) {
-         statuses[i] = closed[i].getStatus();
-      }
-      return statuses;
-   }
-   
-   /** Returns the status's of all the queriers in date/time order */
-   public QuerierStatus[] getAllStatus() {
-      Querier[] held = (Querier[]) heldQueriers.values().toArray(new Querier[] {} );
-      Querier[] queued = (Querier[]) queuedQueriers.values().toArray(new Querier[] {} );
-      Querier[] running = (Querier[]) runningQueriers.values().toArray(new Querier[] {} );
-      Querier[] ran = (Querier[]) closedQueriers.values().toArray(new Querier[] {} );
-      
-      TreeSet statuses = new TreeSet(new StatusStartTimeComparator());
-      for (int i = 0; i < held.length; i++) {
-         statuses.add(held[i].getStatus());
-      }
-      for (int i = 0; i < queued.length; i++) {
-         statuses.add(queued[i].getStatus());
-      }
-      for (int i = 0; i < running.length; i++) {
-         statuses.add(running[i].getStatus());
-      }
-      for (int i = 0; i < ran.length; i++) {
-         statuses.add(ran[i].getStatus());
-      }
-      return (QuerierStatus[]) statuses.toArray(new QuerierStatus[] {} );
-   }
-   
-   /** Adds the given querier to this manager, but leaves it in the initialised passive queue */
-   public void holdQuerier(Querier querier) {
-      heldQueriers.put(querier.getId(), querier);
+   public synchronized void releaseQuerier(String id) throws IOException {
+     for (Querier q: jobs) {
+       if (id.equals(q.getId())) {
+         enqueueQuerier(q);
+         break;
+       }
+     }
+     throw new IOException("There is no querier named " + id);
    }
    
   /**
-   * Enqueues a querier for asynchronous execution.
+   * Submits a querier for asynchronous execution.
+   * The querier is enqueued immediately and executed when it reaches the
+   * head of the queue.
+   *
+   * @param querier The querier.
    */
-  public synchronized void submitQuerier(Querier querier)  {
-
-    // see if it's in holding queue
-    if (heldQueriers.get(querier.getId()) != null) {
-      heldQueriers.remove(querier.getId());
-    }
-      
-    // Reject it if it's already running.
-    if (runningQueriers.get(querier.getId()) != null) {
-      log.error( "Handle '" + querier.getId() + "' already in use");
-      throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
-    }
-
-    // Tell it that it's queued.
+  public synchronized void submitQuerier(Querier querier) {
     querier.setStatus(new QuerierQueued(querier.getStatus()));
+    synchronized(this) {
+      jobs.add(querier);
+    }
+    enqueueQuerier(querier);
+  }
 
-    // Make it call back to this object when its state changes.
-    querier.addListener(this);
 
-    // Now actually enqueue it.
+  /**
+   * Enqueues a querier for execution.
+   *
+   * @param querier The querier.
+   */
+  protected void enqueueQuerier(Querier querier) {
     try {
       executor.execute(querier);
-      queuedQueriers.put(querier.getId(), querier);
     }
     catch (RejectedExecutionException e) {
-      querier.abort();
-      closedQueriers.put(querier.getId(), querier);
+      querier.setStatus(new QuerierError(querier.getStatus(),
+                                         "Service is too busy to accept this query.",
+                                         e));
     }
   }
 
-	public synchronized void fullyDeleteQuery(String qid) throws IOException
-	{
-      Querier q = (Querier) heldQueriers.get(qid);
-      if (q != null) {
-			// Don't need to abort it, just kill it
-         heldQueriers.remove(qid);
-			return;
-		}
-      q = (Querier) queuedQueriers.get(qid);
-      if (q != null) {
-			// Don't need to abort it, just kill it
-         queuedQueriers.remove(qid);
-			return;
-		}
-      q = (Querier) runningQueriers.get(qid);
-      if (q != null) {
-			q.abort();
-			runningQueriers.remove(qid);
-		}
-      q = (Querier) closedQueriers.get(qid);
-      if (q != null) {
-			// Don't need to abort it as finished
-			// Need to clean up results too.
-         closedQueriers.remove(qid);
-			return;
-		}
-		throw new IOException("Query with ID " + qid + 
-				" could not be found, and therefore could not be deleted.");
+  /**
+   * Deletes from the job list the querier with the given ID.
+   * If the querier is running, then it is first aborted.
+   *
+   * @param qid The identifier of the query.
+   */
+	public synchronized void fullyDeleteQuery(String qid) {
+    ListIterator<Querier> i = jobs.listIterator();
+    while (i.hasNext()) {
+      Querier q = i.next();
+      if (q.getId().equals(qid)) {
+        if (q.isRunning()) {
+          q.abort();
+        }
+        i.remove();
+      }
+    }
 	}
 
 
@@ -364,138 +253,113 @@ public class QuerierManager implements QuerierListener {
     * rejected straight away.
     */
    public QuerierStatus askQuerier(Querier querier)  throws IOException {
-      
-      //assigns handle
-      if (runningQueriers.get(querier.getId()) != null) {
-         log.error( "Handle '" + querier.getId() + "' already in use");
-         throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
-      }
-      if (startBlockingQuerier() == true) {
-         try {
-            runningQueriers.put(querier.getId(), querier);
-            querier.addListener(this);
-            querier.ask();
-            return querier.getStatus();
-         }
-         finally {
-            // Always decrement the queue
-            finishBlockingQuerier();
-         }
-      }
-      else {
-         throw new IOException("The server is too busy to handle your query, please try again later");
-      }
+     jobs.add(querier);
+     if (startBlockingQuerier() == true) {
+       try {
+         querier.ask();
+         return querier.getStatus();
+       }
+       finally {
+         finishBlockingQuerier();
+       }
+     }
+     else {
+       IOException e =
+         new IOException("The server is too busy to handle your query, please try again later");
+       querier.setStatus(new QuerierError(querier.getStatus(),
+                                         "Service is too busy to accept this query.",
+                                         e));
+       throw e;
+     }
    }
 
    /** Adds the given querier to this manager, and asks the querier for the
     * count (number of matches).  Synchronous, returning the number of matches
     */
    public long askCount(Querier querier)  throws IOException {
-      
-      //assigns handle
-      if (runningQueriers.get(querier.getId()) != null) {
-         log.error( "Handle '" + querier.getId() + "' already in use");
-         throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
-      }
-      runningQueriers.put(querier.getId(), querier);
-      querier.addListener(this);
-      return querier.askCount();
-   }
-   
-   /** Decrement the number of active asynchronous queriers.
-    * In a separate function to minimize required synchronization.
-    */
-   protected synchronized void decrementAsynchQueriers()
-   {
-     numAsynchQueriers = numAsynchQueriers - 1;
-   }
-   
-   /** A Querier manager must listen to its queriers
-    */
-   public void queryStatusChanged(Querier querier) {
-
-     // If it just started, move it off the queued list.
-     if (querier.isRunning()) {
-       queuedQueriers.remove(querier.getId());
-       runningQueriers.put(querier.getId(), querier);
+     holdQuerier(querier);
+     if (startBlockingQuerier() == true) {
+       try {
+         return querier.askCount();
+       }
+       finally {
+         finishBlockingQuerier();
+       }
      }
-
-     // If it's changed to closed, then move to closed list
-     if (querier.getStatus().isFinished()) {
-       queuedQueriers.remove(querier.getId());
-       runningQueriers.remove(querier.getId());
-       closedQueriers.put(querier.getId(), querier);
-       cleanupOldClosedJobs();
+     else {
+       IOException e =
+         new IOException("The server is too busy to handle your query, please try again later");
+       querier.setStatus(new QuerierError(querier.getStatus(),
+                                         "Service is too busy to accept this query.",
+                                         e));
+       throw e;
      }
    }
 
   /**
-   * Purges the records of jobs older than a certain number of days.
+   * Shuts down the service, aborting all running queries.
    */
-  protected synchronized void cleanupOldClosedJobs() {
-      // Get current time
-       Date now = new Date();
-       GregorianCalendar nowCal = new GregorianCalendar();
-       nowCal.setTime(now);
+  public synchronized void shutDown() {
 
-       // Work out time we last checked the old queue
-       GregorianCalendar lastCheck = new GregorianCalendar();
-       lastCheck.setTime(lastQueueFlush);
-
-       // Work out difference
-       long diffMillis = nowCal.getTimeInMillis()-lastCheck.getTimeInMillis();
-       double diffHours = (double)diffMillis/(3600000.0);
-       if (diffHours > 1.0) {  // Time to check it again?
-          // Yes!
-          lastQueueFlush = new Date(); // Reset last-time-checked to now
-
-          Vector toRemove = new Vector();
-          Iterator it = closedQueriers.keySet().iterator();
-          while (it.hasNext()) {
-
-             // Get the querier, and the time it completed
-             String qid = (String)it.next();
-             Querier querier = (Querier)closedQueriers.get(qid);
-             Date lastDate = querier.getStatus().getTimestamp();
-             GregorianCalendar lastCal = new GregorianCalendar();
-             lastCal.setTime(lastDate);
-
-             // Get difference in milliseconds
-             diffMillis = nowCal.getTimeInMillis()-lastCal.getTimeInMillis();
-             double diffDays = (double)diffMillis/(86400000.0);
-
-             if (diffDays > queueFlushInterval) { //Is it too old?
-                // Yes, delete it from the old jobs queue
-                toRemove.add(qid);
-             }
-         }
-         it = toRemove.iterator();
-         while (it.hasNext()) {
-            closedQueriers.remove((String)it.next());
-         }
-      }
-   }
-   
-   /** Shut down - abort all running queries */
-  public void shutDown() {
-    
     // Close the queue to new queries.
     executor.shutdown();
 
     // Abort all the queued queries so their clients get notification.
-    for (Querier q: queuedQueriers.values()) {
-      q.abort();
+    for (Querier q : jobs) {
+      if (!q.isClosed()) {
+        q.abort();
+      }
     }
-    queuedQueriers.clear();
 
-    // Abort the ones currently executing.
-    for (Querier q: runningQueriers.values()) {
-      q.abort();
-    }
-    runningQueriers.clear();
+    jobs.clear();
   }
-   
-   
-   
+
+  /**
+   * Returns the stati of all the queriers in date/time order of their
+   * initiation.
+   */
+  public QuerierStatus[] getAllStatus() {
+    cleanUpOldClosedJobs();
+
+    // The job list has the oldest queriers first, so we reverse it in
+    // the status listing.
+    QuerierStatus[] stati = null;
+    synchronized(this) {
+      stati = new QuerierStatus[jobs.size()];
+      for (int i = 0, j = stati.length - 1; i < stati.length; i++, j--) {
+        stati[i] = jobs.get(j).getStatus();
+      }
+    }
+    return stati;
+  }
+
+  /**
+   * Purges the records of jobs older than a certain number of days.
+   */
+  protected synchronized void cleanUpOldClosedJobs() {
+    if (isTimeToCleanJobList()) {
+      Date now = new Date();
+      lastQueueFlush = now;
+      long retentionLimitMs = queueFlushInterval * ONE_DAY_IN_MS;
+      ListIterator<Querier> it = jobs.listIterator();
+      while (it.hasNext()) {
+        Querier q = it.next();
+        if (q.isClosed()) {
+          long ageMs = now.getTime() - q.getStatus().getTimestamp().getTime();
+          if (ageMs > retentionLimitMs) {
+             it.remove();
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Determines whether it is time to remove completed jobs from the job list.
+   */
+  private boolean isTimeToCleanJobList() {
+    long msSinceLastFlush = new Date().getTime() - lastQueueFlush.getTime();
+    return msSinceLastFlush > 3600000L; // More than an hour ago.
+  }
    
 }

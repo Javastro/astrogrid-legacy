@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.2 2009/06/05 17:46:44 gtr Exp $
+ * $Id: Querier.java,v 1.3 2009/06/08 16:27:04 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -138,6 +138,37 @@ public class Querier implements Runnable, PluginListener {
       Querier querier = new Querier(forUser, query, source);
 
       return querier;
+   }
+
+   /**
+    * Determines whether two queriers are equal.
+    * They are equivalent if their ID strings are equals
+    *
+    * @param o The querier to test.
+    * @return True if the queriers are equal.
+    */
+   @Override
+   public boolean equals(Object o) {
+     if (o == null) {
+       return false;
+     }
+     else if (!(o instanceof Querier)) {
+       return false;
+     }
+     else {
+       Querier q = (Querier) o;
+       return id.equals(q.getId());
+     }
+   }
+
+   /**
+    * Supplies the hash code for the querier.
+    *
+    * @return The code.
+    */
+   @Override
+   public int hashCode() {
+     return id.hashCode();
    }
 
    
