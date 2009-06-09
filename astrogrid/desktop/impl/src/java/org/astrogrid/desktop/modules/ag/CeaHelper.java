@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.19 2009/05/12 12:19:56 gtr Exp $
+/*$Id: CeaHelper.java,v 1.20 2009/06/09 13:12:12 gtr Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -142,6 +142,7 @@ public class CeaHelper {
           AccessURL[] urls = interfaces[0].getAccessUrls();
           if (urls.length > 0) {
             endpoint = urls[0].getValueURI();
+            break;
           }
         }
       }
