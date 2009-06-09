@@ -32,4 +32,11 @@ public class MetadataHelperTest extends TestCase {
     assertEquals("https://foo.bar:8443/dsa/", MetadataHelper.getInstallationSecureBaseURL());
   }
 
+  public void testIsConeSearchSecure() throws Exception {
+    assertFalse(MetadataHelper.isConeSearchSecure());
+
+    ConfigFactory.getCommonConfig().setProperty("cone.search.secure", "true");
+    assertTrue(MetadataHelper.isConeSearchSecure());
+  }
+
 }

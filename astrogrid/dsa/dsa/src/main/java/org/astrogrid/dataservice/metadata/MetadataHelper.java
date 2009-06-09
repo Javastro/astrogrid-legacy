@@ -256,4 +256,15 @@ public class MetadataHelper {
          return false;
       }
    }
+
+  /**
+   * Determines whether cone searches are secure on this installation.
+   * (An installation is not allowed to have a mix of secure and insecure
+   * cone-search endpoints.)
+   *
+   * @return true if cone searches are secure.
+   */
+  public static boolean isConeSearchSecure() {
+    return ConfigFactory.getCommonConfig().getBoolean("cone.search.secure", false);
+  }
 }
