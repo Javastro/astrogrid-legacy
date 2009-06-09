@@ -2,10 +2,8 @@ package org.astrogrid.dataservice.service.servlet;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,12 +17,9 @@ import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.service.cone.v1_0.ConeResources;
 import org.astrogrid.dataservice.service.cea.v1_0.CeaResources;
 import org.astrogrid.tableserver.metadata.v1_0.TableResources;
-import org.astrogrid.dataservice.metadata.v1_0.VoDescriptionGenerator;
 
 /**
- * Servlet to inform VOSI responses. This servlet does not generate VOSI
- * documents itself but instead sets request attributes for the use of the JSPs
- * that write VOSI documents.
+ * Servlet to inform VOSI responses.
  *
  * /my-DSA/catalogue-foo/cone-search
    /my-DSA/catalogue-foo/TAP
@@ -51,6 +46,7 @@ public class VosiServlet extends HttpServlet {
    * Initializes the servlet. Records the start time so that service
    * up-time may later be reported.
    */
+  @Override
   public void init() throws ServletException {
     this.startTime = new Date();
      try {
@@ -71,6 +67,7 @@ public class VosiServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
   throws ServletException, IOException {
     
@@ -275,13 +272,6 @@ public class VosiServlet extends HttpServlet {
      catch (Exception ex) {
         throw new ServletException(ex.getMessage());
      }
-  }
-
-
-  /** Returns a short description of the servlet.
-   */
-  public String getServletInfo() {
-    return "Short description";
   }
   
   /**
