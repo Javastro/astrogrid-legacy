@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.1 2009/05/13 13:20:32 gtr Exp $
+/*$Id: ConeResources.java,v 1.2 2009/06/09 18:12:41 gtr Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,13 +84,23 @@ public class ConeResources {
          }
       }
 
+      // Find the base URL; there is one URL for secured ccone-searches and
+      // another for insecure searches. In any given installation, all the
+      // cone-search endpoints will be insecure or all will be secure.
+      String baseUri = null;
+      if (MetadataHelper.isConeSearchSecure()) {
+        baseUri = MetadataHelper.getInstallationSecureBaseURL();
+      }
+      else {
+         baseUri = MetadataHelper.getInstallationBaseURL();
+      }
       String coneCap = 
          "  <capability xsi:type=\"cs:ConeSearch\" standardID=\"ivo://ivoa.net/std/ConeSearch\">\n" +
          "    <description>" + catName + 
              ", " +tabName +": cone search</description>\n" +
          "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\">\n" + 
          "      <accessURL use=\"base\">" + 
-            MetadataHelper.getInstallationBaseURL()+"SubmitCone?DSACAT="+
+            baseUri + "SubmitCone?DSACAT="+
                catName+"&amp;DSATAB="+tabName+"&amp;" + "</accessURL>\n" +
          "    </interface>\n" +
          "    <maxSR>" + Double.toString(maxRadius) + "</maxSR>\n" +
