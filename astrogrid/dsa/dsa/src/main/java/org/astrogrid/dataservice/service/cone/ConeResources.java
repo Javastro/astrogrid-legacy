@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.2 2009/06/10 07:38:19 gtr Exp $
+/*$Id: ConeResources.java,v 1.3 2009/06/10 07:50:10 gtr Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,84 +44,98 @@ public class ConeResources {
       return coneList;
    }
 
-   protected static String getVoConeCapability(String catName, String tabName) 
-      throws IOException {
+  protected static String getVoConeCapability(String catName,
+                                              String tabName) throws IOException {
 
-      // Get max row limit 
-      int maxRows;
-      double maxRadius;
-      String maxRowStr = ConfigFactory.getCommonConfig().getString(
-            "datacenter.max.return");
-      if ((maxRowStr == null) || ("".equals(maxRowStr))) {
-         //NB shouldn't get here
-         maxRows = 999999999; // A very big and obviously silly number
+    int maxRows;
+    double maxRadius;
+    String maxRowStr = ConfigFactory.getCommonConfig().getString("datacenter.max.return");
+    if ((maxRowStr == null) || ("".equals(maxRowStr))) {
+      //NB shouldn't get here
+      maxRows = 999999999; // A very big and obviously silly number
+    }
+    else if (maxRowStr.equals("0")) {
+      // No limit - use a dummy value
+       maxRows = 999999999; // A very big and obviously silly number
+    }
+    else {
+      try {
+        maxRows = Integer.parseInt(maxRowStr);
       }
-      else if (maxRowStr.equals("0")) {
-         // No limit - use a dummy value
-         maxRows = 999999999; // A very big and obviously silly number
+      catch (NumberFormatException nfe) {
+        throw new IOException("Datacenter is misconfigured: datacenter.max.return has illegal value '" + maxRowStr + "'");
       }
-      else {
-         try {
-            maxRows = Integer.parseInt(maxRowStr);
-         }
-         catch (NumberFormatException nfe) {
-            throw new IOException("Datacenter is misconfigured: datacenter.max.return has illegal value '" + maxRowStr + "'");
-         }
+    }
+    // Get max search radius
+    String maxRadStr = ConfigFactory.getCommonConfig().getString("conesearch.radius.limit");
+    if ((maxRadStr == null) || ("".equals(maxRadStr))) {
+      //NB shouldn't get here
+      maxRadius = 180.0;
+    }
+    else {
+      try {
+        maxRadius = Double.parseDouble(maxRadStr);
       }
-      // Get max search radius
-      String maxRadStr = ConfigFactory.getCommonConfig().getString(
-            "conesearch.radius.limit");
-      if ((maxRadStr == null) || ("".equals(maxRadStr))) {
-         //NB shouldn't get here
-         maxRadius = 180.0;
+      catch (NumberFormatException nfe) {
+        throw new IOException("Datacenter is misconfigured: conesearch.radius.limit has illegal value '" + maxRadStr + "'");
       }
-      else {
-         try {
-            maxRadius = Double.parseDouble(maxRadStr);
-         }
-         catch (NumberFormatException nfe) {
-            throw new IOException("Datacenter is misconfigured: conesearch.radius.limit has illegal value '" + maxRadStr + "'");
-         }
-      }
+    }
 
-      // There is one URL for secured ccone-searches and
-      // another for insecure searches. In any given installation, all the
-      // cone-search endpoints will be insecure or all will be secure.
-      String baseUri;
-      String securityMethod;
-      if (MetadataHelper.isConeSearchSecure()) {
-        baseUri = MetadataHelper.getInstallationSecureBaseURL();
-        securityMethod = "<securityMethod standardID='ivo://ivoa.net/sso#tls-with-client-certificate'/>\n";
-      }
-      else {
-         baseUri = MetadataHelper.getInstallationBaseURL();
-         securityMethod = "";
-      }
-      String accessUrl = 
-          String.format("%sSubmitCone?DSACAT=%s&amp;DSATAB=%s&amp;",
-                        baseUri, catName, tabName);
-
+    // There is one URL for secured cone-searches and
+    // another for insecure searches. In any given installation, all the
+    // cone-search endpoints will be insecure or all will be secure.
+    if (MetadataHelper.isConeSearchSecure()) {
       return String.format(
-          "  <capability xsi:type='cs:ConeSearch'\n" +
-          "      standardID='ivo://ivoa.net/std/ConeSearch'>\n" +
-          "    <description>%s,%s: cone search</description>\n" +
-          "    <interface xsi:type='vs:ParamHTTP' role='std'>\n" +
-          "      <accessURL use='base'>%s</accessURL>\n%s" +
-          "    </interface>\n" +
-          "    <maxSR>%f</maxSR>\n" +
-          "    <maxRecords>%d</maxRecords>\n" +
-          "    <verbosity>false</verbosity>\n" +
-          "    <testQuery>\n" +
-          "      <ra>96.0</ra>\n" +
-          "      <dec>5.0</dec>\n" +
-          "      <sr>0.001</sr>\n" +
-          "    </testQuery>\n" +
-          "  </capability>\n",
+        "  <capability xsi:type='cs:ConeSearch'\n" +
+        "      standardID='ivo://ivoa.net/std/ConeSearch'>\n" +
+        "    <description>%s,%s: cone search</description>\n" +
+        "    <interface xsi:type='vs:ParamHTTP' role='std'>\n" +
+        "      <accessURL use='base'>%sSubmitCone?DSACAT=%s&amp;DSATAB=%s&amp;</accessURL>\n" +
+        "      <securityMethod standardID='ivo://ivoa.net/sso#tls-with-client-certificate'/>\n" +
+        "    </interface>\n" +
+        "    <maxSR>%f</maxSR>\n" +
+        "    <maxRecords>%d</maxRecords>\n" +
+        "    <verbosity>false</verbosity>\n" +
+        "    <testQuery>\n" +
+        "      <ra>96.0</ra>\n" +
+        "      <dec>5.0</dec>\n" +
+        "      <sr>0.001</sr>\n" +
+        "    </testQuery>\n" +
+        "  </capability>\n",
+        catName,
+        tabName,
+        MetadataHelper.getInstallationSecureBaseURL(),
+        catName,
+        tabName,
+        maxRadius,
+        maxRows);
+     }
+     else {
+       return String.format(
+         "  <capability xsi:type='cs:ConeSearch'\n" +
+         "      standardID='ivo://ivoa.net/std/ConeSearch'>\n" +
+         "    <description>%s,%s: cone search</description>\n" +
+         "    <interface xsi:type='vs:ParamHTTP' role='std'>\n" +
+         "      <accessURL use='base'>%sSubmitCone?DSACAT=%s&amp;DSATAB=%s&amp;</accessURL>\n" +
+         "    </interface>\n" +
+         "    <maxSR>%f</maxSR>\n" +
+         "    <maxRecords>%d</maxRecords>\n" +
+         "    <verbosity>false</verbosity>\n" +
+         "    <testQuery>\n" +
+         "      <ra>96.0</ra>\n" +
+         "      <dec>5.0</dec>\n" +
+         "      <sr>0.001</sr>\n" +
+         "    </testQuery>\n" +
+         "  </capability>\n",
          catName,
          tabName,
-         accessUrl,
-         securityMethod,
+         MetadataHelper.getInstallationBaseURL(),
+         catName,
+         tabName,
          maxRadius,
          maxRows);
-   }
+    }
+      
+  }
+  
 }
