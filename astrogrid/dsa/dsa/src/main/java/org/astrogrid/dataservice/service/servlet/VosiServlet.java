@@ -180,8 +180,8 @@ public class VosiServlet extends HttpServlet {
 
 			 // Security/delegation capability
           "<capability standardID='ivo://ivoa.net/std/Delegation'>" +
-          "  <interface xsi:type='vs:ParamHTTP'>" +
-          "    <accessURL use='full' role='std'>" + delegationsUri + "</accessURL>" +
+          "  <interface xsi:type='vs:ParamHTTP'  role='std'>" +
+          "    <accessURL use='full'>" + delegationsUri + "</accessURL>" +
           "    <queryType>GET</queryType>" +
           "    <resultType>application/xml</resultType>" +
           "  </interface>" +
