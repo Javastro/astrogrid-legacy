@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.1 2009/06/10 06:49:03 gtr Exp $
+/*$Id: ConeResources.java,v 1.2 2009/06/10 07:38:19 gtr Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,35 +84,44 @@ public class ConeResources {
          }
       }
 
-      // Find the base URL; there is one URL for secured ccone-searches and
+      // There is one URL for secured ccone-searches and
       // another for insecure searches. In any given installation, all the
       // cone-search endpoints will be insecure or all will be secure.
-      String baseUri = null;
+      String baseUri;
+      String securityMethod;
       if (MetadataHelper.isConeSearchSecure()) {
         baseUri = MetadataHelper.getInstallationSecureBaseURL();
+        securityMethod = "<securityMethod standardID='ivo://ivoa.net/sso#tls-with-client-certificate'/>\n";
       }
       else {
          baseUri = MetadataHelper.getInstallationBaseURL();
+         securityMethod = "";
       }
-      String coneCap = 
-         "  <capability xsi:type=\"cs:ConeSearch\" standardID=\"ivo://ivoa.net/std/ConeSearch\">\n" +
-         "    <description>" + catName + 
-             ", " +tabName +": cone search</description>\n" +
-         "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\">\n" + 
-         "      <accessURL use=\"base\">" + 
-            baseUri + "SubmitCone?DSACAT="+
-               catName+"&amp;DSATAB="+tabName+"&amp;" + "</accessURL>\n" +
-         "    </interface>\n" +
-         "    <maxSR>" + Double.toString(maxRadius) + "</maxSR>\n" +
-         "    <maxRecords>" + Integer.toString(maxRows) + "</maxRecords>\n" +
-         "    <verbosity>false</verbosity>\n" +
-         "    <testQuery>\n" +
-         "      <ra>96.0</ra>\n" +
-         "      <dec>5.0</dec>\n" +
-         "      <sr>0.001</sr>\n" +
-         "    </testQuery>\n" +
-         "  </capability>\n";
+      String accessUrl = 
+          String.format("%sSubmitCone?DSACAT=%s&amp;DSATAB=%s&amp;",
+                        baseUri, catName, tabName);
 
-      return coneCap;
+      return String.format(
+          "  <capability xsi:type='cs:ConeSearch'\n" +
+          "      standardID='ivo://ivoa.net/std/ConeSearch'>\n" +
+          "    <description>%s,%s: cone search</description>\n" +
+          "    <interface xsi:type='vs:ParamHTTP' role='std'>\n" +
+          "      <accessURL use='base'>%s</accessURL>\n%s" +
+          "    </interface>\n" +
+          "    <maxSR>%f</maxSR>\n" +
+          "    <maxRecords>%d</maxRecords>\n" +
+          "    <verbosity>false</verbosity>\n" +
+          "    <testQuery>\n" +
+          "      <ra>96.0</ra>\n" +
+          "      <dec>5.0</dec>\n" +
+          "      <sr>0.001</sr>\n" +
+          "    </testQuery>\n" +
+          "  </capability>\n",
+         catName,
+         tabName,
+         accessUrl,
+         securityMethod,
+         maxRadius,
+         maxRows);
    }
 }
