@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.2 2009/06/09 18:12:41 gtr Exp $
+/*$Id: ConeResources.java,v 1.1 2009/06/10 06:49:03 gtr Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
  **/
-package org.astrogrid.dataservice.service.cone.v1_0;
+package astrogrid.dataservice.service.cone;
 
 import java.io.IOException;
 import org.astrogrid.cfg.ConfigFactory;

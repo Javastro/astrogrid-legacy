@@ -21,7 +21,7 @@ import org.astrogrid.dataservice.metadata.VoResourceSupportBase;
 // v1.0 resources
 //import org.astrogrid.dataservice.metadata.v1_0.VoResourceSupport;
 import org.astrogrid.dataservice.service.cea.v1_0.CeaResources;
-import org.astrogrid.dataservice.service.cone.v1_0.ConeResources;
+import astrogrid.dataservice.service.cone.ConeResources;
 import org.astrogrid.tableserver.metadata.v1_0.TableResources;
 
 // AG stuff

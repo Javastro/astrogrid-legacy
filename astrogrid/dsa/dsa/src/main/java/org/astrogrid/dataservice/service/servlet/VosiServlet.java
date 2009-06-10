@@ -14,7 +14,7 @@ import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.metadata.MetadataException;
 
-import org.astrogrid.dataservice.service.cone.v1_0.ConeResources;
+import astrogrid.dataservice.service.cone.ConeResources;
 import org.astrogrid.dataservice.service.cea.v1_0.CeaResources;
 import org.astrogrid.tableserver.metadata.v1_0.TableResources;
 
