@@ -24,7 +24,7 @@ import org.astrogrid.security.authorization.AccessPolicy;
  * latter. If worker threads are not used - i.e. if the application code
  * is executed directly from the web-service thread - then the correct guard
  * is still retrieved from the cache.
- *
+ *@TODO this specialization has dubious caching properties - should be replaces.
  * @author Guy Rixon
  */
 public class CeaSecurityGuard extends SecurityGuard {
@@ -88,6 +88,7 @@ public class CeaSecurityGuard extends SecurityGuard {
    * configuration item cea.access.policy. If this is misconfigured
    * such that an instance of that class cannot be made, then this method
    * throws a RuntimeException.
+   * @TODO I think this way of chosing access policies is now defunct.
    */
   private void chooseAccessPolicy() {
     String accessPolicyClass = 
