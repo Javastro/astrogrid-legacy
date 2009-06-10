@@ -179,9 +179,9 @@ public class VosiServlet extends HttpServlet {
           "</capability>\n" +
 
 			 // Security/delegation capability
-          "<capability standardID=\"ivo://ivoa.net/std/Delegation\">" +
-          "  <interface xsi:type=\"vs:ParamHTTP\">" +
-          "    <accessURL use=\"full\">" + delegationsUri + "</accessURL>" +
+          "<capability standardID='ivo://ivoa.net/std/Delegation'>" +
+          "  <interface xsi:type='vs:ParamHTTP'>" +
+          "    <accessURL use='full' role='std'>" + delegationsUri + "</accessURL>" +
           "    <queryType>GET</queryType>" +
           "    <resultType>application/xml</resultType>" +
           "  </interface>" +
