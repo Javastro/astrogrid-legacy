@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.3 2009/06/10 07:50:10 gtr Exp $
+/*$Id: ConeResources.java,v 1.4 2009/06/10 09:38:41 gtr Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -88,7 +88,7 @@ public class ConeResources {
       return String.format(
         "  <capability xsi:type='cs:ConeSearch'\n" +
         "      standardID='ivo://ivoa.net/std/ConeSearch'>\n" +
-        "    <description>%s,%s: cone search</description>\n" +
+        "    <description>%s, %s: cone search</description>\n" +
         "    <interface xsi:type='vs:ParamHTTP' role='std'>\n" +
         "      <accessURL use='base'>%sSubmitCone?DSACAT=%s&amp;DSATAB=%s&amp;</accessURL>\n" +
         "      <securityMethod standardID='ivo://ivoa.net/sso#tls-with-client-certificate'/>\n" +
@@ -114,7 +114,7 @@ public class ConeResources {
        return String.format(
          "  <capability xsi:type='cs:ConeSearch'\n" +
          "      standardID='ivo://ivoa.net/std/ConeSearch'>\n" +
-         "    <description>%s,%s: cone search</description>\n" +
+         "    <description>%s, %s: cone search</description>\n" +
          "    <interface xsi:type='vs:ParamHTTP' role='std'>\n" +
          "      <accessURL use='base'>%sSubmitCone?DSACAT=%s&amp;DSATAB=%s&amp;</accessURL>\n" +
          "    </interface>\n" +
