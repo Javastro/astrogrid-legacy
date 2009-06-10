@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.20 2009/05/22 14:47:57 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.21 2009/06/10 12:40:46 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -275,7 +275,7 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
                                             IllegalAccessException, 
                                             CertificateException {
      AxisServiceSecurityGuard g = AxisServiceSecurityGuard.getInstanceFromContext();
-     g.loadDelegation();
+     if(!g.isSignedOn())g.loadDelegation();
      CeaSecurityGuard.setInstanceInContext(g);
      return g;
    }
