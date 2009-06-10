@@ -202,7 +202,7 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
 
         //put in the delegation capability itself 
         Capability deleCap = new Capability();
-        deleCap.setStandardID("ivo://net.ivoa/std/Delegation");
+        deleCap.setStandardID("ivo://ivoa.net/std/Delegation");
         ParamHTTP deleIntf = new ParamHTTP();
         deleIntf.setVersion("1.0");
         AccessURL deleURL = new AccessURL();
