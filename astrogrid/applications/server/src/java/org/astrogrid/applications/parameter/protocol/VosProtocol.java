@@ -1,5 +1,5 @@
 /*
- * $Id: VosProtocol.java,v 1.5 2009/05/22 14:47:21 pah Exp $
+ * $Id: VosProtocol.java,v 1.6 2009/06/10 10:40:08 pah Exp $
  * 
  * Created on 3 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -22,9 +22,9 @@ import junit.framework.Test;
 
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.security.SecurityGuard;
-import org.astrogrid.vospace.client.delegate.AGVOSpaceDelegate;
-import org.astrogrid.vospace.client.delegate.AGVOSpaceDelegateResolver;
-import org.astrogrid.vospace.client.delegate.AGVOSpaceDelegateResolverImpl;
+import org.astrogrid.vospace.v11.client.system.SystemDelegate;
+import org.astrogrid.vospace.v11.client.system.SystemDelegateResolver;
+import org.astrogrid.vospace.v11.client.system.SystemDelegateResolverImpl;
 
 /**
  * A {@link Protocol} for communicating with VOSpace. 
@@ -36,7 +36,7 @@ import org.astrogrid.vospace.client.delegate.AGVOSpaceDelegateResolverImpl;
 public class VosProtocol implements Protocol, ComponentDescriptor {
 
     
-    private final AGVOSpaceDelegateResolver resolver;
+    private final SystemDelegateResolver resolver;
     /** logger for this class */
     private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
             .getLog(VosProtocol.class);
@@ -47,7 +47,7 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
      * @param regEndpoint the endpoint URL of a registry query service.
      */
     public VosProtocol(URL regEndpoint) {
-       	resolver = new AGVOSpaceDelegateResolverImpl(regEndpoint);
+       	resolver = new SystemDelegateResolverImpl(regEndpoint);//IMPL is there a factory for this - pointless having different implementations otherwise.
     }
     
     public ExternalValue createIndirectValue(final URI reference, final SecurityGuard secGuard)
@@ -61,18 +61,19 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
 
     
     private class VOSExternalValue implements ExternalValue {
-        private final AGVOSpaceDelegate delegate;
+        private final SystemDelegate delegate;
         private final URI reference;
         VOSExternalValue(SecurityGuard secGuard, URI ref) throws CertificateException{
             this.reference = ref;
             logger.debug("secguard signedon="+secGuard.isSignedOn() +" id="+ secGuard.getX500Principal());
             if(secGuard.isSignedOn()){
-                secGuard.loadDelegation();
                 delegate = resolver.resolve(secGuard);
             }
-            else {
+            else 
+            {
                 delegate = resolver.resolve();
             }
+            return;
         }
         public InputStream read() throws InaccessibleExternalValueException {
             try {
@@ -115,6 +116,12 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
 
 /*
  * $Log: VosProtocol.java,v $
+ * Revision 1.6  2009/06/10 10:40:08  pah
+ * RESOLVED - bug 2917: update to latest VOSpace delegate
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2917
+ *
+ * upgrade to latest VOSpace delegate & and ensure that proxy delegation does not happen here.
+ *
  * Revision 1.5  2009/05/22 14:47:21  pah
  * try to force the loaddelegation earlier
  *
