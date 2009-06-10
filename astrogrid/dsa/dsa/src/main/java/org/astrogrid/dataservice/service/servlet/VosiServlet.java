@@ -116,7 +116,7 @@ public class VosiServlet extends HttpServlet {
      try {
 
        // Write the processing instruction for transforming this XML to HTML.
-       writer.write(String.format("<?xml-stylesheet type='text/xsl' href='%s'?>", xslUrl));
+       writer.write(String.format("<?xml-stylesheet type='text/xsl' href='%s'?>\n", xslUrl));
 
        // Output the capabilities header stuff
         writer.write(
@@ -179,13 +179,13 @@ public class VosiServlet extends HttpServlet {
           "</capability>\n" +
 
 			 // Security/delegation capability
-          "<capability standardID='ivo://ivoa.net/std/Delegation'>" +
-          "  <interface xsi:type='vs:ParamHTTP'  role='std'>" +
-          "    <accessURL use='full'>" + delegationsUri + "</accessURL>" +
-          "    <queryType>GET</queryType>" +
-          "    <resultType>application/xml</resultType>" +
-          "  </interface>" +
-          "</capability>" 
+          "<capability standardID='ivo://ivoa.net/std/Delegation'>\n" +
+          "  <interface xsi:type='vs:ParamHTTP'  role='std'>\n" +
+          "    <accessURL use='full'>" + delegationsUri + "</accessURL>\n" +
+          "    <queryType>GET</queryType>\n" +
+          "    <resultType>application/xml</resultType>\n" +
+          "  </interface>\n" +
+          "</capability>\n"
           );
 
        // End of capabilities
