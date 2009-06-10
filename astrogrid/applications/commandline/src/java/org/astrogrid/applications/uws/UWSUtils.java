@@ -1,5 +1,5 @@
 /*
- * $Id: UWSUtils.java,v 1.8 2008/09/25 23:13:44 pah Exp $
+ * $Id: UWSUtils.java,v 1.9 2009/06/10 10:38:33 pah Exp $
  * 
  * Created on 28 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -73,6 +73,9 @@ public class UWSUtils {
 	
 	HttpsServiceSecurityGuard retval = new HttpsServiceSecurityGuard();
 	retval.loadHttpsAuthentication(request);
+	if(!retval.isSignedOn()){
+	    retval.loadDelegation();//TODO need to check error conditions on proxy delegation loading
+	}
 	return retval ;
 
     }
@@ -125,6 +128,12 @@ public class UWSUtils {
 
 /*
  * $Log: UWSUtils.java,v $
+ * Revision 1.9  2009/06/10 10:38:33  pah
+ * RESOLVED - bug 2917: update to latest VOSpace delegate
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2917
+ *
+ * ensured that proxy delegation happening here
+ *
  * Revision 1.8  2008/09/25 23:13:44  pah
  * new redirect functions
  *
