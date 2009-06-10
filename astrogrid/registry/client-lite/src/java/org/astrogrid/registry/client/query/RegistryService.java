@@ -147,7 +147,6 @@ public interface RegistryService  {
     * Description: Return the self describing Registry Type entry.
     * @return DOM object of the Registry Type entry (self describing Registry entry being called).
     * @throws RegistryException
-    * @deprecated Use getIdentity instead.
     */   
    public Document getIdentity()  throws RegistryException;
    public HashMap managedAuthorities() throws RegistryException;
