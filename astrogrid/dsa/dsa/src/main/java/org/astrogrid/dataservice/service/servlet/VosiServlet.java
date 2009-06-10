@@ -112,7 +112,11 @@ public class VosiServlet extends HttpServlet {
      String ceaAppUri = endpoint + catalogName + CEAAPP_SUFFIX;
      String delegationsUri = endpoint + DELEGATIONS_SUFFIX;
      String schemaUrl = endpoint + "schema/Capabilities.xsd";
+     String xslUrl = endpoint + "xsl/capabilities.xsl";
      try {
+
+       // Write the processing instruction for transforming this XML to HTML.
+       writer.write(String.format("<?xml-stylesheet type='text/xsl' href='%s'?>", xslUrl));
 
        // Output the capabilities header stuff
         writer.write(
