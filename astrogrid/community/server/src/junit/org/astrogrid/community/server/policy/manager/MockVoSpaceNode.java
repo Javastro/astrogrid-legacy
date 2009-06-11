@@ -1,6 +1,8 @@
 package org.astrogrid.community.server.policy.manager;
 
 import java.net.URI;
+import java.util.Date;
+import org.astrogrid.vospace.v11.VOS11Const;
 import org.astrogrid.vospace.v11.client.AbstractDelegate;
 import org.astrogrid.vospace.v11.client.exception.ConnectionException;
 import org.astrogrid.vospace.v11.client.exception.ContainerException;
@@ -14,6 +16,7 @@ import org.astrogrid.vospace.v11.client.exception.ResponseException;
 import org.astrogrid.vospace.v11.client.exception.ServiceException;
 import org.astrogrid.vospace.v11.client.node.Node;
 import org.astrogrid.vospace.v11.client.node.NodeTypeEnum;
+import org.astrogrid.vospace.v11.client.property.Property;
 import org.astrogrid.vospace.v11.client.vosrn.Vosrn;
 
 /**
@@ -52,7 +55,7 @@ public class MockVoSpaceNode implements Node {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
-  public void refresh() throws Exception {
+  public void refresh() {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
@@ -61,6 +64,34 @@ public class MockVoSpaceNode implements Node {
   }
 
   public Iterable<Node> nodes() throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, NotFoundException, PermissionException {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public Iterable<Property> properties() throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, NotFoundException, PermissionException {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public Property property(VOS11Const arg0) throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, NotFoundException, PermissionException {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public Property property(URI arg0) throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, NotFoundException, PermissionException {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public void property(URI arg0, String arg1) throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, NotFoundException, PermissionException {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public Date created() throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, NotFoundException, PermissionException {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public Date modified() throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, NotFoundException, PermissionException {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public long size() throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, NotFoundException, PermissionException {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 

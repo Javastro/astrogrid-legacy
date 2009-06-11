@@ -18,9 +18,11 @@ import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.vospace.v11.client.node.Node;
 import org.astrogrid.vospace.v11.client.node.NodeTypeEnum;
+import org.astrogrid.vospace.v11.client.policy.NodePolicyProperty;
 import org.astrogrid.vospace.v11.client.system.SystemDelegate;
 import org.astrogrid.vospace.v11.client.system.SystemDelegateResolver;
 import org.astrogrid.vospace.v11.client.system.SystemDelegateResolverImpl;
+
 
 /**
  * Manages the VOSpace associated with a user account.
@@ -134,7 +136,8 @@ public class VOSpace {
           homeSpaceLocation = node.getMetadata().getNodeIvorn().toString();
         }
 
-        // Call the VOSpace delegate to create the space.
+        // Call the VOSpace delegate to create the space. This makes the
+        // new space private to the community member.
         else if (vospaceDelegate != null) {
           URI u1 = new CommunityConfiguration().getVoSpaceIvorn();
           URI u2 = new URI(String.format("%s/%s", u1, userName));
@@ -142,7 +145,9 @@ public class VOSpace {
           synchronized(credentialResolver) {
             credentialResolver.setCurrent(credentials);
             Node n =
-                vospaceDelegate.create(NodeTypeEnum.TREE_NODE, u2);
+                vospaceDelegate.create(NodeTypeEnum.TREE_NODE, 
+                                       u2,
+                                       NodePolicyProperty.PRIVATE);
             homeSpaceLocation = n.uri().toString();
           }
 

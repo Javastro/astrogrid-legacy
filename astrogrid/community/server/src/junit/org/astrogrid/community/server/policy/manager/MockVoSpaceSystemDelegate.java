@@ -20,6 +20,7 @@ import org.astrogrid.vospace.v11.client.exception.ServiceException;
 import org.astrogrid.vospace.v11.client.node.Node;
 import org.astrogrid.vospace.v11.client.node.NodeImpl;
 import org.astrogrid.vospace.v11.client.node.NodeTypeEnum;
+import org.astrogrid.vospace.v11.client.property.Property;
 import org.astrogrid.vospace.v11.client.security.SecurityGuardResolver;
 import org.astrogrid.vospace.v11.client.system.SystemDelegate;
 import org.astrogrid.vospace.v11.client.transfer.export.ExportTransferResponse;
@@ -169,6 +170,18 @@ class MockVoSpaceSystemDelegate implements SystemDelegate {
   }
 
   public ExportTransferResponse export(Vosrn arg0) throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, ContainerException, NotFoundException, PermissionException {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public Node create(NodeTypeEnum arg0, URI arg1, Property... arg2) throws URISyntaxException, ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, DuplicateException, PermissionException {
+    return new MockVoSpaceNode(arg1);
+  }
+
+  public Node create(NodeTypeEnum arg0, Vosrn arg1, URI arg2, Property... arg3) throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, DuplicateException, PermissionException {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public void update(NodeImpl arg0, URI arg1, String arg2) throws ResolverException, ConnectionException, ServiceException, RequestException, ResponseException, LinkException, RecursiveLinkException, ContainerException, NotFoundException, PermissionException {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 }
