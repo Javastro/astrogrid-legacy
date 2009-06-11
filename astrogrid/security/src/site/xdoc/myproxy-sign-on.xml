@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>MyProxy support</title>
+  
+  <body>
+  	
+    <section name="MyProxy support">
+      <p>
+        From v2009.1, it is possible to sign on using a MyProxy service
+        instead of a community accounts service. "Signing on at a MyProxy
+        service" means that the library does a GET operation on the service,
+        authenticating with the given password and obtaining a certificate chain
+        tipped with a proxy certificate. The proxy certificate must be put into
+        MyProxy beforehand using the latter's normal mechanisms.
+      </p>
+      <p>
+        To sign on at a MyProxy service, pass an approriate credential-source
+        URI to <i>SecurityGuard.signOn(String, String, int, URI)</i>. The URI
+        may be in the <i>myproxy</i> scheme or the <i>ivo</i> scheme.
+      </p>
+      <p>
+        If you pass a URI in the form <i>myproxy://address:port</i>, then the
+        library will use the service at that address and port. Port 7512 is
+        normal, but the library does not use this default; you must state the
+          port explicitly.
+      </p>
+      <p>
+        If you pass a URI of the form <i>ivo://authority/resource-key</i> -
+        i.e. an IVOA identifier - then the library will look up that resource
+        in the IVOA registry and will use whatever service capabilities it
+        finds there. If it finds a community accounts capability then it
+        will use that. If it does not find the accounts capability but instead
+        finds a MyProxy capability then it will sign on at the MyProxy service.
+      </p>
+      <p>
+        The capability for registering a MyProxy service is expected to be
+        a plain capability with no extra metadata beyond those allowed
+        by VOResource 1.0. It must have the standard ID
+        <i>ivo://ivoa.net/std/MyProxy</i>. There should be one interface,
+        in which the access URL should be of the form described above.
+      </p>
+      <p>
+        MyProxy has no mechanism to record and communicate the location of
+        a user's home-space in VOSpace. If a user is signed on at a MyProxy
+        service, then <i>SecurityGuard.getHomespaceLocation()</i> and
+        <i>SecurityGuard.getHomespaceLocationAsString()</i> return null.
+      </p>
+      <p>
+        MyProxy supports changes of the password protecting a user's credentials.
+        The facade library tries to implement this but there is currently a
+        bug: password changes always fail. We hope to fix this in a later release.
+      </p>
+      <p>
+        The security facade has no support for putting a proxy certificate into
+        a MyProxy service, or for putting an EEC into the service. These
+        features might be added in a later release, but only if there is a
+        strong demand.
+      </p>
+    </section>
+  
+  </body>
+  
+ </document>
