@@ -10,6 +10,12 @@
 
   <description>Community is a AstroGrid web-application to manage user accounts.</description>
 
+  <parent>
+    <groupId>org.astrogrid</groupId>
+    <artifactId>astrogrid-base</artifactId>
+    <version>2009.1-SNAPSHOT</version>
+  </parent>
+
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <testSourceDirectory>src/junit</testSourceDirectory>
@@ -31,21 +37,6 @@
     </resources>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory>
@@ -63,6 +54,16 @@
     </plugins>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-contracts</artifactId>
+      <version>2008.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>2008.2</version>
+    </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-common</artifactId>
@@ -111,10 +112,6 @@
     </dependency>
   </dependencies>
 
-  <properties>
-    <netbeans.hint.deploy.server>gfv3</netbeans.hint.deploy.server>
-  </properties>
-
   <url>${astrogrid_doc_URL_root}/p/community/${project.version}/webapp</url>
 
   <distributionManagement>
@@ -124,5 +121,10 @@
       <url>${astrogrid_doc_server_root}/p/community/${project.version}/webapp</url>
     </site>
   </distributionManagement>
+
+  <properties>
+    <astrogrid_name>community-webapp</astrogrid_name>
+    <netbeans.hint.deploy.server>gfv3</netbeans.hint.deploy.server>
+  </properties>
 
 </project>
