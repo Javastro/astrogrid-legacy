@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-   <!-- $Id: pom.xml,v 1.9 2009/06/02 08:53:03 pah Exp $ -->
+   <!-- $Id: pom.xml,v 1.10 2009/06/15 14:51:52 pah Exp $ -->
    <!--
            This is the official maven 2 base pom - use as a parent pom in components
       pah
@@ -122,7 +122,7 @@
          <plugin> <!-- this plug-in makes appropriate links in the astrogrid doc site when a site is deployed -->
             <groupId>org.astrogrid</groupId>
             <artifactId>maven-agrelease-plugin</artifactId>
-            <version>0.1</version>
+            <version>0.3</version>
             <executions>
                 <execution>
             <id></id>
@@ -240,24 +240,20 @@
        <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
         <configuration>
-           <targetJdk>1.5</targetJdk>
+            <linkJavadoc>true</linkJavadoc>
         </configuration>
+         <reportSets>
+            <reportSet>
+               <reports>
+              <report>jxr</report>
+              <report>test-jxr</report>
+            </reports>
+           </reportSet>
+          </reportSets>
+        
       </plugin>
-       <plugin>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <configuration>
-               <configLocation> <!-- TODO probably nicer to refer to fixed url - but where-->
-                  ${maven.base.dir}/checkstyle.xml
-               </configLocation>
-            </configuration>
-          </plugin>
-         
-         <plugin>
+        <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>taglist-maven-plugin</artifactId>
             <configuration>
@@ -327,8 +323,34 @@
       </plugin>
        </plugins>
         </reporting>
+        
       </profile>
-      
+      <profile>
+        <id>codestyle</id>
+        <activation><activeByDefault>false</activeByDefault></activation>
+        <reporting>
+           <plugins>
+                 <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+           <targetJdk>1.5</targetJdk>
+        </configuration>
+      </plugin>
+       <plugin>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <configuration>
+               <configLocation> <!-- TODO probably nicer to refer to fixed url - but where-->
+                  ${maven.base.dir}/checkstyle.xml
+               </configLocation>
+            </configuration>
+          </plugin>
+         
+ 
+           </plugins>
+        </reporting>
+          
+      </profile>
    </profiles>
  
 </project>
