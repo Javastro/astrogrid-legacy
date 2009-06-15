@@ -25,6 +25,7 @@ String secure = (String) request.getAttribute("org.astrogrid.vosi.baseurlsecure"
     <description>A RESTful web-service for signing on to the community.</description>
     <interface xsi:type="vs:ParamHTTP" version="3" role="std">
       <accessURL use="base"><%=secure%>/accounts</accessURL>
+      <securityMethod standardID="ivo://ivoa.net/sso#tls-with-password"/>
     </interface>
   </capability>
   
@@ -55,6 +56,7 @@ String secure = (String) request.getAttribute("org.astrogrid.vosi.baseurlsecure"
     <description>A web UI for managing the community.</description>
     <interface xsi:type="vr:WebBrowser">
       <accessURL use="full"><%=secure%></accessURL>
+      <securityMethod standardID="ivo://ivoa.net/sso#tls-with-password"/>
     </interface>
   </capability>
 
