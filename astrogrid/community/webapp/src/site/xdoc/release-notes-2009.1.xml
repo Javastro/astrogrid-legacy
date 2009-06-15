@@ -86,6 +86,14 @@
         changing passwords and uploading credentials, is now registered
         in the IVOA registry.
       </p>
+      <p><em>Since v2009.1.a07</em></p>
+      <p>
+        The documents linked from the web-browser interface are no longer
+        embedded in the community web-application. The "document index" and
+        "release notes" links now lead to an external site. The live pages in
+        the community web-application have a different, yellow background to
+        distinguish them.
+      </p>
       </subsection>
       
     </section>
