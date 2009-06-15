@@ -35,7 +35,7 @@
         <dt>Access URL</dt>
         <dd><xsl:value-of select="."/></dd>
       </xsl:for-each>
-      <xsl:for-each select="securityMethod">
+      <xsl:for-each select="securityMethod/@standardID">
         <dt>Security method</dt>
         <dd><xsl:value-of select="."/></dd>
       </xsl:for-each>
