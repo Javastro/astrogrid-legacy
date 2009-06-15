@@ -1,11 +1,13 @@
 <!-- admin navigation -->
+<!-- ${pom.url} tokens get resolved to point to the document site for
+     this component. -->
 <div id='leftColumn'>
   <div id='navcolumn'>
     <h5>Navigation</h5>
     <ul>
       <li><a href="./" >Community home page</a></li>
-      <li><a href="site/index.html">Document index</a></li>
-      <li><a href="site/release-notes.html">Release notes</a></li>
+      <li><a href="${pom.url}">Document index</a></li>
+      <li><a href="${pom.url}/release-notes.html">Release notes</a></li>
       <li><a href="about.txt">About this component</a></li>
     </ul>
     <h5>For community members</h5>

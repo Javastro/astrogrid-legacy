@@ -6,7 +6,7 @@
   <artifactId>astrogrid-community</artifactId>
   <packaging>war</packaging>
   <name>Community Web Application</name>
-  <version>2009.1.a06</version>
+  <version>2009.1.a07</version>
 
   <description>Community is a AstroGrid web-application to manage user accounts.</description>
 
@@ -45,6 +45,7 @@
               <directory>src/site/resources</directory>
               <includes>
                 <include>about.txt</include>
+                <include>navigation.xml</include>
               </includes>
               <filtering>true</filtering>
             </resource>
