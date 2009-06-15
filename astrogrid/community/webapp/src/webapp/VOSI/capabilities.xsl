@@ -36,11 +36,11 @@
         <dd><xsl:value-of select="."/></dd>
       </xsl:for-each>
       <xsl:for-each select="securityMethod">
-        <dt>Access URL</dt>
+        <dt>Security method</dt>
         <dd><xsl:value-of select="."/></dd>
       </xsl:for-each>
       <xsl:for-each select="wsdlURL">
-        <dt>Access URL</dt>
+        <dt>WSDL URL</dt>
         <dd><xsl:value-of select="."/></dd>
       </xsl:for-each>
       <dt>HTTP verb</dt>
