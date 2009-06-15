@@ -6,7 +6,7 @@
   <artifactId>astrogrid-community</artifactId>
   <packaging>war</packaging>
   <name>Community Web Application</name>
-  <version>2009.1.a05</version>
+  <version>2009.1.a06</version>
 
   <description>Community is a AstroGrid web-application to manage user accounts.</description>
 
