@@ -23,5 +23,7 @@ Administration of the community and user accounts should be done through
 the pages of this web-application.
 </p>
 
+</div>
+
 </body>
 </html>
