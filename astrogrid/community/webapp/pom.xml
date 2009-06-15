@@ -72,7 +72,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-server</artifactId>
-      <version>2009.1.a05</version>
+      <version>2009.1.a06</version>
     </dependency>
     <dependency>
       <groupId>commons-fileupload</groupId>
