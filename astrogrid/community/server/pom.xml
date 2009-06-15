@@ -8,7 +8,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-community-server</artifactId>
   <name>Community service library</name>
-  <version>2009.1.a05</version>
+  <version>2009.1.a06</version>
   <description>This project builds the jar of classes needed for the community web-application.</description>
 
   <parent>
@@ -154,11 +154,6 @@
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-utils</artifactId>
-      <version>2007.2ut</version>
-    </dependency>
-    <dependency>
-      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-pal-oldquery</artifactId>
       <version>2007.2.05pl</version>
     </dependency>
@@ -186,11 +181,6 @@
       <groupId>org.codehaus.castor</groupId>
       <artifactId>castor</artifactId>
       <version>1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.transaction</groupId>
-      <artifactId>jta</artifactId>
-      <version>1.0.1B</version>
     </dependency>
     <dependency>
       <groupId>hsqldb</groupId>
@@ -232,16 +222,19 @@
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty</artifactId>
       <version>6.1.11</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-util</artifactId>
       <version>6.1.11</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-servlet-tester</artifactId>
       <version>6.1.11</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
