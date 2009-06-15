@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.17 2009/06/02 09:01:25 pah Exp $ -->
+<!-- $Id: pom.xml,v 1.18 2009/06/15 14:49:57 pah Exp $ -->
    <!--
       This pom is intended to contain the "version" information for the astrogrid (and other commonly used) components.
       In addition it contains the basic project information - however it *must not* contain any specific build information - this is contained in the
@@ -22,15 +22,19 @@
      <astrogrid_doc_URL_root>http://software.astrogrid.org/doc/</astrogrid_doc_URL_root>
      
      <!-- edit the versions below to  upgrade a version for release - do not use ${pom.version} here, as it will pick up the version of the inheriting project-->
-     <astrogrid_contracts_version>2009.1-SNAPSHOT</astrogrid_contracts_version>
-     <astrogrid_common_version>2009.1-SNAPSHOT</astrogrid_common_version>
-     <astrogrid_cea_version>2009.1-SNAPSHOT</astrogrid_cea_version>
-     <astrogrid_dsa_version>2009.1-SNAPSHOT</astrogrid_dsa_version>
-     <astrogrid_registry_version>2009.1-SNAPSHOT</astrogrid_registry_version>
-     <astrogrid_vospace_version>2009.0.02.alpha</astrogrid_vospace_version>
+     <astrogrid_adql1_version>2009.1-SNAPSHOT</astrogrid_adql1_version>
+     <astrogrid_adql2_version>2009.1-SNAPSHOT</astrogrid_adql2_version>
+     <astrogrid_common_version>2009.1</astrogrid_common_version>
      <astrogrid_community_version>2009.1.a02</astrogrid_community_version>
-     <astrogrid_security_version>2009.1.a08</astrogrid_security_version>
+     <astrogrid_contracts_version>2008.2</astrogrid_contracts_version>
+     <astrogrid_cea_version>2009.1-SNAPSHOT</astrogrid_cea_version>
      <astrogrid_desktop_version>1.2.3</astrogrid_desktop_version>
+     <astrogrid_dsa_version>2009.1.a08</astrogrid_dsa_version>
+     <astrogrid_ivoaobj_version>2009.1-SNAPSHOT</astrogrid_ivoaobj_version>
+     <astrogrid_registry_version>2008.2.01</astrogrid_registry_version>
+     <astrogrid_samp_version>0.3-1</astrogrid_samp_version>
+     <astrogrid_security_version>2009.1.a09</astrogrid_security_version>
+     <astrogrid_vospace_version>2009.0.03.beta</astrogrid_vospace_version>
    </properties>
    
    <packaging>pom</packaging>
@@ -73,17 +77,17 @@
          <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>2009.1-SNAPSHOT</version>
+            <version>${astrogrid_common_version}</version>
          </dependency>
          <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-client-lite</artifactId>
-            <version>${astrogrid_registry_version}</version>
+            <version>2008.2.01</version>
          </dependency>
          <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>${astrogrid_registry_version}</version>
+            <version>2008.2.01</version>
          </dependency>
          <dependency>
             <groupId>org.astrogrid</groupId>
@@ -158,12 +162,12 @@
          <dependency>
 	        <groupId>org.astrogrid</groupId>
 	        <artifactId>jsamp</artifactId>
-            <version>0.3-1</version>
+            <version>${astrogrid_samp_version}</version>
          </dependency>
          <dependency>
             <groupId>net.ivoa</groupId>
             <artifactId>ivoa-objects</artifactId>
-            <version>2009.1-SNAPSHOT</version>
+            <version>${astrogrid_ivoaobj_version}</version>
          </dependency>
         <dependency> 
               <groupId>org.astrogrid</groupId>
