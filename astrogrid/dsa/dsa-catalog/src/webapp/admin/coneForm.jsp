@@ -19,7 +19,6 @@
 <style type="text/css" media="all">
           @import url("../style/astrogrid.css");
 </style>
-</title>
 </head>
 
 
@@ -92,6 +91,8 @@
       }
    }
 %>
+
+</div>
 
 </body>
 </html>
