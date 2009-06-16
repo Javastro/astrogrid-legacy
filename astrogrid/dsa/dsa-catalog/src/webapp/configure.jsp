@@ -12,7 +12,6 @@
 <style type="text/css" media="all">
           @import url("./style/astrogrid.css");
 </style>
-</title>
 </head>
 
 <body>
@@ -35,6 +34,8 @@ There are a number of steps involved in configuring your DSA/catalog installatio
 <li><h3><a href="docs/configure_step6.jsp">Step 6 : Test your customised configuration</a></h3></li>
 <li><h3><a href="docs/configure_step7.jsp">Step 7 : Register your DSA/catalog with the VO</a></h3></li>
 </ul>
+
+</div>
 
 </body>
 </html>

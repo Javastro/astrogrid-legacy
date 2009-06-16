@@ -12,7 +12,6 @@
 <style type="text/css" media="all">
           @import url("./style/astrogrid.css");
 </style>
-</title>
 </head>
 
 <body>
@@ -64,6 +63,8 @@ you should now do the following:
 <li>Read the <a href="release.jsp">release notes</a></li>
 <li><a href="configure.jsp">Configure</a> your DSA/catalog installation</li>
 </ol>
+
+</div>
 
 </body>
 </html>

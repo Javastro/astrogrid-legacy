@@ -12,7 +12,6 @@
 <style type="text/css" media="all">
           @import url("./style/astrogrid.css");
 </style>
-</title>
 </head>
 
 <body>
@@ -40,7 +39,7 @@ In summary, the self-test functions are as follows:
 
 <ul>
     <li><a href="admin/happyaxis.jsp">Apache Axis self-check</a>
-    for validating the AXIS installation's configuration.</a><br/>
+    for validating the AXIS installation's configuration.<br/>
     DSA/catalog uses Apache Axis as its underlying SOAP transport mechanism. 
     It is not necessarily problematic if "optional components" are missing.
     If this validation page displays an exception instead of a status 
@@ -83,6 +82,8 @@ configured and working correctly, the links in the 'Service fingerprints'
 menu can be used to further examine what java properties are being applied 
 to the installation, and that these are as expected.
 </p>
+
+</div>
 
 </body>
 </html>
