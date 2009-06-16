@@ -12,7 +12,6 @@
 <style type="text/css" media="all">
           @import url("./style/astrogrid.css");
 </style>
-</title>
 </head>
 
 <body>
@@ -43,7 +42,6 @@ How to report bugs (BugZilla, content etc)
 <li>Pluggable architecture for back-end data access</li>
 <li>Pluggable architecture for IVOA VOResource generation</li>
 </ul>
-</p>
 
 <h2>Functionality Not Currently Supported</h2>
 <ul>
@@ -95,9 +93,10 @@ for more details.
 
 <p>
 If you have found a suspected bug, check the bugzilla pages at 
-<a href="http://www.astrogrid.org/bugzilla">http://www.astrogrid.org/bugzilla<a/> for known bugs, for example 
-<a href="http://www.astrogrid.org/bugzilla/buglist.cgi?short_desc_type=allwordssubstr&short_desc=&product=DSA%2FCatalog&component=DSA%2Fcatalog+webservice&version=unspecified&long_desc_type=allwordssubstr&long_desc=&bug_file_loc_type=allwordssubstr&bug_file_loc=&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&emailassigned_to1=1&emailtype1=substring&email1=&emailassigned_to2=1&emailreporter2=1&emailcc2=1&emailtype2=substring&email2=&bugidtype=include&bug_id=&votes=&changedin=&chfieldfrom=&chfieldto=Now&chfieldvalue=&cmdtype=doit&newqueryname=&order=Reuse+same+sort+as+last+time&field0-0-0=noop&type0-0-0=noop&value0-0-0=">using this query</a>, or
-consult <a href="mailto:astrogrid_dsa@star.le.ac.uk">astrogrid_dsa@star.le.ac.uk</a>.
+<a href="http://www.astrogrid.org/bugzilla">http://www.astrogrid.org/bugzilla<a/>
+for known bugs, for example using
+<a href="http://www.astrogrid.org/bugzilla/buglist.cgi?short_desc_type=allwordssubstr&short_desc=&product=DSA%2FCatalog&component=DSA%2Fcatalog+webservice&version=unspecified&long_desc_type=allwordssubstr&long_desc=&bug_file_loc_type=allwordssubstr&bug_file_loc=&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&emailassigned_to1=1&emailtype1=substring&email1=&emailassigned_to2=1&emailreporter2=1&emailcc2=1&emailtype2=substring&email2=&bugidtype=include&bug_id=&votes=&changedin=&chfieldfrom=&chfieldto=Now&chfieldvalue=&cmdtype=doit&newqueryname=&order=Reuse+same+sort+as+last+time&field0-0-0=noop&type0-0-0=noop&value0-0-0=">this query</a>,
+or consult <a href="mailto:astrogrid_dsa@star.le.ac.uk">astrogrid_dsa@star.le.ac.uk</a>.
 </p>
 
 <p>
