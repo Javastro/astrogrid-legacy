@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.22 2008/02/13 16:31:44 KevinBenson Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.23 2009/06/17 12:56:04 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -53,38 +53,7 @@ public class RegistryDelegateFactory {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
       }      
    }
-   
-   /**
-    * Method: createQuery
-    * Description: Creates a RegistryService interface for querying
-    * the registry based on a property 'org.astrogrid.registry.query.endpoint'
-    * Note the RegistryService interface will be the default generic interface
-    * and will not contain the added methods in the org.astrogrid.registry.client.query.v1_0.RegistryService
-    * 
-    * @return RegistryService interface object connected to query the registry.
-    */
-   public static synchronized RegistryService createQuery() {
-      return createQuery(conf.getUrl(QUERY_URL_PROPERTY));
-   }
-
-   /**
-    * Method: createQuery
-    * Description: Creates a RegistryService interface for querying
-    * the registry from the url endpoint passed in.
-    * Note the RegistryService interface will be the default generic interface
-    * and will not contain the added methods in the org.astrogrid.registry.client.query.v1_0.RegistryService
-    * 
-    * @param endPoint url object to the registry web service endpoint
-    * @return RegistryService interface object connected to query the registry.
-    */
-   public static synchronized RegistryService createQuery(URL endPoint) {
-        logger.info("createQuery(URL) - the ENDPOINT AT DELEGATE = "
-                + "'" + endPoint + "'");
-      //return createQuery(endPoint,DEFAULT_CONTRACT_VERSION);
-      return new org.astrogrid.registry.client.query.v0_1.QueryRegistry(endPoint);
-   } 
-   
-   
+    
    /**
     * Method: createQueryv1_0
     * Description: Creates a RegistryService interface for querying
@@ -123,30 +92,6 @@ public class RegistryDelegateFactory {
      return new org.astrogrid.registry.client.query.v1_0.QueryRegistry(endPoint);
        //return new org.astrogrid.registry.client.query.v0_1.QueryRegistry(contractEndpoint);
   }
-
- 
-
-   /*
-   public static synchronized RegistryService createQuery(URL endPoint, String contractVersion) {
-	   URL contractEndpoint = null;
-		  try {
-			 contractEndpoint =  new URL(endPoint.toString() + "v" + contractVersion.replaceAll("[^\\w*]","_"));
-		  }catch(java.net.MalformedURLException me) {
-			  logger.error(me);
-			  throw new RuntimeException("Error could not construct url " + me.getMessage());
-		  }
-		  //System.out.println("the endpoint constructoed = " + contractEndpoint);
-		  if(contractVersion.equals("1.0")) {
-			  return (org.astrogrid.registry.client.query.v1_0.RegistryService) new org.astrogrid.registry.client.query.v1_0.QueryRegistry(contractEndpoint);
-		  }else if(contractVersion.equals("0.1")) {
-			  return (org.astrogrid.registry.client.query.v0_1.RegistryService) new org.astrogrid.registry.client.query.v0_1.QueryRegistry(contractEndpoint);
-		  }else {
-			  logger.warn("Could not find an AdminService for version = " + contractVersion + 
-					  " Currently only 0.1 and 1.0 is available.  Defaulting to 0.1");
-			  return (org.astrogrid.registry.client.query.v0_1.RegistryService) new org.astrogrid.registry.client.query.v0_1.QueryRegistry(contractEndpoint);
-		  }	   
-  }
-  */
 
    
    /**

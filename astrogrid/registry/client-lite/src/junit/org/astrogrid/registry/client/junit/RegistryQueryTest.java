@@ -20,7 +20,7 @@ import java.io.File;
 import java.util.Date;
 import org.astrogrid.oldquery.sql.Sql2Adql;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
-import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import java.util.*;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.config.Config;
@@ -70,7 +70,7 @@ public class RegistryQueryTest extends TestCase {
        System.out.println("Property for regtest.basedir = " + regTestBase);
        
        RegistryDelegateFactory.conf.setProperty("registry.cache.dir",regTestBase);                    
-       rs = RegistryDelegateFactory.createQuery();
+       rs = RegistryDelegateFactory.createQueryv1_0();
        if (DEBUG_FLAG) System.out.println("----\"----");
    }
    

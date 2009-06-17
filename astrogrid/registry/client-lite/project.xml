@@ -47,15 +47,12 @@
     <description>
         <![CDATA[
 	<p>
-		The Client area's main purpose is to give the users a delegate to go by
-		and to interact with a Registry server or cache.  The Client section
-		will read in a config file and determine to use a Registry server which
-		will be the most common or use a a local cache through it's config file.
-		It determines rather to use a server or local config file by simply determining
-		if the endpoints are in the config file.  It should be noted current 
-		implementation only queries based on identifiers when using the local config
-		cache.  The current client is now associated with the ivoa standard now of
-    	querying via ADQL and is OAI conformed on the web service interface.
+		The Registry Client library purpose is to give the users a delegate to go by
+		and to interact with a Registry.  Most components in Astrogrid tend to use the delegate
+		for query purposes to look up a particular resource or possibly do an xquery but usually to 
+		look up a particular resource and to discover the endpoint of a particular service.  The delegate
+		implements all the ivoa standard query interface along with a few helpful methods that are typically
+		ran on the query.
 	</p>
 	<section name="Builds">
 		<p>
@@ -65,7 +62,7 @@
 				<li>clean - cleans out and removes all previous builds.</li>
 				<li>install - compiles, runs unit tests and installs a local jar to your repository as well as the target directory.</li>
 				<li>site - builds and deploys a local site information about this project.</li>
-			</ul>
+			</ul> <br />
 			Here are the maven goals for building the registry for maven 1:
 			<ul>
 				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
@@ -73,8 +70,6 @@
 				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
 				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
 			</ul>
-			<br />
-			
 		</p>
 	</section>
 	<section name="Deployment/Installation">
