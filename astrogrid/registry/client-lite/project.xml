@@ -123,8 +123,10 @@
 				<li>updateFromUrl(URL url) - same as above just a url reference.</li>
 				<li>updateFromFile(File fi) - same as above just a file reference.</li>
 			</ul>
-		</p>
+		</p>   
 	</section>
+		]]>    
+	</description>
 
     <!--+
         | Our cvs repository location.
