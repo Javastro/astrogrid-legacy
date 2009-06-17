@@ -7,3 +7,4 @@ classes
 test-reports
 test-classes
 javancss-raw-report.xml
+*.jar
