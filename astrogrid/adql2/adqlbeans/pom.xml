@@ -90,18 +90,18 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>xmlbeans</groupId>
-      <artifactId>xbean</artifactId>
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans</artifactId>
       <version>2.3.0</version>
     </dependency>
     <dependency>
-      <groupId>xmlbeans</groupId>
-      <artifactId>jsr173_1.0_api</artifactId>
-      <version>2.3.0</version>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jsr173_api</artifactId>
+      <version>1.0</version>
     </dependency>
     <dependency>
-      <groupId>xmlbeans</groupId>
-      <artifactId>xmlbeans_qname</artifactId>
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans-qname</artifactId>
       <version>2.3.0</version>
     </dependency>
     <dependency>
