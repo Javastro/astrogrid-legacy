@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.2 2008/09/08 15:37:12 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.3 2009/06/17 10:43:09 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -91,8 +91,11 @@ public class AdqlStoXTest extends XMLTestCase {
     
     public AdqlStoXTest() {
         super() ;
-        System.setProperty( "javax.xml.transform.TransformerFactory"
-                           ,"com.icl.saxon.TransformerFactoryImpl" ) ;
+//        System.setProperty( "javax.xml.transform.TransformerFactory"
+//                           ,"net.sf.saxon.TransformerFactoryImpl" ) ;
+        
+      System.setProperty( "javax.xml.transform.TransformerFactory"
+                        ,"com.icl.saxon.TransformerFactoryImpl" ) ;
     }
 
 	/* (non-Javadoc)
@@ -391,7 +394,7 @@ public class AdqlStoXTest extends XMLTestCase {
     
     // JL note:
     // need to try the next two tests for memory on separate threading basis as well.
-    public void testMemoryUsageWithReinit() throws OutOfMemoryError {
+    public void _testMemoryUsageWithReinit() throws OutOfMemoryError {
         // NB: (JL) I've tried this with the setting set to 1000000 and it worked.
         //
         // Turn off all logging.
@@ -464,7 +467,7 @@ public class AdqlStoXTest extends XMLTestCase {
                
     }
     
-    public void testMemoryUsageWithoutReinit() throws OutOfMemoryError {
+    public void _testMemoryUsageWithoutReinit() throws OutOfMemoryError {
         //
         // Turn off all logging.
         // Precaution in case the log level is set inappropriately,
@@ -981,9 +984,15 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.2  2008/09/08 15:37:12  jl99
- * Merge of branch adql_jl_2575_mark2 into HEAD
+ * Revision 1.3  2009/06/17 10:43:09  jl99
+ * Merge of adql v2 parser with maven 2 build. Site docs still to do.
  *
+/* Revision 1.2.2.1  2009/06/05 10:37:54  jl99
+/* Mavenizing for maven 2.
+/*
+/* Revision 1.2  2008/09/08 15:37:12  jl99
+/* Merge of branch adql_jl_2575_mark2 into HEAD
+/*
 /* Revision 1.1.2.5  2008/09/08 11:10:28  jl99
 /* Change to where test queries are held within project.
 /*

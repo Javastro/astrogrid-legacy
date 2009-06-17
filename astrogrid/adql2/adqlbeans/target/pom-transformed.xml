@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  
+    <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-adqlbeans</artifactId>
+	   <packaging>jar</packaging>
+	<version>${astrogrid_adql2_version}</version>
+ 
+  <name>Generated XMLBeans for ADQL</name>
+  <description>&lt;p>
+            The ADQL parser, having parsed a piece of ADQL, then forms it into an intermediate XML format
+            according to an ADQL schema. All creation and manipulation is undertaken using the XMLBeans
+            framework. The beans generated from the schema are a critical part of the process. 
+            &lt;br/>&lt;br/>
+            The beans are also used within the AstroGrid VO desktop.&lt;br/>
+    	&lt;/p></description>
+    	
+   <parent>
+		<artifactId>astrogrid-adqlparser-bundle</artifactId>
+		<groupId>org.astrogrid</groupId>
+		<version>${astrogrid_adql2_version}</version>
+	</parent>
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <plugins>
+      <plugin>
+  			<groupId>org.codehaus.mojo</groupId>
+  			<artifactId>xmlbeans-maven-plugin</artifactId>
+  			<version>2.3.1</version>
+  			<executions>
+            	<execution>
+                	<goals>
+                    	<goal>xmlbeans</goal>
+                    </goals>
+                </execution>
+            </executions>
+  			<configuration>
+            	<schemaDirectory>../contracts/src/schema/adql/v2.0</schemaDirectory>
+            	<!-- classGenerationDirectory>target/classes</classGenerationDirectory -->
+            	<!-- sourceGenerationDirectory>src/java</sourceGenerationDirectory -->
+                <noPvr>true</noPvr>
+                <staleFile>config/staleFlag</staleFile>
+   				<verbose>true</verbose>
+   				<download>true</download>
+                <outputJar>lib/${artifactId}.jar</outputJar>
+                <defaultXmlConfigDir>config</defaultXmlConfigDir>
+            </configuration>
+  	  </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <showDeprecation>true</showDeprecation>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links>http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlbeans/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-base/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-sv/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-utils/apidocs/</links>
+          <source>1.5</source>
+          <tags>
+            <tag>
+              <head>To Do:</head>
+              <name>todo</name>
+              <placement>a</placement>
+            </tag>
+            <tag>
+              <head>Future:</head>
+              <name>future</name>
+            </tag>
+            <tag>
+              <head>Modified:</head>
+              <name>modified</name>
+              <placement>a</placement>
+            </tag>
+          </tags>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>-ea</argLine>
+          <testFailureIgnore>true</testFailureIgnore>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>xmlbeans</groupId>
+      <artifactId>xbean</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>xmlbeans</groupId>
+      <artifactId>jsr173_1.0_api</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>xmlbeans</groupId>
+      <artifactId>xmlbeans_qname</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-changes-plugin</artifactId>
+        <configuration>
+          <xmlPath>${basedir}/xdocs/changes.xml</xmlPath>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>${basedir}/../maven/checkstyle.xml</configLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <configuration>
+          <tags>
+            <tag>@TODO</tag>
+          </tags>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>

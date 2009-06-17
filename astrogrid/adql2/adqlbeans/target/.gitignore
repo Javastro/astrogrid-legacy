@@ -1,0 +1,9 @@
+java
+maven-archiver
+cobertura
+site
+generated-classes
+classes
+test-reports
+test-classes
+javancss-raw-report.xml
