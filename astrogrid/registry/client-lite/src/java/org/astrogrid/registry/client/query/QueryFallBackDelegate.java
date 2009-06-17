@@ -12,6 +12,31 @@ public class QueryFallBackDelegate {
      */
     private static final Log logger = LogFactory
             .getLog(QueryFallBackDelegate.class);
+    
+    
+    /**
+     * Method: createQueryv1_0
+     * Description: Creates a 1.0 RegistryService interface object for querying 1.0
+     * Resources.  Allowing the ability to query based on some new interface methods plus the
+     * default RegistryService methods as well. Normally astrogrid endpoints end in RegistryQueryv1_0
+     * @param endPoint url end point to a 1.0 web service.
+     * @return RegistryService interface object connected to query the registry.
+     */
+    public static synchronized org.astrogrid.registry.client.query.v1_0.RegistryService createFallBackQueryv1_0(URL endPoint) {
+      logger.info("createQuery(URL) - the ENDPOINT AT DELEGATE = "
+                + "'" + endPoint + "'");
+      
+      if(endPoint.toString().endsWith("RegistryQuery")) {
+		  try {
+			  endPoint =  new URL(endPoint.toString() + "v1_0");
+		  }catch(java.net.MalformedURLException me) {
+			  logger.error(me);
+			  throw new RuntimeException("Error could not construct url " + me.getMessage());
+		  }
+	  }
+      return new org.astrogrid.registry.client.query.v1_0.QueryRegistry(endPoint);
+        //return new org.astrogrid.registry.client.query.v0_1.QueryRegistry(contractEndpoint);
+   }
 	
 	
 	  protected static synchronized RegistryService createFallBackQuery(URL endPoint, String contractVersion) {

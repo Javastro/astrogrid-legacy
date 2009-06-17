@@ -213,13 +213,17 @@ public abstract class QueryRegistry {
       try {
           return callService(adql,"Search","Search");
       } catch (RemoteException re) {
-         re.printStackTrace();
+    	  URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+          if(backupEndpoint != null && !backupEndpoint.equals(this.endPoint)) {
+              RegistryService rs = QueryFallBackDelegate.createFallBackQueryv1_0(backupEndpoint);
+              return rs.search(adql);
+          }//if 
          logger.error(re);         
          throw new RegistryException(re);
       } catch(ServiceException se) {
           URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
           if(backupEndpoint != null && !backupEndpoint.equals(this.endPoint)) {
-              RegistryService rs = QueryFallBackDelegate.createFallBackQuery(backupEndpoint,getContractVersion());
+              RegistryService rs = QueryFallBackDelegate.createFallBackQueryv1_0(backupEndpoint);
               return rs.search(adql);
           }//if 
           logger.error(se);
@@ -535,12 +539,20 @@ public abstract class QueryRegistry {
                   cache.put(xquery,resultDoc);
               return resultDoc;
           } catch (RemoteException re) {
-              logger.error(re);              
+        	  URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+              if(backupEndpoint != null && !backupEndpoint.equals(this.endPoint)) {
+                  RegistryService rs = QueryFallBackDelegate.createFallBackQueryv1_0(backupEndpoint);
+                  resultDoc = rs.xquerySearch(xquery);
+                  if(useRefCache)
+                 	 cache.put(xquery,resultDoc);
+                  return resultDoc;
+              }       
+        	  logger.error(re);         
               throw new RegistryException(re);
           } catch (ServiceException se) {
              URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
              if(backupEndpoint != null && !backupEndpoint.equals(this.endPoint)) {
-                 RegistryService rs = QueryFallBackDelegate.createFallBackQuery(backupEndpoint,getContractVersion());
+                 RegistryService rs = QueryFallBackDelegate.createFallBackQueryv1_0(backupEndpoint);
                  resultDoc = rs.xquerySearch(xquery);
                  if(useRefCache)
                 	 cache.put(xquery,resultDoc);
@@ -549,6 +561,7 @@ public abstract class QueryRegistry {
              logger.error(se);              
              throw new RegistryException(se);
           } catch (Exception e) {
+        	  System.out.println("a regular exception called " + e.getMessage());
              logger.error(e);              
              throw new RegistryException(e);
           }
@@ -622,13 +635,18 @@ public abstract class QueryRegistry {
               resultDoc =  callService(doc,"GetResource","GetResource");
               //cache.put(ident,resultDoc); //kmb -- no need to do this callService caches via identifier now automatically.
            } catch (RemoteException re) {
+        	   URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+               if(backupEndpoint != null && !backupEndpoint.equals(this.endPoint)) {
+                   RegistryService rs = QueryFallBackDelegate.createFallBackQueryv1_0(backupEndpoint);
+                   resultDoc = rs.getResourceByIdentifier(ident);
+               }        	  
              
               logger.error(re);                 
               throw new RegistryException(re);
           } catch (ServiceException se) {
         	  URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
               if(backupEndpoint != null && !backupEndpoint.equals(this.endPoint)) {
-                  RegistryService rs = QueryFallBackDelegate.createFallBackQuery(backupEndpoint,getContractVersion());
+                  RegistryService rs = QueryFallBackDelegate.createFallBackQueryv1_0(backupEndpoint);
                   resultDoc = rs.getResourceByIdentifier(ident);
               }        	  
               logger.error(se);                 
@@ -728,12 +746,20 @@ public abstract class QueryRegistry {
               if(useRefCache)
                   cache.put(keywords,resultDoc);
           } catch (RemoteException re) {
+        	  URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+              if(backupEndpoint != null && !backupEndpoint.equals(this.endPoint)) {
+                  RegistryService rs = QueryFallBackDelegate.createFallBackQueryv1_0(backupEndpoint);
+                  resultDoc = rs.keywordSearch(keywords,orValues);
+                  if(useRefCache)
+                	  cache.put(keywords,resultDoc);
+                  return resultDoc;
+              }        	  
               logger.error(re);                 
               throw new RegistryException(re);
           } catch (ServiceException se) {
               URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
               if(backupEndpoint != null && !backupEndpoint.equals(this.endPoint)) {
-                  RegistryService rs = QueryFallBackDelegate.createFallBackQuery(backupEndpoint,getContractVersion());
+                  RegistryService rs = QueryFallBackDelegate.createFallBackQueryv1_0(backupEndpoint);
                   resultDoc = rs.keywordSearch(keywords,orValues);
                   if(useRefCache)
                 	  cache.put(keywords,resultDoc);
