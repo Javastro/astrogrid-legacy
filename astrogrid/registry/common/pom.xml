@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>astrogrid-registry-common</artifactId>
-  <name>AstroGrid registry common</name>
+  <name>AstroGrid Registry Common</name>
     <parent>
       <artifactId>astrogrid-registry-base</artifactId>
       <groupId>org.astrogrid</groupId>
@@ -11,7 +11,8 @@
   </parent>
   
   <description>
-		The Common area are what is common between both the Client and Server areas.
+		A Registry common library used for the client and server pieces of the Registry.  Normally common methods they both need or share a couple of examples are looking in a Document (DOM)
+		for a particular identifier or validating Registry Resources.  See the 'Dependencies' link for information of which libraries it depends on.
 	</description>
   <scm>
     <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry/common</connection>

@@ -31,23 +31,31 @@
         | This description is used to generate the front page of the project's web site. 
         +-->
   <description>
-        
-	&lt;p&gt;
-		The Common area are what is common between both the Client and Server areas.
-	&lt;/p&gt;
-	&lt;section name="Builds"&gt;
-		&lt;p&gt;			
-			Here are the maven goals for building the registry, it has a one extra goal compared to the other sub-projects.
-			&lt;ul&gt;
-				&lt;li&gt;astrogrid-clean - cleans out and removes all previous builds.&lt;/li&gt;
-				&lt;li&gt;astrogrid-install-snapshot - Builds all the necessry jar and war files.&lt;/li&gt;
-				&lt;li&gt;astrogrid-install-artifact - Builds all the necessry jar and war files.&lt;/li&gt;    	
-				&lt;li&gt;astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.&lt;/li&gt;
-				&lt;li&gt;astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.&lt;/li&gt;
-			&lt;/ul&gt;
-		&lt;/p&gt;
-	&lt;/section&gt;
-		
+         <![CDATA[
+	<p>
+		A Registry common library used for the client and server pieces of the Registry.  Normally common methods they both need or share a couple of examples are looking in a Document (DOM)
+		for a particular identifier or validating Registry Resources.  See the 'Dependencies' link for information of which libraries it depends on.
+	</p>
+	<section name="Builds">
+		<p>
+			The registry allows you to build at the top level or at it's sub-project level.  
+			Here are the mvn goals for maven 2:
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install - compiles, runs unit tests and installs a local jar to your repository as well as the target directory.</li>
+				<li>site - builds and deploys a local site information about this project.</li>
+			</ul> <br />
+			Here are the maven goals for building the registry for maven 1:
+			<ul>
+				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
+				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	
+	</section>
+			]]>       
 </description>
   <!--+
         | A short description of the project.
