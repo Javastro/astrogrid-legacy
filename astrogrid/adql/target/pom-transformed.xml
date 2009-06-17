@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-adqlv1parser</artifactId>
+  <version>${astrogrid_adql1_version}</version>
+  <parent>
+  	<artifactId>astrogrid-base</artifactId>
+  	<groupId>org.astrogrid</groupId>
+  	<version>2009.1-SNAPSHOT</version> 
+  </parent>
+  <packaging>pom</packaging>
+  <name>AstroGrid ADQL Version 1 Parser Master POM</name>
+  <description>&lt;p>
+          This project contains a parser which processes queries written in ADQL (Astronomical Data Query Language).
+          Please Note: this is the ADQL version 1 parser. For ADQL version 2, please see the adql2 project.
+          &lt;/p>
+          Various outputs can be produced. The basic though intermediate output is ADQL/x (ie: an XML version of a query).
+          This can be processed further into some variant of SQL suitable for submission against an astronomical archive
+          held in a relational database. The parser itself is not involved in the actual submission of a query.
+          &lt;/p>
+          &lt;p>
+          From the last sentence it is obvious the parser is not a standalone component. It only serves a useful
+          function inside an existing software environment. Within Astrogrid, these environments are provided by 
+          the VODesktop on the client side, and the DSA on the server side. It is the VODesktop that is involved
+          in framing a suitable query and in finding a server which can satisfy that query.
+          It is the DSA component within that server that handles submitting the resulting SQL to a relational database.
+          &lt;/p>
+          &lt;p>
+          As such a lot of the detail you will find on this site is targeted at developers: those wishing to question
+          the further development of ADQL as a language, and those wishing to place the parser within a relevant
+          software environment. 
+          &lt;/p>
+          &lt;p>
+          There are two (some may say three) levels of code generation in the project. One concerns the use of JavaCC
+          to generate the basic parser and its associated syntax tree of modules (nearly 100 of these). 
+          Another concerns the generation of XMLBeans that are indispensable for manipulating the intermediate XML
+          form of a query.</description>
+  <url>${astrogrid_doc_URL_root}/p/adql/${project.version}</url>
+  
+  <developers>
+  	<developer>
+  		<id>jl99</id>
+  		<name>Jeff Lusted</name>
+  		<email>jl99@star.le.ac.uk</email>
+  		<organization>Dept of Physics and Astronomy, University of Leicester</organization>
+  	</developer>
+  </developers>
+  <properties>
+		<astrogrid_name>adql</astrogrid_name>
+  </properties>
+  <scm>
+  	<connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/adql/</connection>
+  	<developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/adql/</developerConnection>
+  	<url>http://www.astrogrid.org/viewcvs/astrogrid/adql/</url>
+  </scm>
+  <build>
+    <plugins>
+    </plugins>
+  </build>
+  <modules>  	
+  	<module>adqlbeans</module>
+  	<module>adqlbase</module>
+  </modules>
+  <reporting>
+  </reporting>
+  <distributionManagement>
+    <site>
+      <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
+ 
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/adql/${project.version}</url>
+      <!-- terror.star.le.ac.uk/ -->
+    </site>  
+ </distributionManagement>
+</project>
