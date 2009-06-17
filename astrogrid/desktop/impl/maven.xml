@@ -71,6 +71,8 @@
     <attainGoal name="jar-strip" />
 <!--  package as a jar file -->
     <attainGoal name="app-jar" />
+    <!-- build .dmg file if possible -->
+    <attainGoal name="attempt-dmgfile" />
     <!-- smoke-test -->
     <attainGoal name="smoke-test" />
     <!--  generate announcement -->
@@ -707,12 +709,66 @@
           </j:if>   
     </goal>
 
+    <!-- If on MacOS build a .dmg file, otherwise don't. -->
+    <goal name="attempt-dmgfile">
+      <condition property="isMacos">
+        <os family="mac"/>
+      </condition>
+      <j:choose>
+        <j:when test="${isMacos}">
+          <attainGoal name="dmgfile"/>
+        </j:when>
+        <j:otherwise>
+          <echo>No .dmg file built - OS is not MacOS</echo>
+        </j:otherwise>
+      </j:choose>
+    </goal>
+
+    <!-- Creates a .dmg file which is the preferred packaging for MacOS X use.
+     !   Note that this goal will only work if the build is done on a Mac.
+     ! -->
+    <goal name="dmgfile" description="Create .dmg file for MacOS X (only works on OS X)">
+
+      <!-- Set up a clean temporary directory to write the app files into. -->
+      <property name="osx.releasedir" value="${maven.build.dir}/osx-app"/>
+      <delete dir="${osx.releasedir}"/>
+      <mkdir dir="${osx.releasedir}"/>
+
+      <!-- Write the Mac-specific application files into the directory. -->
+      <osxjarbundler dir="${osx.releasedir}"
+                     name="VO Desktop"
+                     shortname="VO Desktop"
+                     version="${astrogrid.desktop.version}"
+                     jvmversion="1.5+"
+                     icon="${maven.src.dir}/webapp/logo.icns"
+                     vmoptions="-Xmx512M"
+                     mainclass="${astrogrid.application.mainclass}"
+                     jar="${maven.build.dir}/${maven.final.name}-app.jar">
+        <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
+      </osxjarbundler>
+
+      <!-- Package the contents of the temporary directory into a .dmg file. -->
+      <exec executable="/usr/bin/hdiutil" os="Mac OS X">
+        <arg value="create"/>
+        <arg value="-srcfolder"/>
+        <arg value="${osx.releasedir}"/>
+        <arg value="-volname"/>
+        <arg value="${maven.final.name}"/>
+        <arg value="-ov"/>
+        <arg value="${maven.build.dir}/${maven.final.name}.dmg"/>
+      </exec>
+    </goal>
 
 <!--  definitions of custom ant tasks. -->  
           
     <!--  strips unused classes and methods from a jar -->
     <taskdef resource="proguard/ant/task.properties"
       classpathref="maven.dependency.classpath"/>
+
+    <!--  creates an OS X-style VO Desktop.app directory -->
+    <taskdef name="osxjarbundler"
+             classpathref="maven.dependency.classpath"
+             classname="net.sourceforge.jarbundler.JarBundler"/>
      
 </project>
 

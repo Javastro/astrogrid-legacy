@@ -1242,6 +1242,13 @@
             <type>jar</type>
             <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
         </dependency>
+        <dependency>
+            <groupId>jarbundler</groupId>
+            <artifactId>jarbundler</artifactId>
+            <version>1.8.1</version>
+            <type>jar</type>
+            <url>http://jarbundler.sourceforge.net/</url>
+        </dependency>
         <!--  libraries used for testing -->
         <dependency>
             <groupId>xmlunit</groupId>
