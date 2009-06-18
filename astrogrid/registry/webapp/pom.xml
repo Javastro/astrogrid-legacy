@@ -63,6 +63,7 @@ There are some irritations
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
+      <version>2009.1</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
@@ -105,6 +106,7 @@ There are some irritations
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-contracts</artifactId>
+      <version>2009.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.xfire</groupId>

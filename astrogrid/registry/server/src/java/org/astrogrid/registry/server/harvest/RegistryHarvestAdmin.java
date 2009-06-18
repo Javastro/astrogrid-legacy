@@ -11,6 +11,7 @@ import org.astrogrid.registry.RegistryException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -24,6 +25,7 @@ import java.io.IOException;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Hashtable;
 
 import junit.framework.AssertionFailedError;
 import org.xmldb.api.base.Collection;
@@ -305,7 +307,7 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        AuthorityList tempAuthorityListKey = null;
        AuthorityList tempAuthorityListVal = null;
        boolean validateResourceXML = true;
-       String returnString = "";
+       String returnString = "List below of Invalid Resources not updated and then a list of Updated Resources\r\n";
        XSLHelper xs = new XSLHelper();
        
        if(update == null) {
@@ -335,8 +337,8 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        //with OAI.  This might change in the near future.
        boolean hasStyleSheet = true;//conf.getBoolean("reg.custom.harveststylesheet." + versionNumber,false);
        Document xsDoc = null;
-
-       log.debug("Before " + DomHelper.DocumentToString(update));
+       //log.debug("Before " + DomHelper.DocumentToString(update));
+       
        if(hasStyleSheet) {
           log.debug("performing transformation before analysis of update for versionNumber = " + versionNumber);
           try {
@@ -367,7 +369,26 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        } else {
           xsDoc = update;
        }
-       log.debug("After = " + DomHelper.DocumentToString(update));
+       
+       Hashtable defaultNS = new Hashtable();
+	   try {
+		   NamedNodeMap nnm = update.getDocumentElement().getAttributes();
+		   for(int ww = 0; ww < nnm.getLength();ww++) {
+			   log.info("NNM index = " + ww);
+			   Node tmpNode = nnm.item(ww);
+			   if(tmpNode.getNamespaceURI().equals("http://www.w3.org/2000/xmlns/") &&
+			      tmpNode.getNodeName().startsWith("xmlns:") &&
+			      !tmpNode.getNodeValue().startsWith("http://www.openarchives.org")) {
+				   //a default namespace found
+				   defaultNS.put(tmpNode.getNodeName(), tmpNode.getNodeValue());
+			   }
+		   }
+		   update.getDocumentElement().setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:tmp", "http://www.astrogrid.org/test");
+	   }catch(Exception e) {
+		   log.info("exception trying to getattribute node");
+		   e.printStackTrace();
+	   }
+       
        
        //collection/table name to be used for storing into the db.
        String collectionName = "astrogridv" + versionNumber.replace('.','_');
@@ -377,6 +398,26 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        //validate Resources individually this becomes true
        //if the whole VOResources document has errors and is invalid.
        boolean validateSingleResources = false;
+	   int loopi = 0;
+       
+       //Grab all the Resource Elements.
+       nl = xsDoc.getElementsByTagNameNS("*","Resource");
+       if(defaultNS.size() > 0) {
+	       while(loopi < nl.getLength()) {
+//			   log.info("loopi = " + loopi + " and nl.getlength = " + nl.getLength());
+			   try {
+				   Object []defaultNSKey = defaultNS.keySet().toArray();
+				   for(int ns = 0;ns < defaultNSKey.length;ns++) {
+					   ((Element)nl.item(loopi)).setAttributeNS("http://www.w3.org/2000/xmlns/", (String)defaultNSKey[ns], (String)defaultNS.get((String)defaultNSKey[ns]));
+				   }
+				   loopi++;
+			   }catch(Exception e) {
+				   log.error("default namespaces found but could not add it to the individual resource elements");
+				   loopi++;
+	           }//catch
+		   }//while
+       }
+       //log.debug("After = " + DomHelper.DocumentToString(xsDoc));
        
        //adding back the && check for 0.10 collection there is just
        //no point in validating 0.10 during harvests to many mistakes and
@@ -395,27 +436,26 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
            }//catch
        }
 
-       //Grab all the Resource Elements.
-       nl = xsDoc.getElementsByTagNameNS("*","Resource");
        
        //If we are validating Single Resources because some are 
        //invalid then loop through the Single Resoruces and remove 
        //the invalid entries.
        if(validateSingleResources) {
-       	   log.info("Number of Resources to try validating individually (invalid will be removed) = " + nl.getLength());
-    	   int loopi = 0;
+       	   log.info("Number of Resources to try validating individually (invalid will be removed and logged in the status page) = " + nl.getLength());
+       	   loopi = 0;
     	   while(loopi < nl.getLength()) {
-    		   log.info("loopi = " + loopi + " and nl.getlength = " + nl.getLength());
+    		   //log.info("loopi = " + loopi + " and nl.getlength = " + nl.getLength());
     		   try {
+    			   
     			   RegistryValidator.isValid(((Element)nl.item(loopi)),"Resource");
     			   loopi++;
     		   }catch(AssertionFailedError afe) {
-    			   //log.error("Error invalid individual Resource = " + afe.getMessage() + " loop i = " + loopi);
-    			   xsDoc.getDocumentElement().removeChild(nl.item(loopi));
-    			   //log.info("nl.getlength in afe after removechild = " + nl.getLength());
-                   //afe.printStackTrace();
-                   
-                   //return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Invalid update, document not valid ",afe.getMessage());           
+    			   //log.warn("Invalid Resource for Identifier: ivo://" + RegistryDOMHelper.getAuthorityID( ((Element)nl.item(loopi)) ) + "/" +  RegistryDOMHelper.getResourceKey( ((Element)nl.item(loopi)) ));
+    			   //log.warn(afe.getMessage());
+    			   returnString += "Invalid Resource that did not get updated - ivo://" + RegistryDOMHelper.getAuthorityID( ((Element)nl.item(loopi)) ) + "/" +  RegistryDOMHelper.getResourceKey( ((Element)nl.item(loopi)) ) + " \r\n Error:" + afe.getMessage() + "\r\n";
+    			   //ident = RegistryDOMHelper.getAuthorityID( currentResource);
+    		       //resKey = RegistryDOMHelper.getResourceKey( currentResource);
+    			   xsDoc.getDocumentElement().removeChild(nl.item(loopi));           
                }//catch
     	   }//while
        }
@@ -561,7 +601,7 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
                                                          //collectionName, root /*currentResource*/);
                           //xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml", 
                                                        //collectionName, root /*currentResource*/);
-                          returnString += tempIdent + ",\r\n";
+                          returnString += "Updated: " + tempIdent + ",\r\n";
                       }else {
                       	//could not update the resource because of some other error.
                       	//So remove the resource so we can continue through the loop.
