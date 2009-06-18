@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-dsa</artifactId>
   <packaging>jar</packaging>
-  <version>2009.1.a09</version>
+  <version>2009.1.a10</version>
   <name>AstroGrid DSA library</name>
   
   <parent>
@@ -147,26 +147,20 @@
 
     <dependency>
       <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-vospace-delegate</artifactId>
-      <version>2009.0.02.alpha</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-vospace-1.1-client</artifactId>
-      <version>2009.0.02.alpha</version>
+      <version>2009.0.03.beta</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-vospace-util</artifactId>
-      <version>2009.0.02.alpha</version>
+      <version>2009.0.03.beta</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-vospace-1.1-schema</artifactId>
-      <version>2009.0.02.alpha</version>
+      <version>2009.0.03.beta</version>
     </dependency>
 
     <dependency>
