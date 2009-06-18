@@ -1,5 +1,5 @@
 /*
- * $Id: IVORN.java,v 1.1 2009/05/13 13:20:41 gtr Exp $
+ * $Id: IVORN.java,v 1.2 2009/06/18 09:57:56 KevinBenson Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -139,7 +139,7 @@ public class IVORN
     */
    public String resolve() throws IOException {
       
-      RegistryService registry = RegistryDelegateFactory.createQuery();
+      RegistryService registry = RegistryDelegateFactory.createQueryv1_0();
 
       //used for debug/Principal info - says somethign about where the ivorn has been looked for
       String lookedIn = "";
@@ -178,8 +178,11 @@ public class IVORN
 
 /*
 $Log: IVORN.java,v $
-Revision 1.1  2009/05/13 13:20:41  gtr
-*** empty log message ***
+Revision 1.2  2009/06/18 09:57:56  KevinBenson
+changed createQuery to createQueryv1_0 because createQuery is no longer used in registry client.
+
+Revision 1.1.1.1  2009/05/13 13:20:41  gtr
+
 
 Revision 1.2  2006/09/26 15:34:42  clq2
 SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
