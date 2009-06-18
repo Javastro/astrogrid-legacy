@@ -1,12 +1,3 @@
-/*
- * $Id: IVORN.java,v 1.2 2009/06/18 09:57:56 KevinBenson Exp $
- *
- * Copyright 2003 AstroGrid. All rights reserved.
- *
- * This software is published under the terms of the AstroGrid Software License,
- * a copy of which has been included with this distribution in the LICENSE.txt file.
- */
-
 package org.astrogrid.slinger.ivo;
 
 import java.io.FileNotFoundException;
@@ -97,6 +88,7 @@ public class IVORN
    public String getFragment()  { return fragment;   }
 
    /** String representation */
+   @Override
    public String toString() {
       return toURI();
    }
@@ -110,12 +102,22 @@ public class IVORN
       }
    }
 
+   @Override
    public boolean equals(Object anotherIvorn) {
       if (anotherIvorn instanceof IVORN) {
          return toURI().equals( ((IVORN) anotherIvorn).toURI());
       }
       return false;
    }
+
+  @Override
+  public int hashCode() {
+    int hash = 5;
+    hash = 59 * hash + (this.key != null ? this.key.hashCode() : 0);
+    hash = 59 * hash + (this.authority != null ? this.authority.hashCode() : 0);
+    hash = 59 * hash + (this.fragment != null ? this.fragment.hashCode() : 0);
+    return hash;
+  }
    
    /** Returns true if the given string is likely to be an ivorn - ie if it
     * starts with ivo://
@@ -178,6 +180,9 @@ public class IVORN
 
 /*
 $Log: IVORN.java,v $
+Revision 1.3  2009/06/18 10:10:13  gtr
+I added the missing hashCode() method.
+
 Revision 1.2  2009/06/18 09:57:56  KevinBenson
 changed createQuery to createQueryv1_0 because createQuery is no longer used in registry client.
 
