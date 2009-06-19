@@ -13,7 +13,13 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="1.2.3" date="2009-5-1">
+<release version="1.3.pre" date="??">
+    <action dev="mbt" type="fix" issue="2938">
+        Exponential format avoided in DAL requests; fixes problem with
+        small angle searches.
+    </action>
+</release>
+<release version="1.2.3.1" date="2009-6-5">
     <action dev="mbt" type="update">
         Preferences: alt registry endpoint changed to match new service
         (context now consistent between alt and main reg services).
