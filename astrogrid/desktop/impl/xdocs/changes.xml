@@ -13,11 +13,29 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+
 <release version="1.3.pre" date="??">
     <action dev="mbt" type="fix" issue="2938">
         Exponential format avoided in DAL requests; fixes problem with
         small angle searches.
     </action>
+    <action dev="gtr" type="fix">
+            FileExplorer: fixed the "VO workspace" button to work sensibly with
+            vos:// locations.
+        </action>
+        <action dev="gtr" type="add">
+            TaskRunner: all CEC jobs (including ADQL queries to DSA) now
+            delegate credentials if the service haa registered a delegation
+            endpoint. This allows the service to talk to the user's private
+            VOSpace.
+        </action>
+        <action dev="gtr" type="add">
+            Astro Runtime: added the getHome() method to UserInformation to
+            reveal the user's home space. The value returned by this method
+            is determined from the community at log-in time, so is always
+            correct and, when the home space is in the ivo:// scheme, it is
+            always a "concrete" IVORN.
+        </action>
 </release>
 <release version="1.2.3.1" date="2009-6-5">
     <action dev="mbt" type="update">
