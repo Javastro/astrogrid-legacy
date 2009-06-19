@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.20 2009/03/26 18:04:12 nw Exp $
+/*$Id: SsapImpl.java,v 1.21 2009/06/19 16:40:23 mbt Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -100,8 +100,8 @@ public class SsapImpl extends DALImpl implements Ssap {
             throws InvalidArgumentException, NotFoundException {
         return addOption(addOption(
                 addOption(
-                        resolveEndpoint(service),"POS",Double.toString(ra) + "," + Double.toString(dec))
-                    ,"SIZE",Double.toString(size)
+                        resolveEndpoint(service),"POS",formatDouble(ra) + "," + formatDouble(dec))
+                    ,"SIZE",formatDouble(size)
                     ),"REQUEST","queryData"
         
         );
@@ -115,11 +115,11 @@ public class SsapImpl extends DALImpl implements Ssap {
         if (ra_size == dec_size) {
             return constructQuery(service,ra,dec,ra_size);
         } else {
-            final String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
+            final String sizeStr = formatDouble(ra_size) + "," + formatDouble(dec_size);
             return addOption(
             addOption(
                     addOption(
-                            resolveEndpoint(service),"POS",Double.toString(ra) + "," + Double.toString(dec))
+                            resolveEndpoint(service),"POS",formatDouble(ra) + "," + formatDouble(dec))
                         ,"SIZE",sizeStr
                         ),"REQUEST","queryData"
             );
@@ -181,6 +181,9 @@ public class SsapImpl extends DALImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.21  2009/06/19 16:40:23  mbt
+Avoid exponential format when talking to DAL services - bugzilla 2938
+
 Revision 1.20  2009/03/26 18:04:12  nw
 source code improvements - cleaned imports, @override, etc.
 

@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.19 2009/03/26 18:04:12 nw Exp $
+/*$Id: ConeImpl.java,v 1.20 2009/06/19 16:40:23 mbt Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,9 +52,9 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 
         endpoint = addOption(
         					addOption( 
-        							addOption(endpoint,"RA",Double.toString(arg1))
-        						,"DEC",Double.toString(arg2))
-        					,"SR",Double.toString(arg3));
+        							addOption(endpoint,"RA",formatDouble(arg1))
+        						,"DEC",formatDouble(arg2))
+        					,"SR",formatDouble(arg3));
       //  }
         return endpoint;
       
@@ -132,6 +132,9 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.20  2009/06/19 16:40:23  mbt
+Avoid exponential format when talking to DAL services - bugzilla 2938
+
 Revision 1.19  2009/03/26 18:04:12  nw
 source code improvements - cleaned imports, @override, etc.
 

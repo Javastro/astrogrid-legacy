@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.27 2009/04/06 11:43:21 nw Exp $
+/*$Id: DALImpl.java,v 1.28 2009/06/19 16:40:23 mbt Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -185,6 +186,57 @@ public abstract class DALImpl implements Dal{
         } catch (final IOException e) {
             throw new InvalidArgumentException(e);
         } 
+    }
+
+    /** Formats a floating point value as a string for use as a URL query parameter value.
+     *  It's prudent to avoid use of exponential format more aggressively than Double.toString()
+     *  does since some servers don't like it.  It's not clear from the DAL standards what formats
+     *  servers ought to accept though.
+     */
+    public String formatDouble(double value) {
+        return formatDouble(value, 16, 32);
+    }
+
+    /** Formats a floating point value.
+     *  It will be done in fixed point format if it can be done within the
+     *  given number of characters, else exponential notation.
+     * @param   value  value
+     * @param   nsf   number of significant figures
+     * @param   maxleng  maximum length of string - if longer than this,
+     *          will return to exponential notation
+     * @return  string representation of value
+     */
+    private String formatDouble(double value, int nsf, int maxleng) {
+        String sval = Double.toString( value );
+        if ( sval.indexOf( 'E' ) < 0 ) {
+            return sval;
+        }
+        else {
+            int log10 = log10( value );
+            StringBuffer fbuf = new StringBuffer( "0." );
+            for ( int i = 0; i < nsf - log10; i++ ) {
+                fbuf.append( '0' );
+            }
+            String fval =
+                new DecimalFormat( fbuf.toString() ).format( value );
+            fval = fval.replaceFirst( "0+$", "" );
+            if ( fval.length() <= maxleng ) {
+                return fval;
+            }
+            else {
+                return sval;
+            }
+        }
+    }
+
+    /**
+     * Returns approximate logarithm to base 10 of the value.
+     *
+     * @param  value  value
+     * @return  approximate log to base 10
+     */
+    private int log10( double value ) {
+        return (int) Math.round( Math.log( Math.abs( value ) ) / Math.log( 10 ) );
     }
     
     public final Map[] execute(final URL arg0) throws ServiceException {
@@ -552,6 +604,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.28  2009/06/19 16:40:23  mbt
+Avoid exponential format when talking to DAL services - bugzilla 2938
+
 Revision 1.27  2009/04/06 11:43:21  nw
 Complete - taskConvert all to generics.
 
