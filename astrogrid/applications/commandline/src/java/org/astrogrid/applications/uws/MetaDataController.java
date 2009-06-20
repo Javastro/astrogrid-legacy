@@ -1,5 +1,5 @@
 /*
- * $Id: MetaDataController.java,v 1.3 2009/02/26 12:22:54 pah Exp $
+ * $Id: MetaDataController.java,v 1.4 2009/06/20 14:23:24 pah Exp $
  * 
  * Created on 9 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -22,6 +22,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
+import net.ivoa.resource.Service;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.CEAComponents;
@@ -29,6 +31,8 @@ import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.description.ServiceDefinitionFactory;
+import org.astrogrid.applications.description.ServiceDescriptionException;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
@@ -36,6 +40,7 @@ import org.astrogrid.applications.description.execution.ListOfParameterValues;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
+import org.astrogrid.applications.description.registry.RegistryQueryLocator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,12 +56,37 @@ import org.w3c.dom.Document;
 @Controller
 @RequestMapping("/reg/**")
 public class MetaDataController extends AbstractMetadataController {
+    public class ServerInfo {
+
+        public String getId() {
+            return id;
+        }
+
+        public boolean isRegistered() {
+            return registered;
+        }
+
+        private String id;
+        private  boolean registered;
+
+        public ServerInfo(Service service) {
+           this.id = service.getIdentifier();
+           this.registered = regQuerier.isRegistered(id);
+        }
+        public ServerInfo() {
+            this.id = "error";
+            this.registered = false;
+        }
+
+    }
+
     private static final Log logger = LogFactory.getLog(MetaDataController.class);
+    private ServiceDefinitionFactory serviceFactory;
 
     @Autowired
-    public MetaDataController(CEAComponents manager){
-	  super(manager);
-
+    public MetaDataController(CEAComponents manager, RegistryQueryLocator querier, ServiceDefinitionFactory serviceDefinitionFactory){
+	  super(manager, querier);
+          this.serviceFactory = serviceDefinitionFactory;
     }
 
     @RequestMapping("")
@@ -65,6 +95,17 @@ public class MetaDataController extends AbstractMetadataController {
 	
 	ModelAndView mav = new ModelAndView("resourceList");
 	createAppsModel(mav);
+	mav.addObject("registry", regQuerier.getRegistry());
+	ServerInfo sinfo;
+	try {
+        Service service = serviceFactory.getCECDescription();
+        sinfo = new  ServerInfo(service);
+        
+    } catch (ServiceDescriptionException e) {
+       logger.error("cannot get service definiton", e);
+       sinfo = new ServerInfo();
+    } 
+        mav.addObject("server", sinfo);
 	return mav ;
     }
 
@@ -184,6 +225,9 @@ public class MetaDataController extends AbstractMetadataController {
 
 /*
  * $Log: MetaDataController.java,v $
+ * Revision 1.4  2009/06/20 14:23:24  pah
+ * improvements in registration if talking to AG registry
+ *
  * Revision 1.3  2009/02/26 12:22:54  pah
  * separate more out into cea-common for both client and server
  *

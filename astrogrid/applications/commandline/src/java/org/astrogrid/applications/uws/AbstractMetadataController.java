@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractMetadataController.java,v 1.4 2009/02/26 12:22:54 pah Exp $
+ * $Id: AbstractMetadataController.java,v 1.5 2009/06/20 14:23:24 pah Exp $
  * 
  * Created on 12 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -31,6 +31,7 @@ import org.astrogrid.applications.component.CEAComponents;
 import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
+import org.astrogrid.applications.description.registry.RegistryQueryLocator;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UrlPathHelper;
 import org.w3c.dom.Document;
@@ -45,6 +46,7 @@ public class AbstractMetadataController {
 
     protected final CEAComponents manager;
     protected Transformer identityTransformer;
+    protected final RegistryQueryLocator regQuerier;
     /** logger for this class */
     private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
 	    .getLog(AbstractMetadataController.class);
@@ -59,15 +61,20 @@ public class AbstractMetadataController {
      * @since VOTech Stage 7
      */
     public static class ResInfo{
+        public boolean isRegistered() {
+            return registered;
+        }
         final private String shortref;
         final private String name;
         final private String id;
         final private String[] ifaces;
-        public ResInfo(String id, String name, String[] ifaces) {
+        final private boolean registered;
+        public ResInfo(String id, String name, String[] ifaces, boolean isregistered) {
             this.id = id;
             this.name = name;
             this.shortref = name.replaceAll("\\s", "");
             this.ifaces = ifaces;
+            this.registered = isregistered;
         }
         public String getShortref() {
             return shortref;
@@ -95,13 +102,14 @@ public class AbstractMetadataController {
 	            for (int j = 0; j < ifaces.length; j++) {
 			ifaces[j]= intfs[j].getId();
 		    }
-	            resources.add(new ResInfo(appDesc.getId(),appDesc.getName(), ifaces));
+	            resources.add(new ResInfo(appDesc.getId(),appDesc.getName(), ifaces, regQuerier.isRegistered(appDesc.getId())));
 	        }
 	        mav.addObject("apps", resources);
 	    }
 
-    public AbstractMetadataController(CEAComponents manager) {
+    public AbstractMetadataController(CEAComponents manager, RegistryQueryLocator regQuerier) {
 	this.manager = manager;
+	this.regQuerier = regQuerier;
 	  TransformerFactory tFactory =
 	      TransformerFactory.newInstance();
 	    try {
@@ -165,6 +173,9 @@ public class AbstractMetadataController {
 
 /*
  * $Log: AbstractMetadataController.java,v $
+ * Revision 1.5  2009/06/20 14:23:24  pah
+ * improvements in registration if talking to AG registry
+ *
  * Revision 1.4  2009/02/26 12:22:54  pah
  * separate more out into cea-common for both client and server
  *
