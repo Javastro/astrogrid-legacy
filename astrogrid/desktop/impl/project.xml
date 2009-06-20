@@ -7,8 +7,8 @@
     <name>VODesktop</name>
     <description>AstroGrid VODesktop</description>
     <shortDescription>VODesktop - Explore the Virtual Observatory</shortDescription>
-     <siteAddress>terror.star.le.ac.uk</siteAddress>
-      <siteDirectory>/software_docs/vodesktop-${pom.currentVersion}</siteDirectory>
+     <siteAddress>maven.astrogrid.org</siteAddress>
+      <siteDirectory>/software/vodesktop/${pom.currentVersion}</siteDirectory>
     
     <repository>
         <connection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/desktop/impl</connection>
