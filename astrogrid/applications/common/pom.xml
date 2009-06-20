@@ -42,7 +42,6 @@
   	<dependency>
   		<groupId>org.astrogrid</groupId>
   		<artifactId>astrogrid-security</artifactId>
-  		<version>2008.2</version>
   	</dependency>
   </dependencies>
  <dependencyManagement>
