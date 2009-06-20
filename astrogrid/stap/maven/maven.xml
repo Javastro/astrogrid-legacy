@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven build tasks for the AstroGrid registry components.
+    |
+    +-->
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:deploy="deploy"
+    >
+
+	<!--+
+		| Determine what the top-level project root is
+		+-->
+	<core:set var="project.base.root" value="${pom.parentBasedir().getParentFile().getCanonicalFile()}"/>
+	<ant:echo message=""/>
+	<ant:echo message="Top level project directory : ${project.base.root}"/>
+	<!--+
+		| Load the maven properties.
+		| Note, if we use ant:properties, then the values are not passed to the Maven plugins.
+		| eg. jar:deploy-snapshot tries to deploy to ibiblio.org !
+		+-->
+	<ant:echo message="Loading maven properties : ${project.base.root}/maven/maven.properties"/>
+	<util:properties file="${project.base.root}/maven/maven.properties"/>
+	<!--+
+		| Load the axis properties.
+		| Note, if we use util:properties, then the references to other properties are not resolved.
+		+-->
+	<ant:echo message="Loading axis properties  : ${project.base.root}/maven/axis.properties"/>
+	<ant:property file="${project.base.root}/maven/axis.properties"/>
+
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+</project>

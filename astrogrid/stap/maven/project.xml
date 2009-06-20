@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid registry components.
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+	<extend>${basedir}/../../maven-base/project.xml</extend>
+   	<currentVersion>${astrogrid.solarsearch.version}</currentVersion>
+
+    <!--+
+        | The external libraries required to build our components.
+        +-->
+    <dependencies>
+
+        
+    </dependencies>
+
+ 
+</project>

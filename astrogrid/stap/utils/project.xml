@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid registry common components.
+    +-->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
+  <!--+
+        | Extend the top level project descriptor.
+        +-->
+  <extend>${basedir}/../maven/project.xml</extend>
+  <!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+
+  <id>astrogrid-tools-stap-utils</id>
+  <!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+  <name>AstroGrid Stap Utils</name>
+  <!--+
+        | The Java package name of the project.
+        | This value is used when generating JavaDoc.
+       
+  <package>org.astrogrid.tools.solarsearch</package>
+   +-->
+   
+  <!--+
+        | Optional.
+        | A detailed description of the project.
+        | This element is usually specified as CDATA to enable the use of HTML tags within the description.
+        | This description is used to generate the front page of the project's web site. 
+        +-->
+  <description>        
+		Solar Search tool to extract data and make a votable from various web services or components.
+</description>
+  <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+  <shortDescription>Solar Search Tool</shortDescription>
+  <!--+
+        | Our cvs repository location.
+        +-->
+  <repository>
+    <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:tools/solarsearch</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:tools/solarsearch</developerConnection>
+  </repository>
+  <!--+
+        | The external dependencies required to build and test the project.
+        +-->
+  <dependencies>
+      
+
+       
+
+     <dependency>
+          <id>junit</id>
+          <version>3.8</version>
+        </dependency>   
+        
+     <dependency>          
+		 <artifactId>stil</artifactId>
+         <groupId>starlink</groupId>
+         <version>2.3-1</version>
+     </dependency>                      
+
+  </dependencies>
+  <!--+
+        | The build properties for our project.
+        +-->
+  <build>
+    <!--+
+            | The location of our Java source code.
+            +-->
+    <sourceDirectory>src/java</sourceDirectory>
+    <!--+
+            | The location of our JUnit source code.
+            +-->
+    <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+  </build>
+</project>
+

@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>Stap Information</title>
+</head>
+<body>
+<p>
+<h1>Info</h1><br />
+STAP (Simple Time Access Protocol) - will most likely change its name in the 
+near future since IVOA is talking about 'Simple Table Access Protocol'.  This protocol is used to 
+display give back data that is based on Time typically Images such as Fits and Time-Series such as CDF.
+Please Note at this time SIA (Simple Image Access Protocol) does not handle 'just time' but is expected to
+in the next version whereby SIA2 is what will be used to fetch data.  Till then use this experimental
+protocol.
+<br /><br />
+<h1>Current Draft</h1><br />
+Current Working Draft Spec can be found: <a href='stap.html'>here</a>
+<br /><br />
+<h1>Installation</h1><br />
+To begin installing and connecting STAP to your database you must do 3 things:<br />
+<ul>
+<li>a.)Find a suitable jdbc driver for your database and  place it where the webapp can find it.
+  (This is typically in the webapps/{context name}/WEB-INF/lib or a common/lib for your servlet container like tomcat/common/lib whereby all webapps have access to those libraries.)</li>
+<li>b.) Read and Edit the astrogrid.properties file in the webapps/{context name}/WEB-INF/classes directory.</li>
+<li>b.) Read and Edit the regmetadata.properties file in the webapps/{context name}/WEB-INF/classes directory.</li>
+<li>d.) Restart your servlet container or webapp via the manager. (if you put the jdbc driver in common/lib then a restart of the servlet container is required.)</li>
+</ul>
+<br />
+You may now test your service by doing various requests; sample url:<br />
+http://{your domain}/{your context}/StapSearch?START=2006-02-08T00:00:00&END=2006-02-08T15:00:00
+<br /><ul>
+<li>d.)Once you verify things are working then the final thing is to upload a registration entry into your publishing
+registry so other registries can find and use your service.  Currently this is a manual process the registry administrator
+should do or somebody who has the ability to upload data into the registry.<br />
+You will find XML that needs to be updated into the registry here:<br />
+0.10 -  <a href="MetaDataXML0_10.jsp">Here</a><br />
+1.0 -  <a href="MetaDataXML1_0.jsp">Here</a><br />
+ </li>
+ </ul>
+ <br />
+ <h1>Important Notes:</h1><br />
+ <ul>
+ <li>
+ If your looking for generating data from Fits files such as sql to go into your database see the fitstosql tool.
+ Located here <a href='http://www.astrogrid.org/maven/org.astrogrid/zips/astrogrid-tools-fitstosql-1.0.zip'>here</a>
+ </li>
+ </ul>
+ </p>
+ </body>
+ </html>
+
+
+  

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid registry client components.
+    +-->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="maven-project.xsd">
+	<!--+
+        | Extend the top level project descriptor.
+        +-->
+	<extend>./maven/project.xml</extend>
+	<!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+	<id>astrogrid-tools-solarsearch-master</id>
+	<!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+	<name>AstroGrid registry</name>
+	<description> <![CDATA[
+	<p>Info on SolarSearch</p>
+		]]> </description>
+	<shortDescription>Astrogrid SolarSearch tool</shortDescription>
+	<build>
+		<sourceDirectory/>
+		<unitTestSourceDirectory/>
+	</build>
+</project>

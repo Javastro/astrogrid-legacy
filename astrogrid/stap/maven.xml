@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven build tasks for the AstroGrid registry components.
+    |
+    | </cvs:log>
+    +-->
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:deploy="deploy" >
+<!--	default="astrogrid-install-snapshot"	
+    >-->
+    
+    <goal name="astrogrid-deploy-site">
+    	<attainGoal name="astrogrid-build-site" />
+        <attainGoal name="site:sshdeploy"/>
+    </goal>
+ 
+
+    <!--+
+        | Hook for build script site:fsdeploy
+        +-->
+    <preGoal name="site:sshdeploy">
+        <ant:echo message="${pom.artifactId} - site:sshdeploy"/>
+        <ant:echo message=" build  location : ${maven.docs.dest}"/>
+        <ant:echo message=" deploy location : ${site.deploy.directory}"/>
+		<!--+
+			| Fix to check if we have defined an alternative location in our build.properties.
+			+-->
+		<core:set var="deployLocation" value="${site.deploy.directory}"/>
+		<core:if test="${!empty(deployLocation)}">
+	        <core:expr value="${pom.setSiteDirectory(deployLocation)}"/>
+		</core:if>
+    </preGoal>
+
+    <!--+
+        | Hook for build script jar:deploy-snapshot
+        | Delete the extra jar file.
+            +-->
+    <postGoal name="jar:deploy-snapshot">
+		<ant:echo message=""/>
+		<ant:echo message="Post processing jar:deploy-snapshot"/>
+		<core:set var="snapshotVersion" value="${pom.getPluginContext('maven-jar-plugin').getVariable('snapshotVersion')}"/>
+		<core:set var="snapshotRemove"  value="cd ${maven.repo.central.directory}/${pom.artifactDirectory}/jars ; rm astrogrid-tools-solarsearch-SNAPSHOT.jar ; rm astrogrid-tools-solarsearch-${snapshotVersion}.jar"/>
+		<ant:echo message="  Command  : ${maven.ssh.executable}"/>
+		<ant:echo message="  Username : ${maven.username}"/>
+		<ant:echo message="  Server   : ${maven.repo.central}"/>
+		<ant:echo message="  Command  : ${snapshotRemove}"/>
+		<ant:exec dir="." executable="${maven.ssh.executable}">
+			<ant:arg line="-l ${maven.username} ${maven.repo.central} '${snapshotRemove}'"/>
+		</ant:exec>
+    </postGoal>
+
+
+    <!--+
+        | Hook for build script war:deploy-snapshot
+        | Does nothing, 'deploy-snapshot' will have been called by 'jar:deploy-snapshot'.
+            +-->
+    <goal name="war:deploy-snapshot">
+        <ant:echo message="Skipping war:deploy-snapshot, already done by jar:deploy-snapshot"/>
+    </goal>
+
+
+    <!--+
+        | Primary goals are :
+        |     clean
+        |     install-artifact
+        |     install-snapshot
+        |     site
+        +-->
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+    <!--+
+        | Clean out all of the build targets.
+        +-->
+    <goal name="astrogrid-clean">
+        <!--+
+            | Clean our sub-projects.
+            +-->
+            <attainGoal name="multiproject:clean"/>
+            <attainGoal name="clean:clean"/>
+    </goal>
+
+    <!--+
+        | Build and install our component artifacts.
+        +-->
+    <goal name="astrogrid-install-artifact">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="utils/project.xml,client/project.xml,webapp/project.xml"
+            goals="astrogrid-install-artifact"
+            banner="Building component artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+
+    <!--+
+        | Build and install our snapshot artifacts.
+        +-->
+    <goal name="astrogrid-install-snapshot">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="utils/project.xml,client/project.xml,webapp/project.xml"
+            goals="astrogrid-install-snapshot"
+            banner="Building snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+
+    <!--+
+        | Generate a clover report for our sub-projects.
+        | Needs to have install-snapshot called first.
+        +-->
+    <goal name="clover-report">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="client/project.xml"
+            goals="clover-report"
+            banner="Building clover report : "
+            ignoreFailures="false"
+            />
+    </goal>
+    
+    <!--+
+        | Build our project website.
+        | This can be called fom outside, or recursively by site:generate.
+        | (required as a target goal for the reactor in multiproject:site)
+        +-->
+    <goal name="astrogrid-build-site">
+                <attainGoal name="multiproject:site"/>
+    </goal>
+
+    <!--+
+        | Deploy our snapshot artifacts.
+        +-->
+    <goal name="astrogrid-deploy-snapshot">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="client/project.xml,webapp/project.xml"
+            goals="astrogrid-deploy-snapshot"
+            banner="Deploying snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+    
+    <!--+
+        | Build and deploy our components.
+        +-->
+    <goal name="astrogrid-deploy-artifact">
+        <maven:reactor
+            basedir="${basedir}"
+            postProcessing="false"
+            includes="client/project.xml,webapp/project.xml"
+            goals="astrogrid-deploy-artifact"
+            banner="Deploying snapshot artifact : "
+            ignoreFailures="false"
+            />
+    </goal>
+    
+    
+ 
+
+</project>
