@@ -35,8 +35,8 @@
 
 </ul>
 <h3>Registry</h3>
-<p>The registry (<c:out value="${registry.name}"></c:out>, <c:out value="${registry.id}"></c:out>) that you are using to query from is at <c:out value="${registry.endpoint}"></c:out> - you might also be able to use this as a publishing registry to register this service.
-but note that the only authority Ids that this registry will allow you to publish under are </p>
+<p>The registry (<c:out value="${registry.name}"></c:out>, <c:out value="${registry.id}"></c:out>) that you are using to query from is at <a href="${registry.endpoint}"><c:out value="${registry.endpoint}"></c:out></a> - you might also be able to use this as a publishing registry to register this service.
+However, note that the only authority Ids that this registry will allow you to publish under are; </p>
 <ul>
   <c:forEach items="${registry.managedAuthorities}" var="authority">
   <li><c:out value="${authority}"/></li>
@@ -45,15 +45,22 @@ but note that the only authority Ids that this registry will allow you to publis
 <c:if test="${registry.astrogridRegistry}">
 <h4>Astrogrid Registry</h4>
 
-<p>It appears that you are using an astrogrid registry - in this case it might be possible to register using these buttons if you have appropriate privileges.</p>
+<p>It appears that you are using an AstroGrid registry - in this case it might be possible to register using these buttons if you have appropriate privileges (and the registry is a pubishing registry for the appropriate authority ids).</p>
 
 <ul>
 
 <li><form method="post" action="${registry.endpoint}/../admin/addResourceEntry_backdoor.jsp">
-<input type="hidden" name="docurl" value="<%=server %>${base}/server" />
+<input type="hidden" name="docurl" value="<%=server %>${base}/server" /> 
 <input type="hidden" name="addFromURL" value="true" />
  Server <c:out value="${server.id}"/>  <input type="submit" name="uploadFromURL" value="upload" />
 </form>
+<c:if test="${server.registered}">
+        <form action="${registry.endpoint}/../registration/ServiceMetadata" method="post">
+	      <input type="hidden" name="IVORN" value="${server.id}"/>
+          <input type="hidden" name="VOSI_Capabilities" value="<%=server + request.getContextPath() %>/VOSI/capabilities" />
+          <input type="submit" value="Update the registry entry using VOSI"/>
+        </form>        
+</c:if>
 </li>
  <c:forEach items="${apps}" var="theApp">
  <li>
