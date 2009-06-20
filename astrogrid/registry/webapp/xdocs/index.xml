@@ -11,18 +11,14 @@
  <section>
  	<p>
     	Welcome to the Registry Webapp Documentation.  
-    	In the menu on the left hand side you should find all the required information you
-    	need.<br />
-    	There have been many changes see "Changes" link, including WebStart GUI client and WebDav, support for 1.0 RI and others.<br />
-    	The Registry at the moment is designed to work with databases that support the XMLDB:API.<br />
-    	The Registry currently is bundled up with the eXist XMLDB and is the recommended database
-    	for the Astrogrid Registry.<br />
-    	For most Registries the bundled eXist is the easiest option.
-    	For Larger Publishing Registries (holding thousands of Resources) or Full Registries that contain all Resources from 
-    	all VO's we prefer eXist is installed as a seperate Database service.  Or you may have other reasons to have your Database
-    	on a seperate machine.  Please see <a href="/external_eXist.html">external eXist</a> for more information on installing
-    	eXist XMLDB externally.<br />
-    	You may click on 'Home' in the menu to exit the 'Docs' area and go back to your main Registry home page.
+    	The Registry web application implements the full IVOA interface along with other
+    	helpful pages to help query and update the Registry and harvest external IVOA registries.
+    	
+    	Look at the installation page to install the Registry to your servlet container such as tomcat.
+    	Once installed all the documentation, query, updating, harvesting web application pages will
+    	be located on your local site.  After installation you will need to continue with the Configuration page
+    	to set particular properties up for your registry.  Once configuration is done you will have an
+    	IVOA compliant Registry to use.
 	</p>
  </section>
  </body>

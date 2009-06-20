@@ -21,9 +21,9 @@
        out.write("<Error>No entry returned</Error>");
    } else {
       out.write("<Description>Below you will find Status information about the harvesting of this particular " +
-      " registry. StatsDate deals with last successful harvests, Info elements normally contains a comma seperated " +
-      " List of Resources harvested on that particular date. Finally Error information will try to give you details " +
-      " of any problems that happened during harvests. If no Harvest information is shown this means no Harvesting occurred yet for this registry.");
+      " registry. Note the last harvest is generally at the bottom of the page. " +
+      " StatsDate shows the date of the last harvests, Info elements normally contain Validation errors of resources that did not get harvested and a comma seperated " +
+      " List of Resources harvested on that particular date. If no Harvest information is shown below this means no Harvesting occurred yet for this registry.");
       
       XMLUtils.ElementToWriter(entry.getDocumentElement(),out);
       out.write("</Description>");

@@ -70,6 +70,8 @@ public abstract class DefaultQueryService {
    private static final String ASTROGRID_SCHEMA_BASE = "http://software.astrogrid.org/schema/";
    
    protected static String schemaLocationBase;
+   private static  String serverCache;
+   private static int serverCacheResourceCount;
 
    /**
     * Static to be used on the initiatian of this class for the config
@@ -77,6 +79,9 @@ public abstract class DefaultQueryService {
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
+         serverCache = conf.getString("server.cache","false");
+         serverCacheResourceCount = conf.getInt("server.cache.resource.count",100);
+         ///conf.g
          if(schemaLocationBase == null) {              
              schemaLocationBase = ContractsFilter.getContextURL() != null ? ContractsFilter.getContextURL() + "/schema/" :
                                   ASTROGRID_SCHEMA_BASE;
@@ -175,8 +180,6 @@ public abstract class DefaultQueryService {
              if(xql == null || xql.trim().length() == 0)
             	 xql = DomHelper.getNodeTextValue(query,"XQuery");
              log.debug("Found XQuery in XQuerySearch = " + xql);
-             
-             log.info("1. The current cache size = " + cache.size());
              /*
               * Hmmmm right now Astrogrid knows it is vor:Resource in our db, but others do not and
               * might send vr:Resource we will need to translate/replace those and possibly
@@ -273,40 +276,24 @@ public abstract class DefaultQueryService {
              int hashC = xql.hashCode();
              log.info("0.a The hashcode = " + hashC);   
 
-             Runtime runtime = Runtime.getRuntime();
-             long maxMem = runtime.maxMemory();
-             long totalMem = runtime.totalMemory();
-             long freeMem = runtime.freeMemory();
-             log.info("Before max = " + maxMem / 1024 );
-             log.info("Before allocated = " + totalMem / 1024);
-             log.info("Before free = " + freeMem / 1024);
-             log.info("Before total free = " + (freeMem + (maxMem - totalMem)) / 1024 );
-
-        	 if(cache.containsKey(String.valueOf(hashC))) {
-        		 log.info("2.a Found in the cache.");
-        		 return new ResourceStreamer(cloneResources((List)cache.get(String.valueOf(hashC))), wrapper);
-        	 }
+             if(serverCache != null && serverCache.equals("true")) {
+            	 if(cache.containsKey(String.valueOf(hashC))) {
+            		 log.info("2.a Found in the cache.");
+            		 return new ResourceStreamer(cloneResources((List)cache.get(String.valueOf(hashC))), wrapper);
+            	 }
+             }
              //log.info("Query to be ran = " + xql);
              rs = xdbRegistry.query(xql,collectionName);
              List resSet = cloneResources(rs);
-             log.info("0.b The hashcode = " + hashC);   
+             //log.info("0.b The hashcode = " + hashC);   
              
-
-             if(rs.getSize() >= 100) {
-            	 log.info("2.b placing in cache");
-            	 //Hmmm at least 100 Resources on this query.
-            	 //lets go ahead and cache it.
-        		 cache.put(String.valueOf(hashC), resSet );
-                 maxMem = runtime.maxMemory();
-                 totalMem = runtime.totalMemory();
-                 freeMem = runtime.freeMemory();
-                 log.info("After max = " + maxMem / 1024 );
-                 log.info("After allocated = " + totalMem / 1024);
-                 log.info("After free = " + freeMem / 1024);
-                 log.info("After total free = " + (freeMem + (maxMem - totalMem)) / 1024 );
+             if(serverCache != null && serverCache.equals("true")) {
+	             if(rs.getSize() >= serverCacheResourceCount) {
+	            	 //Hmmm at least 100 Resources on this query.
+	            	 //lets go ahead and cache it.
+	        		 cache.put(String.valueOf(hashC), resSet );
+	             }
              }
-             log.info("3.b The current cache size = " + cache.size());
-             debugCache();
              return new ResourceStreamer(resSet, wrapper);
          }catch(XMLDBException xdbe) {
              xdbe.printStackTrace();

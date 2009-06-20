@@ -13,13 +13,6 @@
          <!--  <li><a href="<%=request.getContextPath()%>/currentContractSession.jsp" >3.Current Contract - (<%=contractVersion%>,<%=voResourceVersion%>)</a></li>-->
       </ul>
    </div>
-   <div id='menuDocs'>
-      <h5>Documentation</h5>
-      <ul>
-         <li><a href="<%=request.getContextPath()%>/docs/index.html" >1.Docs</a></li>
-       	 <li><a href="<%=request.getContextPath()%>/resourceHelp.jsp">2.Resource Help</a></li>         
-      </ul>
-   </div>
    <div id='menuQuery'>
       <h5>Investigate</h5>
       <ul>
@@ -28,6 +21,7 @@
          <li><a href="<%=request.getContextPath()%>/keywordquery.jsp" >3.Keyword Query</a></li>
          <li><a href="<%=request.getContextPath()%>/xquerysearch.jsp">4.XQuery Search</a></li>
          <li><a href="<%=request.getContextPath()%>/tree">5.Tree view</a></li>
+         <li><a href="<%=request.getContextPath()%>/harvestInfo.jsp">6.Harvests Status</a></li>
       </ul>
    </div>
    <div id="menuRegister">
@@ -43,13 +37,13 @@
    <div id='menuRegister'>
       <h5>Admin</h5>
       <ul>
-         <li><a href="<%=request.getContextPath()%>/admin/changeStatus.jsp">1.Resource(s) Status Change</a></li>         
-         <li><a href="<%=request.getContextPath()%>/admin/harvestResource.jsp">2.Harvest</a></li>
-         <li><a href="<%=request.getContextPath()%>/admin/harvestVOSI.jsp">3.Harvest VOSI</a></li>         
-         <li><a href="<%=request.getContextPath()%>/admin/getRegistryFromHarvest.jsp">4.Get/Find New Registries</a></li>
-         <li><a href="<%=request.getContextPath()%>/admin/newManagedAuthority.jsp">5.Manage New Authority</a></li>
-         <li><a href="<%=request.getContextPath()%>/admin/removeResource.jsp">6.Remove Resource</a></li>
-         <li><a href="<%=request.getContextPath()%>/admin/environment-main.jsp">7.Edit Properties</a></li>         
+         <li><a href="<%=request.getContextPath()%>/admin/harvestResource.jsp">1.Harvest</a></li>
+         <li><a href="<%=request.getContextPath()%>/admin/harvestVOSI.jsp">2.Harvest VOSI</a></li>         
+         <li><a href="<%=request.getContextPath()%>/admin/getRegistryFromHarvest.jsp">3.Get/Find New Registries</a></li>
+         <li><a href="<%=request.getContextPath()%>/admin/newManagedAuthority.jsp">4.Manage New Authority</a></li>
+         <li><a href="<%=request.getContextPath()%>/admin/removeResource.jsp">5.Remove Resource</a></li>
+         <li><a href="<%=request.getContextPath()%>/admin/environment-main.jsp">6.Edit Properties</a></li>
+		 <li><a href="<%=request.getContextPath()%>/admin/changeStatus.jsp">7.Resource(s) Status Change</a></li>         
          <li><a href="<%=request.getContextPath()%>/admin/fingerprint.jsp">8.FingerPrint</a></li>
          <li><a href="<%=request.getContextPath()%>/admin/index.jsp" >9.Admin Home (Other Tasks)</a></li>
       </ul>
@@ -60,5 +54,19 @@
          <li><a href="<%=request.getContextPath()%>/dbclients.jsp">1.DB client and WebDav</a></li>
       </ul>
    </div>   
+     <div id='menuDocs'>
+      <h5>Documentation</h5>
+      <ul>
+         <li><a href="<%=request.getContextPath()%>/regdocs/installation.jsp" >1.Installation</a></li>
+         <li><a href="<%=request.getContextPath()%>/regdocs/configure.jsp" >2.Configure</a></li>
+         <li><a href="<%=request.getContextPath()%>/regdocs/cookbook.jsp" >3.Cookbook</a></li>         
+         <li><a href="<%=request.getContextPath()%>/regdocs/eXist_reference.jsp" >4.eXist Ref</a></li>
+         <li><a href="<%=request.getContextPath()%>/regdocs/registry_reference.jsp" >5.Reg Reference</a></li>
+         <li><a href="<%=request.getContextPath()%>/regdocs/uninstall.jsp" >6.Uninstallation</a></li>
+         <li><a href="<%=request.getContextPath()%>/regdocs/upgrading.jsp" >7.Upgrading</a></li>
+       	 <li><a href="<%=request.getContextPath()%>/resourceHelp.jsp">8.Resource Help</a></li>
+       	 <!--<li><a href="<%=request.getContextPath()%>/installation.jsp">9.Installation</a></li> -->       	          
+      </ul>
+   </div>
 </div>
 </div>

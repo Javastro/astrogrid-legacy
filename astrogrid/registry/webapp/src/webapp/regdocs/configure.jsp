@@ -1,65 +1,68 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<document>
-    <properties>
-        <title>AstroGrid registry configure</title>
-    </properties>
-    <body>
-	<section name="Properties for Servlet/J2ee containers">
+<%@ page import="org.astrogrid.config.SimpleConfig"
+   isThreadSafe="false"
+   session="false"
+%>
+
+<html>
+<head>
+<title>AstroGrid Registry FAQ</title>
+<style type="text/css" media="all">
+	<%@ include file="/style/astrogrid.css" %>          
+</style>
+</title>
+</head>
+
+<body>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
+<div id='bodyColumn'>
+
     <p>
-    <i>Context Name - is your webapp name (hence usually the unpacked directory name in the webapps).  This will be used
-a lot in various documentation usually with curly brackets around it.</i>
-    <br /><i>As Noted now on the main docs page, if you plan on being a Full Registry or Larger Publishing Registry (holding thousans of Resources) or simply want your db on a seperate machine.  Then
-      recommend installing the db externally please read <a href="external_eXist.html">Using external eXist</a>.</i><br />
-    </p>	
-	<p>
-	    BackGround: For webapps properties are stored in the WEB-INF/web.xml but this xml contains a lot more than just 
+    <h1>Configuration</h1>
+    
+    <br />
+	    <b>BackGround:</b> For webapps properties are stored in the WEB-INF/web.xml but this xml contains a lot more than just 
 	    properties and can be a bit cumbersome to edit by hand.  These properties are known as JNDI environment entries.  
 	    Typically servlet containers will have a special GUI for changing these properties and this is what is advised for you to use.
-	    Tomcat GUI by default is no longer installed with tomcat 5.5 and the GUI is not known to be good anyways.<br />
+	    Tomcat GUI by default is no longer installed with tomcat 5.5 and the GUI is not known to be reliable.<br />
 	    Tomcat will also allow 'you' to place a special xml properties file in the {tomcat}/conf/Catalina/localhost named {context}.xml.
 	    <br />Click on the below link to take you to the property editor page which will write the properties in the conf/Catalina/localhost.
 	    Click on this link (advise open in a new window) <a href="../admin/environment-main.jsp">here</a> to edit JNDI properties.	    
-	</p>
-	</section>
-    <section name="Configuration">
-      <p>
-         This page will take you step-by-step on how to setup the registry to be complete.  Again this page
- will reference Tomcat.<br />
-      </p>
-      <subsection name="Changing Properties">
-      <p>
-         First we need to change some properties in the environment entries. Click on the above link to change properties.<br />
-         <ul>
-            <li></li>
 
+<hr />
+</p>
+<p>
+<b>Changing Properties</b>
+         First we need to change some properties in the environment entries. Click on the above link if you haven't already to change properties.<br />
+         <ul>
             <li>reg.amend.authorityid - Your main authority id for this registry, normally an institution domain name ex: mssl.ucl.ac.uk</li>
             <li>reg.amend.harvest - *Only if you want registry to automatically harvest then set to "true"</li>
             <li>reg.amend.identify.adminEmail - to your contact e-mail.</li>
-            <li>reg.amend.oaipublish.0.1 - *Only if your {context name} is not "astrogrid-registry" then change it or on a different port.</li>
             <li>reg.amend.oaipublish.1.0 - *Only if your {context name} is not "astrogrid-registry" then change it or on a different port.</li>
             <li>reg.custom.restrict.ipaddresses.updates - Restrict to certain ip address for Update web service current setting is localhost(127.0.0.1). Must do this for external clients to update via the Update web service call.</li>
-            <li>reg.custom.restrict.ipaddresses - Restrict to certain ip addresses to webdav and xmlrpc servlets current setting is localhost(127.0.0.1). Must do for WebStart Gui or connecting an app via WebDav.</li> 
+            <li>reg.custom.restrict.ipaddresses - Restrict to certain ip addresses to webdav and xmlrpc servlets current setting is localhost(127.0.0.1). Must do for WebStart Gui or connecting an app via WebDav.</li>
             <li>You can verify properties are changed with <a href="../admin/fingerprint.jsp">Fingerprint</a>.  Tomcat 5.5 seems to not catch changes automatically and requires a restart of tomcat.</li>
-            <li>That is all for properties, you may wish to read the "Registry Reference" to understand other properties.  This also explains further advanced abilities of the registry</li> -->
+            <li>That is all the primary properties to be changed for the registry.</li>
+            <li>reg.custom.exist.configuration - Optional though recommended is moving your embedded database ouside the web application which requires setting this property.  See <a href='eXist_reference.jsp'>eXist_Reference</a>.
          </ul>
-         <strong>By default the registry runs a xml database inside the webapp where all the data is stored inside the webapp directory.
-              It is STRONGLY RECOMMENDED to read the "eXist for Registry" to explain on how to move the data outside your webapp to ensure
-no data is lost when upgrading later (this is a fairly simple task and can save you a lot of effort later).  There is also details of backups, client connection to the db.</strong>         
-      </p>
-      </subsection>
-      <subsection name="Setting up for data">
-         <p>
+<hr />
+</p>
+<p>
+<b>Setting up for data</b><br />
+
             <strong>DO NOT NEED TO DO WHEN UPGRADING</strong>
             <br />
             <strong>Advise to click on the <a href="../admin/fingerprint.jsp">Fingerprint</a> page to confirm properties are changed.   (might want to open in a new tab/window so you can still read docs).</strong>
           <ul>
-            <li> 1.) Go to the registry jsp page of "http://../[context name]/admin/index.jsp" (click <a href="../admin/index.jsp">here</a> advise open up in new tab/window) 
+            <li> 1.) Go to the 'Admin Home' (click <a href="../admin/index.jsp">here</a> advise open up in new tab/window) 
              and do the first link for adding Indexes.
               <br />*If your asked for a username and password then it is currently the same as your tomcat manager.             
             </li>
             <li>2.) Now do the second link for "Self Registration" to register
               this registry. This will in setup your first entry into your registry which is your Registry Type describing about this registry.
             </li>
+            <li>Look at the XML produced in the Self Registration this can be done by clicking the 'here' link on your Registry home page.  This
+            Registration shows all the endpoints needed for querying the registry by other components along with the OAI publishing url.</li>
             <li>
               If you are setting up a local publishing Registry and DO NOT WANT TO BE HARVESTED BY OTHER REGISTRIES then stop here, all your
                  entries are complete and other client apps may submit Resources to this registry as long as it is a AuthorityID
@@ -82,7 +85,5 @@ determine what authority ids you are allowed to use.</i>
             <li>You're done.</li>
           </ul>
          </p>
-      </subsection>
-    </section>
    </body>
-</document>
+</html>

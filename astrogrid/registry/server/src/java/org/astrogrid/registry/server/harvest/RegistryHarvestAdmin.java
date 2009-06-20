@@ -141,7 +141,17 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
            java.util.Calendar rightNow = java.util.Calendar.getInstance();
            Element elem = statDoc.createElement("Info");
            elem.setAttribute("date",sdf.format(rightNow.getTime()));
-           elem.appendChild(statDoc.createTextNode(info));           
+           elem.appendChild(statDoc.createTextNode(info));
+           //see how long the Info list is and remove it.
+           NodeList childNodes =  statDoc.getDocumentElement().getElementsByTagNameNS("*","Info");
+           //log.info("Number of INFO elements found = " + childNodes.getLength());
+           if(childNodes.getLength() > 60) {
+      		   //log.info("removing child node length = " + childNodes.getLength());
+      		  
+        	   while(childNodes.getLength() > 30) {
+        		   statDoc.getDocumentElement().removeChild(childNodes.item(0));
+        	   }//for
+           }
            if(nl.getLength() > 0) {
                nl.item(0).appendChild(elem);
            }else {
@@ -177,7 +187,16 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
            java.util.Calendar rightNow = java.util.Calendar.getInstance();
            Element elem = statDoc.createElement("Error");
            elem.setAttribute("date",sdf.format(rightNow.getTime()));
-           elem.appendChild(statDoc.createTextNode(error));           
+           elem.appendChild(statDoc.createTextNode(error));  
+           
+         //see how long the Info list is and remove it.
+           NodeList childNodes =  statDoc.getDocumentElement().getElementsByTagNameNS("*","Error");
+           if(childNodes.getLength() > 60) {
+        	   while(childNodes.getLength() > 30) {
+        		  // log.info("removing child node length = " + childNodes.getLength());
+        		   statDoc.getDocumentElement().removeChild(childNodes.item(0));
+        	   }//for
+           }
            if(nl.getLength() > 0) {
                nl.item(0).appendChild(elem);
            }else {

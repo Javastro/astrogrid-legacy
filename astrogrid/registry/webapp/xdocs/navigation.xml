@@ -6,19 +6,7 @@
   <body>
     <menu name="Administrator Quickstart">  	
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
-       <item name="Home" href="../"/>
    	   <item name="Installation/Requirements" href="installation.html"/>    	
-   	   <item name="Configuration" href="configure.html"/>    	
-   	   <item name="Self-Testing" href="self_testing.html"/>    	
-   	   <item name="External Testing" href="external_testing.html"/>    	
-   	   <item name="Upgrading" href="upgrading.html"/>
-   	   <item name="Uninstallation" href="uninstall.html"/>
-  	   <item name="Changes" href="regchanges.html"/>    	
 	</menu>
-    <menu name="Administrator Reference">  	
-    	   <item name="Registry Reference" href="registry_reference.html"/>    	
-    	   <item name="eXist for Registry" href="eXist_reference.html"/>    	
-		   <item name="Using external eXist" href="external_eXist.html"/>    	    	   
-    </menu>
   </body>
 </project>

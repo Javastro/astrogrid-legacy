@@ -8,12 +8,32 @@
     <author email="paul.harrison@manchester.ac.uk">Paul Harrison</author>
   </properties>
  <body>
- <section>
  	<p>
-    	<b>Please see the "webapp" documentation for more information on the registry.</b>
+    	Registry server library is a library that provides the Registry Interface standards
+    	set by the IVOA.  The library performs Inserts, Updates, Queries or OAI publishing information  of
+    	Resources to the Registry.  The Registry tends to connect with an xmldb api to an XML database called
+    	eXist.  See the webapp documentation of how to install the web application in a servlet container
+    	such as Tomcat and begin using a Registry.
 		<br />
 	</p>
- 
- </section>
+	<section name="Builds">
+		<p>
+			The registry allows you to build at the top level or at it's sub-project level.  
+			Here are the mvn goals for maven 2:
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install - compiles, runs unit tests and installs a local jar to your repository as well as the target directory.</li>
+				<li>site - builds and deploys a local site information about this project.</li>
+			</ul> <br />
+			Here are the maven goals for building the registry for maven 1:
+			<ul>
+				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
+				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+
  </body>
 </document>

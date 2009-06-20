@@ -1,15 +1,26 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<document>
-    <properties>
-        <title>AstroGrid registry reference</title>
-    </properties>
-    <body>
-    <section name="Reference">
+<%@ page import="org.astrogrid.config.SimpleConfig"
+   isThreadSafe="false"
+   session="false"
+%>
+
+<html>
+<head>
+<title>AstroGrid Registry FAQ</title>
+<style type="text/css" media="all">
+	<%@ include file="/style/astrogrid.css" %>          
+</style>
+</title>
+</head>
+
+<body>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
+<div id='bodyColumn'>
+<h1>Registry Reference</h1>
       <p>
          This area is dedicated for more information on various areas in the registry and some tips and tricks in certain areas.
       </p>
-      <subsection name="Properties">
-		<p>
+		<p><b>Properties:</b><br />
          Here is a more detailed list of each property in the registry.  There are a lot of properties and the majority you will not ever change.  But they are there for you to tweak.  See following
 sections on other certain ideas on manipulating the properties to help you in certain objectives you wish to do with the registry.
       Below are a list of all the properties of the registry, most are custom and require no changing, but you 
@@ -53,9 +64,8 @@ sections on other certain ideas on manipulating the properties to help you in ce
       Used for the Identify verb in OAI.  The administration Email of this OAI repository.</li>
          <li>reg.custom.identify.earliestDatestamp -- 
       Used for the Identify verb in OAI.  The earliest date stamp for records/metadata being published.</li>
-               <li>reg.custom.keywordxpaths.1.0 -- 
+         <li>reg.custom.keywordxpaths.1.0 -- 
       (Advanced) Specify xpath for keyword search based on various versions in the registry.</li>
-      
          <li>reg.custom.rootNode.default -- 
       (Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</li>
           <li>reg.custom.declareNS.1.0 --
@@ -64,33 +74,20 @@ sections on other certain ideas on manipulating the properties to help you in ce
          <li>reg.custom.harvest.set-{main authority id} -- allows you to harvest only a particular set for a registry.  By default ivo_managed set is what is used.</li>
          <li>Finaly various properties used in the OAI servlet and should not need changing.</li>
    </ul>
+   <hr />
    </p>
-   </subsection>
-   
-   <subsection name="Extend Registry">
-	<p>
+   <p>
+   <b>Extend the XML Resources and Schema</b><br />
       Lets say you needed to extend some of the xml resources, meaning add your own namespaces with your own element extensions.  You can already do this by default, be sure your xml instance documents has schemaLocations or what is needed 
-      to make it valid xml.  If your schema uses qualified namespace elements which is frowned up in the 1.0 version, but if used you will need to change the property reg.custom.declareNS.{contractversion} (see above properties).  
-      This property allows you to declare a namespace with a prefix for queries.  
-     <br />
+      to make it valid xml.  If your schema uses qualified namespace elements which is frowned upon in the 1.0 version, but if used you will need to change the property reg.custom.declareNS.1.0 (see above properties).  
+      This property allows you to declare a namespace with a prefix for queries.  This property is not used for the XQuery search though because you declare your full xquery with namespaces on this interface method.  
+     <hr />      
    </p>
-   </subsection>
-   <subsection name="Another XMLDB">
 	<p>
-      This has not been tested and assumes you are an expert on this other xml database such as xhive, xindice, and others.  First it must support
- the xmldb api.  And you will need to change the "xmldb.uri" and the "xmldb.driver" to the proper settings.  A final note when something is
-performed on the database such as opening a collection it always has "/db" as part of the path hence opening a collection for updating for version 1.0 would open
-"xmldb:exist:///db/astrogridv1_0" hence you must make sure "/db" can be concatenated with your uri.  Also read the "changing queries" in the next section, most likely you will
-need to change the queries up to conform to your xml database.
-</p>
-   </subsection>
-   <subsection name="Changing Queries"> 
-	<p>
+	<b>Changing the XQueries</b>
       You might find a more powerfull way of doing xqueries or decide to experiment on the xqueries on your own.  Currently not located in the environment entries web.xml piece, but located in the file
-      "astrogrid.properties" in the WEB-INF/classes directory under your {context name} directory. You will find a set of internal queries that you may change.  Also in the WEB-INF/classes/xsl directory
-      you will find the xsl stylesheets that take a ADQL (xml) and convert it to XQuery.
+      "astrogrid.properties" in the WEB-INF/classes directory under your {context name} directory. You will find a set of internal queries that you may change.  These internal queries are for the Search and KeywordSearch along with OAI queries that can occur.  It is not
+      used for the XQuery interface because this method you can define your own XQuery.
 	  </p>
-   </subsection>
-   </section>
    </body>
-</document>
+</html>

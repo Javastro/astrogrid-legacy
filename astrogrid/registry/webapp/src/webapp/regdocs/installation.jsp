@@ -1,10 +1,23 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<document>
-    <properties>
-        <title>AstroGrid registry installation</title>
-    </properties>
-    <body>
-    <section name="Installation">
+<%@ page import="org.astrogrid.config.SimpleConfig"
+   isThreadSafe="false"
+   session="false"
+%>
+
+<html>
+<head>
+<title>AstroGrid Registry FAQ</title>
+<style type="text/css" media="all">
+	<%@ include file="/style/astrogrid.css" %>          
+</style>
+</title>
+</head>
+
+<body>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
+<div id='bodyColumn'>
+
+<h1>Installation</h1>
     <p>
     <i>Definition 'Context Name' - is your webapp name (hence usually the unpacked directory name in the webapps).  This will be used
 a lot in various registry documentation usually with curly brackets.</i>
@@ -21,7 +34,7 @@ a lot in various registry documentation usually with curly brackets.</i>
       <br />
       Download Location of war: http://developer.astrogrid.org
       </p>
-      <subsection name="Installation">
+      <h2>Installation Steps</h2>
       <p>
          Most of the work is in the configure page, for installation. 
          <ul>
@@ -35,8 +48,7 @@ a lot in various registry documentation usually with curly brackets.</i>
             <li>If it does not unpack it then you may have it turned off in your tomcat or your using a different servlet container that does not unpack the war files "see bottom section if you know it does not unpack wars".</li>
          </ul>
       </p>
-      </subsection>      
-	  <subsection name="Handling Packed wars">
+      <h2>Handling Packed wars</h2>
 		<p>This section is for servlet containers that do not unpack the war file.  You may be able go to your
 		Registry but it cannot make a connection to the embedded database.  You must download an empty eXist that can
 		be unzipped, and like the above directions go to your Configure page in the Registry to set your property to this new location of the
@@ -48,7 +60,5 @@ a lot in various registry documentation usually with curly brackets.</i>
 			  <li>Information on changing properties is in the Configure section.</li>
 			</ul>
 		</p>
-	  </subsection>
-    </section>
    </body>
-</document>
+</html>

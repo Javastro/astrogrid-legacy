@@ -49,13 +49,12 @@ Because you would not wish to make your database public, you must make a change 
 Edit JNDI property called "reg.custom.restrict.ipaddresses" allowing you 
 to restrict who has access to the WebDav and client Gui.  
 Just make a comma seperated list of ip addresses you allow.  You may even do expressions if desired such as 128.9.*.<br />
-As noted in the Configure docs this is typically in your WEB-INF/web.xml unless you have a {context}.xml file in your conf/Catalina/localhost and
-requires a reload of the webapp via tomcat manager or restart of tomcat.
+Much like changing properties during Configure go to the 'Edit Properties' in the menu to change this property.
 </li>
 <li>
 eXist database is not fully initialized until a query happens this can be done by simply going to almost any jsp page such as the home (index.jsp) page of your registry or
 when any component calls the registry via a web service call.  Hence if you connect via WebDav or client GUI and says the 'eXist' db is not initialized then please go to the
-home page of your registry which will initialize it.  This usually happens when there is a restart of your servlet container.
+home page of your registry which will initialize it.  This usually happens when there is a restart of your servlet container or eXist then you immediately tried to access it via WebDav.
 </li>
 <li>
 Many people like the use of XML editors such as Oxygen or XMLSpy to validate and edit the XML.  But it is easy
@@ -68,14 +67,13 @@ pages here at the registry put in the XML so it is validated and certain to go i
 <hr />
 <br /><br />
 <h1>The Client</h1>
-You can launch a web start client here:<br />
-<a href="http://demo.exist-db.org/webstart/exist.jnlp"><img src="img/webstart.small.jpg"></img></a>
+You can launch a web start client go to <a href='http://exist.sourceforge.net'>eXist</a>  and click on the 'Launch' button on the left hand side to start a client and follow the options below.:<br />
 <br />
 By default the username is "admin" password is empty.  <br />
 Type: Remote<br />
 URL: xmldb:exist://{host}:{port}/{context}/xmlrpc
 <br />Sample url for embedded:<br />
-URL: xmldb:exist://galahad.star.le.ac.uk:8080/astrogrid-registry/xmlrpc <br /> or most likely this: <br />
+URL: xmldb:exist://registry.astrogrid.org/astrogrid-registry/xmlrpc <br /> or most likely this: <br />
 URL: xmldb:exist://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>/xmlrpc
 <br />Sample url for external:<br />
 URL: xmldb:exist://mssl.ucl.ac.uk:6080/xmlrpc<br />
