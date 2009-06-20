@@ -39,11 +39,14 @@ sections on other certain ideas on manipulating the properties to help you in ce
          <li>xmldb.admin.password -- 
       The admin password used to create Resources or collections, and startup/shutdown the internal eXist database if it is internally being ran.</li>
          <li>xmldb.query.user -- 
-      The user used to query.</li>
+      The user used to query.</li>         
          <li>xmldb.query.password -- 
       The query user password.</li>
+         <li>server.cache -- Default is 'false' set to 'true' to turn on server side caching, not much gain except for workshop
+         situations or stress testing.</li>
+         <li>server.cache.resource.count -- Default 100, what is the number of Resources returned from the that must be reached to store in the cache.</li>
          <li>reg.amend.returncount -- 
-      The maximum number of results to return from queries.</li>
+      The maximum number of results to return from queries except for the main XQuery interface that accepts straight XQuery and has no limit.</li>
 		  <li>reg.custom.restrict.ipaddresses
 	  The ip addresses restricted for WebDav and XMLRPC servlet.  You may use expressions as well ex: 127.*  by default it is set to 127.0.0.1.</li>
  		  <li>reg.custom.restrict.ipaddresses.updates
