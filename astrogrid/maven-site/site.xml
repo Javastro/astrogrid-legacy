@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: site.xml,v 1.5 2009/06/02 17:43:43 pah Exp $ -->
+<!-- $Id: site.xml,v 1.6 2009/06/20 14:36:02 pah Exp $ -->
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
@@ -28,20 +28,20 @@
     <menu name="Deployable Components">
        <item name="CEA" href="${astrogrid_doc_URL_root}/p/cea/${astrogrid_cea_version}/"/>
        <item name="Community" href="${astrogrid_doc_URL_root}/p/community/${astrogrid_community_version}/"/>
-       <item name="Registry" href="${astrogrid_doc_URL_root}/p/registry/${astrogrid_registry_version}/"/>
        <item name="DSA" href="${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/"/>
+       <item name="Registry" href="${astrogrid_doc_URL_root}/p/registry/${astrogrid_registry_version}/"/>
+       <item name="VOExplorer" href="${astrogrid_doc_URL_root}/p/desktop/${astrogrid_desktop_version}"/>
        <item name="VOSpace" href="${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/"/>
-       <item name="VOExplorer" href="${astrogrid_doc_URL_root}/p/desktop"/>
     </menu>
    
     <menu name="Libraries">
-	     <item name="Contracts" href="${astrogrid_doc_URL_root}/p/contracts/${astrogrid_contracts_version}/"/>
-         <item name="Common" href="${astrogrid_doc_URL_root}/p/common/${astrogrid_common_version}/" />
-         <item name="Security" href="${astrogrid_doc_URL_root}/p/security/${astrogrid_security_version}/"/>
+         <item name="ADQL" href="${astrogrid_doc_URL_root}/p/adql2/${astrogrid_adql2_version}"/>
          <item name="AR" href="${astrogrid_doc_URL_root}/p/astro-runtime/${astrogrid_desktop_version}"/>
-         <item name="SAMP" href="${astrogrid_doc_URL_root}/p/samp/"/>
-         <item name="ADQL" href="${astrogrid_doc_URL_root}/p/adql"/>
-         <item name="IVOA Objects" href="${astrogrid_doc_URL_root}/p/ivoa-objects/${astrogrid_release}"/>
+         <item name="Common" href="${astrogrid_doc_URL_root}/p/common/${astrogrid_common_version}/" />
+         <item name="Contracts" href="${astrogrid_doc_URL_root}/p/contracts/${astrogrid_contracts_version}/"/>
+        <item name="IVOA Objects" href="${astrogrid_doc_URL_root}/p/ivoa-objects/${astrogrid_ivoaobj_version}"/>
+         <item name="Security" href="${astrogrid_doc_URL_root}/p/security/${astrogrid_security_version}/"/>
+         <item name="SAMP" href="${astrogrid_doc_URL_root}/p/samp/${astrogrid_samp_version}"/>
     </menu>
     <menu name="Webservice clients">
     </menu>
@@ -55,7 +55,8 @@
     <menu name="Miscellaneous">
          <item name="Acknowledging Astrogrid" href="acknowledge.html" />
          <item name="Deprecated Components" href="deprecated.html" collapse="true">
-            <item name="workflow objects" href="${astrogrid_doc_URL_root}/p/workflow-objects/2007.2wo/"/>
+           <item name="workflow objects" href="${astrogrid_doc_URL_root}/p/workflow-objects/2007.2wo/"/>
+           <item name="ADQL1" href="${astrogrid_doc_URL_root}/p/adql1"/>
          </item>
          <item name="Obsolete Components" href="obsolete.html" collapse="true">
             <item name="JES" href="${astrogrid_doc_URL_root}/p/jes/2007.1/"/>
@@ -63,11 +64,17 @@
          </item>
     </menu>
     <menu name="Other Versions">
-       <item name="Nightly build" href="http://software.astrogrid.org/doc/HEAD"></item>
+       <item name="Nightly build" href="http://software.astrogrid.org/doc/HEAD/devel/"></item>
+       <item name="old versions" collapse="false"><description>Older Versions</description>
+         <item name="2008.2" href="http://software.astrogrid.org/doc/2008.2/devel"/>
+       </item>
     </menu>
-    <menu ref="reports"></menu>
-    <menu ref="Global Reports" href="global.html" collapse="true">
-       <item name="Javadoc" href="apidocs/index.html"/>
+    <!-- standard reports -->
+    <menu ref="reports">
+    <!-- aggregated reports -->
+    <item ref="Global Reports" href="global.html" collapse="true">
+       <item name="Javadoc" href="apidocs/"/>
+    </item>
     </menu>
   </body>
 </project>
