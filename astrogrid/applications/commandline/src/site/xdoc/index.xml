@@ -76,7 +76,7 @@ http://my.cea.server:8081/CEC-1/
 				</pre>
 				<p>	
 					The copy of these pages that is bundled with the web service components
-					has, in its sidebar, extra links leading to local controls for configuration, testing and
+					has, in its sidebar, extra links leading to local controls for configuration such as  <span class="ceconly" ><a href="./admin/configuration-describe.jsp">Show current configuration</a></span> for testing and
 					registration. Therefore, while setting up the CEC, you should look at the internal pages.
 					If you can't find the controls, you're probably reading the web pages on 
 					<i>software.astrogrid.org</i> instead.

@@ -19,7 +19,7 @@
 		  in a machine-readable format.
 	  </p>
 	  <p>
-		  The CEC presents the possible registration documents at the "<a href="../uws/reg">Show registration documents</a>" side bar menu. 
+		  The CEC presents the possible registration documents at the "<span class="ceconly"><a href="../uws/reg">Manage Registration</a></span>" side bar menu. 
 The resource documents have to be registered manually with a registry, the method of doing this with an Astrogrid registry below.
   	</p>
   </section>
@@ -27,7 +27,7 @@ The resource documents have to be registered manually with a registry, the metho
 	<section name="Registering individual applications">	
 		<p>
 			It is not always possible or necessary to register all of the applications that your CEC is capable of running. If the CEC is mirroring 
-         an application that was originally published by another CEC (and consequently already registered), then it is not necessary to try to reregister that application.
+         an application that was originally published by another CEC (and consequently already registered), then it is not necessary to try to reregister that application. The "manage registrations" page indicates when a particular application is already present in the registry.
 		</p>
 	</section>
 		
@@ -35,8 +35,8 @@ The resource documents have to be registered manually with a registry, the metho
   	<p>
   		Most registries have a web-browser interface whereby you can submit 
   		resource documents manually. Typically, and especially in the AstroGrid
-  		implementation of the registry, you upload the registration documents
-  		from files on disc.
+  		implementation of the registry, you can upload the registration documents
+  		from files on disc or better in this instance via a URL (see below).
   	</p>
   	<p>
   		You can get a registration document using the "show registration document"

@@ -14,7 +14,7 @@
                services. If Axis is not working, then the CEC does not
                work. You should test Axis as soon as you have the CEC
                installed.</p>
-            <p>Run the Axis tests using the "<a href="../happyaxis.jsp">Axis test</a>" command from
+            <p>Run the Axis tests using the "<span class="ceconly"><a href="../happyaxis.jsp">Axis test</a></span>" command from
                the left-hand side-bar. The test checks for the presence
                of JARs of code. You need all the core libraries to be
                present; the optional libraries are not required.</p>
@@ -37,7 +37,7 @@
             <p>
                When you have the CEC configured you can test the
                configuration using the
-               <a href="../TestServlet?suite=org.astrogrid.applications.component.ContainerInstallationTestSuite">Installation test</a>
+               <span class="ceconly"><a href="../TestServlet?suite=org.astrogrid.applications.component.ContainerInstallationTestSuite">Installation test</a></span>
                command from the left-hand side-bar.
             </p>
             <p> If you get a test-failure here then either your
@@ -48,7 +48,7 @@
             </p>
          </subsection>
          <subsection name="Test-running applications">
-            <p> When all is configured, use the "<a href="../app/chooseapp.jsp">Test run of application</a>"
+            <p> When all is configured, use the "<a href="../app/chooseapp.jsp"  class="ceconly">Test run of application</a>"
                link from the sidebar. This lets you invoke the
                configured applications locally. They should all work.
                However, any applications that produce big output-files

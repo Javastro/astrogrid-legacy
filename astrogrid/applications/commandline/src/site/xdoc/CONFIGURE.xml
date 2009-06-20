@@ -60,7 +60,7 @@
                </i>
                is the registration-template document.
             </p>
-            <p>It is always possible to check the the configuration with the <a href="../admin/configuration-describe.jsp">Show current configuration</a> sidebar menu.</p>
+            <p>It is always possible to check the the configuration with the <span class="ceconly"><a href="../admin/configuration-describe.jsp">Show current configuration</a></span> sidebar menu.</p>
          </subsection>
       </section>
       <section name="Edit the registration template">

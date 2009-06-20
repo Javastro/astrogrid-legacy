@@ -34,12 +34,12 @@
                basic web interface for interacting with UWS built-in,
                and accessible via the side-menus.
                <dl>
-                  <dt><a href="../app/chooseapp.jsp">Test run of application</a></dt>
+                  <dt><a href="../app/chooseapp.jsp"  class="ceconly">Test run of application</a></dt>
                   <dd>This allows the installed applications to be
                      run in a simple fashion via a web form. After the
                      application parameters are set a job is created in
                      the UWS system.</dd>
-                  <dt><a href="../uws/jobs">UWS root</a></dt>
+                  <dt><a href="../uws/jobs"  class="ceconly">UWS root</a></dt>
                   <dd>This is the root of the UWS system as defined
                      in the IVOA Standard. The initial URL gives a list
                      of jobs known to the CEC, which links to each job

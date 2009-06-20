@@ -128,7 +128,7 @@
             <p>
                Both of the above beans have their currently set
                properties displayed by the
-               <a href="./admin/configuration-describe.jsp">Show current configuration</a>
+               <span class="ceconly"><a href="./admin/configuration-describe.jsp">Show current configuration</a></span>
                sidebar menu.
             </p>
          </subsection>

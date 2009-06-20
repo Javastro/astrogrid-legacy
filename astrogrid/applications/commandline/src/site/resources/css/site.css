@@ -1,4 +1,4 @@
-a.ceconly, a.ceconly:link, a.ceconly:visited, a.ceconly:active, a.ceconly:hover {
+span.ceconly a, span.ceconly a:link, span.ceconly a:visited, span.ceconly a:active, span.ceconly a:hover {
 	background: url(../images/ceconly.png) right center no-repeat;
 	padding-right: 28px;
 	text-decoration: line-through;
