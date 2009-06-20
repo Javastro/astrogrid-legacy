@@ -11,7 +11,6 @@
       <artifactId>astrogrid-cea-site</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>2009.1-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>  
     </parent>
   <name>CEA CEC web server</name>
   <version>${astrogrid_cea_version}</version>
