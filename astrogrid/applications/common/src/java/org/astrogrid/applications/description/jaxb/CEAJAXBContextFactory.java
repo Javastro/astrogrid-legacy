@@ -1,5 +1,5 @@
 /*
- * $Id: CEAJAXBContextFactory.java,v 1.2 2009/06/05 13:06:20 pah Exp $
+ * $Id: CEAJAXBContextFactory.java,v 1.3 2009/06/20 14:31:23 pah Exp $
  * 
  * Created on 12 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -35,7 +35,8 @@ public class CEAJAXBContextFactory {
 	  		"org.astrogrid.applications.description.cea:"+
 	  		"net.ivoa.uws:"+
 	  		"net.ivoa.resource.registry.iface:"+
-	  		"net.ivoa.resource.dataservice");
+	  		"net.ivoa.resource.dataservice:"+
+	  		"net.ivoa.resource.registry");
 	return jc;
 
     }
@@ -44,6 +45,9 @@ public class CEAJAXBContextFactory {
 
 /*
  * $Log: CEAJAXBContextFactory.java,v $
+ * Revision 1.3  2009/06/20 14:31:23  pah
+ * add registry objects to the context
+ *
  * Revision 1.2  2009/06/05 13:06:20  pah
  * RESOLVED - bug 2921: add capabilities to the automatic registration
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2921
