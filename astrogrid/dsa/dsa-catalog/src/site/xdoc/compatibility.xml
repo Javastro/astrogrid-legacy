@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Compatibility</title>
+  </properties>
+<body>
+
+  <section name="Java compatibility">
+    <p>
+      DSA/Catalogue should be run with Java 5 or later. From DSA/Catalogue
+      2009.1, it is entirely impossible to run with Java 1.4.2 or earlier.
+    </p>
+  </section>
+
+  <section name="Tomcat capability">
+    <p>
+      We recomend Tomcat v5.5, and all DSA testing is done with this version.
+      Tomcat v6.0 should also work.
+    </p>
+  </section>
+
+  <section name="Database compatibility">
+    <p>
+      The DSA/Catalog component can be configured to connect to any
+      RDBMS system for which a
+      <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver is provided.
+    </p>
+    <p>
+      It uses an XSLT stylesheet to perform translation from the input
+      ADQL/xml query language to the system-specific SQL required by
+      the RDBMS, and a number of stylesheets are pre-embedded in the
+      DSA distribution.
+    </p>
+    <p>
+      The table below shows the RDBMS, JDBC driver and embedded stylesheet
+      combinations against which the DSA/Catalog has been known to operate
+      succesfully (with any caveats listed).
+    </p>
+    <table>
+      <tr>
+        <th>RDBMS</th>
+        <th>JDBC driver</th>
+        <th>XSLT stylesheet</th>
+        <th>Comments</th>
+      </tr>
+      <tr>
+        <td><a href="http://hsqldb.sourceforge.net/">HSQLDB</a> 1.8.0</td>
+        <td>hsqldb-1.8.0.jar</td>
+        <td>HSQLDB-1.8.0.xsl</td>
+        <td>Works.</td>
+      </tr>
+      <tr>
+        <td><a href="http://www.mysql.com/">MySQL</a> 4.1.16</td>
+        <td>mysql-connector-java-3.1.12-bin.jar</td>
+        <td>MYSQL-4.1.16.xsl</td>
+        <td>>Works.</td>
+      </tr>
+      <tr>
+        <td><a href="http://www.postgresql.org/">PostgreSQL</a> 7.2.3</td>
+        <td>pg72jdbc2.jar</td>
+        <td>POSTGRES-7.2.3.xsl</td>
+        <td>Works, but streaming data transfers from
+              RDBMS don't work (so setting low return row limit
+              recommended to avoid DSA running out of memory).</td>
+      </tr>
+      <tr>
+        <td><a href="http://www.postgresql.org/">PostgreSQL</a> 8.1.4</td>
+        <td>postgresql-8.1-407.jdbc3.jar</td>
+        <td>POSTGRES-7.2.3.xsl</td>
+        <td>Works.</td>
+      </tr>
+      <tr>
+        <td><a href="http://www.microsoft.com/sql/">Microsoft SQL Server</a> 8.00</td>
+        <td>mssqlserver.jar, msbase.jar, msutil.jar
+            (unsure of provenance of these, presume from appropriate distro)</td>
+        <td>SQLSERVER-8.00.xsl</td>
+        <td>Works.</td></tr>
+        <tr>
+          <td><a href="http://www.microsoft.com/sql/">Microsoft SQL Server</a> 2000</td>
+          <td>mssqlserver.jar, msbase.jar, msutil.jar
+            (from SQL Server 2000 distro.)</td><td>SQLSERVER-8.00.xsl</td>
+          <td>Works.</td>
+        </tr>
+        <tr>
+          <td><a href="http://www.sybase.com">Sybase</a> ASR 15.0</td>
+          <td>jconnect55.jar</td>
+          <td>SYBASE-ASE-15.0.xsl</td>
+          <td>Doesn't work (JDBC driver too old)</td>
+        </tr>
+        <tr class="a">
+          <td><a href="http://www.sybase.com">Sybase</a> ASR 15.0</td>
+          <td>jconnect60-exclude.jar</td><td>SYBASE-ASE-15.0.xsl</td>
+          <td>Works, but TRUNCATE() function not supported.</td>
+        </tr>
+        <tr>
+          <td><a href="http://www.sybase.com">Sybase</a> ASR 15.0</td>
+          <td>jconn3.jar</td><td>SYBASE-ASE-15.0.xsl</td>
+          <td>Works, but TRUNCATE() function not supported.</td>
+        </tr>
+      </table>
+      <p>
+        We are always grateful to hear of other combinations of RDBMS,
+        driver and XSLT stylesheet that have been shown to work / not work.
+        We also welcome community contributions of stylesheets for other
+        RDBMS systems.
+     </p>
+
+  </section>
+
+  <section name="VOSpace compatibility">
+    <p>
+      V2009.1 of DSA/Catalogue can use VO storage via the VOSpace 1.1
+      standard (file URIs beginning with <i>vos://</i>. It can also use
+      the older MySpace interface (file URIs beginning with <i>ivo://</i>.
+    </p>
+  </section>
+
+  <section name="VODesktop compatibility">
+    <p>
+      For best effect, VODesktop v1.3 or later should be used with
+      DSA/Catalogue v2009.1. This version of VODesktop supports the VOSpace
+      interfaces.
+    </p>
+  </section>
+
+</body>
+
+</document>
