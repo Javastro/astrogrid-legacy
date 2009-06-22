@@ -5,7 +5,7 @@
       <ul>
          <li><a href="<%=pathPrefix%>/index.jsp">Welcome page</a></li>
          <li><a href="${pom.url}">Documentation index</a></li>
-         <li><a href="${pom.url}/release-notes">Release notes</a></li>
+         <li><a href="${pom.url}/release-notes-${pom.version}">Release notes</a></li>
          <li><a href="<%=pathPrefix%>/configure.jsp">Configuring your DSA/catalog</a></li>
          <li><a href="<%=pathPrefix%>/about.txt">Version information</a></li>
       </ul>
