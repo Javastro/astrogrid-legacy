@@ -18,7 +18,7 @@
     	&lt;/p></description>
     	
    <parent>
-		<artifactId>astrogrid-adqlparser-bundle</artifactId>
+		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
 		<version>${astrogrid_adql2_version}</version>
 	</parent>
@@ -33,7 +33,7 @@
             	<execution>
                 	<goals>
                     	<goal>xmlbeans</goal>
-                    </goals>
+                    </goals> 
                 </execution>
             </executions>
   			<configuration>
@@ -41,7 +41,6 @@
             	<!-- classGenerationDirectory>target/classes</classGenerationDirectory -->
             	<!-- sourceGenerationDirectory>src/java</sourceGenerationDirectory -->
                 <noPvr>true</noPvr>
-                <staleFile>config/staleFlag</staleFile>
    				<verbose>true</verbose>
    				<download>true</download>
                 <outputJar>lib/${artifactId}.jar</outputJar>
@@ -103,12 +102,6 @@
       <groupId>org.apache.xmlbeans</groupId>
       <artifactId>xmlbeans-qname</artifactId>
       <version>2.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
   <reporting>

@@ -9,7 +9,7 @@
 	<name>Astrogrid ADQL Base Parser</name>
   	<description>This project contains the base parser which processes ADQL/s (ie: ADQL in string format) and outputs ADQL/x (ie: ADQL in xml format).</description>
 	<parent>
-		<artifactId>astrogrid-adqlparser-bundle</artifactId>
+		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
 		<version>${astrogrid_adql2_version}</version>
 	</parent>
@@ -134,29 +134,31 @@
    
     <dependency>
       <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-xml</artifactId>
+      <artifactId>astrogrid-xml</artifactId>  
       <!-- version>2007.2xml</version -->
+      <scope>test</scope>
     </dependency>
-    <dependency>
+    
+    <!-- dependency>
       <groupId>axis</groupId>
       <artifactId>axis</artifactId>
       <version>1.3</version>
-    </dependency>
+    </dependency -->
     <!-- dependency>
       <groupId>axis</groupId>
       <artifactId>wsdl4j</artifactId>
       <version>1.5.1</version>
     </dependency -->
-    <dependency>
+    <!-- dependency>
       <groupId>axis</groupId>
       <artifactId>axis-saaj</artifactId>
       <version>1.3</version>
-    </dependency>
-    <dependency>
+    </dependency -->
+    <!-- dependency>
       <groupId>axis</groupId>
       <artifactId>axis-jaxrpc</artifactId>
       <version>1.3</version>
-    </dependency>
+    </dependency -->
     <!-- 
     <dependency>
       <groupId>axis</groupId>
@@ -179,7 +181,7 @@
   		<artifactId>saxon</artifactId>
   		<version>6.5.5</version>
 	</dependency> 
-    <dependency>
+    <!-- dependency>
       <groupId>org.apache.xmlbeans</groupId>
       <artifactId>xmlbeans</artifactId>
       <version>2.3.0</version>
@@ -188,7 +190,7 @@
       <groupId>javax.xml.bind</groupId>
       <artifactId>jsr173_api</artifactId>
       <version>1.0</version>
-    </dependency>
+    </dependency -->
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-adqlbeans</artifactId>
@@ -198,16 +200,17 @@
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
       <version>1.0</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
+      <!-- version>1.0.4</version -->
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.8</version>
+      <!-- version>1.2.8</version -->
     </dependency>
     <dependency>
       <groupId>junit</groupId>

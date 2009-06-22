@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.astrogrid</groupId>
-  <artifactId>astrogrid-adqlparser-bundle</artifactId>
+  <artifactId>astrogrid-adqlparser</artifactId>
   <version>${astrogrid_adql2_version}</version>
   <parent>
   	<artifactId>astrogrid-base</artifactId>
@@ -64,6 +64,7 @@
   	<module>adqlbeans</module>
   	<module>adqlserver</module>
   	<module>adqlutils</module>
+  	<module>adqlbundle</module>
   </modules>
   <reporting>
   </reporting>

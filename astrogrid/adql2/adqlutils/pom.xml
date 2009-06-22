@@ -9,7 +9,7 @@
   <name>Astrogrid ADQL Utilities</name>
   <description>This project contains miscellaneous programs for testing the ADQL parser, and for producing BNF diagrams from the file AdqlStoX.jjt</description>
 	<parent>
-		<artifactId>astrogrid-adqlparser-bundle</artifactId>
+		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
 		<version>${astrogrid_adql2_version}</version>
 	</parent>              
@@ -76,7 +76,7 @@
       <artifactId>astrogrid-adqlparser-sv</artifactId>
       <version>${astrogrid_adql2_version}</version>
     </dependency>
-    <dependency>
+    <!-- dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon</artifactId>
       <version>6.5.5</version>
@@ -90,7 +90,7 @@
       <groupId>javax.xml.bind</groupId>
       <artifactId>jsr173_api</artifactId>
       <version>1.0</version>
-    </dependency>
+    </dependency -->
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-adqlbeans</artifactId>
@@ -100,6 +100,7 @@
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
       <version>1.0</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>

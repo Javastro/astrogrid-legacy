@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>true</includeBaseDirectory>
+  <dependencySets>
+	<dependencySet>
+		<useProjectArtifact>false</useProjectArtifact>
+		<useTransitiveDependencies>true</useTransitiveDependencies>
+		<excludes>
+			<exclude>log4j:log4j</exclude>
+			<exclude>javax.mail:mail</exclude>
+			<exclude>commons-logging:commons-logging</exclude>
+			<exclude>javax.activation:activation</exclude>
+			<exclude>avalon-framework:avalon-framework</exclude>
+			<exclude>com.sun.jmx:jmxri</exclude>
+			<exclude>com.sun.jdmk:jmxtools</exclude>
+			<exclude>junit:junit</exclude>
+			<exclude>logkit:logkit</exclude>
+			<exclude>javax.jms:jms</exclude>
+		</excludes>		
+	</dependencySet>
+  </dependencySets>
+  <fileSets>
+    <fileSet>
+    	<!-- includes README and a basic shell script -->
+ 		<directory>${basedir}/../zipdoc</directory> 
+ 		<outputDirectory></outputDirectory>
+    </fileSet>
+    <fileSet>
+    	<!-- includes a basic log4j properties file -->
+ 		<directory>${basedir}/../adqlbase/src/config</directory> 
+ 		<outputDirectory></outputDirectory>
+    </fileSet>
+  </fileSets>
+</assembly>

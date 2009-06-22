@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+	<artifactId>astrogrid-adqlparser-bundle</artifactId>
+	<packaging>pom</packaging>
+	<version>${astrogrid_adql2_version}</version>
+	<name>Astrogrid ADQL Parser Bundle</name>
+  	<description>This project produces an overall bundle of artifacts</description>
+	<parent>
+		<artifactId>astrogrid-adqlparser</artifactId>
+		<groupId>org.astrogrid</groupId>
+		<version>${astrogrid_adql2_version}</version>
+	</parent>
+	<scm>
+  	<connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/adql2/adqlbundle/</connection>
+  	<developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/adql2/adqlbundle/</developerConnection>
+  	<url>http://www.astrogrid.org/viewcvs/astrogrid/adql2/adqlbundle/</url>
+  	<tag>HEAD</tag>
+	</scm>
+          
+  <build>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>
+                  src/main/assembly/bin.xml
+                </descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>      
+    </plugins>
+    
+  </build>
+  
+  <dependencies>
+  
+  <dependency>
+     <groupId>org.astrogrid</groupId>
+	 <artifactId>astrogrid-adqlparser-base</artifactId>
+	 <version>${astrogrid_adql2_version}</version>
+  </dependency>
+  <dependency>
+     <groupId>org.astrogrid</groupId>
+	 <artifactId>astrogrid-adqlparser-sv</artifactId>
+	 <version>${astrogrid_adql2_version}</version>
+  </dependency>
+  <dependency>
+     <groupId>org.astrogrid</groupId>
+	 <artifactId>astrogrid-adqlparser-utils</artifactId>
+	 <version>${astrogrid_adql2_version}</version>
+  </dependency>
+  <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-adqlbeans</artifactId>
+      <version>${astrogrid_adql2_version}</version>
+    </dependency>
+    
+  </dependencies>
+</project>
