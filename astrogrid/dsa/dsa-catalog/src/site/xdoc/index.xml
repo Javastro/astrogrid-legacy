@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+<properties>
+  <title>DSA/Catalogue</title>
+</properties>
+
+<body>
+
+<section name="DSA/Catalogue">
+
+<p>
+DSA/catalogue is an AstroGrid web-application providing Virtual Observatory
+compliant access to data in a relational database. The following web services
+are provided.
+</p>
+<dl>
+<dt>CEC</dt>
+<dd>an AstroGrid Common-Execution-Architecture interface for use with
+    AstroGrid/EuroVO tools and libraries; allows ADQL queries;</dd>
+<dt>Cone Search</dt>
+<dd>IVOA-compliant Simple-Cone-Search service.</dd>
+</dl>
+
+</section>
+
+</body>
+
+</document>

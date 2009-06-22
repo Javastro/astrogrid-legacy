@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+<properties>
+  <title>Release notes for DSA/Catalogue 2009.1</title>
+</properties>
+
+<body>
+<section name="Release notes for DSA/Catalogue 2009.1">
+
+<subsection name="Functionality Supported">
+<ul>
+<li>Input queries in ADQL 0.7.4 and ADQL 1.0 (excluding Region searches and XMATCH).</li>
+<li>Standard AstroGrid CEC web service interface, supporting multiple interfaces (currently ADQL querying, asynchronous "conesearch" and simple "multicone" crossmatch)</li>
+<li>Standard optional IVOA conesearch interface, now with optional access-control.</li>
+<li>Standardised, tested JDBC access to at least the RDBMSs listed
+<a href="docs/configure_step3.jsp">on this page</a>.
+</li>
+<li>Log views</li>
+<li>Registry metadata views</li>
+<li>Server status views</li>
+<li>Pluggable architecture for back-end data access</li>
+</ul>
+</subsection>
+
+<subsection name="Functionality Not Currently Supported">
+<ul>
+<li>ADQL Region queries, advanced joins etc.</li>
+<li>Other service interfaces such as SkyNode.</li>
+</ul>
+</subsection>
+
+<subsection name="Installation">
+  <p>
+    The installation procedure is unchanged from the previous version,
+    <em>except</em> in respect of secured cone-searches for which extra
+    configuration is needed in the web server.
+  </p>
+</subsection>
+
+<subsection name="Upgrading from previous versions">
+<p>
+  To upgrade from DSA versions 2008.2 and 2008.2.xx, you will have to edit
+  <i>astrogrid.properties</i> and add the following properties.
+</p>
+<ul>
+ <li>datacentre.url.secure</li>
+ <li>cone.search.secure</li>
+ <li>cone.search.access.policy</li>
+</ul>
+<p>
+  These all relate to the ability to secure your cone-search services using
+  HTTPS, but you must set them even if you do not need to secure your services.
+  Please see the comments in <i>default.properties</i> for advice on
+  the appropriate values.
+</p>
+
+<p>
+  The "metadoc" files (the metadata describing the database) have the same
+  format as in the 2008.2 series and need not be changed.
+</p>
+
+<p>
+  You can re-use the context file from the old installation.
+</p>
+
+<p>
+If you are upgrading a very old installation,
+we suggest creating a new <i>astrogrid.properties</i> starting from the
+<i>default.properties</i> file supplied with the
+DSA/catalog service (by copying in relevant properties from your old
+configuration), rather than attempting to update your old
+configuration file.
+</p>
+
+<p>
+Additionally, we advise keeping a backup of your original DSA/catalog
+installation and any configuration files associated with it, in case you
+should encounter any problems running a newer DSA/catalog service against
+your RDBMS and/or data.
+</p>
+
+<p>
+Please contact
+<a href="mailto:astrogrid_dsa@star.le.ac.uk">astrogrid_dsa@star.le.ac.uk</a>
+for advice if you find that you cannot upgrade an old installation to
+the newest DSA/catalog service.
+</p>
+</subsection>
+
+
+<subsection name="Bug reporting">
+
+<p>
+If you have found a suspected bug, check the bugzilla pages at
+<a href="http://www.astrogrid.org/bugzilla">http://www.astrogrid.org/bugzilla<a/>
+for known bugs. You can submit new bugs to the bugzilla entry page.
+Before filing a bug, we suggest you run the self-tests to verify that
+your system is correctly configured.
+Please include any error output or logs in the bug report, along with the
+server URL and version of the DSA/catalogue server you have installed.
+</p>
+</subsection>
+
+</section>
+</body>
+
+</document>
