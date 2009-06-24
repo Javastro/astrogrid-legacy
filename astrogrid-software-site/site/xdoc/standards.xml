@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>IVOA Standards - AstroGrid Comonents Matrix</title>
+    <author email="pah@jb.man.ac.uk">Paul Harrison</author>
+  </properties>
+
+  <!-- Optional HEAD element, which is copied as is into the XHTML <head> element -->
+  <head>
+   <title>Latest Astrogrid software versions</title>
+  </head>
+
+  <body>
+    <section name="IVOA Standards Compliance">
+ <p>The following matrix shows which <a href="http://www.ivoa.net/Documents/">IVOA standards are supported by each Astrogrid Component</a></p>
+<table>
+  <tr style="border-bottom:medium">
+    <th  scope="col"> </th>
+    <th scope="col">Registry</th>
+    <th scope="col">DSA</th>
+    <th scope="col">CEA</th>
+    <th scope="col">Community</th>
+    <th scope="col">VOSpace</th>
+  </tr>
+  <tr>
+    <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/ConeSearch.html">ConeSearch</a> </td>
+    <td align="center"> </td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/SIA.html">SIAP</a></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/SSA.html">SSAP</a></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/VOSI.html">VOSI</a></td>
+    <td align="center"> </td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/">UWS</a></td>
+    <td align="center"> </td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/SSOAuthMech.html">SSO</a></td>
+    <td align="center"> </td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /><br /></td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/CredentialDelegation.html">Delegation</a></td>
+    <td align="center"> </td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/TAP.html">TAP</a></td>
+    <td align="center"> </td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/RegistryInterface.html">Registry Interface</a></td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/ADQL.html">ADQL</a></td>
+    <td align="center"> </td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/VOT.html">VOTable</a></td>
+    <td align="center"> </td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+  </tr>
+  <tr>
+     <td align="right" scope="row"><a href="http://www.ivoa.net/Documents/latest/VOSpace.html">VOSpace</a></td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"> </td>
+    <td align="center"><img src="images/tick.png" alt="supported" width="16" height="16" /></td>
+  </tr>
+</table>
+    
+    </section>
+  </body>
+  </document>

@@ -35,4 +35,5 @@ Astrogrid Architecture
     Finally if the data/algorithms that you want to publish should not be publicly accessibly, but rather available only to a select group of users then you might consider installing a {{{community.html}}community}} component. This allows the 
     administration of those users as well as providing them with the necessary security tokens (in the form of identity certificates) to interact with secured VO services.
     
+    There is a {{{standards.html}Standards matrix}} which can help in making a choice also.
 
