@@ -9,14 +9,14 @@
 	<version>${astrogrid_adql1_beans_version}</version>
  
   <name>Generated XMLBeans for ADQL</name>
-  <description>&lt;p>
+  <description>
   			The XmlBeans required for ADQL version 1.
             The ADQL parser, having parsed a piece of ADQL, then forms it into an intermediate XML format
             according to an ADQL schema. All creation and manipulation is undertaken using the XMLBeans
             framework. The beans generated from the schema are a critical part of the process. 
-            &lt;br/>&lt;br/>
+            
             The beans are also used within the AstroGrid VO desktop.&lt;br/>
-    	&lt;/p></description>
+   </description>
     	
    <parent>
 		<artifactId>astrogrid-adqlv1parser</artifactId>
@@ -42,99 +42,33 @@
             	<!-- classGenerationDirectory>target/classes</classGenerationDirectory>
             	<sourceGenerationDirectory>target/src/java</sourceGenerationDirectory -->
                 <noPvr>true</noPvr>
-                <staleFile>config/staleFlag</staleFile>
    				<verbose>true</verbose>
    				<download>true</download>
                 <outputJar>target/lib/${artifactId}.jar</outputJar>
                 <defaultXmlConfigDir>config</defaultXmlConfigDir>
             </configuration>
   	  </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <showDeprecation>true</showDeprecation>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <links>http://www.astrogrid.org/maven/docs/HEAD/adql/multiproject/astrogrid-adqlv1beans/apidocs/</links>
-          <source>1.5</source>
-          <tags>
-            <tag>
-              <head>To Do:</head>
-              <name>todo</name>
-              <placement>a</placement>
-            </tag>
-            <tag>
-              <head>Future:</head>
-              <name>future</name>
-            </tag>
-            <tag>
-              <head>Modified:</head>
-              <name>modified</name>
-              <placement>a</placement>
-            </tag>
-          </tags>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>-ea</argLine>
-          <testFailureIgnore>true</testFailureIgnore>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <dependencies>
-    <dependency>
-      <groupId>xmlbeans</groupId>
-      <artifactId>xbean</artifactId>
+	<dependency>
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans</artifactId>
       <version>2.3.0</version>
     </dependency>
     <dependency>
-      <groupId>xmlbeans</groupId>
-      <artifactId>jsr173_1.0_api</artifactId>
-      <version>2.3.0</version>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jsr173_api</artifactId>
+      <version>1.0</version>
     </dependency>
     <dependency>
-      <groupId>xmlbeans</groupId>
-      <artifactId>xmlbeans_qname</artifactId>
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans-qname</artifactId>
       <version>2.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
   <reporting>
     <plugins>
-      <plugin>
-        <artifactId>maven-changes-plugin</artifactId>
-        <configuration>
-          <xmlPath>${basedir}/xdocs/changes.xml</xmlPath>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>${basedir}/../maven/checkstyle.xml</configLocation>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-        <configuration>
-          <tags>
-            <tag>@TODO</tag>
-          </tags>
-        </configuration>
-      </plugin>
     </plugins>
   </reporting>
 </project>

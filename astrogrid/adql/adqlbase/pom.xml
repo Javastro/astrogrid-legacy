@@ -87,107 +87,12 @@
 					</execution>
 				</executions>
 			</plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <showDeprecation>true</showDeprecation>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <links></links>
-          <source>1.5</source>
-          <tags>
-            <tag>
-              <head>To Do:</head>
-              <name>todo</name>
-              <placement>a</placement>
-            </tag>
-            <tag>
-              <head>Future:</head>
-              <name>future</name>
-            </tag>
-            <tag>
-              <head>Modified:</head>
-              <name>modified</name>
-              <placement>a</placement>
-            </tag>
-          </tags>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>-ea</argLine>
-          <testFailureIgnore>true</testFailureIgnore>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
-  <dependencies>
-   
+  <dependencies>  
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-xml</artifactId>
-      <!-- version>2007.2xml</version -->
-    </dependency>
-    <dependency>
-      <groupId>axis</groupId>
-      <artifactId>axis</artifactId>
-      <version>1.3</version>
-    </dependency>
-    <!-- dependency>
-      <groupId>axis</groupId>
-      <artifactId>wsdl4j</artifactId>
-      <version>1.5.1</version>
-    </dependency -->
-    <dependency>
-      <groupId>axis</groupId>
-      <artifactId>axis-saaj</artifactId>
-      <version>1.3</version>
-    </dependency>
-    <dependency>
-      <groupId>axis</groupId>
-      <artifactId>axis-jaxrpc</artifactId>
-      <version>1.3</version>
-    </dependency>
-    <!-- 
-    <dependency>
-      <groupId>axis</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>axis</groupId>
-      <artifactId>commons-discovery</artifactId>
-      <version>0.2</version>
-    </dependency>  
-    <dependency>
-      <groupId>javacc</groupId>
-      <artifactId>javacc</artifactId>
-      <version>4.0</version>
-    </dependency>
-        -->  
-    <dependency>
-  		<groupId>net.sf.saxon</groupId>
-  		<artifactId>saxon</artifactId>
-  		<version>6.5.5</version>
-	</dependency> 
-    <dependency>
-      <groupId>xmlbeans</groupId>
-      <artifactId>xbean</artifactId>
-      <version>2.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>xmlbeans</groupId>
-      <artifactId>jsr173_1.0_api</artifactId>
-      <version>2.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
@@ -195,44 +100,27 @@
       <version>${astrogrid_adql1_beans_version}</version>
     </dependency>
     <dependency>
-      <groupId>xmlunit</groupId>
-      <artifactId>xmlunit</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.8</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
   <reporting>
     <plugins>
-      <plugin>
-        <artifactId>maven-changes-plugin</artifactId>
-        <configuration>
-          <xmlPath>${basedir}/xdocs/changes.xml</xmlPath>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-        <configuration>
-          <tags>
-            <tag>@TODO</tag>
-          </tags>
-        </configuration>
-      </plugin>
     </plugins>
   </reporting>
 </project>
