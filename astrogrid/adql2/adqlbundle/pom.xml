@@ -7,7 +7,7 @@
 	<packaging>pom</packaging>
 	<version>${astrogrid_adql2_version}</version>
 	<name>Astrogrid ADQL Parser Bundle</name>
-  	<description>This project produces an overall bundle of artifacts</description>
+  	<description>This project produces an overall bundle of artifacts.</description>
 	<parent>
 		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
@@ -70,4 +70,11 @@
     </dependency>
     
   </dependencies>
+  <distributionManagement>
+    <site>
+      <id>agsite</id>   
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/astrogrid-adqlparser-bundle</url>
+    </site>  
+ </distributionManagement>
 </project>

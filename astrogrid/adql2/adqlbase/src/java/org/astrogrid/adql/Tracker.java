@@ -1,4 +1,4 @@
-/*$Id: Tracker.java,v 1.2 2008/09/08 15:37:02 jl99 Exp $
+/*$Id: Tracker.java,v 1.3 2009/06/28 14:45:25 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -24,8 +24,15 @@ import org.apache.xmlbeans.SchemaType;
 //import org.astrogrid.acr.ivoa.resource.Catalog;
 //import org.astrogrid.acr.ivoa.resource.DataCollection;
 /**
- * Tracker
- *
+ * The <code>Tracker</code> class attempts to do two things:
+ * <br/>
+ * (1) To keep a meaningful track on position when parsing ADQL, during both
+ * syntactic and semantic processing. This is quite difficult and there is
+ * still a lot to be achieved in this area.
+ * <br/>
+ * (2) To be a repository of messages (errors, warnings and information)
+ * during parsing. The intention is to link messages with a tracked position,
+ * thus giving more targeted feedback.
  *
  * @author Jeff Lusted jl99@star.le.ac.uk
  * Dec 29, 2006
@@ -38,6 +45,19 @@ public class Tracker {
     
     private boolean traceBufferEnabled = false ;
     
+    /**
+     * The <code>Part</code> class represents a single construct within
+     * the ADQL tree. It is very similar in idea to a node within the
+     * syntax tree. Each part has a parent, except for the root node. 
+     * Parts are more easily envisaged by the end product of the base
+     * parser: by an xml element and its type within the xml schema. 
+     * 
+     * @author Jeff Lusted jl99@star.le.ac.uk
+     */
+    /**
+     * @author jl99
+     *
+     */
     public class Part {
         
         private String element ;
@@ -52,7 +72,7 @@ public class Tracker {
             this.type = type ;
         }
         
-        public Part Reinit( Part parent, String element, SchemaType type ) {
+        private Part Reinit( Part parent, String element, SchemaType type ) {
             this.element = element ;
             this.type = type ;
             childCount = 0 ;
@@ -60,18 +80,32 @@ public class Tracker {
             return this ;
         }
 
+        /**
+         * @return the schema type representing this Part.
+         */
         public SchemaType getType() {
             return type;
         }
-        
+               
+        /**
+         * Sets the SchemaType for this Part.
+         * @param type. 
+         */
         public void setType(SchemaType type) {
             this.type = type;
         }
 
+        /**
+         * @return the XML element name of this Part
+         */
         public String getElement() {
             return element;
         }
         
+        /**
+         * Sets the XML element name for this Part
+         * @param element
+         */
         public void setElement( String element ) {
             this.element = element ;
         }
@@ -618,6 +652,9 @@ public class Tracker {
 
 /*
 $Log: Tracker.java,v $
+Revision 1.3  2009/06/28 14:45:25  jl99
+Tidying up of the maven build
+
 Revision 1.2  2008/09/08 15:37:02  jl99
 Merge of branch adql_jl_2575_mark2 into HEAD
 

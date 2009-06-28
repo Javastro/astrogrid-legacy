@@ -10,12 +10,12 @@
  
   <name>Generated XMLBeans for ADQL</name>
   <description>&lt;p>
-            The ADQL parser, having parsed a piece of ADQL, then forms it into an intermediate XML format
+            The ADQL parser first parses a piece of ADQL, then forms it into an intermediate XML format
             according to an ADQL schema. All creation and manipulation is undertaken using the XMLBeans
             framework. The beans generated from the schema are a critical part of the process. 
-            &lt;br/>&lt;br/>
-            The beans are also used within the AstroGrid VO desktop.&lt;br/>
-    	&lt;/p></description>
+            The beans are also used within the AstroGrid VO desktop.
+  </description>
+  <url>${astrogrid_doc_URL_root}/p/adql2/${project.version}/adqlbeans</url>
     	
    <parent>
 		<artifactId>astrogrid-adqlparser</artifactId>
@@ -58,6 +58,8 @@
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
+          <!-- excludePackageNames>org.astrogrid.*</excludePackageNames -->
+       
           <links>http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlbeans/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-base/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-sv/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-utils/apidocs/</links>
           <source>1.5</source>
           <tags>
@@ -129,4 +131,11 @@
       </plugin>
     </plugins>
   </reporting>
+  <distributionManagement>
+    <site>
+      <id>agsite</id>  
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/astrogrid-adqlbeans</url>
+    </site>  
+ </distributionManagement>
 </project>

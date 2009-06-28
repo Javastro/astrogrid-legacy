@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+	<body>
+		<breadcrumbs>
+			<item name="ADQL v2 Parser Home"
+				href="${astrogrid_doc_URL_root}/p/adql2/${project.version}/" />
+		</breadcrumbs>
+		<menu name="Documents">
+			<item name="Overview" href="overview.html" />
+			<item name="BNF Extraction" href="bnfextraction.html" />
+			<item name="Interactive Sessions" href="interactive.html" />
+		</menu>
+		<menu ref="reports" />
+	</body>
+</project>

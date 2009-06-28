@@ -6,7 +6,7 @@
     <body>
     <section name="Generation">
        <p>
-         Within the Maven build the beans are generated using an Ant task. This is all automatic. 
+         Within the Maven build the beans are generated using a Maven plugin. This is all automatic. 
          However, if you wish to build by hand, see the scomp utility available with the XMLBeans distribution. 
          Here is an example of a scomp command:
          <br/><br/>
@@ -14,7 +14,7 @@
        	 <br/><br/>
        </p>
        <p>
-         Both the Ant task and the scomp utility require a schema and a configuration file.
+         Both the Maven plugin and the scomp utility require a schema and a configuration file.
        </p>
        <p>
        	<ul>  

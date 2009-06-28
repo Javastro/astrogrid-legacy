@@ -8,6 +8,7 @@
   <version>${astrogrid_adql2_version}</version>
   <name>Astrogrid ADQL Parser Server Version</name>
   <description>This project contains a program which manages a pool of Astrogrid ADQL parsers.</description>
+  <url>${astrogrid_doc_URL_root}/p/adql2/${project.version}/adqlserver</url>
 	<parent>
 		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
@@ -70,21 +71,6 @@
       <artifactId>astrogrid-adqlparser-base</artifactId>
       <version>${astrogrid_adql2_version}</version>
     </dependency>
-    <!-- dependency>
-    	<groupId>net.sf.saxon</groupId>
-      <artifactId>saxon</artifactId>
-      <version>6.5.5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlbeans</groupId>
-      <artifactId>xmlbeans</artifactId>
-      <version>2.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jsr173_api</artifactId>
-      <version>1.0</version>
-    </dependency -->
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-adqlbeans</artifactId>
@@ -129,4 +115,11 @@
       </plugin>
     </plugins>
   </reporting>
+  <distributionManagement>
+    <site>
+      <id>agsite</id>
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/astrogrid-adqlparser-sv</url>
+    </site>  
+ </distributionManagement>
 </project>
