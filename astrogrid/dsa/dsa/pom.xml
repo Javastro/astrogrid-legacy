@@ -182,6 +182,18 @@
     </dependency>
 
     <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-filestore-client</artifactId>
+      <version>2007.2fs</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-filestore-common</artifactId>
+      <version>2007.2fs</version>
+    </dependency>
+
+    <dependency>
       <groupId>uk.ac.starlink</groupId>
       <artifactId>stil</artifactId>
       <version>2.6-7</version>
