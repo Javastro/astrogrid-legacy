@@ -19,7 +19,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-dsa</artifactId>
-      <version>2009.1.a09</version>
+      <version>2009.1.a10</version>
     </dependency>
 
     <dependency>
