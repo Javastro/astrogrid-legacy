@@ -25,44 +25,6 @@
       </resource>
     </resources>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <showDeprecation>true</showDeprecation>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <links>http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlbeans/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-base/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-sv/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-utils/apidocs/</links>
-          <source>1.5</source>
-          <tags>
-            <tag>
-              <head>To Do:</head>
-              <name>todo</name>
-              <placement>a</placement>
-            </tag>
-            <tag>
-              <head>Future:</head>
-              <name>future</name>
-            </tag>
-            <tag>
-              <head>Modified:</head>
-              <name>modified</name>
-              <placement>a</placement>
-            </tag>
-          </tags>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>-ea</argLine>
-          <testFailureIgnore>true</testFailureIgnore>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -98,21 +60,6 @@
   </dependencies>
   <reporting>
     <plugins>
-      <plugin>
-        <artifactId>maven-changes-plugin</artifactId>
-        <configuration>
-          <xmlPath>${basedir}/xdocs/changes.xml</xmlPath>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-        <configuration>
-          <tags>
-            <tag>@TODO</tag>
-          </tags>
-        </configuration>
-      </plugin>
     </plugins>
   </reporting>
   <distributionManagement>
