@@ -7,11 +7,11 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-common</artifactId>
   <name>Common classes</name>
-  <version>2009.1-SNAPSHOT</version>
+  <version>2009.1</version>
   <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
+      <version>2009.1</version>
   </parent>
   
   <packaging>jar</packaging>
@@ -117,7 +117,6 @@
       <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
       <name>Default Site</name>
       <url>${astrogrid_doc_server_root}/p/${astrogrid_name}/${project.version}</url>
-      <!-- terror.star.le.ac.uk/ -->
-    </site>
+     </site>
  </distributionManagement>
  </project>

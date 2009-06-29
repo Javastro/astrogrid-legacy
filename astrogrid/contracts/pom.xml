@@ -10,10 +10,10 @@
    <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
+      <version>2009.1</version>
    </parent>
    <name>Astrogrid sub-system contracts</name>
-   <version>2009.1-SNAPSHOT</version>
+   <version>2009.1</version>
    <description>
       Contracts for interfaces to major components of AstroGrid. The
       contracts contain the XML schemata for the interfaces plus textual
@@ -138,7 +138,7 @@
       </dependency>
    </dependencies>
    
-    <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url>  --> 
+    <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url> 
    <distributionManagement>
     <site>
       <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
