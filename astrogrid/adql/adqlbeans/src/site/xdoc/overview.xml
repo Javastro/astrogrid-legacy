@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL XmlBeans Overview</title>
+    </properties>
+    <body>
+    <section name="Overview">
+       <p>
+         The generated XMLBeans are used to produce the XML form of a query as emitted by the base
+         ADQL parser. The whole XMLBeans framework is a powerful setup. There are factories to build every single
+         part of a query. Each bean allows manipulaton of its lower level structures, and there is access to all 
+         of the schema data, which is useful for introspection. There is a low level cursor architecture with the
+         ability to quickly examine (modify, copy, insert, delete) parts of a query, and many useful utility 
+         functions. 
+       </p>
+       <p>
+         The cursor architecture is used in semantic checking within the ADQL base parser.
+       </p>
+       <p>
+         The beans are particularly useful in producing a fragment of a query. For example, the base parser
+         in fragment mode can process in isolation the following fragment of ADQL:
+         <br/><br/>
+         (a.frequency&lt;=110 AND a.frequency&gt;=100) OR (a.frequency&lt;=220 AND a.frequency&gt;=210)
+         <br/><br/>
+         and the fragment of XML produced can then be inserted into an existing query. This aspect is used extensively
+         in the VODesktop's Query Builder.
+       </p>  
+       <p>
+       <a href="http://xmlbeans.apache.org">Read about XMLBeans here</a>  
+       </p>
+    </section>
+   </body>
+</document>

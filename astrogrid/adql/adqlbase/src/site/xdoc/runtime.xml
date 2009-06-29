@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL Base Parser - Runtime Considerations</title>
+    </properties>
+    <body>
+    <section name="Runtime Considerations">
+    
+    	<subsection name="Invocation">
+    		<p>
+    		The parser can be invoked for processing whole queries or fragments of queries.
+    		First a new parser must be instantiated or an existing one re-initialized with the query or 
+    		fragment of a query to be processed. There are then a number of convenience methods for executing a parse, 
+    		depending upon what is required to be returned: DOM, XML text, or XMLBean. You can ask for the text
+    		to be indented.	         
+	       </p>
+  		</subsection>
+  		
+    </section>
+   </body>
+</document>

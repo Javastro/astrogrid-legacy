@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL Base Parser - Syntax Diagrams</title>
+    </properties>
+    <body>
+    <section name="BNF Syntax Diagrams">
+       <p>
+       	<ul>  
+       		<li><a href="bnf/adql-bnf.html">BNF diagrams for ADQL v1.0 Astrogrid implementation</a></li> 
+       	</ul>
+       </p>
+
+    </section>
+   </body>
+</document>

@@ -23,14 +23,14 @@ import org.astrogrid.stc.coords.v1_10.beans.* ;
  *
  * (1) All methods which are quoted bnf statements follow the bnf format, 
  *     with any embedded dashes (-) removed from the name.
- *     Thus the the statment <comparison_predicate> from the SQL/92 standard
+ *     Thus the the statment &lt;comparison_predicate> from the SQL/92 standard
  *     will have a corresponding method with a name similar to comparison_predicate().
  *     However, such methods are decorated in a particular way, for which see
  *     points (2) and (3) below. All methods which are tantamount to quoted
  *     bnf will have the standard syntax as a comment embedded within them.
  *     Thus: 
  *     //S: 
- *     // <row_value_constructor> <comp_op> <row_value_constructor>
+ *     // &lt;row_value_constructor> &lt;comp_op> &lt;row_value_constructor>
  * (2) Methods which follow exactly the SQL/92 syntax at a shallow level are suffixed _S.
  *     Thus comparison_predicate_S() represents the SQL/92 standard syntax. Shallow implies
  *     that the syntax can still vary from the standard within statements quoted
@@ -55,11 +55,11 @@ import org.astrogrid.stc.coords.v1_10.beans.* ;
  * sorts of comments: singletons and multiples, depending on whether the BNF definition is on 
  * one or more lines. Two examples are given below:
  *
- *     bnf-single <boolean_factor> ::= [ NOT ] <boolean_test>
+ *     bnf-single &lt;boolean_factor> ::= [ NOT ] &lt;boolean_test>
  *     bnf-start
- *        <between_predicate> ::=
- *          <value_expression> [ NOT ] BETWEEN
- *          <value_expression> AND <value_expression>
+ *        &lt;between_predicate> ::=
+ *          &lt;value_expression> [ NOT ] BETWEEN
+ *          &lt;value_expression> AND &lt;value_expression>
  *     bnf-end
  *
  * (Real ones have to be positioned at the beginning of a line with each line prefixed by

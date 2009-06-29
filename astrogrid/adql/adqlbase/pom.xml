@@ -52,12 +52,7 @@
       </testResource>
     </testResources>
     <plugins>
-      <!-- plugin>
-        <groupId>maven-plugins</groupId>
-        <artifactId>maven-javacc-plugin</artifactId>
-        <version>1.1-patch</version>
-      </plugin -->
-      <plugin>
+      	<!-- plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>javacc-maven-plugin</artifactId>
 				<version>2.5</version>
@@ -68,7 +63,6 @@
 							<goal>jjtree-javacc</goal>
 						</goals>
 						<configuration>
-							<!-- options for JJTree and JavaCC go here -->
 							<isStatic>false</isStatic>
 							<jdkVersion>1.5</jdkVersion>
 							<multi>true</multi>
@@ -77,16 +71,16 @@
 							<nodeScopeHook>true</nodeScopeHook>
 							<nodeUsesParser>true</nodeUsesParser>
 							<ignoreCase>true</ignoreCase>
-							<sourceDirectory>${basedir}src/java/org/astrogrid/adql
+							<sourceDirectory>${basedir}/src/java/org/astrogrid/adql
 							</sourceDirectory>
-							<interimDirectory>${basedir}src/java/org/astrogrid/adql
+							<interimDirectory>${basedir}/src/java/org/astrogrid/adql
 							</interimDirectory>
-							<outputDirectory>${basedir}src/java/org/astrogrid/adql
+							<outputDirectory>${basedir}/src/java/org/astrogrid/adql
 							</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin -->
     </plugins>
   </build>
   <dependencies>  

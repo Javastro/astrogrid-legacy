@@ -53,7 +53,7 @@
       </testResource>
     </testResources>
     <plugins>
-      <plugin>
+      <!-- plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>javacc-maven-plugin</artifactId>
 				<version>2.5</version>
@@ -64,7 +64,6 @@
 							<goal>jjtree-javacc</goal>
 						</goals>
 						<configuration>
-							<!-- options for JJTree and JavaCC go here -->
 							<isStatic>false</isStatic>
 							<jdkVersion>1.5</jdkVersion>
 							<multi>true</multi>
@@ -73,57 +72,16 @@
 							<nodeScopeHook>true</nodeScopeHook>
 							<nodeUsesParser>true</nodeUsesParser>
 							<ignoreCase>true</ignoreCase>
-							<sourceDirectory>${basedir}src/java/org/astrogrid/adql
+							<sourceDirectory>${basedir}/src/java/org/astrogrid/adql
 							</sourceDirectory>
-							<interimDirectory>${basedir}src/java/org/astrogrid/adql
+							<interimDirectory>${basedir}/src/java/org/astrogrid/adql
 							</interimDirectory>
-							<outputDirectory>${basedir}src/java/org/astrogrid/adql
+							<outputDirectory>${basedir}/src/java/org/astrogrid/adql
 							</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-      <!-- plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <showDeprecation>true</showDeprecation>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <links>http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlbeans/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-base/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-sv/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/adql2/multiproject/astrogrid-adqlparser-utils/apidocs/</links>
-          <source>1.5</source>
-          <tags>
-            <tag>
-              <head>To Do:</head>
-              <name>todo</name>
-              <placement>a</placement>
-            </tag>
-            <tag>
-              <head>Future:</head>
-              <name>future</name>
-            </tag>
-            <tag>
-              <head>Modified:</head>
-              <name>modified</name>
-              <placement>a</placement>
-            </tag>
-          </tags>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>-ea</argLine>
-          <testFailureIgnore>true</testFailureIgnore>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-        </configuration>
-      </plugin -->
+			</plugin -->
     </plugins>
   </build>
   <dependencies>

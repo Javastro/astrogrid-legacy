@@ -1,5 +1,5 @@
 
-/*$Id: AdqlStoXTest.java,v 1.2 2009/06/17 10:13:32 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.3 2009/06/29 09:40:02 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -240,7 +240,7 @@ public class AdqlStoXTest extends XMLTestCase {
     
     // JL note:
     // need to try the next two tests for memory on separate threading basis as well.
-    public void testMemoryUsageWithReinit() throws OutOfMemoryError {
+    public void _testMemoryUsageWithReinit() throws OutOfMemoryError {
         // NB: (JL) I've tried this with the setting set to 1000000 and it worked.
         //
         // Turn off all logging.
@@ -310,7 +310,7 @@ public class AdqlStoXTest extends XMLTestCase {
                
     }
     
-    public void testMemoryUsageWithoutReinit() throws OutOfMemoryError {
+    public void _testMemoryUsageWithoutReinit() throws OutOfMemoryError {
         //
         // Turn off all logging.
         // Precaution in case the log level is set inappropriately,
@@ -703,10 +703,13 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.2  2009/06/17 10:13:32  jl99
- * Merge of adql v1 parser with maven 2 build.
- * Due to some necessary restructuring, the maven 1 build process has been removed.
+ * Revision 1.3  2009/06/29 09:40:02  jl99
+ * Removed javacc plugin to prevent regeneration of code.
  *
+/* Revision 1.2  2009/06/17 10:13:32  jl99
+/* Merge of adql v1 parser with maven 2 build.
+/* Due to some necessary restructuring, the maven 1 build process has been removed.
+/*
 /* Revision 1.1.2.1  2009/06/16 07:49:41  jl99
 /* First commit of maven 2 build
 /*
