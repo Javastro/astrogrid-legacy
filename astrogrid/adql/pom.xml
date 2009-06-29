@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-adqlv1parser</artifactId>
-  <version>${astrogrid_adql1_version}</version>
+  <version>2008.1.03sx</version>
   <parent>
   	<artifactId>astrogrid-base</artifactId>
   	<groupId>org.astrogrid</groupId>
-  	<version>2009.1-SNAPSHOT</version> 
+  	<version>2009.1</version> 
   </parent>
   <packaging>pom</packaging>
-  <name>AstroGrid ADQL Version 1 Parser Master POM</name>
+  <name>AstroGrid ADQL Parser Version 1</name>
   <description>
           This project contains a parser which processes queries written in ADQL (Astronomical Data Query Language).
           Please Note: this is the ADQL version 1 parser. For ADQL version 2, please see the adql2 project.
@@ -45,7 +45,7 @@
   	</developer>
   </developers>
   <properties>
-		<astrogrid_name>adql</astrogrid_name>
+		
   </properties>
   <scm>
   	<connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/adql/</connection>

@@ -6,25 +6,26 @@
     <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-adql_v1_0a2</artifactId>
 	   <packaging>jar</packaging>
-	<version>${astrogrid_adql1_beans_version}</version>
  
   <name>Generated XMLBeans for ADQL</name>
+  <version>${astrogrid_adql1_beans_version}</version>
   <description>
   			The XmlBeans required for ADQL version 1.
             The ADQL parser, having parsed a piece of ADQL, then forms it into an intermediate XML format
             according to an ADQL schema. All creation and manipulation is undertaken using the XMLBeans
             framework. The beans generated from the schema are a critical part of the process. 
             
-            The beans are also used within the AstroGrid VO desktop.&lt;br/>
+            The beans are also used within the AstroGrid VO desktop.
    </description>
+  <url>${astrogrid_doc_URL_root}/p/adql/${project.version}/adqlbeans</url>
     	
    <parent>
 		<artifactId>astrogrid-adqlv1parser</artifactId>
 		<groupId>org.astrogrid</groupId>
-		<version>${astrogrid_adql1_version}</version>
+		<version>2008.1.03sx</version>
 	</parent>
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
+    <sourceDirectory>src/generated-sources</sourceDirectory>
     <plugins>
       <plugin>
   			<groupId>org.codehaus.mojo</groupId>
@@ -71,4 +72,11 @@
     <plugins>
     </plugins>
   </reporting>
+  <distributionManagement>
+    <site>
+      <id>agsite</id>  
+      <name>Default Site</name>
+      <url>${astrogrid_doc_server_root}/p/adql/${project.version}/adqlbeans</url>
+    </site>  
+  </distributionManagement>
 </project>
