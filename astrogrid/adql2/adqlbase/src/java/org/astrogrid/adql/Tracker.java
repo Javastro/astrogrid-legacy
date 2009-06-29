@@ -1,4 +1,4 @@
-/*$Id: Tracker.java,v 1.3 2009/06/28 14:45:25 jl99 Exp $
+/*$Id: Tracker.java,v 1.4 2009/06/29 21:12:58 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -53,10 +53,6 @@ public class Tracker {
      * parser: by an xml element and its type within the xml schema. 
      * 
      * @author Jeff Lusted jl99@star.le.ac.uk
-     */
-    /**
-     * @author jl99
-     *
      */
     public class Part {
         
@@ -652,6 +648,9 @@ public class Tracker {
 
 /*
 $Log: Tracker.java,v $
+Revision 1.4  2009/06/29 21:12:58  jl99
+Updated javadocs
+
 Revision 1.3  2009/06/28 14:45:25  jl99
 Tidying up of the maven build
 

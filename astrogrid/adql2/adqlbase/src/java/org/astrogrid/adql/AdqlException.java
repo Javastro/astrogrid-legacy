@@ -1,4 +1,4 @@
-/*$Id: AdqlException.java,v 1.2 2008/09/08 15:37:03 jl99 Exp $
+/*$Id: AdqlException.java,v 1.3 2009/06/29 21:12:58 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -14,9 +14,12 @@ import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
 /**
- * AdqlException
+ * The <code>AdqlException</code> class wraps the <code>Tracker</code> object in error
+ * situations. The <code>Tracker</code> object is a container of messages and tracked
+ * positions.
  *
- *
+ * @see org.astrogrid.adql.Tracker
+ * 
  * @author Jeff Lusted jl99@star.le.ac.uk
  * Apr 17, 2007
  */
@@ -26,15 +29,34 @@ public class AdqlException extends Exception {
     
     private Tracker tracker ;
     
+    /**
+     * The only permitted constructor, as <code>AdqlException</code> must contain the
+     * <code>Tracker</code> object.
+     * 
+     * @param tracker
+     * @see org.astrogrid.adql.Tracker
+     */
     public AdqlException( Tracker tracker ) {
         this.tracker = tracker ;
     }
     
+    private AdqlException() {}
+    
+    /**
+     * Returns the enclosed <code>Tracker</code>.
+     * 
+     * @return the enclosed <code>Tracker</code> object.
+     */
     public Tracker getTracker() {
         return this.tracker ;
     }
     
 
+    /**
+     * Returns the error messages contained within the <code>Tracker</code>
+     * 
+     * @return the error messages contained within the <code>Tracker</code> object.
+     */
     public String[] getErrorMessages() {  
         if( log.isTraceEnabled() ) { log.trace( "enter: getMessages()" ) ; } 
         ArrayList errors = tracker.getErrors() ;
@@ -81,10 +103,20 @@ public class AdqlException extends Exception {
         return false ;
     }
     
+    /**
+     * Returns true if a warning message is present, false otherwise.
+     * 
+     * @return true if a warning message is present, false otherwise.
+     */
     public boolean isWarningMessage() {
         return tracker.isWarningMessage() ;
     }
     
+    /**
+     * Returns the warning messages contained within the <code>Tracker</code>
+     * 
+     * @return the warning messages contained within the <code>Tracker</code> object.
+     */
     public String[] getWarningMessages() {
         return tracker.getWarningMessages() ;
     }
@@ -94,6 +126,9 @@ public class AdqlException extends Exception {
 
 /*
 $Log: AdqlException.java,v $
+Revision 1.3  2009/06/29 21:12:58  jl99
+Updated javadocs
+
 Revision 1.2  2008/09/08 15:37:03  jl99
 Merge of branch adql_jl_2575_mark2 into HEAD
 

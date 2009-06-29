@@ -24,7 +24,6 @@ import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlCursor;
 
-
 /** 
  * The <code>AdqlParser</code> class is the top of a hierarchy of classes that help parse ADQL queries 
  * into an intermediate XML format, or report back on any errors encountered. 
@@ -102,62 +101,238 @@ public class AdqlParser {
     
 	private StringBuffer logIndent = null ;
 	
+	/**
+	 * Error message regarding duplicate table aliases.
+	 */
 	public static final String DUPLICATE_TABLE_ALIAS =
 	     "Duplicated table alias: " ;
+	
+	/**
+	 * Error message regarding duplicate aliases (table or otherwise).
+	 */
 	public static final String TABLE_ALIAS_CLASH =
 	     "Alias with same name as a table: " ;
+	
+	/**
+	 * Error message regarding unknown table or table alias.
+	 */
 	public static final String NONEXISTENT_ALIAS =
 	     "Column reference with unknown table or table alias: " ;
+	
+	/**
+	 * Error message regarding a duplicated expression alias.
+	 */
 	public static final String DUPLICATE_EXPRESSION_ALIAS =
 	     "Duplicated expression alias: " ;
+	
+    /**
+     * Error message regarding an expression alias and a table alias which happen to be the same.
+     */
     public static final String EXPRESSION_ALIAS_CLASH_WITH_TABLE =
          "Expression alias with same name or alias as a table: " ;
+    
+	/**
+	 * Error message regarding parsing a fragment of ADQL. The passed context was
+	 * not identified as a recognised fragment of ADQL,
+	 */
 	public static final String UNRECOGNIZED_FRAGMENT =
 	     "Unrecognized fragment of ADQL: " ;
+	
+	/**
+	 * Error message regarding extra characters found beyond the end of the query.
+	 */
 	public static final String UNEXPECTED_REMAINDER =     
 	     "Unexpected remaining characters found: " ;
+	
+    /**
+     * Error message regarding the use of an unknown table.
+     */
     public static final String UNKNOWN_TABLE =
          "Unknown table: " ;
+    
+    /**
+     * Error message regarding the use of an unknown column.
+     */
     public static final String COLUMN_NOT_KNOWN_IN_THIS_TABLE =
         "Column not known in this table: " ;
+    
+    /**
+     * Error message regarding premature end of query whilst still
+     * in the SELECT list.
+     */
     public static final String PREMATURE_EOF_WHILST_IN_SELECTION_LIST =
         "premature end of query whilst searching selection list." ;
     
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String SELECT_ELEMENT = "Select" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
     public static final String QUERYEXPRESSION_ELEMENT = "QueryExpression" ;
+    /**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String ALLOW_ELEMENT = "Allow" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String RESTRICT_ELEMENT = "Restrict" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String SELECTION_LIST_ELEMENT = "SelectionList" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String FROM_ELEMENT = "From" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String WHERE_ELEMENT = "Where" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String GROUPBY_ELEMENT = "GroupBy" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String HAVING_ELEMENT = "Having" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String ORDERBY_ELEMENT = "OrderBy" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String COLUMN_ELEMENT = "Column" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String ITEM_ELEMENT = "Item" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String SET_ELEMENT = "Set" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
     public static final String INVALUELIST_ELEMENT = "InValueList" ;
+    /**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String CONDITION_ELEMENT = "Condition" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String TABLE_ELEMENT = "Table" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String ARG_ELEMENT = "Arg" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String PATTERN_ELEMENT = "Pattern" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String EXPRESSION_ELEMENT = "Expression" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String ORDER_ELEMENT = "Order" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String FROM_TABLE_TYPE_ELEMENT = "fromTableType" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String TABLES_ELEMENT = "Tables" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String LITERAL_ELEMENT = "Literal" ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
     public static final String JOINSPECIFICATION_ELEMENT = "JoinSpecification" ;
-    
+    /**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
     public static final String AGGREGATE_FUNCTION_TYPE = AggregateFunctionType.type.getShortJavaName() ;
-	public static final String INCLUSIVE_SEARCH_TYPE = InclusiveSearchType.type.getShortJavaName() ;	
+    /**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
+	public static final String INCLUSIVE_SEARCH_TYPE = InclusiveSearchType.type.getShortJavaName() ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String EXCLUSIVE_SEARCH_TYPE = ExclusiveSearchType.type.getShortJavaName() ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String ORDER_TYPE = OrderType.type.getShortJavaName() ;
-	public static final String ORDER_OPTION_TYPE = OrderOptionType.type.getShortJavaName() ;	
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
+	public static final String ORDER_OPTION_TYPE = OrderOptionType.type.getShortJavaName() ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String TABLE_TYPE = TableType.type.getShortJavaName() ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String JOIN_TABLE_TYPE = JoinTableType.type.getShortJavaName() ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String ARRAY_OF_FROM_TABLE_TYPE = ArrayOfFromTableType.type.getShortJavaName() ;
+	/**
+	 * Fragment context used in parsing a fragment.
+	 * @see org.astrogrid.adql.AdqlParser#parseFragmentToXmlBean(String)
+	 */
 	public static final String ALIAS_SELECTION_ITEM_TYPE = AliasSelectionItemType.type.getShortJavaName() ;
         
+	
+    /**
+     * Suitable array of token kinds for skipping passed an error encountered in a SELECT clause
+     */
     public static final int[] SELECTION_LIST_SKIP_TO = { 
     	AdqlStoXConstants.FROM, 
     	AdqlStoXConstants.WHERE,
@@ -166,7 +341,10 @@ public class AdqlParser {
     	AdqlStoXConstants.ORDERBY,
         AdqlStoXConstants.SELECT    
     } ;
-		      
+		
+    /**
+     * Suitable array of token kinds for skipping passed an error encountered in a WHERE clause
+     */
     public static final int[] WHERE_SKIP_TO = { 
     	AdqlStoXConstants.GROUPBY,
     	AdqlStoXConstants.HAVING,
@@ -174,6 +352,9 @@ public class AdqlParser {
         AdqlStoXConstants.SELECT
     } ;
     
+    /**
+     * Suitable array of token kinds for skipping passed an error encountered in a FROM clause
+     */
     public static final int[] FROM_SKIP_TO = { 
     	AdqlStoXConstants.WHERE,
     	AdqlStoXConstants.GROUPBY,
@@ -182,7 +363,11 @@ public class AdqlParser {
         AdqlStoXConstants.SELECT
     } ;
     
-     public static final int[] TABLE_REF_SKIP_TO = { 
+    /**
+     * Suitable array of token kinds for skipping passed an error encountered in a reference to
+     * a table.
+     */
+    public static final int[] TABLE_REF_SKIP_TO = { 
      	AdqlStoXConstants.COMMA,
     	AdqlStoXConstants.WHERE,
     	AdqlStoXConstants.GROUPBY,
@@ -190,18 +375,15 @@ public class AdqlParser {
     	AdqlStoXConstants.ORDERBY,
         AdqlStoXConstants.SELECT
     } ;
-     
-     
+         
      private int prettyPrintIndent = 2 ;
      private ArrayList tableReferences = new ArrayList() ;
      private ArrayList columnReferences = new ArrayList() ;
-     private ArrayList aliasSelections = new ArrayList() ;
-     
-     
+     private ArrayList aliasSelections = new ArrayList() ;    
 
     /**
-     * Enables different areas of syntax checking to be turned off/on at runtime.
-     * Thus it provides a more flexible approach to extending the ADQL syntax.
+     * Enables different areas of syntax checking to be turned off/on at runtime,
+     * Provides a somewhat more flexible approach to extending the ADQL syntax.
      */
     public enum SyntaxOption {
         
@@ -343,7 +525,7 @@ public class AdqlParser {
      
      /**
      * Array of support options which covers ADQL version 2.0 support.
-     * This is simply synonym for FULL_REGION_SUPPORT.
+     * This is simply a synonym for FULL_REGION_SUPPORT.
      */
      public static final SyntaxOption[] V20 = FULL_REGION_SUPPORT ;
      
@@ -647,7 +829,11 @@ public class AdqlParser {
          }   
      }
     
+    /**
+     * The generated JavaCC parser for which AdqlParser is the wrapper.
+     */
     protected AdqlStoX adqlstox ;
+    
 	private StringBuffer uBuffer = new StringBuffer() ;    
     private boolean semanticProcessing = false ;
     private MetadataQuery metadataQuery = null ;
@@ -737,6 +923,15 @@ public class AdqlParser {
         }    
     }
     
+    /**
+     * Returns the <code>XmlOptions</code> required to produce
+     * a text representation of the emitted XML.
+     * If <code>prettyPrint</code> is true, the text will be
+     * indented according to the <code>prettyPrintIndent</code> setting.
+     * 
+     * @param prettyPrint
+     * @return XmlOptions
+     */
     public XmlOptions getSaveOptions( boolean prettyPrint ) {
         XmlOptions opts = new XmlOptions();
         opts.setSaveOuter() ;
@@ -1767,6 +1962,13 @@ public class AdqlParser {
         }
     }
  
+    /**
+     * Utility routine to check whether a token kind matches a given array.
+     * 
+     * @param kindArray
+     * @param kind
+     * @return true if kind is matched within the array
+     */
     protected boolean matches( int[] kindArray, int kind ) {
     	for( int i=0; i < kindArray.length; i++ ) {
     		if( kind == kindArray[i] ) {
@@ -1800,26 +2002,51 @@ public class AdqlParser {
     	return uBuffer ;
     }
 
+	/**
+	 * Utility routine to enter a structured message in the trace log that the given method 
+	 * has been entered. Almost essential for syntax debugging.
+	 * 
+	 * @param entry: the name of the method entered
+	 * @see        org.astrogrid.AdqlParser#exitTrace(String)
+	 */
 	public void enterTrace( String entry ) {
 		log.trace( getIndent().toString() + "enter: " + entry ) ;
 		indentPlus() ;
 	}
 
+    /**
+     * Utility routine to enter a structured message in the trace log that the given method 
+	 * has been exited. Almost essential for syntax debugging.
+	 * 
+     * @param entry: the name of the method exited
+     * @see        org.astrogrid.AdqlParser#enterTrace(String)
+     */
     public void exitTrace( String entry ) {
     	indentMinus() ;
 		log.trace( getIndent().toString() + "exit : " + entry ) ;
 	}
 	
+    /**
+     * Utility method used to maintain the structured trace log.
+     * @see        org.astrogrid.AdqlParser#indentMinus()
+     */
     public void indentPlus() {
 		getIndent().append( ' ' ) ;
 	}
 	
+    /**
+     * Utility method used to maintain the structured trace log.
+     * @see        org.astrogrid.AdqlParser#indentPlus()
+     */
     public void indentMinus() {
         if( logIndent.length() > 0 ) {
             getIndent().deleteCharAt( logIndent.length()-1 ) ;
         }
 	}
 	
+    /**
+     * Utility method used for indenting the structured trace log.
+     */
     public StringBuffer getIndent() {
 	    if( logIndent == null ) {
 	       logIndent = new StringBuffer() ;	
@@ -1827,7 +2054,7 @@ public class AdqlParser {
 	    return logIndent ;	
 	}
     
-    public void resetIndent() {
+    private void resetIndent() {
         if( logIndent != null ) { 
             if( logIndent.length() > 0 ) {
                logIndent.delete( 0, logIndent.length() )  ;
@@ -1835,6 +2062,15 @@ public class AdqlParser {
         }   
     }
 	
+	/**
+	 * Error "recovery" routine. Does not actually recover an encountered error,
+	 * but will force the underlying AdqlStoX parser to skip over tokens until it
+	 * finds one that matches <code>kindArray</code> is encountered. The parsing will
+	 * then take up from a new position.
+	 * 
+	 * @param kindArray
+	 * @return
+	 */
 	protected boolean errorSkipTo( int[] kindArray ) {
 	    if( log.isTraceEnabled() ) enterTrace ( "errorSkipTo()" ) ;
 	    try {
@@ -1861,6 +2097,15 @@ public class AdqlParser {
 	    }
     }
     
+	/**
+	 * Error "recovery" routine. Does not actually recover an encountered error,
+	 * but will force the underlying AdqlStoX parser to skip over tokens until it
+	 * finds one that is not matched by any within <code>kindArray</code>. 
+	 * The parsing will then take up from a new position.
+	 * 
+	 * @param kindArray
+	 * @return
+	 */
 	protected void errorSkipPast( int[] kindArray, ParseException pex ) 
 	{
 	    if( log.isTraceEnabled() ) enterTrace ( "errorSkipPast()" ) ;	
@@ -1880,7 +2125,14 @@ public class AdqlParser {
 	        if( log.isTraceEnabled() ) exitTrace ( "errorSkipPast()" ) ;
 	    }
 	}
-    protected boolean checkForMatchingBrace( int startAt ) {      if( log.isTraceEnabled() ) enterTrace ( "checkForMatchingBrace()" ) ;
+    /**
+     * Routine for matching brackets, by reading ahead until the end of the query.
+     * If unmatched brackets are encountered, will raise an error in the <code>Tracker</code>.
+     * 
+     * @param startAt; ie: offset from the current parser position.
+     * @return true if the rest of the query has matched brackets, false otherwise
+     */
+    protected boolean checkForMatchingBrace( int startAt ) {      if( log.isTraceEnabled() ) enterTrace ( "checkForMatchingBrace()" ) ;
       boolean retCode = false ;      try {
           Token tok = null ;          int i = startAt ;
           if( log.isDebugEnabled() ) {
@@ -1921,6 +2173,13 @@ public class AdqlParser {
           return retCode ;                }      finally {      	 if( log.isDebugEnabled() ) {      	    log.debug( "retCode: " + retCode ) ;	      	 }      	 if( log.isTraceEnabled() ) exitTrace ( "checkForMatchingBrace()" ) ;      }
           }
     
+    /**
+     * Routine for matching brackets, by reading ahead until a given position.
+     * If unmatched brackets are encountered, will raise an error in the <code>Tracker</code>.
+     * 
+     * @param startAt; ie: offset from the current parser position.
+     * @return true if no unmatched brackets are encountered, false otherwise
+     */
     protected boolean checkForMatchingBraces( Token fromHere, Token toHere ) {
         if( log.isTraceEnabled() ) enterTrace ( "checkForMatchingBraces()" ) ;
         try {    
@@ -1961,6 +2220,15 @@ public class AdqlParser {
         }
     }
     
+    /**
+     * Utility routine to aid in skipping past errors encountered in the Select list.
+     * It is an attempt at making the detection of multiple errors in a complex Select list.
+     * It is invoked on each sublist; ie: each member (or value expression) of the select list.
+     * 
+     * @param first. Boolean to indicate this is the first entry in the Select list.
+     * @param pex. Generalized error exception already raised.
+     * @throws ParseException. A more targetted exception, or the one already passed in.
+     */
     protected void selectSublistError( boolean first, ParseException pex ) throws ParseException {
       if( log.isTraceEnabled() ) enterTrace ( "selectSublistError()" ) ;
       try {
@@ -2002,7 +2270,9 @@ public class AdqlParser {
     
 
     /**
-     * 
+     * Checks for marginal conditions when processing the Select list;
+     * ie: That a sublist does not start with a comma, or alternatively ends with multiple commas.
+     * An aid to supporting the diagnosis of multiple errors in the Select list.
      */
     protected void selectSublistEnsureNotComma() {
         if( log.isTraceEnabled() ) enterTrace ( "selectSublistEnsureNotComma()" ) ;
@@ -2021,7 +2291,10 @@ public class AdqlParser {
 
     
     /**
-     * 
+     * Checks for marginal conditions when processing the Select list;
+     * ie: That a sublist does not start with a comma, or alternatively ends with multiple commas,
+     * or that the FROM is not accidentally trapped by a simple syntax error.
+     * An aid to supporting the diagnosis of multiple errors in the Select list, and beyond.
      */
     protected void selectSublistEnsureCommaOrFrom() {
         if( log.isTraceEnabled() ) enterTrace ( "selectSublistEnsureCommaOrFrom()" ) ;
@@ -2074,6 +2347,21 @@ public class AdqlParser {
     int ffoReturnValue = 0 ;
     Token ffoFirstToken = new Token() ;
     
+    /**
+     * A utility routine that attempts to type a value expression by looking for a first
+     * operator within the given expression. The "given expression" is given in the sense 
+     * that the parser is currently positioned on some value expression.
+     * <br/><br/>
+     * For example the following expression would return the kind 
+     * <code>AdqlStoXConstants.PLUS_SIGN</code> by encountering the + sign:
+     * <p><blockquote><pre>
+     *     sin(col1) + cos(col2)
+     * </pre></blockquote>
+     * 
+     * @param countAhead. The number of tokens to be examined before abandoning the search.
+     * @param defaultValue. To be returned if no operator is encountered before the countAhead, or EOF.
+     * @return The operator encountered, or the defaultValue.
+     */
     protected int findFirstOperator( int countAhead, int defaultValue ) {
 //        if( log.isTraceEnabled() ) enterTrace ( "findFirstOperator()" ) ;
         try {
@@ -2128,6 +2416,12 @@ public class AdqlParser {
         }
     }
     
+    /**
+     * Utility routine that checks the depth of qualification of a database object.
+     *  
+     * @param partsToCheck. The number of parts to check in the chain.
+     * @return True is the qualifaction is of this depth, false otherwise.
+     */
     protected boolean ifQualifiedPartsEqual( int partsToCheck ) {
 //        if( log.isTraceEnabled() ) enterTrace ( "countQualifiedParts()" ) ;
         boolean retValue = false ;
@@ -2163,6 +2457,12 @@ public class AdqlParser {
         return retValue ;
     }
     
+    /**
+     * Utility routine for discovering a .* qualification
+     * 
+     * @param countAhead: Number of tokens to search ahead.
+     * @return True if .* qualification encountered, false otherwise.
+     */
     protected boolean findPeriodAsterisk( int countAhead ) {
         if( log.isTraceEnabled() ) enterTrace ( "findPeriodAsterisk()" ) ;
         int count = countAhead - 2 ;
@@ -2184,6 +2484,12 @@ public class AdqlParser {
         }
       }
     
+    /**
+     * Utility routine for searching ahead to find a JOIN operator.
+     * 
+     * @param countAhead. Number of tokens to search ahead.
+     * @return True if a join operator is encountered, false otherwise.
+     */
     protected boolean findJoinOperator( int countAhead ) {
         if( log.isTraceEnabled() ) enterTrace ( "findJoinOperator()" ) ;
         int count = countAhead - 2 ;
