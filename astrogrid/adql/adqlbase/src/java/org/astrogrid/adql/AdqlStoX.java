@@ -103,7 +103,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
                 log.trace( compiler.getIndent().toString() + "exit : " + entry ) ;
         }
 
-/**
+/*
  * actual_identifier_S
  *
  * bnf-single <actual_identifier> ::= <regular_identifier> | <delimited_identifier>
@@ -176,7 +176,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     throw new Error("Missing return statement in function");
   }
 
-/**
+/*
  * between_predicate_A
  *
  * bnf-start
@@ -242,7 +242,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * boolean_primary_S
  *
  * bnf-start
@@ -340,7 +340,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * boolean_term_S
  *
  * bnf-start
@@ -392,7 +392,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * boolean_factor_S
  *
  * bnf-single <boolean_factor> ::= [ NOT ] <boolean_test>
@@ -445,7 +445,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * boolean_test_A
  *
  * bnf-start
@@ -459,7 +459,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
                 if( log.isTraceEnabled() ) exitTrace ( "boolean_test_A()" ) ;
   }
 
-/**
+/*
  * like_predicate_A
  *
  * bnf-start
@@ -521,7 +521,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     jj_consume_token(337);
   }
 
-/**
+/*
  * character_factor_A
  *
  * bnf-start
@@ -533,7 +533,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     character_primary_A();
   }
 
-/**
+/*
  * character_primary_A
  *
  * bnf-start
@@ -545,7 +545,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     value_expression_primary_A();
   }
 
-/**
+/*
  * character_string_literal_A
  *
  * bnf-start
@@ -647,7 +647,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * character_value_expression_A
  *
  * bnf-start
@@ -666,7 +666,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     qualified_name_A();
   }
 
-/**
+/*
  * column_name_S
  *
  * bnf-single <column_name> ::= <identifier>
@@ -706,7 +706,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * column_name_list_S
  *
  * bnf-single <column_name_list> ::= <column_name> [ { <comma> <column_name> }... ]
@@ -729,7 +729,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * column_reference_A
  *
  * bnf-start
@@ -793,9 +793,9 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-///**// * aliased_expression_reference_A// *// *-bnf-start// *- <aliased_expression_reference> ::= <identifier>// *- !! ADQL specific. // *- NB. This is simply a reference to an aliased expression.// *-bnf-end// *// *///AliasSelectionItemType aliased_expression_reference_A() ://{//	if( log.isTraceEnabled() ) enterTrace ( "aliased_expression_reference_A()" ) ;//	AliasSelectionItemType asiType = null ;//	String name = null ;//}//{//	////	// Note especially that this is simply a reference to an//	// aliased expression defined elsewhere. At this point we//	// only have the name of the alias, not the content, so we//	// can only construct an empty AliasSelectionItemType.//	// Filling in these must wait until the whole query has//	// been assembled and is thought to be syntactically correct!!!//	name=identifier_A()//	{//		if( name != null ) {//		    asiType = AliasSelectionItemType.Factory.newInstance() ;//			asiType.setAs( name ) ;//		}//	    if( log.isTraceEnabled() ) exitTrace ( "aliased_expression_reference_A()" ) ;		//	    return asiType ;	//	}//}
+///*// * aliased_expression_reference_A// *// *-bnf-start// *- <aliased_expression_reference> ::= <identifier>// *- !! ADQL specific. // *- NB. This is simply a reference to an aliased expression.// *-bnf-end// *// *///AliasSelectionItemType aliased_expression_reference_A() ://{//	if( log.isTraceEnabled() ) enterTrace ( "aliased_expression_reference_A()" ) ;//	AliasSelectionItemType asiType = null ;//	String name = null ;//}//{//	////	// Note especially that this is simply a reference to an//	// aliased expression defined elsewhere. At this point we//	// only have the name of the alias, not the content, so we//	// can only construct an empty AliasSelectionItemType.//	// Filling in these must wait until the whole query has//	// been assembled and is thought to be syntactically correct!!!//	name=identifier_A()//	{//		if( name != null ) {//		    asiType = AliasSelectionItemType.Factory.newInstance() ;//			asiType.setAs( name ) ;//		}//	    if( log.isTraceEnabled() ) exitTrace ( "aliased_expression_reference_A()" ) ;		//	    return asiType ;	//	}//}
 
-/**
+/*
  * value_expression_primary_A
  *
  * NB: Referred in some sources as <common_primary>
@@ -872,7 +872,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * comp_op_S
  *
  * bnf-start
@@ -929,7 +929,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * comparison_predicate_A
  *
  * bnf-start
@@ -979,7 +979,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * correlation_name_S
  *
  * bnf-single <correlation_name> ::= <identifier>
@@ -1179,7 +1179,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * derived_column_list_S
  *
  * bnf-single <derived_column_list> ::= <column_name_list>
@@ -1226,7 +1226,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     character_value_expression_A();
   }
 
-/**
+/*
  * exact_numeric_literal_S
  *
  * bnf-start
@@ -1284,7 +1284,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     table_name_A();
   }
 
-/**
+/*
  * factor_S
  *
  * bnf-single <factor> ::= [ <sign> ] <numeric_primary> 
@@ -1337,7 +1337,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * sign
  *
  * bnf-single <sign> ::= <plus_sign> | <minus_sign>
@@ -1377,7 +1377,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     throw new Error("Missing return statement in function");
   }
 
-/**
+/*
  * from_clause_S
  *
  * bnf-start
@@ -1438,7 +1438,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * general_literal_A
  *
  * bnf-start
@@ -1450,7 +1450,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     character_string_literal_A();
   }
 
-/**
+/*
  * general_set_function_A
  *
  * bnf-start
@@ -1517,7 +1517,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * general_value_specification_A
  *
  * -bnf-start
@@ -1546,7 +1546,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     throw new Error("Missing return statement in function");
   }
 
-/**
+/*
  * group_by_clause_S
  *
  * bnf-start
@@ -1591,7 +1591,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * grouping_column_reference_list_S
  *
  * bnf-start
@@ -1647,7 +1647,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * grouping_column_reference_A
  *
  * bnf-start
@@ -1661,7 +1661,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
                 if( log.isTraceEnabled() ) exitTrace ( "grouping_column_reference_A()" ) ;
   }
 
-/**
+/*
  * having_clause_S
  *
  * bnf-single <having_clause> ::= HAVING <search_condition>	
@@ -1704,7 +1704,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * identifier_A
  *
  * bnf-start
@@ -1716,7 +1716,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     actual_identifier_S();
   }
 
-/**
+/*
  * in_predicate_A
  *
  * bnf-start
@@ -1770,7 +1770,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * in_predicate_value_S
  *
  * bnf-start
@@ -2003,7 +2003,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * in_value_list_A
  *
  * bnf-start
@@ -2055,7 +2055,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * in_value_list_constant_A
  *
  * bnf-start
@@ -2131,7 +2131,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * join_specification_A
  *
  * bnf-start
@@ -2148,7 +2148,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     comparison_predicate_A();
   }
 
-/**
+/*
  * joined_table_S
  *
  *-bnf-start
@@ -2170,7 +2170,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
                 if( log.isTraceEnabled() ) exitTrace ( "joined_table_S()" ) ;
   }
 
-/**
+/*
  * join_type_A
  *
  * bnf-start
@@ -2229,7 +2229,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * match_value_S
  *
  * bnf-single <match_value> ::= <character_value_expression>
@@ -2303,7 +2303,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     table_subquery_S();
   }
 
-/**
+/*
  * math_function_A
  *
  * bnf-start
@@ -2566,7 +2566,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     jj_consume_token(NULL);
   }
 
-/**
+/*
  * numeric_primary_S
  *
  * bnf-start
@@ -2606,7 +2606,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
                 if( log.isTraceEnabled() ) exitTrace ( "numeric_primary_S()" ) ;
   }
 
-/**
+/*
  * numeric_value_expression_S
  *
  * bnf-start
@@ -2672,7 +2672,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * numeric_value_function_A
  *
  * bnf-start
@@ -2825,7 +2825,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * order_by_clause
  *
  * bnf-start
@@ -2870,7 +2870,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * sort_specification_list
  *
  * bnf-start
@@ -2926,7 +2926,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * sort_specification_A
  *
  * bnf-start
@@ -3020,7 +3020,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     row_value_constructor_S();
   }
 
-/**
+/*
  * pattern_A
  *
  * bnf-start
@@ -3034,7 +3034,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
                 if( log.isTraceEnabled() ) exitTrace ( "pattern_A()" ) ;
   }
 
-/**
+/*
  * predicate_A
  *
  * bnf-start
@@ -3065,7 +3065,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
         if( log.isTraceEnabled() ) exitTrace ( "predicate_A()" ) ;
   }
 
-/**
+/*
  * qualified_join_S
  *
  * bnf-start
@@ -3156,7 +3156,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * qualified_name_A
  *  
  *  JL Note: Removed for the moment. Problems with semantic lookahead
@@ -3218,7 +3218,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * schema_name_A
  *
  * bnf-start
@@ -3260,7 +3260,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -3274,7 +3274,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
                 if( log.isTraceEnabled() ) exitTrace ( "qualifier_A()" ) ;
   }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -3848,7 +3848,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     subquery_S();
   }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -3905,7 +3905,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
 
 //SearchType booleanTermList() : //{//	if( log.isTraceEnabled() ) enterTrace ( "booleanTermList" ) ;//	Stack stack = null ;//	SearchType st = null ;//}//{//	( //	  LOOKAHEAD(3)//	  st=booleanTermSingleton() //	  { if( stack == null )//	  	   stack = new Stack() ;//	  	stack.push( st ) ;//	  } //	)*//	{ //		if( stack != null ) {//			UnionSearchType heldOr = null ;//			SearchType[] conditions = new SearchType[2] ;//			while( stack.empty() == false ) {//				st = (SearchType)stack.pop() ;//				if( heldOr != null ) {//					conditions[0] = st ;//					conditions[1] = heldOr ;//					UnionSearchType orType = UnionSearchType.Factory.newInstance() ;//					orType.setConditionArray( conditions ) ;//					heldOr = orType ;//				}//				else if( stack.empty() == false  ) {//					conditions[0] = (SearchType)stack.pop() ;//					conditions[1] = st ;//					UnionSearchType orType = UnionSearchType.Factory.newInstance() ;//					orType.setConditionArray( conditions ) ;//					heldOr = orType ;//				}//			}//			if( heldOr != null )//				st = heldOr ; //		}	//		if( log.isTraceEnabled() ) exitTrace ( "booleanTermList" ) ;	//		return st ;//	}//}////SearchType booleanTermSingleton() ://{//	if( log.isTraceEnabled() ) enterTrace ( "booleanTermSingleton" ) ;//	SearchType st = null ;//	Token t = null ;//}//{////	t=<OR>{if(t!=null){_lt(UnionSearchType.type);_lp(CONDITION_ELEMENT);}}  //	st=boolean_term_S() //	{ //		_lp() ;//		if( log.isTraceEnabled() ) exitTrace ( "booleanTermSingleton" ) ;//		return st ; //	}//}
 
-/**
+/*
  * select_list_S
  *
  * bnf-start
@@ -3993,7 +3993,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -4094,7 +4094,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * derived_column_S
  *
  * bnf-start
@@ -4156,7 +4156,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * set_function_specification_S
  *
  * bnf-start
@@ -4297,7 +4297,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -4341,7 +4341,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * set_quantifier_S
  *
  * bnf-single <set_quantifier> ::= DISTINCT | ALL
@@ -4440,7 +4440,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -4453,7 +4453,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     character_value_expression_A();
   }
 
-/**
+/*
  * subquery_S
  *
  */
@@ -4570,7 +4570,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     column_name_list_S();
   }
 
-/**
+/*
  * cross_join_S
  *
  *-bnf-start
@@ -4764,10 +4764,10 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-///**// * table_expression_A// *// *-bnf-start// *- <table_expression> ::=// *-     <from_clause>// *-     [ <where_clause> ]// *-     [ <group_by_clause> ]// *-     [ <having_clause> ]// *-     [ <order_by_clause> ]// *-!! ADQL adds <order_by_clause>// *-bnf-end// *// */
+///*// * table_expression_A// *// *-bnf-start// *- <table_expression> ::=// *-     <from_clause>// *-     [ <where_clause> ]// *-     [ <group_by_clause> ]// *-     [ <having_clause> ]// *-     [ <order_by_clause> ]// *-!! ADQL adds <order_by_clause>// *-bnf-end// *// */
 //void table_expression_A( SelectType st ) : //{//	if( log.isTraceEnabled() ) enterTrace ( "table_expression_A" ) ;//} //{//	//S://	// <table_expression> ::=//	// <from_clause>//    // [ <where_clause> ]//    // [ <group_by_clause> ]//    // [ <having_clause> ]//	(//		from_clause_S( st ) 		//		[ LOOKAHEAD(3) where_clause_S( st ) ] //		//		[ LOOKAHEAD(3) group_by_clause_S( st ) ] //		//		[ LOOKAHEAD(3) having_clause_S( st ) ] //		//		[ LOOKAHEAD(3) order_by_clause( st ) ]	//	)//	{ //		if( log.isTraceEnabled() ) exitTrace ( "table_expression_A" ) ;//	}//}
 
-/**
+/*
  * table_name_A
  *
  * bnf-start
@@ -4810,7 +4810,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/** 
+/* 
  * table_reference_A
  *
  * bnf-start
@@ -4895,7 +4895,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/** 
+/* 
  * simple_table_reference_A
  *
  * bnf-start
@@ -4971,7 +4971,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     throw new Error("Missing return statement in function");
   }
 
-/**
+/*
  * table_subquery_A
  *
  * bnf-start
@@ -5038,7 +5038,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * term_S
  *
  * bnf-start
@@ -5134,7 +5134,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -5263,7 +5263,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     table_subquery_S();
   }
 
-/**
+/*
  * unsigned_literal_S
  *
  * bnf-single <unsigned_literal> ::= <unsigned_numeric_literal> | <general_literal>
@@ -5286,7 +5286,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * unsigned_numeric_literal_S
  *
  * bnf-start
@@ -5313,7 +5313,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * approximate_numeric_literal_S
  *
  * bnf-start
@@ -5337,7 +5337,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * unsigned_value_specification_S
  *
  * bnf-start
@@ -5364,7 +5364,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * value_expression_A
  *
  * bnf-start
@@ -5420,7 +5420,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     }
   }
 
-/**
+/*
  * variable_specification_A
  *
  * -bnf-start
@@ -5439,7 +5439,7 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants, AdqlStoX
     throw new Error("Missing return statement in function");
   }
 
-/**
+/*
  * where_clause_S
  *
  * bnf-single <where_clause> ::= WHERE <search_condition>
