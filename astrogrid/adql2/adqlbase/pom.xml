@@ -8,11 +8,11 @@
 	<version>${astrogrid_adql2_version}</version>
 	<name>Astrogrid ADQL Base Parser</name>
   	<description>This project contains the base parser which processes ADQL/s (ie: ADQL in string format) and outputs ADQL/x (ie: ADQL in xml format).</description>
-  	<url>${astrogrid_doc_URL_root}/p/adql2/${project.version}/astrogrid-adqlparser-base/</url>
+  	<url>${astrogrid_doc_URL_root}/p/adql2/${project.version}/adqlbase/</url>
 	<parent>
 		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
-		<version>${astrogrid_adql2_version}</version>
+		<version>2009.1</version>
 	</parent>
 	<scm>
   	<connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/adql2/adqlbase/</connection>
@@ -129,7 +129,7 @@
   <distributionManagement>
     <site>
       <id>agsite</id>   
-      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/astrogrid-adqlparser-base</url>
+      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/adqlbase</url>
     </site>  
  </distributionManagement>
 </project>

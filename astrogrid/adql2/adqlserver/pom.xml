@@ -12,7 +12,7 @@
 	<parent>
 		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
-		<version>${astrogrid_adql2_version}</version>
+		<version>2009.1</version>
 	</parent> 
   <build>
     <sourceDirectory>src/java</sourceDirectory>
@@ -66,7 +66,7 @@
     <site>
       <id>agsite</id>
       <name>Default Site</name>
-      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/astrogrid-adqlparser-sv</url>
+      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/adqlserver</url>
     </site>  
  </distributionManagement>
 </project>

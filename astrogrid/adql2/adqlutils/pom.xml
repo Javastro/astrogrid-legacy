@@ -8,11 +8,10 @@
   <version>${astrogrid_adql2_version}</version>
   <name>Astrogrid ADQL Utilities</name>
   <description>This project contains miscellaneous programs for testing the ADQL parser, and for producing BNF diagrams from the file AdqlStoX.jjt</description>
-  <url>${astrogrid_doc_URL_root}/p/adql2/${project.version}/adqlutils</url>
 	<parent>
 		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
-		<version>${astrogrid_adql2_version}</version>
+		<version>2009.1</version>
 	</parent>              
   <build>
     <sourceDirectory>src/java</sourceDirectory>
@@ -68,11 +67,12 @@
     <plugins>
     </plugins>
   </reporting>
+  <url>${astrogrid_doc_URL_root}/p/adql2/${project.version}/adqlutils</url>
   <distributionManagement>
     <site>
       <id>agsite</id> 
       <name>Default Site</name>
-      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/astrogrid-adqlparser-utils</url>
+      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/adqlutils</url>
     </site>  
  </distributionManagement>
 </project>

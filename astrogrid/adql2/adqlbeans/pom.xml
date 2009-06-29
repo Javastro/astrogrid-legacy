@@ -20,10 +20,10 @@
    <parent>
 		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
-		<version>${astrogrid_adql2_version}</version>
+		<version>2009.1</version>
 	</parent>
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
+    <sourceDirectory>src/generated-sources</sourceDirectory>
     <plugins>
       <plugin>
   			<groupId>org.codehaus.mojo</groupId>
@@ -39,7 +39,7 @@
   			<configuration>
             	<schemaDirectory>../contracts/src/schema/adql/v2.0</schemaDirectory>
             	<!-- classGenerationDirectory>target/classes</classGenerationDirectory -->
-            	<!-- sourceGenerationDirectory>src/java</sourceGenerationDirectory -->
+            	<!-- sourceGenerationDirectory>src/java</sourceGenerationDirectory-->
                 <noPvr>true</noPvr>
    				<verbose>true</verbose>
    				<download>true</download>
@@ -74,7 +74,7 @@
     <site>
       <id>agsite</id>  
       <name>Default Site</name>
-      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/astrogrid-adqlbeans</url>
+      <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/adqlbeans</url>
     </site>  
  </distributionManagement>
 </project>

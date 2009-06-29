@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-adqlparser</artifactId>
-  <version>${astrogrid_adql2_version}</version>
+  <version>2009.1</version>
   <parent>
   	<artifactId>astrogrid-base</artifactId>
   	<groupId>org.astrogrid</groupId>
-  	<version>2009.1-SNAPSHOT</version>
+  	<version>2009.1</version>
   </parent>
   <packaging>pom</packaging>
-  <name>AstroGrid ADQL Parser Master POM</name>
+  <name>AstroGrid ADQL Parser</name>
   <description>This project contains a parser which processes queries written in ADQL (Astronomical Data Query Language). Various outputs can be produced. The basic though intermediate output is ADQL/x (ie: an XML version of a query). This can be processed further into some variant of SQL suitable for submission against an astronomical archive
           held in a relational database. The parser itself is not involved in the actual submission of a query. 
           From the last sentence it is obvious the parser is not a standalone component. It only serves a useful
