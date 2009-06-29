@@ -13,7 +13,9 @@
          BNF structure of the language.
        </p>
        <p>
-         Within the Maven build the generation is managed by a Maven v2 plugin. This is all automatic. 
+         Within the Maven build the code generation plugin is commented out. 
+       </p>
+       <p>
          If you wish to build by hand, I recommend the Eclipse JavaCC plugin, which
          makes development a whole lot easier. Otherwise, you must read the JavaCC documentation to configure
          a command line execution of the generator.
