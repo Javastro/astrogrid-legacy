@@ -9,7 +9,7 @@
 	<version>${astrogrid_adql2_version}</version>
  
   <name>Generated XMLBeans for ADQL</name>
-  <description>&lt;p>
+  <description>
             The ADQL parser first parses a piece of ADQL, then forms it into an intermediate XML format
             according to an ADQL schema. All creation and manipulation is undertaken using the XMLBeans
             framework. The beans generated from the schema are a critical part of the process. 
