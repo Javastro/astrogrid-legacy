@@ -9,25 +9,20 @@
   <artifactId>astrogrid-security</artifactId>
   <packaging>jar</packaging>
   <version>2009.1</version>
-
   <parent>
     <groupId>org.astrogrid</groupId>
     <artifactId>astrogrid-base</artifactId>
-    <version>2009.1-20090610.124724-17</version>
+    <version>2009.1</version>
   </parent>
-
   <properties>
     <astrogrid_name>security</astrogrid_name>
   </properties>
-
   <dependencies>
-
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
       <version>2007.2.01</version>
     </dependency>
-
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty</artifactId>
@@ -152,7 +147,12 @@
     MyProxy or the AstroGrid accounts service; a client and servlet implementing
     the IVOA delegation protocol.
   </description>
-
+   <scm>
+      <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/${astrogrid_name}/</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid_name}/</developerConnection>
+      <url>http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid_name}/</url>
+   </scm>
+ 
   <build>
     <defaultGoal>install</defaultGoal>
     <directory>${basedir}/target</directory>
@@ -214,7 +214,7 @@
     </plugins>
   </build>
 
-   <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url>  --> 
+   <url>${astrogrid_doc_URL_root}/p/${astrogrid_name}/${project.version}</url> 
    <distributionManagement>
     <site>
       <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->
