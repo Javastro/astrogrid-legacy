@@ -8,13 +8,13 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-community-server</artifactId>
   <name>Community service library</name>
-  <version>2009.1.a06</version>
+  <version>2009.1</version>
   <description>This project builds the jar of classes needed for the community web-application.</description>
 
   <parent>
     <groupId>org.astrogrid</groupId>
     <artifactId>astrogrid-base</artifactId>
-    <version>2009.1-SNAPSHOT</version>
+    <version>2009.1-20090622.102645-18</version>
   </parent>
 
   <properties>
