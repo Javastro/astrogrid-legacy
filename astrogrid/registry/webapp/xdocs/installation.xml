@@ -42,7 +42,7 @@ a lot in various registry documentation usually with curly brackets.</i>
 		be unzipped, and like the above directions go to your Configure page in the Registry to set your property to this new location of the
 		database. SEE THE 3RD POINT BELOW to set a property to your database.
 			<ul>
-			  <li>Find the eXist zip file corresponding to this release ex: astrogrid-registry-eXist.zip located at: <a href='http://www.astrogrid.org/maven/org.astrogrid/zips'>Zips Directory</a></li>
+			  <li>Download an empty eXist db zip located at: <a href='http://software.astrogrid.org/eXist/empty_exist_for_internal_registry.zip'>Registry eXist Zip</a></li>
 			  <li>Now unzip it in some directory where you want your database.</li>
 			  <li>Now a property must be set "reg.custom.exist.configuration" property and point to this directory plus conf.xml ex: /exist/db/conf.xml.</li>
 			  <li>Information on changing properties is in the Configure section.</li>

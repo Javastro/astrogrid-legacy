@@ -40,7 +40,7 @@ using eXist bundled inside your web application to move it out to another direct
 		<ul>
 			<li>Create some other directory not under tomcat of where you would like your data to be stored for eXist.</li>
             <li>Copy the conf.xml, and the whole "data" directory from your {context name}/WEB-INF directory and the whole "lib" directory. So inside your directory you should now have conf.xml, data {directory}, lib {directory}.</li>
-            <li>Optionally if this is a brand new registry and your not able to get at your directory because the servlet container did not unpack the war then you can download an empty at <a href='http://www.astrogrid.org/maven/org.astrogrid/zips'>Zip Directory</a> with the name astrogrid-registry-empty.zip.</li>
+            <li>Optionally if this is a brand new registry and your not able to get at your directory because the servlet container did not unpack the war then you can download an empty at <a href='http://software.astrogrid.org/eXist/empty_exist_for_internal_registry.zip'>Registry eXist Zip</a>.</li>
 			<li>Change the JNDI property of  "reg.custom.exist.configuration"  and point to this directory plus conf.xml ex: /exist/db/conf.xml.</li>
 			<li>Restarting the Registry webapp to make certain property is set may be needed.</li>
 			<li>That is all you, now when data is being stored it is using this new data directory, be sure during upgrades to set that property to your directory.  Also note "Windows" OS users "may" need to escape there slashes ex: c:\\existstore.</li>

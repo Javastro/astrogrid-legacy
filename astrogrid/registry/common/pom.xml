@@ -7,7 +7,7 @@
     <parent>
       <artifactId>astrogrid-registry-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
+      <version>2009.1</version>
   </parent>
   
   <description>
