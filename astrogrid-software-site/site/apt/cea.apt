@@ -7,3 +7,30 @@
          --- 
 
 CEA Installation Considerations
+
+   This component can be used to "wrap" existing applications or algorithms so that they are presented as IVOA standard asynchronous web services. The applications are
+   formally exposed to the rest of the VO as CEAApplications, which have initial parameter lists defined by their registry entries.
+   
+   This component provides support for wrapping
+   
+              * Exiting commandline applications
+              
+              * Existing web form based HTTP applications
+              
+              * Custom written Java applications
+   
+   Suitable applications are subject to two main constraints
+   
+           * they have no graphical interface.
+           
+           * they need no user interaction once launched.
+   
+   You should install this component if you wish to allow virtual-observatory users to run
+				selected applications on your computer. You choose the applications that may be run.
+				You must obtain and install these applications; they are not supplied with the CEA CEC.
+				The applications will run on the computer where you install
+				the service, and you must provide sufficient resources (CPU, memory, disc space) for the
+				applications to run efficiently.
+   
+           
+   
