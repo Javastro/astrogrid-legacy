@@ -5,7 +5,7 @@
 	<body>
 		<breadcrumbs>
 			<item name="ADQL v1 Parser Home"
-				href="${astrogrid_doc_URL_root}/p/adql/${project.version}/" />
+				href="${astrogrid_doc_URL_root}/p/adql/${project.version}/adqlbase" />
 		</breadcrumbs>
 
 		<menu name="Documents">
