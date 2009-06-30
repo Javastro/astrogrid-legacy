@@ -1,10 +1,29 @@
          --- 
          AstroGrid Community 
          --- 
-         Paul Harrison	
+         Guy Rixon
          --- 
          01-June-2009 
          --- 
          
 Community Installation Considerations
+
+   The community web-application registers end-users of the virtual
+   observatory and supports the IVO single-sign-on (SSO) system for control of
+   access to science services. By signing on at a community service with
+   a user-name and password, science users can equip their desktop tools with
+   cryptographic credentials that unlock the science facilities all over the
+   VO.
+
+   Users need SSO credentials to access secured VOSpace. They may also need
+   the credentials for specific facilities such as UKIDSS.
+
+   Users with "strong" identity certificates issued by well-respected
+   authorities may use them with the community web-application. The community
+   software can issue certificates locally (i.e. it contains a certificate
+   authority) for other users, and this makes the certification process far
+   less painful for the users.
+
+   The community web-application is compatible with the AstroGrid VODesktop
+   and Astro Runtime software.
 
