@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0         http://maven.apache.org/xsd/settings-1.0.0.xsd">
+	<servers>
+		<!--
+			replace pah username below with your username for accessing these
+			servers - they all use ssh see
+			http://www.astrogrid.org/viewcvs/astrogrid/maven-base/pom.xml?view=markup
+			and
+			http://www.astrogrid.org/viewcvs/astrogrid/maven-base/base/pom.xml?view=markup
+			for the definitions of the servers (the ids match)
+		-->
+	</servers>
+	<!-- use the codehaus plugins too -->
+	<pluginGroups>
+		<pluginGroup>org.codehaus.mojo</pluginGroup>
+	</pluginGroups>
+	<mirrors>
+		<mirror>
+			<id>nexus-main</id>
+			<mirrorOf>central</mirrorOf>
+			<url>http://agdevel.jb.man.ac.uk:8080/nexus/content/groups/public/</url>
+		</mirror>
+	</mirrors>
+
+	<profiles>
+		<profile>
+			<id>ag-personal</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<repositories>
+				<repository>
+					<id>agMaven2</id>
+					<name>Astrogrid Maven 2 repository</name>
+					<url>http://www.astrogrid.org/maven2</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+
+
+				<repository>
+					<id>3rdparty</id>
+					<name>nexus 3rd party repository</name>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+					<url>http://agdevel.jb.man.ac.uk:8080/nexus/content/repositories/thirdparty/</url>
+				</repository>
+			</repositories>
+		</profile>
+	</profiles>
+</settings>
