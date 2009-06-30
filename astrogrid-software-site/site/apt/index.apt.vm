@@ -30,21 +30,21 @@ Astrogrid Software Versions at a Glance ${project.version}
 | <<Documentation>>       | <<Download>>|<<checksum>>|
 *-------------------------*--------------------------*----------------------*
 #if ($astrogrid_registry_version.endsWith("SNAPSHOT"))
-|  {{{${astrogrid_doc_URL_root}/p/registry/${astrogrid_registry_version}/webapp/}registry}} | {{{$m2reposnap/astrogrid-registry/${astrogrid_registry_version}/}astrogrid-registry-${astrogrid_registry_version}.war}} |{{{$m2repo/astrogrid-registry/${astrogrid_registry_version}/}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/registry/${astrogrid_registry_version}/webapp/}Registry}} | {{{$m2reposnap/astrogrid-registry/${astrogrid_registry_version}/}astrogrid-registry-${astrogrid_registry_version}.war}} |{{{$m2repo/astrogrid-registry/${astrogrid_registry_version}/}sha1}} |
 #else
-|  {{{${astrogrid_doc_URL_root}/p/registry/${astrogrid_registry_version}/webapp/}registry}} | {{{$m2repo/astrogrid-registry/${astrogrid_registry_version}/astrogrid-registry-${astrogrid_registry_version}.war}astrogrid-registry-${astrogrid_registry_version}.war}} |{{{$m2repo/astrogrid-registry/${astrogrid_registry_version}/astrogrid-registry-${astrogrid_registry_version}.war.sha1}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/registry/${astrogrid_registry_version}/webapp/}Registry}} | {{{$m2repo/astrogrid-registry/${astrogrid_registry_version}/astrogrid-registry-${astrogrid_registry_version}.war}astrogrid-registry-${astrogrid_registry_version}.war}} |{{{$m2repo/astrogrid-registry/${astrogrid_registry_version}/astrogrid-registry-${astrogrid_registry_version}.war.sha1}sha1}} |
 #end
 *-------------------------*--------------------------*---------------------*
 #if ($astrogrid_community_version.endsWith("SNAPSHOT"))
-|  {{{${astrogrid_doc_URL_root}/p/community/${astrogrid_community_version}/webapp/}community}} | {{{$m2reposnap/astrogrid-community/${astrogrid_community_version}/}astrogrid-community-${astrogrid_community_version}.war}} |{{{$m2reposnap/astrogrid-community/${astrogrid_community_version}/}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/community/${astrogrid_community_version}/webapp/}Community}} | {{{$m2reposnap/astrogrid-community/${astrogrid_community_version}/}astrogrid-community-${astrogrid_community_version}.war}} |{{{$m2reposnap/astrogrid-community/${astrogrid_community_version}/}sha1}} |
 #else
-|  {{{${astrogrid_doc_URL_root}/p/community/${astrogrid_community_version}/webapp/}community}} | {{{$m2repo/astrogrid-community/${astrogrid_community_version}/astrogrid-community-${astrogrid_community_version}.war}astrogrid-community-${astrogrid_community_version}.war}} |{{{$m2repo/astrogrid-community/${astrogrid_community_version}/astrogrid-community-${astrogrid_community_version}.war.sha1}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/community/${astrogrid_community_version}/webapp/}Community}} | {{{$m2repo/astrogrid-community/${astrogrid_community_version}/astrogrid-community-${astrogrid_community_version}.war}astrogrid-community-${astrogrid_community_version}.war}} |{{{$m2repo/astrogrid-community/${astrogrid_community_version}/astrogrid-community-${astrogrid_community_version}.war.sha1}sha1}} |
 #end
 *-------------------------*--------------------------*---------------------*
 #if ($astrogrid_vospace_version.endsWith("SNAPSHOT"))
-|  {{{${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/webapp/}vospace}} | {{{$m2reposnap/astrogrid-vospace/${astrogrid_vospace_version}/}astrogrid-vospace-${astrogrid_vospace_version}.war}} |{{{$m2reposnap/astrogrid-vospace/${astrogrid_vospace_version}/}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/webapp/}VOSpace}} | {{{$m2reposnap/astrogrid-vospace/${astrogrid_vospace_version}/}astrogrid-vospace-${astrogrid_vospace_version}.war}} |{{{$m2reposnap/astrogrid-vospace/${astrogrid_vospace_version}/}sha1}} |
 #else
-|  {{{${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/webapp/}vospace}} | {{{$m2repo/astrogrid-vospace/${astrogrid_vospace_version}/astrogrid-vospace-${astrogrid_vospace_version}.war}astrogrid-vospace-${astrogrid_vospace_version}.war}} |{{{$m2repo/astrogrid-vospace/${astrogrid_vospace_version}/astrogrid-vospace-${astrogrid_vospace_version}.war.sha1}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/webapp/}VOSpace}} | {{{$m2repo/astrogrid-vospace/${astrogrid_vospace_version}/astrogrid-vospace-${astrogrid_vospace_version}.war}astrogrid-vospace-${astrogrid_vospace_version}.war}} |{{{$m2repo/astrogrid-vospace/${astrogrid_vospace_version}/astrogrid-vospace-${astrogrid_vospace_version}.war.sha1}sha1}} |
 #end
 *-------------------------*--------------------------*---------------------*
 #if ($astrogrid_cea_version.endsWith("SNAPSHOT"))
@@ -54,9 +54,9 @@ Astrogrid Software Versions at a Glance ${project.version}
 #end
 *-------------------------*--------------------------*---------------------*
 #if ($astrogrid_dsa_version.endsWith("SNAPSHOT"))
-|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/webapp/}dsa}} | {{{$m2reposnap/astrogrid-dsa/${astrogrid_dsa_version}/}astrogrid-dsa-${astrogrid_dsa_version}.war}} |{{{$m2reposnap/astrogrid-dsa/${astrogrid_dsa_version}/}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/dsa-catalog/}DSA}} | {{{$m2reposnap/astrogrid-dsa/${astrogrid_dsa_version}/}astrogrid-dsa-${astrogrid_dsa_version}.war}} |{{{$m2reposnap/astrogrid-dsa/${astrogrid_dsa_version}/}sha1}} |
 #else
-|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/webapp/}dsa}} | {{{$m2repo/astrogrid-dsa/${astrogrid_dsa_version}/astrogrid-dsa-${astrogrid_dsa_version}.war}astrogrid-dsa-${astrogrid_dsa_version}.war}} |{{{$m2repo/astrogrid-dsa/${astrogrid_dsa_version}/astrogrid-dsa-${astrogrid_dsa_version}.war}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/dsa-catalog/}DSA}} | {{{$m2repo/astrogrid-dsa/${astrogrid_dsa_version}/astrogrid-dsa-${astrogrid_dsa_version}.war}astrogrid-dsa-${astrogrid_dsa_version}.war}} |{{{$m2repo/astrogrid-dsa/${astrogrid_dsa_version}/astrogrid-dsa-${astrogrid_dsa_version}.war}sha1}} |
 #end
 *-------------------------*--------------------------*---------------------*
 
