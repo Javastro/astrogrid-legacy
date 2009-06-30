@@ -37,3 +37,21 @@ Building with Maven
 
        
 * Maven Repositories
+
+   To find the AstroGrid artifacts you need to make maven point at the astrogrid maven 2 repository at {{{http://www.astrogrid.org/maven2/}}}. You can 
+   do this by editing your ~/.m2/settings.xml file to include a repository definition such as
+   
++---
+      <repository>
+        <id>agMaven2</id>
+        <name>Astrogrid Maven 2 repository</name>
+        <url>http://www.astrogrid.org/maven2</url>
+        <snapshots>
+           <enabled>false</enabled>
+        </snapshots>
+     </repository>
+    
++---
+
+    There is a suitable {{{settings.xml}settings.xml}} file that can be downloaded if you have not used maven 2 before, otherwise it is probably more sensible to hand edit your existing <<settings.xml>> file to ensure that 
+you do not lose any existing settings.
