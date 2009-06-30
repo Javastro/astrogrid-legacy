@@ -86,6 +86,7 @@ import org.w3c.dom.Document;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StarTableFactory;
+import uk.ac.starlink.table.ValueInfo;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
@@ -363,30 +364,15 @@ public class MultiConeImpl extends UIComponentImpl {
         
         row++;
 
-        // this is the underlying model for the ra combo box. Keeps items sorted
-        // and ensures that things matching 'ra' are on top.
-        raColList = new SortedList<String>(new BasicEventList<String>()
-                , new SearchTermFavoringComparator<String>(new Matcher<String>() {
-
-                    public boolean matches(final String item) {
-                        return StringUtils.startsWithIgnoreCase(item,"ra");
-                    }
-                })
-                );
+        // this is the underlying model for the ra combo box.
+        raColList = new BasicEventList<String>();
         raCol = new JComboBox(new EventComboBoxModel(raColList));
         raCol.setEditable(true);
         raCol.setSelectedItem("$1");
         raCol.setToolTipText("Select the RA column in the Table: either by its name, or by its index (preceeded by $)");
 
         // ditto for dec
-        decColList = new SortedList<String>(new BasicEventList<String>()
-                , new SearchTermFavoringComparator<String>(new Matcher<String>() {
-
-                    public boolean matches(final String item) {
-                        return StringUtils.startsWithIgnoreCase(item,"dec");
-                    }
-                })
-                );        
+        decColList = new BasicEventList<String>();
         decCol = new JComboBox(new EventComboBoxModel(decColList));
         decCol.setEditable(true);
         decCol.setSelectedItem("$2");
@@ -911,13 +897,12 @@ public class MultiConeImpl extends UIComponentImpl {
             final URI tableURI = model.getTableURL();
             suggest.setEnabled(false); // as it's already running.
             indicator.startAnimation();
-            (new BackgroundWorker<List<String>>(MultiConeImpl.this,"Examining the table columns") {
+            (new BackgroundWorker<StarTable>(MultiConeImpl.this,"Examining the table columns") {
                 {
                     setTransient(true);
                 }
                 @Override
-                protected List<String> construct() throws Exception {
-                    final List<String> cols = new ArrayList<String>();     
+                protected StarTable construct() throws Exception {
                     final StarTableFactory factory = new StarTableFactory();
                     // need to use vfs to convert the URI into a URI.
                     // if I just use URI.toURL(), or new URL(uri.toString())
@@ -926,21 +911,56 @@ public class MultiConeImpl extends UIComponentImpl {
                     // would imagine it will work with vospace too.
                     final URL u = fileChooser.getVFS().resolveFile(tableURI.toString()).getURL();
                     final StarTable starTable = factory.makeStarTable(u,format.getSelectedItem().toString());
-                    for (int i = 0; i < starTable.getColumnCount(); i++) {
-                        final ColumnInfo columnInfo = starTable.getColumnInfo(i);
-                        cols.add(columnInfo.getName());
-                    }
-                    return cols;
+                    return starTable;
                 }
                 @Override
-                protected void doFinished(final List<String> cols) {
+                protected void doFinished(final StarTable table) {
+                    List<String> nameList = new ArrayList<String>();
+                    List<ColumnInfo> infoList = new ArrayList<ColumnInfo>();
+                    int ncol = table.getColumnCount();
+
+                    // Make best guesses at RA/Dec columns.
+                    int raScore = 0;
+                    int raIndex = -1; 
+                    int decScore = 0; 
+                    int decIndex = -1;
+                    int j = 0;
+                    for (int i = 0; i < ncol; i++) {
+                        ColumnInfo info = table.getColumnInfo(i);
+                        Class clazz = info.getContentClass();
+                        if (clazz == Float.class || clazz == Double.class) {
+                            infoList.add(info);
+                            nameList.add(info.getName());
+                            int rs = getRaDecScore(info, "RA");
+                            if (rs > raScore) {
+                                raScore = rs;
+                                raIndex = j;
+                            }
+                            int ds = getRaDecScore(info, "DEC");
+                            if (ds > decScore) {
+                                decScore = ds;
+                                decIndex = j;
+                            }
+                            j++;
+                        }
+                    }
+                    assert j == nameList.size();
+                    assert j == infoList.size();
+
+                    // Set up the column selectors accordingly.
                     raColList.clear();
                     decColList.clear();
-                    if (cols.size() > 0) {
-                        raColList.addAll(cols);
-                        raCol.setSelectedIndex(0);             
-                        decColList.addAll(cols);
-                        decCol.setSelectedIndex(0);
+                    if (nameList.size() > 0) {
+                        raColList.addAll(nameList);
+                        decColList.addAll(nameList);
+                        if (raScore > 0 && decScore > 0) {
+                            raCol.setSelectedIndex(raIndex);
+                            decCol.setSelectedIndex(decIndex);
+                        }
+                        else if (nameList.size() >= 2) {
+                            raCol.setSelectedIndex(0);
+                            decCol.setSelectedIndex(1);
+                        }
                     }
                 }
                 @Override               
@@ -953,9 +973,37 @@ public class MultiConeImpl extends UIComponentImpl {
         public void propertyChange(final PropertyChangeEvent evt) {
             setEnabled(evt.getNewValue() != null);
         }
+        /** Tries to guess suitability for use as an RA or Dec. */
+        private int getRaDecScore(ValueInfo info, String base) {
+            base = base.toLowerCase();
+            String ucd = info.getUCD();
+            if (ucd != null && ucd.length() > 0) {
+                String ucd1 = ucd.replace('_','.').replaceAll(" ", "").toLowerCase();
+                if (ucd1.startsWith("pos.eq." + base) &&
+                    ucd1.indexOf("main") >= 0) {
+                    return 10;
+                }
+                else if (ucd1.startsWith("pos.eq." + base)) {
+                    return 5;
+                }
+            }
+            String name = info.getName();
+            if (name != null && name.length() > 0) {
+                String name1 = name.toLowerCase();
+                if (name1.equals(base)) {
+                    return 3;
+                }
+                else if (name1.startsWith(base) &&
+                         name1.indexOf("2000") > 0) {
+                    return 2;
+                }
+                else if (name1.startsWith(base)) {
+                    return 1;
+                }
+            }
+            return 0;
+        }
     }
-    
-        
     
     /** choose the service to query */
     private class ChooseService extends AbstractAction {

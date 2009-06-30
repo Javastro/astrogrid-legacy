@@ -14,6 +14,10 @@
 	</head>
 <body>
 <release version="1.3.pre" date="unreleased">
+    <action dev="mbt" type="fix" issue="2941">
+        Improve column suggestions provided by Multi Query dialogue
+        "Magic Wand" button.
+    </action>
     <action dev="mbt" type="fix" issue="2938">
         Exponential format avoided in DAL requests; fixes problem with
         small angle searches.
