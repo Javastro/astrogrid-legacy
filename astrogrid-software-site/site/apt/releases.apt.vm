@@ -12,11 +12,11 @@ Astrogrid Releases
 
   The deployment sites represent the collection of component versions that make up the regular AstroGrid release cycles.  
 
-   * {{{../../RELEASE/deploy/}Current Release}} - The latest integration-tested Release.
+   * {{{../RELEASE/}Current Release}} - The latest integration-tested Release.
    
-   * {{{../../HEAD/deploy/}Head}} - The latest development releases, not necessarily integration-tested (use at your own risk).
+   * {{{../HEAD/}Head}} - The latest development releases, not necessarily integration-tested (use at your own risk).
    
-   * {{{../../2008.2/deploy}2008.2}} - A previous integration-tested release.
+   * {{{../2008.2/}2008.2}} - A previous integration-tested release.
    
 * Individual Components
 

@@ -15,10 +15,10 @@
 
   <body>
     <section name="Latest published versions">
-      <iframe src="../../versions.html" frameborder="0" height="90%" width="95%">
+      <iframe src="http://software.astrogrid.org/doc/versions.html" frameborder="0" height="90%" width="95%">
       If you can see this, your browser doesn't 
 understand IFRAME.  However, you can still view the  
-<a href="../../versions.html">latest versions</a> 
+<a href="http://software.astrogrid.org/doc/versions.html">latest versions</a> 
 by following the link.
       </iframe>
     </section>

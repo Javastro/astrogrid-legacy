@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.2 2009/06/03 15:33:00 pah Exp $ --><!--
+<!-- $Id: pom.xml,v 1.3 2009/06/30 08:28:37 pah Exp $ --><!--
       This is the pom for generating the overall AG Software site documentation
    -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -7,14 +7,14 @@
    <groupId>org.astrogrid</groupId>
    <artifactId>deployer-site</artifactId>
    <name>AstroGrid for Deployers</name>
-   <version>2009.1-SNAPSHOT</version>
+   <version>2009.1</version>
    <packaging>pom</packaging>
       <parent>
       <artifactId>astrogrid-versions</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>  
+      <version>2009.1</version>  
     </parent>
-    <url>${astrogrid_doc_URL_root}/${astrogrid_release}/deploy</url>
+    <url>http://deployer.astrogrid.org/${astrogrid_release}</url>
     <build>
     </build>
     <!--  perhaps use dependencies to get at the snapshot versions 
@@ -70,9 +70,9 @@
     </reporting>
      <distributionManagement>
     <site>
-      <id>agsite</id>
-      <name>Default Site</name>
-      <url>${astrogrid_doc_server_root}/${astrogrid_release}/deploy</url>
+      <id>agdeploysite</id>
+      <name>Deployer Site</name>
+      <url>scpexe://terror.star.le.ac.uk/software_docs/${astrogrid_release}/</url>
     </site>
     
     </distributionManagement>

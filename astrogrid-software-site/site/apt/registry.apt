@@ -5,3 +5,27 @@
          --- 
          01-June-2009 
          --- 
+
+Registry Installation Considerations
+
+   This page discusses the aspects of the global architecture of registries which influence the decision at to whether it is necessary to install a registry.
+
+   The IVOA registries for a distributed network on the internet. Registries periodically replicate data between themselves in a process known as "harvesting".
+   So registries contain effectively two classes of information;
+   
+    * The resources that have been entered directly into that registry - i.e. these resources are 'owned' by the registry.
+   
+    * the resources that the registry has harvested from the other registries that it knows about.
+   
+  The resources that a registry 'owns' are separated from the other resources by belonging to a particular set of authority identifiers, which provide a namespace.
+   
+  The decision about whether it is necessary to install a registry depends on whether you have permission to add resources at a particular registry - i.e. if
+  the curator of a registry is  prepared to allow you to enter resources in their registry then it might not be necessary to install a registry yourself. However, even if you can
+  obtain this permission it can still be advantageous to install a local registry.
+   
+    * It might be simply more convenient to enter resources in a local registry.
+   
+    * There might be a performance advantage in having a local registry on which you can search for resources.
+   
+  Once the registry has been installed, if it is desired that other registries should possibly harvest from it, then the details of the newly installed registry should be 
+  entered at the "registry of registries" at {{http://rofr.ivoa.net/}}

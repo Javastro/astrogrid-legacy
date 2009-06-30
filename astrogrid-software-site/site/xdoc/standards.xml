@@ -15,7 +15,7 @@
 
   <body>
     <section name="IVOA Standards Compliance">
- <p>The following matrix shows which <a href="http://www.ivoa.net/Documents/">IVOA standards are supported by each Astrogrid Component</a></p>
+ <p>The following matrix shows which <a href="http://www.ivoa.net/Documents/">IVOA standards</a> are supported by each Astrogrid Component</p>
 <table>
   <tr style="border-bottom:medium">
     <th  scope="col"> </th>
