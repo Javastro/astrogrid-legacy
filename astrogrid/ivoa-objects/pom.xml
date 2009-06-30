@@ -7,7 +7,7 @@
    <artifactId>ivoa-objects</artifactId>
    <name>IVOA objects</name>
    <description>JAXB Based objects for IVOA schema</description>
-   <version>2009.1-SNAPSHOT</version>
+   <version>2009.1</version>
    <scm>
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/ivoa-objects/</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/ivoa-objects/</developerConnection>
@@ -20,7 +20,7 @@
    <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
+      <version>2009.1</version>
     </parent>
  	<dependencies>
      <dependency>

@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.astrogrid</groupId>
     <artifactId>astrogrid-base</artifactId>
-    <version>2009.1-20090622.102645-18</version>
+    <version>2009.1</version>
   </parent>
 
   <dependencies>

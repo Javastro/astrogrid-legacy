@@ -4,12 +4,12 @@
   <artifactId>dsa-base</artifactId>
   <packaging>pom</packaging>
   <name>Data Set Access (DSA)</name>
-  <version>2009.1.a08</version>
+  <version>2009.1</version>
   <description>The Astrogrid Data Set Access (DSA) component</description>
   <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
+      <version>2009.1</version>
   </parent>
   <url>${astrogrid_doc_URL_root}/p/dsa/${project.version}</url>
     

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.40 2008/10/21 13:28:25 nw Exp $ -->
+<!-- $Id: project.xml,v 1.41 2009/06/30 20:15:33 pah Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
@@ -191,6 +191,34 @@
    </roles>
   </developer>
  </developers>
+   
+ <contributors>
+   <contributor>
+      <name>Andy Lawrence</name>
+      <organization>Institute for Astronomy, University of Edinburgh </organization>
+      <roles>Project Lead</roles>
+   </contributor>
+   <contributor>
+      <name>Nicholas Walton</name>
+      <organization>IoA, University of Cambridge</organization>
+      <roles>Project Scientist</roles>
+   </contributor>
+   <contributor>
+      <name>Anita Richards</name>
+      <organization>JBCA, University of Manchester</organization>
+      <roles>Scientist</roles>
+   </contributor>
+   <contributor>
+      <name>Eduardo Gonzalez Solares</name>
+      <organization>IoA, University of Cambridge</organization>
+      <roles>Scientist</roles>
+   </contributor>
+   <contributor>
+      <name>Jonathan Tedds</name>
+      <organization>University of Leicester</organization>
+      <roles>Scientist</roles>
+   </contributor>
+ </contributors>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
