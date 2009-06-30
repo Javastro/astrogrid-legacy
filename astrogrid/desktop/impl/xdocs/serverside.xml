@@ -114,7 +114,7 @@ contexts can be accommodated simultaneously within a single Astro Runtime.
 
 <p>
 <!--  fixme: link to api docs. -->
-The <a href=" apidocs/org/astrogrid/acr/builtin/SessionManager.html">org.astrogrid.acr.builtin.SessionManager</a> service can be used to create new user sessions and 
+The <a href="http://deployer.astrogrid.org/software/astro-runtime/apidocs/org/astrogrid/acr/builtin/SessionManager.html">org.astrogrid.acr.builtin.SessionManager</a> service can be used to create new user sessions and 
 connect to them. The Session Identifiers created by this service can be stored in the user context within the web application, to 'link' the user sessions of the web layer
 and Astro Runtime.
 </p>
