@@ -313,7 +313,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
                xqlQuery += "and $x/@updated <= '" + until + "' ";
            }           
            //xqlQuery += " return $x";
-           xqlQuery += " return $x) return subsequence($hits," + fromSequence + "," + (maxListSize + fromSequence + 2) + ")";
+           xqlQuery += " return $x) return subsequence($hits," + fromSequence + "," + (maxListSize + /*fromSequence*/ + 2) + ")";
            
            System.out.println("xql for OAI = " + xqlQuery);
            log.info("the build xql = " + xqlQuery);
@@ -330,6 +330,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
                if(rs.getSize() > 0) {
                    Resource xmlr = rs.getMembersAsResource();
                    sourceFile = DomHelper.newDocument(xmlr.getContent().toString());
+                   //System.out.println("here is the getcontent in oai = " + xmlr.getContent().toString());
                } else {
                    throw new NoItemsMatchException();
                }

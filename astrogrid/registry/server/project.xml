@@ -396,7 +396,14 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-    	
+        
+        	<dependency>
+	    	<id>commons-collections</id>
+      		<version>3.0</version>
+      		<properties>
+        		<jar.fileset>true</jar.fileset>
+      		</properties>
+    	</dependency>
     	<!-- 
         <dependency>
             <groupId>org.astrogrid</groupId>
