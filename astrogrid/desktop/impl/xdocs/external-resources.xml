@@ -47,7 +47,7 @@ The service endpoint can be altered using the <tt>cds.sesame.rest.endpoint</tt> 
 or via the preferences dialogue. 
 </p>
 </subsection>
-
+<!--  not used anymore
 <subsection name="Service Monitoring">
 <p>
 To ascertain the availability of external services, VOExplorer and TaskRunner 
@@ -60,6 +60,7 @@ This endpoint can be altered using the
 <tt>votech.vomon.endpoint</tt> configuration key, or via the preferences dialogue.
 </p>
 </subsection>
+ -->
 
 <subsection name="Annotation Services">
 <p>

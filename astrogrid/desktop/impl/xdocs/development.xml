@@ -1,106 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <document>
 <properties>
-<title>DesktopAstroGridDevelopment &lt; Astrogrid &lt;
-TWiki</title>
+<title>Development</title>
+<author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
 </properties>
 <body>
 <section>
 <p>
-<a name="PageTop"></a>
-<div id="patternScreen">
-<div id="patternPageShadow">
-<div id="patternPage">
-<div id="patternOuter">
-<div id="patternFloatWrap">
-<div id="patternMain">
-<div id="patternMainContents">
-<div class="patternContent">
-<div class="patternTopic">
-<div style="position: relative; float:right; margin:0 1em 1em 0; padding:0; border:0;">
 
-<div style="position: relative; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%; width:20em; border:2px solid #99CCFF; padding:5px; margin:10px 0 0 0;">
-
-<strong>Table of Contents</strong>
-<div class="twikiToc">
-<ul>
-<li>
-<a href="#Assembling_the_environment">Assembling the
-environment</a>
-<ul>
-<li>
-<a href="#Pre_requisites">Pre-requisites</a>
-</li>
-<li>
-<a href="#Getting_access_to_the_source">Getting access to the
-source</a>
-</li>
-<li>
-<a href="#Checking_out_the_source">Checking out the source</a>
-</li>
-<li>
-<a href="#Maven">Maven</a>
-</li>
-<li>
-<a href="#Desktop_Project_Structure">Desktop Project Structure</a>
-</li>
-<li>
-<a href="#How_do_I_do_a_release">How do I do a release?</a>
-</li>
-<li>
-<a href="#How_do_I_just_build_the_source">How do I just build the
-source?</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#Development_Practice">Development Practice</a>
-<ul>
-<li>
-<a href="#Bugzilla">Bugzilla</a>
-</li>
-<li>
-<a href="#Coding_Standards">Coding Standards</a>
-</li>
-<li>
-<a href="#Testing">Testing</a>
-</li>
-<li>
-<a href="#Javadoc">Javadoc</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#Development_Notes">Development Notes</a>
-<ul>
-<li>
-<a href="#AR_API">AR API</a>
-</li>
-<li>
-<a href="#HiveMind">HiveMind</a>
-</li>
-<li>
-<a href="#External_libraries">External libraries</a>
-</li>
-<li>
-<a href="#Astrogrid_Delegates">Astrogrid Delegates</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#Still_to_be_written_past_this">Still to be written past
-this.</a>
-</li>
-</ul>
-</div>
-</div>
-<div style="position: relative; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%; width:20em; border:2px solid #99CCFF; padding:5px; margin:10px 0 0 0;">
-
-<strong>Children of this topic</strong>
-<br></br>
-<p></p>
-</div>
-</div>
 <h1>
 <a name="DevelopingDesktop_AstroGrid"></a>
 <a name="_DevelopingDesktop_AstroGrid"></a>Developing 
@@ -150,11 +57,6 @@ our build against this yet - so stick with
 source</h2>You need read &amp; write permissions to the astrogrid
 CVS. If you don't already have this, email 
 <a href="mailto:gg78@astrogridNOSPAM.org">gg78@astrogrid.org</a>
-<p></p>See Also: 
-<a href="/bin/view/Support/UsingCVS" class="twikiLink">
-UsingCVS</a>- especially 
-<a href="/bin/view/Support/UsingCVS#Commit_Access"
-class="twikiAnchorLink">UsingCVS#Commit_Access</a>
 <p></p>
 <h2>
 <a name="Checking_out_the_source"></a>Checking out the
@@ -276,16 +178,7 @@ errors.</dd>
 </dl>
 <p></p>
 <p></p>
-<h3>
-<a name="Hacking_on_Maven"></a>Hacking on Maven</h3>Don't, if you
-can help it. If you must, take a look at 
-<a href="/bin/view/Astrogrid/UsefulMavenNotes" class="twikiLink">
-UsefulMavenNotes</a>, 
-<a href="/bin/view/Astrogrid/MavenFAQ" class="twikiLink">
-MavenFAQ</a>, the following sections, and the appropriate 
-<code>maven.xml</code>files carefully - there are hopefully enough
-comments within them to make it clear what's going on. 
-<hr></hr>
+
 <h2>
 <a name="Desktop_Project_Structure"></a>Desktop Project
 Structure</h2>
@@ -367,41 +260,36 @@ and examples of using the AR from python, perl, etc. The
 AstroRuntime</a>API. 
 <p></p>
 <p></p>
-<em>TODO: need to find a place in Trac to publish the latest the
-latest API documentation.</em>
+
 <p></p>Issuing the command 
 <code>maven astrogrid-install-artifact</code>in the 
 <code>api</code>project causes both 
 <code>.jar</code>and 
 <code>.zip</code>to be built and placed in the 
 <em>local</em>repository - from where they can be accessed from the
-
 <code>impl</code>build. 
 <p></p>
-<img width="16" alt="warning" align="top"
-src="/pub/TWiki/TWikiDocGraphics/warning.gif" height="16"
-border="0"></img>These artifacts need to be copied 
-<strong>by hand</strong>to the 
-<em>astrogrid</em>repository when a versioned release is done. The
-same will need to be done the online version of the API
-documentation once a publishing location location is settled. This
-is simple enough with 
-<code>sftp</code>
-<p></p>
+Issuing the command 
+<code>maven astrogrid-deploy-artifact</code>in the 
+<code>api</code>project causes both 
+<code>.jar</code>and 
+<code>.zip</code>to be built and deployed to the 
+<em>public astrogrid </em>repository. The documentation site for the project is
+also built and deployed to the public webserver.
+
+
 <h4>
 <a name="API_Descriptors"></a>API Descriptors</h4>
-<img src="/pub/Astrogrid/DesktopAstroGridDevelopment/xml-descriptors-flowchart.png"
+<img src="xml-descriptors-flowchart.png"
 alt="xml-descriptors-flowchart.png" width="268" height="526"
 align="right"></img>One important quirk of the build is how a
 description of the API is extracted from the Java sources. 
-<a href="/bin/view/Astrogrid/AstroRuntime" class="twikiLink">
-AstroRuntime</a>needs to be told about the public API - which
+AstroRuntime needs to be told about the public API - which
 interfaces, methods, and parameter types - so it can expose them
 via RMI, XML-RPC and HTTP. Some of this information 
 <em>could</em>be determined just by introspecting onto the API
 classes - but this would produce only type information. 
-<a href="/bin/view/Astrogrid/AstroRuntime" class="twikiLink">
-AstroRuntime</a>requires further metadata about the API - such as
+AstroRuntime requires further metadata about the API - such as
 what the XML-RPC component names to use for each Java interface -
 and function documentation. 
 <p></p>To achieve this, the build follows the process illustrated
@@ -414,29 +302,14 @@ HTML documentation.
 <p></p>This results in a single XML file which describes the API.
 It contains all the information extracted by Javadoc - method
 signatures, interface names, documentation comments and @tags. 
-<p></p>The build then applies XSLT stylesheets to this file. One
-generates HTML documentation 
-<a href="http://software.astrogrid.org/astro-runtime-docs/xmlrpc.html"
-target="_top">(example)</a>of the API in language-neutral XML-RPC
-terminology: this is included in the distribution zip along with
-the conventional HTML Javadoc 
-<a href="http://software.astrogrid.org/astro-runtime-docs/apidocs/index.html"
-target="_top">(example)</a>. 
-<p></p>
-<em>TODO: update links to ducumentation</em>
-<p></p>Another stylesheet generates an XML descriptor file for each
+
+<p></p>A stylesheet generates an XML descriptor file for each
 'module' of the API. Each file is in the format of a 
-<span class="twikiNewLink">hivemind contribution
-<a rel="nofollow"
-href="/bin/edit/Astrogrid/HivemindInDesktopAstroGrid?topicparent=Astrogrid.DesktopAstroGridDevelopment"
-title="Create this topic">
-<sup>?</sup>
-</a></span>for the 
+hivemind contribution for the 
 <code>framework.descriptors</code>configuration point. This
 supplies all the metadata needed to publish and document the API
 within 
-<a href="/bin/view/Astrogrid/AstroRuntime" class="twikiLink">
-AstroRuntime</a>. 
+AstroRuntime. 
 <p></p>These descriptor files are packaged into the api 
 <code>.jar</code>along with the API interfaces, which is then
 included in the 
@@ -444,14 +317,19 @@ included in the
 main hivemind module files by using external entity references. 
 <p></p>This approach means that the definition and documentation of
 the API can be managed in a single place - the Java source - and it
-is extracted and propagated throughout the system. Almost all the
-required metadata is expressed in standard Javadoc. The only
+is extracted and propagated throughout the system.  All the
+required metadata is expressed in Javadoc with some additional tags. The most important
 addition is a new tag - 
 <code>@service 
-<i>modulename.servicename</i></code>which must be added to the
+<i>modulename.servicename</i></code> which must be added to the
 class documentation comment for each API interface. This tag
 defines the name of the module and service that this interface will
 be exposed as in the XML-RPC and HTML interfaces. 
+
+<p></p>
+For a full description of the set of javadoc tags used for documenting the API documentation (and providing
+figures and code examples), see <b><a href="javadoc-markup-notes.html">Javadoc Markup Notes</a></b>.
+
 <p></p>
 <img width="16" alt="warning" align="top"
 src="/pub/TWiki/TWikiDocGraphics/warning.gif" height="16"
@@ -471,8 +349,7 @@ the following steps.
 <li>produces a jar from the compiled sources</li>
 <li>builds a distribution zip, useful for developers who wish to
 embed 
-<a href="/bin/view/Astrogrid/AstroRuntime" class="twikiLink">
-AstroRuntime</a>in their own products. This contains - 
+AstroRuntime in their own projects. This contains - 
 <ul>
 <li>the compiled jar</li>
 <li>all dependent libraries</li>
@@ -481,9 +358,7 @@ AstroRuntime</a>in their own products. This contains -
 <li>Hivedoc - (description of the hivemind container configuration)
 - generated by running the application itself</li>
 <li>configuration documentation - a documented list of
-configuration settings for 
-<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
-DesktopAstroGrid</a>- generated by running the application
+configuration settings - generated by running the application
 itself.</li>
 </ul></li>
 <li>Strip unused classes and methods from classes and libraries,
@@ -504,16 +379,15 @@ skipped.
 <strong>application jar</strong>to prevent against bad builds</li>
 </ol>
 <p></p>The final product of the impl build are the 
-<strong>application jar</strong>and 
-<strong>distribution zip</strong>. On each release, these products
-should be manually copied into the astrogrid maven repository. 
+<strong>application jar</strong>, 
+<strong>distribution zip</strong>, and <strong>site documentation</strong>.
+As with the api build these can be produced locally using <strong>astrogrid-install-artifact</strong>
+or produced and deployed to the public astrogrid server using <strong>astrogrid-deploy-artifact</strong>
 <p></p>
 <h3>
 <a name="Version_Numbering"></a>Version Numbering</h3>
 <p></p>Finally, version numbering requires a little care. The
-version number for the current build of 
-<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
-DesktopAstroGrid</a>is defined by the key 
+version number for the current build is defined by the key 
 <code>astrogrid.desktop.version</code>in 
 <code>$BASE/template/project.properties</code>. The same version
 number is used for both the 
@@ -548,45 +422,11 @@ produce a snapshot or interim release:
 cvs friendly variant thereof)</li>
 <li>in 
 <code>$BASE/desktop/api</code>run 
-<code>maven astrogrid-install-artifact</code></li>
+<code>maven astrogrid-deploy-artifact</code></li>
 <li>in 
 <code>$BASE/desktop/impl</code>run 
-<code>maven astrogrid-build-artifact</code></li>
-<li>verify the build completes successfully</li>
-<li>Upload the build products: 
-<ol>
-<li>
-<code>$BASE/desktop/impl/target/vodesktop-version-app.jar</code>to
-the directory 
-<code>
-sftp://astrogrid@katatjuta.star.le.ac.uk/data/uluruDec2006/home/www/software/vodesktop</code></li>
-<li>
-<code>$BASE/desktop/api/target/acr-interface-version.jar</code>to
-the directory 
-<code>
-sftp://astrogrid@katatjuta.star.le.ac.uk/data/uluruDec2006/home/maven/maven/org.astrogrid/jars</code></li>
-<li>
-<code>
-$BASE/desktop/api/target/distributions/acr-interface-version.zip</code>to
-the directory 
-<code>
-sftp://astrogrid@katatjuta.star.le.ac.uk/data/uluruDec2006/home/maven/maven/org.astrogrid/zips</code></li>
-</ol></li>
-<li>Inform people 
-<ul>
-<li>(only for an interim release) Edit the Wiki page at 
-<a href="/bin/view/Astrogrid/DesktopAstroGridSnapshots"
-class="twikiLink">DesktopAstroGridSnapshots</a>to include details
-of the new snapshot. Use the text formatted changes at 
-<code>
-$BASE/desktop/impl/target/generated-xdocs/announcements</code></li>
-<li>If a snapshot, send an email to astrogrid engineers giving the
-download URL.</li>
-<li>If an interim release, send an email to astrogrid engineers and
-astrogrid scientists pointing to the 
-<a href="/bin/view/Astrogrid/DesktopAstroGridSnapshots"
-class="twikiLink">DesktopAstroGridSnapshots</a>page</li>
-</ul></li>
+<code>maven astrogrid-deploy-artifact</code></li>
+<li>Inform people </li>
 </ol>
 <p></p>
 <hr></hr>
@@ -640,6 +480,19 @@ products</td>
 deprecation warnings. 
 <a href="http://maven.apache.org/maven-1.x/plugins/java/properties.html"
 target="_top">Here's a list of other compiler flags</a></td>
+</tr>
+<tr>
+<th bgcolor="#dadada" colspan="2" class="twikiFirstCol">
+<strong>
+<font color="#000000">Testing Goals</font>
+</strong>
+</th>
+</tr>
+<tr>
+<td bgcolor="#ffffff" class="twikiFirstCol">
+<code>maven run-now</code>
+</td>
+<td bgcolor="#ffffff">compiles the sources,run the application</td>
 </tr>
 <tr>
 <th bgcolor="#dadada" colspan="2" class="twikiFirstCol">
@@ -730,14 +583,10 @@ something like
 <code>nw-desktop-2312</code></li>
 <li>Code away until the feature is implemented / failing tests pass
 
-<ul>
-<li>
-<a href="/bin/view/Astrogrid/DesktopAstroGridDevelopment#Coding_Standards"
-class="twikiAnchorLink">Coding Standards</a>
-</li>
-<li>
-<a href="/bin/view/Astrogrid/DesktopAstroGridDevelopment#Testing"
-class="twikiAnchorLink">Testing</a>
+<ul><li>
+<a href="testing.html"
+class="twikiAnchorLink">Testing</a> and
+<a href="testingprocess.html">Testing Process</a>
 </li>
 </ul></li>
 <li>Record what you've done 
@@ -791,9 +640,6 @@ target="_top">List of open desktop bugs</a>
 <a name="Coding_Standards"></a>Coding Standards</h2>In general, try
 to fit in with what's already there - but don't be afraid to
 improve bits that aren't right. 
-<p></p>
-<a href="/bin/view/Astrogrid/JavaBestPractice" class="twikiLink">
-JavaBestPractice</a>lists some specific do's and dont's. 
 <p></p>Our coding standards are based on the 
 <a href="http://www.amazon.co.uk/exec/obidos/ASIN/0521777682/qid=1063227668/sr=1-2/ref=sr_1_3_2/026-3116518-5618048"
 target="_top">Elements of Java Style</a>book - which is in turn
@@ -807,19 +653,7 @@ AbbreviatedCode</a>and 'well known' shortcuts
 <a href="/bin/view/Astrogrid/CommonsLogging" class="twikiLink">
 Commons Logging</a>for all log/debug messages 
 <p></p>
-<h2>
-<a name="Testing"></a>Testing</h2>
-<strong>Please see 
-<a href="/bin/view/Astrogrid/DesktopAstroGridTestingProcess"
-class="twikiLink">DesktopAstroGridTestingProcess</a></strong>
-<p></p>See also 
-<span class="twikiNewLink">DesktopAstroGridTesting
-<a rel="nofollow"
-href="/bin/edit/Astrogrid/DesktopAstroGridTesting?topicparent=Astrogrid.DesktopAstroGridDevelopment"
-title="Create this topic">
-<sup>?</sup>
-</a></span>
-<p></p>
+
 <h2>
 <a name="Javadoc"></a>Javadoc</h2>We use some additional tags: 
 <dl>
@@ -850,7 +684,7 @@ title="Create this topic">
 event</dd>
 </dl>And in the api sources, an additional tag is used 
 <code>@service</code>- See 
-<a href="/bin/view/Astrogrid/DesktopAstroGridDevelopment#API_Descriptors"
+<a href="#API_Descriptors"
 class="twikiAnchorLink">#API_Descriptors</a>
 <p></p>
 <p></p>
@@ -908,32 +742,18 @@ else RMI will fail.</dd>
 class="twikiAnchorLink">version number</a>of the project 
 <strong>must</strong>be altered. 
 <p></p>
-<h2>
-<a name="HiveMind"></a>
-<a href="/bin/view/Astrogrid/HiveMind" class="twikiLink">
-HiveMind</a>
+<h2>HiveMind
 </h2>The code relies on 
-<a href="/bin/view/Astrogrid/HiveMind" class="twikiLink">
-HiveMind</a>to assemble and configure the application at runtime.
+HiveMind to assemble and configure the application at runtime.
 There's lots of benefits to using 
-<a href="/bin/view/Astrogrid/HiveMind" class="twikiLink">
-HiveMind</a>, but it is a new thing to learn - and theres a lot of
+HiveMind, but it is a new thing to learn - and theres a lot of
 depth to this subject. 
 <p></p>See 
-<a href="/bin/view/Astrogrid/DependencyInjectionContainers"
+<a href="dependencyinjectioncontainers.html"
 class="twikiLink">DependencyInjectionContainers</a>for explanation
 the benefits of container management 
 <p></p>
-<strong>See 
-<span class="twikiNewLink">HivemindInDesktopAstroGrid
-<a rel="nofollow"
-href="/bin/edit/Astrogrid/HivemindInDesktopAstroGrid?topicparent=Astrogrid.DesktopAstroGridDevelopment"
-title="Create this topic">
-<sup>?</sup>
-</a></span>for the details of how 
-<a href="/bin/view/Astrogrid/HiveMind" class="twikiLink">
-HiveMind</a>is applied in the implementation, and the architecture
-of the implementation</strong>
+
 <p></p>
 <h2>
 <a name="External_libraries"></a>External libraries</h2>As well as
@@ -1085,15 +905,7 @@ stable API under which the delegates are free to change.
 directly - e.g. the utilities in the common project. All these are
 already available on the classpath. 
 <p></p>
-<h1>
-<a name="Still_to_be_written_past_this"></a>
-<a name="Still_to_be_written_past_this_"></a>Still to be written
-past this.</h1>
-<p></p>
-<h3>
-<a name="Transports"></a>Transports</h3>
-<p></p>
-<p></p>
+
 <h3>
 <a name="UI_Layer"></a>UI Layer</h3>
 <p></p>There's a bunch of icons in the package
@@ -1121,72 +933,8 @@ webservice) should be executed on a background thread so that the
 responsiveness of the UI is maintained. This is particularly
 important when there is more than one window displayed by the
 application. 
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>-- 
-<a href="/bin/view/Main/NoelWinstanley" class="twikiLink">
-NoelWinstanley</a>- 27 Jun 2007, updated to cleaned up build 29
-April 2008</div>
-</div>
-<div class="patternTopicFooter">
-<span class="patternHomePath">This topic: Astrogrid 
-<span class="sep">&gt;</span>
-<a href="/bin/view/Astrogrid/WebHome" class="twikiLink">
-WebHome</a>&gt; 
-<a href="/bin/view/Astrogrid/AstroGrid" class="twikiLink">
-AstroGrid</a>&gt; 
-<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
-DesktopAstroGrid</a>
-<span class="sep">&gt;</span>
-<a href="/bin/view/Astrogrid/DesktopAstroGridDevelopment"
-class="twikiLink">DesktopAstroGridDevelopment</a></span>
-<div class="patternTopicInfo patternRevInfo">History: r13 - 30 Apr
-2008 - 06:43:59 - 
-<a href="/bin/view/Main/NoelWinstanley" class="twikiLink">
-NoelWinstanley</a></div>
-<!-- /patternTopicInfo -->
-</div>
-<!-- /patternTopicFooter -->
-</div>
-<!-- /patternMainContents-->
-</div>
-<!-- /patternMain-->
-</div>
-<!-- /patternFloatWrap-->
-<div class="clear">&#160;</div>
-</div>
-<!-- /patternOuter-->
-<div id="patternBottomBar">
-<div id="patternBottomBarContents">
-<span class="twikiRight">
-<a href="http://twiki.org/">
-<img src="/pub/TWiki/TWikiLogos/T-logo-80x15.gif"
-alt="This site is powered by the TWiki collaboration platform"
-width="80" height="15"
-title="This site is powered by the TWiki collaboration platform"
-border="0"></img>
-</a>
-</span>Copyright &#169; by the contributing authors. All material
-on this collaboration platform is the property of the contributing
-authors. 
-<br></br>Ideas, requests, problems regarding TWiki? 
-<a href="mailto:agsitemeister@star.le.ac.uk?subject=TWiki Feedback on Astrogrid.DesktopAstroGridDevelopment">
-Send feedback</a></div>
-<!-- /patternBottomBarContents-->
-</div>
-<!-- /patternBottomBar-->
-</div>
-<!-- /patternPage-->
-</div>
-<!-- /patternPageShadow-->
-</div>
-<!-- /patternScreen-->
+
+
 </p>
 </section>
 </body>

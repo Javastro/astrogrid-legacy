@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+<properties>
+<title>API Javadoc Tags</title>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+
+</properties>
+<body>
+
+<section name="Description of Additional Javadoc Markup">
+<p>
+Astro Runtime API docs 
+uses many different @tags 
+- some defined by ourselves, and others defined by external taglet libraries.
+
+</p>
+</section>
+<section name="Defined by ourselves">
+<p>
+<dl>
+<dt>@service</dt>
+    <dd>marker tag that marks an interface as an AR component
+    This tag is vital, and is used within the AR implementation
+    </dd>    
+<dt>@bean</dt>
+    <dd>marker tag that marks a java bean as a datastructure that is returned by the AR
+    Think this tag is vital to the implementation too.
+    </dd>
+<dt>@xmlrpc</dt>
+    <dd>documentation specific to xml-rpc access method</dd>
+<dt>@todo @modified</dt>
+    <dd>
+Only for development use: not presented in final documentation
+    </dd>
+</dl>
+</p>
+</section>    
+
+
+<section name="Standard Doclet tags to remember">
+<p>
+As well as the obvious ones, there's 
+<dl>
+
+<dt><code>{@literal}</code></dt><dd>displays text without interpreting html tag</dd>
+<dt><code>{@code}</code></dt><dd>equivalent to <code>{@literal}</code>. Consider {@example} or {@source} for
+larger examples.</dd>
+</dl>
+</p>
+</section>
+
+<section name="Code Exclusion">
+<p>
+Provided by a custom doclet filter (org.astrogrid.util.ExcludeDoclet)
+<code>@exclude</code> - will exclude this item (field, method, or even class) from the final documentation
+</p>
+</section>
+
+<section name="Presentation">
+<p>
+Provided by the Taglets collection  - http://taglets.sourceforge.net
+</p>
+<subsection name="Block Tags">
+<p>
+<ul>
+<li>@note</li>
+<li>@warning</li>
+<li>@equivalence - equivalent to (used for describing convenience fns, etc)</li>
+</ul>
+</p>
+</subsection>
+
+<subsection name="Inline Tags">
+<p>
+<dl>
+<dt>{@example }</dt><dd>preformatted, literal, and colured</dd>
+<dt>{@markupExample}</dt><dd>preformatted, but not literal (so can contain other tags}</dd>
+<dt>{@source}</dt><dd>preformatted, literal, coloured, but, unlike example, with no title.</dd>
+<dt>{@stickyError}, {@stickyInfo}, {@stickyNote}, {@stickyWarning}</dt><dd>postit with icon.</dd>
+</dl>
+</p>
+</subsection>
+</section>
+
+<section name="Diagramming">
+<p>
+Provided by the TextDiagramTaglet - http://ditaa.sourceforge.net/. An example
+</p>
+
+<source><![CDATA[
+{@textdiagram <unique name>
+
+<diagram>
+ }
+
+e.g.
+
+{@textdiagram testDiagram
+ *   +--------+   +-------+    +-------+
+ *   |        | --+ ditaa +--> |       |
+ *   |  Text  |   +-------+    |diagram|
+ *   |Document|   |!magic!|    |       |
+ *   |     {d}|   |       |    |       |
+ *   +---+----+   +-------+    +-------+
+ *       :                         ^
+ *       |       Lots of work      |
+ *       +-------------------------+
+ * }
+ * 
+ ]]></source>
+ 
+ <p>
+ Diagram Syntax: - http://ditaa.sourceforge.net/
+ in brief:
+ </p>
+ <source><![CDATA[
+ square with rounded corners - 
+/--+
+|  |
++--/
+
+color:
+/----\ /----\
+|c33F| |cRED|
+|    | |    |
+\----/ \----/
+
+tags:
+place within a square to change how it's rendered.
+{d} - as a document
+{s} - as a storage cylinder
+{io} - as a rhombus
+
+dashed lines:
+make one item in the line a '=' (horizontal) or ':' (vertical) to make the whole line dashed.
+
+text in boxes:
+itmized list - wiki like markup - starts with <space>o<space>
+]]></source>
+</section>
+</body>
+</document>
+
+  

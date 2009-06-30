@@ -17,7 +17,7 @@ import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
 import org.votech.plastic.CommonMessageConstants;
 
-/**
+/** Message type for exchanging a Fits Image
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 16, 20093:50:19 PM
  */

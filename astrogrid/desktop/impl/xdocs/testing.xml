@@ -1,74 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <document>
 <properties>
-<title>DesktopAstroGridTesting &lt; Astrogrid &lt; TWiki</title>
+<title>Testing</title>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+
 </properties>
 <body>
 <section>
 <p>
-<a name="PageTop"></a>
-<div id="patternScreen">
-<div id="patternPageShadow">
-<div id="patternPage">
-<div id="patternOuter">
-<div id="patternFloatWrap">
-<div id="patternMain">
-<div id="patternMainContents">
-<div class="patternContent">
-<div class="patternTopic">
-<div style="position: relative; float:right; margin:0 1em 1em 0; padding:0; border:0;">
-
-<div style="position: relative; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%; width:20em; border:2px solid #99CCFF; padding:5px; margin:10px 0 0 0;">
-
-<strong>Table of Contents</strong>
-<div class="twikiToc">
-<ul>
-<li>
-<a href="#Testing_DesktopAstroGrid">Testing DesktopAstroGrid</a>
-<ul>
-<li>
-<a href="#Unit_testing_with_Mock_Objects">Unit testing with Mock
-Objects</a>
-</li>
-<li>
-<a href="#Obsolete">Obsolete</a>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div style="position: relative; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%; width:20em; border:2px solid #99CCFF; padding:5px; margin:10px 0 0 0;">
-
-<strong>Children of this topic</strong>
-<br></br>
-<p></p>
-</div>
-</div>
-<h1>
-<a name="Testing_DesktopAstroGrid"></a>Testing 
-<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
-DesktopAstroGrid</a></h1>
-<p></p>
-<dl>
-<dt>
-<a href="/bin/view/Astrogrid/DesktopAstroGridTestingProcess"
-class="twikiLink">DesktopAstroGridTestingProcess</a>
-</dt>
-<dd>Documents the testing process - how tests are organized, what
-tests are run when, etc.</dd>
-</dl>
-<p></p>
-<dl>
-<dt>
-<a href="/bin/view/Astrogrid/AstroRuntimeJavaSix"
-class="twikiLink">AstroRuntimeJavaSix</a>
-</dt>
-<dd>reports on recent compatability testing of 
-<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
-DesktopAstroGrid</a>with Java 6</dd>
-</dl>
-<p></p>
 <h2>
 <a name="Unit_testing_with_Mock_Objects"></a>Unit testing with Mock
 Objects</h2>
@@ -100,75 +39,7 @@ target="_top">(example)</a>,
 <a href="http://software.astrogrid.org/astrogrid-desktop-docs-snapshot/xref-test/org/astrogrid/desktop/modules/system/pref/PreferenceManagerImplUnitTest.html"
 target="_top">(example)</a>
 <p></p>
-<h2>
-<a name="Obsolete"></a>Obsolete</h2>
-<ul>
-<li>
-<a href="/bin/view/Astrogrid/OSXWebstartNotes" class="twikiLink">
-OSXWebstartNotes</a>- Troubleshooting of webstart on Mac OS.</li>
-<li>
-<a href="/bin/view/Astrogrid/WorkbenchWebstartTesting"
-class="twikiLink">WorkbenchWebstartTesting</a>- testing that the
-runtime webstarts on different platforms.</li>
-</ul>
-<p></p>
-<p></p>-- 
-<a href="/bin/view/Main/NoelWinstanley" class="twikiLink">
-NoelWinstanley</a>- 28 Jun 2007</div>
-</div>
-<div class="patternTopicFooter">
-<span class="patternHomePath">This topic: Astrogrid 
-<span class="sep">&gt;</span>
-<a href="/bin/view/Astrogrid/WebHome" class="twikiLink">
-WebHome</a>&gt; 
-<a href="/bin/view/Astrogrid/AstroGrid" class="twikiLink">
-AstroGrid</a>&gt; 
-<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
-DesktopAstroGrid</a>
-<span class="sep">&gt;</span>
-<a href="/bin/view/Astrogrid/DesktopAstroGridTesting"
-class="twikiLink">DesktopAstroGridTesting</a></span>
-<div class="patternTopicInfo patternRevInfo">History: r3 - 29 Jun
-2007 - 18:12:27 - 
-<a href="/bin/view/Main/NoelWinstanley" class="twikiLink">
-NoelWinstanley</a></div>
-<!-- /patternTopicInfo -->
-</div>
-<!-- /patternTopicFooter -->
-</div>
-<!-- /patternMainContents-->
-</div>
-<!-- /patternMain-->
-</div>
-<!-- /patternFloatWrap-->
-<div class="clear">&#160;</div>
-</div>
-<!-- /patternOuter-->
-<div id="patternBottomBar">
-<div id="patternBottomBarContents">
-<span class="twikiRight">
-<a href="http://twiki.org/">
-<img src="/pub/TWiki/TWikiLogos/T-logo-80x15.gif"
-alt="This site is powered by the TWiki collaboration platform"
-width="80" height="15"
-title="This site is powered by the TWiki collaboration platform"
-border="0"></img>
-</a>
-</span>Copyright &#169; by the contributing authors. All material
-on this collaboration platform is the property of the contributing
-authors. 
-<br></br>Ideas, requests, problems regarding TWiki? 
-<a href="mailto:agsitemeister@star.le.ac.uk?subject=TWiki Feedback on Astrogrid.DesktopAstroGridTesting">
-Send feedback</a></div>
-<!-- /patternBottomBarContents-->
-</div>
-<!-- /patternBottomBar-->
-</div>
-<!-- /patternPage-->
-</div>
-<!-- /patternPageShadow-->
-</div>
-<!-- /patternScreen-->
+
 </p>
 </section>
 </body>

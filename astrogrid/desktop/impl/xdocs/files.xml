@@ -13,7 +13,7 @@ VODesktop stores information in a number of places on local disk. Some of these 
 <subsection name="Data Directory">
 <p>
 VODesktop stores caches, resource lists, and other downloaded material in the directory <tt>~/.workbench</tt>. Deleting this directory
-has the affect of resetting much of the application behaviour. Some files of interest within this directory are
+has the affect of <b>losing all user data</b> and resetting much of the application behaviour. The files of interest within this directory are
 <table>
 <tr>
 <th>Filename</th><th>Description</th>
@@ -24,8 +24,11 @@ has the affect of resetting much of the application behaviour. Some files of int
 <tr><td><tt>trusted-certificates</tt></td><td>directory of downloaded trust anchors</td></tr>
 <tr><td><tt>user-annotations.xml</tt></td><td>User-provided annotations of resources in VOExplorer</td></tr>
 </table>
-The contents of this directory also includes cached information about: registry resources;
- annotations; object positions; and  query sizes.
+The user / sysadmin should consider backing up these files.
+</p>
+<p>
+Other files in this directory (with file types <tt>.data</tt> or <tt>.index</tt>) contain cached information about: registry resources;
+ annotations; object positions; and  query sizes. They can be safely deleted or not backed up.
 </p>
 </subsection>
 
@@ -51,7 +54,12 @@ When Astro Runtime is running, two files are written to the user's home director
 When the application halts, this file is deleted.
 </p>
 </subsection>
-
+<subsection name="SAMP">
+<p>
+The SAMP hub within VODesktop write the file <tt>~/.samp</tt>, which, as per the SAMP specification, describes how other application may connect to the 
+messaging hub.
+</p>
+</subsection>
 <subsection name="PLASTIC">
 <p>
 The PLASTIC hub within VODesktop writes the file <tt>~/.plastic</tt>, which describes how PLASTIC applications may connect to the hub.

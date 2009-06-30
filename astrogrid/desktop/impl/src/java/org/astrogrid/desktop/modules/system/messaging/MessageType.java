@@ -8,19 +8,20 @@ import java.net.URI;
 import java.net.URL;
 
 /** Abstract class for message types.
- * 
+ * A message type represents a particular kind of message, and handles the differences in sending this
+ * message over either PLASTIC or SAMP.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 15, 20092:58:32 PM
  */
 public abstract class MessageType<S extends MessageSender> {
 
     
-    /** return the SAMP MType this message type matches against
+    /** return the SAMP MType this message type matches against.
      * 
      *  return null if not applicatblae for this protocol*/
     protected abstract String getSampMType() ;
     
-    /** return the Plastic message this message type matches against 
+    /** return the Plastic message this message type matches against. 
      * 
      * return null if not applicable to htis protocol.
      * */
@@ -35,15 +36,23 @@ public abstract class MessageType<S extends MessageSender> {
      */
     protected abstract S createPlasticSender(PlasticApplicationDescription plas);
     
-    /** crate a sender that will send a message of this type to a
+    /** create a sender that will send a message of this type to a
      * SAMP application.
      * 
      * @return null if this message cannot be sent via SAMP
      */
     protected abstract S createSampSender(SampMessageTarget somethingSamp);
     
+    /**
+     * Create an unmarshaller that can accept a message of this type received from a PLASTIC application
+     * @return a message unmarshaller for this message type
+     */
     protected abstract MessageUnmarshaller<S> createPlasticUnmarshaller();
     
+    /** Create an unmarshaller that can accept a message of this type received from a SAMP application
+     * 
+     * @return a message unmarshaller for this message type
+     */
     protected abstract MessageUnmarshaller<S> createSampUnmarshaller();
     
     @Override

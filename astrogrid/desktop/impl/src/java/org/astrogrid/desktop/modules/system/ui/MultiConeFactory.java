@@ -24,7 +24,7 @@ import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.samp.ErrInfo;
 import org.astrogrid.samp.Response;
 
-/**
+/** Factory for creating MultiCone UI windows.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 15, 20094:15:23 PM
  */

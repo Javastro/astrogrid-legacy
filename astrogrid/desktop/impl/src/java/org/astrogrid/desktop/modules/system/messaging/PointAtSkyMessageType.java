@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.system.messaging;
 
 import java.net.URI;
 
-/**
+/** Message type for a 'point at sky' command.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 16, 20093:57:55 PM
  */

@@ -17,7 +17,7 @@ import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
 import org.votech.plastic.CommonMessageConstants;
 
-/**
+/** Message Type for exchanging a votable.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 16, 20094:08:34 PM
  */

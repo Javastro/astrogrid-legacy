@@ -77,10 +77,8 @@ Inspect the <a href="hivedoc/index.html">Hivedoc</a> for other components that c
 <subsection name="Contribution to Configuration Points">
 <p>
 More extensive configuration - such as providing new plugins and extensions to the application - can be achieved
-by using commandline parameters to specify additional Hivemind descriptors. The hivemind system
-still needs to be documented properly.
+by using commandline parameters to add additional Hivemind descriptors. See  <a href="extending.html">Extending VODesktop</a>.
 
-<!-- TODO: document this properly. --> 
 </p>
 </subsection>
 

@@ -7,9 +7,10 @@
 <section name="Astro Runtime">
 <p>
 Astro Runtime (AR) is middleware that makes it simple to call Virtual Observatory 
-services from any programming language. The VODesktop user interface is 
-implemented upon this middleware.
+services from any programming language. 
 
+</p><p>The VODesktop application is 
+implemented upon the AR middleware.
 </p>
 <p>
 AstroRuntime within VODesktop can also be called directly from external scripts and

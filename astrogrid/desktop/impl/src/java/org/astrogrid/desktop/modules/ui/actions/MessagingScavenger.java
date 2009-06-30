@@ -27,7 +27,7 @@ import ca.odell.glazedlists.CollectionList.Model;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 
 /**
- * A scavenger that monitors the plastic-registered applications, and provides activities suitable for 
+ * A scavenger that monitors the registered applications (SAMP or PLASTIC), and provides activities suitable for 
  * communicating with each application.
  *  @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20071:29:37 PM

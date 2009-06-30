@@ -29,7 +29,8 @@ import org.astrogrid.samp.Response;
 
 import com.l2fprod.common.swing.JLinkButton;
 
-/** Send PLASTIC loadVOTable message for a file, or a suitable registry resource
+/** Send a loadVOTable message for a file, or a suitable registry resource (either over SAMP or PLASTIC).
+ * @todo rename this class to 'MessageVotableActivity' to fit with other messaging activities.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:35 PM
  */

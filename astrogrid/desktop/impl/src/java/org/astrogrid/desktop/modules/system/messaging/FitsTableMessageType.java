@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.system.messaging;
 
 import java.net.URI;
 
-/**
+/** Message Type for exchanging a Fits Table.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 16, 20093:52:16 PM
  */

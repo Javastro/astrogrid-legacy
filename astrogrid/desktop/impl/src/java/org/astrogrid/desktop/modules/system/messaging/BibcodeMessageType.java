@@ -15,7 +15,7 @@ import org.astrogrid.samp.Message;
 import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
 
-/**
+/** Message Type for exchanging a Bibcode.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 15, 20093:02:01 PM
  */

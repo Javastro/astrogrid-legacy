@@ -2,76 +2,16 @@
 <document>
 <properties>
 <title>Testing Process</title>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+
 </properties>
 <body>
 <section>
 <p>
-<a name="PageTop"></a>
-<div id="patternScreen">
-<div id="patternPageShadow">
-<div id="patternPage">
-<div id="patternOuter">
-<div id="patternFloatWrap">
-<div id="patternMain">
-<div id="patternMainContents">
-<div class="patternContent">
-<div class="patternTopic">
-<div style="position: relative; float:right; margin:0 1em 1em 0; padding:0; border:0;">
 
-<p></p>
-<div style="position: relative; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%; width:20em; border:2px solid #99CCFF; padding:5px; margin:10px 0 0 0;">
-
-<p></p>
-<strong>Table of Contents</strong>
-<p></p>
-<div class="twikiToc">
-<ul>
-<li>
-<a href="#Types_of_Test">Types of Test</a>
-<ul>
-<li>
-<a href="#Test_Organization">Test Organization</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#Hand_Running_Tests">Hand Running Tests</a>
-<ul>
-<li>
-<a href="#UI_testing">UI testing</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#Smoke_Tests">Smoke Tests</a>
-</li>
-<li>
-<a href="#Hand_testing_Checklist">Hand-testing Checklist.</a>
-</li>
-<li>
-<a href="#Platform_Testing">Platform Testing</a>
-</li>
-</ul>
-</div>
-<p></p>
-</div>
-<p></p>
-<div style="position: relative; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%; width:20em; border:2px solid #99CCFF; padding:5px; margin:10px 0 0 0;">
-
-<p></p>
-<strong>Children of this topic</strong>
-<br></br>
-<p></p>
-<p></p>
-<p></p>
-</div>
-</div>
-<p></p>
 <h1>
 <a name="Process_forDesktop_Astro_Grid_Te"></a>
-<a name="_Process_forDesktop_Astro_Grid_T"></a>Process for 
-<a href="/bin/view/Astrogrid/DesktopAstroGrid" class="twikiLink">
-Desktop Astro Grid</a>Testing.</h1>
+<a name="_Process_forDesktop_Astro_Grid_T"></a>Testing Process</h1>
 <p></p>The testing process for a workbench release is 
 <p></p>
 <ol>
@@ -81,8 +21,6 @@ Desktop Astro Grid</a>Testing.</h1>
 <li>hand-testing checklist</li>
 <li>platform testing</li>
 </ol>
-<p></p>
-<br clear="all"></br>
 <p></p>
 <h1>
 <a name="Types_of_Test"></a>Types of Test</h1>
@@ -402,67 +340,7 @@ testing checklist on each target operating system - Windows XP, OS
 X, Ubuntu Linux. For XP and Ubuntu, verify that system tray icon
 appears. 
 <p></p>(I use Parallels to run XP and Ubuntu in a window on OSX) 
-<p></p>See also: 
-<ul>
-<li>
-<a href="/bin/view/Astrogrid/WorkbenchWebstartTesting"
-class="twikiLink">WorkbenchWebstartTesting</a>- historical testing
-of webstart on different platforms.</li>
-</ul>
-<p></p>
-<p></p>-- 
-<a href="/bin/view/Main/NoelWinstanley" class="twikiLink">
-NoelWinstanley</a>- 22 Jan 2007</div>
-</div>
-<div class="patternTopicFooter">
-<span class="patternHomePath">This topic: Astrogrid 
-<span class="sep">&gt;</span>
-<a href="/bin/view/Astrogrid/ComponentTestingProcess"
-class="twikiLink">ComponentTestingProcess</a>
-<span class="sep">&gt;</span>
-<a href="/bin/view/Astrogrid/DesktopAstroGridTestingProcess"
-class="twikiLink">DesktopAstroGridTestingProcess</a></span>
-<div class="patternTopicInfo patternRevInfo">History: r7 - 02 May
-2008 - 10:12:05 - 
-<a href="/bin/view/Main/NoelWinstanley" class="twikiLink">
-NoelWinstanley</a></div>
-<!-- /patternTopicInfo -->
-</div>
-<!-- /patternTopicFooter -->
-</div>
-<!-- /patternMainContents-->
-</div>
-<!-- /patternMain-->
-</div>
-<!-- /patternFloatWrap-->
-<div class="clear">&#160;</div>
-</div>
-<!-- /patternOuter-->
-<div id="patternBottomBar">
-<div id="patternBottomBarContents">
-<span class="twikiRight">
-<a href="http://twiki.org/">
-<img src="/pub/TWiki/TWikiLogos/T-logo-80x15.gif"
-alt="This site is powered by the TWiki collaboration platform"
-width="80" height="15"
-title="This site is powered by the TWiki collaboration platform"
-border="0"></img>
-</a>
-</span>Copyright &#169; by the contributing authors. All material
-on this collaboration platform is the property of the contributing
-authors. 
-<br></br>Ideas, requests, problems regarding TWiki? 
-<a href="mailto:agsitemeister@star.le.ac.uk?subject=TWiki Feedback on Astrogrid.DesktopAstroGridTestingProcess">
-Send feedback</a></div>
-<!-- /patternBottomBarContents-->
-</div>
-<!-- /patternBottomBar-->
-</div>
-<!-- /patternPage-->
-</div>
-<!-- /patternPageShadow-->
-</div>
-<!-- /patternScreen-->
+
 </p>
 </section>
 </body>

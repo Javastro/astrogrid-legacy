@@ -7,8 +7,19 @@
 <body>
 <section name="Extending VODesktop">
 <p>
+VODesktop can be extended with new functionality by using the <tt>-addModule</tt> or <tt>-addModuleURL</tt> commandline flags to add additional 
+hivemind XML modules. These descriptors can contribute to existing configuration points, provide new implementations for existing service points, 
+or add completely new service points. 
+</p>
+<p>
+To see the possible extension points, consult the <a href="hivedoc/index.html">hivedoc</a>, and read the <a href="http://hivemind.apache.org/">hivemind documentation</a>
+</p>
+<p>
+Obviously, if the additional hivemind modules specify new java classes, these must be added to the classpath.
 </p>
 </section>
+
+<!--  TODO: work out some simple places to extend.. -->
 
 </body>
 </document>

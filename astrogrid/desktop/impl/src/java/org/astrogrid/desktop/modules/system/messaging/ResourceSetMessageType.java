@@ -17,7 +17,7 @@ import org.astrogrid.samp.Message;
 import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
 
-/** 
+/**  Message Type for exchanging a registry resource set.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 16, 20091:21:30 PM
  */

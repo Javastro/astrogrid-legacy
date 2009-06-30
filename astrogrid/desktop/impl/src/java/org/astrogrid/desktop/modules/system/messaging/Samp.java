@@ -7,7 +7,7 @@ import javax.swing.Action;
 
 import org.astrogrid.samp.client.HubConnector;
 
-/**
+/** Internal component that integrates to the JSAMP library.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 25, 200910:27:22 AM
  */

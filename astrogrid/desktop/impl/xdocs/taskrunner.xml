@@ -17,7 +17,7 @@ it communicates with services that support the <a href="http://www.ivoa.net/cgi-
 (<a href='http://technology.astrogrid.org/wiki/CEA'>CEA Application Servers</a>, and <a href='http://technology.astrogrid.org/'>DSA Remote Databases</a>)
 </p>
 <p> There's experimental
-support for an early version of <a href="http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/TableAccess">TAP</a>, while support for <a href="http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/AsynchronousHome">UWS</a> services is planned. 
+support for an early version of <a href="http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/TableAccess">TAP</a>
 </p>
 <p>
 See the <a href="http://www.astrogrid.org/wiki/Help/IntroVODesktop/UsingTaskRunner">TaskRunner User Guide</a>

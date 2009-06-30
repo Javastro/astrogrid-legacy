@@ -7,7 +7,7 @@ import java.net.URI;
 
 import org.votech.plastic.CommonMessageConstants;
 
-/**
+/** Message Type for exchanging a list of table rows.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 16, 20094:04:03 PM
  */

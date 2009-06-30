@@ -56,6 +56,10 @@ For further information, see the note on <a href="configuration.html">Configurat
 <p>
 Lists the configuration keys, and their current values. 
 </p>
+<p>
+Note: the output of  <tt>-list</tt> can be saved to file, edited, and then used to configure VODesktop by using it with
+ the <tt>-propertyFile</tt> or <tt>-propertyURL</tt> commandline arguments
+</p>
 </subsection>
 <subsection name="-propertyFile">
 <p>
@@ -99,12 +103,23 @@ A standard copy of this documentation is
 </p>
 </subsection>
 <subsection name="-addModule">
-Load xml description of extensions from a file.
+<p>
+Load an additional XML hivemind module from a file.
+</p>
 </subsection>
 <subsection name="-addModuleURL">
-Load xml description of extensions from a URL
+<p>
+Load an additional XML hivemind module from a URL
+</p>
 </subsection>
 </section>
-
+<section name="Development">
+<subsection name="-debugEDT">
+<p>
+Enable additional debugging of the Swing Event Dispatch Thread (EDT). This should assist in catching programming errors where
+long-running or IO-bound methods are called from the EDT. Any such coding violations are logged.
+</p>
+</subsection>
+</section>
 </body>
 </document>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Running Astro Runtime / VO Desktop on a server</title>
+</properties>
+<body>
+<section name="Introduction">
+<p>
+VO Desktop can be happily run in a headless server environment, as part of the implementation of a web application. The Astro Runtime library
+makes it simple to add VO functionality to a web application - for example, single-sign on, vospace access, registry queries, etc. 
+</p>
+<p>
+This page describes how to launch VO Desktop on a server, and how to integrate it with your chosen web-application technology.
+</p>
+</section>
+
+<section name="Deployment Options">
+<p>
+To run VO Desktop on a headless server, it should be launched with the <tt>-headless</tt> commandline option. See <a href="host.html">Scripting Host</a> for details.
+As noted on the Scripting Host page, you may wish to disable additional unused services - for example RMI.
+</p>
+<p>
+How VO Desktop should be integrated with the web application - i.e. how the web layer calls functions of the Astro Runtime - depends on the web application technology.
+Some scenarios are sketched in the sections below.
+</p>
+
+<subsection name="Python Web App calling to External VODesktop Process">
+<p>
+<img src="python-scenario.gif" align="right"/>
+If your web application layer is implemented in Python (or some other non-JVM language), then this is the only 
+suitable deployment scenario. Your web application (in the figure, the yellow script) runs in the framework / server of your choice (in the figure <a href="http://cherrypy.org/">CherryPy</a>). 
+VO Desktop runs in a separate process, started conventionally, using the <tt>-headless</tt> flag. The web application calls functions of the Astro Runtime library
+using XML-RPC method calls. 
+</p>
+<p>
+To achieve this, the web application will need to read <tt>~/.astrogrid-desktop</tt> to discover the XML-RPC URL for the Astro Runtime. This is no different to 
+usual Python scripting - there are many examples in the Astro Runtime documentation.  
+<br clear="all" />
+</p>
+</subsection>
+
+<subsection name="Java Web App calling to External VODesktop process">
+<p>
+<img src="java-scenarios.gif" align="right" />
+This scenario is essentially the same as the one above, only the web application is implemented in a Java technology (for example <a href="http://java.sun.com/products/jsp/">JSP</a>) and hosted in 
+a java web container (e.g. <a href="http://tomcat.apache.org/">Tomcat</a>). <i>(a)</i> in the figure above shows this configuration. The web application connects to a VODesktop in an external process and
+calls Astro Runtime library functions using either XML-RPC or Java RMI.
+</p>
+</subsection>
+
+<subsection name="Java Web App and VODesktop in same web container">
+<p>
+A more efficient deployment scenario is shown in <i>(b)</i>. VODesktop is deployed as a library within the same web container as the web application. The figure shows
+VODesktop / AR and the web application both running within the Topcat web container. 
+As the AstroRuntime library is in the same process as the web application, function calls can be made directly, removing the overheads incurred for RMI or XML-RPC.
+</p>
+<p>
+To achieve this, the VODesktop jar should be added to the library directory of the web application's WAR file.
+To call Astro Runtime functions, the web application should use the <tt>org.astrogrid.acr.Finder</tt> class to return a reference to the Astro Runtime Library. 
+The procedure for using this class is the same as when connecting using RMI - however, if the VODesktop jar is on the classpath, a local instance will be started, and
+a reference to this instance returned. The resulting <tt>org.astrogrid.acr.builtin.ACR</tt> object can then be stored in the servlet context, or somewhere 
+similar where it can be accessed as needed. The <tt>ACR</tt> object can then be used as usual to return service instances. 
+These will then make direct function calls, rather than RMI calls (although 
+there is no observable difference to the client code.)
+</p>
+</subsection>
+
+<subsection name="Java Web App in VODesktop's internal webserver">
+<p>
+Another alternative is shown in <i>(c)</i>. VoDesktop contains an internal webserver (implemented using <a href="">Jetty</a>). This is used for a 
+<a href="html.html">variety of purposes</a>. It is possible to deploy an additional web application into this webserver. The web application is running in the 
+same process as the Astro Runtime library, and so can make direct function calls, as in the previous scenario. Using VoDesktop as the web container simplifies things 
+because it removes the need to 
+deploy and configure another web server such as Tomcat.
+</p>
+<p>
+To achieve this, an additional hivemind xml descriptor should be supplied at startup using the <tt>-addModule</tt> commandline argument. The descriptor should contribute
+a new web context to the <tt>system.webapps</tt> configuration point, or contribute new servlets to the <tt>system.servlets</tt> configuraiton point; while additional supporting libraries should be added to the classpath.
+</p>
+<p>
+A new servlet or web application will find it's context populated with the items listed in the <a href="hivedoc/config/system.servletContext.html">system.servletContext</a> hivemind configuration point. In
+particular, an instance of <tt>org.astrogrid.acr.builtin.ACR</tt> can be found under the key <tt>module-registry</tt>. This <tt>ACR</tt> object can be used as usual
+to return service instances.
+</p>
+<p>
+You may also wish to adjust the <a href="configuration.html">Configuration</a> to control the IP address and port that the VODesktop runs it's internal server on.
+<br clear="all" />
+
+</p>
+</subsection>
+
+</section>
+
+<section name="Multi-Session Support">
+<p>
+If a web application has different users which have varying range of rights (for example, if it requires it's users to log on),
+then it needs to maintain some model of multiple user sessions. Sometimes the data associated with each session can be held just within the web application - 
+in fact most web application frameworks provides a way of associating requests with user sessions by cookie or url rewriting.
+</p>
+<p>
+However, in other cases the user-specific data is passed down into the Astro Runtime library. For example, a web application that 
+allows each user to navigate their vospace files
+would prompt each user to login, and pass the login information to Astro Runtime to perform the VO-login.
+Once logged in, the web application then calls functions of the Astro Runtime File service to list the
+content's of that user's home directory. Later, the user may traverse to another folder, which in turn causes calls to Astro Runtime to list that directory.
+</p>
+
+<p>
+The example above is problematic for the standard use of AstroRuntime, which has a single-user model. It _could_ be possible to repeatedly log in and out with every
+different user request. However, this is very inefficient. Instead, Astro Runtime provides support for multiple user sessions, so multiple users, with different logins and
+contexts can be accommodated simultaneously within a single Astro Runtime.
+</p>
+
+<p>
+<!--  fixme: link to api docs. -->
+The <a href=" apidocs/org/astrogrid/acr/builtin/SessionManager.html">org.astrogrid.acr.builtin.SessionManager</a> service can be used to create new user sessions and 
+connect to them. The Session Identifiers created by this service can be stored in the user context within the web application, to 'link' the user sessions of the web layer
+and Astro Runtime.
+</p>
+
+<p>
+NB: at present, sessioning is only supported for the XML-RPC and RMI conneection methods to the AstroRuntime. Direct function calls to the AstroRuntime can't be sessioned
+(yet). This means that deployment scenarios (b) and (c) above cannot be used if muliple sessions are required. We hope to fix this at some point.
+</p>
+</section>
+
+</body>
+</document>

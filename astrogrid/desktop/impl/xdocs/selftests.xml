@@ -1,12 +1,50 @@
 <document>
 <properties>
         <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
-        <title>VOExplorer Introduction</title>
+        <title>Self Tests</title>
 </properties>
 <body>
-<section name="VOExplorer">
+<section name="Self Testing Framework">
 <p>
+As VODesktop connects to many different external services, there are many things out of it's control
+that may go wrong. In addition, VODesktop itself listens at various ports for connections from
+external processes calling SAMP, Plastic, or AR functionality. Frankly, there's a whole bunch of things
+that can go wrong, especially on oddly configured laptops with broken networking.
+</p>
+<p>
+The VODesktop self tests can be accessed from the main menu bar - <tt> Window - Run Self Tests</tt>. According
+to user preferences, the self tests are run automatically at startup. Whether run manually or at startup, any errors in the 
+selftests are logged.
+</p>
+</section>
+<section name="Adding a new self-test">
+<p>
+The intention of self-tests is that they should  be used to verify that the network is accessible, file locations
+readable etc - i.e. things that might go wrong in a usage environment. Self tests aren't a
+good place to put functionality and coding tests - which should be part of the main test tree.
+</p>
+<p>
+Self tests are expressed in the JUnit framework. New self tests should be contributed to the hivemind configuration point <tt>util.selftest</tt>.
+Each contribution must either be a JUnit <tt>TestCase</tt> or <tt>TestSuite</tt> object. 
+</p>
+<p>
+Two main ways of implementing self tests occur in the code
+<ol>
+<li>Either write conventional top-level Junit test classes, and instantiate these in the configuration point. 
+This is best for stand-alone environmental tests (e.g.
+memory, JVM version, network connectivity). See implementation and hivemind conf for <tt>org.astrogrid.desktop.modules.util.ConnectivityTests</tt> as an example
+</li>
+<li>
+Or have a service implementation provide access to it's self test object (TestCase or TestSuite) through a property getter method. This self test is typically
+implemented as an inner class of the service implementation. This
+provides better access from the test to the internal state and configuration of a component (e.g. submitting test queries to
+an ivoa registry). See implementation and hivemind conf for <tt>org.astrogrid.desktop.modules.system.JettyWebServer</tt> for an example of this approach.
 
+</li>
+</ol>
+</p>
+<p>
+For further examples, consult the <a href="hivedoc/config/util.selftest.html">hivedoc</a>
 </p>
 </section>
 </body>

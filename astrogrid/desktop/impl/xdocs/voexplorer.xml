@@ -45,6 +45,12 @@
             </p>
             
         </section>
+        <section name="Simple Registry Query Language (SRQL)">
+            <p>
+            SRQL is the preferred language for expressing queries in VOExplorer (the alternative is XQuery, or enumerating a list of resource IDs).
+            SRQL is described <a href="srql.html">here</a>.
+            </p>
+        </section>
         <section name="Annotations">
             <p>In the resource details display, (bottom pane of VOExplorer), 
             a list of <i>annotations</i> for a resource are displayed on the right hand side.

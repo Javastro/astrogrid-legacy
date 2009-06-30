@@ -17,7 +17,7 @@ import org.astrogrid.samp.Message;
 import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
 
-/**
+/** Message Type for exchanging spectra.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 16, 20094:06:59 PM
  */

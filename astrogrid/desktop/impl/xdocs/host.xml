@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Scripting Host</title>
+</properties>
+<body>
+<section name="Scripting Host">
+<p>
+VODesktop can be configured to display no GUI, but instead to run in the background, from where it can provide scripting facilities to other programs running on the same machine.
+Other programs and scripts may use it's SAMP or PLASTIC hubs, or may call functions of the Astro Runtime interface.
+A collection of sample <a href="http://deployer.astrogrid.org/software/astro-runtime/commandline/index.html">commandline scripts</a> (implemented by calling Astro Runtime functions) is available as part of the Astro Runtime Distribution
+
+</p>
+<p>
+To run VODesktop as a no-GUI scripting host, launch it with the <tt>-headless</tt> flag. (see <a href="commandline.html">Commandline Options</a>). 
+</p>
+<p>
+Depending on circumstance, you may wish to disable further functionality of VODesktop. For example, if your scripts will only be connecting via XML-RPC or HTTP, 
+you can disable the RMI remote access system by adding the commandline flag <tt>-Dsystem.rmi.disabled=true</tt>. See <a href="configuration.html">Configuration</a>
+for further details.
+</p>
+
+</section>
+
+</body>
+</document>

@@ -96,9 +96,15 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-/**TODO:
+/**T
+ * Implementation of the MultiCone UI Window.
+ * 
+ * TODO:
  *  * should allow service to be provided just by URL
  *  preference for 'upload' doesn't seem to stick.
+ *  
+ *  
+ *  @todo should really move this to org.astrogrid.desktop.modules.ui package.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 15, 20094:30:06 PM
  */

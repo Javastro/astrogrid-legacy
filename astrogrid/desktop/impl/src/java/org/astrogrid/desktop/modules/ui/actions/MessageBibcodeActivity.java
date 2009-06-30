@@ -12,7 +12,7 @@ import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.samp.Response;
 
-/** Send a PLASTIC 'bibcode' message for a resource.
+/** Send a 'bibcode' message for a resource (either over SAMP or PLASTIC)
  *  */
 public class MessageBibcodeActivity extends AbstractResourceActivity {
 	private final ExternalMessageTarget target;

@@ -1,12 +1,28 @@
 <document>
 <properties>
         <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
-        <title>VOExplorer Introduction</title>
+        <title>Background Processes</title>
 </properties>
 <body>
-<section name="VOExplorer">
+<section name="Background Processes">
 <p>
-
+This window is accessed from the menubar as 'window > show background processes', or by clicking the activity throbber
+at the bottom left hand corner of any window. The window shows some subset of the currently running background processes (i.e. running instances of
+<tt>org.astrogrid.desktop.modules.ui.BackgroundWorker</tt>.
+</p>
+<p>
+When instantiating <tt>BackgroundWorker</tt>, a parent must be provided - either the owning window (a <tt>UIComponent</tt>) or the general <tt>UIContext</tt>.
+The parentage of background workers is used to categorize them.
+</p>
+<p>
+Each item listed in the BackgroundProcesses window is a running background task. Buttons are provided to abort the task, and also to pop it out into it's own
+progress window. There's also facility for the background process to indicate how much progress it has made, and provide status messsages. Progress information
+ and status messages are provided by the background worker subclass calling <tt>org.astrogrid.desktop.modules.ui.BackgroundWorker.setProgress(int, int)</tt>
+  and <tt>org.astrogrid.desktop.modules.ui.BackgroundWorker.reportProgress(String)</tt>
+ respectively.
+</p>
+<p>
+See the javadoc for BackgroundWorker for more information on how to implement worker threads.
 </p>
 </section>
 </body>

@@ -24,7 +24,7 @@ import org.astrogrid.samp.Response;
 
 import com.l2fprod.common.swing.JLinkButton;
 
-/** Send PLASTIC loadSpectrum message for a file.
+/** Send a loadSpectrum message for a file (either over SAMP or PLASTIC).
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:56 PM
  */

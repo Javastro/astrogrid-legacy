@@ -1,0 +1,47 @@
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Web Interface</title>
+</properties>
+<body>
+<section name="Web Interface">
+<p>
+As well as a Graphical User Interface, VODesktop also exposes a web-based html user interface. 
+When VO Desktop is running, it writes the base URL of it's web interface in the <tt>~/.astrogrid-desktop</tt> file. This can be read by external programs who wish
+to connect, or alternately, you can simply copy and paste this URL into a webbrowser.
+</p>
+<p>
+The web page of the base URL contains links to the following functionality:
+</p>
+<subsection name="Access to Astro Runtime">
+<p>
+The web interface provides access to the functions of the Astro Runtime, both at an XML-RPC endpoint and as a nested hierachy of webforms.
+So, for example, to experiment with the Astro Runtime function to query a registry, from the top page navigate to <tt>ivoa - registry - keywordSearch</tt>. At this point
+the behaviour of the function is documented, and there's a simple web form for you to try out the function. Details on how to call this function from another program
+or script are also provided. For more details consult the Astro Runtime documentation.
+</p>
+<p>
+These webpages can be used to perform simple low-level tests and experiments without going to the trouble of writing scripts.
+</p>
+</subsection>
+<subsection name="Configuration Editor">
+<p>
+The web interface provides a page that lists all the current preferences, and allows their values to be changed. See <a href="configuration.html">Configuration</a>.
+</p>
+</subsection>
+<subsection name="Registry XML Access">
+<p>
+Provides Quick and Dirty access to the raw XML of a registry entry. Useful for debugging of registry entries, producing simple scripts, etc.
+The IVO-ID of the registry entry to retrieve must be provided using the <tt>?id=</tt> query parameter. 
+</p>
+</subsection>
+<subsection name="File Access">
+<p>
+Similar to Registry XMl access, but this provides quick and dirty acess to the contents of a file, in any of the recognized types of filesystem
+(currently this includes ftp, sftp, http, vospace and myspace). Useful for quick scripts, etc.
+The URI of the file to read must be provided using the <tt>?id=</tt> query parameter.
+</p>
+</subsection>
+</section>
+</body>
+</document>

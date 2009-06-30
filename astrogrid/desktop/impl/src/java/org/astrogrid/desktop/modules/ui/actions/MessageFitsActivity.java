@@ -22,7 +22,7 @@ import org.astrogrid.samp.Response;
 
 import com.l2fprod.common.swing.JLinkButton;
 
-/** Send a PLASTIC loadFits message for a file.
+/** Send a loadFits image message for a file (either over SAMP or PLASTIC).
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:47 PM
  */

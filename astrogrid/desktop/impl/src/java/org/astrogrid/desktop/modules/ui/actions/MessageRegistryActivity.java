@@ -16,7 +16,7 @@ import org.astrogrid.samp.Response;
 
 import com.l2fprod.common.swing.JLinkButton;
 
-/** Send a PLASTIC Resource message for a resource.
+/** Send a  Resource message for a resource (either via SAMP or PLASTIC).
  * I've modified this so that it only appears on the main menu - as it's advanced, and because of poor resource typeing, not universally applicable.
  *  */
 public class MessageRegistryActivity extends AbstractResourceActivity {
