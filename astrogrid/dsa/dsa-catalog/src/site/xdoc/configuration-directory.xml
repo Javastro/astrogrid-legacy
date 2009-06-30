@@ -33,16 +33,15 @@
         stands for the name of the installation, e.g. <i>/astrogrid/hipparcos</i>.
       </p>
       <p>
-        Download the <a href="context.xml">template context file</a>. Edit it,
+        Download the template context file (see the die-bar of this page). Edit it,
         changing the value of <i>org.astrogrid.config.filename</i> to point to
         the file <i>astrogrid.properties</i> in the configuration, e.g.
         <i>/astrogrid/hipparcos/astrogrid.properties</i>. This file just
         tells DSA/Catalogue where to find its properties file.
       </p>
       <p>
-        Download the <a href="astrogrid.properties">default properties file</a>.
+        Download the default properties file.
         Put it in the configuration directory and name it <i>astrogrid.properties</i>.
-
       </p>
     </section>
   </body>

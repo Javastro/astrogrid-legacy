@@ -17,11 +17,16 @@
       <item name="Installation procedure" href="installation-procedure.html"/>
       <item name="Preparing Tomcat" href="tomcat.html"/>
       <item name="Preparing the RDBMS" href="rdbms.html"/>
+      <item name="Configuration directory" href="configuration-directory.html"/>
       <item name="Configuring the service" href="astrogrid-properties.html"/>
       <item name="Deployment" href="deploy.html"/>
       <item name="Generating the metadoc" href="metadoc-raw.html"/>
       <item name="Annotating the metadoc" href="metadoc-cooked.html"/>
       <item name="Registration" href="registration.html"/>
+    </menu>
+    <menu name="Templates">
+      <item name="Context file" href="context.xml"/>
+      <item name="astrogrid.properties" href="astrogrid.properties"/>
     </menu>
     <menu name="Maintenance">
       <item name="Upgrading" href="upgrade-procedure.html"/>
