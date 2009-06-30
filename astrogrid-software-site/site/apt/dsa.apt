@@ -1,7 +1,33 @@
          --- 
          AstroGrid DSA 
          --- 
-         Paul Harrison	
+         Guy Rixon
          --- 
-         01-June-2009 
+         30-June-2009
          --- 
+
+DSA/Catalogue installation considerations
+
+   The DSA/Catalogue web-application allows ADQL queries and cone searches on
+   astronomical catalogues in relational databases. The cone searches follow
+   the IVOA SCS standard. The ADQL queries are
+   currently supported on a CEC interface and are therefore specific to
+   AstroGrid software. Later releases of DSA/Catalogue will support the
+   IVOA TAP standard.
+
+   DSA/Catalogue adapts to an existing database by configuration of the DSA
+   service and description of the database to the service; you do not need
+   to change your database schema. You can apply the component to any
+   database, whether or not astronomical. However, the cone-search facility
+   can only work on tables with columns containing equatorial coordinates.
+
+   Results of queries can be sent in a variety of formats: VOTable/TABLEDATA,
+   VOTable/BINARY, CSV, HTML.
+
+   ADQL queries are executed asynchronously from the client and can therefore
+   run for as long as necessary without timing out the connection. Query results
+   can be large: 500MB result-sets have been tested.
+
+   By default, DSA/Catalogue installations allow public, read-only access to
+   the database. If your database has a restricted access-policy, then DSA
+   can enforce this by requiring authentication of clients.
