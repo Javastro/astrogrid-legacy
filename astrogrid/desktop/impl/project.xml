@@ -26,7 +26,7 @@
         </packageGroup>
         <packageGroup>
             <title>Virtual Observatory</title>
-            <packages>org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.cds*:org.astrogrid.desktop.modules.ivoa*:org.astrogrid.desktop.modules.vo*:org.astrogrid.desktop.modules.plastic:org.astrogrid.desktop.modules.util</packages>
+            <packages>org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.file*:org.astrogrid.desktop.modules.cds*:org.astrogrid.desktop.modules.ivoa*:org.astrogrid.desktop.modules.vo*:org.astrogrid.desktop.modules.plastic:org.astrogrid.desktop.modules.util</packages>
         </packageGroup>
         <packageGroup>
             <title>UI and Dialogues</title>
@@ -254,7 +254,7 @@
             <type>jar</type>
             <properties>
                 <dist.bundle>true</dist.bundle>
-                <strip>true</strip>
+                <strip>false</strip> <!--  don't strip, else hard to deploy other web contexts -->
                 <version-held>2008-04-14</version-held>                
             </properties>
         </dependency>
@@ -265,7 +265,7 @@
             <version>2.3</version>
             <properties>
                 <dist.bundle>true</dist.bundle>
-                <strip>true</strip>
+                <strip>false</strip> <!-- don't strip, as hard to deploy other web contexts -->
                 <part-of>jetty - 2.3</part-of>
                 <part-of>xmlrpc - 2.2</part-of>
             </properties>
@@ -277,7 +277,7 @@
             <version>1.0</version>
             <properties>
                 <dist.bundle>true</dist.bundle>
-                <strip>false</strip>
+                <strip>false</strip> 
                 <!--small and perfectly formed -->
                 <version-checked>2008-04-14</version-checked>                
             </properties>
