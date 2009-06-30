@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>The configuration directory</title>
+  </properties>
+
+  <body>
+    <section name="The configuration directory">
+      <p>
+        You need a directory in which to keep the three configuration files
+        for DSA/Catalogue:
+      </p>
+      <ul>
+        <li>the context file;</li>
+        <li><i>astrogrid.properties</i>;</li>
+        <li>the metadoc file.</li>
+      </ul>
+      <p>
+        This directory should be outside the Tomcat directory tree in order that
+        it not be lost when Tomcat or DSA/Catalogue are upgraded. It is specific
+        to one installation of DSA/catalogue; if you make a second, parallel
+        installation, then make a second configuration directory. The configuration
+        files may include passwords, so the configuration directory should be
+        somewhere secure.
+      </p>
+      <p>
+        Apart from the constraints stated above, you put the configuration
+        directory anywhere you choose. One naming convention may help you: the
+        configuration directory might be <i>/astrogrid/x</i> where <i>x</i>
+        stands for the name of the installation, e.g. <i>/astrogrid/hipparcos</i>.
+      </p>
+      <p>
+        Download the <a href="context.xml">template context file</a>. Edit it,
+        changing the value of <i>org.astrogrid.config.filename</i> to point to
+        the file <i>astrogrid.properties</i> in the configuration, e.g.
+        <i>/astrogrid/hipparcos/astrogrid.properties</i>. This file just
+        tells DSA/Catalogue where to find its properties file.
+      </p>
+      <p>
+        Download the <a href="astrogrid.properties">default properties file</a>.
+        Put it in the configuration directory and name it <i>astrogrid.properties</i>.
+
+      </p>
+    </section>
+  </body>
+
+</document>

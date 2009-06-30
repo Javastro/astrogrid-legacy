@@ -13,6 +13,20 @@
       <item name="Release notes" href="release-notes-2009.1.html"/>
       <item name="Compatibility" href="compatibility.html"/>
     </menu>
+    <menu name="Installation">
+      <item name="Installation procedure" href="installation-procedure.html"/>
+      <item name="Preparing Tomcat" href="tomcat.html"/>
+      <item name="Preparing the RDBMS" href="rdbms.html"/>
+      <item name="Configuring the service" href="astrogrid-properties.html"/>
+      <item name="Deployment" href="deploy.html"/>
+      <item name="Generating the metadoc" href="metadoc-raw.html"/>
+      <item name="Annotating the metadoc" href="metadoc-cooked.html"/>
+      <item name="Registration" href="registration.html"/>
+    </menu>
+    <menu name="Maintenance">
+      <item name="Upgrading" href="upgrade-procedure.html"/>
+      <item name="Backing up" href="back-up.html"/>
+    </menu>
     <menu ref="reports"/>
   </body>
 </project>

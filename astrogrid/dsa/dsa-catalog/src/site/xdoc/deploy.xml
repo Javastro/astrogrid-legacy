@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Deploying DSA/Catalogue</title>
+  </properties>
+<body>
+
+  <section name="Deploying DSA/Catalogue">
+    <p>
+      The act of installing the DSA/Catalogue software into Tomcat is called
+      deployment. It involves the war file and the context file.
+    </p>
+    <p>
+      Tomcat allows many ways of deploying. All are buggy; some have horrible
+      side-effects. The following approach I find to be least distressing.
+    </p>
+    <p>
+      First, copy the war file (i.e. the software itself) onto the server
+      computer. You should already have the context file in the
+      <a href="configuration-directory.html">configuration-directory</a> on the
+      server.
+    </p>
+    <p>
+      With a web-browser, go to Tomcat's manager page (you need to sign in to
+      Tomcat with the manager password to get there). Scroll down the page until
+      you see the form labelled "deploy directory or WAR file located on server"
+      (the one with three text-boxes.
+    </p>
+    <p>
+      In the "context-path" field, put the name of the context in which you
+      are going to run the web application. This must match the base URL
+      declared in <a><i>astrogrid.properties</i></a>. E.g., if you declared
+    </p>
+    <pre>
+  datacenter.url=http://some.where:8080/hipparcos
+    </pre>
+    <p>
+      then the context path is <i>/hipparcos</i>. It's case sensitive and
+      Tomcat breaks if you leave out the leading slash.
+    </p>
+    <p>
+      In the "XML-configuration-file-URL" field, state the URL leading to
+      the context file as installed in the configuration directory. This
+      should be a <i>file://</i> URL. If your configuration directory is, e.g.,
+      <i>/astrogrid/hipparcos</i> then the URL for this field would be
+      <i>file:///astrogrid/hipparcos/context.xml</i> (NB: tripple slash at the
+      start of the URL; the third slash is the start of the file-path).
+    </p>
+    <p>
+      In the third field, put the URL leading to the war file itself. This
+      will typically be another <i>file://</i> URL; you could get creative and
+      put a <i>http://</i> URL pointing to a copy of the war file on a web server,
+      but this is untested and may confuse Tomcat.
+    </p>
+    <p>
+      Now press the deploy button and stand well back. If all is well, your
+      web application will appear in the table of applications and you can then
+      visit its web pages via the link in the table.
+    </p>
+    <p>
+      If anything is wrong,
+      Tomcat <em>will</em> create and list the application context but it
+      will be marked in the table as not started. At this point you would have
+      to undeploy the abortive context (use the link in the table) and try
+      again to deploy it. The most-common errors are to mis-type the URLs for
+      the context file and war file. Tomcat is too stupid to give you a proper
+      error-message in the browser, but if you look in <i>catalina.out</i>
+      it will usually tell you what went wrong.
+    </p>
+  </section>
+
+</body>
+
+</document>

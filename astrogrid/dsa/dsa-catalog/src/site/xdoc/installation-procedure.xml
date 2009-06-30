@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Installation sequence</title>
+  </properties>
+
+  <body>
+
+    <section name="Installation sequence">
+      <p>
+        The DSA/Catalogue web-application is supplied as a web archive
+        (<i>.war</i> file) to be run inside Apache Tomcat. The latter software
+        is a "servlet container": a specialized kind of web server.
+      </p>
+      <p>
+        The natural sequence of installation is as follows.
+      </p>
+      <ol>
+        <li><a href="tomcat.html">Prepare Tomcat for DSA.</a></li>
+        <li><a href="rdbms.html">Prepare your RDBMS for DSA.</a></li>
+        <li><a href="configuration-directory.html">Create and populate the configuration directory.</a></li>
+        <li><a href="deploy.html">Deploy the war file into Tomcat.</a></li>
+        <li>Verify that DSA/Catalogue works with its built-in, dummy database. 
+            I.e. <a href="self-test.html">run the self-tests</a>.</li>
+        <li><a href="astrogrid-properties.html">Reconfigure DSA/Catalogue</a>
+            to communicate with your database of choice.</li>
+        <li><a href="metadoc-raw.html">Generate the "metadoc" file</a>
+            describing your database
+            (DSA/Catalogue does this for you by analyzing the database).</li>
+        <li><a href="self-test.html">Re-run the self tests.</a></li>
+        <li><a href="metadoc-cooked.html">Add scientific metadata to your metadoc file</a>
+            (you do this manually).</li>
+        <li>Verify that DSA/Catalogue reads your database correctly:
+            <a href="self-test.html">re-run the self tests</a>.</li>
+        <li><a href="registration.html">Register your installation in your IVOA publishing-registry.</a></li>
+      </ol>
+      <p>
+        If you are upgrading from a previous version of DSA/Catalogue don't
+        run this full procedure. Instead, run the
+        <a href="upgrading.html">upgrading procedure</a>.
+      </p>
+    </section>
+  </body>
+
+</document>

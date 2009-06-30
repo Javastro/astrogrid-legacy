@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Preparing Tomcat</title>
+  </properties>
+
+  <body>
+
+    <section name="Preparing Apache Tomcat">
+
+      <p>
+        DSA/Catalogue is designed to run with Apache Tomcat. Other servlet
+        containers could be used, but these notes are specific to Tomcat.
+      </p>
+      <p>
+        In the following sections, <i>$TOMCAT_HOME</i> means the top-level
+        directory of your tomcat installation.
+      </p>
+
+      <subsection name="Tomcat version">
+        <p>
+          We recommend Tomcat 5.5.x. Tomcat 6.0.x should also work. You need Java 5
+          or later to run these; and DSA itself requires Java 5 or later.
+        </p>
+      </subsection>
+
+      <subsection name="Ports">
+        <p>
+          You need two ports on Tomcat: one for plain HTTP and one for HTTPS.
+          These should normally be ports 80 and 443 respectively. Ports 8080 and
+          8443 are acceptable alternatives if the normal ports are not available,
+          but be warned that not all users can see these latter ports due to
+          firewall restrictions.
+        </p>
+        <p>
+          It is possible to configure Tomcat to offer only plain HTTP and not
+          HTTPS; in fact it comes configured this way. You can run DSA/Catalogue
+          with only HTTP, but you risk exposing your adminstrator password (it
+          is sent in plain text when HTTP is used) and will not be able to
+          authenticate the users of your cone-search services. We do not recommend
+          this configuration.
+        </p>
+        <p>
+          It is possible to configure Tomcat to offer only HTTPS, but
+          DSA/Catalogue cannot run on such a server. You need the plain-HTTP port.
+        </p>
+      </subsection>
+
+      <subsection name="Administrator account">
+        <p>
+          The web interface for administration of your DSA/catalog installation
+          contains a number of restricted pages that require the user to log in
+          before accessing them. This restriction is implemented using tomcat user
+          accounts and roles.
+        </p>
+        <p>
+          Tomcat user accounts and roles are configured in the file
+          <i>$TOMCAT_HOME/conf/tomcat-users.xml</i>.
+          You should ensure that at least one tomcat user defined in this file
+          has the role <i>dsaadmin</i>; you can then use this user account to
+          access the restricted pages in your DSA/catalog installation.
+        </p>
+        <p>
+          For example, the following user is allowed administrative access to
+          the DSA/catalog installation:
+        </p>
+        <pre>
+           &lt;user username="user1" password="password1" roles="dsaadmin"/&gt;
+        </pre>
+        <p>
+          The following user is allowed administrative access to the DSA/catalog
+          installation, and also to the tomcat administration and manager interfaces:
+        </p>
+        <pre>
+          &lt;user username="user2" password="password2" roles="admin,manager,dsaadmin"/&gt;
+        </pre>
+        <p>
+          Remember that tomcat usernames and passwords are stored in plain-text,
+          so you may wish to check that the file permissions on the
+          <i>tomcat-users.xml</i> file are suitably restrictive.
+        </p>
+        <p>
+          <em>Migration note: the legacy role <i>paladmin</i> is also acceptable for
+          accessing the DSA/catalog restricted pages.</em>
+        </p>
+      </subsection>
+
+      <subsection name="JDBC drivers">
+        <p>
+          DSA/Catalogue uses JDBC to talk to your RDBMS. For each kind of RDBMS,
+          the details are encapsulated in driver classes supplied in a jar.
+        </p>
+        <p>
+          The JDBC-driver jars are not supplied with Tomcat or with
+          DSA/Catalogue. You should obtain the jar, or jars, for your RDBMS; the
+          <a href="compatibility.html">compatibility page</a> lists the common
+          ones. SUN also provide a
+          <a href="http://developers.sun.com/product/jdbc/drivers">database of JDBC drivers and where to get them</a>.
+        </p>
+        <p>
+          Install your driver jars into <i>$TOMCAT_HOME/common/lib/</i>.
+        </p>
+      </subsection>
+
+      <subsection name="HTTPS">
+        <p>
+          To configure HTTPS, edit the XML file <i>$TOMCAT_HOME/conf/server.xml.</i>
+          You must set up one <i>connector</i> element for HTTPS.
+        </p>
+        <p>
+          The <i>server.xml</i> supplied with Tomcat has a connector for HTTPS
+          but it is commented out. I.e., HTTPS is turned off by default and you
+          have to turn it on.
+        </p>
+        <p>
+          Two configurations of the HTTPS connector are appropriate. One
+          protects only your administration interface. The other still protects
+          the administration interface but also allows you to authenticate callers
+          to your cone-search services.
+        </p>
+        <p>
+          To protect only your administration interface, set the connector
+          thus:
+        </p>
+        <pre>
+          &lt;Connector
+           port="443" minProcessors="5" maxProcessors="75"
+           enableLookups="true" disableUploadTimeout="true"
+           acceptCount="100" debug="0" scheme="https" secure="true"
+           clientAuth="false" sslProtocol="TLS"
+           keystoreFile="/tomcat/conf/tomcat.jks" /&gt;
+        </pre>
+        <p>
+          but change the port number to your chosen value. Note that
+          <i>clientAuth</i> is set to false: this turns off the authentication
+          by client certificate leaving only password authentication.
+          The file <i>/tomcat/conf/tomcat.jks</i>
+          contains your host certificate and key which you should generate
+          as suggested by the
+          <a href="http://tomcat.apache.org/">documentation on the Tomcat site</a>.
+        </p>
+        <p>
+          To protect both interfaces, set the connector thus:
+        </p>
+        <pre>
+          &lt;Connector
+           port="443" minProcessors="5" maxProcessors="75"
+           enableLookups="true" disableUploadTimeout="true"
+           acceptCount="100" debug="0" scheme="https" secure="true"
+           clientAuth="want" sslProtocol="TLS"
+           truststoreFile="/tomcat/conf/trust-anchors.jks"
+           SSLImplementation="org.astrogrid.security.rfc3820.tomcat.RFC3820Implementation"/&gt;
+        </pre>
+        <p>
+          again setting your port of choice. The <i>clientAuth</i> is now set
+          to "want" rather than true: this enables authentication with
+          certificate but does not require it. This setting allows you to use
+          certificates with your cone-search services and local passwords in
+          the administration interface. 
+          The file <i>/tomcat/conf/trust-anchors.jks</i> contains the root
+          certificate of authorities who you trust to certify identies of
+          your users. IVOA standards require support for proxy certificates
+          which is not provided by Tomcat's own HTTPS implementation. Hence,
+          this configuration uses an AstroGrid patch to HTTPS, as set by the
+          <i>SSLImplementation</i> attribute. The software for this patch is
+          included in the AstroGrid security library. You must download the
+          <a href="http://www.astrogrid.org/maven2/org/astrogrid/astrogrid-security/2009.1/astrogrid-security-2009.1.jar">security jar</a>
+          and install it in <i>$TOMCAT_HOME/server/lib/</i>.
+        </p>
+      </subsection>
+
+    </section>
+
+  </body>
+  
+</document>

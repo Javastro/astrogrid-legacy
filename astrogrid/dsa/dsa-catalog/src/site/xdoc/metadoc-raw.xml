@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Generating the metadoc file</title>
+  </properties>
+<body>
+
+  <section name="Generating the metadoc file">
+    <p>
+      Once you have configured your installation to talk to your database,
+      you can make the web application generate the skeleton of the
+      metadoc file by analysis of the database. This operation will fill in
+      all the structural details concerning the database schema leaving you to
+      add the scientific metadata.
+    </p>
+    <p>
+      Go to the web-application pages with a web browser.
+      Follow the link marked "generate template metadoc" in the left-hand
+      side-bar. This will download the metadoc file into your browser. Use the
+      "save as" command in the browser to sabe the result into your
+      configuration directory as the file <i>metadoc.xml</i>. (The file-name
+      and location is actually arbitrary, but it has to match what you
+      wrote in <i>astrogrid.properties</i> and it helps to follow the naming
+      convention.)
+    </p>
+  </section>
+
+</body>
+
+</document>

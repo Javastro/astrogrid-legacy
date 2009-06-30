@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>DSA self-tests</title>
+  </properties>
+
+  <body>
+
+    <section name="DSA Self-tests">
+      <p>
+        Self tests are run from the main menu in the left-hand side-bar of the
+        pages of the DSA/Catalogue web-application (NB: not from these
+        documentation pages which are outside the web-application). Run the
+        tests in the order in which they appear in the side-bar.
+      </p>
+      <p>
+        You should run the tests with DSA/Catalogue's default configuration
+        (i.e. before editing <i>astrogrid.properties</i> and again when you have
+        configured the web-application for your installation. If it fails with
+        the default configuration then either something is wrong with your
+        war file or your Tomcat installation is not working properly. If it
+        works with the default configuration and not with the configuration of
+        choice then you need to inspect <i>astrogrid.properties</i> and
+        the metadoc file for errors.
+      </p>
+      <p>
+        The SQL-syntax test (the last test in the sequence) can take a long time
+        to run. It is only worth running this test when you first configure for
+        a new database, to check that the ADQL queries are translated to SQL
+        properly. There are some known, harmless bugs in the standard translators;
+        e.g. two of the test routinely fail for MySQL.
+      </p>
+    </section>
+
+  </body>
+
+</document>

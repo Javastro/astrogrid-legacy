@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Registration</title>
+  </properties>
+<body>
+
+  <section name="Registration of your service">
+    <p>
+      Before your service is visible and useful for end users you must
+      register it in the IVOA registry. This means that you add metadata
+      describing the service and the database to a "publishing" registry (usually
+      a local service) from where it is collated into a central "harvesting"
+      registry.
+    </p>
+    <p>
+      DSA/Catalogue needs many metadata, particularly concerning the
+      database, and it would be tedious to enter them all by hand. Instead,
+      you tell your service about the registry (you will have entered its
+      location when you edited <i>astrogrid.properties</i>) and let it transfer
+      the information for you.
+    </p>
+    <p>
+      Before registering, please check that your service passes its self-tests.
+      Please also <em>check carefully the entries in <i>astrogrid.properties</i>
+      that set the location of the publishing registry and the name under which
+      the service will be registered</em> (these are not checked in the self-tests).
+    </p>
+    <p>
+      To register, follow the "manage registrations" link in the side-bar of
+      the web-application pages. This takes you to a page of controls. Now follow
+      the link in the table under the heading "register DSA". This makes
+      a new registration for the service and gives you a form to edit the
+      "core metadata" describing the service to human users. After this operation,
+      the service is visible in the publishing registry but does not yet have the
+      technical metadata that make it easy to use from tools like VODesktop.
+    </p>
+    <p>
+      Now go back to the "manage registration" page. Follow the link in the
+      table under the heading "update service metadata". There is no form to
+      complete here; the registry and DSA service interact to load the
+      machine-readable metadata. Your registration is now complete.
+    </p>
+    <p>
+      There will now be some delay, typically about an hour, before the new
+      registration is harvested from the publishing registry into the main
+      registries. Once this is done, your service is visible to all users of
+      the virtual observatory.
+    </p>
+  </section>
+
+</body>
+
+</document>

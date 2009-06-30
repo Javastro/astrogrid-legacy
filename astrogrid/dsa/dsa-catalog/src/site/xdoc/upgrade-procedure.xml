@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Upgrade procedure</title>
+  </properties>
+<body>
+
+  <section name="Upgrade procedure">
+    <p>
+      If you already have a functioning installation with a previous
+      version of DSA/Catalogue, then your should follow this procedure to
+      upgrade the software rather than repeating the full, installation
+      procedure.
+    </p>
+    <ol>
+      <li><a href="back-up.html">Back up your current installation.</a></li>
+      <li>Check the <a href="release-notes.html">release notes</a>
+          for any changes in the required configuration.</li>
+      <li>Alter <a href="astrogrid-properties.html"><i>astrogrid.properties</i></a>
+          as advised in the release notes (changes here are common).</li>
+      <li>Alter the <a href="metadoc-cooked.html">metadoc file</a>
+          if so instructed in the release notes (changes here are rare).</li>
+      <li>Remove the installation from Tomcat (use the undeploy link on Tomcat's
+          manager page).</li>
+      <li><a href="deploy.html">Redeploy</a> the new war file into Tomcat using
+          the old context-file (see the
+          <a href="back-up.html">back-up instructions</a> to find the
+          context file).</li>
+      <li><a href="self-test.html">Run the self tests.</a></li>
+      <li>Update the <a href="registration.html">registration</a> if so advised
+          in the release notes.</li>
+    </ol>
+  </section>
+
+</body>
+
+</document>

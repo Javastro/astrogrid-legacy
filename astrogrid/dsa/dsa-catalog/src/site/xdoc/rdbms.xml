@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>RDBMS preparation</title>
+  </properties>
+<body>
+
+  <section name="RDBMS preparation">
+    <p>
+      In general, your shouldn't have to change your database to work with
+      DSA/Catalogue; the web application is supposed to adapt to the database.
+      However, you will need to set the user account (or "principal") in which
+      name DSA connects to the RDBMS. You will also need to discover, from
+      your RDBMS documentation, the form of the URL that identifies the
+      JDBC connection.
+    </p>
+    <p>
+      The account used to access the RDBMS should only have read/query
+      privileges granted. <em>Do not</em> grant permissions to write to
+      tables, create tables, delete tables, or to access other databases
+      or tables than those that are to be published through DSA:
+      these abilities are not needed and present a security risk.
+    </p>
+  </section>
+
+</body>
+
+</document>

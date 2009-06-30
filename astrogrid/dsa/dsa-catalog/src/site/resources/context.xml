@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context displayName="DSA/catalogue">
+
+<Environment description="Configuration filename" name="org.astrogrid.config.filename" override="false" type="java.lang.String" value="/astrogrid/dsa/astrogrid.properties"/>
+
+</Context>

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Configuring DSA/Catalogue through its properties file</title>
+  </properties>
+
+  <body>
+    <section name="Configuring DSA/Catalogue through its properties file">
+      <p>
+        Most of the general configuration, including the connection to the
+        RDBMS, is set up by the file <i>astrogrid.properties</i>. You should
+        have installed the default copy of <i>astrogrid.properties</i> when
+        you made the <a href="configuration-directory.html">configuration directory</a>.
+      </p>
+      <p>
+        You should now work through <i>astrogrid.properties</i> changing the
+        property values to suit your installation. Detailed advice on the
+        meaning of the properties is in the comments of the file (any
+        line beginning with "#" or "!" is a comment).
+      </p>
+      <p>
+        The primary change you will make is to change
+      </p>
+      <pre>
+  datacenter.querier.plugin=org.astrogrid.tableserver.test.SampleStarsPlugin
+      </pre>
+      <p>
+        to
+      </p>
+      <pre>
+  datacenter.querier.plugin=org.astrogrid.tableserver.jdbc.JdbcPlugin
+      </pre>
+      <p>
+        This switches the data source for web application from its internal,
+        dummy database to an external database connected via JDBC. When you make
+        this change you must also set the properties for the JDBC URL, username
+        and password.
+      </p>
+      <p>
+        When setting the property <i>datacenter.metadoc.file</i>, change this
+        to point to the file called <i>metadoc.xml</i> in your
+        configuration directory. For the property value, put the absolute
+        path to the file, e.g.
+      </p>
+      <pre>
+  /astrogrid/hipparcos/metadoc.xml
+      </pre>
+      <p>
+        rather than the URL for that file; i.e. don't put a <i>file://</i>
+        prefix. This file doesn't exist yet: the web application will later
+        create it for you.
+      </p>
+      <p>
+        After setting properties you need to restart Tomcat for them to take
+        effect.
+      </p>
+    </section>
+
+  </body>
+
+</document>

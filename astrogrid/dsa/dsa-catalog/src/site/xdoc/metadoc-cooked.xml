@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Annotating the metadoc file</title>
+  </properties>
+<body>
+
+  <section name="Annotating the metadoc file">
+    <p>
+      The web-application generates the metadoc file for you but it cannot
+      know the scientific details such as units, UCDs and column descriptions.
+      You need to add these by editing the file.
+    </p>
+    <p>
+      If you are a sysadmin, you may need an astronomer to help with
+      this step.  Producing useful metadoc requires familiarity with
+      astronomical rather than technical features of the data.
+    </p>
+    <p>
+      The file needs to be valid XML after your changes or DSA will break.
+      If you have XML tools then it would be sensible to validate the file
+      after editing. If you don't have these tools then please just be careful!
+      Note these points:
+    </p>
+    <ul>
+      <li>don't change the structure of the XML tags;</li>
+      <li>if you need the characters &amp;, &lt; or &gt; in your column names or
+          descriptions then you have to escape them: write &amp;amp; &amp;lt; and
+          &amp;gt; respectively;</li>
+      <li>don't delete any XML elements except as noted below;</li>
+      <li>don't add any elements.</li>
+    </ul>
+    <p>
+      You'll see that tables and colums have both an <i>ID</i> attribute and
+      a nested <i>name</i> element. The <i>ID</i> specifies the name known
+      to the RDBMS; don't change these or you will break things. The <i>name</i>
+      element is the name by which the table or column will be identified in
+      the registry and in ADQL queries. You can change these to more meaningful
+      names if you wish.
+    </p>
+    <p>
+      The generated metadoc covers all the tables in the database and all the
+      columns of each table. You should delete from the file the <i>table</i>
+      structures for any tables that you don't want to expose in the service.
+      Once you decide to keep a table, however, you shouldn't delete the
+      metadata for any of its columns. (If you do so, DSA gets miserably confused
+      by <i>SELECT * from ...</i> as it can't work out what to do with the
+      unmapped columns in the results. This is arguably a bug and might get
+      fixed in a later release.)
+    </p>
+    <p>
+      You need to set the UCDs, descriptions and units (where appropriate)
+      for each column. The IVOA provides information about
+      <a href="http://cdsweb.u-strasbg.fr/UCD/old/">the UCD1 controlled vocabulary</a>
+      and
+      <a href="http://www.ivoa.net/Documents/latest/UCDlist.html">the UCD1+ controlled vocabulary</a>
+      online. UCD 1+ is the more-useful vocabulary, but, sadly, the cone-search
+      standard requires the older UCD 1, so please set both.
+    </p>
+    <p>
+      If you want the cone-search facility, enable it on your tables of
+      choice by setting the ConeSettings element on those tables.
+    </p>
+  </section>
+
+</body>
+
+</document>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Backing up DSA/Catalogue</title>
+  </properties>
+<body>
+
+  <section name="Backing up DSA/Catalogue">
+    <p>
+      To preserve the state of your installation, such that you can
+      recreate it after, say, replacing Tomcat, you need to make copies of
+      these files:
+    </p>
+    <ul>
+      <li>the war file for DSA/Catalogue;</li>
+      <li>the context file;</li>
+      <li><i>astrogrid.properties</i>;</li>
+      <li>the metadoc file.</li>
+    </ul>
+    <p>
+      The latter three files will be in your
+      <a href="configuration-directory.html">configuration directory</a> if
+      you did a standard installation.
+    </p>
+    <p>
+      To restore from back-up, put back <i>astrogrid.properties</i> and
+      the metadoc file at <em>the same absolute locations</em> from which
+      you copied them in the back-up. (If you do have to relocate them then
+      you must change the context file to show the new location of
+      <i>astrogrid.properties</i> and change <i>astrogrid.properties</i> to
+      show the new location of the metadoc file.) Then
+      <a href="deploy.html">redeploy the web application</a> using the saved
+      war file and context file.
+    </p>
+  </section>
+
+</body>
+
+</document>
