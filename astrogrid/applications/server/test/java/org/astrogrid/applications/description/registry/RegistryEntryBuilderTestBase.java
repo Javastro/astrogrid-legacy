@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTestBase.java,v 1.11 2009/06/05 13:07:50 pah Exp $
+ * $Id: RegistryEntryBuilderTestBase.java,v 1.12 2009/07/01 13:33:20 pah Exp $
  * 
  * Created on 02-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -25,6 +25,7 @@ import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ServiceDefinitionFactory;
 import org.astrogrid.applications.description.TemplatedServiceDefinition;
+import org.astrogrid.applications.description.TestServiceDefinition;
 import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 import org.astrogrid.applications.manager.DefaultMetadataService;
 import org.astrogrid.contracts.SchemaMap;
@@ -66,7 +67,7 @@ protected void setUp() throws Exception {
      super.setUp();
      lib = createDesciptionLibrary();
      Configuration configuration = new MockNonSpringConfiguredConfig();
-     ServiceDefinitionFactory fac = new TemplatedServiceDefinition(configuration);
+     ServiceDefinitionFactory fac = new TestServiceDefinition();
     builder = new DefaultMetadataService(lib,configuration, fac);
    }
    
@@ -136,6 +137,9 @@ protected ApplicationDescriptionLibrary lib;
 
 /*
  * $Log: RegistryEntryBuilderTestBase.java,v $
+ * Revision 1.12  2009/07/01 13:33:20  pah
+ * registration template directly argument of builder object - removed from config
+ *
  * Revision 1.11  2009/06/05 13:07:50  pah
  * RESOLVED - bug 2921: add capabilities to the automatic registration
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2921

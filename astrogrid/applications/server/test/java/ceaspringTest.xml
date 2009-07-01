@@ -43,7 +43,6 @@
 <bean id="config" class="org.astrogrid.applications.contracts.MockCeaConfiguration"> 
     <property name="configurationDirectory" value="${cea.base.dir}/config/" />
     <property name="recordsDirectory" value="${cea.base.dir}/records/" />
-    <property name="registryTemplate" value="classpath:CEARegistryTemplate.xml" />
     <property name="serviceEndpoint" value="${cea.webapp.url}/services/CommonExecutionConnectorService" />
     <property name="temporaryFilesDirectory" value="${cea.base.dir}/temp/" />
     <property name="applicationDescriptionUrl" value="classpath:/TestApplicationConfig.xml" />
@@ -52,6 +51,12 @@
 <bean id="ExecutionHistory" class="org.astrogrid.applications.manager.persist.InMemoryExecutionHistory">
 	
 </bean>
+<bean id="ServiceDefinitionFactory" class="org.astrogrid.applications.description.TemplatedServiceDefinition"> 
+  <constructor-arg >
+    <value type="java.net.URL">classpath:CEARegistryTemplate.xml</value>
+   </constructor-arg>
+</bean> 
+
 
 <!-- I think that this can go.. -->
 <bean id="AppAuthorityIDResolver" class="org.astrogrid.applications.description.base.TestAuthorityResolver">

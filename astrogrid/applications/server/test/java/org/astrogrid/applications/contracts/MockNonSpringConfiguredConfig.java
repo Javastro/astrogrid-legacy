@@ -1,5 +1,5 @@
 /*
- * $Id: MockNonSpringConfiguredConfig.java,v 1.3 2008/09/24 13:40:50 pah Exp $
+ * $Id: MockNonSpringConfiguredConfig.java,v 1.4 2009/07/01 13:33:20 pah Exp $
  * 
  * Created on 3 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -45,8 +45,6 @@ public class MockNonSpringConfiguredConfig extends CEAConfiguration implements J
 	    this.recordsDirectory.mkdir();
 	    this.temporaryFilesDirectory = new File(this.baseDirectory, "temp");
 	    this.temporaryFilesDirectory.mkdir();
-	    this.registryTemplate = this.getClass().getResource(
-	    "/CEARegistryTemplate.xml");
 	    this.applicationDescriptionUrl = this.getClass().getResource("/TestApplicationConfig.xml");
 	    this.serviceEndpoint = new URL(
 		    "http://localhost:8888/cec/services/CommonExecutionConnectorService");
@@ -64,6 +62,9 @@ public class MockNonSpringConfiguredConfig extends CEAConfiguration implements J
 }
 /*
  * $Log: MockNonSpringConfiguredConfig.java,v $
+ * Revision 1.4  2009/07/01 13:33:20  pah
+ * registration template directly argument of builder object - removed from config
+ *
  * Revision 1.3  2008/09/24 13:40:50  pah
  * package naming changes
  *
