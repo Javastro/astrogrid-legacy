@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-vospace-delegate</artifactId>
-  <version>${astrogrid_vospace_version}</version>
+  <version>2009.1</version>
   <name>AstroGrid VoSpace-1.1 delegate</name>
    <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
+      <version>2009.1</version>
   </parent>
   <description>
                 This component provides a wrapper for the VOSpace-1.1 client to integrate it into the AstroGrid code base.
@@ -131,25 +131,25 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-vospace-junit</artifactId>
-      <version>${astrogrid_vospace_version}</version>
+      <version>2009.0.03.beta</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-vospace-util</artifactId>
-      <version>${astrogrid_vospace_version}</version>
+      <version>2009.0.03.beta</version>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-vospace-1.1-schema</artifactId>
-      <version>${astrogrid_vospace_version}</version>
+      <version>2009.0.03.beta</version>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-vospace-1.1-client</artifactId>
-      <version>${astrogrid_vospace_version}</version>
+      <version>2009.0.03.beta</version>
     </dependency>
     <dependency>
       <groupId>axis</groupId>
