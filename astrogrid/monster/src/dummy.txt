@@ -1,1 +1,0 @@
-Dummy file to force cvs to create the folder.  Otherwise javadoc seems to decide there's nothing to do.

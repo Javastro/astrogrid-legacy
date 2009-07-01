@@ -1,1 +1,0 @@
-This is a dummy project used to collate all the source files to produce a single set of javadoc
