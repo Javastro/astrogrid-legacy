@@ -1,7 +1,7 @@
 package org.astrogrid.maven.agrelease;
 
 /*
- * $Id: AGRelease.java,v 1.3 2009/06/04 15:13:09 pah Exp $
+ * $Id: AGRelease.java,v 1.4 2009/07/01 07:07:28 pah Exp $
  * 
  * Created on 14 May 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -176,8 +176,8 @@ public class AGRelease
 //                        "; cd /"+ start + "latest/; ln -s ../p/"+name+"/"+project.getVersion()+" "+ name);
                 final String dirname = "/"+ start + "latest/" + name + "/";
                 exec.executeCommand( "if [ ! -d "+dirname+" ]; then  mkdir "+dirname+ 
-                        ";fi;echo  'Redirect 301 /doc/latest/"+name+"/index.html http://software.astrogrid.org/doc/p/"+name+"/"+
-                        project.getVersion()+"/index.html' >" + dirname +
+                        ";fi;echo  'Redirect 301 /doc/latest/"+name+"/ http://software.astrogrid.org/doc/p/"+name+"/"+
+                        project.getVersion()+"/' >" + dirname +
                         ".htaccess;");
 
                 final String artifactname = project.getArtifactId()+"-"+project.getVersion()+"."+project.getPackaging();
