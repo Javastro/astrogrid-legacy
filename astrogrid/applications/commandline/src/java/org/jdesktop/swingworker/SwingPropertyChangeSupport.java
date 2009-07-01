@@ -1,7 +1,7 @@
 /* 
- * $Id: SwingPropertyChangeSupport.java,v 1.2 2008/09/03 14:19:06 pah Exp $
+ * $Id: SwingPropertyChangeSupport.java,v 1.3 2009/07/01 16:38:28 pah Exp $
  * 
- * Copyright © 2005 Sun Microsystems, Inc. All rights
+ * Copyright 2005 Sun Microsystems, Inc. All rights
  * reserved. Use is subject to license terms.
  */
 
@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
  * listeners are only ever notified on the <i>Event Dispatch Thread</i>.
  *
  * @author Igor Kushnirskiy
- * @version $Revision: 1.2 $ $Date: 2008/09/03 14:19:06 $
+ * @version $Revision: 1.3 $ $Date: 2009/07/01 16:38:28 $
  */
 
 public final class SwingPropertyChangeSupport extends PropertyChangeSupport {
