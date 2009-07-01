@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.6 2009/07/01 16:40:23 pah Exp $ --><!--
+<!-- $Id: pom.xml,v 1.7 2009/07/01 19:32:27 pah Exp $ --><!--
       This is the pom for generating the overall AG Software site documentation
    --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
@@ -45,37 +45,10 @@
   <build>
   	<sourceDirectory>src/java</sourceDirectory>
     <plugins>
-    </plugins>
-    <extensions>
-    </extensions>
-  </build>
-   <reporting>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-changes-plugin</artifactId>
-            <configuration>
-               <xmlPath>maven-site/changes.xml</xmlPath>
-               <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
-        </configuration>
-      </plugin>
-      <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-site-plugin</artifactId>
-       <version>2.0</version>
-        <configuration>
-         <siteDirectory>maven-site</siteDirectory>
-       </configuration>
-      </plugin>
-
-
-    <plugin><!-- get an aggregate javadoc -->
+        <plugin><!-- get an aggregate javadoc need to run this separately as mvn javadoc:aggregate before main build-->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <reportSets>
-        <reportSet>
-            <id>aggregate</id>
-            <configuration>
+           <configuration>
             <aggregate>true</aggregate> <!-- still need to set this to true for it to work - even though you deprecated -->
            <groups>
             <group>
@@ -108,15 +81,15 @@
             </group>
             <group>
               <title>Registry</title>
-              <packages>org.astrogrid.registry</packages>
+              <packages>org.astrogrid.registry*</packages>
             </group>
             <group>
               <title>Desktop</title>
-              <packages>org.astrogrid.desktop</packages>
+              <packages>org.astrogrid.desktop.*</packages>
             </group>
             <group>
               <title>Security</title>
-              <packages>org.astrogrid.security</packages><!-- add more groups.. -->
+              <packages>org.astrogrid.security.*</packages><!-- add more groups.. -->
             </group>
           </groups>
                <tags>
@@ -143,12 +116,32 @@
           <maxmemory>1g</maxmemory>
                
             </configuration>
-            <reports>
-              <report>aggregate</report>
-            </reports>
-          </reportSet>
-        </reportSets>
       </plugin>
+    
+    </plugins>
+    <extensions>
+    </extensions>
+  </build>
+   <reporting>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changes-plugin</artifactId>
+            <configuration>
+               <xmlPath>maven-site/changes.xml</xmlPath>
+               <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+        </configuration>
+      </plugin>
+      <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-site-plugin</artifactId>
+       <version>2.0</version>
+        <configuration>
+         <siteDirectory>maven-site</siteDirectory>
+       </configuration>
+      </plugin>
+
+
        
        
       </plugins>
@@ -169,15 +162,18 @@
       <activation >
         <activeByDefault>false</activeByDefault>
       </activation>
-      <build>
+     <reporting>
          <plugins>
                 <plugin>
        	<groupId>org.apache.maven.plugins</groupId>
        	<artifactId>maven-changelog-plugin</artifactId>
         <version>2.1</version>
         <configuration>
-          <type>range</type>
-          <range>30</range>
+         <type>date</type>
+          <dates>
+            <date implementation="java.lang.String">2008-10-09</date>
+            <date implementation="java.lang.String">2009-07-01</date>
+          </dates>
           <connectionType>developerConnection</connectionType>           
          </configuration>
        </plugin>   
@@ -188,7 +184,7 @@
         <version>3.0</version>
       </plugin>-->
    </plugins>
-      </build>
+      </reporting>
     </profile>
     </profiles>
 </project>
