@@ -12,20 +12,26 @@
   </parent>
   <packaging>pom</packaging>
   <name>AstroGrid ADQL Parser</name>
-  <description>This project contains a parser which processes queries written in ADQL (Astronomical Data Query Language). Various outputs can be produced. The basic though intermediate output is ADQL/x (ie: an XML version of a query). This can be processed further into some variant of SQL suitable for submission against an astronomical archive
+  <description>This project contains a parser which processes queries written in ADQL (Astronomical Data Query Language). 
+          Various outputs can be produced. The basic though intermediate output is ADQL/x (ie: an XML version of a query). 
+          This can be processed further into some variant of SQL suitable for submission against an astronomical archive
           held in a relational database. The parser itself is not involved in the actual submission of a query. 
+          
           From the last sentence it is obvious the parser is not a standalone component. It only serves a useful
           function inside an existing software environment. Within Astrogrid, these environments are provided by 
           the VODesktop on the client side, and the DSA on the server side. It is the VODesktop that is involved
           in framing a suitable query and in finding a server which can satisfy that query.
           It is the DSA component within that server that handles submitting the resulting SQL to a relational database. 
+          
           As such a lot of the detail you will find on this site is targetted at developers: those wishing to question
           the further development of ADQL as a language, and those wishing to place the parser within a relevant
-          software environment. 
+          software environment.
+           
           There are two (some may say three) levels of code generation in the project. One concerns the use of JavaCC
           to generate the basic parser and its associated syntax tree of modules (nearly 100 of these). 
           Another concerns the generation of XMLBeans that are indispensable for manipulating the intermediate XML
           form of a query. 
+          
           Apart from the base parser, which is not thread safe, there is a server version which handles thread safety.
           Other utility programmes are included that are used as aids within the development environment.
           </description>

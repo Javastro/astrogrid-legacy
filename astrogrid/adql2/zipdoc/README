@@ -2,12 +2,21 @@ Contents of the zip:
 ====================
 
 README ....................................This readme file
-astrogrid-adqlparser-base-2008.2.jar ......Base parser that produces XML from ADQL
-astrogrid-adqlparser-sv-2008.2.jar ........Server version that manages a pool of base parsers
-astrogrid-adqlparser-utils-2008.2.jar .....Basic utilities, some used in testing
-astrogrid-adqlbeans-2008.2.jar ............XMLBeans generated against an AQDL schema
+astrogrid-adqlparser-base-2009.1.jar ......Base parser that produces XML from ADQL
+astrogrid-adqlparser-sv-2009.1.jar ........Server version that manages a pool of base parsers
+astrogrid-adqlparser-utils-2009.1.jar .....Basic utilities, some used in testing
+astrogrid-adqlbeans-2009.1.jar ............XMLBeans generated against an AQDL schema
 adqli.sh ..................................Shell script for running one of the utilities (requires editing)
 log4j.properties ..........................a basic log4j properties file
+
+For convenience, some of the major runtime dependencies have been included, which are also
+available from other public sites:
+
+jsr173_api-1.0.jar
+saxon-6.5.5.jar
+stax-api-1.0.1.jar
+xmlbeans-2.3.0.jar
+xmlbeans-qname-2.3.0.jar
 
 Style Sheets:
 =============
@@ -25,18 +34,11 @@ Please forward changes and suggestions to me: Jeff Lusted [ email: jl99@star.le.
 
 Runtime Dependencies:
 =====================
-These are the runtime dependencies, which are smaller than those from the Maven build.
-The Maven dependencies list everything required for development and unit testing. 
+There are other runtime dependencies. For a complete list, see the Maven reports. 
 Java 1.5.0_15 or above is required. It has not been tested yet with Java 1.6.
 
-commons-logging 1.0.4	
-log4j           1.2.8	
-saxon           6.5.5 (This dependency may be eliminated in the future)	
-jsr173_1.0_api  2.3.0	
-xbean           2.3.0
-
-The xbean and jsr173_1.0_api artifacts are included with the XMLBeans distribution. Those available
-from the AstroGrid maven repository are renamed to include a version number.
+commons-logging 1.0.4 or later
+log4j           1.2.8 or later
 
 Script:
 =======
