@@ -109,7 +109,7 @@ public class CeaApplication
 
  
    public boolean isValid(){
-       return DescriptionValidator.validate(this);
+       return DescriptionValidator.validate(this).valid;
    }
 
 public String getId() {

@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionValidator.java,v 1.1 2009/02/26 12:25:48 pah Exp $
+ * $Id: DescriptionValidator.java,v 1.2 2009/07/01 13:29:49 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -43,21 +43,28 @@ public class DescriptionValidator {
     private static final Log logger = LogFactory
 	    .getLog(DescriptionValidator.class);
 
-    
+    public static class Validation {
+        public boolean valid;
+        public String message;
+        public Validation(boolean v, String m){
+            valid = v;
+            message = m;
+        }
+    }
     /**
      * Validates a resource object.
      * @param appdesc a java object that has suitable jaxb annotations
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static boolean validate(final Resource appdesc)
+    public static Validation validate(final Resource appdesc)
     {
 	JAXBElement jaxobj = new JAXBElement(new QName(Namespaces.RI.getNamespace(),"Resource"),Resource.class,appdesc);
         return validate(jaxobj);
     }
     
     @SuppressWarnings("unchecked")
-    public static boolean validate(final ExecutionSummaryType execution){
+    public static Validation validate(final ExecutionSummaryType execution){
 	JAXBElement jaxobj = new JAXBElement(new QName(Namespaces.CEAT.getNamespace(),"ExecutionSummary"),ExecutionSummaryType.class,execution);
         return validate(jaxobj);
  
@@ -73,7 +80,7 @@ public class DescriptionValidator {
      * 
      * @return
      */
-    public static boolean validate(final Object appdesc)
+    public static Validation validate(final Object appdesc)
     {
 	  String name = appdesc.getClass().getCanonicalName();
 	  try {
@@ -85,7 +92,7 @@ public class DescriptionValidator {
 		  m.setEventHandler(handler );
 		  StringWriter sw = new StringWriter();
 	          m.marshal( appdesc, sw);
-	          
+	          StringBuffer message = new StringBuffer();
 	          if(handler.hasEvents())
 	          {
 	            logger.error("invalid - "+name);
@@ -93,13 +100,16 @@ public class DescriptionValidator {
 			ValidationEvent array_element = handler.getEvents()[i];
 		    logger.error("validation error - "
 			    + array_element.toString(), null);
-		    logger.debug(sw.toString());	
+		    message.append(array_element.toString());
+		    message.append("\n");
 		    }
+	             logger.debug(sw.toString());        
 	          }
-                  return !handler.hasEvents();
+	          
+                  return new Validation(!handler.hasEvents(), message.toString());
 	} catch (JAXBException e) {
 	    logger.error("validation errror - "+name, e);
-	    return false;
+	    return new Validation(false, "validation error - "+name+" "+ e.getMessage());
 	}
          
     }
@@ -109,6 +119,9 @@ public class DescriptionValidator {
 
 /*
  * $Log: DescriptionValidator.java,v $
+ * Revision 1.2  2009/07/01 13:29:49  pah
+ * validator improvement - returns the validation error string
+ *
  * Revision 1.1  2009/02/26 12:25:48  pah
  * separate more out into cea-common for both client and server
  *

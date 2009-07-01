@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationBase.java,v 1.1 2009/02/26 12:25:47 pah Exp $
+ * $Id: ApplicationBase.java,v 1.2 2009/07/01 13:29:50 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -150,7 +150,7 @@ public class ApplicationBase  {
 
     public boolean isValid()
     {
-	return DescriptionValidator.validate(this);
+	return DescriptionValidator.validate(this).valid;
        
     }
 }
