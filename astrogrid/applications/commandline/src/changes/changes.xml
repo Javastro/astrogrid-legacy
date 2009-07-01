@@ -3,6 +3,11 @@
     <title>Changes since previous release</title>
   </properties>
   <body>
+    <release version="2009.1" description="Better configuration, performance" date="01/07/2009">
+      <action dev="pah" type="update" issue="2835">
+        The referenced bugzilla ticket and its dependencies detail the changes in this version
+      </action>
+    </release>
     <release version="2008.2" description="UWS, New Schema, Delegation" date="02/10/2008">
        <action dev="pah" type="add" issue="1611">
        The referenced bugzilla ticket and its dependencies detail the changes in this version - a summary of the more important changes are below.

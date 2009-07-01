@@ -8,7 +8,7 @@
  
     <menu name="Administrator Quickstart">
        <item name="Overview" href="index.html"/>
-       <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-cec-${project.version}.war"/>
+       <item name="Download" href="http://www.astrogrid.org/maven2/org/astrogrid/astrogrid-cea-cec/${project.version}/astrogrid-cea-cec-${project.version}.war"/>
        <item name="Installation" href="INSTALL.html"/>
        <item name="Configuration" href="CONFIGURE.html"/>
        <item name="Self-testing" href="SELF-TEST.html"/>

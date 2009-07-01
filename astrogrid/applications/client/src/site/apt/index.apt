@@ -1,0 +1,23 @@
+         --- 
+         CEA Client 
+         --- 
+         Paul Harrison	
+         --- 
+         03-Oct-2009 
+         --- 
+
+         
+CEA Client
+
+    This project contains a java client implementation for the CEA server. This makes communication with the SOAP service simpler.
+    
++----
+    CommonExecutionConnectorClient cea = DelegateFactory.createDelegate("http://localhost:8888/astrogrid-cea-cec/services/CommonExecutionConnectorService");
+	Tool tool = new Tool();
+	tool.setName("ivo://org.astrogrid.unregistered/default");
+ //More tool setup omitted for clarity
+    String jobId = cea.init(tool, externalId );
+    boolean started = cea.execute(jobId);
++----
+
+   There is also a {{{./xref/org/astrogrid/uws/client/UWSClient.html}UWS client}} to assist with using the UWS interface.

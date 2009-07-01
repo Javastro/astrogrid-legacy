@@ -1,17 +1,22 @@
-<document>
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
    <properties>
-      <author email="pah@jb.manac.uk">Paul Harrison</author>
+     
       <title>Security</title>
+      <author email="pah@jb.manac.uk">Paul Harrison</author>
    </properties>
    <body>
-      <section name="Introduction">
-         <p>To utilise the CEC capabilities to the full you will need
+   <section name="Security">
+      <subsection name="Introduction">
+         <p>To utilise the the security CEC capabilities to the full you will need
             to configure the container to be able to use TLS/HTTPS.
             There are two main reasons for wanting to configure security
          </p>
          <ol>
             <li>To be able to interact with other services requiring
-               security - the most likely of these being VOSpace</li>
+               security via the <a href="http://www.ivoa.net/Documents/latest/CredentialDelegation.html">IVOA delegation service</a> - the most likely of these being VOSpace</li>
             <li>The CEC itself can be configured to only allow
                authorised users to run jobs</li>
          </ol>
@@ -19,30 +24,33 @@
             security as detailed on this page, but then it will only be
             able to interact with other non-secure services and be open
             to all callers.</p>
-      </section>
-      <section name="TLS">
+      </subsection>
+      <subsection name="TLS">
          <p>Transport layer security (TLS) is the name for the
-            general approach of ensuring that HTTP communications are
+            general approach of ensuring that HTTP communications are;
          </p>
          <ol>
             <li>Encrypted</li>
             <li>Authenticated - at the server, and
                optionally the client end</li>
          </ol>
-         <p> - this is typically known as "enabling HTTPS".</p>
-         <subsection name="Certificates">
+         <p> - this is typically known as "enabling HTTPS" and is described in more detail in the <a href="http://software.astrogrid.org/doc/latest/security/https-authentication.html">Astrogrid security component</a></p>
+         </subsection> <subsection name="Certificates">
+         <p>If you want to operate secured services from your CEC then it is necessary to obtain a "Server Certificate" for the machine on which you want to run the CEC. In the academic world this means obtaining a certificate from the national certificate authority - In the UK this CA is run by the <a href="https://ca.grid-support.ac.uk/">National Grid Service</a>  </p>
          </subsection>
          <subsection name="Trust Anchors">
+          <p>It is necessary to inform the system which certificate authorities that you trust. Typically in academic grid communities the national root certificate distribution is handled by the <a href="http://www.eugridpma.org/">EuroPMA</a> at the European level with links to the rest of the world. It is possible to download root certificates (or "trust anchors") in pre-packaged groups from this web site. </p>
          </subsection>
-      </section>
-      <section name="Authorization">
+     
+      <subsection name="Authorization">
       <p>
         The CEC can have an authorization policy applied to the job control which can specify which users are allowed to perform various operations on the CEC.
-        The policies need to implement org.astrogrid.applications.authorization.AuthorizationPolicy to allow or disallow operations. The authorization policy is configured
-        in the WEB-INF/cec-spring.xml file, and the supplied file comes with a commented out bean (id="AuthorizationPolicy") that implements a useful policy that allows only authenticated access to the CEC and only allows the job owner to manipulate a job. There are other
-        experimental policy implementations such as org.astrogrid.applications.manager.agast.PolicyDecisionPoint that use an external service to make the authentication decision.
+        The policies need to implement <a href="http://software.astrogrid.org/doc/cea/server/xref/org/astrogrid/applications/authorization/AuthorizationPolicy">org.astrogrid.applications.authorization.AuthorizationPolicy</a> to allow or disallow operations. The authorization policy is configured
+        in the <code>WEB-INF/cec-spring.xml</code> file, and the supplied file comes with a commented out bean (id="AuthorizationPolicy") that implements a useful policy that allows only authenticated access to the CEC and only allows the job owner to manipulate a job. There are other
+        experimental policy implementations such as <code><a href="http://software.astrogrid.org/doc/cea/server/xref/org/astrogrid/applications/manager/agast/PolicyDecisionPoint.html">org.astrogrid.applications.manager.agast.PolicyDecisionPoint</a></code> that use an external service to make the authentication decision.
         
       </p>
+      </subsection>
       </section>
    </body>
 </document>

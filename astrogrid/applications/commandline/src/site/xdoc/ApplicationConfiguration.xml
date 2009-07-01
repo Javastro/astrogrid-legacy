@@ -1,23 +1,17 @@
-<?xml version="1.0" ?>
-   <!--
-      would be nice to get the doctype right so that we can have
-      assisted editing for the type - need to have a dtd for the xdocs
-      though!! <!DOCTYPE document PUBLIC "-//W3C//DTD XHTML 1.0
-      Transitional//EN"
-      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-   -->
-<!-- <!DOCTYPE document SYSTEM "../../xdocs/xdoc.dtd" > -->
-<document>
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
    <properties>
-      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
       <title>CEA Command Line CEC Configuration</title>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
    </properties>
    <body>
       <section name="Application Configuration">
          <p>This page gives brief guidance to writing an application
             configuration file. This should be read in conjunction with
             the <a href="http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/CommonExecutionArchitecture">IVOA notes on CEA</a></p>
-         <p>The CEC has a model of a CEC that</p>
+         <p>The CEC has a model of an application that is used to specified the input and output parameter of the application</p>
          <p> The UML model for an application is shown in the diagram
             below</p>
          <img
@@ -189,129 +183,25 @@
 
             </p>
             <p>To define more than one application in the single file then the CECConfig element should be used as a top-level element,
-             but if only a single application is to be defined then a CeaApplication element can be used.</p>
+             but if only a single application is to be defined then a CeaApplication element can be used - it is possible to configure multiple applications each within their own
+             separate file by placing them in a directory and then setting the "applicationDescriptionUrl" property of the configuration to point to that directory rather than an individual file.</p>
          </subsection>
  
  
    </section>
-      <section name="CommandLine Application Configuration">
-         <p>The Command line Execution Controller is a component
-            that can be used to wrap legacy command line applications in
-            a specialized CEA web service so that it can become part of
-            the VO.</p>
-         <subsection name="Command Line Application prerequisites">
-            <p>For the CEA Command Line Execution Controller to be
-               able to run an application, it must fit into the model of
-               a command line application that the CLEC understands.
-               Amongst other characteristics, it must be possible to run
-               the application to completion with arguments supplied on
-               the command line.</p>
-            <p>Characteristics of the application that
-               cannot be supported include</p>
-            <ul>
-               <li>requiring user input from a GUI</li>
-               <li>requiring a GUI to display results</li>
-               <li>requiring user input of any kind after
-                  execution had been started</li>
-            </ul>
-            <p>The command line application parameters should be
-               specified by one of the "standard" unix methods</p>
-            <ul>
-               <li>by position</li>
-               <li>by a switch of the form -param value</li>
-               <li>by a switch of the form param=value</li>
-            </ul>
-            <p>It is possible that an application that does not quite
-               meet these requirements in a small fashion could be
-               accommodated by writing an adapter class that extends the
-               standard
-               org.astrogrid.applications.commandline.CommandLineApplication
-               model.</p>
-         </subsection>
-         <subsection name="Extra Configuration for a commandline application">
-            <p>
-For this type of CEC the applicationDefinition element of the CeaApplication is defined to be of xsi:type "ceaimp:CeaCmdLineApplicationDefinition" 
-and each parameterDefinition to be of xsi:type "ceaimp:CommandLineParameterDefinition" - note that the type here is the schema type for the element, not to be confused with the type of the parameter itself. 
-</p>
-<p>The model that the cec uses for forming the command line parameters follows the typical style under unix, and uses the following attributes to control this;
-</p>
-
-<dl>    
-<dt>fileRef</dt><dd>This specifies whether the application expects the parameter to refer to a file or simply a value that is passed on the command line</dd>
-<dt>commandSwitch</dt><dd>This is the text of the command switch (without any hyphen or equals characters). If this is set to the special value "---" then it means that the parameter will not be added to the command line at all - this is useful sometimes in allowing a value to be passed to the java wrapper class.</dd>
-<dt>commandPosition</dt><dd>This is specified as an integer index position that the parameter will be specified on the command line - if a value is specified for this attribute, then the parameter will be presented "bare" with no switch</dd>
-<dt>switchType</dt><dd>This can be 'normal', in which case the switch will written in the -X val style or 'keyword' in which case the x=val style will be used.</dd>
-<dt>localFileName</dt><dd>If the parameter references a file and the application always </dd>
-</dl>
-
-<p>Finally the location of the commandline executable is specified with the executionPath element which can have commandpval child elements to specify fixed parameters that always need to be passed to the application, but are not part of the application parameters.
- For example, running a java application might need a commandline <code>java -jar app.jar</code> which could be configured with</p>
- <pre>
-   &lt;executionPath&gt;java&lt;commandpval&gt;-jar &lt;/commandpval&gt;&lt;commandpval&gt;app.jar&lt;/commandpval&gt;&lt;/executionPath&gt;
- </pre>
- <subsubsection name="hints and tips">
- <ul>
- <li>If the standard out fom the underlying commandline application is required as an output parameter then set the localFileName to "cea-output.log", as this is the file that CEA redirects standard out to.</li>
- </ul>
- </subsubsection>
-         </subsection>
-         <subsection name="HTTP Application">
-        <p> This component provides a Common Execution Connector web-service for HTTP
-				applications (HTTP-CEC for short). The HTTP-CEC makes astronomy applications available to the
-				virtual observatory; notably, it makes them visible to AstroGrid's web portal, desktop UI
-				and workflow system.</p><p> Suitable applications for this kind of CEC (there are other kinds) run on external web-servers
-				(i.e. they need not be co-located with the CEC) and can be invoked using the HTTP-get protocol;
-				the CEC does not work with HTTP-post services. The HTTP-CEC acts as a proxy for the HTTP application,
-				translating between the standards CEA protocols and the application's own protocol. This has 
-				two advantages.
-			</p><ul>
-				<li>Non-standard applications become accessible to the IVO.</li>
-				<li>IVO-standard HTTP-get services (e.g. SIAP), which are already accessible
-				to the IVO in a basic form, become accessible as CEA applications and can be
-				used from all AstroGrid UIs.</li>
-			</ul><p>
-				One HTTP-CEC can stand as proxy for any number of HTTP applications. Therefore, if
-				you have an HTTP application on your web-server you can use associate it with an
-				HTTP-CEC in two ways.
-			</p><ol>
-				<li>Run your own HTTP-CEC.</li>
-				<li>Have your application configured onto someone else's HTTP-CEC.</li>
-			</ol>
-         <subsubsection name="Extra configuration for the HTTP Applications">
-            <p>For HTTP applications the applicationDefinition should be of xsi:type="impl:CeaHttpApplicationDefinition" which allows a CeaHttpAdapterSetup element to be written after the interfaces element. This CeaHttpAdapterSetup element allows the location of the web application that is to be proxied to be specified.
-            </p>
-         </subsubsection>
-         </subsection>
-         <subsection name="JavaClass Application">
-         
-         <p>You need to locate the WEB-INF/cec-spring.xml file and edit it.</p>
-<p>In particular you need to add an application description library definition to the bean with id=&quot;ApplicationDescriptionLibrary&quot; - this means inserting the following just before the last &lt;/list&gt; in the bean definition.</p>
-<code> &lt;bean
-   class=&quot;org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary&quot;
-   depends-on=&quot;internalComponentManager&quot;
-   &gt;
-   &lt;constructor-arg&gt;
-   &lt;bean
-   class=&quot;org.astrogrid.applications.javaclass.BaseJavaClassConfiguration&quot;
-   parent=&quot;config&quot;
-   &gt;
-   &lt;constructor-arg
-   value=&quot;org.astrogrid.applications.javaclass.SampleJavaClassApplications&quot; /&gt;
-   &lt;/bean&gt;
-   &lt;/constructor-arg&gt;
-   &lt;/bean&gt;
- </code>
-<p>where the org.astrogrid.applications.javaclass.SampleJavaClassApplications class should be replaced by the name of the class with the static methods that make up your application.</p>
-         
-         </subsection>
-      </section>
-    	<section name="Modifying default application behaviour">
-		<p>It might be that it is necessary to modify the output of the commandline application in some fashion to make the application more "VO friendly", this can be done in two general ways</p>
-        <ol>
-            <li>Wrapping the application in a shell script and specifying the script rather than the application directly in the <code>ExecutionPath</code> element. A description of this method of customization is outside the scope of this documentation, but it is a valuable, and often quick-to-implement way to slightly alter the behaviour of an application.</li>
-            <li>Writing a custom adapter class - it is possible to write a specific class to alter the way that an application is run and to specify the class name as the <code>instanceClass</code> attribute on an <code>applicationDefinition</code> element. The <a href="AppProgGuide.html">CommandLine CEC Application Programmers Guide</a> contains information to aid in writing such a class.</li>
-        </ol>
-	</section>
+   <section name="Kinds of Applications">
+     
+     <p>This page has discussed the features that are common to all kinds of CEA applications - to actually install an application it is necessary to use one of the specific types of 
+     application that the CEC is capable of running - Each of these kinds is discussed in more detail on a separate page</p>
+     <ul>
+     <li><a href="commandline.html">Commandline Applications</a></li>
+     <li><a href="javaclass.html">Java Applications</a></li>
+     <li><a href="httpapplication.html">"HTTP Form" Applications</a></li>
+     
+     </ul>
+   
+   </section>     
+      
     
 </body>
 </document>

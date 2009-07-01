@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+   <properties>
+      <title>CEA Java Class Application</title>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
+   </properties>
+   <body>
+      <section name="HTTP Application">
+        
+        <p> This component provides a Common Execution Connector web-service for HTTP
+            applications (HTTP-CEC for short). The HTTP-CEC makes astronomy applications available to the
+            virtual observatory; notably, it makes them visible to AstroGrid's web portal, desktop UI
+            and workflow system.</p><p> Suitable applications for this kind of CEC (there are other kinds) run on external web-servers
+            (i.e. they need not be co-located with the CEC) and can be invoked using the HTTP-get protocol;
+            the CEC does not work with HTTP-post services. The HTTP-CEC acts as a proxy for the HTTP application,
+            translating between the standards CEA protocols and the application's own protocol. This has 
+            two advantages.
+         </p><ul>
+            <li>Non-standard applications become accessible to the IVO.</li>
+            <li>IVO-standard HTTP-get services (e.g. SIAP), which are already accessible
+            to the IVO in a basic form, become accessible as CEA applications and can be
+            used from all AstroGrid UIs.</li>
+         </ul><p>
+            One HTTP-CEC can stand as proxy for any number of HTTP applications. Therefore, if
+            you have an HTTP application on your web-server you can use associate it with an
+            HTTP-CEC in two ways.
+         </p><ol>
+            <li>Run your own HTTP-CEC.</li>
+            <li>Have your application configured onto someone else's HTTP-CEC.</li>
+         </ol>
+         
+         <subsection name="Extra configuration for the HTTP Applications">
+            <p>For HTTP applications the applicationDefinition should be of xsi:type="impl:CeaHttpApplicationDefinition" which allows a CeaHttpAdapterSetup element to be written after the interfaces element. This CeaHttpAdapterSetup element allows the location of the web application that is to be proxied to be specified.
+            </p>
+         </subsection>
+       
+      
+</section>
+</body>
+</document>

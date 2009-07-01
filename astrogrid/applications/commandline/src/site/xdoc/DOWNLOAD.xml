@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
    <properties>
-      <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
       <title>Download</title>
+      <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
    </properties>
    <body>
       <section name="Download">
-         <p> The links on this page lead to version
-            ${project.version} of the CEC.</p>
+         <p> The version of the CEC is displayed at the top left of this page.</p>
          <p>
-            The CEC component is supplied as a J2EE web-application
-            in a
+            It is possible to download this and other versions by browsing
             <a
-               href="http://www.astrogrid.org/maven2/org.astrogrid/astrogrid-cea-cec/${project.version}/astrogrid-cea-cec-${project.version}.war"
-            >WAR file</a>
-            (http://www.astrogrid.org/maven2/org.astrogrid/astrogrid-cea-cec/${project.version}/astrogrid-cea-cec-${project.version}.war).
-            Download the WAR file to the computer where you want to run
-            the web-application.
+               href="http://www.astrogrid.org/maven2/org/astrogrid/astrogrid-cea-cec/"
+            >http://www.astrogrid.org/maven2/org/astrogrid/astrogrid-cea-cec/</a>
+            and the latest documentation for a released CEC can be found at <a href="http://software.astrogrid.org/doc/cea/cec/">http://software.astrogrid.org/doc/cea/cec/</a>
          </p>
          
       </section>

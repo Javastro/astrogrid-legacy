@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+   <properties>
+      <title>CEA Java Class Application</title>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
+   </properties>
+   <body>
+      <section name="Java Class Applications">
+      <subsection name="Writing">
+      <p>As always it is generally easier to modify an existing example. Each CEC comes with <a href="http://software.astrogrid.org/doc/cea//server/xref/org/astrogrid/applications/javaclass/SampleJavaClassApplications.html">SampleJavaClassApplications</a> that illustrates how to write a simple java class applicaton. </p>
+      
+      <p>The java class corresponds to a single CEA application with each static method of the class being exposed as an "interface" of the application. Much use is made of Java annotations to supply the extra metadata required</p>
+      </subsection>
+      <subsection name="Configuring">
+      </subsection>
+           <p>You need to locate the WEB-INF/cec-spring.xml file and edit it.</p>
+<p>In particular you need to add an application description library definition to the bean with id=&quot;ApplicationDescriptionLibrary&quot; - this means inserting the following just before the last &lt;/list&gt; in the bean definition.</p>
+<pre> &lt;bean
+   class=&quot;org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary&quot;
+   depends-on=&quot;internalComponentManager&quot;
+   &gt;
+   &lt;constructor-arg&gt;
+   &lt;bean
+   class=&quot;org.astrogrid.applications.javaclass.BaseJavaClassConfiguration&quot;
+   parent=&quot;config&quot;
+   &gt;
+   &lt;constructor-arg
+   value=&quot;org.astrogrid.applications.javaclass.SampleJavaClassApplications&quot; /&gt;
+   &lt;/bean&gt;
+   &lt;/constructor-arg&gt;
+   &lt;/bean&gt;
+ </pre>
+<p>where the org.astrogrid.applications.javaclass.SampleJavaClassApplications class should be replaced by the name of the class with the static methods that make up your application.</p>
+         
+    
+</section>
+</body>
+</document>

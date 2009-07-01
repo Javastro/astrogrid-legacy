@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+   <properties>
+      <title>CEA Java Class Application</title>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
+   </properties>
+   <body>
+      <section name="CommandLine Application Configuration">
+         <p>The Command line Execution Controller is a component
+            that can be used to wrap legacy command line applications in
+            a specialized CEA web service so that it can become part of
+            the VO.</p>
+         <subsection name="Command Line Application prerequisites">
+            <p>For the CEA Command Line Execution Controller to be
+               able to run an application, it must fit into the model of
+               a command line application that the CLEC understands.
+               Amongst other characteristics, it must be possible to run
+               the application to completion with arguments supplied on
+               the command line.</p>
+            <p>Characteristics of the application that
+               cannot be supported include</p>
+            <ul>
+               <li>requiring user input from a GUI</li>
+               <li>requiring a GUI to display results</li>
+               <li>requiring user input of any kind after
+                  execution had been started</li>
+            </ul>
+            <p>The command line application parameters should be
+               specified by one of the "standard" unix methods</p>
+            <ul>
+               <li>by position</li>
+               <li>by a switch of the form -param value</li>
+               <li>by a switch of the form param=value</li>
+            </ul>
+            <p>It is possible that an application that does not quite
+               meet these requirements in a small fashion could be
+               accommodated by writing an adapter class that extends the
+               standard
+               org.astrogrid.applications.commandline.CommandLineApplication
+               model.</p>
+         </subsection>
+         <subsection name="Extra Configuration for a commandline application">
+            <p>
+For this type of CEC the applicationDefinition element of the CeaApplication is defined to be of xsi:type "ceaimp:CeaCmdLineApplicationDefinition" 
+and each parameterDefinition to be of xsi:type "ceaimp:CommandLineParameterDefinition" - note that the type here is the schema type for the element, not to be confused with the type of the parameter itself. 
+</p>
+<p>The model that the cec uses for forming the command line parameters follows the typical style under unix, and uses the following attributes to control this;
+</p>
+
+<dl>    
+<dt>fileRef</dt><dd>This specifies whether the application expects the parameter to refer to a file or simply a value that is passed on the command line</dd>
+<dt>commandSwitch</dt><dd>This is the text of the command switch (without any hyphen or equals characters). If this is set to the special value "---" then it means that the parameter will not be added to the command line at all - this is useful sometimes in allowing a value to be passed to the java wrapper class.</dd>
+<dt>commandPosition</dt><dd>This is specified as an integer index position that the parameter will be specified on the command line - if a value is specified for this attribute, then the parameter will be presented "bare" with no switch</dd>
+<dt>switchType</dt><dd>This can be 'normal', in which case the switch will written in the -X val style or 'keyword' in which case the x=val style will be used.</dd>
+<dt>localFileName</dt><dd>If the parameter references a file and the application always </dd>
+</dl>
+
+<p>Finally the location of the commandline executable is specified with the executionPath element which can have commandpval child elements to specify fixed parameters that always need to be passed to the application, but are not part of the application parameters.
+ For example, running a java application might need a commandline <code>java -jar app.jar</code> which could be configured with</p>
+ <pre>
+   &lt;executionPath&gt;java&lt;commandpval&gt;-jar &lt;/commandpval&gt;&lt;commandpval&gt;app.jar&lt;/commandpval&gt;&lt;/executionPath&gt;
+ </pre>
+  </subsection>
+ <subsection name="hints and tips">
+ <ul>
+ <li>If the standard out from the underlying commandline application is required as an output parameter then set the localFileName to "cea-output.log", as this is the file that CEA redirects standard out to.</li>
+ </ul>
+ </subsection>
+ 
+      <subsection name="Modifying default application behaviour">
+      <p>It might be that it is necessary to modify the output of the commandline application in some fashion to make the application more "VO friendly", this can be done in two general ways</p>
+        <ol>
+            <li>Wrapping the application in a shell script and specifying the script rather than the application directly in the <code>ExecutionPath</code> element. A description of this method of customization is outside the scope of this documentation, but it is a valuable, and often quick-to-implement way to slightly alter the behaviour of an application.</li>
+            <li>Writing a custom adapter class - it is possible to write a specific class to alter the way that an application is run and to specify the class name as the <code>instanceClass</code> attribute on an <code>applicationDefinition</code> element. The <a href="AppProgGuide.html">CommandLine CEC Application Programmers Guide</a> contains information to aid in writing such a class.</li>
+        </ol>
+   </subsection>
+   </section>
+ 
+</body>
+</document>

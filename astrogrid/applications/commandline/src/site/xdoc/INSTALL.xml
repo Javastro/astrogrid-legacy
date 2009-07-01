@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<document>
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
    <properties>
-      <author email="pah@jb.manac.uk">Paul Harrison</author>
       <title>Installation</title>
+      <author email="pah@jb.manac.uk">Paul Harrison</author>
    </properties>
    <body>
       <section name="Installation">
@@ -40,10 +42,10 @@
                CEC web-application. E.g., if you name the
                web-application context "CEC-1", the URLs will be of the
                form
-               <pre>
-                  http://your.server.address:8080/CEC-1/
+               <code>
+                  http://your.server.address:8080/CEC-1/<br/>
                   http://your.server.address:8080/CEC-1/services/CommonExecutionConnectorService
-               </pre>
+               </code>
                respectively.
             </p>
             <p>

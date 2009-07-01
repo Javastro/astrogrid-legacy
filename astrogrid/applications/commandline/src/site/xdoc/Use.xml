@@ -1,7 +1,10 @@
-<document>
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
    <properties>
+       <title>USE of the CEC</title>
       <author email="pah@jb.man.ac.uk">Paul Harrison</author>
-      <title>USE of the CEC</title>
    </properties>
    <body>
       <section name="Using this service">
@@ -10,6 +13,7 @@
             defined applications, and it it possible, though perhaps not
             recommended, to control a single job with either interface.</p>
             <subsection name="SOAP services">
+            <p>
                The SOAP interface is the so called CEA Common Execution
                Connector interface defined by this
                <a
@@ -20,9 +24,10 @@
                . It is possible to write a custom application to access
                this web service with any standard SOAP toolkit. However,
                we recommend that you use one of the clients listed
-               below.
+               below.</p>
             </subsection>
             <subsection name="UWS">
+            <p>
                The server also supports a Universal Worker Service (UWS)
                REST style interface described on the
                <a
@@ -32,7 +37,7 @@
                interface, making it possible to use, for example, a web
                browser to interact with a UWS service. This CEC has a
                basic web interface for interacting with UWS built-in,
-               and accessible via the side-menus.
+               and accessible via the side-menus.</p>
                <dl>
                   <dt><a href="../app/chooseapp.jsp"  class="ceconly">Test run of application</a></dt>
                   <dd>This allows the installed applications to be
@@ -65,7 +70,7 @@
                access all aspects of the VO via the AstroRuntime.</p>
          </subsection>
          <subsection name="Java client">
-            <p>Astrogrid supplies a Java client for the SOAP
+            <p>Astrogrid supplies a <a href="http://software.astrogrid.org/doc/latest/cea/client/">Java client</a> for the SOAP
                service that deals with creating a authenticated SOAP
                connection to the server.</p>
          </subsection>

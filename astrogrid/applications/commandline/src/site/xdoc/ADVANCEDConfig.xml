@@ -1,7 +1,10 @@
-<document>
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
    <properties>
-      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
       <title>Advanced Configuration</title>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
    </properties>
    <body>
       <section name="Introduction">
@@ -49,7 +52,14 @@
                identifier which is the value of the "id" attribute -
                these instructions will refer to the beans by this
                identifier.</p>
-            <subsubsection name="config">
+                <p>
+               Both of the beans described below can have their currently set
+               properties displayed by the
+               <span class="ceconly"><a href="./admin/configuration-describe.jsp">Show current configuration</a></span>
+               sidebar menu.
+            </p>
+               </subsection>
+            <subsection name="config">
                <p>The config bean defines the basic configuration
                   parameters of the CEC. Each of these parameters is
                   described in more detail below</p>
@@ -86,8 +96,8 @@
                   <dd>This is the service endpoint of the SOAP web
                      service - this should not be changed</dd>
                </dl>
-            </subsubsection>
-            <subsubsection name="ExecutionPolicy">
+            </subsection>
+            <subsection name="ExecutionPolicy">
                <p>The execution policy determines how the CEC behaves
                   with respect to running and storing jobs - this
                   behaviour is described in more detail in the IVOA UWS
@@ -124,14 +134,9 @@
                   <dd>The maximum number of jobs that can be run
                      simultaneously. By default this value is 4.</dd>
                </dl>
-            </subsubsection>
-            <p>
-               Both of the above beans have their currently set
-               properties displayed by the
-               <span class="ceconly"><a href="./admin/configuration-describe.jsp">Show current configuration</a></span>
-               sidebar menu.
-            </p>
-         </subsection>
+            </subsection>
+           
+         
          <subsection name="Adding new Application Libraries">
             <p>The applications that are run by the CEC are defined
                by the contents of the bean
@@ -146,13 +151,14 @@
                <dd>
                <p>This is the core description library - in default configuration it reads descriptions from the "applicationDescriptionUrl" URL. 
                However, it has an alternative constructor which allows the URL to be specified directly. If the bean is defined as below</p>
-               <pre>
+               <code>
+               
                  <bean class="org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary" autowire="no">
                  <constructor-arg><ref local="config"/></constructor-arg>
                  <constructor-arg type="java.net.URL"><value>file:/home/cea/conf/</value></constructor-arg>
                  </bean>
                
-               </pre>
+               </code>
                Then the library will read configuration files from the <tt>/home/cea/conf/</tt> directory. In fact this bean definition can be repeated multiple times
                with different locations for the configuration files.
                </dd>
@@ -167,7 +173,7 @@
       </section>
       <section name="Writing new components">
          <p>In general to write extensions to the CEC you should
-            consult the javadoc of the CEA common library component</p>
+            consult the <a href="http://software.astrogrid.org/doc/cea/server/apidocs/index.html">javadoc of the CEA server library</a> component</p>
          <subsection name="Inversion of control">
             <p>
                The CEC has been written with the design aim that each of

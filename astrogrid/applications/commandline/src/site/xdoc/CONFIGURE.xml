@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<document>
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
    <properties>
-      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
       <title>Configuration</title>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
    </properties>
    <body>
       <section name="Configuration">
@@ -74,7 +76,7 @@
             link in the sidebar. You need to replace the copy at that
             location with a customized version.
          </p>
-         <p>To create a new registration document use <a href="../config/registration-template.xml">this template</a>. The template initialized by the CEC has extensive comments
+         <p>To create a new registration document use <a href="./config/registration-template.xml">this template</a>. The template initialized by the CEC has extensive comments
             to tell you what to set; please read them. Note that this template
              is for the service registration, the applications are configured separately.</p>
      
@@ -137,7 +139,7 @@
             web-application.</p>
       </section>
       <section name="Using the CEC">
-        <p>Once you have restarted the CEC you may start to <a href="Use.html">use</a>it, or in the event of failures try <a href="SELF-TEST.html">further testing</a>.</p>
+        <p>Once you have restarted the CEC you may start to <a href="Use.html">use</a> it, or in the event of failures try <a href="SELF-TEST.html">further testing</a>.</p>
       </section>
    </body>
 </document>

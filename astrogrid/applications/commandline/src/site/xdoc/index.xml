@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<document>
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 	<properties>
-		<author email="pah@jb.man.ac.uk">Paul Harrison</author>
 		<title>CEC: overview</title>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
 	</properties>
 	<body>
 		<section name="Overview">
@@ -18,8 +20,7 @@
                   <li>Delegation</li>
                   <li>VOSpace</li>
                 </ul>
-            <p>
-            </p>
+            
             <p>
               This component can be used to "wrap" existing applications so that they are presented as IVOA standard web services. The applications are
               formally exposed to the rest of the VO as CEAApplications, which have initial parameter lists defined by their registry entries.
@@ -36,10 +37,11 @@
                   <li>have no graphical interface</li>
                   <li>need no user interaction once launched</li>
                 </ol>
-			<ul>
+			
          <p>These
             are some of the commandline applications already in use in AstroGrid.</p>
-				<li>SExtractor</li>
+			<ul>	
+         <li>SExtractor</li>
 				<li>HyperZ</li>
 				<li>BPZ</li>
 				<li>Pegase</li>
@@ -52,17 +54,7 @@
 				the service, and you must provide sufficient resources (CPU, memory, disc space) for the
 				applications to run efficiently.</p>
             
-          <p> There is also a variant of the Common Execution Controller that is customised to serve other standard IVOA Protocols including</p>
-            <ul>
-              <li>SIAP</li>
-              <li>SSAP</li>
-              <li>TAP</li>
-            </ul>
-            <p>whilst still retaining the CEA flexibility of choice in how to configure the back end implentation.</p>
-            
-            <p> However, at this time, if your application is to serve archive data then this may not be the ideal component. You
-            should look first at the Data Set Access (DSA) component of AstroGrid, which specializes in connecting directly to a variety of database backends.</p>
-           
+          
  
 			
 			<subsection name="Internal web-pages and local controls">

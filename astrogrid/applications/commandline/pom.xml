@@ -10,7 +10,7 @@
     <parent>
       <artifactId>astrogrid-cea-site</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
+      <version>2009.1</version>
     </parent>
   <name>CEA CEC web server</name>
   <version>${astrogrid_cea_version}</version>
