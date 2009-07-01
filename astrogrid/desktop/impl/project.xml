@@ -8,7 +8,7 @@
     <description>AstroGrid VODesktop</description>
     <shortDescription>VODesktop - Explore the Virtual Observatory</shortDescription>
      <siteAddress>maven.astrogrid.org</siteAddress>
-      <siteDirectory>/software/vodesktop/${pom.currentVersion}</siteDirectory>
+      <siteDirectory>/software/doc/p/vodesktop/${pom.currentVersion}</siteDirectory>
     
     <repository>
         <connection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/desktop/impl</connection>
