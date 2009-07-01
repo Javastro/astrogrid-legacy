@@ -37,6 +37,7 @@ import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 import org.astrogrid.applications.description.jaxb.NamespacePrefixMapperImpl;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
@@ -72,7 +73,7 @@ public class XSLTTest extends TestCase {
         Document callingDocument = builder.getDOMImplementation().createDocument(null, "http-app", null);
 
 
-        callingDocument.getDocumentElement();
+        Element docel = callingDocument.getDocumentElement();
 
      //   Attr namespace = callingDocument.createAttribute("xmlns:agpd");
      //   namespace.setNodeValue("http://www.astrogrid.org/schema/AGParameterDefinition/v1");
@@ -86,14 +87,15 @@ public class XSLTTest extends TestCase {
         Marshaller marshaller = jc.createMarshaller();
 	    marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
 		    	new NamespacePrefixMapperImpl());
-        marshaller.marshal(app, callingDocument);
-        marshaller.marshal(tool,callingDocument);
+        marshaller.marshal(app, docel);
+        marshaller.marshal(tool,docel);
+        
 
         OutputFormat format = new OutputFormat(callingDocument);
         XMLSerializer output = new XMLSerializer(pretransWriter, format);
         //output.setNamespaces(false);
         output.serialize(callingDocument);
-
+        //FIXME need to actually test something here.../also leaves files lying around
 
 
     }
