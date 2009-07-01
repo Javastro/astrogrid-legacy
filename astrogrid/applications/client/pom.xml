@@ -9,11 +9,11 @@
    <parent>
       <artifactId>astrogrid-cea-site</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
+      <version>2009.1</version>
       <relativePath>../pom.xml</relativePath>
    </parent>
    <name>CEA Client</name>
-   <version>2009.1-SNAPSHOT</version>
+   <version>2009.1</version>
    <description>Client library for communicating with CEA services.</description>
    <properties>
       <astrogrid_name>client</astrogrid_name>
@@ -95,11 +95,11 @@
       <dependency>
          <groupId>org.astrogrid</groupId>
          <artifactId>astrogrid-cea-common</artifactId>
-         <version>2009.1-SNAPSHOT</version>
+         <version>2009.1</version>
       </dependency>
    </dependencies>
    
-   <url>${astrogrid_doc_URL_root}/p/cea/${project.version}/client</url>  --> 
+   <url>${astrogrid_doc_URL_root}/p/cea/${project.version}/client</url> 
    <distributionManagement>
     <site>
       <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->

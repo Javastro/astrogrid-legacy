@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.4 2009/05/18 14:46:13 pah Exp $ -->
+<!-- $Id: pom.xml,v 1.5 2009/07/01 13:33:41 pah Exp $ -->
 	<!--
 		this is an unofficial maven 2 pom to make my maven2 builds easier pah
 	-->
@@ -9,11 +9,11 @@
 	<groupId>org.astrogrid</groupId>
 	<artifactId>astrogrid-cea-site</artifactId>
 	<name>Common Execution Architecture (CEA)</name>
-	<version>2009.1-SNAPSHOT</version>
+	<version>2009.1</version>
       <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>  
+      <version>2009.1</version>  
     </parent>
 	<packaging>pom</packaging>
    <!-- multi module site generation is very broken in maven at the moment..... do not try...-->

@@ -8,11 +8,11 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-cea-common</artifactId><!--  would be better to rename to astrogrid-cea-common -->
   <name>CEA common library</name>
-  <version>2009.1-SNAPSHOT</version>
+  <version>2009.1</version>
   <parent>
       <artifactId>astrogrid-cea-site</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
+      <version>2009.1</version>
   </parent>
   <scm>
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/applications/common/</connection>
@@ -37,7 +37,7 @@
   	<dependency>
   		<groupId>net.ivoa</groupId>
   		<artifactId>ivoa-objects</artifactId>
-  		<version>2009.1-SNAPSHOT</version>
+  		<version>2009.1</version>
   	</dependency>
   	<dependency>
   		<groupId>org.astrogrid</groupId>
