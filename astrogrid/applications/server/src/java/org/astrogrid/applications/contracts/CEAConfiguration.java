@@ -1,5 +1,5 @@
 /*
- * $Id: CEAConfiguration.java,v 1.4 2008/09/18 09:13:39 pah Exp $
+ * $Id: CEAConfiguration.java,v 1.5 2009/07/01 14:29:51 pah Exp $
  * 
  * Created on 2 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -37,7 +37,6 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
     protected File recordsDirectory;
     protected File temporaryFilesDirectory;
     protected URL  serviceEndpoint;
-    protected URL registryTemplate;
     public URL applicationDescriptionUrl;
 
 
@@ -91,20 +90,7 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
 	this.serviceEndpoint = serviceEndpoint;
     }
 
-    /**
-     * @return the registryTemplate
-     */
-    public URL getRegistryTemplate() {
-	return registryTemplate;
-    }
-
-    /**
-     * @param registryTemplate the registryTemplate to set
-     */
-    public void setRegistryTemplate(URL registryTemplate) {
-	this.registryTemplate = registryTemplate;
-    }
-
+ 
     /**
      * Describes the component and its current state.
      */
@@ -121,9 +107,6 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
 	sb.append("\n");
 	sb.append("Execution-records directory: ");
 	sb.append(this.getRecordsDirectory().getAbsolutePath());
-	sb.append("\n");
-	sb.append("Registration-template URL: ");
-	sb.append(this.getRegistryTemplate().toString());
 	sb.append("\n");
 	sb.append("CEC endpoint: ");
 	sb.append(this.getServiceEndpoint().toString());
@@ -215,6 +198,9 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
 
 /*
  * $Log: CEAConfiguration.java,v $
+ * Revision 1.5  2009/07/01 14:29:51  pah
+ * *** empty log message ***
+ *
  * Revision 1.4  2008/09/18 09:13:39  pah
  * improved javadoc
  *

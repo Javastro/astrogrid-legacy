@@ -21,7 +21,6 @@ public interface Configuration {
   
   public File getRecordsDirectory();
   public File getTemporaryFilesDirectory();
-  public URL  getRegistryTemplate();
   public URL  getServiceEndpoint();
   /**
    * Gets the URL for the file of application descriptions. If no such file 
