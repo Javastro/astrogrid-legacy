@@ -16,8 +16,8 @@ Astrogrid Software Documentation for developers ${project.version}
    
    The menu items on the left link to the major components
    
-     * <<Deployable Components>> are the major software products that make up the Astrogrid software. The links here point to the top level projects for each component, and there are usually several subprojects
+     * <<Deployable Components>> are the major software products that make up the Astrogrid software. The links here point to the top level projects for each component - there are usually several subprojects which comprise the component.
 
      * <<Libraries>> are components that can be used in the building of other components - note that we recommend that these libraries are used via our maven repository.
      
-     * <<Webservice Clients>> are small java libraries that make it easier to call the webservices in the deployable components.
+    

@@ -7,6 +7,5 @@
          --- 
 
 How to change these documents
-	These documents are stored in the Astrogrid CVS repository under astrogrid/maven-site.  To add a document simply drop a simple html file or xdoc
-into this folder.
-	
+	These documents are stored in the Astrogrid CVS repository under astrogrid/maven-site.  To add a document simply create in the appropriate subfolder according to type.
+	More detailed instructions on creating documentation suitable for maven can be found at {{http://maven.apache.org/guides/mini/guide-site.html}}

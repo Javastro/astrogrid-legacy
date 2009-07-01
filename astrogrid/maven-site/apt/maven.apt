@@ -7,7 +7,7 @@
 
 Building with Maven
 
-        All astrogrid code must be build with {{{http://maven.apache.org}Maven}}. Note that the recommended version of Maven is Maven 2, but there 
+        All astrogrid code must be built with {{{http://maven.apache.org}Maven}}. Note that the recommended version of Maven is Maven 2, but there 
         are some components that are still built with Maven 1 - the maven 1 procedures are described on a {{{maven1.html}separate page}}.
         
         The recommended way of creating a new project is to inherit from the "astrogrid-base" POM - this POM defines all of the general project properties 
@@ -38,7 +38,7 @@ Building with Maven
        
 * Maven Repositories
 
-   To find the AstroGrid artifacts you need to make maven point at the astrogrid maven 2 repository at {{{http://www.astrogrid.org/maven2/}}}. You can 
+   To find the AstroGrid artifacts you need to make maven point at the astrogrid maven 2 repository at {{http://www.astrogrid.org/maven2/}}. You can 
    do this by editing your ~/.m2/settings.xml file to include a repository definition such as
    
 +---
@@ -53,5 +53,5 @@ Building with Maven
     
 +---
 
-    There is a suitable {{{settings.xml}settings.xml}} file that can be downloaded if you have not used maven 2 before, otherwise it is probably more sensible to hand edit your existing <<settings.xml>> file to ensure that 
+    There is a suitable {{{./settings.xml}settings.xml}} file that can be downloaded if you have not used maven 2 before, otherwise it is probably more sensible to hand edit your existing <<settings.xml>> file to ensure that 
 you do not lose any existing settings.

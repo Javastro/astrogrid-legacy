@@ -1,0 +1,18 @@
+         --- 
+         Editing this site
+         --- 
+         Paul Harrison	
+         --- 
+         03-Oct-2008 
+         --- 
+
+Releases
+
+	Each major AstroGrid release is labelled with a version number of the form "year.n" e.g. 2009.1. This release represents a collection of components that have been
+	tested to work together - each of the indvidual components and libraries may have a different version number, and may indeed be updated between the major suite release cycles.
+	
+	For each major release there will be a maven artifact of the form org.astrogrid:astrogrid-base:pom which represents the collection of components that make up the release, and should be used
+	as a base POM for working with that release to inherit the relevant version numbers for each compontent.
+	
+	Each release is tagged in CVS with a tag of the form AG_2009_1.
+	

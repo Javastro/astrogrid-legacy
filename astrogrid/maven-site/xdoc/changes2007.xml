@@ -147,7 +147,7 @@
 			<li>astrogrid-cea-http-2007.2.01.war</li>
 			<li>astrogrid-cea-javaclass-2007.2.01.war</li>
 			<li>astrogrid-common-2007.2.01.jar
-			fixes BZ2266 see gtr email date: 11:46 22nd Aug 2007 
+			fixes BZ2266 see gtr email date: 11:46 22nd Aug 2007 </li>
     	  </action>  
         
           <action dev="gtr" type="fix">

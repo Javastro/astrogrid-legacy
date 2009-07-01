@@ -9,6 +9,6 @@
          
 Common Execution Architecture (CEA)
 
-    This is the base of the projects that make up the Common Execution Architecture (CEA) implementation. Most of the code lives in the {{{./server/}server project}, but most of the
+    This is the base of the projects that make up the Common Execution Architecture (CEA) implementation. Most of the code lives in the {{{./server/}server project}}, but most of the
     explanation of what CEA is lives in the {{{./cec/}Common Execution Controller (CEC)}} sub-project, which is the actual deployable server component. The {{{./client}client}} project
     contains a java client for calling both SOAP CEA services and the UWS version of the services, and the {{{./common/}common}} project contains code that is common to both the server and client.

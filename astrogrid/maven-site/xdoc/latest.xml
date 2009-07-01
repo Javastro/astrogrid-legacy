@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Latest Software components</title>
+    <author email="pah@jb.man.ac.uk">Paul Harrison</author>
+  </properties>
+
+  <!-- Optional HEAD element, which is copied as is into the XHTML <head> element -->
+  <head>
+   <title>Latest Astrogrid software versions</title>
+  </head>
+
+  <body>
+    <section name="Latest published versions">
+      <iframe src="http://software.astrogrid.org/doc/versions.html" frameborder="0" height="90%" width="95%">
+      If you can see this, your browser doesn't 
+understand IFRAME.  However, you can still view the  
+<a href="http://software.astrogrid.org/doc/versions.html">latest versions</a> 
+by following the link.
+      </iframe>
+    </section>
+  </body>
+  </document>
