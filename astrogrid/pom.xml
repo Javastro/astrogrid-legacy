@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.4 2009/06/02 17:43:02 pah Exp $ --><!--
+<!-- $Id: pom.xml,v 1.5 2009/07/01 13:18:16 pah Exp $ --><!--
       This is the pom for generating the overall AG Software site documentation
    --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
@@ -10,24 +10,29 @@
       <parent> 
       <artifactId>astrogrid-versions</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>  
+      <version>2009.1</version>  
     </parent>
    
    <modules>
+      <module>adql</module>
+      <module>adql2</module>
       <module>common</module>
+      <module>community</module> 
       <module>contracts</module>
-      <!-- -->
+      <module>dsa</module>
       <module>applications</module>
       <module>ivoa-objects</module>
       <module>security</module>
-      <module>samp</module>
-      <module>community</module> 
       <module>xmldb</module>
       <module>registry</module>
       
 <!-- needs svn password for trac report      <module>vospace/delegate</module>--> 
-    <!--    <module>dsa</module> -->
-      <!-- <module>workflow-objects</module> do this manually because it has 1.4 code and is deprecated anyway -->
+    <!--     -->
+      <!-- <module>workflow-objects</module> do this manually because it has 1.4 code and is deprecated anyway 
+            <module>samp</module> maven 1 still
+      
+      
+      -->
 	
   <!--  <module>site-skin</module>  -->   
   </modules>
@@ -40,34 +45,6 @@
   <build>
   	<sourceDirectory>src/java</sourceDirectory>
     <plugins>
-       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-antrun-plugin</artifactId>
-         <executions>
-           <execution>
-             <id>ftp</id>
-             <phase>pre-site</phase>
-             <configuration>
-               <tasks>
-
-               <echo>should generate appropriate site.xml with xslt here...</echo>
-
-               </tasks>
-             </configuration>
-             <goals>
-               <goal>run</goal>
-             </goals>
-           </execution>
-         </executions>
-         <dependencies>
-           <dependency>
-             <groupId>net.sf.saxon</groupId>
-             <artifactId>saxon</artifactId>
-             <version>9.0</version>
-           </dependency>
-          
-         </dependencies>
-       </plugin>
     </plugins>
     <extensions>
     </extensions>
