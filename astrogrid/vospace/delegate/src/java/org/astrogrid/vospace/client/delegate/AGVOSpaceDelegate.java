@@ -19,7 +19,7 @@ import org.astrogrid.vospace.v11.client.system.SystemDelegate;
 
 /**
  * Interface for an AstroGrid VOSpace delegate.
- * @deprecated Please use VOSpace SystemDelegate instead.
+ * @deprecated Please use the SystemDelegate from the vospace client package.
  *
  */
 public interface AGVOSpaceDelegate

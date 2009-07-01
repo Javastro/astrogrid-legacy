@@ -21,7 +21,7 @@ import org.astrogrid.vospace.v11.client.system.SystemDelegateResolver;
 
 /**
  * Interface for an AstroGrid AGVOSpaceDelegate resolver.
- * @deprecated Please use VOSpace SystemDelegateResolver instead.
+ * @deprecated Please use the SystemDelegateResolver from the vospace client package.
  *
  */
 public interface AGVOSpaceDelegateResolver

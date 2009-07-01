@@ -28,7 +28,7 @@ import org.astrogrid.vospace.v11.client.service.ServiceDelegateResolverImpl;
 
 /**
  * AstroGrid VOSpace delegate implementation.
- * @deprecated Please use VOSpace SystemDelegateImpl instead.
+ * @deprecated Please use the SystemDelegateImpl in the vospace client package.
  *
  */
 public class AGVOSpaceDelegateImpl
