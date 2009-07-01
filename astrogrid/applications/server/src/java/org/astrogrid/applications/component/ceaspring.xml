@@ -54,8 +54,6 @@
 </bean> 
 
 
-<bean id="ServiceDefinitionFactory" class="org.astrogrid.applications.description.TemplatedServiceDefinition">	
-</bean> 
 
 <bean id="ExecutionController" class="org.astrogrid.applications.manager.ThreadPoolExecutionController" destroy-method="shutdown">
 

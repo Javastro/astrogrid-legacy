@@ -219,14 +219,7 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
 
     }
 
-    /**
-     * Gets a URL leading to the current registration-template. The location of
-     * the template is set during construction.
-     */
-    public URL getRegistrationTemplate() {
-	return this.configuration.getRegistryTemplate();
-    }
-
+ 
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
      */

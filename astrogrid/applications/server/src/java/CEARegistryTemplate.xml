@@ -39,7 +39,7 @@
             on-line. If that entity has an IVOID (registered name starting
             with ivo://) then you can put this into the ivo-id attribute;
             otherwise, delete that attribute. -->
-         <publisher ivo-id="ivo://foo/bar">AstroGrid</publisher>
+         <publisher>AstroGrid</publisher>
          <!-- AstroGrid made this software, so we get to set this.
             No need for you to change this bit. -->
          <creator>

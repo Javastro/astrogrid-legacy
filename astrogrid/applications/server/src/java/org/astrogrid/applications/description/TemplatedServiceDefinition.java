@@ -1,5 +1,5 @@
 /*
- * $Id: TemplatedServiceDefinition.java,v 1.2 2008/09/03 14:18:43 pah Exp $
+ * $Id: TemplatedServiceDefinition.java,v 1.3 2009/07/01 14:28:43 pah Exp $
  * 
  * Created on 17 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -22,7 +22,6 @@ import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import net.ivoa.resource.Service;
 import net.ivoa.resource.registry.iface.VOResources;
 
-import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 
 /**
@@ -31,16 +30,20 @@ import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
  * @version $Name:  $
  * @since VOTech Stage 7
  */
-public class TemplatedServiceDefinition implements ServiceDefinitionFactory {
+public class TemplatedServiceDefinition extends AbstractServiceDefinition implements ServiceDefinitionFactory {
 
     
-  private URL conf;
 
-public TemplatedServiceDefinition(Configuration conf)
-  {
-      this.conf = conf.getRegistryTemplate();
-  }
-protected TemplatedServiceDefinition(URL url)
+private URL conf;
+public URL getConf() {
+    return conf;
+}
+
+public void setConf(URL conf) {
+    this.conf = conf;
+}
+
+public TemplatedServiceDefinition(URL url)
 {
     this.conf = url;
 }
@@ -60,11 +63,16 @@ protected TemplatedServiceDefinition(URL url)
 
    }
 
+    public String getName() {
+        return "template ServiceDefinition url="+conf.toString();
+
+    }
 }
-
-
 /*
  * $Log: TemplatedServiceDefinition.java,v $
+ * Revision 1.3  2009/07/01 14:28:43  pah
+ * registration template directly argument of builder object - removed from config
+ *
  * Revision 1.2  2008/09/03 14:18:43  pah
  * result of merge of pah_cea_1611 branch
  *

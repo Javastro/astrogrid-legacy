@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractMetadataService.java,v 1.3 2008/09/18 09:13:39 pah Exp $
+ * $Id: AbstractMetadataService.java,v 1.4 2009/07/01 14:27:11 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -52,12 +52,15 @@ public abstract class AbstractMetadataService implements MetadataService{
      
     protected boolean isValid(Resource desc)
     {
-	return DescriptionValidator.validate(desc);
+	return DescriptionValidator.validate(desc).valid;
     }
 }
 
 /*
  * $Log: AbstractMetadataService.java,v $
+ * Revision 1.4  2009/07/01 14:27:11  pah
+ * registration template directly argument of builder object - removed from config
+ *
  * Revision 1.3  2008/09/18 09:13:39  pah
  * improved javadoc
  *
