@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-   <!-- $Id: pom.xml,v 1.11 2009/06/30 20:15:33 pah Exp $ -->
+   <!-- $Id: pom.xml,v 1.12 2009/07/01 07:09:13 pah Exp $ -->
    <!--
            This is the official maven 2 base pom - use as a parent pom in components
       pah
@@ -122,10 +122,10 @@
          <plugin> <!-- this plug-in makes appropriate links in the astrogrid doc site when a site is deployed -->
             <groupId>org.astrogrid</groupId>
             <artifactId>maven-agrelease-plugin</artifactId>
-            <version>0.3</version>
+            <version>0.4</version>
             <executions>
                 <execution>
-            <id></id>
+            <id>agrel</id>
             <phase>site-deploy</phase>
             <goals>
               <goal>release</goal>
