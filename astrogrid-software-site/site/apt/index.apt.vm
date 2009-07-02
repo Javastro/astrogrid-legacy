@@ -44,7 +44,7 @@ Astrogrid Software Versions at a Glance ${project.version}
 #if ($astrogrid_vospace_version.endsWith("SNAPSHOT"))
 |  {{{${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/webapp/}VOSpace}} | {{{$m2reposnap/astrogrid-vospace/${astrogrid_vospace_version}/}astrogrid-vospace-${astrogrid_vospace_version}.war}} |{{{$m2reposnap/astrogrid-vospace/${astrogrid_vospace_version}/}sha1}} |
 #else
-|  {{{${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/webapp/}VOSpace}} | {{{$m2repo/astrogrid-vospace/${astrogrid_vospace_version}/astrogrid-vospace-${astrogrid_vospace_version}.war}astrogrid-vospace-${astrogrid_vospace_version}.war}} |{{{$m2repo/astrogrid-vospace/${astrogrid_vospace_version}/astrogrid-vospace-${astrogrid_vospace_version}.war.sha1}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/vospace/${astrogrid_vospace_version}/webapp/}VOSpace}} | {{{http://www.astrogrid.org/maven/wars/astrogrid-vospace-${astrogrid_vospace_version}.war}astrogrid-vospace-${astrogrid_vospace_version}.war}} |{{{http://www.astrogrid.org/maven/wars/astrogrid-vospace-${astrogrid_vospace_version}.war.md5}md5}} |
 #end
 *-------------------------*--------------------------*---------------------*
 #if ($astrogrid_cea_version.endsWith("SNAPSHOT"))
