@@ -1,7 +1,40 @@
          --- 
          AstroGrid VOSpace 
          --- 
-         Paul Harrison	
+         Dave Morris	
          --- 
-         01-June-2009 
+         01-July-2009 
          --- 
+
+VOSpace
+
+    VOSpace is an {{{href="http://www.ivoa.net/}IVOA}} project being developed by the
+    {{{http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/IvoaGridAndWebServices}Grid and WebServices} working group
+    to create a virtual file system for the VO.
+
+    The project defines a common webservice API to enable data storage and transfer between services within the VO.
+
+    The main participants in the project are
+
+        * {{{http://www.astrogrid.org/}AstroGrid}}
+        * {{{http://www.cacr.caltech.edu/}Caltech Center for Advanced Computing Research (CACR)}}
+        * {{{http://www.esa.int/SPECIALS/ESAC/index.html/}European Space Astronomy Center (ESAC)}}
+        * {{{http://www.eso.org/}European Southern Observatory (ESO)}}
+        * {{{http://cdsweb.u-strasbg.fr/}Centre de Donnees astronomiques de Strasbourg}}
+
+    The specification for the VOSpace web service API is available from the IVOA website :
+
+        * {{{http://www.ivoa.net/Documents/cover/VOSpace-20090505.html}VOSpace 1.15 specification (Proposed Recommendation 05 May 2009)}}
+        * {{{http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/VOSpaceHome}VOSpace wiki page}}
+
+    The current AstroGrid implementation supports both the IVOA VOSpace service specification and the original AstroGrid MySpace service.
+
+
+    The the source code repository for the AstroGrid implementation is hosted 
+    by the {{{http://www.esa.int/SPECIALS/ESAC/index.html}European Space Astronomy Center (ESAC)}}.
+
+        * {{{http://esavo02.esac.esa.int/trac/VOSpace/}Trac system}}
+        * {{{http://esavo02.esac.esa.int/trac/VOSpace/browser}Source code}}
+        * {{{http://esavo02.esac.esa.int/svnvo/VOSpace/}SVN repository}}
+
+
