@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: site.xml,v 1.4 2009/06/30 08:28:37 pah Exp $ -->
+<!-- $Id: site.xml,v 1.5 2009/07/03 17:20:46 pah Exp $ -->
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
@@ -9,7 +9,7 @@
   </bannerRight>
   <skin><groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-site-skin</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1</version>
         </skin> 
 <publishDate position="navigation-top" format="yyyy-MM-dd"/> 
 <version position="left"/>
