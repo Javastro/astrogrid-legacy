@@ -26,7 +26,7 @@
 	    Typically servlet containers will have a special GUI for changing these properties and this is what is advised for you to use.
 	    Tomcat GUI by default is no longer installed with tomcat 5.5 and the GUI is not known to be reliable.<br />
 	    Tomcat will also allow 'you' to place a special xml properties file in the {tomcat}/conf/Catalina/localhost named {context}.xml.
-	    <br />Click on the below link to take you to the property editor page which will write the properties in the conf/Catalina/localhost.
+	    <br />Click on the below link to take you to the property editor page which will write the properties in the conf/Catalina/localhost.<br />
 	    Click on this link (advise open in a new window) <a href="../admin/environment-main.jsp">here</a> to edit JNDI properties.	    
 
 <hr />

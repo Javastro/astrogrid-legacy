@@ -60,11 +60,11 @@ are available.
    	out.write("<font color='red'>Could not detect that your database was initalizaed with the eXist default xml database</font><br />");
    }
    if(!logInit) {
-   	out.write("<font color='red'>Could not initalize logging, See <a href='docs/configure.html'>Configure</a></font><br />");
+   	out.write("<font color='red'>Could not initalize logging, See <a href='regdocs/configure.jsp'>Configure</a></font><br />");
    }
    
    if (newRegistry) {
-      out.write("This Registry has not yet been configured; click <a href='docs/configure.html'>here</a> to set it up");
+      out.write("This Registry has not yet been configured; click <a href='regdocs/configure.jsp'>here</a> to set it up");
    }
    else {
       out.write("This Registry main authorityid <b>"+SimpleConfig.getSingleton().getString("reg.amend.authorityid")+"</b>");

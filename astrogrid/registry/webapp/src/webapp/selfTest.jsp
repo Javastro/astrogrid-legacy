@@ -64,7 +64,7 @@ are available.
    }
    
    if(!logInit) {
-   	out.write("<li><font color='red'>Error: Could not initalize logging, See <a href='docs/configure.html'>Configure</a></font></li>");
+   	out.write("<li><font color='red'>Error: Could not initalize logging, See <a href='regdocs/configure.html'>Configure</a></font></li>");
    }else {
     out.write("<li>Success: Logging Initialized.</li>");
    }
