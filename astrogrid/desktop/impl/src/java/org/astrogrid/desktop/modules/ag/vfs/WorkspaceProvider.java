@@ -88,7 +88,33 @@ public class WorkspaceProvider extends AbstractFileProvider implements VfsFilePr
           if (home == null) {
             throw new FileSystemException("User's home-space is unknown");
           }
-          return home.toString();
+          
+          // If this home is in MySpace, the URI in the UserInformation is a
+          // concrete IVORN. Sadly, the MySpace plug-in can't handle this, so
+          // we have to butcher it back to an abstract IVORN.
+          if (home.getScheme().equals("ivo")) {
+            URI community = uriOrBust(user.getCommunity());
+            return String.format("ivo://%s/%s#", community.getAuthority(), user.getName());
+          }
+          else {          
+            return home.toString();
+          }
+        }
+        
+        /**
+         * Creates a URI from a string, without throwing checked exceptions.
+         *
+         * @param s The string form of the URI.
+         * @return The URI
+         * @throw RuntimeException If the given string is not a valid URI.
+         */
+        URI uriOrBust(String s) {
+          try {
+            return new URI(s);
+          }
+          catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+          }
         }
 
 }
