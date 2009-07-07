@@ -1,7 +1,0 @@
-<plugins>
-  <plugin>ar-taverna-0.4_vo.xml</plugin>
-  <plugin>ar-taverna-myspace-0.6_vo.xml</plugin>
-  <plugin>ar-taverna-vohttp-0.7.1_vo.xml</plugin>
-  <plugin>ar-taverna-cea-0.4_vo.xml</plugin>
-  <plugin>ar-taverna-ceaapp-0.9_vo.xml</plugin>
-</plugins>

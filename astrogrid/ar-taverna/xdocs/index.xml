@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Page Title</title>
+    <author email="paul.harrison@manchester.ac.uk">Paul Harrison</author>
+  </properties>
+ <body>
+ <section name="Astrogrid Taverna Suite">
+ 	<p>
+		This Taverna plugin is for Taverna 1.7.1.* version of Taverna  (a 2.0 is being developed at this moment).  The Astrogrid plugin for Taverna exposes
+		all the capabilities of the AR plus other convenient modules to interact with DSA, myspace, registry, cea in a more easy fashion.<br />
+		Features of the Taverna plugin:
+	    <ul>
+		  <li>AR exposed - all the Astrogrid Astro Runtime library is exposted to Taverna for you to call via the VODesktop.  Docs on all the library is shown <a href='http://deployer.astrogrid.org/software/astro-runtime/apidocs/index.html'>here</a> The AR though can be quite low level so other modules were added and described on the points below.</li>
+		  <li>DSA - Connects and let you make sql/adql type queries to databases.</li>
+		  <li>CEA - Launch applications via Astrogrid.</li>
+		  <li>VOHTTP - Query on certain Cone, SIAP, SSA, and Time-based services</li>
+		  <li>Myspace - Not used as often because DSA and CEA already expose the ability to save information to Myspace, but the module will allow you to Fetch and Save to your myspace locations.</li>		  
+		</ul>
+		<br />
+		<i>*Note DSA, VOHTTP, Myspace, and CEA all have other capabilities once you add it to the model by right-clicking which will allow you to pick certain locations or search the Registry to find Resources.</i>
+		<br /><i>**CEA by default will launch with popular applications by adding one of these to the Model and right-clicking will allow you to 'ADD' more applications for you to launch.  (Once added the Application will not  show on the list till a restart of Taverna happens).</i>
+	</p>
+	</section>
+	<section name="Builds">
+		<p>
+			The taverna plugin allows you to build at the top level or at it's sub-project level.  
+			Here are the mvn goals for maven 2:
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install - compiles, runs unit tests and installs a local jar to your repository as well as the target directory.</li>
+				<li>site - builds and deploys a local site information about this project.</li>
+			</ul> <br />
+		</p>
+	</section>
+	<section name="Deployment/Installation">
+		<p>
+			First Launch VODesktop, you must launch VODesktop which the Taverna plugins communicates with for launching Astro Runtime calls.  VODesktop can be
+			found <a href='http://www.astrogrid.org'>here</a><br/>
+			Now Launch Taverna version 1.7.1 if you do not have it installed you can find it <a href='http://taverna.sourceforge.net'>here</a>.<br />
+			Once running then follow these steps below:
+			<ul>
+				<li>Go to Tools->Plugin Manager</li>
+				<li>click on 'Find New Plugins'</li>
+				<li>click on 'Add Plugin Site'</li>
+				<li>Site Name place in 'Astrogrid' and for Site url place in 'http://software.astrogrid.org/taverna_plugins/plugins/'</li>
+				<li>You should now see the Astrogrid Taverna Suite available for installation.</li>
+				<li>Ever now and then check the plugin manager and it should automatically detect any new updates.</li>
+			</ul>
+			Your plugins should now have installed and you can all the 'Astro Runtime' modules.  The best way to see Taverna work with Astrogrid is to run the examples and usually you will find yourself
+			simply making adjustments to these examples to run the workflow that your targetting.  The examples can be found <a href='http://software.astrogrid.org/taverna_plugins/examples/SampleWorkflows.zip'>here</a>.
+		</p>
+	</section>
+ </body>
+</document>
