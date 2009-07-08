@@ -15,7 +15,7 @@
   </parent>
   
   <packaging>jar</packaging>
-  <description>Classes used across the components.</description>
+  <description>Taverna Suite plugin</description>
   <properties>
    <astrogrid_name>astrogrid-taverna-suite</astrogrid_name>
    <taverna_version>1.7.1.0</taverna_version>
@@ -42,6 +42,18 @@
       </resources>
  </build>
   <dependencies>
+  <dependency>
+      <groupId>org.astrogrid</groupId>
+    	<artifactId>vodesktop</artifactId>
+      <version>1.2.3.1-app</version>
+    </dependency>
+    
+   <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.12</version>
+    </dependency>                    
+    
      <dependency>
   		<groupId>uk.org.mygrid.taverna.scufl</groupId>
   		<artifactId>scufl-model</artifactId>
@@ -85,19 +97,6 @@
   		<version>${taverna_version}</version>
   	</dependency>   	
   	 -->
-  	
-  	  <dependency>
-      <groupId>org.astrogrid</groupId>
-    	<artifactId>vodesktop</artifactId>
-      <version>1.2.3.1-app</version>
-    </dependency>
-    
-   <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.12</version>
-    </dependency>                    
-
   </dependencies>
   
   <repositories>
