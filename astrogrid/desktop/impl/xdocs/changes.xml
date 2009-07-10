@@ -13,7 +13,7 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="1.3" date="2009-7-10">
+<release version="1.3" date="2009-7-13">
     <action dev="kmb" type="fix">
         Login now works correctly if main registry is down and only 
         the fallback registry is working.
