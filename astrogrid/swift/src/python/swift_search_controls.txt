@@ -15,19 +15,27 @@ IMAGE SECTION:
 #
 # The following lines obey this format...
 # integer
-# [ short name for service | ivorn of service ]
+# [ short name for service | ivorn of service | bandpasscolumn:bandpassvalue]
 #
-# where integer is the number of services to use as mirrors for a given source.
+# where integer is the number of services to use as alternatives for a given source.
+# What is an 'alternative' is down to your judgement. It could be a complete mirror,
+# or something much looser.
+# The bandpasscolumn and value define which VOTable column should be used to choose which
+# image to receive, and what value that column needs to have.
 ######################################################################################
 # DSS Image:
 2
-[ESO_DSS | ivo://archive.eso.org/dss]
-[HEARSARC | ivo://nasa.heasarc/skyview/dss2]
+#[STSCI | ivo://archive.stsci.edu/dss/dss2 | ]
+[ESO_DSS | ivo://archive.eso.org/dss | survey:DSS2-blue]
+[HEASARC | ivo://nasa.heasarc/skyview/dss2 | ]
+#[DSSBLUE | ivo://archive.stsci.edu/dss/dss2blue | ]
+
+
 #
 # 2Mass Image:
-2
-[IRSA2 | ivo://irsa.ipac/2MASS-QL]
-[NED | ivo://ned.ipac/Image]
+1
+[IRSA2 | ivo://irsa.ipac/2MASS-QL | BandPass_ID:K]
+#[NED | ivo://ned.ipac/Image]
 
 CATALOGUE SECTION:
 ######################################################################################
@@ -35,41 +43,61 @@ CATALOGUE SECTION:
 #
 # The format is...
 # integer
-# [ short name for service | service ivorn | table name | column names | search function name ]
+# [ short name for service | service ivorn | table name | column names | search function name | URL:ID | filtercolumn ]
 #
 # where:
 #  . integer is the number of services to use as alternatives for a given source.
+#    What is an 'alternative' is down to your judgement. It could be a complete mirror,
+#    or something much looser.
 #  . table name (if required, but leave blank for the moment!)
-#  . column names are a set of paired mappings of column name to variables name 
+#  . column names are a set of paired mappings of column names to variables names 
 #    eg:  Bmag:B where Bmag is column name and B is variable name  
 #  . The search function name is a real function name in the code, so beware!
-#    There are three sorts: two generic functions (searchStars and searchGalaxies)
+#    There are three sorts: three generic functions (searchStars, searchGalaxies and searchXrays)
 #    and one where code has to be hand crafted to decide between stars and galaxies.
 #    Look at the comments below and the associated function names.   
+#  . If Dist appears as a partner in a column:variable name combination, it is 
+#    assumed to be the spherical offset distance calculated and returned by the 
+#    service. If it does not appear, it is calculated by the script and inserted
+#    into the final results (eg: see entries for 6df below).
+#    The penultimate field allows an HTML lookup of the details from the catalogue. If the source
+#    is a Vizier catalogue the first part can be blank, otherwise it should contain
+#    the full URL with %VAR% in place of the variable to be filled
+#    After the colon the second part gives the name of the column whose contents will
+#    be substituted into %VAR%
+#    The final field can be omitted, if provided it should contain a column:value pair
+#    and a stipulation that column=value will be added to the query
 #####################################################################################
 # SDSS for stars and galaxies:
 1
-[SDSS | ivo://CDS.VizieR/II/276 |  | _r:Dist RAJ2000:RA DEJ2000:Dec umag:u gmag:g rmag:R imag:i zmag:z | searchSDSS ]
+[SDSS | ivo://CDS.VizieR/II/282 |  | _r:Dist RAJ2000:RA DEJ2000:Dec umag:u gmag:g rmag:R imag:i zmag:z | searchSDSS | !SDSS ]
 #
 # APM for galaxies:
 1
 [APM-N | ivo://CDS.VizieR/I/267 |  | _r:Dist RAJ2000:RA DEJ2000:Dec rmag:R rDiam:RDiam bmag:B \ 
-  bDiam:BDiam APM-ID:id | searchGalaxies ]
+  bDiam:BDiam | searchGalaxies | !APM-ID]
 #
 # PSCz for galaxies:
 1
 [PSCz | ivo://CDS.VizieR/VII/221 |  | _r:Dist _RAJ2000:RA _DEJ2000:Dec Bmag:B MajAxiO:Maj \
-  MinAxiO:Min recno:recno | searchGalaxies  ]
+  MinAxiO:Min  | searchGalaxies | !recno ]
 #
 # USNO for stars and galaxies:
 1
 [USNO-B1 | ivo://CDS.VizieR/I/284 |  | _r:Dist RAJ2000:RA DEJ2000:Dec B1mag:B1 R1mag:R1 B2mag:B2 \
-  R2mag:R2 Imag:I USNO-B1.0:id | searchUSNO ]
+  R2mag:R2 Imag:I  | searchUSNO | !USNO-B1.0 ]
 #
 # 2MASS for stars:
 1
-[2MASS | ivo://CDS.VizieR/II/246 |  | _r:Dist RAJ2000:RA DEJ2000:Dec Jmag:j Hmag:h Kmag:k | searchStars  ]
+[2MASS | ivo://CDS.VizieR/II/246 |  | _r:Dist RAJ2000:RA DEJ2000:Dec Jmag:j Hmag:h Kmag:k | searchStars | !2MASS ]
 #
-# 6df for galaxies:
+# NED
+#[NED | ivo://ned.ipac/Basic_Data_Near_Position | | 
+
+#SSS
+#1
+#[SSS | ivo://wfau.roe.ac.uk/ssa-dsa/ssa | Source | ra:RA dec:Dec classMagB:B classMagR1:R1 classMagR2:R2 classMagI:I meanClass:class  | searchGalaxies | surveys.roe.ac.uk:8080/ssa/SSASQL?sqlstmt=select%20*%20from%20Source%20where%20objID=%VAR%&action=freeform&server=amachine&format=HTML!objID | meanClass:1 ]
+
+# Xray master
 1
-[6df | ivo://wfau.roe.ac.uk/6df-dsa/wsa |  | RA:RA DEC:Dec J:j H:h K:k TARGETNAME:id | searchGalaxies ]
+[Xray | ivo://uk.ac.le.star.tmpledas/ledas/ledas/xray | | ra:RA decl:Dec count_rate:RATE flux:FLUX observatory:MISSION name:NAME | searchXrays | ledas-www.star.le.ac.uk/arnie5/arnie5.php?catname=xray&querymode=advanced&cat_equinox=2000&xcoordinates=&coordinates=&csystem=Equatorial&equinox=2000&search=cone&radius=0.333333333333333&squared=1&ra_dim=1&dec_dim=1&outcoord=sexigesimal&outsys=D&outequ=J2000&outputformat=html&nlines=10000&process.x=7&process.y=15&process=Submit&display%5B%5D=name&filter1_name=%3D&min_name=%VAR%&filter2_name=%3C&max_name=&display%5B%5D=database_table&filter1_database_table=%3E&min_database_table=&filter2_database_table=%3C&max_database_table=&display%5B%5D=ra&filter1_ra=%3E&min_ra=&filter2_ra=%3C&max_ra=&display%5B%5D=decl&filter1_decl=%3E&min_decl=&filter2_decl=%3C&max_decl=&display%5B%5D=lii&filter1_lii=%3E&min_lii=&filter2_lii=%3C&max_lii=&display%5B%5D=bii&filter1_bii=%3E&min_bii=&filter2_bii=%3C&max_bii=&display%5B%5D=count_rate&filter1_count_rate=%3E&min_count_rate=&filter2_count_rate=%3C&max_count_rate=&display%5B%5D=count_rate_error&filter1_count_rate_error=%3E&min_count_rate_error=&filter2_count_rate_error=%3C&max_count_rate_error=&display%5B%5D=error_radius&filter1_error_radius=%3E&min_error_radius=&filter2_error_radius=%3C&max_error_radius=&display%5B%5D=flux&filter1_flux=%3E&min_flux=&filter2_flux=%3C&max_flux=&display%5B%5D=exposure&filter1_exposure=%3E&min_exposure=&filter2_exposure=%3C&max_exposure=&display%5B%5D=class&filter1_class=%3E&min_class=&filter2_class=%3C&max_class=&display%5B%5D=observatory&filter1_observatory=%3E&min_observatory=&filter2_observatory=%3C&max_observatory=&sortby=_r!name]
