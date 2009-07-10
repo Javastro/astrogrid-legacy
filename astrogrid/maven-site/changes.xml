@@ -8,7 +8,8 @@
   <body>
   
      <release version="2009.1" description="VOSpace 1.1" date="01/07/2009">
-       <action dev="dave" type="addition">VOSpace 1.1 supported - including authentication and authorization</action>
+       <action dev="dave" type="update">VOSpace 1.1 supported - including authentication and authorization</action>
+       <action dev="pah" type="update" issue="2835">CEA - the referenced bugzilla ticket and its dependencies detail the changes in this version</action>
      </release>
     <release version="2008.2" description="UWS, VOSpace, Delegation, SAMP" date="03/10/2008">
        <action dev="pah" type="update" issue="1611">
