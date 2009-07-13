@@ -9,8 +9,8 @@
 		</breadcrumbs>
 
 		<menu name="Downloads">
-			<item name="Zip" href="http://www.astrogrid.org/maven2/org/astrogrid/adql2/${project.version}/astrogrid-adqlparser-bundle-${project.version}-bin.zip"/>
-			<item name="Tar" href="http://www.astrogrid.org/maven2/org/astrogrid/adql2/${project.version}/astrogrid-adqlparser-bundle-${project.version}-bin.tar.gz"/>
+			<item name="Zip" href="http://www.astrogrid.org/maven2/org/astrogrid/astrogrid-adqlparser-bundle/${project.version}/astrogrid-adqlparser-bundle-${project.version}-bin.zip"/>
+			<item name="Tar" href="http://www.astrogrid.org/maven2/org/astrogrid/astrogrid-adqlparser-bundle/${project.version}/astrogrid-adqlparser-bundle-${project.version}-bin.tar.gz"/>
 		</menu>
 
 		<menu ref="reports" />
