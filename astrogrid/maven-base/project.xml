@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.41 2009/06/30 20:15:33 pah Exp $ -->
+<!-- $Id: project.xml,v 1.42 2009/07/15 16:23:09 mbt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
@@ -188,6 +188,17 @@
 	<role> Workbench Developer </role>
     <role> Portal Developer </role>
     <role> Workflow Developer </role>
+   </roles>
+  </developer>
+  <developer>
+   <name>Mark Taylor</name>
+   <id>mbt</id>
+   <email>m.b.taylor@bristol.ac.uk</email>
+   <organization>Bristol University</organization>
+   <roles>
+    <role>TOPCAT developer</role>
+    <role>JSAMP developer</role>
+    <role>VODesktop developer</role>
    </roles>
   </developer>
  </developers>
