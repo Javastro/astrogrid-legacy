@@ -1,5 +1,5 @@
 /*
- * $Id: JAXB2Axis.java,v 1.2 2008/09/03 14:18:33 pah Exp $
+ * $Id: JAXB2Axis.java,v 1.3 2009/07/15 13:37:07 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -119,6 +119,15 @@ public class JAXB2Axis {
 	   result = ExecutionPhase.RUNNING;
 	   break;
 
+       case ABORTED:
+           result = ExecutionPhase.ERROR;
+           break;
+           
+       case HELD:
+       case QUEUED:
+       case SUSPENDED:
+           result = ExecutionPhase.PENDING;
+           break;
        default:
 	   result = ExecutionPhase.fromValue(ep.toString());
        break;
