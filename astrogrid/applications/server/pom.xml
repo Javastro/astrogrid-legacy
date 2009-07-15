@@ -177,7 +177,7 @@
     <dependency>
        <groupId>org.astrogrid</groupId><!-- do I need this -->
        <artifactId>astrogrid-base-ws</artifactId>
-       <version>2008.2</version>
+       <version>2009.1</version>
        <type>pom</type>
     </dependency>
     <dependency>
