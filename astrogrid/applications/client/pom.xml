@@ -58,7 +58,7 @@
       <dependency><!-- all the stuff needed for standard ws -->
          <groupId>org.astrogrid</groupId>
          <artifactId>astrogrid-base-ws</artifactId>
-         <version>2008.2</version>
+         <version>2009.1</version>
          <type>pom</type>
       </dependency>
       <dependency>
