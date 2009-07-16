@@ -372,9 +372,10 @@ requires no other resources to run.</li>
 <li>If the build is being done on a Mac, build a <code>.dmg</code> file.
 This is a packaging format convenient for Mac OS X users, and
 can be offered as a download from the relevant download page.
-If the build is being done on a non-Mac system, this will be
-skipped.
-</li>
+If the build is being done on a non-Mac system, the files required
+will be assembled, and instructions will be issued on how to generate
+the actual .dmg file (which must be done on a Mac).
+This step is done using the maven <strong>dmgfile</strong> goal.</li>
 <li>Run smoke tests against the 
 <strong>application jar</strong>to prevent against bad builds</li>
 </ol>
