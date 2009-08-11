@@ -53,24 +53,31 @@ public class ARProcessor extends Processor implements Serializable {
 			if(myspace == null) {
 				myspace = (Myspace)acr.getService(Myspace.class);
 			}
-			describeDirectoryPort();
+			
 
-			if(commonName.equals("Save")) {
+			if(commonName.equals("VOSpace-UserInfo")) {
+				//describeVospaceuUserPort();
+				describeVospaceUserOutputPort();
+			}else if(commonName.equals("Save")) {
+				describeDirectoryPort();
 				describeMainListPort();
 				describeSaveOutput();
 			}else if(commonName.equals("Save_For_VOTables")) {
+				describeDirectoryPort();
 				describeMainListPort();
 				describeVOTableGrabForURLS();
 				describeVOTableGrab();
 				describeSaveOutput();
 				describeSaveVOTableOutput();
 			}else if(commonName.equals("Fetch")) {
+				describeDirectoryPort();
 				describeRecurseDirectories();
 				describeVOTableFetch();
 				//describeMapPort();
 				describeResultList();
 				describeResultListValue();
 			}else if(commonName.equals("Fetch_String_Content")) {
+				describeDirectoryPort();
 				describeRecurseDirectories();
 				describeVOTableFetch();
 				//describeMapPort();
@@ -185,6 +192,29 @@ public class ARProcessor extends Processor implements Serializable {
 		saveList.setSyntacticType(computeType(java.util.List.class,mimes));
 		this.addPort(saveList);
 	}
+	
+	private void describeVospaceUserOutputPort() throws PortCreationException, DuplicatePortNameException {
+		OutputPort homeP = new OutputPort(this,"Home");
+		homeP.getMetadata().setDescription("Vospace Home");
+		List mimeID = new ArrayList();
+		mimeID.add("text/plain");
+		homeP.getMetadata().setMIMETypes(mimeID);
+		homeP.setSyntacticType(computeType(java.lang.String.class,mimeID));
+		this.addPort(homeP);
+		
+		OutputPort commInfo = new OutputPort(this,"Community");
+		commInfo.getMetadata().setDescription("Community");		
+		commInfo.getMetadata().setMIMETypes(mimeID);
+		commInfo.setSyntacticType(computeType(java.lang.String.class,mimeID));
+		this.addPort(commInfo);		
+		
+		OutputPort userName = new OutputPort(this,"User Name");
+		userName.getMetadata().setDescription("User Name");		
+		userName.getMetadata().setMIMETypes(mimeID);
+		userName.setSyntacticType(computeType(java.lang.String.class,mimeID));
+		this.addPort(userName);		
+	}
+	
 	
 	private void describeSaveVOTableOutput() throws PortCreationException, DuplicatePortNameException {
 		OutputPort saveList= new OutputPort(this,"Myspace URI List of VOTables");

@@ -34,7 +34,6 @@ public class ARScavenger extends Scavenger {
 	 */
 	public ARScavenger() throws ScavengerCreationException {
 		super("Astro Runtime");
-		logger.error("22start constructor in ARScavenger for Astro Runtime");
 		listApi();
 	}
 	

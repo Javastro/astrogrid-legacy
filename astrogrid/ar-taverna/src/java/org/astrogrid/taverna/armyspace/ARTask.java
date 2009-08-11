@@ -24,6 +24,8 @@ import org.astrogrid.acr.NotFoundException;
 
 import org.w3c.dom.Document;
 import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.UserInformation;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ACR;
@@ -93,12 +95,21 @@ public class ARTask implements ProcessorTaskWorker {
 		    Myspace myspace = (Myspace)acr.getService(Myspace.class);
 		    //String myspaceDirectory = (String)((DataThing)arg0.get("Myspace Directory or File")).getDataObject();
 		    String myspaceDirectory = processor.getChosenDirectoryURI();
-		    if(myspaceDirectory == null) {
+		    if(myspaceDirectory == null && !name.equals("VOSpace-UserInfo")) {
 		    	myspaceDirectory = ((String)((DataThing)arg0.get("Myspace Directory or File")).getDataObject()).trim();
 		    }
 		    Object mainInputObj;	
 		    String recurseDir, votableOnly;
-		    if(name.equals("Save")) {
+		    if(name.equals("VOSpace-UserInfo")) {
+		    	 Community comm = (Community)acr.getService(Community.class);
+		    	 logger.warn("gout comm");
+		    	 UserInformation userInfo = comm.getUserInformation();
+		    	 logger.warn("got userinfo");
+		    	 logger.warn("home = " + userInfo.getHome());
+		    	 outputMap.put("Home",DataThingFactory.bake(userInfo.getHome()));
+		    	 outputMap.put("Community",DataThingFactory.bake(userInfo.getCommunity()));
+		    	 outputMap.put("User Name",DataThingFactory.bake(userInfo.getName()));
+		    } else if(name.equals("Save")) {
 			    mainInputObj = ((DataThing)arg0.get("Object or List")).getDataObject();
 				MyspaceWriter mw = new MyspaceWriter(myspace);
 				savedOutput = mw.writeObject(mainInputObj,new URI(myspaceDirectory),"FromTaverna");

@@ -29,7 +29,7 @@ public class ARScavenger extends Scavenger {
 	 * @throws ScavengerCreationException 
 	 */
 	public ARScavenger() throws ScavengerCreationException {
-		super("Astro Runtime Myspace");
+		super("Astro Runtime VOSpace");
 		logger.warn("start constructor in ARScavenger");
 		listMyspaceProcessors();
 	}
@@ -40,6 +40,8 @@ public class ARScavenger extends Scavenger {
 		//try {
 			logger.warn("start listMyspaceProcessors in ARScavenger");
 			//DefaultMutableTreeNode root = new DefaultMutableTreeNode("Myspace");
+			DefaultMutableTreeNode vospaceUserInfo = 
+				new DefaultMutableTreeNode(new ARProcessorFactory("VOSpace-UserInfo","VOSpace-UserInfo"));
 			DefaultMutableTreeNode myspaceSave = 
 				new DefaultMutableTreeNode(new ARProcessorFactory("Save","Save"));
 			DefaultMutableTreeNode myspaceVotableSave = 
@@ -48,6 +50,7 @@ public class ARScavenger extends Scavenger {
 				new DefaultMutableTreeNode(new ARProcessorFactory("Fetch","Fetch"));
 			//DefaultMutableTreeNode myspaceFetchString = 
 			//	new DefaultMutableTreeNode(new ARProcessorFactory("Fetch_String_Content"));			
+			add(vospaceUserInfo);
 			add(myspaceSave);
 			add(myspaceVotableSave);
 			add(myspaceFetch);
