@@ -301,8 +301,9 @@ public class ARTask implements ProcessorTaskWorker {
 	    		 if(paramValue instanceof String) {
 	    			 logger.warn("parameter instance a string");
 		    		 if(((String)paramValue).startsWith("http://") || 
-		    			((String)paramValue).startsWith("ftp://") ||
-		    		    ((String)paramValue).startsWith("ivo://")) {
+		    			  ((String)paramValue).startsWith("ftp://")  ||
+		    		    ((String)paramValue).startsWith("ivo://")  ||
+                ((String)paramValue).startsWith("vos://")) {
 		    			inputVals.put("indirect",new Boolean(true));
 		    		 }else {
 		    			inputVals.put("indirect",new Boolean(false));
@@ -314,8 +315,9 @@ public class ARTask implements ProcessorTaskWorker {
 	    			
 	    			 if(listSize > 0) {
 			    		 if(((String)(((List)paramValue).get(0))).startsWith("http://") || 
-			    		    ((String)(((List)paramValue).get(0))).startsWith("ftp://") ||
-					        ((String)(((List)paramValue).get(0))).startsWith("ivo://")) {
+			    		    ((String)(((List)paramValue).get(0))).startsWith("ftp://")  ||
+					        ((String)(((List)paramValue).get(0))).startsWith("ivo://")  ||
+                  ((String)(((List)paramValue).get(0))).startsWith("vos://")) {
 					    		inputVals.put("indirect",new Boolean(true));
 			    		 }else {
 					    		inputVals.put("indirect",new Boolean(false));
