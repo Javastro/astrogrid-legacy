@@ -301,9 +301,9 @@ public class ARTask implements ProcessorTaskWorker {
 	    		 if(paramValue instanceof String) {
 	    			 logger.warn("parameter instance a string");
 		    		 if(((String)paramValue).startsWith("http://") || 
-		    			  ((String)paramValue).startsWith("ftp://")  ||
+		    			((String)paramValue).startsWith("ftp://")  ||
 		    		    ((String)paramValue).startsWith("ivo://")  ||
-                ((String)paramValue).startsWith("vos://")) {
+		    		    ((String)paramValue).startsWith("vos://")) {
 		    			inputVals.put("indirect",new Boolean(true));
 		    		 }else {
 		    			inputVals.put("indirect",new Boolean(false));
@@ -317,7 +317,7 @@ public class ARTask implements ProcessorTaskWorker {
 			    		 if(((String)(((List)paramValue).get(0))).startsWith("http://") || 
 			    		    ((String)(((List)paramValue).get(0))).startsWith("ftp://")  ||
 					        ((String)(((List)paramValue).get(0))).startsWith("ivo://")  ||
-                  ((String)(((List)paramValue).get(0))).startsWith("vos://")) {
+					        ((String)(((List)paramValue).get(0))).startsWith("vos://")) {
 					    		inputVals.put("indirect",new Boolean(true));
 			    		 }else {
 					    		inputVals.put("indirect",new Boolean(false));
@@ -330,12 +330,14 @@ public class ARTask implements ProcessorTaskWorker {
 	    			 
 	    		 }else {
 	    			 logger.warn("Not a String or List value will try to use toString(). paramValue = " + paramValue);
-	    			 if(paramValue.toString().startsWith("http://") || paramValue.toString().startsWith("ftp://") ||
-	 		    		    paramValue.toString().startsWith("ivo://")) {
-	 		    			inputVals.put("indirect",new Boolean(true));
-	 		    		 }else {
-	 		    			inputVals.put("indirect",new Boolean(false));
-	 		    		 }
+	    			 if(paramValue.toString().startsWith("http://") || 
+	    			    paramValue.toString().startsWith("ftp://") ||
+	 		    		paramValue.toString().startsWith("ivo://") || 
+	 		    		paramValue.toString().startsWith("vos://")) {
+	    				 inputVals.put("indirect",new Boolean(true));
+	 		    	 }else {
+	 		    		 inputVals.put("indirect",new Boolean(false));
+	 		    	 }
 	 		    		 inputVals.put("value",paramValue.toString().trim());	    			 
 	    		 }
 	    	}else {

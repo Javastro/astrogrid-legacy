@@ -375,8 +375,10 @@ public class ARTask implements ProcessorTaskWorker {
 	    		 Hashtable inputVals = (Hashtable)inputFromCEATemplate.get(paramName);
 	    		 //change value and indirect now.
 	    		 paramValue = (String)parameterThing.getDataObject();
-	    		 if(paramValue.startsWith("http://") || paramValue.startsWith("ftp://") ||
-	    		    paramValue.startsWith("ivo://")) {
+	    		 if(paramValue.startsWith("http://") || 
+	    		    paramValue.startsWith("ftp://") ||
+	    		    paramValue.startsWith("ivo://")  ||
+	    		    paramValue.startsWith("vos://")) {
 	    			inputVals.put("indirect",new Boolean(true));
 	    		 }else {
 	    			inputVals.put("indirect",new Boolean(false));
@@ -392,8 +394,10 @@ public class ARTask implements ProcessorTaskWorker {
 	    	parameterThing = (DataThing)input.get("Optional Result Saved");
 	    	paramValue = (String)parameterThing.getDataObject();
 	    	if(paramValue != null && paramValue.trim().length() > 0) {
-	    		 if(paramValue.startsWith("http://") || paramValue.startsWith("ftp://") ||
-	 	    		    paramValue.startsWith("ivo://")) {
+	    		 if(paramValue.startsWith("http://") || 
+	    		    paramValue.startsWith("ftp://") ||
+	    		    paramValue.startsWith("vos://") ||
+	 	    		paramValue.startsWith("ivo://")) {
 	    			 Hashtable outputFromCEATemplate = (Hashtable)toolStruct.get("output");
 	    			 //Hashtable outputVals = (Hashtable)outputFromCEATemplate.get((String)outputFromCEATemplate.get("Result"));
 	    			 Hashtable outputVals = (Hashtable)outputFromCEATemplate.get("Result");
