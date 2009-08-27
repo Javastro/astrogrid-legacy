@@ -54,9 +54,9 @@ Astrogrid Software Versions at a Glance ${project.version}
 #end
 *-------------------------*--------------------------*---------------------*
 #if ($astrogrid_dsa_version.endsWith("SNAPSHOT"))
-|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/dsa-catalog/}DSA}} | {{{$m2reposnap/astrogrid-dsa/${astrogrid_dsa_version}/}astrogrid-dsa-${astrogrid_dsa_version}.war}} |{{{$m2reposnap/astrogrid-dsa/${astrogrid_dsa_version}/}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/dsa-catalog/}DSA}} | {{{$m2reposnap/astrogrid-dsa-catalog/${astrogrid_dsa_version}/}astrogrid-dsa-catalog${astrogrid_dsa_version}.war}} |{{{$m2reposnap/astrogrid-dsa-catalog/${astrogrid_dsa_version}/}sha1}} |
 #else
-|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/dsa-catalog/}DSA}} | {{{$m2repo/astrogrid-dsa/${astrogrid_dsa_version}/astrogrid-dsa-${astrogrid_dsa_version}.war}astrogrid-dsa-${astrogrid_dsa_version}.war}} |{{{$m2repo/astrogrid-dsa/${astrogrid_dsa_version}/astrogrid-dsa-${astrogrid_dsa_version}.war}sha1}} |
+|  {{{${astrogrid_doc_URL_root}/p/dsa/${astrogrid_dsa_version}/dsa-catalog/}DSA}} | {{{$m2repo/astrogrid-dsa-catalog/${astrogrid_dsa_version}/astrogrid-dsa-catalog${astrogrid_dsa_version}.war}astrogrid-dsa-${astrogrid_dsa_version}.war}} |{{{$m2repo/astrogrid-dsa-catalog/${astrogrid_dsa_version}/astrogrid-dsa-catalog${astrogrid_dsa_version}.war}sha1}} |
 #end
 *-------------------------*--------------------------*---------------------*
 
