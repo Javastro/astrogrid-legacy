@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -24,9 +23,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
@@ -36,10 +32,8 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
 
 public class SimpleQueryBuilder extends JFrame {
@@ -52,9 +46,9 @@ public class SimpleQueryBuilder extends JFrame {
 	private Shutdown sd ;
 	private ACRException acrException ;
 	
-	private JTextArea queryText ;
+	private JTextArea workArea ;
 	private JComboBox collectionCB ;
-	private JButton submitButton, resultsButton, resetButton ;
+	private JButton submitButton, resetButton ;
 	
 	String appIvorn = "ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa/ceaApplication" ;
 	String serverIvorn = "ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa" ;
@@ -72,7 +66,7 @@ public class SimpleQueryBuilder extends JFrame {
 		this.sd = sd ;
 		SwingUtilities.invokeLater( new Runnable() {
 			public void run(){
-				queryText.setText( adqlQuery  ) ;
+				workArea.setText( adqlQuery  ) ;
 			}
 		} ) ;
 	}
@@ -81,7 +75,7 @@ public class SimpleQueryBuilder extends JFrame {
 		this.acrException = acrException ;
 		SwingUtilities.invokeLater( new Runnable() {
 			public void run(){
-				queryText.setText( acrException.getLocalizedMessage() ) ;
+				workArea.setText( acrException.getLocalizedMessage() ) ;
 			}
 		} ) ;		
 	} 
@@ -113,8 +107,8 @@ public class SimpleQueryBuilder extends JFrame {
 		c.fill = GridBagConstraints.HORIZONTAL ;
 		panel.add( collectionCB, c ) ;
 		
-		queryText = new JTextArea() ;
-		JScrollPane scroll = new JScrollPane( queryText ) ;
+		workArea = new JTextArea() ;
+		JScrollPane scroll = new JScrollPane( workArea ) ;
 		scroll.setPreferredSize( new Dimension( 500, 500) ) ;
 		c.gridx = 0 ;
 		c.gridy = 1 ;
@@ -129,6 +123,7 @@ public class SimpleQueryBuilder extends JFrame {
 		
 		submitButton = new JButton( "Submit" ) ;
 		submitButton.addActionListener( new  SubmitActionListener() ) ;
+		submitButton.setEnabled( false ) ;
 		c.gridx = 0 ;
 		c.gridy = 7 ;
 		c.gridwidth = 1 ;
@@ -136,12 +131,6 @@ public class SimpleQueryBuilder extends JFrame {
 		c.weighty = 0.0 ;
 		c.fill = GridBagConstraints.HORIZONTAL ;
 		panel.add( submitButton, c ) ;
-		
-		resultsButton = new JButton( "Results" ) ;
-		resultsButton.addActionListener( new ResultsActionListener() ) ;
-		resultsButton.setEnabled( false ) ;
-		c.gridx = 2 ;
-		panel.add( resultsButton, c ) ;
 		
 		resetButton = new JButton( "Reset" ) ;
 		resetButton.addActionListener( new ResetActionListener() ) ;
@@ -151,12 +140,23 @@ public class SimpleQueryBuilder extends JFrame {
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE ) ;	
 		
 		//
-		// This could probably be made more subtle...
+		// A bit pedantic, but we close down the ACR on a separate thread.
 		addWindowListener( new WindowAdapter() {
 			public void windowClosing( WindowEvent event ) {
-				sd.reallyHalt() ;
+				Thread worker = new Thread() {
+					public void run() {
+						sd.reallyHalt() ;
+					}
+				};
+				worker.start();				
 			}
 		} ) ;
+		
+		setVisible( true ) ;
+	}
+	
+	public void setReady() {
+		submitButton.setEnabled( true ) ;
 	}
 	
 	public static void main( String argv[] ) {
@@ -166,36 +166,44 @@ public class SimpleQueryBuilder extends JFrame {
 	class SubmitActionListener implements ActionListener {
 		
 		public void actionPerformed( ActionEvent e ) {
-			String adqlString = queryText.getText() ;
-			queryText.setText( "Submitting without using background thread..." ) ;	
-			try {	
-				
-				URI appURI = new URI( appIvorn ) ;
-				Document doc = apps.createTemplateDocument( appURI, "ADQL" ) ;
-				Tool tool = (Tool) Unmarshaller.unmarshal( Tool.class, doc ) ;
-				ParameterValue[] pvs = tool.getInput().getParameter() ;
-				pvs[0].setValue( adqlString ) ;
-				doc = doc.getImplementation().createDocument( null, null, null ) ;
-				Marshaller.marshal(tool,doc) ;
-//				XMLUtils.PrettyDocumentToStream(doc,System.out);
-				
-				URI jobURI = rpm.submitTo( doc, new URI(serverIvorn) ) ;
-				//
-				// Need to set up a listener here...
-				rpm.addRemoteProcessListener( jobURI, new JobListener() ) ;
-				queryText.setText( "Submitted successfully!" ) ;							
-			}
-			catch( final Exception  usx ) {
-//				SwingUtilities.invokeLater( new Runnable() {
-//					Exception usx1 = usx ;
-//					public void run() {					
-//						queryText.setText( usx.getLocalizedMessage() ) ;			
-//					}
-//				}) ;	
-				queryText.setText( usx.getLocalizedMessage() ) ;	
-			}	
+			final String adqlString = workArea.getText() ;
+			workArea.setText( "Submitting..." ) ;	
+			
+			Thread worker = new Thread() {
+				public void run() {
+					try {
+										
+						URI appURI = new URI( appIvorn ) ;
+						Document doc = apps.createTemplateDocument( appURI, "ADQL" ) ;
+						Tool tool = (Tool) Unmarshaller.unmarshal( Tool.class, doc ) ;
+						ParameterValue[] pvs = tool.getInput().getParameter() ;
+						pvs[0].setValue( adqlString ) ;
+						doc = doc.getImplementation().createDocument( null, null, null ) ;
+						Marshaller.marshal(tool,doc) ;
+						//						XMLUtils.PrettyDocumentToStream(doc,System.out);
+
+						URI jobURI = rpm.submitTo( doc, new URI(serverIvorn) ) ;
+						//
+						// Need to set up a listener here...
+						rpm.addRemoteProcessListener( jobURI, new JobListener() ) ;
+						SwingUtilities.invokeLater( new Runnable() {
+							public void run() {
+								workArea.setText( "Submitted successfully!" ) ;	
+							}
+						}) ;
+						
+					}
+					catch( final Exception ex ) {
+						SwingUtilities.invokeLater( new Runnable() {
+							public void run() {
+								workArea.setText( ex.getLocalizedMessage() ) ;	
+							}
+						}) ;				
+					}
+				}
+			};
+			worker.start();
 			submitButton.setEnabled( false ) ;
-			resultsButton.setEnabled( true ) ;
 		}
 		
 	}
@@ -203,7 +211,7 @@ public class SimpleQueryBuilder extends JFrame {
 	class ResultsActionListener implements ActionListener {
 
 		public void actionPerformed( ActionEvent e ) {
-			queryText.setText( "These are the results" ) ;	
+			workArea.setText( "These are the results" ) ;	
 		}
 		
 	}
@@ -211,9 +219,8 @@ public class SimpleQueryBuilder extends JFrame {
 	class ResetActionListener implements ActionListener {
 
 		public void actionPerformed( ActionEvent e ) {
-			queryText.setText( "Type query here..." ) ;	
+			workArea.setText( "Type query here..." ) ;	
 			submitButton.setEnabled( true ) ;
-			resultsButton.setEnabled( false ) ;
 		}
 		
 	}
@@ -236,34 +243,23 @@ public class SimpleQueryBuilder extends JFrame {
 	
 	class JobListener implements RemoteProcessListener {
 		
-		//
-		// Question. If this is made more sophisticated,
-		// will thread safety need to be taken into account,
-		// or is this guaranteed by the calling environment?
-		
 		public JobListener() {}
 
 		public void messageReceived( URI arg0, final ExecutionMessage message ) {
-//			queryText.setText( queryText.getText() + "\n" + message.getContent() ) ;
 			SwingUtilities.invokeLater( new Runnable() {
 				public void run() {
-					queryText.setText( queryText.getText() + "\n" + message.getContent() ) ;
+					workArea.setText( workArea.getText() + "\n" + message.getContent() ) ;
 				}
 			}) ;
 		}
 
-		public void resultsReceived( URI arg0, final Map resultsMap ) {	
-//			Map resultsMap1 = resultsMap ;
-//			Iterator it = resultsMap.entrySet().iterator() ;
-//			if( it.hasNext() ) {
-//				queryText.setText( it.next().toString() ) ;
-//			}				
+		public void resultsReceived( URI arg0, final Map resultsMap ) {					
 			SwingUtilities.invokeLater( new Runnable() {
 				public void run() {
 					Map resultsMap1 = resultsMap ;
 					Iterator it = resultsMap.entrySet().iterator() ;
 					if( it.hasNext() ) {
-						queryText.setText( it.next().toString() ) ;
+						workArea.setText( it.next().toString() ) ;
 					}				
 				}
 			}) ;		
@@ -279,47 +275,51 @@ public class SimpleQueryBuilder extends JFrame {
 					SwingUtilities.invokeLater( new Runnable() {
 						public void run() {
 							String status1 = status ;
-							queryText.setText( status ) ;
-							try {
-								rpm.delete( jobURI ) ;
-							}
-							catch( Exception ex ) {
-								;
-							}						
+							workArea.setText( status ) ;
+							deleteJob( jobURI ) ;			
 						}
 					}) ;
-//					queryText.setText( status ) ;
-					
 				}
 				else if ( status.equalsIgnoreCase( ExecutionInformation.COMPLETED ) ) {
+					final String results = rpm.getResults( jobURI).toString() ;
 					SwingUtilities.invokeLater( new Runnable() {
 						public void run() {
 							try {
-								queryText.setText(  rpm.getResults( jobURI).toString() ) ;
+								workArea.setText( results ) ;
 							}
 							catch( Exception ex ) {
-								queryText.setText(  ex.getLocalizedMessage() ) ;
+								workArea.setText(  ex.getLocalizedMessage() ) ;
+							}
+							finally {
+								deleteJob( jobURI ) ;
 							}
 						}
 					}) ;
-//					try {
-//						queryText.setText(  rpm.getResults( jobURI).toString() ) ;
-//					}
-//					catch( Exception ex ) {
-//						queryText.setText(  ex.getLocalizedMessage() ) ;
-//					}
 				}
 			}
 			catch( final Exception ex ) {
 				SwingUtilities.invokeLater( new Runnable() {				
 					public void run() {
 						Exception ex1 = ex ;
-						queryText.setText( ex1.getLocalizedMessage() ) ;						
+						workArea.setText( ex1.getLocalizedMessage() ) ;						
 					}
 				} ) ;
-//				queryText.setText( ex.getLocalizedMessage() ) ;	
 			} 
 			
+		}
+		
+		private void deleteJob( final URI jobURI ) { 			
+			Thread worker = new Thread() {
+				public void run() {
+					try {
+						getRpm().delete( jobURI ) ;
+					}
+					catch( Exception ex ) {
+						;
+					}
+				}
+			};
+			worker.start();
 		}
 		
 	}
