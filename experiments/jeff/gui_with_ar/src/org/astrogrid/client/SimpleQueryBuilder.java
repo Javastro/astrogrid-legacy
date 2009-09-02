@@ -49,10 +49,16 @@ public class SimpleQueryBuilder extends JFrame {
 	private JTextArea workArea ;
 	private JComboBox collectionCB ;
 	private JButton submitButton, resetButton ;
+
+	private static String[] SERVER_IVORNS = { 
+		"ivo://wfau.roe.ac.uk/sdssdr3-dsa/dsa",
+		"ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa",
+		"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey",
+		"ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED",
+		"ivo://wfau.roe.ac.uk/ukidssDR3-dsa/wsa"		
+	} ;
 	
-	String appIvorn = "ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa/ceaApplication" ;
-	String serverIvorn = "ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa" ;
-	String adqlQuery = 
+	private static String EXAMPLE_ADQL_QUERY = 
 		    "Select Top 100 a.ra, a.dec, a.psfMag_g, a.psfMag_r " +
 		    "From PhotoTag as a " +
 			"Where a.ra>110 And a.ra<230 And a.dec>20 And a.dec<=22 " +
@@ -66,7 +72,7 @@ public class SimpleQueryBuilder extends JFrame {
 		this.sd = sd ;
 		SwingUtilities.invokeLater( new Runnable() {
 			public void run(){
-				workArea.setText( adqlQuery  ) ;
+				workArea.setText( EXAMPLE_ADQL_QUERY  ) ;
 			}
 		} ) ;
 	}
@@ -99,7 +105,9 @@ public class SimpleQueryBuilder extends JFrame {
 		c.anchor = GridBagConstraints.WEST ;
 		
 		collectionCB = new JComboBox() ;
-		collectionCB.addItem( "ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa" ) ;
+		for( int i=0; i< SERVER_IVORNS.length; i++ ) {
+			collectionCB.addItem( SERVER_IVORNS[i] ) ;
+		}
 		collectionCB.setPreferredSize( new Dimension( 500, 20 ) ) ;
 		c.gridx = 0;
 		c.weightx = 1.0 ;
@@ -168,7 +176,8 @@ public class SimpleQueryBuilder extends JFrame {
 		public void actionPerformed( ActionEvent e ) {
 			final String adqlString = workArea.getText() ;
 			workArea.setText( "Submitting..." ) ;	
-			
+			final String serverIvorn = (String)collectionCB.getSelectedItem() ;
+			final String appIvorn = serverIvorn + "/ceaApplication" ;
 			Thread worker = new Thread() {
 				public void run() {
 					try {
@@ -180,23 +189,22 @@ public class SimpleQueryBuilder extends JFrame {
 						pvs[0].setValue( adqlString ) ;
 						doc = doc.getImplementation().createDocument( null, null, null ) ;
 						Marshaller.marshal(tool,doc) ;
-						//						XMLUtils.PrettyDocumentToStream(doc,System.out);
+						// XMLUtils.PrettyDocumentToStream(doc,System.out);
 
 						URI jobURI = rpm.submitTo( doc, new URI(serverIvorn) ) ;
-						//
-						// Need to set up a listener here...
-						rpm.addRemoteProcessListener( jobURI, new JobListener() ) ;
 						SwingUtilities.invokeLater( new Runnable() {
 							public void run() {
 								workArea.setText( "Submitted successfully!" ) ;	
 							}
 						}) ;
-						
+						//
+						// The remote listener deals with problems, output etc...
+						rpm.addRemoteProcessListener( jobURI, new JobListener() ) ;						
 					}
 					catch( final Exception ex ) {
 						SwingUtilities.invokeLater( new Runnable() {
 							public void run() {
-								workArea.setText( ex.getLocalizedMessage() ) ;	
+								workArea.setText( "Problem occurred: " + ex.getLocalizedMessage() ) ;	
 							}
 						}) ;				
 					}
@@ -204,14 +212,6 @@ public class SimpleQueryBuilder extends JFrame {
 			};
 			worker.start();
 			submitButton.setEnabled( false ) ;
-		}
-		
-	}
-	
-	class ResultsActionListener implements ActionListener {
-
-		public void actionPerformed( ActionEvent e ) {
-			workArea.setText( "These are the results" ) ;	
 		}
 		
 	}
@@ -256,8 +256,7 @@ public class SimpleQueryBuilder extends JFrame {
 		public void resultsReceived( URI arg0, final Map resultsMap ) {					
 			SwingUtilities.invokeLater( new Runnable() {
 				public void run() {
-					Map resultsMap1 = resultsMap ;
-					Iterator it = resultsMap.entrySet().iterator() ;
+					Iterator it = resultsMap.values().iterator() ;
 					if( it.hasNext() ) {
 						workArea.setText( it.next().toString() ) ;
 					}				
@@ -274,18 +273,22 @@ public class SimpleQueryBuilder extends JFrame {
 				) {
 					SwingUtilities.invokeLater( new Runnable() {
 						public void run() {
-							String status1 = status ;
 							workArea.setText( status ) ;
 							deleteJob( jobURI ) ;			
 						}
 					}) ;
 				}
 				else if ( status.equalsIgnoreCase( ExecutionInformation.COMPLETED ) ) {
-					final String results = rpm.getResults( jobURI).toString() ;
+					String results = "" ;
+					Iterator it = rpm.getResults( jobURI).values().iterator() ;
+					if( it.hasNext() ) {
+						results = it.next().toString() ;
+					}	
+					final String fResults = results;
 					SwingUtilities.invokeLater( new Runnable() {
 						public void run() {
 							try {
-								workArea.setText( results ) ;
+								workArea.setText( fResults ) ;
 							}
 							catch( Exception ex ) {
 								workArea.setText(  ex.getLocalizedMessage() ) ;
