@@ -54,16 +54,21 @@ public class SimpleQueryBuilder extends JFrame {
 		"ivo://wfau.roe.ac.uk/sdssdr3-dsa/dsa",
 		"ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa",
 		"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey",
-		"ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED",
-		"ivo://wfau.roe.ac.uk/ukidssDR3-dsa/wsa"		
+		"ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED"		
 	} ;
 	
-	private static String EXAMPLE_ADQL_QUERY = 
-		    "Select Top 100 a.ra, a.dec, a.psfMag_g, a.psfMag_r " +
-		    "From PhotoTag as a " +
-			"Where a.ra>110 And a.ra<230 And a.dec>20 And a.dec<=22 " +
-			" And  (a.psfMag_g-a.psfMag_r <0.4 )  " +
-			" And a.psfMag_r>20.0 And a.psfMag_g>0 And a.mode=1 And a.probPSF=1" ;
+	private static String EXAMPLE_SDSS_QUERY = 
+		"Select Top 100 a.ra, a.dec, a.psfMag_g, a.psfMag_r \n" +
+		"From PhotoTag as a \n" +
+		"Where a.ra>110 And a.ra<230 And a.dec>20 And a.dec<=22 \n" +
+		" And  (a.psfMag_g-a.psfMag_r <0.4 )  \n" +
+		" And a.psfMag_r>20.0 And a.psfMag_g>0 And a.mode=1 And a.probPSF=1" ;
+	
+	private static String EXAMPLE_2DF_QUERY =
+		"Select Top 100 * From best_observations as a Where a.serial>=100000 And a.serial<=100100 And a.quality>=3" ;
+	
+	private static String EXAMPLE_HIPPARCOS_QUERY =
+		"SELECT Top 100 m.HIP, h.HD, m.Plx From maincat as m, hdtohip as h Where  (m.HIP=h.HIP)" ;
 	
 	public synchronized void setACR( ACR ar, Applications apps, RemoteProcessManager rpm, Shutdown sd ) {
 		this.ar = ar ;
@@ -72,7 +77,7 @@ public class SimpleQueryBuilder extends JFrame {
 		this.sd = sd ;
 		SwingUtilities.invokeLater( new Runnable() {
 			public void run(){
-				workArea.setText( EXAMPLE_ADQL_QUERY  ) ;
+				workArea.setText( EXAMPLE_SDSS_QUERY  ) ;
 			}
 		} ) ;
 	}
@@ -177,6 +182,10 @@ public class SimpleQueryBuilder extends JFrame {
 			final String adqlString = workArea.getText() ;
 			workArea.setText( "Submitting..." ) ;	
 			final String serverIvorn = (String)collectionCB.getSelectedItem() ;
+			//
+			// This relationship between server ivorn and application ivorn is informal,
+			// so it cannot be relied upon in all circumstances.
+			// Both can be retrieved from the Registry.
 			final String appIvorn = serverIvorn + "/ceaApplication" ;
 			Thread worker = new Thread() {
 				public void run() {
