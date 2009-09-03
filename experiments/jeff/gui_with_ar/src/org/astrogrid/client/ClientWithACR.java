@@ -36,20 +36,18 @@ public class ClientWithACR {
 		try {
 			//
 			// Retrieve the ACR...
-			// I think this needs to be done on the main thread,
-			// before the gui is started,
-			// given the property setting that is going on here.
+			// I think this needs to be done on the main thread.
 			// (But it might be worth experimentation).
 			System.setProperty("java.awt.headless","true");
 			ar = f.find() ;
 
 			//
-			// I would suspect these other artifacts could be retrieved on
-			// a background thread in the gui...
+			// I suspect these other artifacts could be retrieved on
+			// a background thread...
 
 			//
 			// This is the service that will do the query...
-			apps = (Applications) ar.getService(Applications.class) ;
+			apps = (Applications) ar.getService( Applications.class ) ;
 			//
 			// This is a convenience object for managing the remote process...
 			rpm = (RemoteProcessManager) ar.getService( RemoteProcessManager.class ) ;

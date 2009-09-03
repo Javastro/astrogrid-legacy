@@ -50,25 +50,29 @@ public class SimpleQueryBuilder extends JFrame {
 	private JComboBox collectionCB ;
 	private JButton submitButton, resetButton ;
 
-	private static String[] SERVER_IVORNS = { 
-		"ivo://wfau.roe.ac.uk/sdssdr3-dsa/dsa",
-		"ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa",
+	private static final String[] SERVER_IVORNS = { 
 		"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey",
-		"ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED"		
+		"ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED",
+		"ivo://wfau.roe.ac.uk/sdssdr3-dsa/dsa",
+		"ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa"			
 	} ;
 	
-	private static String EXAMPLE_SDSS_QUERY = 
+	private static final String EXAMPLE_SDSS_QUERY = 
 		"Select Top 100 a.ra, a.dec, a.psfMag_g, a.psfMag_r \n" +
 		"From PhotoTag as a \n" +
-		"Where a.ra>110 And a.ra<230 And a.dec>20 And a.dec<=22 \n" +
-		" And  (a.psfMag_g-a.psfMag_r <0.4 )  \n" +
-		" And a.psfMag_r>20.0 And a.psfMag_g>0 And a.mode=1 And a.probPSF=1" ;
+		"Where a.ra > 110 And a.ra < 230 And a.dec > 20 And a.dec <= 22 \n" +
+		"And (a.psfMag_g - a.psfMag_r < 0.4) \n" +
+		"And a.psfMag_r > 20.0 And a.psfMag_g > 0 And a.mode = 1 And a.probPSF = 1" ;
 	
-	private static String EXAMPLE_2DF_QUERY =
-		"Select Top 100 * From best_observations as a Where a.serial>=100000 And a.serial<=100100 And a.quality>=3" ;
+	private static final String EXAMPLE_2DF_QUERY =
+		"Select Top 100 * \n" +
+		"From best_observations as a \n" +
+		"Where a.serial >= 100000 And a.serial <= 100100 And a.quality >= 3" ;
 	
-	private static String EXAMPLE_HIPPARCOS_QUERY =
-		"SELECT Top 100 m.HIP, h.HD, m.Plx From maincat as m, hdtohip as h Where  (m.HIP=h.HIP)" ;
+	private static final String EXAMPLE_HIPPARCOS_QUERY =
+		"SELECT Top 100 m.HIP, h.HD, m.Plx \n" +
+		"From maincat as m, hdtohip as h \n" +
+		"Where m.HIP = h.HIP" ;
 	
 	public synchronized void setACR( ACR ar, Applications apps, RemoteProcessManager rpm, Shutdown sd ) {
 		this.ar = ar ;
@@ -77,7 +81,7 @@ public class SimpleQueryBuilder extends JFrame {
 		this.sd = sd ;
 		SwingUtilities.invokeLater( new Runnable() {
 			public void run(){
-				workArea.setText( EXAMPLE_SDSS_QUERY  ) ;
+				workArea.setText( EXAMPLE_2DF_QUERY  ) ;
 			}
 		} ) ;
 	}
@@ -97,7 +101,7 @@ public class SimpleQueryBuilder extends JFrame {
 	
 	public SimpleQueryBuilder() {
 		super( "Simple Query Builder" ) ;
-		setSize( 600, 600 ) ;
+		setSize( 700, 600 ) ;
 		
 		JPanel panel = new JPanel() ;
 		panel.setLayout( new GridBagLayout() ) ;
@@ -113,7 +117,7 @@ public class SimpleQueryBuilder extends JFrame {
 		for( int i=0; i< SERVER_IVORNS.length; i++ ) {
 			collectionCB.addItem( SERVER_IVORNS[i] ) ;
 		}
-		collectionCB.setPreferredSize( new Dimension( 500, 20 ) ) ;
+		collectionCB.setPreferredSize( new Dimension( 600, 20 ) ) ;
 		c.gridx = 0;
 		c.weightx = 1.0 ;
 		c.gridwidth = 6 ;
@@ -121,8 +125,9 @@ public class SimpleQueryBuilder extends JFrame {
 		panel.add( collectionCB, c ) ;
 		
 		workArea = new JTextArea() ;
+		workArea.setText( "Initializing, please wait." ) ;
 		JScrollPane scroll = new JScrollPane( workArea ) ;
-		scroll.setPreferredSize( new Dimension( 500, 500) ) ;
+		scroll.setPreferredSize( new Dimension( 600, 500) ) ;
 		c.gridx = 0 ;
 		c.gridy = 1 ;
 		c.weightx = 1.0 ;
@@ -172,10 +177,6 @@ public class SimpleQueryBuilder extends JFrame {
 		submitButton.setEnabled( true ) ;
 	}
 	
-	public static void main( String argv[] ) {
-		new SimpleQueryBuilder() ;
-	}
-	
 	class SubmitActionListener implements ActionListener {
 		
 		public void actionPerformed( ActionEvent e ) {
@@ -186,6 +187,7 @@ public class SimpleQueryBuilder extends JFrame {
 			// This relationship between server ivorn and application ivorn is informal,
 			// so it cannot be relied upon in all circumstances.
 			// Both can be retrieved from the Registry.
+			// (I use the VODesktop to find suitable candidates.)
 			final String appIvorn = serverIvorn + "/ceaApplication" ;
 			Thread worker = new Thread() {
 				public void run() {
