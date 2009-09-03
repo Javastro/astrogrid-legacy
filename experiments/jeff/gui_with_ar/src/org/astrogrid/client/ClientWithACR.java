@@ -18,13 +18,28 @@ public class ClientWithACR {
 	public static void main( String argv[] ) {	
 		
 		final ClientWithACR client = new ClientWithACR() ;	
+		//
+		// This brings up the GUI, which is a simple panel
+		// with a combo box of hard-coded DSA services, 
+		// a text area for queries/messages/results,
+		// a submit button and a reset button.
+		// The submit button is initially not enabled.
 		final SimpleQueryBuilder sqb = new SimpleQueryBuilder() ;
 		try {
+			//
+			// This retrieves the ACR within the same JVM provided
+			// the vodesktop jar is on the classpath.
 			client.retrieveACR() ;
+			//
+			// Sets up requisite state for the GUI to use the ACR...
 			sqb.setACR( client.ar, client.apps, client.rpm, client.sd ) ;
+			//
+			// Enables the submit button
 			sqb.setReady() ;
 		}
 		catch( final ACRException ex ) {
+			//
+			// If anything goes wrong, a message should appear in the GUI
 			sqb.setException( ex ) ;
 		}
 

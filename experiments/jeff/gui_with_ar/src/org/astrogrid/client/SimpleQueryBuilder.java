@@ -36,20 +36,33 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 
+//
+// Simple GUI client for submitting ADQL queries.
+//
+// The critical methods are within the SubmitActionListener and 
+// the JobListener, which illustrate interaction with the ACR. 
+//
+// I suspect a more sophisticated approach to multi-threading
+// would be achievable by a Swing programmer. But this works.
 public class SimpleQueryBuilder extends JFrame {
 
 	private static final long serialVersionUID = 7516420866606716212L;
 	
+	//
+	// The ACR and services required for managing queries and shutdown...
 	private ACR ar ; 
 	private Applications apps ;
 	private RemoteProcessManager rpm ;
 	private Shutdown sd ;
-	private ACRException acrException ;
 	
+	//
+	// GUI constructs ...
 	private JTextArea workArea ;
 	private JComboBox collectionCB ;
 	private JButton submitButton, resetButton ;
 
+	//
+	// Services used to populate the combo box
 	private static final String[] SERVER_IVORNS = { 
 		"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey",
 		"ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED",
@@ -57,6 +70,12 @@ public class SimpleQueryBuilder extends JFrame {
 		"ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa"			
 	} ;
 	
+	//
+	// Examples of ADQL queries.
+	// One of these is used to pre-populate the work area.
+	// I haven't made the others available through the gui yet,
+	// but if teamed up with the correct entry from the combo-box,
+	// these do work...
 	private static final String EXAMPLE_SDSS_QUERY = 
 		"Select Top 100 a.ra, a.dec, a.psfMag_g, a.psfMag_r \n" +
 		"From PhotoTag as a \n" +
@@ -74,6 +93,9 @@ public class SimpleQueryBuilder extends JFrame {
 		"From maincat as m, hdtohip as h \n" +
 		"Where m.HIP = h.HIP" ;
 	
+	//
+	// Sets the ACR and associated variables once they have been retrieved.
+	// Puts out an example query.
 	public synchronized void setACR( ACR ar, Applications apps, RemoteProcessManager rpm, Shutdown sd ) {
 		this.ar = ar ;
 		this.apps = apps ;
@@ -85,9 +107,11 @@ public class SimpleQueryBuilder extends JFrame {
 			}
 		} ) ;
 	}
-	
+
+	//
+	// If anything went wrong in retrieving the ACR, 
+	// the message from the exception gets displayed.
 	public synchronized void setException( final ACRException acrException ) {
-		this.acrException = acrException ;
 		SwingUtilities.invokeLater( new Runnable() {
 			public void run(){
 				workArea.setText( acrException.getLocalizedMessage() ) ;
@@ -95,10 +119,12 @@ public class SimpleQueryBuilder extends JFrame {
 		} ) ;		
 	} 
 	
-	public synchronized ACRException getException() {
-		return this.acrException ;
-	}
-	
+	// 
+	// GUI constructor. Mostly inconsequential GUI stuff here.
+	// But, see:
+	// (1) The SubmitActionListener which manages the action from
+	//     the submit button.
+	// (2) The window listener that gets added on window closing.
 	public SimpleQueryBuilder() {
 		super( "Simple Query Builder" ) ;
 		setSize( 700, 600 ) ;
@@ -112,7 +138,8 @@ public class SimpleQueryBuilder extends JFrame {
 		GridBagConstraints c = new GridBagConstraints() ;
 		c.insets = new Insets( 2, 2, 2, 2 ) ;
 		c.anchor = GridBagConstraints.WEST ;
-		
+		//
+		// The combo box where the access ivorns are hard coded ...
 		collectionCB = new JComboBox() ;
 		for( int i=0; i< SERVER_IVORNS.length; i++ ) {
 			collectionCB.addItem( SERVER_IVORNS[i] ) ;
@@ -123,7 +150,11 @@ public class SimpleQueryBuilder extends JFrame {
 		c.gridwidth = 6 ;
 		c.fill = GridBagConstraints.HORIZONTAL ;
 		panel.add( collectionCB, c ) ;
-		
+		//
+		// The work area.
+		// Message feedback, query text, and results are
+		// all displayed here.
+		// Suitable only for a test harness!
 		workArea = new JTextArea() ;
 		workArea.setText( "Initializing, please wait." ) ;
 		JScrollPane scroll = new JScrollPane( workArea ) ;
@@ -139,6 +170,9 @@ public class SimpleQueryBuilder extends JFrame {
 		
 		c.anchor = GridBagConstraints.SOUTH ;
 		
+		//
+		// The submit button has an action listener
+		// which does most of the hard work ...
 		submitButton = new JButton( "Submit" ) ;
 		submitButton.addActionListener( new  SubmitActionListener() ) ;
 		submitButton.setEnabled( false ) ;
@@ -149,7 +183,10 @@ public class SimpleQueryBuilder extends JFrame {
 		c.weighty = 0.0 ;
 		c.fill = GridBagConstraints.HORIZONTAL ;
 		panel.add( submitButton, c ) ;
-		
+		//
+		// The reset button does very little,
+		// but it's listener re-enables the submit button
+		// (You may find this annoying)
 		resetButton = new JButton( "Reset" ) ;
 		resetButton.addActionListener( new ResetActionListener() ) ;
 		c.gridx = 5 ;
@@ -158,54 +195,92 @@ public class SimpleQueryBuilder extends JFrame {
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE ) ;	
 		
 		//
-		// A bit pedantic, but we close down the ACR on a separate thread.
+		// Ensures that the ACR's shutdown service gets the opportunity
+		// of a controlled shutdown.
+		//
+		// (There's probably a small timing exposure here too)
+		//
+		// A bit pedantic, but we shutdown on a separate thread.
 		addWindowListener( new WindowAdapter() {
 			public void windowClosing( WindowEvent event ) {
 				Thread worker = new Thread() {
 					public void run() {
-						sd.reallyHalt() ;
+						Shutdown sd1 = getSd() ;
+						if( sd1 != null ) {
+							sd1.reallyHalt() ;
+						}						
 					}
 				};
 				worker.start();				
 			}
 		} ) ;
 		
+		//
+		// Then we make it visible, but the submit button is not enabled
+		// and will only be enabled once the ACR has been successfully
+		// retrieved.
 		setVisible( true ) ;
 	}
 	
+	//
+	// Used by the client to ready the GUI for work...
 	public void setReady() {
 		submitButton.setEnabled( true ) ;
 	}
 	
+	//
+	// Most of the hard work is done here
+	// (and in the remote process listener), 
+	// triggered from the submit button.
 	class SubmitActionListener implements ActionListener {
 		
 		public void actionPerformed( ActionEvent e ) {
+			//
+			// This is a simple client. Allow only one job at a time ...
+			submitButton.setEnabled( false ) ;
+			workArea.setEditable( false ) ;
+			//
+			// Retrieve the ADQL query string from the work area ...
 			final String adqlString = workArea.getText() ;
+			//
+			// Then give the user some feed back ...
 			workArea.setText( "Submitting..." ) ;	
+			//
+			// OK, this we presume is the data collection we wish to query ...
 			final String serverIvorn = (String)collectionCB.getSelectedItem() ;
 			//
-			// This relationship between server ivorn and application ivorn is informal,
+			// The following relationship between server ivorn and application ivorn is informal,
+			// depending upon how the system admin of a DSA server registers its details,
 			// so it cannot be relied upon in all circumstances.
-			// Both can be retrieved from the Registry.
-			// (I use the VODesktop to find suitable candidates.)
+			// But both can be retrieved from the Registry.
+			// (I used the VODesktop to find suitable candidates.)
 			final String appIvorn = serverIvorn + "/ceaApplication" ;
+			
 			Thread worker = new Thread() {
 				public void run() {
 					try {
-										
+						//
+						// Set up a suitable template document for this application
+						// and then unmarshall it into a tool object suitable for simple
+						// manipulation ...
 						URI appURI = new URI( appIvorn ) ;
 						Document doc = apps.createTemplateDocument( appURI, "ADQL" ) ;
 						Tool tool = (Tool) Unmarshaller.unmarshal( Tool.class, doc ) ;
+						//
+						// Set the input parameter to the ADQL query 
+						// and marshall it back into the document ...
 						ParameterValue[] pvs = tool.getInput().getParameter() ;
 						pvs[0].setValue( adqlString ) ;
 						doc = doc.getImplementation().createDocument( null, null, null ) ;
 						Marshaller.marshal(tool,doc) ;
 						// XMLUtils.PrettyDocumentToStream(doc,System.out);
-
+						
+						//
+						// Submit the query using the remote process manager ...
 						URI jobURI = rpm.submitTo( doc, new URI(serverIvorn) ) ;
 						SwingUtilities.invokeLater( new Runnable() {
 							public void run() {
-								workArea.setText( "Submitted successfully!" ) ;	
+								workArea.setText( "Submitted successfully!" ) ;
 							}
 						}) ;
 						//
@@ -213,33 +288,40 @@ public class SimpleQueryBuilder extends JFrame {
 						rpm.addRemoteProcessListener( jobURI, new JobListener() ) ;						
 					}
 					catch( final Exception ex ) {
+						//
+						// A problem occurred. Display message in the work area ...
 						SwingUtilities.invokeLater( new Runnable() {
 							public void run() {
-								workArea.setText( "Problem occurred: " + ex.getLocalizedMessage() ) ;	
+								workArea.setText( "Problem occurred: " + ex.getLocalizedMessage() ) ;
 							}
 						}) ;				
 					}
 				}
 			};
 			worker.start();
-			submitButton.setEnabled( false ) ;
 		}
 		
 	}
 	
+	//
+	// Action listener for the reset button.
 	class ResetActionListener implements ActionListener {
 
 		public void actionPerformed( ActionEvent e ) {
 			workArea.setText( "Type query here..." ) ;	
 			submitButton.setEnabled( true ) ;
+			workArea.setEditable( true ) ;
 		}
 		
 	}
 
+	//
+	// Bunch of synchronized getters for ACR stuff.
+	// Probably not needed, just Jeff being neurotic.
 	public synchronized ACR getAr() {
 		return ar;
 	}
-
+	
 	public synchronized Applications getApps() {
 		return apps;
 	}
@@ -252,10 +334,14 @@ public class SimpleQueryBuilder extends JFrame {
 		return sd;
 	}
 	
+	//
+	// Remote process listener for the query once it has been submitted.
 	class JobListener implements RemoteProcessListener {
 		
 		public JobListener() {}
 
+		//
+		// Concatinate any messages received to the contents of the work area ...
 		public void messageReceived( URI arg0, final ExecutionMessage message ) {
 			SwingUtilities.invokeLater( new Runnable() {
 				public void run() {
@@ -263,7 +349,10 @@ public class SimpleQueryBuilder extends JFrame {
 				}
 			}) ;
 		}
-
+		//
+		// Display the results.
+		// NOTE. I don't believe this is how the results are
+		//       currently displayed in the work area ...
 		public void resultsReceived( URI arg0, final Map resultsMap ) {					
 			SwingUtilities.invokeLater( new Runnable() {
 				public void run() {
@@ -274,10 +363,15 @@ public class SimpleQueryBuilder extends JFrame {
 				}
 			}) ;		
 		}
-		
+		//
+		// The remote process has sent a status changed message.
+		// We are interested in errors or completion ...
 		public void statusChanged( final URI jobURI, final String status ) {
 
 			try {
+				//
+				// If an error (or unknown?), display the status
+				// and delete the job ...
 				if( status.equalsIgnoreCase( ExecutionInformation.ERROR ) 
 					||
 					status.equalsIgnoreCase( ExecutionInformation.UNKNOWN )				
@@ -289,6 +383,9 @@ public class SimpleQueryBuilder extends JFrame {
 						}
 					}) ;
 				}
+				//
+				// If query completed, display the results 
+				// and delete the job ...
 				else if ( status.equalsIgnoreCase( ExecutionInformation.COMPLETED ) ) {
 					String results = "" ;
 					Iterator it = rpm.getResults( jobURI).values().iterator() ;
@@ -298,15 +395,8 @@ public class SimpleQueryBuilder extends JFrame {
 					final String fResults = results;
 					SwingUtilities.invokeLater( new Runnable() {
 						public void run() {
-							try {
-								workArea.setText( fResults ) ;
-							}
-							catch( Exception ex ) {
-								workArea.setText(  ex.getLocalizedMessage() ) ;
-							}
-							finally {
-								deleteJob( jobURI ) ;
-							}
+							workArea.setText( fResults ) ;
+							deleteJob( jobURI ) ;
 						}
 					}) ;
 				}
@@ -314,14 +404,16 @@ public class SimpleQueryBuilder extends JFrame {
 			catch( final Exception ex ) {
 				SwingUtilities.invokeLater( new Runnable() {				
 					public void run() {
-						Exception ex1 = ex ;
-						workArea.setText( ex1.getLocalizedMessage() ) ;						
+						workArea.setText( ex.getLocalizedMessage() ) ;
 					}
 				} ) ;
 			} 
 			
 		}
 		
+		//
+		// Convenience method for signalling to the remote
+		// process that the job is no longer needed ...
 		private void deleteJob( final URI jobURI ) { 			
 			Thread worker = new Thread() {
 				public void run() {
