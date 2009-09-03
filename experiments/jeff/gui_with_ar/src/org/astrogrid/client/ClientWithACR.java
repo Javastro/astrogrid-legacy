@@ -7,6 +7,20 @@ import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.Shutdown;
 
+//
+// A simple test bed for trying out a Swing GUI with
+// the AstroGrid ACR running headless.
+//
+// To be run with the vodesktop-1.3-app.jar or similar
+// running on the classpath.
+//
+// Tested under jdk 1.5.0_15
+//
+// Problems:
+// (1) Do not have the vodesktop running before this is started.
+// (2) No way of serializing large results set at the moment,
+//     so all queries should limit output (Select top 100 or so).
+// (3) At present only supports ADQL v1 syntax.
 public class ClientWithACR {
 	
 	Finder f = new Finder();
@@ -19,8 +33,8 @@ public class ClientWithACR {
 		
 		final ClientWithACR client = new ClientWithACR() ;	
 		//
-		// This brings up the GUI, which is a simple panel
-		// with a combo box of hard-coded DSA services, 
+		// This brings up the GUI, which is a simple panel 
+		// consisting of a combo box of hard-coded DSA services, 
 		// a text area for queries/messages/results,
 		// a submit button and a reset button.
 		// The submit button is initially not enabled.
