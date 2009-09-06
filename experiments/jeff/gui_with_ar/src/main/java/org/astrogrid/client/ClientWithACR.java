@@ -1,7 +1,6 @@
 package org.astrogrid.client;
 
 import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.builtin.ACR;
@@ -23,7 +22,9 @@ import org.astrogrid.acr.builtin.Shutdown;
 // (3) At present only supports ADQL v1 syntax.
 public class ClientWithACR {
 	
-	Finder f = new Finder();
+	//
+	// Produce an altered Finder class that does not look for an external AR
+	Finder f = new Finder() ;
 	ACR ar ; 
 	Applications apps ;
 	RemoteProcessManager rpm ;

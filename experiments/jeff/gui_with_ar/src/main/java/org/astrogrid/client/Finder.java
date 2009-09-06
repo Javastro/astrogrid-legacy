@@ -23,6 +23,14 @@ import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.*;
 import org.astrogrid.acr.SecurityException;
 
+/**
+ * This is an amended version of org.astrogrid.acr.Finder
+ * It does not attempt to connect to an externally running ACR
+ * 
+ * 
+ * @author jl99
+ * @author noel winstanley
+ */
 public class Finder {
     
     // configure the logger earliest.
@@ -77,25 +85,9 @@ public class Finder {
      * @throws ACRException if all options fail
      * @equivalence findSession(true,false)
      * */
-    public synchronized ACR find()  throws ACRException{
-        final boolean tryToStartIfNotRunning = true;
-        final boolean warnUserBeforeStarting = false;
-
-        return find(tryToStartIfNotRunning, warnUserBeforeStarting);
-
-    }
-
-    /**
-     * Find or create an Astro Runtime (AR) instance.
-     * @see #find()
-     * @param tryToStartIfNotRunning if false, will not attempt to start an AR, but instead will return NULL if there isn't an instance already running
-     * @param warnUserBeforeStarting if true, will warn the user before attempting to start an AR, giving them the chance to start one manually
-     * @return an instance of the Astro Runtime
-     * @throws ACRException
-     */
-    public ACR find(final boolean tryToStartIfNotRunning, final boolean warnUserBeforeStarting) throws ACRException {
+    public ACR find() throws ACRException {
         if (acr == null) {
-            acr= createACR(tryToStartIfNotRunning, warnUserBeforeStarting);
+            acr= createACR();
             try { // attempt to register a listener, it it'll let me: use it to remove singleton when host vanishes.
                 final Shutdown sd = (Shutdown)acr.getService(Shutdown.class);               
                 sd.addShutdownListener(new FinderCleanupShutdownListener(this));
@@ -113,27 +105,25 @@ public class Finder {
      * @param tryToStartIfNotRunning if false, don't start an external ACR if there isn't one. 
      * @throws NoAvailableACRException
      */
-    private ACR createACR(final boolean tryToStartIfNotRunning, final boolean warnUser) throws ACRException {
-        logger.info("Searching for AR");
-        ACR result = null;    
+    private ACR createACR() throws ACRException {
+    	logger.info("Searching for AR");
+    	ACR result = null;    
 
-        // try starting internal service
-        if (tryToStartIfNotRunning) {
-            if (isArOnClasspath()) {
-                try {
+    	// try starting internal service
+    	if (isArOnClasspath()) {
+    		try {
 
-                    result = createInternal();
-                    if (result != null) {
-                        return result;
-                    }     
-                } catch (final Exception e) {
-                    logger.warn("Failed to create internal AR",e);
-                    e.printStackTrace();
-                }
-            }            
-        }
-        // fallen through everything.
-        throw new ACRException("Failed to find or create an AR to connect to");
+    			result = createInternal();
+    			if (result != null) {
+    				return result;
+    			}     
+    		} catch (final Exception e) {
+    			logger.warn("Failed to create internal AR",e);
+    			e.printStackTrace();
+    		}
+    	}            
+    	// fallen through everything.
+    	throw new ACRException("Failed to find or create an AR to connect to");
     }
 
 

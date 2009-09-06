@@ -285,7 +285,7 @@ public class SimpleQueryBuilder extends JFrame {
 						}) ;
 						//
 						// The remote listener deals with problems, output etc...
-						rpm.addRemoteProcessListener( jobURI, new JobListener() ) ;						
+						rpm.addRemoteProcessListener( jobURI, new JobListener() ) ;
 					}
 					catch( final Exception ex ) {
 						//
@@ -414,11 +414,18 @@ public class SimpleQueryBuilder extends JFrame {
 		//
 		// Convenience method for signalling to the remote
 		// process that the job is no longer needed ...
-		private void deleteJob( final URI jobURI ) { 			
+		private void deleteJob( final URI jobURI ) { 	
+			//
+			// Probably need to remove the listener at some point!!!
+			// or reposition this within the listener and remove
+			// the listener from within the listener.
 			Thread worker = new Thread() {
+
 				public void run() {
 					try {
-						getRpm().delete( jobURI ) ;
+						RemoteProcessManager rpm = getRpm() ;
+						rpm.delete( jobURI ) ;
+						
 					}
 					catch( Exception ex ) {
 						;
