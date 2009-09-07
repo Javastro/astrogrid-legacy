@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid.cluster</groupId>
+  <artifactId>cluster-root</artifactId>
+  <packaging>pom</packaging>
+  <name>Birminham Clustering</name>
+  <version>0.1-SNAPSHOT</version>
+  <organization>
+  	<name>AstroGrid</name>
+  	<url>http://www.astrogrid.org/</url>
+  </organization>
+  <modules>
+    <module>core</module>
+  </modules>
+
+  <build>
+    <plugins>
+            <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+               <showDeprecation>true</showDeprecation>
+               <source>1.5</source>
+               <target>1.5</target>
+               <verbose>false</verbose>
+            </configuration>
+         </plugin>
+    </plugins>
+  </build>
+</project>
