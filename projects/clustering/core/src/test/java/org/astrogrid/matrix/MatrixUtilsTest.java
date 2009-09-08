@@ -1,5 +1,5 @@
 /*
- * $Id: MatrixUtilsTest.java,v 1.1 2009/09/07 16:06:11 pah Exp $
+ * $Id: MatrixUtilsTest.java,v 1.2 2009/09/08 19:22:21 pah Exp $
  * 
  * Created on 5 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -74,12 +74,26 @@ public class MatrixUtilsTest extends AbstractMatrixTest{
         assertTrue("determinant error too much ", Math.abs(-3 - result) < 1e-9);
         
     }
+    @Test
+    public void testDeterminant2(){
+        Matrix mat = new AGDenseMatrix(new double[][]{   {0.5472 ,  -0.2917 ,  -0.1369},
+                {-0.1772 ,   0.4326 ,  -0.1369},
+                { -0.1772,   -0.2917 ,   0.5874}
+});
+        Double result = mat.det();
+        System.out.println("error in determinant=" + Math.abs(0.06218776 - result));
+        assertTrue("determinant error too much ", Math.abs(0.06218776 - result) < 1e-7);
+        
+    }
 
 }
 
 
 /*
  * $Log: MatrixUtilsTest.java,v $
+ * Revision 1.2  2009/09/08 19:22:21  pah
+ * added new determinant test to check against sign changes
+ *
  * Revision 1.1  2009/09/07 16:06:11  pah
  * initial transcription of the core
  *
