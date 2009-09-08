@@ -1,5 +1,5 @@
 /*
- * $Id: Matrix.java,v 1.1 2009/09/07 16:06:12 pah Exp $
+ * $Id: Matrix.java,v 1.2 2009/09/08 19:24:03 pah Exp $
  * 
  * Created on 21 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -178,11 +178,20 @@ public interface Matrix extends no.uib.cipr.matrix.Matrix {
      * @param d
      */
     public AGDenseMatrix append(double d);
+
+
+    Matrix setRow(int k, Matrix m);
+
+
+    Matrix setRow(int k, Vector v);
 }
 
 
 /*
  * $Log: Matrix.java,v $
+ * Revision 1.2  2009/09/08 19:24:03  pah
+ * further slicing possibilites
+ *
  * Revision 1.1  2009/09/07 16:06:12  pah
  * initial transcription of the core
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: AGDenseMatrix.java,v 1.1 2009/09/07 16:06:12 pah Exp $
+ * $Id: AGDenseMatrix.java,v 1.2 2009/09/08 19:24:02 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -318,6 +318,10 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
         
         
     }
+    public Vector asVector(int istart) {
+        return this.asVector(istart, data.length -1);
+    }
+
 
     /**
      * Return the determinant. This is done by using the LU factorization. 
@@ -339,15 +343,14 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
             throw new MatrixSingularException();
         else if (info.val < 0)
             throw new IllegalArgumentException();
-        boolean signchange = true;
-        for (int i = 0; i < piv.length; i++) {
-            signchange ^= (i != piv[i]);
-        }
-        det = indata[0];
-        if(signchange)
-            det = - det;
-        for (int i = 1; i < numColumns; i++) {
-             det *= indata[i + i*numColumns];            
+        det = 1;
+         for (int i = 0; i < numColumns; i++) {
+             if(i+1 == piv[i]){
+             det *= indata[i + i*numColumns];   
+             } else
+             {
+                 det *= -indata[i + i*numColumns];
+             }
         }
         return det;
         
@@ -482,8 +485,8 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
 
     public AGDenseMatrix append(Vector mm) {
         DenseVector m = (DenseVector) mm; //IMPL dangerous cast
-        if(numColumns != 1){
-            throw new IllegalArgumentException("matrix must have 1 column")  ;
+        if(!(numColumns == 1 || numColumns == 0) ){
+            throw new IllegalArgumentException("matrix must have 1 (or 0) column")  ;
         } else  {
             double arr[] = new double[numRows + m.size()];
             System.arraycopy(data, 0, arr, 0, numRows);
@@ -496,17 +499,28 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
     }
 
     public Matrix setColumn(int idx, Vector v) {
-        // TODO Auto-generated method stub
-        throw new  UnsupportedOperationException("Matrix.setColumn() not implemented");
+        this.setColumn(idx, new AGDenseMatrix(v));
+        return this;
     }
 
     public Matrix setColumn(int idx, Matrix v) {
-        // TODO Auto-generated method stub
-        throw new  UnsupportedOperationException("Matrix.setColumn() not implemented");
+        if(v.numColumns() != 1) {
+            throw new IllegalArgumentException("setting matrix must have 1 column");
+        } else {
+            if(v.numRows() != numRows){
+                throw new IllegalArgumentException("setting matrix must have same number of rows");
+            }
+            else {
+                for (int i = 0; i < v.numRows(); i++) {
+                    this.set(i, idx, v.get(i, 0));
+                }
+            }
+        }
+        return this;
     }
 
     public AGDenseMatrix append(double d) {
-        if(numColumns != 1){
+        if(!(numColumns == 1 || numColumns == 0)){
             throw new IllegalArgumentException("matrix must have 1 column")  ;
         } else  {
             double arr[] = new double[numRows + 1];
@@ -519,14 +533,37 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
         return this;
     }
 
-    public Vector asVector(int istart) {
-        // TODO Auto-generated method stub
-        throw new  UnsupportedOperationException("Matrix.asVector() not implemented");
+    public Matrix setRow(int k, Matrix m) {
+        
+        if (m.numRows() == 1 && m.numColumns() == numColumns) {
+            for (int i = 0; i < m.numColumns(); i++) {
+                this.set(k, i, m.get(0, i));
+                
+            }
+        } else {
+            throw new IllegalArgumentException("The setting matrix is not of the correct dimensions");
+        }
+        return this;
+     }
+
+    public Matrix setRow(int k, Vector v) {
+        if (v.size() == numColumns) {
+          for (int i = 0; i < v.size(); i++) {
+            this.set(k, i, v.get(i));
+        }   
+        } else {
+            throw new IllegalArgumentException("The setting matrix is not of the correct dimensions");
+        }
+       return this;
     }
+
 }
 
 /*
  * $Log: AGDenseMatrix.java,v $
+ * Revision 1.2  2009/09/08 19:24:02  pah
+ * further slicing possibilites
+ *
  * Revision 1.1  2009/09/07 16:06:12  pah
  * initial transcription of the core
  *
