@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterBoundFull.java,v 1.1 2009/09/07 16:06:11 pah Exp $
+ * $Id: ClusterBoundFull.java,v 1.2 2009/09/08 19:23:30 pah Exp $
  * 
  * Created on 12 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -12,7 +12,6 @@
 
 package org.astrogrid.cluster.cluster;
 import no.uib.cipr.matrix.AGDenseMatrix;
-import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Vector;
 
 import org.astrogrid.matrix.Matrix;
@@ -76,8 +75,10 @@ public class ClusterBoundFull {
                     case diagonal:
                         gcv_nr_d = reshape(cv.asVector(n0, n0+K*ndim_nr -1), K, ndim_nr);
                         n0 = n0 + K*ndim_nr;
+                        break;
                     case common:
                         gcv_nr_c = cv.asVector(n0);
+                        break;
                 }
                 d = d + ndim_nr;
             } else if (datatype.get(i,0) == 2) { // continous data with errors
@@ -95,6 +96,7 @@ public class ClusterBoundFull {
                                 qmu[n][k]=  reshape(output.asVector(ini, ini+ndim_er -1),1,
                                     ndim_er);
                                 ini = ini + ndim_er;
+                                break;
                             case diagonal:
                                 qcv[n][k] = reshape(output.asVector(ini, ini+ndim_er*
                                     ndim_er -1),ndim_er, ndim_er);
@@ -102,12 +104,14 @@ public class ClusterBoundFull {
                                 qmu[n][k] = reshape(output.asVector(ini, ini+ndim_er -1),1,
                                     ndim_er);
                                 ini = ini + ndim_er;
+                                break;
                             case common:
                                 qcv[n][k] = reshape(output.asVector(ini, ini+ndim_er*ndim_er -1),
                                     ndim_er, ndim_er);
                                 ini = ini + ndim_er*ndim_er;
                                 qmu[n][k]=reshape(output.asVector(ini, ini+ndim_er -1), 1, ndim_er);
                                 ini = ini + ndim_er;
+                                break;
                         }
                     }
                 }
@@ -194,62 +198,62 @@ public class ClusterBoundFull {
                     // E_q [LOG P(W|U, K)]
                     switch (cv_type){
                         case free:
-                            aux1.set(n,k, -ndim_er/2*Math.log(2*PI)-Math.log(det(diag(S.sliceRow(n))))/2-
+                            aux1.set(n,k, -ndim_er/2.0*Math.log(2*PI)-Math.log(det(diag(S.sliceRow(n))))/2.0-
                                 (multABAT(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))).asScalar() - 
                                 2*multBt(multAt(qmu[n][k],inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
                                 trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k])) 
                                 + multATBA(qmu[n][k],inv(diag(S.sliceRow(n)))
                                 ).asScalar())/2.0);
-                            aux2.set(n,k,-ndim_er/2*log(2*PI)-log(det(gcv_f[k]
-                                ))/2+ndim_er/2*(psi(a.get(n,k))-log(b.get(n,k)))-
+                            aux2.set(n,k,-ndim_er/2.0*log(2*PI)-log(det(gcv_f[k]
+                                ))/2.0+ndim_er/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-
                                 0.5*a.get(n,k)/b.get(n,k)*(
                                 trace(mult(inv((gcv_f[k])),qcv[n][k]))
                                 +multATBA(qmu[n][k],inv(gcv_f[k])).asScalar()
                                 -2*multBt(multAt(qmu[n][k],inv(gcv_f[k])),gmu.sliceRowM(k)).asScalar()
                                 + multABAT(gmu.sliceRowM(k),inv(gcv_f[k])).asScalar() ));
                             // -E_q[ LOG q(W|K) ]
-                            aux4.set(n,k, ndim_er/2*log(2*PI)+log(det(qcv[n][k]))/2+ndim_er/2); 
+                            aux4.set(n,k, ndim_er/2.0*log(2*PI)+log(det(qcv[n][k]))/2.0+ndim_er/2.0); 
                                 break;
                         case diagonal:
-                            aux1.set(n,k,-ndim_er/2*log(2*PI)-log(det(diag(S.sliceRow(n))))/2-
+                            aux1.set(n,k,-ndim_er/2.0*log(2*PI)-log(det(diag(S.sliceRow(n))))/2.0-
                                 (multABAT(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))).asScalar() - 
                                 2*multBt(multAt(qmu[n][k],inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
                                 trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k])) 
                                 + multATBA(qmu[n][k],inv(diag(S.sliceRow(n)))).asScalar()
-                               )/2);                    
+                               )/2.0);                    
                             Vector covk = gcv_d.sliceRow(k);                    
-                            aux2.set(n,k,-ndim_er/2*log(2*PI)-log(det(diag(gcv_d.sliceRow(k))))/2 +
-                                ndim_er/2*(psi(a.get(n,k))-log(b.get(n,k)))-
+                            aux2.set(n,k,-ndim_er/2.0*log(2*PI)-log(det(diag(gcv_d.sliceRow(k))))/2.0 +
+                                ndim_er/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-
                                 0.5*a.get(n,k)/b.get(n,k)*(
                                 trace(mult(inv(diag(gcv_d.sliceRow(k))),qcv[n][k]))
                                 +multATBA(qmu[n][k],inv(diag(gcv_d.sliceRow(k)))).asScalar()
                                 -2*multBt(multAt(qmu[n][k],inv(diag(gcv_d.sliceRow(k)))),gmu.sliceRowM(k)).asScalar()
                                 + multABAT(gmu.sliceRowM(k),inv(diag(gcv_d.sliceRow(k)))).asScalar()));
                             // -E_q[ LOG q(W|K) ]
-                            aux4.set(n,k,ndim_er/2*log(2*PI)+log(det(qcv[n][k]))/2+ndim_er/2);
+                            aux4.set(n,k,ndim_er/2.0*log(2*PI)+log(det(qcv[n][k]))/2.0+ndim_er/2.0);
                                 break;
                         case common:
-                            aux1.set(n,k,-ndim_er/2*log(2*PI)-log(det(diag(S.sliceRow(n))))/2-
+                            aux1.set(n,k,-ndim_er/2.0*log(2*PI)-log(det(diag(S.sliceRow(n))))/2.0-
                                 (multABAT(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))).asScalar() - 
-                                2*multAt(qmu[n][k], inv(diag(S.sliceRow(n)))).asScalar() +
+                                2*multBt(mult(qmu[n][k], inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
                                 trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k])) 
-                                + multATBA(qmu[n][k], inv(diag(S.sliceRow(n)))).asScalar())/2);
+                                + multABAT(qmu[n][k], inv(diag(S.sliceRow(n)))).asScalar())/2.0);
                             AGDenseMatrix tqmu = qmu[n][k];
                             Matrix diff =  sub(tqmu,gmu.sliceRowM(k));
-                            tqmu = (AGDenseMatrix) multAt(diff, diff);
-                            aux2.set(n,k,-ndim_er/2*log(2*PI)-ndim_er*log(gcv_c.get(k))/2 +
-                                ndim_er/2*(psi(a.get(n,k))-log(b.get(n,k)))-0.5*a.get(n,k)
+                            tqmu = (AGDenseMatrix) multBt(diff, diff);
+                            aux2.set(n,k,-ndim_er/2.0*log(2*PI)-ndim_er*log(gcv_c.get(k))/2.0 +
+                                ndim_er/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-0.5*a.get(n,k)
                                 /b.get(n,k)*(tqmu.asScalar()+trace(  
                                 qcv[n][k]))/gcv_c.get(k));
                             // -E_q[ LOG q(W|K) ]
-                            aux4.set(n,k,ndim_er/2*log(2*PI)+log(det(qcv[n][k]))/2+ndim_er/2);
+                            aux4.set(n,k,ndim_er/2.0*log(2*PI)+log(det(qcv[n][k]))/2.0+ndim_er/2.0);
                             break;
                         default:
                             throw new IllegalArgumentException( "Unknown noise model");
                     }
                     // E_q [LOG(P(U|K))]
-                    aux3.set(n,k,v.get(k)/2*log(v.get(k)/2)+(v.get(k)/2-1)*(psi(a.get(n,k))-log(b.get(n,k)))
-                        -v.get(k)/2*a.get(n,k)/b.get(n,k)-log(gamma(v.get(k)/2)));
+                    aux3.set(n,k,v.get(k)/2.0*log(v.get(k)/2.0)+(v.get(k)/2.0-1)*(psi(a.get(n,k))-log(b.get(n,k)))
+                        -v.get(k)/2.0*a.get(n,k)/b.get(n,k)-log(gamma(v.get(k)/2.0)));
                     // -E_q[ LOG q(U|K) ]
                     aux5.set(n,k,-((a.get(n,k)-1)*psi(a.get(n,k))+log(b.get(n,k))-a.get(n,k)-
                         log(gamma(a.get(n,k)))));
@@ -282,20 +286,20 @@ public class ClusterBoundFull {
                         switch (cv_type) {
                             case diagonal:
                                 Vector covkd = gcv_nr_d.sliceRow(k);
-                                aux6.set(n,k,-ndim_nr/2*log(2*PI)-sum(log(covkd))/2+
-                                    ndim_nr/2*(psi(a.get(n,k))-log(b.get(n,k)))-
+                                aux6.set(n,k,-ndim_nr/2.0*log(2*PI)-sum(log(covkd))/2.0+
+                                    ndim_nr/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-
                                     0.5*a.get(n,k)/b.get(n,k)*n3.get(n,k));
                                 break;
                             case common:
                                 double covkc = gcv_nr_c.get(k);
-                                aux6.set(n,k,-ndim_nr/2*log(2*PI)-ndim_nr*log(covkc)/2+
-                                    ndim_nr/2*(psi(a.get(n,k))-log(b.get(n,k)))-
+                                aux6.set(n,k,-ndim_nr/2.0*log(2*PI)-ndim_nr*log(covkc)/2.0+
+                                    ndim_nr/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-
                                     0.5*a.get(n,k)/b.get(n,k)*n3.get(n,k));
                                 break;
                             case free:
                                 Matrix tmp = multABAT(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)),inv(gcv_nr_f[k]));
-                                aux6.set(n,k,-ndim_nr/2*log(2*PI)-log(det(gcv_nr_f[k]))/2+
-                                    ndim_nr/2*(psi(a.get(n,k))-log(b.get(n,k)))-
+                                aux6.set(n,k,-ndim_nr/2.0*log(2*PI)-log(det(gcv_nr_f[k]))/2.0+
+                                    ndim_nr/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-
                                     0.5*a.get(n,k)/b.get(n,k)*tmp.asScalar());
                                     break;
                             default:
@@ -306,24 +310,24 @@ public class ClusterBoundFull {
                         switch (cv_type) {
                             case common:
                                 double covkc = gcv_nr_c.get(k);
-                                aux6.set(n,k, log(gamma((v.get(k)+ndim_nr)/2))- 
-                                    ndim_nr/2*log(covkc)-ndim_nr/2*log(PI*v.get(k)) 
-                                    -log(gamma(v.get(k)/2))-(v.get(k) + ndim_nr)/2* 
+                                aux6.set(n,k, log(gamma((v.get(k)+ndim_nr)/2.0))- 
+                                    ndim_nr/2.0*log(covkc)-ndim_nr/2.0*log(PI*v.get(k)) 
+                                    -log(gamma(v.get(k)/2.0))-(v.get(k) + ndim_nr)/2.0* 
                                     log(1+n3.get(n,k)/(covkc*v.get(k))));
                                 break;
                             case diagonal:
                                 Vector covkd = gcv_nr_d.sliceRow(k);
                                 double dist = sum(divide(pow(sub(data_nr.sliceRow(n),gmu_nr.sliceRow(k)),2.0) , covkd));
-                                aux6.set(n,k, log(gamma((v.get(k)+ndim_nr)/2))-
-                                    sum(log(covkd))/2-
-                                    ndim_nr/2*log(PI * v.get(k))-log(gamma(v.get(k)/2))-
-                                    (v.get(k) + ndim_nr)/2*log(1 + dist/v.get(k)));
+                                aux6.set(n,k, log(gamma((v.get(k)+ndim_nr)/2.0))-
+                                    sum(log(covkd))/2.0-
+                                    ndim_nr/2.0*log(PI * v.get(k))-log(gamma(v.get(k)/2.0))-
+                                    (v.get(k) + ndim_nr)/2.0*log(1 + dist/v.get(k)));
                                 break;
                             case free:
                                 Matrix covkf = gcv_nr_f[k];
-                                aux6.set(n,k, log(gamma((v.get(k)+ndim_nr)/2))-log(det(
-                                    covkf))/2-ndim_nr/2*log(PI*v.get(k))-log(gamma(v.get(k)/2))- 
-                                    ((v.get(k)+ndim_nr)/2)*log(1+multABAT(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)), inv(covkf)).asScalar()
+                                aux6.set(n,k, log(gamma((v.get(k)+ndim_nr)/2.0))-log(det(
+                                    covkf))/2.0-ndim_nr/2.0*log(PI*v.get(k))-log(gamma(v.get(k)/2.0))- 
+                                    ((v.get(k)+ndim_nr)/2.0)*log(1+multABAT(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)), inv(covkf)).asScalar()
                                     /v.get(k)));
                                     break;
                         }
@@ -399,6 +403,9 @@ public class ClusterBoundFull {
 
 /*
  * $Log: ClusterBoundFull.java,v $
+ * Revision 1.2  2009/09/08 19:23:30  pah
+ * got rid of npe and array bound problems....
+ *
  * Revision 1.1  2009/09/07 16:06:11  pah
  * initial transcription of the core
  *

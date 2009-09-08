@@ -1,5 +1,5 @@
 /*
- * $Id: RobustClusterErr.java,v 1.1 2009/09/07 16:06:11 pah Exp $
+ * $Id: RobustClusterErr.java,v 1.2 2009/09/08 19:23:29 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -85,7 +85,7 @@ public class RobustClusterErr {
             data_er = data.sliceCol(n0, ndim_er);
             n0 = n0 + ndim_er;
             }
-        else if ( datatype.get(i,1) == 3){
+        else if ( datatype.get(i,0) == 3){
              ndim_bin =(int) datatype.get(i,1);
             data_bin = data.sliceCol(n0,ndim_bin);
             n0 = n0  + ndim_bin;
@@ -114,7 +114,7 @@ public class RobustClusterErr {
     }
 
     AGDenseMatrix mu = null, cv = null, lmu =null;
-    AGDenseMatrix lcv = null;
+    AGDenseMatrix lcv = new AGDenseMatrix(0,0);
     if (ndim_er != 0) { 
         // initialize the global parameters for the model
         Matrix gmu = centre_kmeans(data_er, K, ndim_er);
@@ -123,13 +123,13 @@ public class RobustClusterErr {
         switch (cv_type) {
             case free:
                 int lcvidx = 0;
-                lcv = new AGDenseMatrix(diag(ini_cov), 1, K);
+                lcv.append(new AGDenseMatrix(diag(ini_cov), 1, K).asVector());
               break;
             case diagonal:
-                lcv = new AGDenseMatrix(ini_cov,K,1);
+                lcv.append( new AGDenseMatrix(ini_cov,K,1).asVector());
                  break;
             case common:
-                lcv = (AGDenseMatrix) ones(1,K).scale(max(ini_cov));
+                lcv.append(ones(1,K).asVector().scale(max(ini_cov)));
                 break;
         }
         lmu = new AGDenseMatrix(gmu.asVector());
@@ -182,7 +182,7 @@ public class RobustClusterErr {
 
     // for iter = 1:niters
     boolean stop = false;
-    int iter = 1;
+    int iter = 0;
     java.util.List<Double> loglik = new ArrayList<Double>();
     AGDenseMatrix q = null;
     AGDenseMatrix C = null;
@@ -217,10 +217,10 @@ public class RobustClusterErr {
         double loglike = ClusterBoundFull.cluster_bound_full(data, datatype, K, mu, cv, lmu, lcv,
             p, output, latent, ab, q, cv_type);
 
-        System.out.printf("In generation //d, the log likelihood bound is %f\n", iter, loglike);
+        System.out.printf("In generation %d, the log likelihood bound is %f\n", iter, loglike);
         
         loglik.add(loglike);
-        if (iter > 1 && abs((loglik.get(iter)-loglik.get(iter-1))/loglik.get(iter-1))<tol){
+        if (iter > 0 && abs((loglik.get(iter)-loglik.get(iter-1))/loglik.get(iter-1))<tol){
             stop = true;
         }
         if (iter >= niters){
@@ -243,6 +243,9 @@ public class RobustClusterErr {
 
 /*
  * $Log: RobustClusterErr.java,v $
+ * Revision 1.2  2009/09/08 19:23:29  pah
+ * got rid of npe and array bound problems....
+ *
  * Revision 1.1  2009/09/07 16:06:11  pah
  * initial transcription of the core
  *

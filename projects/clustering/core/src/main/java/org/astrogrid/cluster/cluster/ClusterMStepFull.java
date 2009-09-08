@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterMStepFull.java,v 1.1 2009/09/07 16:06:11 pah Exp $
+ * $Id: ClusterMStepFull.java,v 1.2 2009/09/08 19:23:30 pah Exp $
  * 
  * Created on 12 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -60,9 +60,8 @@ public class ClusterMStepFull {
         int no_of_data_types = datatype.numRows();
 
         Matrix data_nr = null, data_er = null, data_bin = null, data_mul = null, data_int = null;
-        Matrix gmu_nr = null,gcv_nr[] = null, gcv_nr_d = null, gmu = null, gcv_f[] = new AGDenseMatrix[K], gcv_d = null, S;
-        Vector gcv_c = null;
-        Matrix bp = null, mp = null, ip = null;
+        Vector gcv_c = new DenseVector(no_of_data_types);
+        Matrix   S;
         int ndim_nr = 0, ndim_er = 0,ndim_bin = 0,ndim_mul = 0,ndim_int = 0;
 
         int ini = 0, d = 0;
@@ -101,6 +100,7 @@ public class ClusterMStepFull {
                                 ini = ini + ndim_er*ndim_er;
                                 qmu[n][k]=reshape(output.asVector(ini, ini+ndim_er -1), 1, ndim_er).asVector();
                                 ini = ini + ndim_er;
+                                break;
                         }
                     }
                 }            
@@ -128,24 +128,19 @@ public class ClusterMStepFull {
                 d = d+ ndim_error;
             }
         }
-       Matrix a = null,b = null,v = null;
+       Matrix a = null,b = null, v = null;
         if( ndim_er != 0 || ndim_nr != 0){
             a = reshape(ab.asVector(0, ndata*K - 1), ndata, K);
-            b = reshape(ab.asVector(ndata*K+1), ndata, K);
+            b = reshape(ab.asVector(ndata*K), ndata, K);
             v = reshape(latent, K, 1);
         }
+        Matrix gmu_nr = null,gcv_nr[] = new AGDenseMatrix[K], gcv_nr_d = null, gmu = null, gcv_f[] = new AGDenseMatrix[K], gcv_d = new AGDenseMatrix(K, ndim_er);
 
-        // maximize for the parameters gmu, gcv for the data with measurement errors
-        int ndim = data.numColumns();
-        //-----------
-        //   gmu
-        //-----------
-        int n0 = 0;
-        AGDenseMatrix mu = null ,cv = null, lmu = null;
-        double eps= 2.2204e-16 ; //FIXME what is eps
+        AGDenseMatrix mu = new AGDenseMatrix(0,0) ,cv = new AGDenseMatrix(0,0), lmu = new AGDenseMatrix(0,0);
+        gmu = new AGDenseMatrix(K, ndim_er);
         if (ndim_er != 0 ){ 
             for (int k = 0; k <K; k++){
-                gmu.setColumn(k, zeros(1, ndim_er));
+                gmu.setRow(k, zeros(1, ndim_er));
                 Vector tmp = gmu.sliceRow(k);
                 for (int n = 0; n <ndata; n++){
                     
@@ -153,7 +148,7 @@ public class ClusterMStepFull {
                     
                 }
                 tmp.scale(1.0/sum( divide(times(q.sliceCol(k, 1), a.sliceCol(k, 1)), b.sliceCol(k, 1)).asVector()));
-                gmu.setColumn(k, tmp);
+                gmu.setRow(k, tmp);
                 
             }
             
@@ -207,13 +202,14 @@ public class ClusterMStepFull {
             //-----------
             //   gmu
             //-----------
+            gmu_nr = new AGDenseMatrix(K,ndim_nr);
             for (int k = 0; k <K; k++){
                 Vector tmp = zeros(1, ndim_nr).asVector();
                 for (int n = 0; n <ndata; n++){
                     tmp.add(q.get(n,k)*a.get(n,k)/b.get(n,k), data_nr.sliceRow(n));
                 }
                 tmp.scale(1.0/sum( divide(times(q.sliceCol(k, 1), a.sliceCol(k, 1)), b.sliceCol(k, 1)).asVector()));
-                gmu_nr.setColumn(k,tmp); 
+                gmu_nr.setRow(k,tmp); 
             }
             mu.append(gmu_nr.asVector());
             //-----------
@@ -246,7 +242,7 @@ public class ClusterMStepFull {
                     case common:
                         double tmpt = 0.0;
                         for (int n = 0; n <ndata; n++){
-                            Vector tmp = sub(data_nr.sliceRow(n), gmu.sliceRow(k));
+                            Vector tmp = sub(data_nr.sliceRow(n), gmu_nr.sliceRow(k));
                             tmpt=tmpt+q.get(n,k)*tmp.dot(tmp);
                         }
                         
@@ -260,7 +256,9 @@ public class ClusterMStepFull {
         // the parameters for the binary data
         //--------------------------------------------------------------------------
         if (ndim_bin != 0){
+            
             int  bin_dim = data_bin.numColumns();
+            Matrix bp = new AGDenseMatrix(K,bin_dim);
             ndata = data_bin.numRows();
             for (int k = 0; k <K; k++){
                 for (int j = 0; j <bin_dim; j++){
@@ -273,6 +271,7 @@ public class ClusterMStepFull {
         if (ndim_mul != 0){
             int dim_mul = data_mul.numColumns();
             ndata = data_mul.numRows();
+            Matrix mp = new AGDenseMatrix(K,dim_mul);
             for (int k = 0; k <K; k++){
                 for (int i = 0; i <dim_mul; i++){
                     mp.set(k,i, sum(times(q.sliceCol(k, 1),data_mul.sliceCol(i, 1)).asVector()));
@@ -284,6 +283,7 @@ public class ClusterMStepFull {
 
         if (ndim_int != 0){
             int dim_int = data_int.numColumns();
+            Matrix  ip = new AGDenseMatrix(K, dim_int);
             ndata = data_int.numRows();
             for (int k = 0; k <K; k++){
                 for (int i = 0; i <dim_int; i++){
@@ -328,6 +328,9 @@ public class ClusterMStepFull {
 
 /*
  * $Log: ClusterMStepFull.java,v $
+ * Revision 1.2  2009/09/08 19:23:30  pah
+ * got rid of npe and array bound problems....
+ *
  * Revision 1.1  2009/09/07 16:06:11  pah
  * initial transcription of the core
  *

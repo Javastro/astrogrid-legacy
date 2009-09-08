@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterEStepFull.java,v 1.1 2009/09/07 16:06:11 pah Exp $
+ * $Id: ClusterEStepFull.java,v 1.2 2009/09/08 19:23:30 pah Exp $
  * 
  * Created on 11 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -70,13 +70,13 @@ public class ClusterEStepFull {
     Vector  gcv_nr_c= null, gcv_c = null;
     Matrix bp = null, mp = null, ip = null;
     AGDenseMatrix output = new AGDenseMatrix(12*K*ndata,1), C = new AGDenseMatrix(ndata, K);
-    int end=0 ; //FIXME
+   
     int ndim_nr = 0, ndim_er = 0,ndim_bin=0,ndim_mul = 0,ndim_int = 0;
     for (int i = 0; i < no_of_data_types; i++){
         if (datatype.get(i,0) == 1){     // continuous data without errors
             ndim_nr = (int) datatype.get(i,1);
             data_nr = data.sliceCol(d,ndim_nr );
-            gmu_nr = reshape(mu.asVector(nm+1,nm+K*ndim_nr), K, ndim_nr);
+            gmu_nr = reshape(mu.asVector(nm,nm+K*ndim_nr-1), K, ndim_nr);
             nm = nm + K*ndim_nr;
             switch (cv_type){
                 case free:
@@ -91,7 +91,7 @@ public class ClusterEStepFull {
                     n0 = n0 + K*ndim_nr;
                     break;
                 case common:
-                    gcv_nr_c = cv.asVector(n0,end-1);
+                    gcv_nr_c = cv.asVector(n0);
                     n0 = n0 + K;
                     break;
             }
@@ -116,7 +116,7 @@ public class ClusterEStepFull {
                     n1 = n1 + K*ndim_er;
                     break;
                 case common:
-                    gcv_c = lcv.asVector(n1,end-1);
+                    gcv_c = lcv.asVector(n1);
                 break;
             }
             d = d + ndim_er;
@@ -158,7 +158,7 @@ public class ClusterEStepFull {
     Vector v = null;
     if (ndim_er != 0 || ndim_nr != 0){
         a = reshape(ab.asVector(0,ndata*K-1), ndata, K);
-        b = reshape(ab.asVector(ndata*K,end -1), ndata, K);
+        b = reshape(ab.asVector(ndata*K), ndata, K);
         v = reshape(latent, K, 1).asVector();
     }
 
@@ -208,7 +208,7 @@ public class ClusterEStepFull {
     //                     qcv[n][k] = diag(S.sliceRow(n))*inv(tcv/
     //                         epu.get(n,k)+diag(S.sliceRow(n)))*tcv/epu.get(n,k);
                         qmu[n][k]=add(multBt(gmu.sliceRowM(k),mult(diag(S.sliceRow(n)),inv(add(tcv ,diag(S.sliceRow(n))))))
-                               ,multBt(data_er.sliceRowM(n),mult(tcv,inv(add(tcv,diag(S.sliceRow(n)))))));
+                                ,mult(multBt(data_er.sliceRowM(n),tcv),inv(add(tcv,diag(S.sliceRow(n))))));
                         outpos = output.insert( qcv[n][k], outpos);
                         outpos = output.insert(qmu[n][k], outpos);
                         break;
@@ -359,24 +359,25 @@ public class ClusterEStepFull {
                         aux4.set(n,k, ndim_er/2*log(2*Math.PI)+log(det(qcv[n][k]))/2+ndim_er/2);
                         break;
                     case common:
-                        aux1.set(n,k, -ndim_er/2*log(2*Math.PI)-log(det(diag(S.sliceRow(n))))/2-
+                        aux1.set(n,k, -ndim_er/2.0*log(2*Math.PI)-log(det(diag(S.sliceRow(n))))/2.0-
                             (multABAT(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))).asScalar() - 
-                            2*multBt(multAt(qmu[n][k],inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
+                            2*multBt(mult(qmu[n][k],inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
                             trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k])) 
-                            + multATBA(qmu[n][k],inv(diag(S.sliceRow(n)))).asScalar()
-                             )/2);
+                            + multABAT(qmu[n][k],inv(diag(S.sliceRow(n)))).asScalar()
+                             )/2.0);
                         double covkd = gcv_c.get(k);
-                        aux2.set(n,k, -ndim_er/2*log(2*Math.PI)-ndim_er*log(covkd)/2 +
-                            ndim_er/2*(psi(a.get(n,k))-log(b.get(n,k)))-
+                        aux2.set(n,k, -ndim_er/2.0*log(2*Math.PI)-ndim_er*log(covkd)/2.0 +
+                            ndim_er/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-
                             0.5*a.get(n,k)/b.get(n,k)*C.get(n,k));
                         // -E_q[ LOG q(W|K) ]
-                        aux4.set(n,k, ndim_er/2*log(2*Math.PI)+log(det(qcv[n][k]))/2+ndim_er/2);
+                        aux4.set(n,k, ndim_er/2.0*log(2*Math.PI)+log(det(qcv[n][k]))/2.0+ndim_er/2.0);
+                        break;
                     default:
                         throw new IllegalArgumentException( "Unknown noise/covariance model");
                 }
                 // E_q [LOG(P(U|K))]
-                aux3.set(n,k, v.get(k)/2*log(v.get(k)/2)+(v.get(k)/2-1)*(psi(a.get(n,k))-log(b.get(n,k)))
-                    -v.get(k)/2*a.get(n,k)/b.get(n,k)-log(gamma(v.get(k)/2)));
+                aux3.set(n,k, v.get(k)/2.0*log(v.get(k)/2.0)+(v.get(k)/2.0-1)*(psi(a.get(n,k))-log(b.get(n,k)))
+                    -v.get(k)/2.0*a.get(n,k)/b.get(n,k)-log(gamma(v.get(k)/2.0)));
                 // -E_q[ LOG q(U|K) ]
                 aux5.set(n,k, -((a.get(n,k)-1)*psi(a.get(n,k))+log(b.get(n,k))-a.get(n,k)-
                     log(gamma(a.get(n,k)))));
@@ -394,19 +395,19 @@ public class ClusterEStepFull {
                     switch (cv_type){
                         case diagonal:
                             Vector covkd = gcv_nr_d.sliceRow(k);
-                            aux6.set(n,k, -ndim_nr/2*log(2*Math.PI)-sum(log(covkd))/2+
-                                ndim_nr/2*(psi(a.get(n,k))-log(b.get(n,k)))-
+                            aux6.set(n,k, -ndim_nr/2.0*log(2*Math.PI)-sum(log(covkd))/2.0+
+                                ndim_nr/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-
                                 0.5*a.get(n,k)/b.get(n,k)*n3.get(n,k));
                             break;
                         case common:
                             double covkc = gcv_nr_c.get(k);
-                            aux6.set(n,k, -ndim_nr/2*log(2*Math.PI)-ndim_nr*log(covkc)/2+
-                                ndim_nr/2*(psi(a.get(n,k))-log(b.get(n,k)))-
+                            aux6.set(n,k, -ndim_nr/2.0*log(2*Math.PI)-ndim_nr*log(covkc)/2.0+
+                                ndim_nr/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-
                                 0.5*a.get(n,k)/b.get(n,k)*n3.get(n,k));
                             break;
                         case free:
-                            aux6.set(n,k, -ndim_nr/2*log(2*Math.PI)-log(det(
-                                gcv_nr_f[k]))/2+ndim_nr/2*(psi(a.get(n,k))
+                            aux6.set(n,k, -ndim_nr/2.0*log(2*Math.PI)-log(det(
+                                gcv_nr_f[k]))/2.0+ndim_nr/2.0*(psi(a.get(n,k))
                                 -log(b.get(n,k)))-0.5*a.get(n,k)/b.get(n,k)*n3.get(n,k));
                             break;
                         default:
@@ -419,9 +420,9 @@ public class ClusterEStepFull {
                         case common:
     //                         disp 'e-step, ndim_er ~=0, spherical'
                             double covk = gcv_nr_c.get(k);
-                            aux6.set(n,k, log(gamma((v.get(k)+ndim_nr)/2))- 
-                                ndim_nr/2*log(covk)-ndim_nr/2*log(Math.PI*v.get(k)) 
-                                -log(gamma(v.get(k)/2))-(v.get(k) + ndim_nr)/2* 
+                            aux6.set(n,k, log(gamma((v.get(k)+ndim_nr)/2.0))- 
+                                ndim_nr/2.0*log(covk)-ndim_nr/2.0*log(Math.PI*v.get(k)) 
+                                -log(gamma(v.get(k)/2.0))-(v.get(k) + ndim_nr)/2.0* 
                                 log(1+n3.get(n,k)/(covk*v.get(k))));
                             break;
                         case diagonal:
@@ -429,16 +430,16 @@ public class ClusterEStepFull {
                             Vector covkd = gcv_nr_d.sliceRow(k);
                             
                             double dist = sum(divide(pow(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)),2.0).asVector() , covkd));
-                            aux6.set(n,k,  log(gamma((v.get(k)+ndim_nr)/2))-
-                                sum(log(covkd))/2-
-                                ndim_nr/2*log(Math.PI * v.get(k))-log(gamma(v.get(k)/2))-
-                                (v.get(k) + ndim_nr)/2*log(1 + dist/v.get(k)));
+                            aux6.set(n,k,  log(gamma((v.get(k)+ndim_nr)/2.0))-
+                                sum(log(covkd))/2.0-
+                                ndim_nr/2.0*log(Math.PI * v.get(k))-log(gamma(v.get(k)/2.0))-
+                                (v.get(k) + ndim_nr)/2.0*log(1 + dist/v.get(k)));
                             break;
                         case free:
                             Matrix covkf = gcv_nr_f[k];
-                            aux6.set(n,k, log(gamma((v.get(k)+ndim_nr)/2))-log(det(
-                                covkf))/2-ndim_nr/2*log(Math.PI*v.get(k))-log(gamma(v.get(k)/2))-
-                                ((v.get(k)+ndim_nr)/2)*log(1+n3.get(n,k)/v.get(k)));
+                            aux6.set(n,k, log(gamma((v.get(k)+ndim_nr)/2.0))-log(det(
+                                covkf))/2.0-ndim_nr/2.0*log(Math.PI*v.get(k))-log(gamma(v.get(k)/2.0))-
+                                ((v.get(k)+ndim_nr)/2.0)*log(1+n3.get(n,k)/v.get(k)));
                             break;
                     }
                 }
@@ -489,7 +490,7 @@ public class ClusterEStepFull {
 
     Matrix aux = add(add(add(add(add(add(add(add(aux1 , aux2) ,aux3),  aux4), aux5), aux6), aux9), aux10) , aux11);
 
-    AGDenseMatrix q = (AGDenseMatrix) times(mult(ones(ndata, 1),new AGDenseMatrix(p)),exp(aux));
+    AGDenseMatrix q = (AGDenseMatrix) times(multBt(ones(ndata, 1),new AGDenseMatrix(p)),exp(aux));
     Matrix s = new AGDenseMatrix(sum(q, 2));
     //FIXME need Set any zeros to one before dividing 
     // s = s + (s==0);
@@ -510,6 +511,9 @@ public class ClusterEStepFull {
 
 /*
  * $Log: ClusterEStepFull.java,v $
+ * Revision 1.2  2009/09/08 19:23:30  pah
+ * got rid of npe and array bound problems....
+ *
  * Revision 1.1  2009/09/07 16:06:11  pah
  * initial transcription of the core
  *
