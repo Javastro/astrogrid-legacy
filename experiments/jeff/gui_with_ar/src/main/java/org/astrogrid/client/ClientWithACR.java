@@ -1,5 +1,8 @@
 package org.astrogrid.client;
 
+import java.io.File;
+import java.util.Properties;
+
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
@@ -24,13 +27,28 @@ public class ClientWithACR {
 	
 	//
 	// Produce an altered Finder class that does not look for an external AR
-	Finder f = new Finder() ;
+	Finder finder ;
 	ACR ar ; 
 	Applications apps ;
 	RemoteProcessManager rpm ;
 	Shutdown sd ;
 	
 	public static void main( String argv[] ) {	
+		
+//		-propertyFile=/home/jl99/workspace2/gui_with_ar/src/test/resources/desktop-settings.properties
+			
+		String pathToPropertiesFile = null ;
+		
+		for( int i=0; i<argv.length; i++ ) {
+			if( argv[i].startsWith( "-propertyFile=" ) ) {
+				pathToPropertiesFile =  argv[i].substring( 14 ) ;
+				File file = new File ( pathToPropertiesFile ) ;
+				if( !file.exists() ) {
+					System.out.println( "Properties' file not found: " + pathToPropertiesFile ) ;
+					System.exit( 1 ) ;
+				}
+			}
+		}
 		
 		final ClientWithACR client = new ClientWithACR() ;	
 		//
@@ -44,7 +62,7 @@ public class ClientWithACR {
 			//
 			// This retrieves the ACR within the same JVM provided
 			// the vodesktop jar is on the classpath.
-			client.retrieveACR() ;
+			client.retrieveACR( pathToPropertiesFile ) ;
 			//
 			// Sets up requisite state for the GUI to use the ACR...
 			sqb.setACR( client.ar, client.apps, client.rpm, client.sd ) ;
@@ -62,15 +80,20 @@ public class ClientWithACR {
 	
 	public ClientWithACR() {}
 	
-	public void retrieveACR() throws ACRException {	
+	public void retrieveACR( final String pathToPropertiesFile ) throws ACRException {	
 		try {
+			finder = new Finder( pathToPropertiesFile ) ;
 			//
 			// Retrieve the ACR...
 			// I think this needs to be done on the main thread.
 			// (But it might be worth experimentation).
 			System.setProperty("java.awt.headless","true");
-			ar = f.find() ;
-
+			ar = finder.find() ;
+			
+			System.out.println( "=Properties start===========================" ) ;
+			Properties props = System.getProperties() ;
+			props.list( System.out ) ;
+			System.out.println( "=Properties end=============================" ) ;
 			//
 			// I suspect these other artifacts could be retrieved on
 			// a background thread...

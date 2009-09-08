@@ -2,6 +2,7 @@ package org.astrogrid.client;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,11 +14,14 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -57,9 +61,17 @@ public class SimpleQueryBuilder extends JFrame {
 	
 	//
 	// GUI constructs ...
-	private JTextArea workArea ;
+	private JTextArea queryArea, outputArea ;
 	private JComboBox collectionCB ;
 	private JButton submitButton, resetButton ;
+	
+	//
+	// Output required
+	// 0 = VOTABLE
+	// 1 = COMMA-SEPARATED
+	// 2 = HTML
+	// NOTE: VOTABLE-BINARY not utilized in this example
+	private int outputType = 0 ;
 
 	//
 	// Services used to populate the combo box
@@ -103,7 +115,7 @@ public class SimpleQueryBuilder extends JFrame {
 		this.sd = sd ;
 		SwingUtilities.invokeLater( new Runnable() {
 			public void run(){
-				workArea.setText( EXAMPLE_2DF_QUERY  ) ;
+				queryArea.setText( EXAMPLE_2DF_QUERY  ) ;
 			}
 		} ) ;
 	}
@@ -114,7 +126,7 @@ public class SimpleQueryBuilder extends JFrame {
 	public synchronized void setException( final ACRException acrException ) {
 		SwingUtilities.invokeLater( new Runnable() {
 			public void run(){
-				workArea.setText( acrException.getLocalizedMessage() ) ;
+				outputArea.setText( acrException.getLocalizedMessage() ) ;
 			}
 		} ) ;		
 	} 
@@ -144,6 +156,31 @@ public class SimpleQueryBuilder extends JFrame {
 		for( int i=0; i< SERVER_IVORNS.length; i++ ) {
 			collectionCB.addItem( SERVER_IVORNS[i] ) ;
 		}
+		
+		//
+		// This is very, very crude but convenient for the examples...
+		collectionCB.addActionListener( new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				String ivorn = (String)collectionCB.getSelectedItem() ;
+				if( ivorn.indexOf( "2dF" ) > 0 ) {
+					queryArea.setText( EXAMPLE_2DF_QUERY ) ;
+				}
+				else if( ivorn.indexOf( "hipparcos" ) > 0 ) {
+					queryArea.setText( EXAMPLE_HIPPARCOS_QUERY ) ;
+				}
+				else if( ivorn.indexOf( "sdssdr3" ) > 0 ) {
+					queryArea.setText( EXAMPLE_SDSS_QUERY ) ;
+				}
+				else if( ivorn.indexOf( "sdssdr5" ) > 0 ) {
+					queryArea.setText( EXAMPLE_SDSS_QUERY ) ;
+				} 
+			}
+			
+		}) ;
+		
+		
+		
 		collectionCB.setPreferredSize( new Dimension( 600, 20 ) ) ;
 		c.gridx = 0;
 		c.weightx = 1.0 ;
@@ -151,24 +188,76 @@ public class SimpleQueryBuilder extends JFrame {
 		c.fill = GridBagConstraints.HORIZONTAL ;
 		panel.add( collectionCB, c ) ;
 		//
-		// The work area.
-		// Message feedback, query text, and results are
+		// The query area.
+		queryArea = new JTextArea() ;
+		queryArea.setText( "" ) ;
+		queryArea.setEditable( false ) ;
+		JScrollPane waScroll = new JScrollPane( queryArea ) ;
+		waScroll.setPreferredSize( new Dimension( 600, 150) ) ;
+		
+		//
+		// The feedback area.
+		// Message feedback and results are
 		// all displayed here.
-		// Suitable only for a test harness!
-		workArea = new JTextArea() ;
-		workArea.setText( "Initializing, please wait." ) ;
-		JScrollPane scroll = new JScrollPane( workArea ) ;
-		scroll.setPreferredSize( new Dimension( 600, 500) ) ;
+		outputArea = new JTextArea() ;
+		outputArea.setText( "Initializing, please wait." ) ;
+		outputArea.setEditable( false ) ;
+		JScrollPane fbScroll = new JScrollPane( outputArea ) ;
+		fbScroll.setPreferredSize( new Dimension( 600, 350) ) ;
+		
+		JSplitPane sp = new JSplitPane( JSplitPane.VERTICAL_SPLIT, waScroll, fbScroll ) ;
+		sp.setDividerSize( 8 ) ;
+		sp.setDividerLocation( 100 ) ;
+		sp.setResizeWeight( 0.5 ) ;
+		sp.setOneTouchExpandable( true ) ;
 		c.gridx = 0 ;
 		c.gridy = 1 ;
 		c.weightx = 1.0 ;
 		c.weighty = 1.0 ;
 		c.gridwidth = 6 ;
-		c.gridheight = 6 ;
+		c.gridheight = 7 ;
 		c.fill = GridBagConstraints.BOTH ;
-		panel.add( scroll, c ) ;
-		
+		panel.add( sp, c ) ;
+						
 		c.anchor = GridBagConstraints.SOUTH ;
+		
+		//
+		// Type of output...
+		JPanel radioPanel = new JPanel() ;
+		radioPanel.setLayout( new FlowLayout( FlowLayout.CENTER, 5, 0 ) ) ;
+		ButtonGroup bGroup = new ButtonGroup() ;
+		JRadioButton votButton = new JRadioButton( "VOTable" ) ;
+		votButton.setSelected( true ) ;
+		bGroup.add( votButton ) ;
+		JRadioButton csvButton = new JRadioButton( "Comma-Separated" ) ;
+		bGroup.add( csvButton ) ;
+		JRadioButton htmlButton = new JRadioButton( "HTML" ) ;
+		bGroup.add( htmlButton ) ;
+		radioPanel.add( votButton ) ;
+		radioPanel.add( csvButton ) ;
+		radioPanel.add( htmlButton ) ;
+		c.gridx = 4 ;
+		c.gridy = 10 ;
+		c.gridwidth = 1 ;
+		c.gridheight = 1 ;
+		c.weighty = 0.0 ;
+		panel.add( radioPanel, c ) ;
+		
+		votButton.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				outputType = 0 ;
+			}			
+		}) ;
+		csvButton.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				outputType = 1 ;
+			}			
+		}) ;
+		htmlButton.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				outputType = 2 ;
+			}			
+		}) ;
 		
 		//
 		// The submit button has an action listener
@@ -177,7 +266,7 @@ public class SimpleQueryBuilder extends JFrame {
 		submitButton.addActionListener( new  SubmitActionListener() ) ;
 		submitButton.setEnabled( false ) ;
 		c.gridx = 0 ;
-		c.gridy = 7 ;
+		c.gridy = 11 ;
 		c.gridwidth = 1 ;
 		c.gridheight = 1 ;
 		c.weighty = 0.0 ;
@@ -225,6 +314,7 @@ public class SimpleQueryBuilder extends JFrame {
 	//
 	// Used by the client to ready the GUI for work...
 	public void setReady() {
+		outputArea.setText( "Initiliazed! You can now submit a query." ) ; 
 		submitButton.setEnabled( true ) ;
 	}
 	
@@ -238,13 +328,14 @@ public class SimpleQueryBuilder extends JFrame {
 			//
 			// This is a simple client. Allow only one job at a time ...
 			submitButton.setEnabled( false ) ;
-			workArea.setEditable( false ) ;
+			collectionCB.setEnabled( false ) ;
+			queryArea.setEditable( false ) ;
 			//
 			// Retrieve the ADQL query string from the work area ...
-			final String adqlString = workArea.getText() ;
+			final String adqlString = queryArea.getText() ;
 			//
 			// Then give the user some feed back ...
-			workArea.setText( "Submitting..." ) ;	
+			outputArea.setText( "Submitting..." ) ;	
 			//
 			// OK, this we presume is the data collection we wish to query ...
 			final String serverIvorn = (String)collectionCB.getSelectedItem() ;
@@ -271,6 +362,19 @@ public class SimpleQueryBuilder extends JFrame {
 						// and marshall it back into the document ...
 						ParameterValue[] pvs = tool.getInput().getParameter() ;
 						pvs[0].setValue( adqlString ) ;
+						//
+						// Try different output formats ...
+						// "VOTABLE","VOTABLE-BINARY","COMMA-SEPARATED","HTML"
+						if( outputType == 0 ) {
+							pvs[1].setValue( "VOTABLE" ) ;
+						}
+						else if( outputType == 1 ) {
+							pvs[1].setValue( "COMMA-SEPARATED" ) ;
+						}
+						else if( outputType == 2 ) {
+							pvs[1].setValue( "HTML" ) ;
+						}
+												
 						doc = doc.getImplementation().createDocument( null, null, null ) ;
 						Marshaller.marshal(tool,doc) ;
 						// XMLUtils.PrettyDocumentToStream(doc,System.out);
@@ -280,7 +384,7 @@ public class SimpleQueryBuilder extends JFrame {
 						URI jobURI = rpm.submitTo( doc, new URI(serverIvorn) ) ;
 						SwingUtilities.invokeLater( new Runnable() {
 							public void run() {
-								workArea.setText( "Submitted successfully!" ) ;
+								outputArea.setText( "Submitted successfully!" ) ;
 							}
 						}) ;
 						//
@@ -292,7 +396,7 @@ public class SimpleQueryBuilder extends JFrame {
 						// A problem occurred. Display message in the work area ...
 						SwingUtilities.invokeLater( new Runnable() {
 							public void run() {
-								workArea.setText( "Problem occurred: " + ex.getLocalizedMessage() ) ;
+								outputArea.setText( "Problem occurred: " + ex.getLocalizedMessage() ) ;
 							}
 						}) ;				
 					}
@@ -308,9 +412,11 @@ public class SimpleQueryBuilder extends JFrame {
 	class ResetActionListener implements ActionListener {
 
 		public void actionPerformed( ActionEvent e ) {
-			workArea.setText( "Type query here..." ) ;	
+			queryArea.setText( "Type query here..." ) ;	
 			submitButton.setEnabled( true ) ;
-			workArea.setEditable( true ) ;
+			collectionCB.setEnabled( true ) ;
+			queryArea.setEditable( true ) ;
+			outputArea.setText( "" ) ;
 		}
 		
 	}
@@ -345,7 +451,7 @@ public class SimpleQueryBuilder extends JFrame {
 		public void messageReceived( URI arg0, final ExecutionMessage message ) {
 			SwingUtilities.invokeLater( new Runnable() {
 				public void run() {
-					workArea.setText( workArea.getText() + "\n" + message.getContent() ) ;
+					outputArea.setText( outputArea.getText() + "\n" + message.getContent() ) ;
 				}
 			}) ;
 		}
@@ -358,7 +464,7 @@ public class SimpleQueryBuilder extends JFrame {
 				public void run() {
 					Iterator it = resultsMap.values().iterator() ;
 					if( it.hasNext() ) {
-						workArea.setText( it.next().toString() ) ;
+						outputArea.setText( it.next().toString() ) ;
 					}				
 				}
 			}) ;		
@@ -378,7 +484,7 @@ public class SimpleQueryBuilder extends JFrame {
 				) {
 					SwingUtilities.invokeLater( new Runnable() {
 						public void run() {
-							workArea.setText( status ) ;
+							outputArea.setText( status ) ;
 							deleteJob( jobURI ) ;			
 						}
 					}) ;
@@ -395,7 +501,7 @@ public class SimpleQueryBuilder extends JFrame {
 					final String fResults = results;
 					SwingUtilities.invokeLater( new Runnable() {
 						public void run() {
-							workArea.setText( fResults ) ;
+							outputArea.setText( fResults ) ;
 							deleteJob( jobURI ) ;
 						}
 					}) ;
@@ -404,7 +510,7 @@ public class SimpleQueryBuilder extends JFrame {
 			catch( final Exception ex ) {
 				SwingUtilities.invokeLater( new Runnable() {				
 					public void run() {
-						workArea.setText( ex.getLocalizedMessage() ) ;
+						outputArea.setText( ex.getLocalizedMessage() ) ;
 					}
 				} ) ;
 			} 

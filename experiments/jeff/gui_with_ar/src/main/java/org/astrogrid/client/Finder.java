@@ -3,6 +3,7 @@ package org.astrogrid.client;
 import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Enumeration;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
@@ -25,7 +28,8 @@ import org.astrogrid.acr.SecurityException;
 
 /**
  * This is an amended version of org.astrogrid.acr.Finder
- * It does not attempt to connect to an externally running ACR
+ * It does not attempt to connect to an externally running AR,
+ * but creates an internal instance.
  * 
  * 
  * @author jl99
@@ -68,22 +72,29 @@ public class Finder {
      * @exclude
      */
     protected static final Log logger = LogFactory.getLog(Finder.class);
+    
+    private String pathToPropertiesFile ; 
 
+    /** Construct a new Finder
+     * @param pathToPropertiesFile For setting system properties prior to starting the AR
+     */
+    public Finder( String pathToPropertiesFile ) {
+        super();
+        this.pathToPropertiesFile = pathToPropertiesFile ;
+    }
+    
     /** Construct a new Finder
      * 
      */
     public Finder() {
-        super();
+    	this( null ) ;
     }
 
     /** Find or create an Astro Runtime (AR) instance.
-     * @return an interface to the Astro Runtime - depending on how connected will either 
-     * be a direct instance or a remote stub - although this makes no difference to the 
-     * consumer.
+     * @return an interface to the Astro Runtime - in this version of Finder, a direct instance.
      * @note The instance returned is a singleton - i.e. all subsequent calls to  this method
      * will return the same object.
      * @throws ACRException if all options fail
-     * @equivalence findSession(true,false)
      * */
     public ACR find() throws ACRException {
         if (acr == null) {
@@ -101,9 +112,8 @@ public class Finder {
     }
 
     /**
-     * @param userWarning If not null, prompt the user <b>before</b> attempting to start an external ACR.
-     * @param tryToStartIfNotRunning if false, don't start an external ACR if there isn't one. 
-     * @throws NoAvailableACRException
+     * This version of Finder only attempts to create an internal AR (ie: on the classpath). 
+     * @throws ACRException
      */
     private ACR createACR() throws ACRException {
     	logger.info("Searching for AR");
@@ -112,7 +122,20 @@ public class Finder {
     	// try starting internal service
     	if (isArOnClasspath()) {
     		try {
-
+   			
+    			//
+    			// If a properties file was present
+    			// Set up the enclosed properties ...
+    			if( pathToPropertiesFile != null ) {
+    				Properties props = new Properties() ;
+        			props.load( new FileInputStream( new File( pathToPropertiesFile ) ) ) ;
+        			Enumeration<Object> keys = props.keys() ;
+        			while( keys.hasMoreElements() ) {
+        				String key = (String)keys.nextElement() ;
+        				System.setProperty( key, props.getProperty(key) ) ;
+        			}
+    			}
+    			    			
     			result = createInternal();
     			if (result != null) {
     				return result;
@@ -123,7 +146,7 @@ public class Finder {
     		}
     	}            
     	// fallen through everything.
-    	throw new ACRException("Failed to find or create an AR to connect to");
+    	throw new ACRException("Failed to start internal AR on the classpath");
     }
 
 
