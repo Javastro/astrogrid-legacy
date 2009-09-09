@@ -18,7 +18,7 @@
   <script type="text/javascript" src="/misc/generated-toc.js"></script>
 
   <!--<link href="http://www.ivoa.net/misc/ivoa_a.css" rel="stylesheet" type="text/css" />-->
-  <link rel="stylesheet" href="http://www.ivoa.net/misc/ivoa_wd.css" type="text/css" />
+  <link rel="stylesheet" href="http://www.ivoa.net/misc/ivoa_pr.css" type="text/css" />
 
   <style type="text/css">
     /*
@@ -52,7 +52,7 @@ div.note, div.example {
  <td style="padding: 0cm;">
  <p class="MsoNormal">
 <span style="color: black;">
-<img src="/pub/images/IVOA_wb_300.jpg" height="169" width="300"></span></p>
+<img src="http://www.ivoa.net/pub/images/IVOA_wb_300.jpg" height="169" width="300"></span></p>
 </td>
  <td style="padding: 0cm;">
  <p><b><i><span style="font-size: 14pt; color: rgb(0, 90, 156);">&nbsp;I</span></i></b><i><span style="font-size: 14pt; color: rgb(0, 90, 156);">nternational</span></i></p>
@@ -67,12 +67,12 @@ div.note, div.example {
 <!------------------------------------------------------------------------->
 
 <h1>Simple Image Access Specification<br/>
-Version 1.1</h1>
+Version 1.0</h1>
 <h2>IVOA Proposed Recommendation 2009-05-21 </h2>
 
 <dl>
     <dt>This version:</dt>
-         <dd><a href="http://www.ivoa.net/Documents/PR/DAL/PR-SIA-1.1-20090521.html">http://www.ivoa.net/Documents/PR/DAL/PR-SIA-1.1-20090521.html</a></dd>    
+         <dd><a href="http://www.ivoa.net/Documents/PR/DAL/PR-SIA-1.0-20090521.html">http://www.ivoa.net/Documents/PR/DAL/PR-SIA-1.0-20090521.html</a></dd>    
      <dt>Latest version:</dt>
         <dd><a href="http://www.ivoa.net/Documents/latest/SIA.html">http://www.ivoa.net/Documents/latest/SIA.html</a></dd>
     <dt>Previous versions:</dt>
@@ -265,7 +265,7 @@ service be maintained with the following characteristics:
  
 </li>
 <li> 
-    <p>Finally the image service <strong>must</strong> be <strong>registered</strong> by
+    <p>Finally the image service <strong>should</strong> be <strong>registered</strong> by
 	providing the information defined in <a href="#regmd">section
 	6</a> below.     </p>
         <p>Registration allows clients to use a central registry service
@@ -483,7 +483,7 @@ defaults provided by the region of interest.</p>
 
         <p>Note that when it contains extra GET arguments, the base URL ends in 
           an ampersand, <b>&amp;</b>; if there are no extra arguments, then it 
-          ends in a question mark, <b>?</b>.	In addition if there are any extra arguments in the base URL, then they must not by one of the standard service arguments defined below in this section.</p>
+          ends in a question mark, <b>?</b>.	In addition if there are any extra arguments in the base URL, then they must not be one of the standard service arguments defined below in this section.</p>
         <p>Every query to a given image query service uses the same
 	base URL, and this is the URL which is registered as the &quot;accessURL&quot; for the service (see the &quot;<a href="#regmd">Registering a Compliant Service</a>&quot; section below).</p>
 
@@ -828,7 +828,7 @@ defaults provided by the region of interest.</p>
 
 The output returned by an <strong>Image Query</strong> is a <a
 href="http://us-vo.org/VOTable/">VOTable</a>, an XML table format,
-returned with a MIME-type of <tt>text/xml;content=x-votable</tt>. The table lists all
+returned with a MIME-type of <tt>application/x-votable+xml</tt>. The table lists all
 the images available to the client that match the query constraints.
 The following requirements are placed on the contents of the table when
 the query successfully returns a list of images:
