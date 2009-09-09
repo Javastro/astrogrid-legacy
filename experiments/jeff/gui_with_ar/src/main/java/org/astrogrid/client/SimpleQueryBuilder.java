@@ -85,9 +85,9 @@ public class SimpleQueryBuilder extends JFrame {
 	//
 	// Examples of ADQL queries.
 	// One of these is used to pre-populate the work area.
-	// I haven't made the others available through the gui yet,
-	// but if teamed up with the correct entry from the combo-box,
-	// these do work...
+	// Now co-ordinated with the combo box:
+	// if a choice is selected from the combo box, then a suitable
+	// example is displayed in the query area.
 	private static final String EXAMPLE_SDSS_QUERY = 
 		"Select Top 100 a.ra, a.dec, a.psfMag_g, a.psfMag_r \n" +
 		"From PhotoTag as a \n" +
@@ -178,9 +178,7 @@ public class SimpleQueryBuilder extends JFrame {
 			}
 			
 		}) ;
-		
-		
-		
+				
 		collectionCB.setPreferredSize( new Dimension( 600, 20 ) ) ;
 		c.gridx = 0;
 		c.weightx = 1.0 ;

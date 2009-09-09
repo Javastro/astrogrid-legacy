@@ -1,6 +1,5 @@
 package org.astrogrid.client;
 
-import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,22 +8,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import javax.swing.JOptionPane;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.builtin.SessionManager;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.acr.system.ApiHelp;
-import org.astrogrid.acr.*;
-import org.astrogrid.acr.SecurityException;
 
 /**
  * This is an amended version of org.astrogrid.acr.Finder

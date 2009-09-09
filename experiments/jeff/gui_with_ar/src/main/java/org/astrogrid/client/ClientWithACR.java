@@ -1,8 +1,6 @@
 package org.astrogrid.client;
 
 import java.io.File;
-import java.util.Properties;
-
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
@@ -19,10 +17,9 @@ import org.astrogrid.acr.builtin.Shutdown;
 // Tested under jdk 1.5.0_15
 //
 // Problems:
-// (1) Do not have the vodesktop running before this is started.
-// (2) No way of serializing large results set at the moment,
+// (1) No way of serializing large results set at the moment,
 //     so all queries should limit output (Select top 100 or so).
-// (3) At present only supports ADQL v1 syntax.
+// (2) At present only supports ADQL v1 syntax.
 public class ClientWithACR {
 	
 	//
@@ -54,7 +51,8 @@ public class ClientWithACR {
 		//
 		// This brings up the GUI, which is a simple panel 
 		// consisting of a combo box of hard-coded DSA services, 
-		// a text area for queries/messages/results,
+		// a text area for queries, a text area for messages and results,
+		// some radio buttons to select output format, 
 		// a submit button and a reset button.
 		// The submit button is initially not enabled.
 		final SimpleQueryBuilder sqb = new SimpleQueryBuilder() ;
@@ -86,14 +84,9 @@ public class ClientWithACR {
 			//
 			// Retrieve the ACR...
 			// I think this needs to be done on the main thread.
-			// (But it might be worth experimentation).
+			// (But it might be worth experimentation). 
 			System.setProperty("java.awt.headless","true");
 			ar = finder.find() ;
-			
-			System.out.println( "=Properties start===========================" ) ;
-			Properties props = System.getProperties() ;
-			props.list( System.out ) ;
-			System.out.println( "=Properties end=============================" ) ;
 			//
 			// I suspect these other artifacts could be retrieved on
 			// a background thread...

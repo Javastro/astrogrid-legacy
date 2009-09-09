@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.astrogrid</groupId>
-	<artifactId>gui_with_ar</artifactId>
+	<artifactId>gui-with-ar</artifactId>
 	<packaging>jar</packaging>
 	<name>Example GUI with AR</name>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<description>Example GUI with AR started in the same JVM. A
 		properties file can be passed for setting system properties.
 	</description>
@@ -19,6 +19,18 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<configuration>
+						<archive>
+							<manifest>
+								<mainClass>org.astrogrid.client.ClientWithACR</mainClass>
+								<addClasspath>true</addClasspath>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
