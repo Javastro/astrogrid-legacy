@@ -4,13 +4,26 @@
 
 package org.astrogrid.clustertool;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import no.uib.cipr.matrix.AGDenseMatrix;
+import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
+
+import uk.ac.starlink.table.RowSequence;
+import uk.ac.starlink.table.StarTable;
 
 /**
  * The main class of the application.
  */
 public class ClustertoolApp extends SingleFrameApplication {
+
+    private File inputDataFile;
+    private AGDenseMatrix indata;
 
     /**
      * At startup create and show the main frame of the application.
@@ -43,4 +56,34 @@ public class ClustertoolApp extends SingleFrameApplication {
         
         launch(ClustertoolApp.class, args);
     }
+    
+    public AGDenseMatrix loadTable(StarTable table) throws IOException{
+        RowSequence rseq = table.getRowSequence();
+        int ncols = table.getColumnCount();
+        List<double[]> rows = new ArrayList<double[]>();
+        while (rseq.next()) {
+            double array[] = new double[ncols];
+            for (int i = 0; i < ncols; i++) {
+                 Object ob = rseq.getCell(i);
+                 if (ob instanceof Double) {
+                    Double d = (Double) ob;
+                    array[i] = d.doubleValue();
+
+
+                } else if ( ob instanceof Float){
+                    Float f = (Float) ob;
+                    array[i] = f.floatValue();
+                }
+
+                 else {
+                    throw new IOException("can only handle doubles or floats at the moment");
+                }
+                
+            }
+           rows.add(array);
+        }
+        return new AGDenseMatrix((double[][])rows.toArray(new double[][]{{}}));
+        
+    }
+
 }

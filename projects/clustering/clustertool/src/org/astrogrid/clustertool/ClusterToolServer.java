@@ -1,6 +1,6 @@
 
 /*
- * $$Id: ClusterToolServer.java,v 1.1 2009/09/07 16:06:11 pah Exp $$
+ * $$Id: ClusterToolServer.java,v 1.2 2009/09/14 19:09:26 pah Exp $$
  *
  * Created on 28-Aug-2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright Astrogrid. All rights reserved.
@@ -42,11 +42,15 @@ public class ClusterToolServer {
     private static ClusterToolServer instance_;
 
     private static final int BUFSIZ = 16 * 1024;
+    /** logger for this class */
+    private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
+            .getLog(ClusterToolServer.class);
 
     /**
      * Private constructor constructs sole instance.
      */
     private ClusterToolServer() throws IOException {
+        
         utilServer_ = UtilServer.getInstance();
         profile_ = DefaultClientProfile.getProfile();
         HttpServer httpServer = utilServer_.getServer();
@@ -136,11 +140,15 @@ public class ClusterToolServer {
      *
      * @return   instance
      */
-    public static ClusterToolServer getInstance() throws IOException {
+    public static ClusterToolServer getInstance() {
         if ( instance_ == null ) {
             synchronized ( ClusterToolServer.class ) {
                 if ( instance_ == null ) {
-                    instance_ = new ClusterToolServer();
+                    try {
+                        instance_ = new ClusterToolServer();
+                    } catch (IOException e) {
+                      logger.error("cannot create SAMP server", e);
+                    }
                 }
             }
         }

@@ -1,6 +1,6 @@
 
 /*
- * $$Id: ClusterToolSampControl.java,v 1.1 2009/09/07 16:06:11 pah Exp $$
+ * $$Id: ClusterToolSampControl.java,v 1.2 2009/09/14 19:09:26 pah Exp $$
  *
  * Created on 28-Aug-2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright Astrogrid. All rights reserved.
@@ -12,6 +12,9 @@
  */ 
 package org.astrogrid.clustertool;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.Metadata;
@@ -28,25 +31,40 @@ public class ClusterToolSampControl {
 
     private final HubConnector hubConnector_;
     private final ClustertoolView controlWindow_;
+public ClustertoolView getControlWindow_() {
+        return controlWindow_;
+    }
 
-    public ClusterToolSampControl(HubConnector hubConnector_, ClustertoolView controlWindow_) {
+
+
+/** logger for this class */
+private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
+        .getLog(ClusterToolSampControl.class);
+
+    public ClusterToolSampControl(HubConnector hubConnector_, ClustertoolView controlWindow_) throws IOException {
         this.hubConnector_ = hubConnector_;
         this.controlWindow_ = controlWindow_;
 
             Metadata meta = new Metadata();
-        TopcatServer tcServer = TopcatServer.getInstance();
-        URL tcPkgUrl = tcServer.getTopcatPackageUrl();
-        String homepage = "http://www.starlink.ac.uk/topcat/";
-        meta.setName( "clustertool" );
-        meta.setDescriptionText( "Tool for statistical cluster analysis of data" );
-        URL docUrl = new URL( tcPkgUrl, "sun253/index.html" );
-        meta.setDocumentationUrl( tcServer.isFound( docUrl )
-                                  ? docUrl.toString()
-                                  : homepage );
-        URL logoUrl = new URL( tcPkgUrl, "images/tc3.gif" );
-        meta.setIconUrl( tcServer.isFound( logoUrl )
-                             ? logoUrl.toString()
-                             : homepage + "images/tc3.gif" );
+        ClusterToolServer tcServer = ClusterToolServer.getInstance();
+ //       URL tcPkgUrl = tcServer.getTopcatPackageUrl();
+        String homepage;
+        homepage = "http://software.astrogrid.org/clustertool/";
+        try {
+            URL tcPkgUrl = new URL("http://localhost/");
+            meta.setName( "clustertool" );
+            meta.setDescriptionText( "Tool for statistical cluster analysis of data" );
+            URL docUrl = new URL( tcPkgUrl, "sun253/index.html" );
+            meta.setDocumentationUrl( tcServer.isFound( docUrl )
+                                      ? docUrl.toString()
+                                      : homepage );
+            URL logoUrl = new URL( tcPkgUrl, "images/tc3.gif" );
+            meta.setIconUrl( tcServer.isFound( logoUrl )
+                                 ? logoUrl.toString()
+                                 : homepage + "images/tc3.gif" );
+        } catch (MalformedURLException e) {
+           logger.error("problem with identity metadata", e);
+        }
         meta.put( "home.page", homepage );
         meta.put( "author.name", "Paul Harrison" );
         meta.put( "author.affiliation",
