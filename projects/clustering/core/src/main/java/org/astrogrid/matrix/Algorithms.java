@@ -1,5 +1,5 @@
 /*
- * $Id: Algorithms.java,v 1.1 2009/09/07 16:06:12 pah Exp $
+ * $Id: Algorithms.java,v 1.2 2009/09/14 19:08:42 pah Exp $
  * 
  * Created on 8 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -99,7 +99,7 @@ public class Algorithms {
         // Check if centres and posteriors need to be initialised from data
         if (fromData){
           // Do the initialisation
-          int[] perm = randperm(ndata);
+          int[] perm = randperm(ndata-1);
 
           // Assign first ncentres (permuted) data points as centres
           for (int i = 0; i < ncentres; i++) {
@@ -180,7 +180,7 @@ public class Algorithms {
         
         
         Matrix centres= (Matrix) new AGDenseMatrix(nclus, ndim).zero();
-        kmeans(centres, data, 10, 0.001, 0.001, true, true);
+        kmeans(centres, data, 15, 0.001, 0.001, true, true);
         return centres;
         
     }
@@ -329,7 +329,7 @@ public class Algorithms {
         Matrix n2 = new AGDenseMatrix(ndata, K);
          
                 for (int i = 0 ;i<K; i++){
-                    Matrix diffs = sub(x , mult(ones(ndata, 1) , centres.sliceRowM(i)));
+                    AGDenseMatrix diffs = (AGDenseMatrix) sub(x , mult(ones(ndata, 1) , centres.sliceRowM(i)));
                     // Use Cholesky decomposition of covariance matrix to speed computation
                     
                     DenseCholesky c = DenseCholesky.factorize(covars[i].transpose());
@@ -338,7 +338,7 @@ public class Algorithms {
                     for(int j = 0; j < ndata; j++){
                         double sum = 0;
                         for (int k =0 ; k < K; k++){
-                            sum += temp.get(j,k)*temp.get(j,k);
+                            sum += temp.get(k,j)*temp.get(k,j);
                         }
                     n2.set(j,i, sum);
                     }
@@ -365,6 +365,9 @@ public class Algorithms {
 
 /*
  * $Log: Algorithms.java,v $
+ * Revision 1.2  2009/09/14 19:08:42  pah
+ * code runs clustering, but not giving same results as matlab exactly
+ *
  * Revision 1.1  2009/09/07 16:06:12  pah
  * initial transcription of the core
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterMStepFull.java,v 1.2 2009/09/08 19:23:30 pah Exp $
+ * $Id: ClusterMStepFull.java,v 1.3 2009/09/14 19:08:43 pah Exp $
  * 
  * Created on 12 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -55,18 +55,20 @@ public class ClusterMStepFull {
         //    K, output, latent, ab, q, lcv, cv_type)
         //---
         // M-step of the VB method
+        //IMPL note that lcv is cleared before being used, so is not really a parameter...
+        //IMPL latent not changing
         //---
         int ndata = data.numRows();
         int no_of_data_types = datatype.numRows();
 
-        Matrix data_nr = null, data_er = null, data_bin = null, data_mul = null, data_int = null;
+        Matrix data_nr = null, data_bin = null, data_mul = null, data_int = null;
         Vector gcv_c = new DenseVector(no_of_data_types);
         Matrix   S;
         int ndim_nr = 0, ndim_er = 0,ndim_bin = 0,ndim_mul = 0,ndim_int = 0;
 
         int ini = 0, d = 0;
         Matrix qcv[][] = new AGDenseMatrix[ndata][K];//FIXME these are probably not correct
-        Vector qmu[][] = new DenseVector[ndata][K];
+        DenseVector qmu[][] = new DenseVector[ndata][K];
         for(int i = 0; i <no_of_data_types; i++){
             if (datatype.get(i,0) == 1){     // continuous data without errors
                 ndim_nr = (int) datatype.get(i,1);
@@ -74,7 +76,6 @@ public class ClusterMStepFull {
                 d = d + ndim_nr;
             } else if (datatype.get(i,0) == 2){ // continous data with errors
                 ndim_er = (int) datatype.get(i,1);
-                data_er = data.sliceCol(d, ndim_er );
                 for (int n = 0; n <ndata; n++){
                     for (int k = 0; k <K; k++){
                         switch (cv_type) {
@@ -128,15 +129,17 @@ public class ClusterMStepFull {
                 d = d+ ndim_error;
             }
         }
-       Matrix a = null,b = null, v = null;
+       Matrix a = null,b = null;
+       AGDenseMatrix v;
         if( ndim_er != 0 || ndim_nr != 0){
             a = reshape(ab.asVector(0, ndata*K - 1), ndata, K);
             b = reshape(ab.asVector(ndata*K), ndata, K);
             v = reshape(latent, K, 1);
         }
-        Matrix gmu_nr = null,gcv_nr[] = new AGDenseMatrix[K], gcv_nr_d = null, gmu = null, gcv_f[] = new AGDenseMatrix[K], gcv_d = new AGDenseMatrix(K, ndim_er);
+        Matrix gmu_nr = null,gcv_nr[] = new AGDenseMatrix[K], gcv_nr_d = new AGDenseMatrix(K,ndim_nr), gmu = null, gcv_f[] = new AGDenseMatrix[K], gcv_d = new AGDenseMatrix(K, ndim_er);
 
         AGDenseMatrix mu = new AGDenseMatrix(0,0) ,cv = new AGDenseMatrix(0,0), lmu = new AGDenseMatrix(0,0);
+        lcv = new AGDenseMatrix(0,0);
         gmu = new AGDenseMatrix(K, ndim_er);
         if (ndim_er != 0 ){ 
             for (int k = 0; k <K; k++){
@@ -328,6 +331,9 @@ public class ClusterMStepFull {
 
 /*
  * $Log: ClusterMStepFull.java,v $
+ * Revision 1.3  2009/09/14 19:08:43  pah
+ * code runs clustering, but not giving same results as matlab exactly
+ *
  * Revision 1.2  2009/09/08 19:23:30  pah
  * got rid of npe and array bound problems....
  *

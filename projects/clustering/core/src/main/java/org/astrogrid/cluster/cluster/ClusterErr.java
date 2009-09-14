@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterErr.java,v 1.1 2009/09/07 16:06:11 pah Exp $
+ * $Id: ClusterErr.java,v 1.2 2009/09/14 19:08:43 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -111,6 +111,7 @@ public class ClusterErr {
                 case spherical:
                     gcv = max(ini_cov)*ones(1,K);
                     lcv = [lcv; gcv(:)];
+                    break;
             }
             lmu = [lmu; gmu(:)];
         }
@@ -124,18 +125,21 @@ public class ClusterErr {
                         tmp = squeeze(gcv_nr(k,:,:));
                         cv=[cv; tmp(:)];
                     }
+                    break;
                 case diag:
                     gcv_nr = repmat(ini_cov_nr, K, 1);
                     for (int k = 0:k < K; k+){
                         tmp = gcv_nr(k,:);
                         cv = [cv; tmp(:)];
                     }
+                    break;
                 case spherical:
                     gcv_nr = max(ini_cov_nr)*ones(1,K);
                     cv =[cv; gcv_nr(:)];
-            end
+                    break;
+            }
             mu = [mu; gmu_nr(:)];
-        end
+        }
         if (ndim_bin != 0){
             bp = rand(K, ndim_bin);
         //     bp = ones(K, ndim_bin)/2;
@@ -196,6 +200,9 @@ public class ClusterErr {
 
 /*
  * $Log: ClusterErr.java,v $
+ * Revision 1.2  2009/09/14 19:08:43  pah
+ * code runs clustering, but not giving same results as matlab exactly
+ *
  * Revision 1.1  2009/09/07 16:06:11  pah
  * initial transcription of the core
  *

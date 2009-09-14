@@ -1,5 +1,5 @@
 /*
- * $Id: MatrixUtils.java,v 1.1 2009/09/07 16:06:12 pah Exp $
+ * $Id: MatrixUtils.java,v 1.2 2009/09/14 19:08:43 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -340,6 +340,17 @@ public class MatrixUtils {
         
         return (AGDenseMatrix) a.transAmult(b, c);
     }
+    /**
+     * C = A<sup>T</sup>B. Make the vector into horizontal before multiplying.
+     * @param a
+     * @param b
+     * @return
+     */
+    public static AGDenseMatrix multAt(DenseVector v, no.uib.cipr.matrix.Matrix b) {
+        Matrix a = new AGDenseMatrix(v);
+        Matrix c = new AGDenseMatrix(a.numColumns(), b.numColumns());
+        return (AGDenseMatrix) a.transAmult(b, c);
+    }
     
     
     /**
@@ -362,25 +373,27 @@ public class MatrixUtils {
      * @param b
      * @return
      */
-    public static Matrix multATBA(no.uib.cipr.matrix.Matrix a, no.uib.cipr.matrix.Matrix b)
+    public static Matrix multATBA(DenseVector v, no.uib.cipr.matrix.Matrix b)
     {
-        Matrix c = new AGDenseMatrix(a.numColumns(), b.numColumns());
-        a.transAmult(b, c);
-        Matrix d = new AGDenseMatrix(a.numColumns(),a.numColumns());
-        c.mult(a, d);
+        Matrix a = new AGDenseMatrix(new double[][]{v.getData()}); //this transposes the vector to be a row vector
+        Matrix c = new AGDenseMatrix(1, b.numColumns());
+        a.mult(b, c);
+        Matrix d = new AGDenseMatrix(1,1);
+        c.transBmult(a, d);
         return d;
     }
-    public static Matrix mult(Vector a, no.uib.cipr.matrix.Matrix  b){
-        Matrix c = new AGDenseMatrix(a, 1, a.size());
-        Matrix d = new AGDenseMatrix(1,a.size());
+    /**
+     * a*b - treating a as a row vector.
+     * @param a
+     * @param b
+     * @return
+     */
+    public static Matrix mult(DenseVector a, no.uib.cipr.matrix.Matrix  b){
+        Matrix c = new AGDenseMatrix(new double[][]{a.getData()});//this has effect of transposing the vector to a row vector
+        Matrix d = new AGDenseMatrix(1,b.numColumns());
         return (Matrix) c.mult(b, d);
     }
-    public static Matrix multt(Vector a, no.uib.cipr.matrix.Matrix  b){
-        Matrix c = new AGDenseMatrix(a, 1, a.size());
-        Matrix d = new AGDenseMatrix(1,a.size());
-        return (Matrix) c.transBmult(b, d);
-    }
-    
+   
     /**
      * R = A+B. Elementwise addition of matrices - must be the same size.
      * @param a
@@ -394,17 +407,19 @@ public class MatrixUtils {
     }
     
     public static Vector add(Vector v, double d){
-        for (VectorEntry vectorEntry : v) {
-            vectorEntry.set(vectorEntry.get()+d); 
+        Vector retval = new DenseVector(v.size());
+        for (int i = 0; i < v.size(); i++) {
+            retval.set(i, v.get(i)+d);
         }
-        return v;
+        return retval;
     }
     
     public static Matrix add(Matrix q, double eps) {
+        AGDenseMatrix retval = new AGDenseMatrix(q.numRows(), q.numColumns());
         for (MatrixEntry matrixEntry : q) {
-            matrixEntry.set(matrixEntry.get()+eps);
+            retval.set(matrixEntry.row(), matrixEntry.column(), matrixEntry.get()+eps);
         }
-        return q;
+        return retval;
     }
 
     
@@ -427,10 +442,11 @@ public class MatrixUtils {
  * @return
  */
 public static Vector sub(double d, Vector v){
-       for (VectorEntry vectorEntry : v) {
-        vectorEntry.set(d-vectorEntry.get());
-    }
-       return v;
+      Vector retval = new DenseVector(v.size());
+       for (int i = 0; i < v.size(); i++) {
+           retval.set(i, d-v.get(i));
+       }
+       return retval;
    }
     
     /**
@@ -508,36 +524,41 @@ public static Vector sub(double d, Vector v){
     }
     
     public static Matrix log(Matrix m) {
+        Matrix retval = new AGDenseMatrix(m.numRows(), m.numColumns());
         for (MatrixEntry matrixEntry : m) {
-            matrixEntry.set(Math.log(matrixEntry.get()));
+            retval.set(matrixEntry.row(),matrixEntry.column(), Math.log(matrixEntry.get()));
         }
-        return m;
+        return retval;
     }
     public static Matrix exp(Matrix m) {
+        Matrix retval = new AGDenseMatrix(m.numRows(), m.numColumns());
         for (MatrixEntry matrixEntry : m) {
-            matrixEntry.set(Math.exp(matrixEntry.get()));
+            retval.set(matrixEntry.row(),matrixEntry.column(), Math.exp(matrixEntry.get()));
         }
-        return m;
+        return retval;
     }
     
     public static Vector log(Vector v){
-        for (VectorEntry vectorEntry : v) {
-            vectorEntry.set(Math.log(vectorEntry.get()));
+        Vector retval = new DenseVector(v.size());
+        for (int i = 0; i < v.size(); i++) {
+            retval.set(i, Math.log(v.get(i)));
         }
-        return v;
+        return retval;
         
     }
     public static Matrix pow(Matrix m, double exp){
+        Matrix retval = new AGDenseMatrix(m.numRows(), m.numColumns());
         for (MatrixEntry matrixEntry : m) {
-            matrixEntry.set(Math.pow(matrixEntry.get(), exp));
+            retval.set(matrixEntry.row(),matrixEntry.column(), Math.pow(matrixEntry.get(), exp));
         }
-        return m;
+        return retval;
     }
     public static Vector pow(Vector v, double exp) {
-       for (VectorEntry vectorEntry : v) {
-        vectorEntry.set(Math.pow(vectorEntry.get(), exp));
-    }
-       return v;
+        Vector retval = new DenseVector(v.size());
+        for (int i = 0; i < v.size(); i++) {
+            retval.set(i, Math.pow(v.get(i),exp));
+        }
+        return retval;
     }
 
 
@@ -579,6 +600,9 @@ public static Vector sub(double d, Vector v){
 
 /*
  * $Log: MatrixUtils.java,v $
+ * Revision 1.2  2009/09/14 19:08:43  pah
+ * code runs clustering, but not giving same results as matlab exactly
+ *
  * Revision 1.1  2009/09/07 16:06:12  pah
  * initial transcription of the core
  *

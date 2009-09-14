@@ -1,5 +1,5 @@
 /*
- * $Id: AGDenseMatrix.java,v 1.2 2009/09/08 19:24:02 pah Exp $
+ * $Id: AGDenseMatrix.java,v 1.3 2009/09/14 19:08:43 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -298,11 +298,11 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
         return this;
      }
 
-    public Vector asVector() {
+    public DenseVector asVector() {
        return this.asVector(0,data.length - 1);
     }
 
-    public Vector asVector(int istart, int iend) {
+    public DenseVector asVector(int istart, int iend) {
         
         if( istart < 0){
            istart = 0; 
@@ -455,6 +455,16 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
             return position + m.numRows*m.numColumns;
         }
     }
+    public int insert(DenseVector vector, int inpos) {
+        if (vector.size + inpos > this.numColumns*this.numRows) {
+            throw new IllegalArgumentException("cannot insert m - too big");
+        } else {
+            System.arraycopy(vector.getData(), 0, this.data, inpos, vector.size);
+            return inpos + vector.size;
+        }
+        
+    }
+
     public AGDenseMatrix append(Matrix mm) {
         
         AGDenseMatrix m = (AGDenseMatrix) mm; //IMPL dangerous cast if used outside this application.
@@ -492,6 +502,7 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
             System.arraycopy(data, 0, arr, 0, numRows);
             System.arraycopy(m.getData(), 0, arr, numRows*numColumns, m.size());
             numRows += m.size();
+            if(numColumns == 0) numColumns = 1; //just in case the initial matrix was empty.
             data = arr;
                 
         }
@@ -557,10 +568,14 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
        return this;
     }
 
+ 
 }
 
 /*
  * $Log: AGDenseMatrix.java,v $
+ * Revision 1.3  2009/09/14 19:08:43  pah
+ * code runs clustering, but not giving same results as matlab exactly
+ *
  * Revision 1.2  2009/09/08 19:24:02  pah
  * further slicing possibilites
  *

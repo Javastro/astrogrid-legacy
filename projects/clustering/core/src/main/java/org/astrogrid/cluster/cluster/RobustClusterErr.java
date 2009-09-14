@@ -1,5 +1,5 @@
 /*
- * $Id: RobustClusterErr.java,v 1.2 2009/09/08 19:23:29 pah Exp $
+ * $Id: RobustClusterErr.java,v 1.3 2009/09/14 19:08:43 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -210,6 +210,11 @@ public class RobustClusterErr {
          org.astrogrid.cluster.cluster.ClusterMStepFull.Retval mstepresult = ClusterMStepFull.cluster_m_step_full(data, datatype, 
             K, output, latent, ab, q, lcv, cv_type);
          latent = mstepresult.latent;
+         mu= mstepresult.mu;
+         cv= mstepresult.cv;
+         lmu = mstepresult.lmu;
+         lcv = mstepresult.lcv;
+         p = mstepresult.p;
          
         //----------------------------------------------------------------------
         //   bound
@@ -243,6 +248,9 @@ public class RobustClusterErr {
 
 /*
  * $Log: RobustClusterErr.java,v $
+ * Revision 1.3  2009/09/14 19:08:43  pah
+ * code runs clustering, but not giving same results as matlab exactly
+ *
  * Revision 1.2  2009/09/08 19:23:29  pah
  * got rid of npe and array bound problems....
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterEStepFull.java,v 1.2 2009/09/08 19:23:30 pah Exp $
+ * $Id: ClusterEStepFull.java,v 1.3 2009/09/14 19:08:43 pah Exp $
  * 
  * Created on 11 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -170,7 +170,7 @@ public class ClusterEStepFull {
     int ndim= data.numColumns();       // data is 
 
     AGDenseMatrix qcv[][]= new AGDenseMatrix[ndata][K];
-    AGDenseMatrix qmu[][]= new AGDenseMatrix[ndata][K];
+    DenseVector qmu[][]= new DenseVector[ndata][K]; //actually always a vector
     if (ndim_er != 0) {
         // (1) the centre of the auxiliary distribution q
         Matrix epu = divide(a , b);         // the expectation of u
@@ -183,11 +183,9 @@ public class ClusterEStepFull {
                         Matrix gcv_fe = new AGDenseMatrix(gcv_f[k]);
                         gcv_fe.scale(1.0/epu.get(n,k));
                         qcv[n][k] = mult(mult(diag(S.sliceRow(n)),inv(add(diag(S.sliceRow(n)),gcv_fe))),gcv_fe);
-                        qmu[n][k]= add(mult(gmu.sliceRow(k),mult(diag(S.sliceRow(n)),inv(add(diag(S.sliceRow(n)),gcv_fe))).transpose())
-                                
-                        
-                        ,mult(data_er.sliceRow(n),mult(gcv_fe
-                            ,inv(add(diag(S.sliceRow(n)),gcv_fe))).transpose()));
+                        qmu[n][k] = add(mult(gmu.sliceRowM(k),mult(diag(S.sliceRow(n)),inv(add(diag(S.sliceRow(n)),gcv_fe))))
+                            
+                                ,mult(data_er.sliceRowM(n),mult(gcv_fe,inv(add(diag(S.sliceRow(n)),gcv_fe))))).asVector();
                         outpos = output.insert( qcv[n][k], outpos);
                         outpos = output.insert(qmu[n][k], outpos);
                         
@@ -197,7 +195,7 @@ public class ClusterEStepFull {
                         qcv[n][k]=mult(mult(diag(S.sliceRow(n)),inv(add(gcv_scale,
                             diag(S.sliceRow(n))))),gcv_scale);
                         qmu[n][k]=add(multBt(gmu.sliceRowM(k),mult(diag(S.sliceRow(n)),inv(add(gcv_scale,diag(S.sliceRow(n))))))
-                        ,multBt(data_er.sliceRowM(n),mult(gcv_scale,inv(add(gcv_scale,diag(S.sliceRow(n)))))));
+                        ,multBt(data_er.sliceRowM(n),mult(gcv_scale,inv(add(gcv_scale,diag(S.sliceRow(n))))))).asVector();
                         outpos = output.insert( qcv[n][k], outpos);
                         outpos = output.insert(qmu[n][k], outpos);
                         break;
@@ -208,7 +206,7 @@ public class ClusterEStepFull {
     //                     qcv[n][k] = diag(S.sliceRow(n))*inv(tcv/
     //                         epu.get(n,k)+diag(S.sliceRow(n)))*tcv/epu.get(n,k);
                         qmu[n][k]=add(multBt(gmu.sliceRowM(k),mult(diag(S.sliceRow(n)),inv(add(tcv ,diag(S.sliceRow(n))))))
-                                ,mult(multBt(data_er.sliceRowM(n),tcv),inv(add(tcv,diag(S.sliceRow(n))))));
+                                ,mult(multBt(data_er.sliceRowM(n),tcv),inv(add(tcv,diag(S.sliceRow(n)))))).asVector();
                         outpos = output.insert( qcv[n][k], outpos);
                         outpos = output.insert(qmu[n][k], outpos);
                         break;
@@ -222,8 +220,8 @@ public class ClusterEStepFull {
                 switch (cv_type){
                     case free:
                         epdw.set(n,k, trace(mult(inv(gcv_f[k]),qcv[n][k])) +      
-                            mult(mult(qmu[n][k].transpose(),inv(gcv_f[k]))
-                            , qmu[n][k]).get(0, 0));
+                                multATBA(qmu[n][k],inv(gcv_f[k])).asScalar()
+                            );
                         // the expectation of w^T Sigma^{-1}w
                         
                         C.set(n,k, epdw.get(n,k)-2*multBt(mult(qmu[n][k],inv(gcv_f[k]))
@@ -237,7 +235,7 @@ public class ClusterEStepFull {
                             ,gmu.sliceRowM(k)).get(0, 0)+multABAT(gmu.sliceRowM(k),inv(diag(gcv_d.sliceRow(k)))).get(0, 0));
                         break;
                     case common:
-                        Vector tqmu = new DenseVector(qmu[n][k].asVector());
+                        Vector tqmu = new DenseVector(qmu[n][k]);
                         tqmu.add(-1, gmu.sliceRow(k));
                         
                         C.set(n,k, tqmu.dot(tqmu)/gcv_c.get(k)+ 
@@ -363,7 +361,7 @@ public class ClusterEStepFull {
                             (multABAT(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))).asScalar() - 
                             2*multBt(mult(qmu[n][k],inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
                             trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k])) 
-                            + multABAT(qmu[n][k],inv(diag(S.sliceRow(n)))).asScalar()
+                            + multATBA(qmu[n][k],inv(diag(S.sliceRow(n)))).asScalar()
                              )/2.0);
                         double covkd = gcv_c.get(k);
                         aux2.set(n,k, -ndim_er/2.0*log(2*Math.PI)-ndim_er*log(covkd)/2.0 +
@@ -511,6 +509,9 @@ public class ClusterEStepFull {
 
 /*
  * $Log: ClusterEStepFull.java,v $
+ * Revision 1.3  2009/09/14 19:08:43  pah
+ * code runs clustering, but not giving same results as matlab exactly
+ *
  * Revision 1.2  2009/09/08 19:23:30  pah
  * got rid of npe and array bound problems....
  *

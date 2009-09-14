@@ -11,6 +11,7 @@
   <groupId>org.astrogrid.cluster</groupId>
   <artifactId>core</artifactId>
   <name>core</name>
+  <packaging>jar</packaging>
   <version>0.1-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -65,6 +66,13 @@
     	<artifactId>commons-math</artifactId>
     	<version>2.0</version>
     </dependency>
-    
   </dependencies>
+  <build>
+      <testResources>
+          <testResource><directory>src/test/java</directory>
+          <includes><include>**/*.txt</include>
+          <include>**/*.mm</include>
+          </includes></testResource>
+      </testResources>
+  </build>
 </project>

@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterBoundFull.java,v 1.2 2009/09/08 19:23:30 pah Exp $
+ * $Id: ClusterBoundFull.java,v 1.3 2009/09/14 19:08:43 pah Exp $
  * 
  * Created on 12 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -12,6 +12,7 @@
 
 package org.astrogrid.cluster.cluster;
 import no.uib.cipr.matrix.AGDenseMatrix;
+import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Vector;
 
 import org.astrogrid.matrix.Matrix;
@@ -47,7 +48,7 @@ public class ClusterBoundFull {
         int n0 = 0, n1 = 0, d = 0, nm = 0, ne = 0, ini = 0;
         Matrix data_nr = null, data_er = null, data_bin = null, data_mul = null, data_int = null;
         AGDenseMatrix qcv[][] = new AGDenseMatrix[ndata][K];
-        AGDenseMatrix qmu[][] = new AGDenseMatrix[ndata][K];
+        DenseVector qmu[][] = new DenseVector[ndata][K];
         int ndim_nr = 0, ndim_er = 0,ndim_bin = 0,ndim_mul= 0,ndim_int =0;
         Matrix gmu_nr = null, gcv_nr_f[] = new AGDenseMatrix[K], gcv_nr_d = null, gmu = null;
         Vector gcv_nr_c = null;
@@ -93,23 +94,21 @@ public class ClusterBoundFull {
                                 qcv[n][k] = reshape(output.asVector(ini, ini+ndim_er*
                                     ndim_er -1), ndim_er, ndim_er);
                                 ini = ini + ndim_er*ndim_er;
-                                qmu[n][k]=  reshape(output.asVector(ini, ini+ndim_er -1),1,
-                                    ndim_er);
+                                qmu[n][k]=  output.asVector(ini, ini+ndim_er -1);
                                 ini = ini + ndim_er;
                                 break;
                             case diagonal:
                                 qcv[n][k] = reshape(output.asVector(ini, ini+ndim_er*
                                     ndim_er -1),ndim_er, ndim_er);
                                 ini = ini + ndim_er*ndim_er;
-                                qmu[n][k] = reshape(output.asVector(ini, ini+ndim_er -1),1,
-                                    ndim_er);
+                                qmu[n][k] = output.asVector(ini, ini+ndim_er -1);
                                 ini = ini + ndim_er;
                                 break;
                             case common:
                                 qcv[n][k] = reshape(output.asVector(ini, ini+ndim_er*ndim_er -1),
                                     ndim_er, ndim_er);
                                 ini = ini + ndim_er*ndim_er;
-                                qmu[n][k]=reshape(output.asVector(ini, ini+ndim_er -1), 1, ndim_er);
+                                qmu[n][k]=output.asVector(ini, ini+ndim_er -1);
                                 ini = ini + ndim_er;
                                 break;
                         }
@@ -237,13 +236,13 @@ public class ClusterBoundFull {
                                 (multABAT(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))).asScalar() - 
                                 2*multBt(mult(qmu[n][k], inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
                                 trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k])) 
-                                + multABAT(qmu[n][k], inv(diag(S.sliceRow(n)))).asScalar())/2.0);
-                            AGDenseMatrix tqmu = qmu[n][k];
-                            Matrix diff =  sub(tqmu,gmu.sliceRowM(k));
-                            tqmu = (AGDenseMatrix) multBt(diff, diff);
+                                + multATBA(qmu[n][k], inv(diag(S.sliceRow(n)))).asScalar())/2.0);
+                            
+                            Vector diff =  sub(qmu[n][k],gmu.sliceRow(k));
+                            double tqmu =diff.dot(diff);
                             aux2.set(n,k,-ndim_er/2.0*log(2*PI)-ndim_er*log(gcv_c.get(k))/2.0 +
                                 ndim_er/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-0.5*a.get(n,k)
-                                /b.get(n,k)*(tqmu.asScalar()+trace(  
+                                /b.get(n,k)*(tqmu+trace(  
                                 qcv[n][k]))/gcv_c.get(k));
                             // -E_q[ LOG q(W|K) ]
                             aux4.set(n,k,ndim_er/2.0*log(2*PI)+log(det(qcv[n][k]))/2.0+ndim_er/2.0);
@@ -403,6 +402,9 @@ public class ClusterBoundFull {
 
 /*
  * $Log: ClusterBoundFull.java,v $
+ * Revision 1.3  2009/09/14 19:08:43  pah
+ * code runs clustering, but not giving same results as matlab exactly
+ *
  * Revision 1.2  2009/09/08 19:23:30  pah
  * got rid of npe and array bound problems....
  *
