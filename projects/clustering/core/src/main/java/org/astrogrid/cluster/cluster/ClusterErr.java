@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterErr.java,v 1.2 2009/09/14 19:08:43 pah Exp $
+ * $Id: ClusterErr.java,v 1.3 2009/09/16 16:53:06 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -12,15 +12,37 @@
 
 package org.astrogrid.cluster.cluster;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import no.uib.cipr.matrix.AGDenseMatrix;
+import no.uib.cipr.matrix.Vector;
 
 import org.astrogrid.matrix.Matrix;
+import static org.astrogrid.matrix.MatrixUtils.*;
+import static org.astrogrid.matrix.Algorithms.*;
+import static java.lang.Math.*;
 
 public class ClusterErr {
+	   public static class ClusterErrResult {
+	        public final AGDenseMatrix q;
+	        public final Vector p;
+	        public final AGDenseMatrix mu, cv, lmu, lcv;
+	        public List<Double> loglik;
+	        public ClusterErrResult(AGDenseMatrix q, Vector p, AGDenseMatrix mu, AGDenseMatrix cv, AGDenseMatrix lmu, AGDenseMatrix lcv, List<Double> loglik ) {
+	            this.q = q;
+	            this.p = p;
+	            this.mu = mu;
+	            this.cv = cv;
+	            this.lmu = lmu;
+	            this.lcv = lcv;
+	            this.loglik = loglik;
+	        }
+	    }
 
     
 //    function [q, p, mu, cv, lmu, lcv, loglik] 
-     void cluster_err(Matrix alldata, Matrix datatype, int K, 
+     public static ClusterErrResult cluster_err(Matrix alldata, Matrix datatype, int K, 
             int niters, double tol, CovarianceKind cv_type){
         // data      -- data with measurement errors
         // vartype   -- variable type
@@ -40,155 +62,139 @@ public class ClusterErr {
         // datatype is a 6x2 matrix, containing the combined data information;
         int no_of_data_types = datatype.numRows();
         int n0 = 0, n1 = 0, d = 0;
-        Matrix datadim = new AGDenseMatrix();
+        int ndim_nr = 0, ndim_er= 0, ndim_bin = 0, ndim_mul = 0 , ndim_int = 0,
+        ndim_error = 0;
+        Matrix data_nr = null, data_er = null, data_bin = null, data_int = null,  data_mul = null;
+        AGDenseMatrix datadim = new AGDenseMatrix(0,0);
+        Matrix S;
         for (int i = 0 ; i <no_of_data_types; i++){
             if (datatype.get(i,1) == 1 ){    // continuous data without errors
-                ndim_nr = datatype.get(i,2);
-                data_nr = alldata(:, d+1:d+ndim_nr);
-                datadim = [datadim ndim_nr];
+                ndim_nr = (int) datatype.get(i,2);
+                data_nr = alldata.sliceCol(d, ndim_nr);
+                datadim = datadim.append(data_nr);
                 d = d + ndim_nr;
             }
             else if (datatype.get(i,1) == 2) { // continous data with errors
-                ndim_er = datatype.get(i,2);
-                data_er = alldata(:,d+1:d+ndim_er);
-                datadim = [datadim ndim_er];
+                ndim_er = (int) datatype.get(i,2);
+                data_er = alldata.sliceCol(d, ndim_er);
+                datadim = datadim.append(ndim_er);
                 d = d + ndim_er;
             }
             else if (datatype.get(i,1) == 3){ // binary 
-                ndim_bin = datatype.get(i,2);
-                data_bin = alldata(:,d+1:d+ndim_bin);
-                datadim = [datadim ndim_bin];
+                ndim_bin = (int) datatype.get(i,2);
+                data_bin = alldata.sliceCol(d, ndim_bin);
+                datadim = datadim.append(ndim_bin);
                 d = d  + ndim_bin;
             }
             else if (datatype.get(i,1) == 4) { // multinomial
-                ndim_mul = datatype.get(i,2);
-                data_mul = alldata(:,d+1:d+ndim_mul);
-                datadim  = [datadim ndim_mul];
+                ndim_mul = (int) datatype.get(i,2);
+                data_mul = alldata.sliceCol(d, ndim_mul);
+                datadim = datadim.append(ndim_mul);
                 d = d + ndim_mul;
             }
             else if (datatype.get(i,1) == 5) {   // integer
-                ndim_int = datatype.get(i,2);       
-                data_int = alldata(:, d+1:d+ndim_int);
-                datadim   = [datadim ndim_int];
+                ndim_int = (int) datatype.get(i,2);       
+                data_int = alldata.sliceCol(d, ndim_int);
+                datadim = datadim.append(ndim_int);
                 d= d + ndim_int;
             }
             else if (datatype.get(i,1) == 6 ) {  // error 
-                ndim_error = datatype.get(i,2);
+                ndim_error = (int) datatype.get(i,2);
                 if (ndim_error != ndim_er){
                     throw new IllegalArgumentException( "The dimension of measurement errors and ");
                 }        
-                S = alldata(:, d+1:d+ndim_error);
-                % error inforamtion
-                S = S + 1.0e-6*ones(ndata, ndim_er);
+                S = alldata.sliceCol(d, ndim_error);
+                // error inforamtion
+                S = add(S, ones(ndata, ndim_er).scale(1.0e-6));
                 d = d + ndim_error;
             }
      }
 
         // initialization
-        mu = [];
-        lmu = [];
-        cv = [];
-        lcv =[];
+        AGDenseMatrix mu = null, cv = null, lmu =null;
+        AGDenseMatrix lcv = new AGDenseMatrix(0,0);
         if (ndim_er != 0 ){
             // initialize the global parameters for the model
-            gmu = centre_kmeans(data_er, K, ndim_er);
-            ini_cov = diag(cov(data_er))';
+            Matrix gmu = centre_kmeans(data_er, K, ndim_er);
+            Vector ini_cov = diag(cov(data_er));
             switch (cv_type){
-                case full:
-                    for(int  k = 0;k < K; k++){
-                        gcv(k,:,:) = diag(ini_cov);  
-                        tmp = squeeze(gcv(k,:,:));
-                        lcv = [lcv; tmp(:)];
-                    }
+                case free:
+                	lcv.append(new AGDenseMatrix(diag(ini_cov), 1, K).asVector());
                     break;
-                case diag:
-                    gcv = repmat(ini_cov, K, 1);
-                    for (int k = 0; k <K; k++){
-                        tmp  = gcv(k,:);
-                        lcv = [lcv; tmp(:)];
-                    }
+                case diagonal:
+                	lcv.append( new AGDenseMatrix(ini_cov,K,1).asVector());
                     break;
-                case spherical:
-                    gcv = max(ini_cov)*ones(1,K);
-                    lcv = [lcv; gcv(:)];
+                case common:
+                	lcv.append(ones(1,K).asVector().scale(max(ini_cov)));
                     break;
             }
-            lmu = [lmu; gmu(:)];
+            lmu =  new AGDenseMatrix(gmu.asVector());
         }
         if (ndim_nr != 0){
-            gmu_nr = centre_kmeans(data_nr, K, ndim_nr);    
-            ini_cov_nr = diag(cov(data_nr))';
+            Matrix gmu_nr = centre_kmeans(data_nr, K, ndim_nr);    
+            Vector ini_cov_nr = diag(cov(data_nr));
             switch (cv_type){
-                case full:
-                    for(int k = 0: k<K;k++){
-                        gcv_nr(k,:,:) = diag(ini_cov_nr);
-                        tmp = squeeze(gcv_nr(k,:,:));
-                        cv=[cv; tmp(:)];
-                    }
+                case free:
+                	cv = new AGDenseMatrix(diag(ini_cov_nr).asVector(), 1, K);
                     break;
-                case diag:
-                    gcv_nr = repmat(ini_cov_nr, K, 1);
-                    for (int k = 0:k < K; k+){
-                        tmp = gcv_nr(k,:);
-                        cv = [cv; tmp(:)];
-                    }
+                case diagonal:
+                	cv = new AGDenseMatrix(ini_cov_nr, 1, K);
                     break;
-                case spherical:
-                    gcv_nr = max(ini_cov_nr)*ones(1,K);
-                    cv =[cv; gcv_nr(:)];
+                case common:
+                	 cv = (AGDenseMatrix) ones(1,K).scale(max(ini_cov_nr));
                     break;
             }
-            mu = [mu; gmu_nr(:)];
+            mu = new AGDenseMatrix(gmu_nr.asVector());
         }
         if (ndim_bin != 0){
-            bp = rand(K, ndim_bin);
+            Matrix bp = rand(K, ndim_bin);
         //     bp = ones(K, ndim_bin)/2;
-            mu = [mu; bp(:)];
+            mu.append(bp.asVector());
         }
         if (ndim_mul != 0){
         //     mp = ones(K, ndim_mul)/K;
-            mp = dirichlet_sample(ones(1,ndim_mul),K);
-            mu = [mu; mp(:)];
+            Matrix mp = dirichlet_sample(ones(1,ndim_mul),K);
+            mu.append(mp.asVector());
         }
         if (ndim_int != 0){
         //     ip = rand(K, ndim_int)*max(max(data_int));
-            ip = rand(K, ndim_int);    
-            mu = [mu; ip(:)];
+            Matrix ip = rand(K, ndim_int);    
+            mu.append(ip.asVector());
         }
 
 
         // initialize the class prior distribution
-        p  = ones(1,K)/K;
+        Vector p  = ones(1,K).asVector().scale(1.0/K);
 
         // for iter = 1:niters
-        stop = 0;
-        iter = 1;
-        loglik =[];
+        boolean stop = false;
+        int iter = 0;
+        java.util.List<Double> loglik = new ArrayList<Double>();
 
         while (!stop){
             //----------------------------------------------------------------------
             //   E-step
             //----------------------------------------------------------------------
-            q = clustering_e_step(alldata, datatype, K, mu, cv, lmu, lcv, p, ...
+            q = clustering_e_step(alldata, datatype, K, mu, cv, lmu, lcv, p, 
                 cv_type);
             //----------------------------------------------------------------------
             //   M-step
             //----------------------------------------------------------------------
-            [mu cv lmu lcv p] = clustering_m_step(alldata, datatype, K, q, lcv, ...
+            [mu cv lmu lcv p] = clustering_m_step(alldata, datatype, K, q, lcv, 
                 cv_type);
             //----------------------------------------------------------------------
             //   bound
             //----------------------------------------------------------------------
-            loglike = clustering_bound(alldata, datatype, K, mu, cv, lmu, lcv, p,...
+            double loglike = clustering_bound(alldata, datatype, K, mu, cv, lmu, lcv, p,
                 q, cv_type);
 
             fprintf("In generation %d, the log likelihood bound is %f\n", iter, loglike);
             
-            loglik = [loglik; loglike];
-            if (iter > 1 & abs((loglik(iter)-loglik(iter-1))/loglik(iter-1))<tol){
+            loglik.add(loglike);
+            if (iter > 0 && abs((loglik.get(iter)-loglik.get(iter-1))/loglik.get(iter-1))<tol){
                 stop = true;
             }
-            if( iter >= niters){
+                 if( iter >= niters){
                 stop = true;
             }
             iter = iter + 1;    
@@ -200,6 +206,9 @@ public class ClusterErr {
 
 /*
  * $Log: ClusterErr.java,v $
+ * Revision 1.3  2009/09/16 16:53:06  pah
+ * daily edit
+ *
  * Revision 1.2  2009/09/14 19:08:43  pah
  * code runs clustering, but not giving same results as matlab exactly
  *

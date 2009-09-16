@@ -1,5 +1,5 @@
 /*
- * $Id: Clustering.java,v 1.2 2009/09/15 21:40:15 pah Exp $
+ * $Id: Clustering.java,v 1.3 2009/09/16 16:53:06 pah Exp $
  * 
  * Created on 26 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -105,7 +105,7 @@ public class Clustering {
         Util.disp( "At present, MML is only for real data without measurement errors.\n"
          +"Cannot deal with data set with mixed-type variables\n"
          +"To proceed, we only consider the continuous part of the data set");
-        mix_var = 0;
+        mix_var = false;
 // consider all real data , let the other parts of the data set to be
 // none
         c_dim   = c_dim + e_dim;
@@ -115,8 +115,8 @@ public class Clustering {
         i_dim   = 0;
     }
 
-    bestk = mml_max;     // the default value for the optimal no. of classes
-    ctype = cv_type;    // the covariance type
+    int bestk = mml_max;     // the default value for the optimal no. of classes
+    CovarianceKind ctype = cv_type;    // the covariance type
 
     if( !mix_var ){       // no mixed variables
 // no mixed-type variables
@@ -125,7 +125,7 @@ public class Clustering {
             Util.disp("mml for clustering without outlier");
             
             data = data(:,1:c_dim+e_dim);
-            [bestk,bestpp,bestmu,bestcov,R]=mixtures4(data',
+            [bestk,bestpp,bestmu,bestcov,R]=mixtures4(data, //was data'
                     mml_min,mml_max,
                 mml_reg,tol,cv_type);
             System.out.printf("The optimal number of clusters is %d\n", bestk);
@@ -189,7 +189,7 @@ public class Clustering {
             Util.disp ("mml for clustering with outlier");
             
             data = data(:,1:c_dim+e_dim);
-            [bestk,bestpp,bestmu,bestcov,R]=tmixtures(data'
+            [bestk,bestpp,bestmu,bestcov,R]=tmixtures(data //was dat'
                   ,mml_min,mml_max,
                 mml_reg,tol,cv_type,1.0);
             System.out.printf("The optimal number of clusters is %d\n", bestk);
@@ -250,7 +250,7 @@ public class Clustering {
             allinfo = [sizeall; bestk; bestpp(:); bestmu(:); 
                 bestcov(:); R(:)];    
 // calculate the number of columns needed
-            if rem(sizeall,ndata) != 0
+            if( rem(sizeall,ndata) != 0){
                 colnos = floor(sizeall/ndata)+1;
             } else {
                 colnos = sizeall/ndata;
@@ -295,7 +295,7 @@ public class Clustering {
             allinfo = [sizeall; bestk; bestpp(:); bestmu(:); 
                 bestcov(:); R(:); O(:)];
 // calculate the number of columns needed
-            if rem(sizeall,ndata) != 0
+            if (rem(sizeall,ndata) != 0){
                 colnos = floor(sizeall/ndata)+1;
             } else {
                 colnos = sizeall/ndata;
@@ -346,7 +346,7 @@ public class Clustering {
             allinfo = [sizeall; bestk; bestpp(:); bestmu(:); lbestmu(:); 
                 bestcov(:); lbestcov(:); R(:)];        
 // calculate the number of columns needed
-            if rem(sizeall,ndata) != 0
+            if (rem(sizeall,ndata) != 0){
                 colnos = floor(sizeall/ndata)+1;
             } else {
                 colnos = sizeall/ndata;
@@ -392,7 +392,7 @@ public class Clustering {
             allinfo = [sizeall; bestk; bestpp(:); bestmu(:); lbestmu(:); 
                 bestcov(:); lbestcov(:); R(:); C(:)];        
 // calculate the number of columns needed
-            if rem(sizeall,ndata) != 0
+            if (rem(sizeall,ndata) != 0){
                 colnos = floor(sizeall/ndata)+1;
             } else {
                 colnos = sizeall/ndata;
@@ -432,7 +432,7 @@ public class Clustering {
             sizeall = 2+bestk+bestk*ndim+ndata*bestk;
             allinfo = [sizeall; bestk; bestpp(:); bestmu(:); R(:)];        
 // calculate the number of columns needed
-            if rem(sizeall,ndata) != 0
+            if (rem(sizeall,ndata) != 0){
                 colnos = floor(sizeall/ndata)+1;
             } else {
                 colnos = sizeall/ndata;
@@ -469,7 +469,7 @@ public class Clustering {
             sizeall = 2+bestk+bestk*ndim+ndata*bestk;
             allinfo = [sizeall; bestk; bestpp(:); bestmu(:); R(:)];        
 // calculate the number of columns needed
-            if rem(sizeall,ndata) != 0
+            if (rem(sizeall,ndata) != 0){
                 colnos = floor(sizeall/ndata)+1;
             } else {
                 colnos = sizeall/ndata;
@@ -507,7 +507,7 @@ public class Clustering {
             sizeall = 2+bestk+bestk*ndim+ndata*bestk;
             allinfo = [sizeall; bestk; bestpp(:); bestmu(:); R(:)];        
 // calculate the number of columns needed
-            if rem(sizeall,ndata) != 0
+            if (rem(sizeall,ndata) != 0){
                 colnos = floor(sizeall/ndata)+1;
             } else {
                 colnos = sizeall/ndata;
@@ -558,7 +558,7 @@ public class Clustering {
             lbestcv(:); R(:); C(:)];
         sizeall = size(allinfo, 1);
 // calculate the number of columns needed
-        if rem(sizeall,ndata) != 0
+        if (rem(sizeall,ndata) != 0){
             colnos = floor(sizeall/ndata)+1;
         } else {
             colnos = sizeall/ndata;
@@ -609,7 +609,7 @@ public class Clustering {
         allinfo = [sizeall; bestk; bestpp(:); bestmu(:); lbestmu(:); bestcov(:);
             lbestcv(:); R(:)];
 // calculate the number of columns needed
-        if rem(sizeall,ndata) != 0
+        if( rem(sizeall,ndata) != 0){
             colnos = floor(sizeall/ndata)+1;
         } else {
             colnos = sizeall/ndata;
@@ -657,7 +657,7 @@ public class Clustering {
         allinfo = [sizeall; bestk; bestpp(:); bestmu(:); lbestmu(:); bestcov(:);
             lbestcv(:); R(:)];
 // calculate the number of columns needed
-        if rem(sizeall,ndata) != 0
+        if( rem(sizeall,ndata) != 0)
             colnos = floor(sizeall/ndata)+1;
         } else {
             colnos = sizeall/ndata;
@@ -703,7 +703,7 @@ public class Clustering {
         }        
         allinfo = [sizeall; bestk; bestpp(:); bestmu(:); bestcov(:); R(:)];
 // calculate the number of columns needed
-        if rem(sizeall,ndata) != 0
+        if (rem(sizeall,ndata) != 0){
             colnos = floor(sizeall/ndata)+1;
         } else {
             colnos = sizeall/ndata;
@@ -739,6 +739,9 @@ public class Clustering {
 
 /*
  * $Log: Clustering.java,v $
+ * Revision 1.3  2009/09/16 16:53:06  pah
+ * daily edit
+ *
  * Revision 1.2  2009/09/15 21:40:15  pah
  * safety checkin
  *

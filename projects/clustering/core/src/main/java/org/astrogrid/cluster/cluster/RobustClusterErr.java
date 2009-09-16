@@ -1,5 +1,5 @@
 /*
- * $Id: RobustClusterErr.java,v 1.3 2009/09/14 19:08:43 pah Exp $
+ * $Id: RobustClusterErr.java,v 1.4 2009/09/16 16:53:06 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -122,8 +122,7 @@ public class RobustClusterErr {
         Vector ini_cov = diag(cov(data_er));
         switch (cv_type) {
             case free:
-                int lcvidx = 0;
-                lcv.append(new AGDenseMatrix(diag(ini_cov), 1, K).asVector());
+			    lcv.append(new AGDenseMatrix(diag(ini_cov), 1, K).asVector());
               break;
             case diagonal:
                 lcv.append( new AGDenseMatrix(ini_cov,K,1).asVector());
@@ -248,6 +247,9 @@ public class RobustClusterErr {
 
 /*
  * $Log: RobustClusterErr.java,v $
+ * Revision 1.4  2009/09/16 16:53:06  pah
+ * daily edit
+ *
  * Revision 1.3  2009/09/14 19:08:43  pah
  * code runs clustering, but not giving same results as matlab exactly
  *
