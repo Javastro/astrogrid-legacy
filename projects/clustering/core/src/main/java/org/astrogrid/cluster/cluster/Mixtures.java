@@ -1,5 +1,5 @@
 /*
- * $Id: Mixtures.java,v 1.1 2009/09/17 07:03:49 pah Exp $
+ * $Id: Mixtures.java,v 1.2 2009/09/17 14:13:12 pah Exp $
  * 
  * Created on Sep 16, 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -12,6 +12,11 @@
 
 package org.astrogrid.cluster.cluster;
 
+import org.astrogrid.matrix.Matrix;
+import org.astrogrid.matrix.Matrix;
+import static org.astrogrid.matrix.Algorithms.*;
+import static org.astrogrid.matrix.MatrixUtils.*;
+
 public class Mixtures {
    // function [bestk, bestpp, bestmu, bestcov, R] =
         
@@ -19,8 +24,8 @@ public class Mixtures {
         
     };
     
-     static Retval mixtures4(y, kmin, kmax, 
-            regularize,th, CovarianceKind covoption){
+     static Retval mixtures4(Matrix y, int kmin, int kmax, 
+           int regularize,double th, CovarianceKind covoption){
 // Syntax:
 // [bestk,bestpp,bestmu,bestcov,dl,countf] = mixtures3(y,kmin,kmax,regularize,th,covoption)
 //
@@ -69,11 +74,11 @@ public class Mixtures {
 //
 //   2000, 2001, 2002
 //
-        verb=1; // verbose mode; change to zero for silent mode
-        bins = 40; // number of bins for the univariate data histograms for visualization
+       boolean verb=true; // verbose mode; change to zero for silent mode
+       int bins = 40; // number of bins for the univariate data histograms for visualization
         dl = []; // vector to store the consecutive values of the cost function
-        [dimens,npoints] = size(y);
-
+       int dimens = y.numColumns(),npoints = y.numRows();
+       int npars;
         switch (covoption){
             case 0:
                 npars = (dimens + dimens*(dimens+1)/2);
@@ -96,17 +101,17 @@ public class Mixtures {
                 npars = (dimens + dimens*(dimens+1)/2);
                 break;
         }
-        nparsover2 = npars / 2;
+       int nparsover2 = npars / 2;
 // % we choose which axes to use in the plot,
 // % in case of higher dimensional data (>2)
 // % Change this to have other axes being shown
 // axis1 = 1;
 // axis2 = 2;
 // kmax is the initial number of mixture components
-        k = kmax;
+       int k = kmax;
 // indic will contain the assignments of each data point to
 // the mixture components, as result of the E-step
-        indic = zeros(k,npoints);
+        Matrix indic = zeros(k,npoints);
 // Initialization: we will initialize the means of the k components
 // with k randomly chosen data points. Randperm(n) is a MATLAB function
 // that generates random permutations of the integers from 1 to n.
@@ -377,7 +382,7 @@ public class Mixtures {
                 k_cont = 0;
             }
 
-            } // this is the end of the outer loop "while(k_cont)"
+      } // this is the end of the outer loop "while(k_cont)"
 
         lastpp = estpp;
         lastmu = estmu;
@@ -388,6 +393,9 @@ public class Mixtures {
 
 /*
  * $Log: Mixtures.java,v $
+ * Revision 1.2  2009/09/17 14:13:12  pah
+ * evening commit
+ *
  * Revision 1.1  2009/09/17 07:03:49  pah
  * morning update
  *

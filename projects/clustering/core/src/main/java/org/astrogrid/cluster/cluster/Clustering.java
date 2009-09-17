@@ -1,5 +1,5 @@
 /*
- * $Id: Clustering.java,v 1.4 2009/09/17 07:03:50 pah Exp $
+ * $Id: Clustering.java,v 1.5 2009/09/17 14:13:13 pah Exp $
  * 
  * Created on 26 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -14,6 +14,7 @@ package org.astrogrid.cluster.cluster;
 
 
 import no.uib.cipr.matrix.AGDenseMatrix;
+import no.uib.cipr.matrix.Vector;
 
 import org.astrogrid.matrix.Matrix;
 import static org.astrogrid.matrix.Algorithms.*;
@@ -49,7 +50,7 @@ public class Clustering {
             int mml_min, 
             int  mml_max, 
             int  mml_reg, 
-            CovarianceKind cv_type , AGDenseMatrix data){
+            CovarianceKind cv_type , Matrix data){
 // first, read coptions, copti tol     tol    ons gives the variable types, data associated
      // OPTIONS(1)  --  Display parameter 
      // OPTIONS(2)  --  Termination tolerance on F.(Default: 1e-4).
@@ -114,27 +115,34 @@ public class Clustering {
         m_dim   = 0;
         i_dim   = 0;
     }
-
+    
+    Matrix R, bestmu, bestcov, lbestmu, lbestcov, errlog;
+    Vector bestpp, O;
     int bestk = mml_max;     // the default value for the optimal no. of classes
     CovarianceKind ctype = cv_type;    // the covariance type
-
+    int ndata, ndim, sizeall;
+    
+    AGDenseMatrix allinfo = new AGDenseMatrix(0,0);
+    
     if( !mix_var ){       // no mixed variables
 // no mixed-type variables
         if (c_dim != 0 & mml  & !outlier  ){ // for real data with and without errors
 // use mml methods to determine the number of clusters
             Util.disp("mml for clustering without outlier");
             
-            data = data(:,1:c_dim+e_dim);
+            data = data.sliceCol(0, c_dim+e_dim);
+            /* putback
             [bestk,bestpp,bestmu,bestcov,R]=mixtures4(data, //was data'
                     mml_min,mml_max,
                 mml_reg,tol,cv_type);
+            */
             System.out.printf("The optimal number of clusters is %d\n", bestk);
 // bestk     -- the optimal number of clusters
 // bestpp    -- the mixture probabilities
 // bestmu    -- the estimated mean of the clusters
 // bestcov   -- the estimated covariance matrix for the clusters
 // R         -- the present 
-            ndata = size(data,1);
+            ndata = data.numRows();
             ndim = c_dim +e_dim;
             if (cv_type == CovarianceKind.free){    // full covariance            
                 sizeall = 2+bestk+bestk*ndim+bestk*ndim*ndim+ndata*bestk;
@@ -739,6 +747,9 @@ public class Clustering {
 
 /*
  * $Log: Clustering.java,v $
+ * Revision 1.5  2009/09/17 14:13:13  pah
+ * evening commit
+ *
  * Revision 1.4  2009/09/17 07:03:50  pah
  * morning update
  *
