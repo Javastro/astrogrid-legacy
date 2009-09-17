@@ -3,7 +3,6 @@ package org.astrogrid.clustertool;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Map;
 import javax.swing.Action;
 import javax.swing.JMenu;
@@ -45,7 +44,7 @@ public class TableSendActionManager extends IndividualCallActionManager
      * Constructor.
      *
      * @param   connector  hub connector
-     * @param   sampControl  TOPCAT SAMP control object
+     * @param   sampControl   SAMP control object
      */
     public TableSendActionManager( GuiHubConnector connector,
             ClusterToolSampControl sampControl ) {
@@ -59,9 +58,9 @@ public class TableSendActionManager extends IndividualCallActionManager
         Sender sender = getSender( client );
         StarTable table =  controlWindow_.getOutputTable();
         if ( sender != null && table != null ) {
-            String ident = "cluster id";
-            String name = "cluster results";
-            String sampId = "table id";
+            String ident = "cluster-id";
+            String name = "cluster-results";
+            String sampId = "table-id";
             return sender.createMessage( table, ident, name, sampId );
         }
         else {
@@ -74,7 +73,7 @@ public class TableSendActionManager extends IndividualCallActionManager
         action.putValue( Action.NAME, "Broadcast table" );
         action.putValue( Action.SHORT_DESCRIPTION,
                          "Transmit table to all applications using SAMP" );
- //       action.putValue( Action.SMALL_ICON, ResourceIcon.BROADCAST );
+        action.putValue( Action.SMALL_ICON, ResourceIcon.BROADCAST );
         return action;
     }
 
@@ -89,7 +88,7 @@ public class TableSendActionManager extends IndividualCallActionManager
         JMenu menu = super.createSendMenu( "Send table to..." );
         menu.setToolTipText( "Send table to a single other registered client"
                            + " using SAMP" );
- //       menu.setIcon( ResourceIcon.SEND );
+        menu.setIcon( ResourceIcon.SEND );
         return menu;
     }
 

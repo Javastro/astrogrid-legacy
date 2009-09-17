@@ -1,5 +1,5 @@
 /*
- * $Id: ResourceIcon.java,v 1.1 2009/09/14 19:09:26 pah Exp $
+ * $Id: ResourceIcon.java,v 1.2 2009/09/17 07:03:19 pah Exp $
  * 
  * Created on Sep 14, 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -19,6 +19,8 @@ public class ResourceIcon {
     protected static final ImageIcon CONNECT = makeIcon("connected-24.gif");
     protected static final ImageIcon DISCONNECT = makeIcon("disconnected-24.gif");
     public static final ImageIcon SAMP = makeIcon("comms2.gif");
+    public static final ImageIcon BROADCAST = makeIcon("tx3.gif");
+    public static final ImageIcon SEND = makeIcon("phone2.gif");
 
     
    static private ImageIcon makeIcon(String name){
@@ -31,6 +33,9 @@ public class ResourceIcon {
 
 /*
  * $Log: ResourceIcon.java,v $
+ * Revision 1.2  2009/09/17 07:03:19  pah
+ * GUI refinements
+ *
  * Revision 1.1  2009/09/14 19:09:26  pah
  * basic framework of GUI mostly working
  *

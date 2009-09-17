@@ -4,6 +4,9 @@
 
 package org.astrogrid.clustertool;
 
+import gnu.getopt.Getopt;
+import gnu.getopt.LongOpt;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +27,10 @@ public class ClustertoolApp extends SingleFrameApplication {
 
     private File inputDataFile;
     private AGDenseMatrix indata;
+    /** logger for this class */
+    private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
+            .getLog(ClustertoolApp.class);
+    
 
     /**
      * At startup create and show the main frame of the application.
@@ -53,8 +60,39 @@ public class ClustertoolApp extends SingleFrameApplication {
      */
     public static void main(String[] args) {
 
+        LongOpt lopts[] = new LongOpt[]{
+             new LongOpt("nogui", LongOpt.NO_ARGUMENT   , null, 1),
+             new LongOpt("help", LongOpt.NO_ARGUMENT   , null, 'h'),
+             
+        };
+        Getopt g = new Getopt("clustertool", args, "h", lopts);
+        int c;
+        boolean nogui = false;
+        while ((c = g.getopt()) != -1){
+            switch (c)
+              {
+            
+            case 1:
+                 nogui = true;
+                break;
+            case 'h':
+                System.out.println("clustertool -h --nogui \n" +
+                		"" +
+                		"--nogui do not run the gui, but process a file directly as specified by other arguments\n" +
+                		"");
+                break;
+                default:
+                    logger.warn("getopt() returned " + c);
+                    break;
+              }
+        }
+        if(nogui ){
+            
+        }else {
+            launch(ClustertoolApp.class, args);
+           
+        }
         
-        launch(ClustertoolApp.class, args);
     }
     
     public AGDenseMatrix loadTable(StarTable table) throws IOException{

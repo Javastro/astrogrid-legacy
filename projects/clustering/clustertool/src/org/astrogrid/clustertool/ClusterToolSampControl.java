@@ -1,6 +1,6 @@
 
 /*
- * $$Id: ClusterToolSampControl.java,v 1.2 2009/09/14 19:09:26 pah Exp $$
+ * $$Id: ClusterToolSampControl.java,v 1.3 2009/09/17 07:03:19 pah Exp $$
  *
  * Created on 28-Aug-2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright Astrogrid. All rights reserved.
@@ -12,16 +12,29 @@
  */ 
 package org.astrogrid.clustertool;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+
+import javax.swing.SwingUtilities;
+
+import org.astrogrid.clustertool.ClustertoolView.LoadFileTask;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.Metadata;
 import org.astrogrid.samp.client.AbstractMessageHandler;
 import org.astrogrid.samp.client.HubConnection;
 import org.astrogrid.samp.client.HubConnector;
 import org.astrogrid.samp.client.MessageHandler;
+import org.jdesktop.application.TaskService;
+
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.util.DataSource;
+import uk.ac.starlink.util.FileDataSource;
+import uk.ac.starlink.util.URLDataSource;
+import uk.ac.starlink.util.URLUtils;
+import uk.ac.starlink.util.gui.ErrorDialog;
 
 /**
  *
@@ -103,8 +116,66 @@ private static final org.apache.commons.logging.Log logger = org.apache.commons.
         }
 
         @Override
-        public Map processCall(HubConnection arg0, String arg1, Message arg2) throws Exception {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public Map processCall(HubConnection conn, final String senderId,
+                final Message msg) throws Exception {
+
+            /* Attempt to create a table from the message received. */
+            Throwable error;
+            StarTable table;
+            boolean success;
+            try {
+                table = createTable( format_,
+                                    (String) msg.getRequiredParam( "url" ) );
+                error = null;
+                success = true;
+            }
+            catch ( Throwable e ) {
+                error = e;
+                table = null;
+                success = false;
+            }
+
+            /* Do something with the success or failure of the table creation
+             * on the event dispatch thread. */
+            final boolean success0 = success;
+            final Throwable error0 = error;
+            final StarTable table0 = table;
+            final String tableId = (String) msg.getParam( "table-id" );
+            final String tableName = (String) msg.getParam( "name" );
+            
+            controlWindow_.setFileName(msg.getRequiredParam( "url" ).toString());
+            
+            controlWindow_.loadFile(table0);
+            
+ 
+            /* Pass success/failure status back to the caller as for a 
+             * message handler. */
+            if ( success0 ) {
+                return null;
+            }
+            else {
+                if ( error0 instanceof Error ) {
+                    throw (Error) error0;
+                }
+                else {
+                    throw (Exception) error0;
+                }
+            }
+        }
+        /**
+         * Constructs a table given a format and a URL.
+         *
+         * @param   format  table format string (as used by StarTableFactory)
+         * @param   url   table location
+         */
+        private StarTable createTable( String format, String url )
+                throws IOException {
+            File file = URLUtils.urlToFile( url );
+            DataSource datsrc =
+                file != null
+                    ? (DataSource) new FileDataSource( file )
+                    : (DataSource) new URLDataSource( new URL( url ) );
+            return controlWindow_.getTableFactory().makeStarTable( datsrc, format );
         }
 
     }

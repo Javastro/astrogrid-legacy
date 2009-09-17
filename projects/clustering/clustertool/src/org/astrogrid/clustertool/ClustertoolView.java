@@ -11,6 +11,8 @@ import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.Task;
 import org.jdesktop.application.TaskMonitor;
+import org.jdesktop.application.TaskService;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Level;
@@ -39,17 +41,83 @@ public class ClustertoolView extends FrameView {
     private final EnumComboBoxModel<CovarianceKind> covEnumModel;
     private static final Logger logger = Logger.getLogger(ClustertoolView.class.getName());
     private boolean loadedOK;
-    private AGDenseMatrix indata;
-    
+    private AGDenseMatrix indata; 
 
     public boolean isLoadedOK() {
         return loadedOK;
     }
+    protected String fileName;
+    public static final String PROP_FILENAME = "fileName";
+
+    /**
+     * Get the value of fileName
+     *
+     * @return the value of fileName
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * Set the value of fileName
+     *
+     * @param fileName new value of fileName
+     */
+    public void setFileName(String fileName) {
+        String oldFileName = this.fileName;
+        this.fileName = fileName;
+        firePropertyChange(PROP_FILENAME, oldFileName, fileName);
+    }
+    protected int ncontVar;
+    public static final String PROP_NCONTVAR = "ncontVar";
+
+    /**
+     * Get the value of ncontVar
+     *
+     * @return the value of ncontVar
+     */
+    public int getNcontVar() {
+        return ncontVar;
+    }
+
+    /**
+     * Set the value of ncontVar
+     *
+     * @param ncontVar new value of ncontVar
+     */
+    public void setNcontVar(int ncontVar) {
+        int oldNcontVar = this.ncontVar;
+        this.ncontVar = ncontVar;
+        firePropertyChange(PROP_NCONTVAR, oldNcontVar, ncontVar);
+    }
+
 
     public void setLoadedOK(boolean loadedOK) {
         boolean oldValue = this.loadedOK;
         this.loadedOK = loadedOK;
         firePropertyChange("loadedOK", oldValue, loadedOK);
+    }
+    protected int nconterrVar;
+    public static final String PROP_NCONTERRVAR = "nconterrVar";
+
+    /**
+     * Get the value of nconterrVar
+     *
+     * @return the value of nconterrVar
+     */
+    public int getNconterrVar() {
+        return nconterrVar;
+    }
+
+    /**
+     * Set the value of nconterrVar
+     *
+     * @param nconterrVar new value of nconterrVar
+     */
+    public void setNconterrVar(int nconterrVar) {
+        int oldNconterrVar = this.nconterrVar;
+        this.nconterrVar = nconterrVar;
+        firePropertyChange(PROP_NCONTERRVAR, oldNconterrVar, nconterrVar);
     }
 
     public int getNcols() {
@@ -73,9 +141,122 @@ public class ClustertoolView extends FrameView {
         this.nrows = nrows;
         firePropertyChange("nrows", oldvalue, nrows);
     }
+
+    protected String nbinVar;
+    public static final String PROP_NBINVAR = "nbinVar";
+
+    /**
+     * Get the value of nbinVar
+     *
+     * @return the value of nbinVar
+     */
+    public String getNbinVar() {
+        return nbinVar;
+    }
+
+    /**
+     * Set the value of nbinVar
+     *
+     * @param nbinVar new value of nbinVar
+     */
+    public void setNbinVar(String nbinVar) {
+        String oldNbinVar = this.nbinVar;
+        this.nbinVar = nbinVar;
+        firePropertyChange(PROP_NBINVAR, oldNbinVar, nbinVar);
+    }
+    protected int ncatVar;
+    public static final String PROP_NCATVAR = "ncatVar";
+
+    /**
+     * Get the value of ncatVar
+     *
+     * @return the value of ncatVar
+     */
+    public int getNcatVar() {
+        return ncatVar;
+    }
+
+    /**
+     * Set the value of ncatVar
+     *
+     * @param ncatVar new value of ncatVar
+     */
+    public void setNcatVar(int ncatVar) {
+        int oldNcatVar = this.ncatVar;
+        this.ncatVar = ncatVar;
+        firePropertyChange(PROP_NCATVAR, oldNcatVar, ncatVar);
+    }
+    protected String nintVar;
+    public static final String PROP_NINTVAR = "nintVar";
+
+    /**
+     * Get the value of nintVar
+     *
+     * @return the value of nintVar
+     */
+    public String getNintVar() {
+        return nintVar;
+    }
+
+    /**
+     * Set the value of nintVar
+     *
+     * @param nintVar new value of nintVar
+     */
+    public void setNintVar(String nintVar) {
+        String oldNintVar = this.nintVar;
+        this.nintVar = nintVar;
+        firePropertyChange(PROP_NINTVAR, oldNintVar, nintVar);
+    }
+    protected int nclasses;
+    public static final String PROP_NCLASSES = "nclasses";
+
+    /**
+     * Get the value of nclasses
+     *
+     * @return the value of nclasses
+     */
+    public int getNclasses() {
+        return nclasses;
+    }
+
+    /**
+     * Set the value of nclasses
+     *
+     * @param nclasses new value of nclasses
+     */
+    public void setNclasses(int nclasses) {
+        int oldNclasses = this.nclasses;
+        this.nclasses = nclasses;
+        firePropertyChange(PROP_NCLASSES, oldNclasses, nclasses);
+    }
+    protected CovarianceKind covarianceKind;
+    public static final String PROP_COVARIANCEKIND = "covarianceKind";
+
+    /**
+     * Get the value of covarianceKind
+     *
+     * @return the value of covarianceKind
+     */
+    public CovarianceKind getCovarianceKind() {
+        return covarianceKind;
+    }
+
+    /**
+     * Set the value of covarianceKind
+     *
+     * @param covarianceKind new value of covarianceKind
+     */
+    public void setCovarianceKind(CovarianceKind covarianceKind) {
+        CovarianceKind oldCovarianceKind = this.covarianceKind;
+        this.covarianceKind = covarianceKind;
+        firePropertyChange(PROP_COVARIANCEKIND, oldCovarianceKind, covarianceKind);
+    }
+
     private int ncols;
     private int nrows;
     private SampCommunicator communicator_ = null;
+    private Transmitter tableTransmitter;
 
     public ClustertoolView(ClustertoolApp app) {
         super(app);
@@ -113,6 +294,9 @@ public class ClustertoolView extends FrameView {
                 jInteropMenu.setEnabled(true);
                 javax.swing.Action interopAct = communicator_.createWindowAction(this.getRootPane());
                 jInteropMenu.add(interopAct);
+                tableTransmitter = communicator_.getTableTransmitter();
+                jInteropMenu.add(tableTransmitter.getBroadcastAction());
+                jInteropMenu.add(tableTransmitter.createSendMenu());
             }
         } catch (IOException e1) {
             logger.log(Level.SEVERE, "cannot start up SAMP", e1);
@@ -148,6 +332,7 @@ public class ClustertoolView extends FrameView {
                 }
             }
         });
+        tableFactory = new StarTableFactory();
     }
 
     @Action
@@ -213,7 +398,6 @@ public class ClustertoolView extends FrameView {
         jRunMenu = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
         jInteropMenu = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -221,7 +405,6 @@ public class ClustertoolView extends FrameView {
         statusMessageLabel = new javax.swing.JLabel();
         statusAnimationLabel = new javax.swing.JLabel();
         progressBar = new javax.swing.JProgressBar();
-        clusterControl1 = new org.astrogrid.clustertool.ClusterControl();
 
         mainPanel.setName("mainPanel"); // NOI18N
 
@@ -283,36 +466,35 @@ public class ClustertoolView extends FrameView {
         jC_DIM_TextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jC_DIM_TextField1.setName("jC_DIM_TextField1"); // NOI18N
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clusterControl1, org.jdesktop.beansbinding.ELProperty.create("${ncont_var}"), jC_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ncontVar}"), jC_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding.setSourceNullValue("0");
+        binding.setSourceUnreadableValue("0");
         bindingGroup.addBinding(binding);
 
         jE_DIM_TextField1.setColumns(3);
         jE_DIM_TextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jE_DIM_TextField1.setName("jE_DIM_TextField1"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clusterControl1, org.jdesktop.beansbinding.ELProperty.create("${nconterr_var}"), jE_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${nconterrVar}"), jE_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"));
         bindingGroup.addBinding(binding);
 
         jB_DIM_TextField1.setColumns(3);
         jB_DIM_TextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jB_DIM_TextField1.setName("jB_DIM_TextField1"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clusterControl1, org.jdesktop.beansbinding.ELProperty.create("${nbin_var}"), jB_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${nbinVar}"), jB_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         jM_DIM_TextField1.setColumns(3);
         jM_DIM_TextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jM_DIM_TextField1.setName("jM_DIM_TextField1"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clusterControl1, org.jdesktop.beansbinding.ELProperty.create("${ncat_var}"), jM_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ncatVar}"), jM_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         jP_DIM_TextField1.setColumns(3);
         jP_DIM_TextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jP_DIM_TextField1.setName("jP_DIM_TextField1"); // NOI18N
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clusterControl1, org.jdesktop.beansbinding.ELProperty.create("${nint_var}"), jP_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
-        bindingGroup.addBinding(binding);
 
         jLabel5.setText(resourceMap.getString("jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
@@ -384,17 +566,12 @@ public class ClustertoolView extends FrameView {
 
         jNClassesTextField1.setName("jNClassesTextField1"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clusterControl1, org.jdesktop.beansbinding.ELProperty.create("${nclasses}"), jNClassesTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
-        bindingGroup.addBinding(binding);
-
         jLabel11.setText(resourceMap.getString("jLabel11.text")); // NOI18N
         jLabel11.setName("jLabel11"); // NOI18N
 
         jCovarianceComboBox1.setModel(covEnumModel);
+        jCovarianceComboBox1.setSelectedItem(CovarianceKind.common);
         jCovarianceComboBox1.setName("jCovarianceComboBox1"); // NOI18N
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clusterControl1, org.jdesktop.beansbinding.ELProperty.create("${covarianceKind}"), jCovarianceComboBox1, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
-        bindingGroup.addBinding(binding);
 
         jLabel12.setText(resourceMap.getString("jLabel12.text")); // NOI18N
         jLabel12.setName("jLabel12"); // NOI18N
@@ -447,7 +624,7 @@ public class ClustertoolView extends FrameView {
         fileNameField.setEditable(false);
         fileNameField.setName("fileNameField"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, clusterControl1, org.jdesktop.beansbinding.ELProperty.create("${fileName}"), fileNameField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${fileName}"), fileNameField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"));
         bindingGroup.addBinding(binding);
 
         jLabel3.setText(resourceMap.getString("jLabel3.text")); // NOI18N
@@ -632,11 +809,6 @@ public class ClustertoolView extends FrameView {
 
         jInteropMenu.setText(resourceMap.getString("jInteropMenu.text")); // NOI18N
         jInteropMenu.setName("jInteropMenu"); // NOI18N
-
-        jMenuItem2.setText(resourceMap.getString("jMenuItem2.text")); // NOI18N
-        jMenuItem2.setName("jMenuItem2"); // NOI18N
-        jInteropMenu.add(jMenuItem2);
-
         menuBar.add(jInteropMenu);
 
         helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
@@ -698,19 +870,32 @@ public class ClustertoolView extends FrameView {
 
     @Action
     public Task loadFileTask() {
-        TableLoadChooser fc = new TableLoadChooser(new StarTableFactory());
+        TableLoadChooser fc = new TableLoadChooser(tableFactory);
         StarTable table = fc.showTableDialog(getFrame());   
        
         Task task = null;
         if (table != null) {
-            clusterControl1.setFileName(table.getURL().toExternalForm() );
+            setFileName(table.getURL().toExternalForm() );
             fileNameField.setText(table.getURL().toExternalForm());
             task = new LoadFileTask(table);
         }
         return task;
     }
+    
+    /**
+     * load a file - for use outside this Class. e.g. by the SAMP classes.
+     * @param table
+     */
+    public void loadFile(StarTable table){
+        TaskService taskService = getApplication().getContext().getTaskService();
+        
+        LoadFileTask task = new LoadFileTask(table );
+        
+        taskService.execute(task);
 
-    private class LoadFileTask extends org.jdesktop.application.Task<AGDenseMatrix, Void> {
+    }
+
+    class LoadFileTask extends org.jdesktop.application.Task<AGDenseMatrix, Void> {
         private final StarTable file;
         LoadFileTask(StarTable table) {
             // Runs on the EDT.  Copy GUI state that
@@ -790,11 +975,8 @@ public class ClustertoolView extends FrameView {
             super(app);
         }
         @Override protected Object doInBackground() {
-            // Your Task's code here.  This method runs
-            // on a background thread, so don't reference
-            // the Swing GUI from here.
-            return null;  // return your result
-        }
+            
+         }
         @Override protected void succeeded(Object result) {
             // Runs on the EDT.  Update the GUI based on
             // the result computed by doInBackground().
@@ -804,7 +986,6 @@ public class ClustertoolView extends FrameView {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.astrogrid.clustertool.ClusterControl clusterControl1;
     private javax.swing.JTextField fileNameField;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JTextField jB_DIM_TextField1;
@@ -830,7 +1011,6 @@ public class ClustertoolView extends FrameView {
     private javax.swing.JTextField jM_DIM_TextField1;
     private javax.swing.JCheckBox jMeasErrorCheckBox1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JCheckBox jMixVarCheckBox1;
@@ -861,10 +1041,15 @@ public class ClustertoolView extends FrameView {
     private int busyIconIndex = 0;
 
     private JDialog aboutBox;
+    private final StarTableFactory tableFactory;
 
 
     public StarTable getOutputTable() {
         // TODO make this actually return the output values.....
         return new DenseMatrixStarTable(indata);
+    }
+
+    public StarTableFactory getTableFactory() {
+        return tableFactory;
     }
 }

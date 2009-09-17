@@ -244,8 +244,10 @@
                     <Property name="name" type="java.lang.String" value="jC_DIM_TextField1" noResource="true"/>
                   </Properties>
                   <BindingProperties>
-                    <BindingProperty name="text" source="clusterControl1" sourcePath="${ncont_var}" target="jC_DIM_TextField1" targetPath="text" updateStrategy="0" immediately="false">
+                    <BindingProperty name="text" source="Form" sourcePath="${ncontVar}" target="jC_DIM_TextField1" targetPath="text" updateStrategy="0" immediately="false">
                       <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+                      <Property name="nullValue" type="java.lang.String" value="0"/>
+                      <Property name="incompletePathValue" type="java.lang.String" value="0"/>
                     </BindingProperty>
                   </BindingProperties>
                 </Component>
@@ -256,7 +258,7 @@
                     <Property name="name" type="java.lang.String" value="jE_DIM_TextField1" noResource="true"/>
                   </Properties>
                   <BindingProperties>
-                    <BindingProperty name="text" source="clusterControl1" sourcePath="${nconterr_var}" target="jE_DIM_TextField1" targetPath="text" updateStrategy="0" immediately="false">
+                    <BindingProperty name="text" source="Form" sourcePath="${nconterrVar}" target="jE_DIM_TextField1" targetPath="text" updateStrategy="0" immediately="false">
                       <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_ACTION_OR_FOCUS_LOST"/>
                     </BindingProperty>
                   </BindingProperties>
@@ -268,7 +270,7 @@
                     <Property name="name" type="java.lang.String" value="jB_DIM_TextField1" noResource="true"/>
                   </Properties>
                   <BindingProperties>
-                    <BindingProperty name="text" source="clusterControl1" sourcePath="${nbin_var}" target="jB_DIM_TextField1" targetPath="text" updateStrategy="0" immediately="false">
+                    <BindingProperty name="text" source="Form" sourcePath="${nbinVar}" target="jB_DIM_TextField1" targetPath="text" updateStrategy="0" immediately="false">
                       <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
                     </BindingProperty>
                   </BindingProperties>
@@ -280,7 +282,7 @@
                     <Property name="name" type="java.lang.String" value="jM_DIM_TextField1" noResource="true"/>
                   </Properties>
                   <BindingProperties>
-                    <BindingProperty name="text" source="clusterControl1" sourcePath="${ncat_var}" target="jM_DIM_TextField1" targetPath="text" updateStrategy="0" immediately="false">
+                    <BindingProperty name="text" source="Form" sourcePath="${ncatVar}" target="jM_DIM_TextField1" targetPath="text" updateStrategy="0" immediately="false">
                       <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
                     </BindingProperty>
                   </BindingProperties>
@@ -291,11 +293,6 @@
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="name" type="java.lang.String" value="jP_DIM_TextField1" noResource="true"/>
                   </Properties>
-                  <BindingProperties>
-                    <BindingProperty name="text" source="clusterControl1" sourcePath="${nint_var}" target="jP_DIM_TextField1" targetPath="text" updateStrategy="0" immediately="false">
-                      <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-                    </BindingProperty>
-                  </BindingProperties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel5">
                   <Properties>
@@ -404,11 +401,6 @@
                   <Properties>
                     <Property name="name" type="java.lang.String" value="jNClassesTextField1" noResource="true"/>
                   </Properties>
-                  <BindingProperties>
-                    <BindingProperty name="text" source="clusterControl1" sourcePath="${nclasses}" target="jNClassesTextField1" targetPath="text" updateStrategy="0" immediately="false">
-                      <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-                    </BindingProperty>
-                  </BindingProperties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel11">
                   <Properties>
@@ -421,11 +413,11 @@
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection code="covEnumModel" type="code"/>
                     </Property>
+                    <Property name="selectedItem" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="CovarianceKind.common" type="code"/>
+                    </Property>
                     <Property name="name" type="java.lang.String" value="jCovarianceComboBox1" noResource="true"/>
                   </Properties>
-                  <BindingProperties>
-                    <BindingProperty name="selectedItem" source="clusterControl1" sourcePath="${covarianceKind}" target="jCovarianceComboBox1" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
-                  </BindingProperties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel12">
                   <Properties>
@@ -506,7 +498,7 @@
                     <Property name="name" type="java.lang.String" value="fileNameField" noResource="true"/>
                   </Properties>
                   <BindingProperties>
-                    <BindingProperty name="text" source="clusterControl1" sourcePath="${fileName}" target="fileNameField" targetPath="text" updateStrategy="0" immediately="false">
+                    <BindingProperty name="text" source="Form" sourcePath="${fileName}" target="fileNameField" targetPath="text" updateStrategy="0" immediately="false">
                       <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_ACTION_OR_FOCUS_LOST"/>
                     </BindingProperty>
                   </BindingProperties>
@@ -678,14 +670,6 @@
             <Property name="text" type="java.lang.String" resourceKey="jInteropMenu.text"/>
             <Property name="name" type="java.lang.String" value="jInteropMenu" noResource="true"/>
           </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
-              <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem2.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem2" noResource="true"/>
-              </Properties>
-            </MenuItem>
-          </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="helpMenu">
           <Properties>
@@ -785,8 +769,6 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="org.astrogrid.clustertool.ClusterControl" name="clusterControl1">
-    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="component" type="javax.swing.JComponent" editor="org.netbeans.modules.form.ComponentChooserEditor">

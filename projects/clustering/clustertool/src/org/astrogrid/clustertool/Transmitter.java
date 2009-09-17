@@ -1,5 +1,5 @@
 /*
- * $$Id: Transmitter.java,v 1.1 2009/09/07 16:06:11 pah Exp $$
+ * $$Id: Transmitter.java,v 1.2 2009/09/17 07:03:19 pah Exp $$
  *
  * Created on 28-Aug-2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright Astrogrid. All rights reserved.
@@ -19,6 +19,7 @@ import javax.swing.JMenu;
  * this application to one or more other applications.
  *
  * @author   Mark Taylor
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) Sep 15, 2009
  * @since    4 Sep 2008
  */
 public interface Transmitter {
