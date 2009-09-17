@@ -1,5 +1,5 @@
 /*
- * $Id: Clustering.java,v 1.3 2009/09/16 16:53:06 pah Exp $
+ * $Id: Clustering.java,v 1.4 2009/09/17 07:03:50 pah Exp $
  * 
  * Created on 26 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -165,7 +165,7 @@ public class Clustering {
             allsize = ndata*colnos;
             allinfo =[allinfo; zeros(allsize-sizeall,1)];
             y = [];        ini = 0;        text = [];
-            for(int k = 0: k <colnos; k++){
+            for(int k = 0; k <colnos; k++){
                 textk = num2str(k);
                 text = [text, "col", textk, ","];
                 tk = allinfo(ini+1:ini+ndata);
@@ -739,6 +739,9 @@ public class Clustering {
 
 /*
  * $Log: Clustering.java,v $
+ * Revision 1.4  2009/09/17 07:03:50  pah
+ * morning update
+ *
  * Revision 1.3  2009/09/16 16:53:06  pah
  * daily edit
  *
