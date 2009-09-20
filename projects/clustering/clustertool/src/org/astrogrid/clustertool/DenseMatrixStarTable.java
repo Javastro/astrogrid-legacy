@@ -1,5 +1,5 @@
 /*
- * $Id: DenseMatrixStarTable.java,v 1.1 2009/09/14 19:09:26 pah Exp $
+ * $Id: DenseMatrixStarTable.java,v 1.2 2009/09/20 17:17:59 pah Exp $
  * 
  * Created on Sep 14, 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -53,7 +53,7 @@ public class DenseMatrixStarTable extends RandomStarTable {
     }
     @Override
     public Object getCell(long irow, int icol) throws IOException {
-        return new Double(mat.get(icol, icol));
+        return new Double(mat.get((int) irow, icol));
      }
 
 }
@@ -61,6 +61,9 @@ public class DenseMatrixStarTable extends RandomStarTable {
 
 /*
  * $Log: DenseMatrixStarTable.java,v $
+ * Revision 1.2  2009/09/20 17:17:59  pah
+ * checking just prior to bham visit
+ *
  * Revision 1.1  2009/09/14 19:09:26  pah
  * basic framework of GUI mostly working
  *

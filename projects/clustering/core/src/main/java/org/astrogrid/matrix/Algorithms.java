@@ -1,5 +1,5 @@
 /*
- * $Id: Algorithms.java,v 1.2 2009/09/14 19:08:42 pah Exp $
+ * $Id: Algorithms.java,v 1.3 2009/09/20 17:18:01 pah Exp $
  * 
  * Created on 8 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -355,16 +355,23 @@ public class Algorithms {
     public static Vector mean(Matrix m, int i){
         Vector retval = sum(m, i);
         if(i == 1){
-            return retval.scale(1.0/m.numColumns());
-        }else {
             return retval.scale(1.0/m.numRows());
+        }else {
+            return retval.scale(1.0/m.numColumns());
         }
+    }
+    
+    public static int rem(int a, int b){
+        return a % b;
     }
 }
 
 
 /*
  * $Log: Algorithms.java,v $
+ * Revision 1.3  2009/09/20 17:18:01  pah
+ * checking just prior to bham visit
+ *
  * Revision 1.2  2009/09/14 19:08:42  pah
  * code runs clustering, but not giving same results as matlab exactly
  *

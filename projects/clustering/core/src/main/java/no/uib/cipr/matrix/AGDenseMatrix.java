@@ -1,5 +1,5 @@
 /*
- * $Id: AGDenseMatrix.java,v 1.3 2009/09/14 19:08:43 pah Exp $
+ * $Id: AGDenseMatrix.java,v 1.4 2009/09/20 17:18:01 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -287,6 +287,7 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
     }
 
     public AGDenseMatrix reshape(final int irow, final int icol) {
+        if(this.numColumns !=0 && this.numRows !=0){
         if(irow*icol != data.length){
             throw new IllegalArgumentException("new total size of matrix is different");
         }
@@ -294,6 +295,7 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
             numColumns = icol;
             numRows = irow;
             //do not need to move the data around.
+        }
         }
         return this;
      }
@@ -508,6 +510,20 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
         }
         return this;
     }
+    public void appendCol(AGDenseMatrix r) {
+        if (r.numRows() != numRows) {
+            throw new IllegalArgumentException("matrices must have same number of rows")  ;
+        } else {
+            double arr[] = new double[numRows*(numColumns+r.numColumns())];
+            System.arraycopy(data, 0, arr, 0, numColumns* numRows);
+            System.arraycopy(r.data, 0, arr, numRows*numColumns, r.numColumns()*r.numRows());
+            numColumns += r.numColumns();
+            data = arr;
+        }
+        
+        
+    }
+
 
     public Matrix setColumn(int idx, Vector v) {
         this.setColumn(idx, new AGDenseMatrix(v));
@@ -538,6 +554,7 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
             System.arraycopy(data, 0, arr, 0, numRows);
             arr[numRows] = d;
             numRows += 1;
+            numColumns = 1;
             data = arr;
                 
         }
@@ -568,11 +585,15 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
        return this;
     }
 
+
  
 }
 
 /*
  * $Log: AGDenseMatrix.java,v $
+ * Revision 1.4  2009/09/20 17:18:01  pah
+ * checking just prior to bham visit
+ *
  * Revision 1.3  2009/09/14 19:08:43  pah
  * code runs clustering, but not giving same results as matlab exactly
  *

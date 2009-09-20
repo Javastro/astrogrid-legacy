@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterMStepFull.java,v 1.3 2009/09/14 19:08:43 pah Exp $
+ * $Id: ClusterMStepFull.java,v 1.4 2009/09/20 17:18:01 pah Exp $
  * 
  * Created on 12 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -169,7 +169,7 @@ public class ClusterMStepFull {
                             Matrix mtmp = new AGDenseMatrix(tmp);
                             Matrix mtmp2 = new AGDenseMatrix(tmp.size(), tmp.size());
                             mtmp.transBmult(1.0, mtmp, mtmp2);
-                            gcvt = (Matrix) gcvt.add(q.get(n,k)*a.get(n,k)/b.get(n,k), (qcv[n][k].add(mtmp2)));
+                            gcvt = (Matrix) gcvt.add(q.get(n,k)*a.get(n,k)/b.get(n,k), add(qcv[n][k],mtmp2));
                         }
                         gcv_f[k] = (Matrix) gcvt.scale(1.0/(sum(q.sliceCol(k, 1).asVector())+eps));
                         lcv.append((DenseVector)gcv_f[k].asVector());
@@ -331,6 +331,9 @@ public class ClusterMStepFull {
 
 /*
  * $Log: ClusterMStepFull.java,v $
+ * Revision 1.4  2009/09/20 17:18:01  pah
+ * checking just prior to bham visit
+ *
  * Revision 1.3  2009/09/14 19:08:43  pah
  * code runs clustering, but not giving same results as matlab exactly
  *

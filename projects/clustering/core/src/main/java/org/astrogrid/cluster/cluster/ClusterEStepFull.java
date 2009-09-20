@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterEStepFull.java,v 1.3 2009/09/14 19:08:43 pah Exp $
+ * $Id: ClusterEStepFull.java,v 1.4 2009/09/20 17:18:01 pah Exp $
  * 
  * Created on 11 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -14,6 +14,7 @@ package org.astrogrid.cluster.cluster;
 
 import no.uib.cipr.matrix.AGDenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
+import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.Vector;
 
 import org.astrogrid.matrix.Matrix;
@@ -69,12 +70,12 @@ public class ClusterEStepFull {
     Matrix gmu_nr = null,gcv_nr_f[] = new AGDenseMatrix[K], gcv_nr_d = null,  gmu = null, gcv_f[] = new AGDenseMatrix[K], gcv_d = null, S = null;
     Vector  gcv_nr_c= null, gcv_c = null;
     Matrix bp = null, mp = null, ip = null;
-    AGDenseMatrix output = new AGDenseMatrix(12*K*ndata,1), C = new AGDenseMatrix(ndata, K);
+    AGDenseMatrix C = new AGDenseMatrix(ndata, K);
    
     int ndim_nr = 0, ndim_er = 0,ndim_bin=0,ndim_mul = 0,ndim_int = 0;
     for (int i = 0; i < no_of_data_types; i++){
         if (datatype.get(i,0) == 1){     // continuous data without errors
-            ndim_nr = (int) datatype.get(i,1);
+            if((ndim_nr = (int) datatype.get(i,1)) > 0){
             data_nr = data.sliceCol(d,ndim_nr );
             gmu_nr = reshape(mu.asVector(nm,nm+K*ndim_nr-1), K, ndim_nr);
             nm = nm + K*ndim_nr;
@@ -95,11 +96,11 @@ public class ClusterEStepFull {
                     n0 = n0 + K;
                     break;
             }
-            
+            }
             d = d + ndim_nr;
         }
         else if (datatype.get(i,0) == 2){ // continous data with errors
-            ndim_er = (int) datatype.get(i,1);
+            if((ndim_er = (int) datatype.get(i,1))!=0){
             data_er = data.sliceCol(d,ndim_er);
             gmu = reshape(lmu.asVector(ne,ne+K*ndim_er-1),K, ndim_er);
             ne = ne + K*ndim_er;
@@ -120,6 +121,7 @@ public class ClusterEStepFull {
                 break;
             }
             d = d + ndim_er;
+            }
         }
         else if (datatype.get(i,0) == 3){
              ndim_bin = (int) datatype.get(i,1);
@@ -168,6 +170,7 @@ public class ClusterEStepFull {
     // WITH MEASUREMENT ERRORS
     //--------------------------------------------------------------------------
     int ndim= data.numColumns();       // data is 
+    AGDenseMatrix output = new AGDenseMatrix(ndim_er*(ndim_er+1)*K*ndata,1);
 
     AGDenseMatrix qcv[][]= new AGDenseMatrix[ndata][K];
     DenseVector qmu[][]= new DenseVector[ndata][K]; //actually always a vector
@@ -290,7 +293,7 @@ public class ClusterEStepFull {
     }
     else if( datatype.get(1,1) !=0 && datatype.get(0,1) == 0){
     //     disp 'estimate parameter of u for variable with measurement errors'
-        a = (AGDenseMatrix) (repmatt(v, ndata, 1).add(ndim_nr).scale(0.5));
+        a = (AGDenseMatrix) (repmatt(v, ndata, 1).add(ndim_er).scale(0.5));
         b = (AGDenseMatrix) (repmatt(v, ndata, 1).add(C)).scale(0.5);
         abpos = ab.insert(a,abpos);
         abpos = ab.insert(b,abpos);
@@ -328,33 +331,33 @@ public class ClusterEStepFull {
             for (int k = 0; k <K; k++){
                 switch (cv_type){
                     case free:                  
-                        aux1.set(n,k, -ndim_er/2*log(2*PI)-log(det(diag(S.sliceRow(n))))/2-
-                            (((multBt(mult(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() -  
-                            multBt(multAt(qmu[n][k],inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar()*2) + (
-                            trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k])))
+                        aux1.set(n,k, -ndim_er/2.0*log(2*PI)-log(det(diag(S.sliceRow(n))))/2.0-
+                            (multBt(mult(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() -  
+                            multBt(multAt(qmu[n][k],inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar()*2 + 
+                            trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k]))
                             + multATBA(qmu[n][k],inv(diag(S.sliceRow(n)))).asScalar()
-                            ))/2);
-                        aux2.set(n,k, -ndim_er/2*log(2*Math.PI)-log(det(gcv_f[k]
-                            ))/2+ndim_er/2*(psi(a.get(n,k))-log(b.get(n,k)))-
+                            )/2.0);
+                        aux2.set(n,k, -ndim_er/2.0*log(2*Math.PI)-log(det(gcv_f[k]
+                            ))/2.0+ndim_er/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-
                             0.5*a.get(n,k)/b.get(n,k)*(                            
                             multATBA(qmu[n][k],inv(gcv_f[k])).asScalar()+ (trace(mult(inv(gcv_f[k]),qcv[n][k])))
                             -2*multBt(multAt(qmu[n][k],inv(gcv_f[k])),gmu.sliceRowM(k)).asScalar()
                             + multABAT(gmu.sliceRowM(k),inv(gcv_f[k])).asScalar() ));
                         // -E_q[ LOG q(W|K) ]
-                        aux4.set(n,k, ndim_er/2*log(2*Math.PI)+log(det(qcv[n][k]))/2+ndim_er/2);     
+                        aux4.set(n,k, ndim_er/2.0*log(2*Math.PI)+log(det(qcv[n][k]))/2.0+ndim_er/2.0);     
                             break;
                     case diagonal:
-                        aux1.set(n,k, -ndim_er/2*log(2*Math.PI)-log(det(diag(S.sliceRow(n))))/2-
+                        aux1.set(n,k, -ndim_er/2.0*log(2*Math.PI)-log(det(diag(S.sliceRow(n))))/2.0-
                             (multABAT(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))).asScalar() - 
                             2*multBt(multAt(qmu[n][k],inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
                             trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k])) 
-                            + multATBA(qmu[n][k],inv(diag(S.sliceRow(n)))).asScalar() )/2);                    
+                            + multATBA(qmu[n][k],inv(diag(S.sliceRow(n)))).asScalar() )/2.0);                    
                         Vector covk = gcv_d.sliceRow(k);                    
-                        aux2.set(n,k, -ndim_er/2*log(2*Math.PI)-sum(log(covk))/2 +
-                            ndim_er/2*(psi(a.get(n,k))-log(b.get(n,k)))-
+                        aux2.set(n,k, -ndim_er/2.0*log(2*Math.PI)-sum(log(covk))/2.0 +
+                            ndim_er/2.0*(psi(a.get(n,k))-log(b.get(n,k)))-
                             0.5*a.get(n,k)/b.get(n,k)*C.get(n,k));
                         // -E_q[ LOG q(W|K) ]
-                        aux4.set(n,k, ndim_er/2*log(2*Math.PI)+log(det(qcv[n][k]))/2+ndim_er/2);
+                        aux4.set(n,k, ndim_er/2.0*log(2*Math.PI)+log(det(qcv[n][k]))/2.0+ndim_er/2.0);
                         break;
                     case common:
                         aux1.set(n,k, -ndim_er/2.0*log(2*Math.PI)-log(det(diag(S.sliceRow(n))))/2.0-
@@ -490,8 +493,13 @@ public class ClusterEStepFull {
 
     AGDenseMatrix q = (AGDenseMatrix) times(multBt(ones(ndata, 1),new AGDenseMatrix(p)),exp(aux));
     Matrix s = new AGDenseMatrix(sum(q, 2));
-    //FIXME need Set any zeros to one before dividing 
-    // s = s + (s==0);
+    // Set any zeros to one before dividing 
+    for (MatrixEntry matrixEntry : s) {
+        if(matrixEntry.get() == 0.0)
+        {
+            matrixEntry.set(1.0);
+        }
+    }
     q = (AGDenseMatrix) divide(q,mult(s,ones(1, K)));
 
     Retval retval = new Retval(output, ab, q, C);
@@ -509,6 +517,9 @@ public class ClusterEStepFull {
 
 /*
  * $Log: ClusterEStepFull.java,v $
+ * Revision 1.4  2009/09/20 17:18:01  pah
+ * checking just prior to bham visit
+ *
  * Revision 1.3  2009/09/14 19:08:43  pah
  * code runs clustering, but not giving same results as matlab exactly
  *

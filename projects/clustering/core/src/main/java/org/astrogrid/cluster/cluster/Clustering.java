@@ -1,5 +1,5 @@
 /*
- * $Id: Clustering.java,v 1.5 2009/09/17 14:13:13 pah Exp $
+ * $Id: Clustering.java,v 1.6 2009/09/20 17:18:01 pah Exp $
  * 
  * Created on 26 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,31 +13,41 @@
 package org.astrogrid.cluster.cluster;
 
 
+import java.util.List;
+
 import no.uib.cipr.matrix.AGDenseMatrix;
 import no.uib.cipr.matrix.Vector;
 
+import org.astrogrid.cluster.cluster.RobustClusterErr.RobustClusterErrResult;
 import org.astrogrid.matrix.Matrix;
 import static org.astrogrid.matrix.Algorithms.*;
 import static org.astrogrid.matrix.MatrixUtils.*;
+import static java.lang.Math.*;
 
 public class Clustering {
 // 1. clustering for data sets with mixed-type variables% 
 // 3. clustering for real data sets with outliers
 // 4. MML for determing the optimal number of clusters.
-//    function [output errlog]=
-      public static class Retval {
-        public final Matrix output;
-        public final String errlog;
-        public Retval(Matrix output, String errlog) {
-            this.output = output;
+//    function [output errlog]=  R, bestpp, bestmu, bestcov, errlog
+      public static class ClusteringResults {
+        public final Matrix R;
+        public final Vector bestpp;
+        public final Matrix bestmu;
+        public final Matrix bestcov;
+        public final List<Double> errlog;
+        public ClusteringResults(Matrix R, Vector bestpp, Matrix bestmu, Matrix bestcov, List<Double> errlog) {
+            this.R = R;
+            this.bestpp = bestpp;
+            this.bestmu = bestmu;
+            this.bestcov = bestcov;
             this.errlog = errlog;
         }
     };
         
-    public Retval  clustering( boolean display, 
+    public ClusteringResults  clustering( boolean display, 
             double tol,     
             boolean mix_var, 
-            int err_dim,
+            boolean err_dim,
             boolean outlier, 
             boolean mml,     
             int c_dim,   
@@ -46,10 +56,10 @@ public class Clustering {
             int m_dim,   
             int i_dim,   
             int niters,  
-            double line_s,  
+            double line_s,  //not apparently used
             int mml_min, 
             int  mml_max, 
-            int  mml_reg, 
+            double  mml_reg, 
             CovarianceKind cv_type , Matrix data){
 // first, read coptions, copti tol     tol    ons gives the variable types, data associated
      // OPTIONS(1)  --  Display parameter 
@@ -86,21 +96,21 @@ public class Clustering {
 // OPTIONS(22) --  missing value identicator    
  
     System.out.printf("The tolerance value for optimizataion covergence is %f\n", tol);
-    System.out.printf("Is mix-variable input? %d\n", mix_var);
-    System.out.printf("Do we need to consider error information ? %d\n", err_dim);
-    System.out.printf("Do we need to consider outlier ? %d\n", outlier);
-    System.out.printf("Do we need to look for optimal number of clusters? %d\n", mml);
+    System.out.printf("Is mix-variable input? %b\n", mix_var);
+    System.out.printf("Do we need to consider error information ? %b\n", err_dim);
+    System.out.printf("Do we need to consider outlier ? %b\n", outlier);
+    System.out.printf("Do we need to look for optimal number of clusters? %b\n", mml);
     System.out.printf("The number of continuous variables -- %d\n", c_dim);
     System.out.printf("The number of continuous variables with error -- %d\n", e_dim);
     System.out.printf("The number of binary variables -- %d\n", b_dim);
     System.out.printf("The number of category variables -- %d\n", m_dim);
     System.out.printf("The number of integer variables  -- %d\n", i_dim);
     System.out.printf("The number of iterations -- %d\n", niters);
-    System.out.printf("The line search steps -- %d\n", line_s);
+    System.out.printf("The line search steps -- %f\n", line_s);
     System.out.printf("The minimum no. of clusters -- %d\n", mml_min);
     System.out.printf("The maximum no. of clusters -- %d\n", mml_max);
     System.out.printf("The mml regularizer -- %f\n", mml_reg);
-    System.out.printf("The covariance matrix type -- %d\n", cv_type);
+    System.out.printf("The covariance matrix type -- %s\n", cv_type);
 // if mml == 1 & mix_var == 1
     if( mml) {
         Util.disp( "At present, MML is only for real data without measurement errors.\n"
@@ -116,11 +126,14 @@ public class Clustering {
         i_dim   = 0;
     }
     
-    Matrix R, bestmu, bestcov, lbestmu, lbestcov, errlog;
+    Matrix R, bestmu, bestcov, lbestmu, lbestcov;
+    Matrix vartype;
     Vector bestpp, O;
     int bestk = mml_max;     // the default value for the optimal no. of classes
     CovarianceKind ctype = cv_type;    // the covariance type
     int ndata, ndim, sizeall;
+    List<Double> errlog ;
+    ClusteringResults  retval = null;
     
     AGDenseMatrix allinfo = new AGDenseMatrix(0,0);
     
@@ -131,11 +144,11 @@ public class Clustering {
             Util.disp("mml for clustering without outlier");
             
             data = data.sliceCol(0, c_dim+e_dim);
-            /* putback
+            /*DOLATER
             [bestk,bestpp,bestmu,bestcov,R]=mixtures4(data, //was data'
                     mml_min,mml_max,
                 mml_reg,tol,cv_type);
-            */
+            
             System.out.printf("The optimal number of clusters is %d\n", bestk);
 // bestk     -- the optimal number of clusters
 // bestpp    -- the mixture probabilities
@@ -162,16 +175,23 @@ public class Clustering {
 // 7. the responsibilities
 // all the information will be included in an ascii data file with
 // fixed rows (the number of rows is ndata)        
-            allinfo = [sizeall; bestk; bestpp(:); bestmu(:); 
-                bestcov(:); R(:)];
+            allinfo.append(sizeall);
+            allinfo.append(bestk);
+            allinfo.append(bestpp);
+            allinfo.append(bestmu.asVector());
+            allinfo.append(bestcov.asVector());
+            allinfo.append(R.asVector());
+            
 // calculate the number of columns needed
+            int colnos;
             if( rem(sizeall,ndata) != 0){
-                colnos = floor(sizeall/ndata)+1;
+                colnos = (int) (floor(sizeall/ndata)+1);
             }else{
                 colnos = sizeall/ndata;
             }
-            allsize = ndata*colnos;
-            allinfo =[allinfo; zeros(allsize-sizeall,1)];
+            int allsize = ndata*colnos;
+            allinfo.append(zeros(allsize-sizeall,1).asVector());
+            
             y = [];        ini = 0;        text = [];
             for(int k = 0; k <colnos; k++){
                 textk = num2str(k);
@@ -192,551 +212,153 @@ public class Clustering {
             
             output = writeascii(text, y, output);
             errlog = [];
+            */
         }
         if(c_dim != 0 & mml  & outlier){
             Util.disp ("mml for clustering with outlier");
+            /*DOLATER
             
             data = data(:,1:c_dim+e_dim);
             [bestk,bestpp,bestmu,bestcov,R]=tmixtures(data //was dat'
                   ,mml_min,mml_max,
                 mml_reg,tol,cv_type,1.0);
             System.out.printf("The optimal number of clusters is %d\n", bestk);
-            ndata = size(data,1);
-            ndim = c_dim + e_dim;
-            if(cv_type == CovarianceKind.free){     // full covariance
-                sizeall = 2+bestk+bestk*ndim+bestk*ndim*ndim+ndata*bestk;
-            } else if(cv_type == CovarianceKind.diagonal){ // diagonal covariance
-                sizeall = 2+bestk+bestk*ndim+bestk*ndim+ndata*bestk;
-            } else if(cv_type == CovarianceKind.common){ // spherical covariance
-                sizeall = 2+bestk+bestk*ndim+bestk+ndata*bestk;
-            }        
-            allinfo = [sizeall; bestk; bestpp(:); bestmu(:); bestcov(:); R(:)];        
-// calculate the number of columns needed
-            if (rem(sizeall,ndata) != 0){
-                colnos = floor(sizeall/ndata)+1;
-            }else{
-                colnos = sizeall/ndata;
-            }
-            allsize = ndata*colnos;
-            allinfo =[allinfo; zeros(allsize-sizeall,1)];
-            y = [];        ini = 0;        text = [];
-            for (int k = 0; k < colnos; k++){
-                textk = num2str(k);
-                text = [text, "col", textk, ","];
-                tk = allinfo(ini+1:ini+ndata);
-                y = [y tk];
-                ini = ini + ndata;
-            }
-            textk = num2str(colnos);
-            text = [text, "col", textk];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini+ndata;
-            if(ini != allsize){
-               Util.disp("the number of size is not right");
-                return;
-            }
-            output = writeascii(text, y, output);
-            errlog = [];
+            */
         }    
 // real data without error information and without outliers
-        if(c_dim != 0 & mml == 0 & outlier == 0 & err_dim == 0){
+        if(c_dim != 0 & !mml  & !outlier  & !err_dim){
             vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,0},{4,0},{5,0},{6,0}});
            Util.disp("clustering without outlier and without error");
-            
+           /*DOLATER
+           
             [R, bestpp, bestmu, bestcov, errlog] = cluster_err(data, vartype, mml_max, 
                 niters, tol, cv_type);
-            ndata = size(data,1);
-            
-            if(cv_type == CovarianceKind.free){     // full covariance
-                sizeall = 2+bestk+bestk*c_dim+bestk*c_dim*c_dim+ndata*bestk;
-            } else if(cv_type == CovarianceKind.diagonal){ // diagonal covariance
-                sizeall = 2+bestk+bestk*c_dim+bestk*c_dim+ndata*bestk;
-            } else if(cv_type == CovarianceKind.common){ // spherical covariance
-                sizeall = 2+bestk+bestk*c_dim+bestk+ndata*bestk;
-            }  
-            allinfo = [sizeall; bestk; bestpp(:); bestmu(:); 
-                bestcov(:); R(:)];    
-// calculate the number of columns needed
-            if( rem(sizeall,ndata) != 0){
-                colnos = floor(sizeall/ndata)+1;
-            } else {
-                colnos = sizeall/ndata;
-            }
-            alls = ndata*colnos;
-            allinfo =[allinfo; zeros(alls-sizeall,1)];
-            y = [];        ini = 0;        text = [];
-            for (int k = 0; k < colnos; k++){
-                textk = num2str(k);
-                text = [text, "col", textk, ","];
-                tk = allinfo(ini+1:ini+ndata);
-                y = [y tk];
-                ini = ini + ndata;
-            }
-            textk = num2str(colnos);
-            text = [text, "col", textk];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini+ndata;
-            if(ini != alls){
-               Util.disp("the number of size is not right");
-                return;
-            }
-           Util.disp("write the output");
-            output = writeascii(text, y, output); 
+                     DOLATER*/
+
         }
 // real data without error information, but with outliers
-        if(c_dim != 0 & mml == 0 & outlier == 1 & err_dim == 0){
+        if(c_dim != 0 & !mml  & outlier & !err_dim ){
             vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,0},{4,0},{5,0},{6,0}});
            Util.disp("clustering with outlier and without error");
             
-            [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, O, errlog] = robust_cluster_err(data, vartype, 
+            RobustClusterErrResult rce = RobustClusterErr.robust_cluster_err(data, vartype, 
                 mml_max, niters, tol, cv_type);
-            ndata = size(data,1);        
-            if(cv_type == CovarianceKind.free){     // full covariance
-                sizeall = 2+bestk+bestk*c_dim+bestk*c_dim*c_dim+ndata*bestk+ndata;
-            } else if(cv_type == CovarianceKind.diagonal){ // diagonal covariance
-                sizeall = 2+bestk+bestk*c_dim+bestk*c_dim+ndata*bestk+ndata;
-            } else if(cv_type == CovarianceKind.common){ // spherical covariance
-                sizeall = 2+bestk+bestk*c_dim+bestk+ndata*bestk+ndata;
-            }        
-            allinfo = [sizeall; bestk; bestpp(:); bestmu(:); 
-                bestcov(:); R(:); O(:)];
-// calculate the number of columns needed
-            if (rem(sizeall,ndata) != 0){
-                colnos = floor(sizeall/ndata)+1;
-            } else {
-                colnos = sizeall/ndata;
-            }
-            alls = ndata*colnos;
-            allinfo =[allinfo; zeros(alls-sizeall,1)];
-            y = [];        ini = 0;        text = [];
-            for (int k = 0; k < colnos; k++){
-                textk = num2str(k);
-                text = [text, "col", textk, ","];
-                tk = allinfo(ini+1:ini+ndata);
-                y = [y tk];
-                ini = ini + ndata;
-            }
-            textk = num2str(colnos);
-            text = [text, "col", textk];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini+ndata;
-            if(ini != alls){
-               Util.disp("the number of size is not right");
-                return;
-            }
-            output = writeascii(text, y, output);        
+ 
+            retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+            // still need lbestmu;lbestcv; C;
+
+           lbestmu = rce.lmu; lbestcov =rce.lcv;
+           O = rce.O; 
         }
 // real data with error information and without outliers
-        if(c_dim == 0 & mml == 0 & outlier == 0 & err_dim != 0){
+        if(c_dim == 0 & !mml  & !outlier  & err_dim ){
             vartype = new AGDenseMatrix(new double[][]{{1,0},{2,e_dim},{3,0},{4,0},{5,0},{6,e_dim}});
-            if( cv_type == 0){
-                cv_type = 1;    // we only consider diagnoal covariance matrix
+            if( cv_type ==CovarianceKind.free){
+                cv_type = CovarianceKind.diagonal;    // we only consider diagnoal covariance matrix
             }
            Util.disp("clustering without outlier and with error");
+           /*DOLATER
             
             [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, errlog]=cluster_err(data, vartype, mml_max,
                 niters, tol, cv_type);        
-            ndim = e_dim;
-            ndata = size(data,1)
-            if(cv_type == CovarianceKind.free){     // full covariance
-               Util.disp("full covariance");
-                sizeall = 2+bestk+bestk*ndim+bestk*e_dim*e_dim+ndata*bestk;
-            } else if(cv_type == CovarianceKind.diagonal){ // diagonal covariance
-               Util.disp("diag covariance");
-                sizeall = 2+bestk+bestk*ndim+bestk*ndim+ndata*bestk;
-            } else if(cv_type == CovarianceKind.common){ // spherical covariance
-               Util.disp("spherical covariance");
-                sizeall = 2+bestk+bestk*ndim+bestk+ndata*bestk;
-            }        
-            allinfo = [sizeall; bestk; bestpp(:); bestmu(:); lbestmu(:); 
-                bestcov(:); lbestcov(:); R(:)];        
-// calculate the number of columns needed
-            if (rem(sizeall,ndata) != 0){
-                colnos = floor(sizeall/ndata)+1;
-            } else {
-                colnos = sizeall/ndata;
-            }
-            alls = ndata*colnos;
-            tall = zeros(alls-sizeall,1);
-            allinfo =[allinfo; tall];
-            y = [];        ini = 0;        text = [];
-            for (int k = 0; k < colnos; k++){
-                textk = num2str(k);
-                text = [text, "col", textk, ","];
-                tk = allinfo(ini+1:ini+ndata);
-                y = [y tk];
-                ini = ini + ndata;
-            }
-            textk = num2str(colnos);
-            text = [text, "col", textk];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini+ndata;
-            if(ini != alls){
-               Util.disp("the number of size is not right");
-                return;
-            }
-            output = writeascii(text, y, output);        
+            */       
         }
 // real data with error information and outlier
-        if(c_dim == 0 & mml == 0 & outlier == 1 & err_dim != 0){
+        if(c_dim == 0 & !mml  & outlier & err_dim){
             vartype = new AGDenseMatrix(new double[][]{{1,0},{2,e_dim},{3,0},{4,0},{5,0},{6,e_dim}});
            Util.disp("clustering with outlier and with error");
-            
-            [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, C, errlog] = robust_cluster_err(data, vartype,
-                mml_max, niters, tol, cv_type);
-            ndim = c_dim + e_dim;
-            ndata = size(data,1);
-            if(cv_type == CovarianceKind.free){     // full covariance
-                sizeall = 2+bestk+bestk*ndim+bestk*c_dim*c_dim+bestk*e_dim*e_dim+ndata*bestk+ndata;
-            } else if(cv_type == CovarianceKind.diagonal){ // diagonal covariance
-                sizeall = 2+bestk+bestk*ndim+bestk*ndim+ndata*bestk+ndata;
-            } else if(cv_type == CovarianceKind.common){ // spherical covariance
-                sizeall = 2+bestk+bestk*ndim+bestk+ndata*bestk+ndata;
-            }        
-            allinfo = [sizeall; bestk; bestpp(:); bestmu(:); lbestmu(:); 
-                bestcov(:); lbestcov(:); R(:); C(:)];        
-// calculate the number of columns needed
-            if (rem(sizeall,ndata) != 0){
-                colnos = floor(sizeall/ndata)+1;
-            } else {
-                colnos = sizeall/ndata;
-            }
-            alls = ndata*colnos;
-            allinfo =[allinfo; zeros(alls-sizeall,1)];
-            y = [];        ini = 0;        text = [];
-            for (int k = 0; k < colnos; k++){
-                textk = num2str(k);
-                text = [text, "col", textk, ","];
-                tk = allinfo(ini+1:ini+ndata);
-                y = [y tk];
-                ini = ini + ndata;
-            }
-            textk = num2str(colnos);
-            text = [text, "col", textk];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini+ndata;
-            if(ini != alls){
-               Util.disp("the number of size is not right");
-                return;
-            }
-            output = writeascii(text, y, output);        
+           RobustClusterErrResult rce = RobustClusterErr.robust_cluster_err(
+                   data, vartype, mml_max, niters, tol, cv_type);    
+                
+                retval = new ClusteringResults(rce.q, rce.p, rce.lmu, rce.lcv, rce.loglik);
+        
         }
         
         if(b_dim != 0){
 // use mixture of binomial distribution
-            vartype = new AGDenseMatrix(new double[][]{{1,0},{2,0},{3,b_dim},{4,0},{5,0},{6,0}}); 
+           vartype = new AGDenseMatrix(new double[][]{{1,0},{2,0},{3,b_dim},{4,0},{5,0},{6,0}}); 
            Util.disp("clustering for binary data");
-            
+           /*DOLATER
+
             [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, errlog] = 
                 cluster_err(data, vartype, mml_max, niters, 
                 tol, cv_type);
-            ndim = b_dim;
-            ndata = size(data,1);
-            sizeall = 2+bestk+bestk*ndim+ndata*bestk;
-            allinfo = [sizeall; bestk; bestpp(:); bestmu(:); R(:)];        
-// calculate the number of columns needed
-            if (rem(sizeall,ndata) != 0){
-                colnos = floor(sizeall/ndata)+1;
-            } else {
-                colnos = sizeall/ndata;
-            }
-            alls = ndata*colnos;
-            allinfo =[allinfo; zeros(alls-sizeall,1)];
-            y = [];        ini = 0;        text = [];
-            for (int k = 0; k < colnos; k++){
-                textk = num2str(k);
-                text = [text, "col", textk, ","];
-                tk = allinfo(ini+1:ini+ndata);
-                y = [y tk];
-                ini = ini + ndata;
-            }
-            textk = num2str(colnos);
-            text = [text, "col", textk];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini+ndata;
-            if(ini != alls){
-               Util.disp("the number of size is not right");
-                return;
-            }
-            output = writeascii(text, y, output);        
-        }
+
+        */
+           }
         if(m_dim != 0){
            Util.disp("clustering for categorical data");
             
             vartype = new AGDenseMatrix(new double[][]{{1,0},{2,0},{3,0},{4,m_dim},{5,0},{6,0}});
+            /*DOLATER
             [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, errlog] = 
                 cluster_err(data, vartype, mml_max, niters, tol, cv_type);
-            ndim = m_dim;
-            ndata = size(data,1);
-            sizeall = 2+bestk+bestk*ndim+ndata*bestk;
-            allinfo = [sizeall; bestk; bestpp(:); bestmu(:); R(:)];        
-// calculate the number of columns needed
-            if (rem(sizeall,ndata) != 0){
-                colnos = floor(sizeall/ndata)+1;
-            } else {
-                colnos = sizeall/ndata;
-            }
-            alls = ndata*colnos;
-            allinfo =[allinfo; zeros(alls-sizeall,1)];
-            y = [];        ini = 0;        text = [];
-            for (int k = 0; k < colnos; k++){
-                textk = num2str(k);
-                text = [text, "col", textk, ","];
-                tk = allinfo(ini+1:ini+ndata);
-                y = [y tk];
-                ini = ini + ndata;
-            }
-            textk = num2str(colnos);
-            text = [text, "col", textk];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini+ndata;
-            if(ini != alls){
-               Util.disp("the number of size is not right");
-                return;
-            }
-            output = writeascii(text, y, output);        
+            */  
         }
         if(i_dim != 0){
             vartype = new AGDenseMatrix(new double[][]{{1,0},{2,0},{3,0},{4,0},{5,i_dim},{6,0}});
            Util.disp("clustering for integer data");
-            
+           /*DOLATER
+
             [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, errlog] = 
                 cluster_err(data, vartype, mml_max, niters, 
                 tol, cv_type);
-            ndim = i_dim;
-            ndata = size(data,1);
-            sizeall = 2+bestk+bestk*ndim+ndata*bestk;
-            allinfo = [sizeall; bestk; bestpp(:); bestmu(:); R(:)];        
-// calculate the number of columns needed
-            if (rem(sizeall,ndata) != 0){
-                colnos = floor(sizeall/ndata)+1;
-            } else {
-                colnos = sizeall/ndata;
-            }
-            alls = ndata*colnos;
-            allinfo =[allinfo; zeros(alls-sizeall,1)];
-            y = [];        ini = 0;        text = [];
-            for (int k = 0; k < colnos; k++){
-                textk = num2str(k);
-                text = [text, "col", textk, ","];
-                tk = allinfo(ini+1:ini+ndata);
-                y = [y tk];
-                ini = ini + ndata;
-            }
-            textk = num2str(colnos);
-            text = [text, "col", textk];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini+ndata;
-            if(ini != alls){
-               Util.disp("the number of size is not right");
-                return;
-            }
-            output = writeascii(text, y, output);        
+            */    
         }
     }
 // Taking error information into consideration and outliers
-    if(mix_var != 0 & err_dim != 0 & outlier == 1){
+    if(mix_var  & err_dim  & outlier){
 // with mixed variable types 
 // first specify the variable types
         vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,e_dim},{3,b_dim},{4,m_dim},{5,i_dim},{6,e_dim}});
        Util.disp("clustering for mix-type data with error and with outlier");
 
-        [R, bestpp, bestmu, bestcov, lbestmu, lbestcv, C, errlog]=robust_cluster_err(
+       
+         RobustClusterErrResult rce = RobustClusterErr.robust_cluster_err(
             data, vartype, mml_max, niters, tol, cv_type);    
-        ndim_cv = c_dim + e_dim;    
-        ndim    = b_dim + m_dim + i_dim + ndim_cv; 
-        ndata = size(data,1);
-        if(cv_type == CovarianceKind.free){     // full covariance
-            sizeall = 2+bestk+bestk*ndim+bestk*c_dim*c_dim+bestk*e_dim*e_dim+
-                ndata*bestk+ndata;
-        } else if(cv_type == CovarianceKind.diagonal){ // diagonal covariance
-            sizeall = 2+bestk+bestk*ndim+bestk*ndim_cv+ndata*bestk+ndata;
-        } else if(cv_type == CovarianceKind.common){ // spherical covariance
-            sizeall = 2+bestk+bestk*ndim+bestk+ndata*bestk+ndata;
-        }
-        allinfo = [sizeall; bestk; bestpp(:); bestmu(:); lbestmu(:); bestcov(:); 
-            lbestcv(:); R(:); C(:)];
-        sizeall = size(allinfo, 1);
-// calculate the number of columns needed
-        if (rem(sizeall,ndata) != 0){
-            colnos = floor(sizeall/ndata)+1;
-        } else {
-            colnos = sizeall/ndata;
-        }
-        alls = ndata*colnos;   
-        allinfo =[allinfo; zeros(alls-sizeall,1)];
-        
-        y = [];        ini = 0;        text = [];
-        for (int k = 0; k < colnos; k++){
-            textk = num2str(k);
-            text = [text, "col", textk, ","];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini + ndata;
-        }
-        textk = num2str(colnos);
-        text = [text, "col", textk];
-        tk = allinfo(ini+1:ini+ndata);
-        y = [y tk];
-        ini = ini+ndata;
-        if(ini != alls){
-           Util.disp("the number of size is not right");
-            return;
-        }
-        output = writeascii(text, y, output);
+         
+         retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+         // still need lbestmu;lbestcv; C;
+         
+         //R = rce., bestpp; bestmu; bestcov;  errlog;
     }
 // Taking error information into consideration, but no outliers
-    if(mix_var != 0 & err_dim != 0 & outlier == 0){
+    if(mix_var  & err_dim  & !outlier){
 // with mixed variable types  
         vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,e_dim},{3,b_dim},{4,m_dim},{5,i_dim},{6,e_dim}});
        Util.disp("clustering for mix-type data with error and without outlier");
-        
+/*DOLATER
         if(cv_type == CovarianceKind.free){
             cv_type = 1;
         }
         ndata = size(data,1);
         [R, bestpp, bestmu, bestcov, lbestmu, lbestcv, errlog] = cluster_err(data, 
             vartype, mml_max, niters, tol, cv_type);    
-        ndim_cv = c_dim + e_dim;    
-        ndim    = b_dim + m_dim + i_dim + ndim_cv; 
-        if(cv_type == CovarianceKind.free){     // full covariance
-            sizeall = 2+bestk+bestk*ndim+bestk*c_dim*c_dim+bestk*e_dim*e_dim+ndata*bestk;
-        } else if(cv_type == CovarianceKind.diagonal){ // diagonal covariance
-            sizeall = 2+bestk+bestk*ndim+bestk*ndim_cv+ndata*bestk;
-        } else if(cv_type == CovarianceKind.common){ // spherical covariance
-            sizeall = 2+bestk+bestk*ndim+bestk+ndata*bestk;
-        }
-        allinfo = [sizeall; bestk; bestpp(:); bestmu(:); lbestmu(:); bestcov(:);
-            lbestcv(:); R(:)];
-// calculate the number of columns needed
-        if( rem(sizeall,ndata) != 0){
-            colnos = floor(sizeall/ndata)+1;
-        } else {
-            colnos = sizeall/ndata;
-        }
-        alls = ndata*colnos;
-        allinfo =[allinfo; zeros(alls-sizeall,1)];
-        y = [];        ini = 0;        text = [];
-        for (int k = 0; k < colnos; k++){
-            textk = num2str(k);
-            text = [text, "col", textk, ","];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini + ndata;
-        }
-        textk = num2str(colnos);
-        text = [text, "col", textk];
-        tk = allinfo(ini+1:ini+ndata);
-        ini = ini+ndata;
-        y = [y tk];
-        if(ini != alls){
-           Util.disp("the number of size is not right");
-            return;
-        }
-        output = writeascii(text, y, output);
+        */
     }
 // No error information, with outliers
-    if(mix_var != 0 & err_dim == 0 & outlier == 1){
+    if(mix_var  & !err_dim  & outlier){
 // with mixed variable types 
 // first specify the variable types
        Util.disp("clustering for mix-type data without error and with outlier");
-        
+       /*DOLATER       
         vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,b_dim},{4,m_dim},{5,i_dim},{6,0}});
         [R, bestpp, bestmu, bestcov, lbestmu, lbestcv, C, errlog]=robust_cluster_err(
             data, vartype, mml_max, niters, tol, cv_type);
-        ndim_cv = c_dim;
-        ndim    = b_dim + m_dim + i_dim + ndim_cv; 
-        ndata = size(data,1);
-        if(cv_type == CovarianceKind.free){     // full covariance
-            sizeall = 2+bestk+bestk*ndim+bestk*ndim_cv*ndim_cv+ndata*bestk;
-        } else if(cv_type == CovarianceKind.diagonal){ // diagonal covariance
-            sizeall = 2+bestk+bestk*ndim+bestk*ndim_cv+ndata*bestk;
-        } else if(cv_type == CovarianceKind.common){ // spherical covariance
-            sizeall = 2+bestk+bestk*ndim+bestk+ndata*bestk;
-        }        
-        allinfo = [sizeall; bestk; bestpp(:); bestmu(:); lbestmu(:); bestcov(:);
-            lbestcv(:); R(:)];
-// calculate the number of columns needed
-        if( rem(sizeall,ndata) != 0)
-            colnos = floor(sizeall/ndata)+1;
-        } else {
-            colnos = sizeall/ndata;
-        }
-        alls = ndata*colnos;
-        allinfo =[allinfo; zeros(alls-sizeall,1)];
-        y = [];        ini = 0;        text = [];
-        for (int k = 0; k < colnos; k++){
-            textk = num2str(k);
-            text = [text, "col", textk, ","];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini + ndata;
-        }
-        textk = num2str(colnos);
-        text = [text, "col", textk];
-        tk = allinfo(ini+1:ini+ndata);
-        y = [y tk];
-        ini = ini+ndata;
-        if(ini != alls){
-           Util.disp("the number of size is not right");
-            return;
-        }
-        output = writeascii(text, y, output);
+        */
     }
 // No error information, no outliers
-    if(mix_var != 0 & err_dim == 0 & outlier == 0){
+    if(mix_var  & !err_dim  & !outlier){
 // with mixed variable types  
        Util.disp("clustering for mix-type data without error and without outlier");
-        
+       /*DOLATER
         vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,b_dim},{4,m_dim},{5,i_dim},{6,0}});
         [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, errlog] = 
             cluster_err(data, vartype,mml_max,niters, tol, cv_type);
-        ndim_cv = c_dim;    
-        ndim    = b_dim + m_dim + i_dim + ndim_cv;
-        ndata = size(data,1);
-        if(cv_type == CovarianceKind.free){     // full covariance
-            sizeall = 2+bestk+bestk*ndim+bestk*ndim_cv*ndim_cv+ndata*bestk;
-        } else if(cv_type == CovarianceKind.diagonal){ // diagonal covariance
-            sizeall = 2+bestk+bestk*ndim+bestk*ndim_cv+ndata*bestk;
-        } else if(cv_type == CovarianceKind.common){ // spherical covariance
-            sizeall = 2+bestk+bestk*ndim+bestk+ndata*bestk;
-        }        
-        allinfo = [sizeall; bestk; bestpp(:); bestmu(:); bestcov(:); R(:)];
-// calculate the number of columns needed
-        if (rem(sizeall,ndata) != 0){
-            colnos = floor(sizeall/ndata)+1;
-        } else {
-            colnos = sizeall/ndata;
-        }
-        alls = ndata*colnos;
-        allinfo =[allinfo; zeros(alls-sizeall,1)];
-        y = [];        ini = 0;        text = [];
-        for (int k = 0; k < colnos; k++){
-            textk = num2str(k);
-            text = [text, "col", textk, ","];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini + ndata;
-        }
-        textk = num2str(colnos);
-        text = [text, "col", textk];
-        tk = allinfo(ini+1:ini+ndata);
-        y = [y tk];
-        ini = ini+ndata;
-        if(ini != alls){
-           Util.disp("the number of size is not right");
-            return;
-        }
-        output = writeascii(text, y, output);
-    }        
+         */
+    }  
+    
+    return retval;
 // six programs
 // 1. mixture4       --- MML for real data
 // 2. tmixtures      --- MML for real data with t-distribution
@@ -744,9 +366,12 @@ public class Clustering {
 // 4. robust_cluster_err -- mixture modelling for real data with t and err.
 }
 
-
+}
 /*
  * $Log: Clustering.java,v $
+ * Revision 1.6  2009/09/20 17:18:01  pah
+ * checking just prior to bham visit
+ *
  * Revision 1.5  2009/09/17 14:13:13  pah
  * evening commit
  *

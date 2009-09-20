@@ -17,14 +17,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
+
 import org.astrogrid.cluster.cluster.CovarianceKind;
+import org.astrogrid.cluster.cluster.Clustering.ClusteringResults;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
+import org.jdesktop.swingx.combobox.ListComboBoxModel;
 
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StarTableFactory;
@@ -42,6 +46,13 @@ public class ClustertoolView extends FrameView {
     private static final Logger logger = Logger.getLogger(ClustertoolView.class.getName());
     private boolean loadedOK;
     private AGDenseMatrix indata; 
+    
+    private AGMatrixTableModel muModel = new AGMatrixTableModel();
+    private AGMatrixTableModel covModel = new AGMatrixTableModel();
+    
+    private MutableListModel likModel = new MutableListModel();
+    private MutableListModel probModel = new MutableListModel();
+   
 
     public boolean isLoadedOK() {
         return loadedOK;
@@ -99,6 +110,90 @@ public class ClustertoolView extends FrameView {
     }
     protected int nconterrVar;
     public static final String PROP_NCONTERRVAR = "nconterrVar";
+    protected boolean mml;
+    public static final String PROP_MML = "mml";
+
+    /**
+     * Get the value of mml
+     *
+     * @return the value of mml
+     */
+    public boolean isMml() {
+        return mml;
+    }
+
+    /**
+     * Set the value of mml
+     *
+     * @param mml new value of mml
+     */
+    public void setMml(boolean mml) {
+        boolean oldMml = this.mml;
+        this.mml = mml;
+       firePropertyChange(PROP_MML, oldMml, mml);
+    }
+    protected boolean mix_ver;
+    public static final String PROP_MIX_VER = "mix_ver";
+
+    public boolean isMix_ver() {
+        return mix_ver;
+    }
+
+    public void setMix_ver(boolean mix_ver) {
+        boolean oldMix_ver = this.mix_ver;
+        this.mix_ver = mix_ver;
+       firePropertyChange(PROP_MIX_VER, oldMix_ver, mix_ver);
+    }
+    protected boolean outlier = true;
+    public static final String PROP_OUTLIER = "outlier";
+
+    public boolean isOutlier() {
+        return outlier;
+    }
+
+    public void setOutlier(boolean outlier) {
+        boolean oldOutlier = this.outlier;
+        this.outlier = outlier;
+       firePropertyChange(PROP_OUTLIER, oldOutlier, outlier);
+    }
+    protected double tol = 0.0001;
+    public static final String PROP_TOL = "tol";
+
+    public double getTol() {
+        return tol;
+    }
+
+    public void setTol(double tol) {
+        double oldTol = this.tol;
+        this.tol = tol;
+       firePropertyChange(PROP_TOL, oldTol, tol);
+    }
+    protected int niters = 20;
+    public static final String PROP_NITERS = "niters";
+
+    public int getNiters() {
+        return niters;
+    }
+
+    public void setNiters(int niters) {
+        int oldNiters = this.niters;
+        this.niters = niters;
+       firePropertyChange(PROP_NITERS, oldNiters, niters);
+    }
+
+    protected int mml_max = 2;
+    public static final String PROP_MML_MAX = "mml_max";
+
+    public int getMml_max() {
+        return mml_max;
+    }
+
+    public void setMml_max(int mml_max) {
+        int oldMml_max = this.mml_max;
+        this.mml_max = mml_max;
+        firePropertyChange(PROP_MML_MAX, oldMml_max, mml_max);
+    }
+
 
     /**
      * Get the value of nconterrVar
@@ -118,6 +213,10 @@ public class ClustertoolView extends FrameView {
         int oldNconterrVar = this.nconterrVar;
         this.nconterrVar = nconterrVar;
         firePropertyChange(PROP_NCONTERRVAR, oldNconterrVar, nconterrVar);
+        if(nconterrVar > 0)
+            setErrors(true);
+        else
+            setErrors(false);
     }
 
     public int getNcols() {
@@ -142,7 +241,7 @@ public class ClustertoolView extends FrameView {
         firePropertyChange("nrows", oldvalue, nrows);
     }
 
-    protected String nbinVar;
+    protected int nbinVar;
     public static final String PROP_NBINVAR = "nbinVar";
 
     /**
@@ -150,7 +249,7 @@ public class ClustertoolView extends FrameView {
      *
      * @return the value of nbinVar
      */
-    public String getNbinVar() {
+    public int getNbinVar() {
         return nbinVar;
     }
 
@@ -159,8 +258,8 @@ public class ClustertoolView extends FrameView {
      *
      * @param nbinVar new value of nbinVar
      */
-    public void setNbinVar(String nbinVar) {
-        String oldNbinVar = this.nbinVar;
+    public void setNbinVar(int nbinVar) {
+        int oldNbinVar = this.nbinVar;
         this.nbinVar = nbinVar;
         firePropertyChange(PROP_NBINVAR, oldNbinVar, nbinVar);
     }
@@ -186,15 +285,29 @@ public class ClustertoolView extends FrameView {
         this.ncatVar = ncatVar;
         firePropertyChange(PROP_NCATVAR, oldNcatVar, ncatVar);
     }
-    protected String nintVar;
+    protected int nintVar;
     public static final String PROP_NINTVAR = "nintVar";
+
+    protected boolean errors;
+    public static final String PROP_ERRORS = "errors";
+
+    public boolean isErrors() {
+        return errors;
+    }
+
+    public void setErrors(boolean errors) {
+        boolean oldErrors = this.errors;
+        this.errors = errors;
+        firePropertyChange(PROP_ERRORS, oldErrors, errors);
+    }
+
 
     /**
      * Get the value of nintVar
      *
      * @return the value of nintVar
      */
-    public String getNintVar() {
+    public int getNintVar() {
         return nintVar;
     }
 
@@ -203,34 +316,13 @@ public class ClustertoolView extends FrameView {
      *
      * @param nintVar new value of nintVar
      */
-    public void setNintVar(String nintVar) {
-        String oldNintVar = this.nintVar;
+    public void setNintVar(int nintVar) {
+        int oldNintVar = this.nintVar;
         this.nintVar = nintVar;
         firePropertyChange(PROP_NINTVAR, oldNintVar, nintVar);
     }
-    protected int nclasses;
-    public static final String PROP_NCLASSES = "nclasses";
 
-    /**
-     * Get the value of nclasses
-     *
-     * @return the value of nclasses
-     */
-    public int getNclasses() {
-        return nclasses;
-    }
-
-    /**
-     * Set the value of nclasses
-     *
-     * @param nclasses new value of nclasses
-     */
-    public void setNclasses(int nclasses) {
-        int oldNclasses = this.nclasses;
-        this.nclasses = nclasses;
-        firePropertyChange(PROP_NCLASSES, oldNclasses, nclasses);
-    }
-    protected CovarianceKind covarianceKind;
+    protected CovarianceKind covarianceKind = CovarianceKind.common;
     public static final String PROP_COVARIANCEKIND = "covarianceKind";
 
     /**
@@ -381,6 +473,10 @@ public class ClustertoolView extends FrameView {
         jCovarianceComboBox1 = new javax.swing.JComboBox();
         jLabel12 = new javax.swing.JLabel();
         jImputationComboBox2 = new javax.swing.JComboBox();
+        jTolTextField1 = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        jniterTextField1 = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         fileNameField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -388,8 +484,20 @@ public class ClustertoolView extends FrameView {
         jLabel4 = new javax.swing.JLabel();
         jNrowsTextField = new javax.swing.JTextField();
         jLoadOKCheckBox1 = new javax.swing.JCheckBox();
-        jPanel1 = new javax.swing.JPanel();
+        outputPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jLogLikList1 = new javax.swing.JList();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jcovTable1 = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jmuTable1 = new javax.swing.JTable();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jpropList1 = new javax.swing.JList();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -421,16 +529,29 @@ public class ClustertoolView extends FrameView {
         jMixVarCheckBox1.setText(resourceMap.getString("jMixVarCheckBox1.text")); // NOI18N
         jMixVarCheckBox1.setName("jMixVarCheckBox1"); // NOI18N
 
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${mix_ver}"), jMixVarCheckBox1, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
         jMeasErrorCheckBox1.setText(resourceMap.getString("jMeasErrorCheckBox1.text")); // NOI18N
         jMeasErrorCheckBox1.setName("jMeasErrorCheckBox1"); // NOI18N
 
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${errors}"), jMeasErrorCheckBox1, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
         jOutliersCheckBox1.setText(resourceMap.getString("jOutliersCheckBox1.text")); // NOI18N
+        jOutliersCheckBox1.setEnabled(false);
         jOutliersCheckBox1.setName("jOutliersCheckBox1"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${outlier}"), jOutliersCheckBox1, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
 
         jMMLCheckBox1.setText(resourceMap.getString("jMMLCheckBox1.text")); // NOI18N
         jMMLCheckBox1.setEnabled(false);
         jMMLCheckBox1.setFocusable(false);
         jMMLCheckBox1.setName("jMMLCheckBox1"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${mml}"), jMMLCheckBox1, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -456,7 +577,7 @@ public class ClustertoolView extends FrameView {
                 .add(jOutliersCheckBox1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jMMLCheckBox1)
-                .addContainerGap(92, Short.MAX_VALUE))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel3.border.title"))); // NOI18N
@@ -466,7 +587,7 @@ public class ClustertoolView extends FrameView {
         jC_DIM_TextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jC_DIM_TextField1.setName("jC_DIM_TextField1"); // NOI18N
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ncontVar}"), jC_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ncontVar}"), jC_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         binding.setSourceNullValue("0");
         binding.setSourceUnreadableValue("0");
         bindingGroup.addBinding(binding);
@@ -475,7 +596,7 @@ public class ClustertoolView extends FrameView {
         jE_DIM_TextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jE_DIM_TextField1.setName("jE_DIM_TextField1"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${nconterrVar}"), jE_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${nconterrVar}"), jE_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         jB_DIM_TextField1.setColumns(3);
@@ -495,6 +616,9 @@ public class ClustertoolView extends FrameView {
         jP_DIM_TextField1.setColumns(3);
         jP_DIM_TextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jP_DIM_TextField1.setName("jP_DIM_TextField1"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${nintVar}"), jP_DIM_TextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
         jLabel5.setText(resourceMap.getString("jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
@@ -555,7 +679,7 @@ public class ClustertoolView extends FrameView {
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jP_DIM_TextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel9))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel4.border.title"))); // NOI18N
@@ -564,59 +688,95 @@ public class ClustertoolView extends FrameView {
         jLabel10.setText(resourceMap.getString("jLabel10.text")); // NOI18N
         jLabel10.setName("jLabel10"); // NOI18N
 
+        jNClassesTextField1.setColumns(3);
+        jNClassesTextField1.setToolTipText(resourceMap.getString("jNClassesTextField1.toolTipText")); // NOI18N
         jNClassesTextField1.setName("jNClassesTextField1"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${mml_max}"), jNClassesTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
         jLabel11.setText(resourceMap.getString("jLabel11.text")); // NOI18N
         jLabel11.setName("jLabel11"); // NOI18N
 
         jCovarianceComboBox1.setModel(covEnumModel);
-        jCovarianceComboBox1.setSelectedItem(CovarianceKind.common);
         jCovarianceComboBox1.setName("jCovarianceComboBox1"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${covarianceKind}"), jCovarianceComboBox1, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
 
         jLabel12.setText(resourceMap.getString("jLabel12.text")); // NOI18N
         jLabel12.setName("jLabel12"); // NOI18N
 
         jImputationComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jImputationComboBox2.setEnabled(false);
         jImputationComboBox2.setName("jImputationComboBox2"); // NOI18N
+
+        jTolTextField1.setColumns(6);
+        jTolTextField1.setName("jTolTextField1"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${tol}"), jTolTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        jLabel13.setText(resourceMap.getString("jLabel13.text")); // NOI18N
+        jLabel13.setName("jLabel13"); // NOI18N
+
+        jniterTextField1.setName("jniterTextField1"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${niters}"), jniterTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        jLabel14.setText(resourceMap.getString("jLabel14.text")); // NOI18N
+        jLabel14.setName("jLabel14"); // NOI18N
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel4Layout.createSequentialGroup()
-                .add(20, 20, 20)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .add(jLabel12)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 23, Short.MAX_VALUE)
-                        .add(jImputationComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(jPanel4Layout.createSequentialGroup()
+                        .add(20, 20, 20)
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel12)
                             .add(jLabel11)
-                            .add(jLabel10))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jCovarianceComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jPanel4Layout.createSequentialGroup()
-                                .add(47, 47, 47)
-                                .add(jNClassesTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap())
+                            .add(jLabel10)))
+                    .add(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel13))
+                    .add(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel14)))
+                .add(21, 21, 21)
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jImputationComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jCovarianceComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jNClassesTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 49, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jTolTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 72, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jniterTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 57, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jNClassesTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel10))
+                    .add(jLabel10)
+                    .add(jNClassesTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jCovarianceComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel11))
+                    .add(jLabel11)
+                    .add(jCovarianceComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jImputationComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel12))
-                .addContainerGap(116, Short.MAX_VALUE))
+                    .add(jLabel12)
+                    .add(jImputationComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel13)
+                    .add(jTolTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel14)
+                    .add(jniterTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         jPanel5.setName("jPanel5"); // NOI18N
@@ -667,8 +827,8 @@ public class ClustertoolView extends FrameView {
                 .addContainerGap()
                 .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel5Layout.createSequentialGroup()
-                        .add(fileNameField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 711, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(236, Short.MAX_VALUE))
+                        .add(fileNameField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 722, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
                     .add(jPanel5Layout.createSequentialGroup()
                         .add(jLabel3)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
@@ -677,7 +837,7 @@ public class ClustertoolView extends FrameView {
                         .add(jLabel4)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jNrowsTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 296, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 162, Short.MAX_VALUE)
                         .add(jLoadOKCheckBox1)
                         .add(282, 282, 282))))
         );
@@ -694,7 +854,7 @@ public class ClustertoolView extends FrameView {
                         .add(jLabel4)
                         .add(jNrowsTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(jLoadOKCheckBox1))
-                .addContainerGap())
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout inputPanelLayout = new org.jdesktop.layout.GroupLayout(inputPanel);
@@ -714,7 +874,7 @@ public class ClustertoolView extends FrameView {
                     .add(inputPanelLayout.createSequentialGroup()
                         .add(24, 24, 24)
                         .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -722,33 +882,102 @@ public class ClustertoolView extends FrameView {
                 .add(jLabel1)
                 .add(4, 4, 4)
                 .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(14, 14, 14)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(inputPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel3, 0, 238, Short.MAX_VALUE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(8, 8, 8))
         );
 
-        jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel1.setName("jPanel1"); // NOI18N
+        outputPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        outputPanel1.setName("outputPanel1"); // NOI18N
 
         jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
-                .add(jLabel2)
-                .addContainerGap(924, Short.MAX_VALUE))
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        jLogLikList1.setModel(likModel);
+        jLogLikList1.setName("jLogLikList1"); // NOI18N
+        jScrollPane1.setViewportView(jLogLikList1);
+
+        jScrollPane2.setAutoscrolls(true);
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jcovTable1.setModel(covModel);
+        jcovTable1.setName("jcovTable1"); // NOI18N
+        jcovTable1.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(jcovTable1);
+
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
+
+        jmuTable1.setModel(muModel);
+        jmuTable1.setName("jmuTable1"); // NOI18N
+        jmuTable1.getTableHeader().setReorderingAllowed(false);
+        jScrollPane3.setViewportView(jmuTable1);
+
+        jScrollPane4.setName("jScrollPane4"); // NOI18N
+
+        jpropList1.setModel(probModel);
+        jpropList1.setName("jpropList1"); // NOI18N
+        jScrollPane4.setViewportView(jpropList1);
+
+        jLabel15.setText(resourceMap.getString("jLabel15.text")); // NOI18N
+        jLabel15.setName("jLabel15"); // NOI18N
+
+        jLabel16.setText(resourceMap.getString("jLabel16.text")); // NOI18N
+        jLabel16.setName("jLabel16"); // NOI18N
+
+        jLabel17.setText(resourceMap.getString("jLabel17.text")); // NOI18N
+        jLabel17.setName("jLabel17"); // NOI18N
+
+        jLabel18.setText(resourceMap.getString("jLabel18.text")); // NOI18N
+        jLabel18.setName("jLabel18"); // NOI18N
+
+        org.jdesktop.layout.GroupLayout outputPanel1Layout = new org.jdesktop.layout.GroupLayout(outputPanel1);
+        outputPanel1.setLayout(outputPanel1Layout);
+        outputPanel1Layout.setHorizontalGroup(
+            outputPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(outputPanel1Layout.createSequentialGroup()
+                .add(outputPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(outputPanel1Layout.createSequentialGroup()
+                        .add(jLabel2)
+                        .add(18, 18, 18)
+                        .add(jLabel15)
+                        .add(82, 82, 82)
+                        .add(jLabel16)
+                        .add(68, 68, 68)
+                        .add(jLabel17))
+                    .add(outputPanel1Layout.createSequentialGroup()
+                        .add(35, 35, 35)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 84, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 293, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(outputPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jLabel18)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 320, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(44, 44, 44))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
-                .add(jLabel2)
-                .addContainerGap(101, Short.MAX_VALUE))
+        outputPanel1Layout.setVerticalGroup(
+            outputPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(outputPanel1Layout.createSequentialGroup()
+                .add(outputPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel2)
+                    .add(jLabel15)
+                    .add(jLabel16)
+                    .add(jLabel17)
+                    .add(jLabel18))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(outputPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 167, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 187, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout mainPanelLayout = new org.jdesktop.layout.GroupLayout(mainPanel);
@@ -756,23 +985,23 @@ public class ClustertoolView extends FrameView {
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(mainPanelLayout.createSequentialGroup()
-                .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(mainPanelLayout.createSequentialGroup()
-                        .add(8, 8, 8)
-                        .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, mainPanelLayout.createSequentialGroup()
-                        .add(9, 9, 9)
-                        .add(inputPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+                .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, mainPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(outputPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, mainPanelLayout.createSequentialGroup()
+                        .add(20, 20, 20)
+                        .add(inputPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 916, Short.MAX_VALUE)))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(mainPanelLayout.createSequentialGroup()
-                .add(34, 34, 34)
+                .add(41, 41, 41)
                 .add(inputPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 386, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(66, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 7, Short.MAX_VALUE)
+                .add(outputPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -788,6 +1017,7 @@ public class ClustertoolView extends FrameView {
         fileMenu.add(jMenuItem1);
 
         jMenuItem3.setText(resourceMap.getString("jMenuItem3.text")); // NOI18N
+        jMenuItem3.setEnabled(false);
         jMenuItem3.setName("jMenuItem3"); // NOI18N
         fileMenu.add(jMenuItem3);
 
@@ -842,12 +1072,12 @@ public class ClustertoolView extends FrameView {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(statusMessageLabel)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 820, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 738, Short.MAX_VALUE)
                 .add(progressBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(statusAnimationLabel)
                 .add(50, 50, 50))
-            .add(statusPanelSeparator, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 1046, Short.MAX_VALUE)
+            .add(statusPanelSeparator, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 964, Short.MAX_VALUE)
         );
         statusPanelLayout.setVerticalGroup(
             statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -966,20 +1196,31 @@ public class ClustertoolView extends FrameView {
     public Task doClustering() {
         return new DoClusteringTask(getApplication());
     }
-
-    private class DoClusteringTask extends org.jdesktop.application.Task<Object, Void> {
+    private ClusteringResults clusterResult;
+    private class DoClusteringTask extends org.jdesktop.application.Task<ClusteringResults, Void> {
+        
         DoClusteringTask(org.jdesktop.application.Application app) {
             // Runs on the EDT.  Copy GUI state that
             // doInBackground() depends on from parameters
             // to DoClusteringTask fields, here.
             super(app);
         }
-        @Override protected Object doInBackground() {
-            
+        @Override protected ClusteringResults doInBackground() {
+        int mml_reg = 0; //TODO not connected yet
+        int mml_min = 0; //TODO not connected yet
+        ClusteringResults clust = ((ClustertoolApp)ClustertoolView.this.getApplication()).doClustering(
+                   true, tol, mix_ver, errors, outlier, mml, ncontVar, nconterrVar, nbinVar, ncatVar,
+                   nintVar, niters, 0.0, mml_min, mml_max, mml_reg,  covarianceKind, indata);
+        return clust;
          }
-        @Override protected void succeeded(Object result) {
-            // Runs on the EDT.  Update the GUI based on
-            // the result computed by doInBackground().
+        @Override protected void succeeded(ClusteringResults result) {
+            clusterResult = result;
+            
+            muModel.setMatrix(clusterResult.bestmu);
+            covModel.setMatrix(clusterResult.bestcov);
+            probModel.setList(clusterResult.bestpp);
+            likModel.setList(clusterResult.errlog);
+            
         }
     }
 
@@ -998,6 +1239,12 @@ public class ClustertoolView extends FrameView {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1007,6 +1254,7 @@ public class ClustertoolView extends FrameView {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JCheckBox jLoadOKCheckBox1;
+    private javax.swing.JList jLogLikList1;
     private javax.swing.JCheckBox jMMLCheckBox1;
     private javax.swing.JTextField jM_DIM_TextField1;
     private javax.swing.JCheckBox jMeasErrorCheckBox1;
@@ -1019,14 +1267,23 @@ public class ClustertoolView extends FrameView {
     private javax.swing.JTextField jNrowsTextField;
     private javax.swing.JCheckBox jOutliersCheckBox1;
     private javax.swing.JTextField jP_DIM_TextField1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JMenu jRunMenu;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTextField jTolTextField1;
+    private javax.swing.JTable jcovTable1;
+    private javax.swing.JTable jmuTable1;
+    private javax.swing.JTextField jniterTextField1;
+    private javax.swing.JList jpropList1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JPanel outputPanel1;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
@@ -1045,8 +1302,9 @@ public class ClustertoolView extends FrameView {
 
 
     public StarTable getOutputTable() {
-        // TODO make this actually return the output values.....
-        return new DenseMatrixStarTable(indata);
+        AGDenseMatrix output = new AGDenseMatrix(indata);
+        output.appendCol((AGDenseMatrix) clusterResult.R);
+        return new DenseMatrixStarTable(output);
     }
 
     public StarTableFactory getTableFactory() {

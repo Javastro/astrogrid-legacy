@@ -1,5 +1,5 @@
 /*
- * $Id: RobustClusterErr.java,v 1.4 2009/09/16 16:53:06 pah Exp $
+ * $Id: RobustClusterErr.java,v 1.5 2009/09/20 17:18:01 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -113,7 +113,7 @@ public class RobustClusterErr {
         }
     }
 
-    AGDenseMatrix mu = null, cv = null, lmu =null;
+    AGDenseMatrix mu = new AGDenseMatrix(0,0), cv = null, lmu =null;
     AGDenseMatrix lcv = new AGDenseMatrix(0,0);
     if (ndim_er != 0) { 
         // initialize the global parameters for the model
@@ -237,7 +237,19 @@ public class RobustClusterErr {
     // if C != []
         Vector O = sum(times(q,C), 2);
     // end
-      return new RobustClusterErrResult(q, p, mu, cv, lmu, lcv, O, loglik);
+        
+       //reshape the output matrices appropriately 
+      int ndimtot = ndim_bin +ndim_er+ ndim_int+ ndim_mul+ ndim_nr;
+      
+      switch (cv_type) {
+         case free:
+        
+        break;
+
+    default:
+        break;
+    }
+      return new RobustClusterErrResult(q, p, mu.reshape(ndimtot, K), cv, lmu.reshape(ndimtot, K), lcv, O, loglik);
 
     }
 
@@ -247,6 +259,9 @@ public class RobustClusterErr {
 
 /*
  * $Log: RobustClusterErr.java,v $
+ * Revision 1.5  2009/09/20 17:18:01  pah
+ * checking just prior to bham visit
+ *
  * Revision 1.4  2009/09/16 16:53:06  pah
  * daily edit
  *

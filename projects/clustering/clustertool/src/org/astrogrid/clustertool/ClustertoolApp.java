@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.uib.cipr.matrix.AGDenseMatrix;
+
+import org.astrogrid.cluster.cluster.Clustering;
+import org.astrogrid.cluster.cluster.CovarianceKind;
+import org.astrogrid.matrix.Matrix;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
@@ -122,6 +126,27 @@ public class ClustertoolApp extends SingleFrameApplication {
         }
         return new AGDenseMatrix((double[][])rows.toArray(new double[][]{{}}));
         
+    }
+    
+    public Clustering.ClusteringResults doClustering(boolean display, 
+            double tol,     
+            boolean mix_var, 
+            boolean err_dim,
+            boolean outlier, 
+            boolean mml,     
+            int c_dim,   
+            int e_dim,   
+            int b_dim,   
+            int m_dim,   
+            int i_dim,   
+            int niters,  
+            double line_s,  
+            int mml_min, 
+            int  mml_max, 
+            double  mml_reg, 
+            CovarianceKind cv_type , Matrix data){
+        return new Clustering().clustering(display, tol, mix_var, err_dim, outlier, mml, c_dim, e_dim, b_dim, m_dim,
+                i_dim, niters, line_s, mml_min, mml_max, mml_reg,  cv_type, data);
     }
 
 }
