@@ -1,5 +1,5 @@
 /*
- * $Id: Matrix.java,v 1.2 2009/09/08 19:24:03 pah Exp $
+ * $Id: Matrix.java,v 1.3 2009/09/22 07:04:16 pah Exp $
  * 
  * Created on 21 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -68,7 +68,8 @@ public interface Matrix extends no.uib.cipr.matrix.Matrix {
     public Matrix sliceRowM(int k);
    
     /**
-     * Returns a new Matrix consisting of only the specified columns
+     * Returns a new Matrix consisting of only the specified columns. This is equivalent to the 
+     * Matlab syntax mat(:, colstart:colstart+ncols).
      * @param colstart
      * @param ncols
      * @return
@@ -189,6 +190,9 @@ public interface Matrix extends no.uib.cipr.matrix.Matrix {
 
 /*
  * $Log: Matrix.java,v $
+ * Revision 1.3  2009/09/22 07:04:16  pah
+ * daily checkin
+ *
  * Revision 1.2  2009/09/08 19:24:03  pah
  * further slicing possibilites
  *

@@ -12,6 +12,7 @@
   </organization>
   <modules>
     <module>core</module>
+    <module>clustertool</module>
   </modules>
 
   <build>

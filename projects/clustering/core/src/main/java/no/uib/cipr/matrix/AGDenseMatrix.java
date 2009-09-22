@@ -1,5 +1,5 @@
 /*
- * $Id: AGDenseMatrix.java,v 1.4 2009/09/20 17:18:01 pah Exp $
+ * $Id: AGDenseMatrix.java,v 1.5 2009/09/22 07:04:16 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -586,11 +586,28 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
     }
 
 
- 
+    public AGDenseMatrix selectCols(int cols[], int ncols){
+    	AGDenseMatrix retval = null;
+    	if (ncols <= cols.length && ncols <= numColumns) {
+			retval = new AGDenseMatrix(this.numRows, ncols);
+			for (int i = 0; i < ncols; i++) {
+				int icol = cols[i];
+				System.arraycopy(this.data, icol*this.numRows, retval.data, i*this.numRows, this.numRows);
+			}
+		} else {
+           throw new IllegalArgumentException("To many columns specified");
+		}
+		return retval;
+    	
+    	
+    }
 }
 
 /*
  * $Log: AGDenseMatrix.java,v $
+ * Revision 1.5  2009/09/22 07:04:16  pah
+ * daily checkin
+ *
  * Revision 1.4  2009/09/20 17:18:01  pah
  * checking just prior to bham visit
  *

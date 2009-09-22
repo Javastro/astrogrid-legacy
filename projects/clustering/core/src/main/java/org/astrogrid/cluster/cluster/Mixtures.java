@@ -1,5 +1,5 @@
 /*
- * $Id: Mixtures.java,v 1.2 2009/09/17 14:13:12 pah Exp $
+ * $Id: Mixtures.java,v 1.3 2009/09/22 07:04:16 pah Exp $
  * 
  * Created on Sep 16, 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -12,6 +12,13 @@
 
 package org.astrogrid.cluster.cluster;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
+import no.uib.cipr.matrix.AGDenseMatrix;
+import no.uib.cipr.matrix.Vector;
+
 import org.astrogrid.matrix.Matrix;
 import org.astrogrid.matrix.Matrix;
 import static org.astrogrid.matrix.Algorithms.*;
@@ -21,10 +28,20 @@ public class Mixtures {
    // function [bestk, bestpp, bestmu, bestcov, R] =
         
     static class Retval {
+    	public final int bestk;
+    	public final Vector bestpp;
+    	public final Matrix bestcov;
+    	public final Matrix R;
+    	public Retval(int bestk, Vector bestpp, Matrix bestcov, Matrix R) {
+			this.bestk = bestk;
+			this.bestpp = bestpp;
+			this.bestcov = bestcov;
+			this.R = R;
+		}
         
     };
     
-     static Retval mixtures4(Matrix y, int kmin, int kmax, 
+     static Retval mixtures4(AGDenseMatrix y, int kmin, int kmax, 
            int regularize,double th, CovarianceKind covoption){
 // Syntax:
 // [bestk,bestpp,bestmu,bestcov,dl,countf] = mixtures3(y,kmin,kmax,regularize,th,covoption)
@@ -76,24 +93,25 @@ public class Mixtures {
 //
        boolean verb=true; // verbose mode; change to zero for silent mode
        int bins = 40; // number of bins for the univariate data histograms for visualization
-        dl = []; // vector to store the consecutive values of the cost function
+       List<Double> dl = new ArrayList<Double>(); // vector to store the consecutive values of the cost function
        int dimens = y.numColumns(),npoints = y.numRows();
        int npars;
+       Matrix estmu, estcov[]=new AGDenseMatrix[kmax];
         switch (covoption){
-            case 0:
+            case free:
                 npars = (dimens + dimens*(dimens+1)/2);
                 break;
 //this is for free covariance matrices
-            case 1:
+            case diagonal:
                 npars = 2*dimens;
                 break;
 //this is for diagonal covariance matrices
-            case 2:
+            case common:
                 npars = dimens;
                 break;
 //this is for a common covariance matrix
 //independently of its structure)
-            case 3:
+            case commondiag:
                 npars = dimens;
                 break;
             default:
@@ -115,19 +133,19 @@ public class Mixtures {
 // Initialization: we will initialize the means of the k components
 // with k randomly chosen data points. Randperm(n) is a MATLAB function
 // that generates random permutations of the integers from 1 to n.
-        randindex = randperm(npoints);
-        randindex = randindex(1:k);
-        estmu = y(:,randindex);
+        int[] randindex = randperm(npoints);
+       
+        estmu = y.selectCols(randindex,k);
 // the initial estimates of the mixing probabilities are set to 1/k
-        estpp = (1/k)*ones(1,k);
+        Matrix estpp = (Matrix) ones(1,k).scale(1.0/k);
 // here we compute the global covariance of the data
-        globcov = cov(y');
+        Matrix globcov = cov(transpose(y));
 
         for (int i = 0; i < k; i++) {
 // the covariances are initialized to diagonal matrices proportional
 // to 1/10 of the mean variance along all the axes.
 // Of course, this can be changed
-            estcov(:,:,i) = diag(ones(1,dimens)*max(diag(globcov/10)));
+            estcov[i] = diag(ones(1,dimens).asVector().scale(max(diag(globcov.scale(1/10.0)))));
         }
 // having the initial means, covariances, and probabilities, we can
 // initialize the indicator functions following the standard EM equation
@@ -150,8 +168,8 @@ public class Mixtures {
 // transitions1 stores the iterations at which components are
 // killed by the M-step, while transitions2 stores the iterations
 // at which we force components to zero.
-        transitions1 = [];
-        transitions2 = [];
+        Matrix transitions1 = new AGDenseMatrix();
+        Matrix transitions2 = new AGDenseMatrix();
 // minimum description length seen so far, and corresponding
 // parameter estimates
         mindl = dl(countf);
@@ -287,7 +305,7 @@ public class Mixtures {
                     indic(i,:) = semi_indic(i,:)*estpp(i);
                 }
 
-                if (k~=1) {
+                if (k!=1) {
 // if the number of surviving components is not just one, we compute
 // the loglikelihood from the unnormalized assignment variables
                     loglike(countf) = sum(log(realmin+sum(indic)));
@@ -303,7 +321,7 @@ public class Mixtures {
                 kappas(countf) = k;
 // compute the change in loglikelihood to check if we should stop
                 deltlike = loglike(countf) - loglike(countf-1);
-                if ((verb~=0)) {
+                if ((verb)) {
 //             disp(sprintf('deltaloglike/th = %0.7g', abs(deltlike/loglike
 //                 (countf-1))/th));
                 }
@@ -342,10 +360,10 @@ public class Mixtures {
                     } else {
                         estmu = [estmu(:,1:indminp-1) estmu(:,indminp+1:k)];
                         newcov = zeros(dimens,dimens,k-1);
-                        for kk=1:indminp-1
+                        for (int kk=0: kk <indminp; kk++){
                             newcov(:,:,kk) = estcov(:,:,kk);
                         }
-                        for kk=indminp+1:k
+                        for (int kk=indminp; kk<k ; kk++){
                             newcov(:,:,kk-1) = estcov(:,:,kk);
                         }
                         estcov = newcov;
@@ -366,7 +384,7 @@ public class Mixtures {
                     semi_indic(i,:) = multinorm(y,estmu(:,i),estcov(:,:,i));
                     indic(i,:) = semi_indic(i,:)*estpp(i);
                 }
-                if (k~=1) {
+                if (k!=1) {
                     loglike(countf) = sum(log(realmin+sum(indic)));
                 } else {
                     loglike(countf) = sum(log(realmin+indic));
@@ -393,6 +411,9 @@ public class Mixtures {
 
 /*
  * $Log: Mixtures.java,v $
+ * Revision 1.3  2009/09/22 07:04:16  pah
+ * daily checkin
+ *
  * Revision 1.2  2009/09/17 14:13:12  pah
  * evening commit
  *

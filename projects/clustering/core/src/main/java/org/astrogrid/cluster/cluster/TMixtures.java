@@ -1,5 +1,5 @@
 /*
- * $Id: TMixtures.java,v 1.1 2009/09/17 07:03:50 pah Exp $
+ * $Id: TMixtures.java,v 1.2 2009/09/22 07:04:16 pah Exp $
  * 
  * Created on Sep 16, 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -12,10 +12,12 @@
 
 package org.astrogrid.cluster.cluster;
 
+import no.uib.cipr.matrix.AGDenseMatrix;
+
 public class TMixtures {
 
     
-    function [bestk, bestpp, bestmu, bestcov, R] = tmixtures(y, kmin, kmax, ...
+    function [bestk, bestpp, bestmu, bestcov, R] = tmixtures(AGDenseMatrix y, int kmin, int kmax, 
             regularize,th,covoption, v)
         //
         // Syntax:
@@ -142,7 +144,7 @@ public class TMixtures {
         // we also compute and store the number of components
         countf = 1;
         loglike(countf) = sum(log(sum(realmin+indic)));
-        dlength = -loglike(countf) + (nparsover2*sum(log(estpp))) + ...
+        dlength = -loglike(countf) + (nparsover2*sum(log(estpp))) + 
             (nparsover2 + 0.5)*k*log(npoints);
         dl(countf) = dlength;
         kappas(countf) = k;
@@ -179,7 +181,7 @@ public class TMixtures {
 
                 // we begin at component 1
                 comp = 1;
-                // ...and can only go to the last component, k.
+                // and can only go to the last component, k.
                 // Since k may change during the process, we can not use a for loop
                 while (comp <= k){
                     // we start with the M step
@@ -294,9 +296,9 @@ public class TMixtures {
 
                     if (killed==0) {
                         // if the component was not killed, we update the corresponding
-                        // indicator variables...
+                        // indicator variables
                         semi_indic(comp,:) = t_multinorm(y,estmu(:,comp),estcov(:,:,comp),v);
-                        // ...and go on to the next component
+                        // and go on to the next component
                         comp = comp + 1;
                     }
                     // if killed==1, it means the in the position "comp", we now
@@ -327,7 +329,7 @@ public class TMixtures {
                 }
 
                 // compute and store the description length and the current number of components
-                dlength = -loglike(countf) + (nparsover2*sum(log(estpp))) + ...
+                dlength = -loglike(countf) + (nparsover2*sum(log(estpp))) + 
                     (nparsover2 + 0.5)*k*log(npoints);
                 dl(countf) = dlength;
                 kappas(countf) = k;
@@ -393,7 +395,7 @@ public class TMixtures {
                 //increment the iterations counter
                 countf = countf+1
 
-                // ...and compute the loglikelihhod function and the description length
+                // and compute the loglikelihhod function and the description length
                 clear indic
                 clear semi_indic
                 for(int i=0; i < k; i++){
@@ -405,7 +407,7 @@ public class TMixtures {
                 } else {
                     loglike(countf) = sum(log(realmin+indic));
                 }
-                dl(countf) = -loglike(countf) + (nparsover2*sum(log(estpp))) + ...
+                dl(countf) = -loglike(countf) + (nparsover2*sum(log(estpp))) + 
                     (nparsover2 + 0.5)*k*log(npoints);
 
                 kappas(countf) = k;
@@ -449,6 +451,9 @@ public class TMixtures {
 
 /*
  * $Log: TMixtures.java,v $
+ * Revision 1.2  2009/09/22 07:04:16  pah
+ * daily checkin
+ *
  * Revision 1.1  2009/09/17 07:03:50  pah
  * morning update
  *

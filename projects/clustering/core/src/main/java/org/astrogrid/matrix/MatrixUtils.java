@@ -1,5 +1,5 @@
 /*
- * $Id: MatrixUtils.java,v 1.2 2009/09/14 19:08:43 pah Exp $
+ * $Id: MatrixUtils.java,v 1.3 2009/09/22 07:04:16 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -109,7 +109,7 @@ public class MatrixUtils {
     }
 
     
-    public static Vector diag(Matrix x){
+    public static Vector diag(no.uib.cipr.matrix.Matrix x){
         if(x.isSquare()){
             Vector retval = new DenseVector(x.numColumns());
             for (int i = 0; i < retval.size(); i++) {
@@ -600,6 +600,9 @@ public static Vector sub(double d, Vector v){
 
 /*
  * $Log: MatrixUtils.java,v $
+ * Revision 1.3  2009/09/22 07:04:16  pah
+ * daily checkin
+ *
  * Revision 1.2  2009/09/14 19:08:43  pah
  * code runs clustering, but not giving same results as matlab exactly
  *
