@@ -68,14 +68,15 @@ div.note, div.example {
 
 <h1>Simple Image Access Specification<br/>
 Version 1.0</h1>
-<h2>IVOA Proposed Recommendation 2009-05-21 </h2>
+<h2>IVOA Proposed Recommendation 2009-10-08 </h2>
 
 <dl>
     <dt>This version:</dt>
-         <dd><a href="http://www.ivoa.net/Documents/PR/DAL/PR-SIA-1.0-20090521.html">http://www.ivoa.net/Documents/PR/DAL/PR-SIA-1.0-20090521.html</a></dd>    
+         <dd><a href="http://www.ivoa.net/Documents/PR/DAL/PR-SIA-1.0-20091008.html">http://www.ivoa.net/Documents/PR/DAL/PR-SIA-1.0-20091008.html</a></dd>    
      <dt>Latest version:</dt>
         <dd><a href="http://www.ivoa.net/Documents/latest/SIA.html">http://www.ivoa.net/Documents/latest/SIA.html</a></dd>
     <dt>Previous versions:</dt>
+       <dd><a href="http://www.ivoa.net/Documents/PR/DAL/PR-SIA-1.0-20090521.html">http://www.ivoa.net/Documents/PR/DAL/PR-SIA-1.0-20090521.html</a></dd>    
         <dd><a href="http://www.ivoa.net/Documents/WD/SIA/sia-20040524.html">http://www.ivoa.net/Documents/WD/SIA/sia-20040524.html</a></dd>
        <dd><a href="http://www.ivoa.net/Documents/WD/SIA/SIA-20081030.html">http://www.ivoa.net/Documents/WD/SIA/SIA-20081030.html</a></dd>
 </dl><dl>
@@ -566,7 +567,7 @@ defaults provided by the region of interest.</p>
 
       <dt><strong>Technical Note</strong></dt>
       <dd><tt><br />
-        Large query regions are well defined for the CAR projection
+        Large query regions are well defined for the CAR projection [FITS WCS Paper 2] 
         used for the ROI.  For example, a region with DECSZ=20 and RASZ=360,
         with POS anywhere on the equator, defines a region 20 degrees wide
         covering the entire celestial sphere at the equator.  A region with
@@ -828,7 +829,7 @@ defaults provided by the region of interest.</p>
 
 The output returned by an <strong>Image Query</strong> is a <a
 href="http://us-vo.org/VOTable/">VOTable</a>, an XML table format,
-returned with a MIME-type of <tt>application/x-votable+xml</tt>. The table lists all
+returned with a MIME-type of <tt>text/xml;content=x-votable</tt>. The table lists all
 the images available to the client that match the query constraints.
 The following requirements are placed on the contents of the table when
 the query successfully returns a list of images:
@@ -1792,7 +1793,7 @@ Resource extension schema is formally defined in a separate document.</p>
 <p>[<a name="HTTP" id="HTTP"></a>HTTP] Fielding et al., Hypertext Transfer Protocol -- HTTP/1.1  <a href="http://www.ietf.org/rfc/rfc2616.txt">http://www.ietf.org/rfc/rfc2616.txt</a> </p>
 <p>[<a name="RM" id="RM"></a>RM] Hanish et al., Resource Metadata for the Virtual Observatory <a href="http://www.ivoa.net/Documents/latest/RM.html">http://www.ivoa.net/Documents/latest/RM.html</a></p>
 <p>[<a name="VOR" id="VOR"></a>VOR] Plante et al., VOResource: an XML Encoding Schema for Resource Metadata <a href="http://www.ivoa.net/Documents/latest/VOResource.html">http://www.ivoa.net/Documents/latest/VOResource.html</a></p>
-<p><a name="WCS" id="WCS"></a>FITS WCS <a href="http://fits.gsfc.nasa.gov/fits_wcs.html">http://fits.gsfc.nasa.gov/fits_wcs.html</a></p>
+<p><a name="WCS" id="WCS"></a>[FITS WCS] <a href="http://fits.gsfc.nasa.gov/fits_wcs.html">http://fits.gsfc.nasa.gov/fits_wcs.html</a></p>
 <p>&nbsp;</p>
 </div>
 </body></html>
