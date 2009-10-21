@@ -19,7 +19,6 @@
 <style type="text/css" media="all">
           @import url("../style/astrogrid.css");
 </style>
-</title>
 </head>
 
 
@@ -29,7 +28,6 @@
 
 <div id='bodyColumn'>
 
-<body>
 <h1><font color="RED"><strong>THIS FORM IS NOT IN USE YET!</strong></font></h1>
      <h1>Choose catalogues to use:</h1>
      <p>
@@ -64,6 +62,7 @@
    </form>
 <%
 %>
+</div>
 
 </body>
 </html>

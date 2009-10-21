@@ -2,10 +2,8 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
 <web-app>
 
-  <display-name>Astrogrid Sky Catalog Server</display-name>
-  <description>
-    SOAP service that publishes a sky catalog data set to AstroGrid.
-  </description>
+  <display-name>DSA/Catalogue</display-name>
+  <description>Web services for tabular data ex RDBMS.</description>
 
    <!-- Class to listen out to container events (ie startup, shutdown) -->
    <!-- This doesn't work on tomcat 4.0...
@@ -36,9 +34,9 @@
   </servlet>
 
   <servlet>
-    <servlet-name>TapServlet</servlet-name>
-    <description>Servlet for managing asynchronous TAP queries</description>
-    <servlet-class>org.astrogrid.dataservice.service.tap.TapServlet</servlet-class>
+    <servlet-name>UwsJobServlet</servlet-name>
+    <description>Handles requests to UWS jobs.</description>
+    <servlet-class>org.astrogrid.dataservice.service.tap.UwsJobServlet</servlet-class>
   </servlet>
 
   <servlet>
@@ -69,11 +67,6 @@
   </servlet>
 
   <!-- VOSI servlets -->
-  <servlet>
-    <servlet-name>VosiServlet</servlet-name>
-    <description>Handles VOSI methods</description>
-    <servlet-class>org.astrogrid.dataservice.service.servlet.VosiServlet</servlet-class>
-  </servlet>
 
   <!-- Admin servlets -->
   <servlet>
@@ -82,11 +75,8 @@
     <servlet-class>org.astrogrid.webapp.GetLog</servlet-class>
   </servlet>
 
-  <servlet>
-    <servlet-name>GetMetadata</servlet-name>
-    <description>serves the datacenter's metadata</description>
-    <servlet-class>org.astrogrid.dataservice.service.servlet.GetMetadata</servlet-class>
-  </servlet>
+
+
 
   <!--
   <servlet>
@@ -116,13 +106,50 @@
   </servlet>
 
   <!-- Custom default servlet -->
-  <servlet>
-     <servlet-name>DsaDefault</servlet-name>
-     <servlet-class> org.astrogrid.dataservice.service.servlet.DsaDefaultServlet</servlet-class>
-  </servlet>
 
   <!-- Query Managing tasks -->
-  <servlet><servlet-name>DelegationServlet</servlet-name><servlet-class>org.astrogrid.security.delegation.DelegationServlet</servlet-class></servlet><servlet-mapping>
+  <servlet><servlet-name>DelegationServlet</servlet-name><servlet-class>org.astrogrid.security.delegation.DelegationServlet</servlet-class></servlet>
+
+    <servlet>
+        <servlet-name>TapSyncServlet</servlet-name>
+        <servlet-class>org.astrogrid.dataservice.service.tap.TapSyncServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TapSyncQueryServlet</servlet-name>
+        <servlet-class>org.astrogrid.dataservice.service.tap.TapSyncQueryServlet</servlet-class>
+    </servlet>
+    <servlet><servlet-name>AvailabilityServlet</servlet-name><servlet-class>org.astrogrid.dataservice.service.vosi.AvailabilityServlet</servlet-class></servlet><servlet><servlet-name>CapabilityServlet</servlet-name><servlet-class>org.astrogrid.dataservice.service.vosi.CapabilityServlet</servlet-class></servlet>
+    <servlet>
+        <servlet-name>TableServlet</servlet-name>
+        <servlet-class>org.astrogrid.dataservice.service.vosi.TableServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ApplicationServlet</servlet-name>
+        <servlet-class>org.astrogrid.dataservice.service.vosi.ApplicationServlet</servlet-class>
+    </servlet>
+    <servlet><servlet-name>UwsJobListServlet</servlet-name><servlet-class>org.astrogrid.dataservice.service.tap.UwsJobListServlet</servlet-class></servlet>
+    <servlet>
+        <servlet-name>UwsServlet</servlet-name>
+        <servlet-class>org.astrogrid.dataservice.service.tap.UwsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UwsJobPhaseServlet</servlet-name>
+        <servlet-class>org.astrogrid.dataservice.service.tap.UwsJobPhaseServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UwsResultServlet</servlet-name>
+        <description>Serves the table of results from a query.</description>
+        <servlet-class>org.astrogrid.dataservice.service.tap.UwsResultServlet</servlet-class>
+    </servlet>
+
+  <servlet>
+    <servlet-name>UwsResultListServlet</servlet-name>
+    <servlet-class>org.astrogrid.dataservice.service.tap.UwsResultListServlet</servlet-class>
+  </servlet>
+
+
+  <servlet><servlet-name>UwsJobDestructionServlet</servlet-name><servlet-class>org.astrogrid.dataservice.service.tap.UwsJobDestructionServlet</servlet-class></servlet>
+    <servlet-mapping>
     <servlet-name>BrowserAskQuery</servlet-name>
     <url-pattern>/admin/BrowserAskQuery</url-pattern>
   </servlet-mapping>
@@ -132,10 +159,11 @@
     <url-pattern>/SubmitCone</url-pattern>
   </servlet-mapping>
 
-  <servlet-mapping>
-    <servlet-name>TapServlet</servlet-name>
-	 <url-pattern>tapservice/*</url-pattern>
-  </servlet-mapping>
+
+
+
+
+
 
   <servlet-mapping>
     <servlet-name>SubmitSimpleQuery</servlet-name>
@@ -163,24 +191,11 @@
     <url-pattern>/admin/GetLog</url-pattern>
   </servlet-mapping>
 
-  <!--
-  <servlet-mapping>
-    <servlet-name>Register</servlet-name>
-    <url-pattern>/admin/Register</url-pattern>
-  </servlet-mapping>
-  -->
-
-  <servlet-mapping>
-    <servlet-name>GetMetadata</servlet-name>
-    <url-pattern>/GetMetadata</url-pattern>
-  </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>MetaDocGenerator</servlet-name>
     <url-pattern>/admin/GenerateMetaDoc</url-pattern>
   </servlet-mapping>
 
-  <!-- Axis -->
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/servlet/AxisServlet</url-pattern>
@@ -201,14 +216,6 @@
         <url-pattern>/cec-http</url-pattern>
   </servlet-mapping>
 
-  <servlet-mapping>
-    <servlet-name>DsaDefault</servlet-name>
-    <url-pattern>/</url-pattern>
-  </servlet-mapping>
-
-    <!-- currently the W3C havent settled on a media type for WSDL;
-    http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
-    for now we go with the basic 'it's XML' response -->
     <servlet-mapping>
         <servlet-name>DelegationServlet</servlet-name>
         <url-pattern>/delegations/*</url-pattern>
@@ -217,7 +224,51 @@
         <servlet-name>DelegationServlet</servlet-name>
         <url-pattern>/delegations</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TapSyncServlet</servlet-name>
+        <url-pattern>/TAP/sync</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TapSyncQueryServlet</servlet-name>
+        <url-pattern>/TAP/sync/query</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AvailabilityServlet</servlet-name>
+        <url-pattern>/VOSI/availability</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CapabilityServlet</servlet-name>
+        <url-pattern>/VOSI/capabilities</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TableServlet</servlet-name>
+        <url-pattern>/VOSI/tables</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ApplicationServlet</servlet-name>
+        <url-pattern>/VOSI/applications</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>UwsServlet</servlet-name>
+        <url-pattern>/TAP/async/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UwsServlet</servlet-name>
+        <url-pattern>/TAP/async</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UwsServlet</servlet-name>
+        <url-pattern>/admin/jobs/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UwsServlet</servlet-name>
+        <url-pattern>/admin/jobs</url-pattern>
+    </servlet-mapping>
     <mime-mapping>
+    <extension>wsdl</extension>
+     <mime-type>text/xml</mime-type>
+  </mime-mapping><mime-mapping>
     <extension>wsdl</extension>
      <mime-type>text/xml</mime-type>
   </mime-mapping>
@@ -258,8 +309,8 @@
           <role-name>agWebAdminUser</role-name>
       </auth-constraint>
   </security-constraint>
-   
-  <!-- Use basic http authentication rather than custom form, for 
+
+  <!-- Use basic http authentication rather than custom form, for
    consistency with other AG webapps. -->
   <login-config>
     <auth-method>BASIC</auth-method>
@@ -276,17 +327,4 @@
   <security-role>
      <role-name>dsaadmin</role-name>
   </security-role>
-  <security-role>
-     <role-name>agWebAdminUser</role-name>
-  </security-role>
-
-  <!-- This one is required for the CEA server in DSA/catalog.
-       Don't change or remove it. -->
-  <env-entry>
-     <description>Class name of the component manager implementation to use. Don't change this during deployment!</description>
-     <env-entry-name>cea.component.manager.class</env-entry-name>
-     <env-entry-value>org.astrogrid.dataservice.service.cea.DatacenterCEAComponentManager</env-entry-value>
-     <env-entry-type>java.lang.String</env-entry-type>
-  </env-entry>
-
-</web-app>
+  </web-app>

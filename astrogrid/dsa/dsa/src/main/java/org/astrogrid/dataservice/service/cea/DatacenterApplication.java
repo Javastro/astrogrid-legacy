@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.6 2009/05/27 15:25:57 gtr Exp $
+/*$Id: DatacenterApplication.java,v 1.7 2009/10/21 19:01:00 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.sql.Timestamp;
 import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,11 +37,11 @@ import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
+import org.astrogrid.dataservice.jobs.Job;
+import org.astrogrid.dataservice.jobs.ResultFile;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierListener;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
-import org.astrogrid.dataservice.service.AxisDataServer;
-import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.Queues;
 import org.astrogrid.dataservice.service.TokenQueue;
 import org.astrogrid.dataservice.service.multicone.DirectConeSearcher;
@@ -48,6 +49,7 @@ import org.astrogrid.dataservice.service.multicone.DsaConeSearcher;
 import org.astrogrid.dataservice.service.multicone.DsaQuerySequenceFactory;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.metadata.MetadataException;
+import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.query.Query;
@@ -88,27 +90,23 @@ public class DatacenterApplication extends AbstractApplication implements Querie
   private static final Log logger = LogFactory.getLog(DatacenterApplication.class);
 
   /**
-   * The credentials held for each job. Values in the map are
-   * containers of sets of matched credentials. Keys are job IDs.
+   * The credentials held for each jobId. Values in the map are
+   * containers of sets of matched credentials. Keys are jobId IDs.
    * This cache is internally synchronized.
    */
   private static Hashtable<String,SecurityGuard> credentials;
 
   /**
-   * The job identifier.
+   * The jobId identifier.
    */
-  protected final String job;
+  protected final String jobId;
    
    protected final Principal acc;
-   /** the datacenter system object - a static, which provides access to the datacenter query framework */
-   protected final DataServer serv;
+   
    /** the executor for background tasks */
    Executor exec;
    
-   /** id allocated by datacenter to this querier */
-   protected String querierID;
-   
-   public String getQuerierId() { return querierID;   }
+   public String getJobId() { return jobId;   }
    
    /** Construct a new DatacenterApplication
     * @param arg0
@@ -116,13 +114,29 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * @param arg2
     * @param arg3
     */
-   public DatacenterApplication(IDs ids, Tool tool, ApplicationInterface interf, ProtocolLibrary arg3,DataServer serv,Executor exec) {
+   public DatacenterApplication(IDs ids, Tool tool, ApplicationInterface interf, ProtocolLibrary arg3,Executor exec) {
       super(ids, tool,interf, arg3);
-      this.serv = serv;
       this.exec = exec;
       this.acc = new LoginAccount(ids.getUser().getUserId(),ids.getUser().getCommunity());
       logger.info("CEA DSA initialised, Job ID="+ids.getJobStepId());
-      job = ids.getId();
+      jobId = ids.getId();
+      Job job = new Job();
+      job.setId(jobId);
+      job.setSource("CEC");
+      Timestamp tomorrow = new Timestamp(System.currentTimeMillis() + 24*60*60*1000);
+      job.setDestructionTime(tomorrow);
+      try {
+        job.add();
+      }
+      catch (Exception e) {
+        logger.warn(String.format("Could not persist the job %s: %s", jobId, e));
+      }
+      ResultFile f = new ResultFile(job.getId());
+      try {
+        f.createNewFile();
+      } catch (IOException ex) {
+        logger.warn(String.format("Can't create the results file for job %s: %s", job.getId(), ex));
+      }
       credentials = new Hashtable<String,SecurityGuard>();
    }
 
@@ -130,7 +144,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * 
     */
    public void run() {
-      logger.debug("Starting to run CEA task with querier id " + getQuerierId());
+      logger.debug("Starting to run CEA task with querier id " + jobId);
       try {
          createAdapters();
 
@@ -164,12 +178,13 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             }
             query.getResultsDef().setTarget(ti);
             query.getResultsDef().setFormat(resultsFormat);
-            Querier querier = Querier.makeQuerier(acc,query, "CEA from "+AxisDataServer.getSource()+" [Job "+ids.getJobStepId()+"]");
+            String label = "CEC job "+ids.getJobStepId();
+            Querier querier = new Querier(jobId, acc, query, label);
             querier.addListener(this);
             
             setStatus(Status.INITIALIZED);
-            querierID = serv.submitQuerier(querier,false);
-            logger.debug("assigned QuerierID " + querierID);
+            QuerierManager.getManager("dataserver").submitQuerier(querier);
+            logger.debug("assigned QuerierID " + jobId);
          }
       }
       catch (Throwable e) {
@@ -179,7 +194,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          return;
       }
       finally {
-        credentials.remove(job);
+        credentials.remove(jobId);
       }
    }
 
@@ -246,7 +261,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    
    /**
     * Tells the CEA library to use this object as the Runnable for executing
-    * the job.
+    * the jobId.
     *
     * @see org.astrogrid.applications.Application#createExecutionTask()
     */
@@ -258,6 +273,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    /**
     * Creates the "target identifier" which controls disposition of the
     * query results. Handles credentials for authentication where appropriate.
+    * For direct results, the {@code jobId} property of the class must
+    * previously be set and the matching result-file created before calling this
+    * method.
     *
     * @return The identifier
     * @throws CeaException For any failure.
@@ -282,7 +300,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
        // See queryStatusChanged for what happens to the results when the query 
        // is complete.
        else {
-         return new WriterTarget(new StringWriter(), true); 
+         return new ResultFile(jobId);
        }
      }
      catch (Exception ex) {
@@ -424,6 +442,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    {
       // The multicone application needs special handling
       try {
+        setStatus(Status.RUNNING);
+        recordJobPhase("RUNNING");
+
          // First work out which table needs to be searched
          String catalogName = "", tableName = "";
          String fullName = (String)findInputParameterAdapter(
@@ -538,14 +559,34 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          ostrm.flush();
          ostrm.close();
          this.setStatus(Status.COMPLETED);
+         recordJobPhase("COMPLETED");
       }
       catch (Throwable e) {
          this.setStatus(Status.ERROR);
+         recordJobPhase("ERROR");
          reportFailure("An exception occurred in processing this job: " + 
                e.toString());
          this.reportError(e.toString()+" executing "+this.getTool().getName(),e);
          return;
       }
+   }
+
+   /**
+    * Updates the job phase in the job database. The jobId property of the
+    * instance must be set before calling this method.
+    *
+    * @param phase The phase title, taken from the UWS vocabulary.
+    */
+   private void recordJobPhase(String phase) {
+     try {
+       Job job = Job.open(jobId);
+       job.setPhase(phase);
+       job.save();
+       logger.info(String.format("Job %s is now in phase %s.", jobId, phase));
+     }
+     catch (Exception e) {
+       logger.error(String.format("Can't record the phase for job %s.", jobId));
+     }
    }
 
   /**
@@ -557,8 +598,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    * @return The guard (never null, even for anonymous callers).
    */
   private SecurityGuard getGuard() throws CertificateException {
-    logger.debug(String.format("Looking for credentials for job %s", job));
-    SecurityGuard sg = credentials.get(job);
+    logger.debug(String.format("Looking for credentials for job %s", jobId));
+    SecurityGuard sg = credentials.get(jobId);
     if (sg == null) {
       logger.debug("Nothing found; making an empty SecurityGuard.");
       sg = new SecurityGuard();
@@ -643,17 +684,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     */
    @Override
    public boolean attemptAbort() {
-      try {
-         QuerierStatus stat = serv.abortQuery(acc,querierID);
-         if (stat.getState().equals(QueryState.ABORTED)) {
-            return true;
-         } else {
-            return false; // assume this means we couldn't abort.
-         }
-      } catch (IOException e) {
-         logger.warn("Attempted abort failed with exception",e);
-         return false;
-      }
+     QuerierManager.getManager("dataserver").fullyDeleteQuery(jobId);
+     return true;
    }
    
    
@@ -693,15 +725,6 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          this.setStatus(Status.ERROR);
       } 
       else if (state.equals(QueryState.FINISHED)) {
-         ParameterValue result = findOutputParameter(DatacenterApplicationDescription.RESULT);
-         if (result.getIndirect() != true) {
-            //if the results were to be directed to CEA, they will be stored in a StringWriter in
-            //the WriterTarget
-            WriterTarget target = (WriterTarget) querier.getQuery().getTarget();
-            StringWriter sw = (StringWriter) target.openWriter();
-            result.setValue(sw.toString() );
-         }
-
          this.setStatus(Status.COMPLETED);
          this.reportMessage(qs.toString());
          
@@ -729,9 +752,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    }
 
   /**
-   * Sets the credentials for a given job.
+   * Sets the credentials for a given jobId.
    *
-   * @param job The job identifier.
+   * @param jobId The jobId identifier.
    * @param g1 The credentials.
    */
   static public void putCredentials(String job, SecurityGuard g1) {

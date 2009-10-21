@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.1 2009/05/13 13:20:58 gtr Exp $
+/*$Id: DataServiceTest.java,v 1.2 2009/10/21 19:00:59 gtr Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.queriers.status.QuerierAborted;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.dataservice.service.DataServer;
@@ -62,9 +63,10 @@ public class DataServiceTest extends TestCase {
         super(arg0);
     }
 
+   @Override
     protected void setUp() throws Exception {
        super.setUp();
-
+       SimpleConfig.setProperty("datacenter.cache.directory", "target");
        SampleStarsPlugin.initConfig();
        
        server = new DataServer();
@@ -248,8 +250,14 @@ public class DataServiceTest extends TestCase {
 
 /*
 $Log: DataServiceTest.java,v $
-Revision 1.1  2009/05/13 13:20:58  gtr
-*** empty log message ***
+Revision 1.2  2009/10/21 19:00:59  gtr
+V2009.1.01, merged.
+
+Revision 1.1.1.1.2.1  2009/09/18 13:39:02  gtr
+datacenter.cache.directory is set to support use of the job database.
+
+Revision 1.1.1.1  2009/05/13 13:20:58  gtr
+
 
 Revision 1.8  2007/06/08 13:16:12  clq2
 KEA-PAL-2169

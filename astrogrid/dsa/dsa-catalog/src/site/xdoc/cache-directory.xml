@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Cache directory and job database</title>
+  </properties>
+
+  <body>
+    <section name="The cache directory and job database">
+      <p>
+    Asynchronous queries have their
+    progress records recorded in a database -- the "job" database --
+    and their results recorded in files
+    on disc. This means that the results of queries persist across restarts of
+    the service and that less bulk data is kept in memory. These arrangements
+    apply to both the TAP and CEC interfaces, but not to cone searches.
+  </p>
+  <p>
+    The database and the results files are kept in a single cache directory.
+  </p>
+  <p>
+    The job database is entirely separate from the database
+    of science data served by DSA/Catalogue. The job database is internal to
+    the DSA/Catalogue web-application (it uses an embedded copy of HSQL). The
+    web application writes frequently to the job database but will never
+    write to the science database.
+  </p>
+  <subsection name="Setting the cache directory">
+    <p>
+      The cache directory is selected in <i>astrogrid.properties</i> by the
+      property <i>datacenter.cache.directory</i>. You will
+        need to think carefully when choosing the directory. This directory
+        must be:
+      </p>
+      <ul>
+        <li>a directory not used for any other purpose (so not the same
+        place as the configuration directory, but it could be
+        a sub-directory of the latter);</li>
+        <li>on a disc local to the web server;</li>
+        <li>unique to one DSA installation (if two DSA/Catalogue services
+        share one cache directory then they can overwrite each other's files);</li>
+        <li>writeable by the account running Tomcat;</li>
+        <li>on a disc with enough space to store the results from 24hrs of
+        queries (24 hours being the time after which queries are purged from the system);</li>
+        <li>in a file system that survives reboots of the host (e.g. not
+        <i>/tmp</i> if you have a Solaris host).</li>
+      </ul>
+    <p>
+      You must create the cache directory manually when doing the installation.
+      The web application doesn't create it for you.
+    </p>
+  </subsection>
+
+  <subsection name="Initializing the job database">
+    <p>
+      You should initialize the job database whenever you install a new copy
+      of DSA/Catalogue. You might get away with using the existing database,
+      but DSA upgrades may need a different database-schema and that can only
+      be created by reinitialization.
+    </p>
+    <p>
+      First, stop Tomcat. Now delete all files in the cache directory (don't
+      delete the directory itself). You have to delete the files manually
+      due to issues in the HSQL database-engine, and you can only do it when the
+      database is not running, hence the need to have Tomcat stopped.
+    </p>
+    <p>
+      Second, start Tomcat and go, with your web browser, to the administration
+      pages of your installation. Follow the link
+      "view job database" in the left-hand menu. The button for initialization
+      is at the bottom of the page.
+    </p>
+  </subsection>
+    </section>
+
+  </body>
+
+</document>

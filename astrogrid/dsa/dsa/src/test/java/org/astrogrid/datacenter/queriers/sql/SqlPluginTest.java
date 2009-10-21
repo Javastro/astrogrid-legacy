@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.1 2009/05/13 13:20:58 gtr Exp $
+/*$Id: SqlPluginTest.java,v 1.2 2009/10/21 19:00:59 gtr Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,6 @@ import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.io.account.LoginAccount;
@@ -27,7 +26,6 @@ import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.VoTableTestHelper;
-import org.astrogrid.tableserver.jdbc.JdbcPlugin;
 import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
@@ -78,7 +76,7 @@ public class SqlPluginTest extends TestCase {
       StringWriter sw = new StringWriter();
       Query q = SimpleQueryMaker.makeTestQuery(catalogName, tableName,
           new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
-      manager.askQuerier(Querier.makeQuerier(LoginAccount.ANONYMOUS, q, this));
+      manager.askQuerier(new Querier(LoginAccount.ANONYMOUS, q, this));
       log.info("Checking results...");
       //System.out.println(sw.toString());
       Document results = VoTableTestHelper.assertIsVotable(sw.toString());
@@ -118,7 +116,7 @@ public class SqlPluginTest extends TestCase {
             "ColName_RA", "ColName_Dec",
             ra, dec, r, 
             new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
-      manager.askQuerier(Querier.makeQuerier(LoginAccount.ANONYMOUS, q, this));
+      manager.askQuerier(new Querier(LoginAccount.ANONYMOUS, q, this));
       log.info("Checking results...");
       System.out.println(sw.toString());
       Document results = VoTableTestHelper.assertIsVotable(sw.toString());
@@ -154,11 +152,8 @@ public class SqlPluginTest extends TestCase {
       assertNotNull("Could not open query file :" + queryFile,is);
       
       StringWriter sw = new StringWriter();
-      //Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, AdqlQueryMaker.makeQuery(is, new WriterTarget(sw), ReturnTable.VOTABLE), this);
-      Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
-         new Query(is, new ReturnTable(
-             new WriterTarget(sw), ReturnTable.VOTABLE)),
-         this);
+      ReturnTable rt = new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE);
+      Querier q = new Querier(LoginAccount.ANONYMOUS, new Query(is, rt), this);
       
       manager.askQuerier(q);
       
@@ -192,37 +187,6 @@ public class SqlPluginTest extends TestCase {
       long numTables = metaDoc.getElementsByTagName("Table").getLength();
       assertEquals("Should be four tables (plates, stars, galaxies, stars2) in metadata", 4, numTables);
       
-   }
-   
-   /*
-    // NO LONGER NEEDED
-   public void testDescriptionMaker_v0_10() throws Exception {
-      setUp();
-      
-      //generate metadata
-      Document metaDoc = VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
-      
-      //debug
-      DomHelper.DocumentToStream(metaDoc, System.out);
-      
-      //check results
-      long numTables = metaDoc.getElementsByTagNameNS("*","table").getLength();
-      assertEquals("Should be four tables (plates, stars, galaxies, stars2) in metadata", 4, numTables);
-      
-   }
-   */
-   public void testDescriptionMaker_v1_0() throws Exception {
-      setUp();
-      
-      //generate metadata
-      Document metaDoc = VoDescriptionServer.getVoDescription(VoDescriptionServer.V1_0);
-      
-      //debug
-      DomHelper.DocumentToStream(metaDoc, System.out);
-      
-      //check results
-      long numTables = metaDoc.getElementsByTagNameNS("*","table").getLength();
-      assertEquals("Should be four tables (plates, stars, galaxies, stars2) in metadata", 4, numTables);
    }
    
    /** Test harness - runs tests

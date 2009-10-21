@@ -4,14 +4,14 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-dsa-catalog</artifactId>
   <packaging>war</packaging>
-  <version>2009.1</version>
+  <version>2009.1.01</version>
   <name>AstroGrid DSA/Catalog web-application</name>
   
 
   <parent>
     <groupId>org.astrogrid</groupId>
     <artifactId>astrogrid-base</artifactId>
-    <version>2009.1</version>
+    <version>2009.1-20090622.102645-18</version>
   </parent>
 
   <dependencies>
@@ -19,13 +19,13 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-dsa</artifactId>
-      <version>2009.1</version>
+      <version>2009.1.01</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-security</artifactId>
-      <version>2009.1.a09</version>
+      <version>2009.1</version>
     </dependency>
 
     <!-- Junk dependency: stops Maven POM inheritence breaking -->

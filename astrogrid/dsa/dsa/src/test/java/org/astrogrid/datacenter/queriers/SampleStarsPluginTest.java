@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.1 2009/05/13 13:20:57 gtr Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.dataservice.metadata.VoDescriptionServer;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.TableResults;
@@ -46,9 +46,11 @@ import org.xml.sax.SAXException;
 
 public class SampleStarsPluginTest extends TestCase {
 
-   public void setUp() {
-      SampleStarsPlugin.initConfig();
-   }
+  @Override
+  public void setUp() {
+    SimpleConfig.setProperty("datacenter.cache.directory", "target");
+    SampleStarsPlugin.initConfig();
+  }
    
    /** Tests the precanned results.  Plugin test is done through QuerierTest */
    public void testFixedResults() throws IOException, SAXException, SQLException, URISyntaxException, IOException {
@@ -93,12 +95,11 @@ public class SampleStarsPluginTest extends TestCase {
 
       StringWriter sw = new StringWriter();
       //Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new WriterTarget(sw), ReturnTable.VOTABLE), this);
-      Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
+      Querier q = new Querier(LoginAccount.ANONYMOUS,
           SimpleQueryMaker.makeTestQuery(catalogName, tableName,
             new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE)), 
           this);
       manager.askQuerier(q);
-      String results = sw.toString();
       Document resultsDom = DomHelper.newDocument(sw.toString());
    }
       
@@ -117,25 +118,6 @@ public class SampleStarsPluginTest extends TestCase {
 
       //check valid xml
       Document resultsDom = DomHelper.newDocument(metadata);
-   }
-   
-   /** Tests the served data plugin */
-   /*
-    // NO LONGER NEEDED
-   public void testMetadataServer_v0_10() throws Exception {
-      Document metadata = VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
-      
-      //debug
-      DomHelper.DocumentToStream(metadata, System.out);
-   }
-   */
-
-   /** Tests the served data plugin */
-   public void testMetadataServer_v1_0() throws Exception {
-      Document metadata = VoDescriptionServer.getVoDescription(VoDescriptionServer.V1_0);
-         
-      //debug
-      DomHelper.DocumentToStream(metadata, System.out);
    }
    
    /**

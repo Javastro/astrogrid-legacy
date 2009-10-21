@@ -1,5 +1,8 @@
-<DatasetDescription xmlns='urn:astrogrid:schema:dsa:TableMetaDoc:v1.1'
-                     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+<DatasetDescription
+    xmlns='urn:astrogrid:schema:dsa:TableMetaDoc:v1.1'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='urn:astrogrid:schema:dsa:TableMetaDoc:v1.1
+                          http://software.astrogrid.org/schema/dsa/DSAMetadoc/v1.1/TableMetaDoc.xsd'>
 
    <!-- Note that this is in TWO places - in the classes directory for deployment, and
    also the package with SampleStarsMetaServer in, for unit tests -->

@@ -10,7 +10,7 @@
     </breadcrumbs>
     <menu name="Overview">
       <item name="DSA/Catalogue home-page" href="index.html"/>
-      <item name="Release notes" href="release-notes-2009.1.html"/>
+      <item name="Release notes" href="release-notes.html"/>
       <item name="Compatibility" href="compatibility.html"/>
     </menu>
     <menu name="Installation">

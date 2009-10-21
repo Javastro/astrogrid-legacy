@@ -22,6 +22,8 @@ are provided.
     AstroGrid/EuroVO tools and libraries; allows ADQL queries;</dd>
 <dt>Cone Search</dt>
 <dd>IVOA-compliant Simple-Cone-Search service.</dd>
+<dt>TAP</dt>
+<dd>an early-access implementation of IVOA Table Access Protocol v1.0; provides ADQL queries.</dd>
 </dl>
 
 </section>

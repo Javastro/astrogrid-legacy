@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.1 2009/05/13 13:20:50 gtr Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -96,6 +96,7 @@ public class TableMetaDocInterpreter
     * ensure that the "metadoc" variable is accessed safely by multiple 
     * threads. */
    public static void initialize(URL metadocUrl) throws MetadataException {
+     log.info("Loading table metadata from " + metadocUrl);
      synchronized (TableMetaDocInterpreter.class) {
         if (metadoc != null) { //Initialized already
           //log.error("KONA METADOC ALREADY LOADED!");
@@ -121,11 +122,19 @@ public class TableMetaDocInterpreter
                metadoc = loadAndValidateMetadoc(metadocUrl);
                //log.error("KONA FINISHED LOADING METADOC!");
             }
-            catch (IOException ioe) {
-               if (ioe instanceof FileNotFoundException) {
-                  throw new MetadataException("The specified metadoc file for this DSA cannot be found, please check your configuration.");
-               }
-               throw new MetadataException(ioe.getMessage());
+            catch (FileNotFoundException e) {
+              String message =
+                  String.format("Can't find the metadoc file %s", metadocUrl);
+              log.error(message);
+              throw new MetadataException(message, e);
+            }
+            catch (IOException e) {
+              String message =
+                  String.format("Metadoc file %s is invalid", metadocUrl);
+              log.error(message);
+              log.error(e);
+              log.error(e.getCause());
+              throw new MetadataException(message, e);
             }
             // After initial syntactic validation, make sure our conesearch 
             // settings (if any) are ok

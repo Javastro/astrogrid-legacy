@@ -9,6 +9,7 @@
 package org.astrogrid.datacenter.queriers;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.SimpleQueryMaker;
@@ -34,9 +35,11 @@ public class QuerierManagerTest extends TestCase {
    public QuerierManagerTest(String arg0) {
       super(arg0);
    }
-   
+
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
+      SimpleConfig.setProperty("datacenter.cache.directory", "target");
       SampleStarsPlugin.initConfig();
    }
    
@@ -55,12 +58,12 @@ public class QuerierManagerTest extends TestCase {
              catalogID,tableID);
        String fullName = catalogName + "." + tableName;
 
-      s1 = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
+      s1 = new Querier(LoginAccount.ANONYMOUS,
           SimpleQueryMaker.makeTestQuery(fullName,
             new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)),
           this);
       assertNotNull(s1);
-      s2 = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
+      s2 = new Querier(LoginAccount.ANONYMOUS,
           SimpleQueryMaker.makeTestQuery(fullName,
             new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)),
           this);

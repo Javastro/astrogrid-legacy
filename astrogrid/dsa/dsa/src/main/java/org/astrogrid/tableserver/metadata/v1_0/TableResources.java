@@ -1,5 +1,5 @@
 /*
- * $Id: TableResources.java,v 1.1 2009/05/13 13:20:50 gtr Exp $
+ * $Id: TableResources.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,14 +8,12 @@ package org.astrogrid.tableserver.metadata.v1_0;
 
 import java.io.IOException;
 import org.astrogrid.dataservice.metadata.MetadataException;
-import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoTypes;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.ucd.UcdVersions;
-import org.astrogrid.ucd.UcdException;
 
 /**
  * Generates Table descriptions for CatalogService catalog resources.

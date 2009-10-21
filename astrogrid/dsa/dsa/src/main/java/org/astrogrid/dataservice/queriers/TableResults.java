@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.1 2009/05/13 13:20:26 gtr Exp $
+ * $Id: TableResults.java,v 1.2 2009/10/21 19:00:59 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -78,7 +78,9 @@ public abstract class TableResults implements QueryResults
     * as a mime type*/
    public TableWriter makeTableWriter(TargetIdentifier target, String requestedFormat, Principal user) throws IOException {
 
-      if (requestedFormat.equals(ReturnTable.VOTABLE)) {
+      if (requestedFormat.equals(ReturnTable.VOTABLE) ||
+          requestedFormat.equals(ReturnTable.VOTABLE_GENERIC) ||
+          requestedFormat.equals(ReturnTable.VOTABLE_TEXT)) {
          return new VoTableWriter(target, "Query Results", user);
       }
       else if (requestedFormat.equals(ReturnTable.VOTABLE_BINARY)) {

@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.2 2009/06/08 16:27:04 gtr Exp $
+ * $Id: DataServer.java,v 1.3 2009/10/21 19:01:00 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.io.account.LoginAccount;
-import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.QuerierPluginException;
@@ -27,7 +26,6 @@ import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.slinger.targets.WriterTarget;
-import org.astrogrid.xml.DomHelper;
 
 
 /**
@@ -130,7 +128,7 @@ public class DataServer
               testCatalogName, testTableName, 
               new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE)
          );
-         querier = Querier.makeQuerier(testPrincipal, query, DataServer.class);
+         querier = new Querier(testPrincipal, query, DataServer.class);
          querierManager.askQuerier(querier);
       }
       catch (Exception ex) {
@@ -152,7 +150,7 @@ public class DataServer
 //            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
 //         }
    
-         querier = Querier.makeQuerier(user, query, source);
+         querier = new Querier(user, query, source);
          querierManager.askQuerier(querier);
       }
       catch (Throwable th) {
@@ -185,7 +183,7 @@ public class DataServer
 
       Querier querier = null;
       try {
-         querier = Querier.makeQuerier(user, query, source);
+         querier = new Querier(user, query, source);
       }
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
@@ -203,6 +201,35 @@ public class DataServer
       
       return submitQuerier(querier, false);
    }
+
+   /**
+    * Submits a (non-blocking) ADQL/XML/OM query with a given ID.
+    * Results will be output to given Agsl.  Source indicates
+    * which interface is submitting
+    */
+   public String submitQuery(String id, Principal user, Query query, Object source) throws Throwable {
+
+      Querier querier = null;
+      try {
+         querier = new Querier(id, user, query, source);
+      }
+      catch (Throwable th) {
+         //if there's an error, log it, make sure the querier state is correct, and rethrow to
+         //be dealt with correctly up the tree
+         if (querier != null) {
+            try {
+               if (!(querier.getStatus() instanceof QuerierError)) {
+                  querier.setStatus(new QuerierError(querier.getStatus(), "",th));
+               }
+            } catch (Throwable th2) {} ; //ignore
+         }
+         log.error("submitQuery("+user+", "+query+")", th);
+         throw th;
+      }
+
+      return submitQuerier(querier, false);
+   }
+
    /**
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
     * reference id.  Results will be output to given Agsl.  Source indicates
@@ -212,7 +239,7 @@ public class DataServer
 
       Querier querier = null;
       try {
-         querier = Querier.makeQuerier(user, query, source);
+         querier = new Querier(user, query, source);
       }
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
@@ -232,29 +259,13 @@ public class DataServer
    }
 
    /**
-    * Request to start a pending query.  This might not be successful - 
-	 * depends on the back end.  NB the id given is the *datacenters* id.
-    */
-   public void startPendingQuery(Principal user, String queryId) throws IOException {
-     querierManager.releaseQuerier(queryId);
-   }
-
-   /**
-    * @deprecated convenience method
-    * NOW REMOVED - DON'T SUPPORT CONDITION ANYMORE
-   public String submitQuery(Principal user, Condition condition, ReturnSpec returns) throws Throwable {
-      return submitQuery(user, new Query(condition, returns), null);
-   }
-    */
-
-   /**
     * Returns the number of matches of the given query condition. Source indicates which
     * interface is requesting the count
     */
    public long askCount(Principal user, Query query, Object source) throws Throwable {
       Querier querier = null;
       try {
-         querier = Querier.makeQuerier(user, query, source);
+         querier = new Querier(user, query, source);
          return querierManager.askCount(querier);
       }
       catch (Throwable th) {
@@ -282,17 +293,8 @@ public class DataServer
       assert(querier != null);
       
       try {
-//         if ( (querier.getQuery() instanceof RawSqlQuery) && !ConfigFactory.getCommonConfig().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
-//            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
-//         }
-   
-			if (pending == true) {
-         	querierManager.holdQuerier(querier);
-			}
-			else {
-         	querierManager.submitQuerier(querier);
-			}
-         return querier.getId();
+        querierManager.submitQuerier(querier);
+        return querier.getId();
       }
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
@@ -319,15 +321,10 @@ public class DataServer
    /**
     * Returns status of a query. NB the id given is the *datacenter's* id
     */
-   public QuerierStatus getQueryStatus(Principal user, String queryId) throws IOException
-   {
+   public QuerierStatus getQueryStatus(Principal user, 
+                                       String    queryId) throws IOException {
       Querier querier = querierManager.getQuerier(queryId);
-      if (querier == null) {
-//         throw new DatacenterException("No Query found for ID="+queryId+" on this server");
-         return null;
-      }
-
-      return querier.getStatus();
+      return (querier == null)? null : querier.getStatus();
    }
 
    /**
@@ -348,11 +345,9 @@ public class DataServer
       log.warn(user+" is deleting query "+queryId);
 		querierManager.fullyDeleteQuery(queryId);
    }
-   /**
-    * Returns the metadata file as a string
-    */
-   public String getMetadata(String version) throws IOException {
-      return DomHelper.DocumentToString(VoDescriptionServer.getVoDescription(version));
+
+   public void deleteQuery(String queryId) throws IOException {
+		 querierManager.fullyDeleteQuery(queryId);
    }
    
    /** Returns the valid formats for this service as an array of strings */

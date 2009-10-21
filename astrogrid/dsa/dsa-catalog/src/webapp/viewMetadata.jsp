@@ -21,7 +21,6 @@
 <style type="text/css" media="all">
           @import url("./style/astrogrid.css");
 </style>
-</title>
 </head>
 
 
@@ -32,10 +31,6 @@
 <div id='bodyColumn'>
 
 <h1>MetaDoc for <%=DataServer.getDatacenterName() %></h1>
-<%
-   VoDescriptionServer.clearCaches(); //force refresh
-   //Document voDescription = VoDescriptionServer.getVoDescription();
-%>
 
 <%= new TableMetaDocRenderer().renderMetaDoc() %>
 

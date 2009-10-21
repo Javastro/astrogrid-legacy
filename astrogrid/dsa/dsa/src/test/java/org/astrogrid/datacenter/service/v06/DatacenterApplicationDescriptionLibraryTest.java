@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.1 2009/05/13 13:20:59 gtr Exp $
+/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,15 +71,27 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
 
     public void testContents() throws ApplicationDescriptionNotFoundException {
         String[] names = lib.getApplicationNames();
-        assertEquals(2,names.length);
+        for (int i = 0; i < names.length; i++) {
+          System.out.println(names[i]);
+        }
+        // We expect astrogrid.org/test-dsa-catalog/ceaApplication,
+        // org.astrogrid.unregistered/default
+        // astrogrid.org/test-dsa-catalog/CatName_SampleStarsCat/ceaApplication
+        assertEquals(3,names.length);
         ApplicationDescription appDesc = lib.getDescription(names[0]);
         assertNotNull(appDesc);
     }
 }
 /*
 $Log: DatacenterApplicationDescriptionLibraryTest.java,v $
-Revision 1.1  2009/05/13 13:20:59  gtr
-*** empty log message ***
+Revision 1.2  2009/10/21 19:01:00  gtr
+V2009.1.01, merged.
+
+Revision 1.1.1.1.2.1  2009/09/16 17:24:11  gtr
+Corrected
+
+Revision 1.1.1.1  2009/05/13 13:20:59  gtr
+
 
 Revision 1.7  2007/09/07 09:30:50  clq2
 PAL_KEA_2235

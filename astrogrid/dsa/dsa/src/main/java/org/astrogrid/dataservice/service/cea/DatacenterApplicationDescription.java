@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.1 2009/05/13 13:20:31 gtr Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -221,7 +221,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         logger.debug("Initializing new datacenter application " + newID + " " + id);
         final DefaultIDs ids = new DefaultIDs(id,newID, user);
         ApplicationInterface interf = this.getInterface(tool.getInterface());
-        return new DatacenterApplication(ids,tool,interf,env.getProtocolLib(),ds,exec);
+        return new DatacenterApplication(ids,tool,interf,env.getProtocolLib(),exec);
     }
     
 }
@@ -229,8 +229,14 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
 /*
 $Log: DatacenterApplicationDescription.java,v $
-Revision 1.1  2009/05/13 13:20:31  gtr
-*** empty log message ***
+Revision 1.2  2009/10/21 19:01:00  gtr
+V2009.1.01, merged.
+
+Revision 1.1.1.1.2.1  2009/09/25 15:00:43  gtr
+Refactored: the DataCenter facade is removed.
+
+Revision 1.1.1.1  2009/05/13 13:20:31  gtr
+
 
 Revision 1.9  2008/02/07 17:27:45  clq2
 PAL_KEA_2518

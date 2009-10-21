@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.1 2009/05/13 13:20:57 gtr Exp $
+ * $Id: QuerierTest.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,8 +26,6 @@ import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.VoTableTestHelper;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
-import org.astrogrid.tableserver.test.SampleStarsPlugin;
-import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 
 /**
@@ -45,11 +43,10 @@ public class QuerierTest extends TestCase {
    public QuerierTest(String name) {
       super(name);
    }
-   
+
+   @Override
    protected void setUp() throws Exception{
       super.setUp();
-      
-      SampleStarsPlugin.initConfig();
 
       String catalogID = ConfigFactory.getCommonConfig().getString(
             "datacenter.self-test.catalog", null);
@@ -62,16 +59,12 @@ public class QuerierTest extends TestCase {
 
       sw = new StringWriter();
       //querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new WriterTarget(sw), ReturnTable.VOTABLE), this);
-      querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
+      querier = new Querier(LoginAccount.ANONYMOUS,
           SimpleQueryMaker.makeTestQuery(catalogName, tableName,
               new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE)), 
             this);
       listener = new MockListener();
       querier.addListener(listener);
-   }
-
-   protected void tearDown() throws Exception {
-      super.tearDown();
    }
    
    public void testStatusUpdates() throws Exception {

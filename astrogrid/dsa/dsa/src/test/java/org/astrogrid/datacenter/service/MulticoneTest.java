@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.TokenQueue;
 import org.astrogrid.dataservice.service.multicone.DirectConeSearcher;
@@ -29,16 +30,16 @@ import uk.ac.starlink.ttools.cone.ConeSearcher;
 import uk.ac.starlink.ttools.cone.QuerySequenceFactory;
 import uk.ac.starlink.ttools.task.TableProducer;
 
-import uk.ac.starlink.votable.VOTableWriter;
-
 public class MulticoneTest extends TestCase {
 
     public MulticoneTest(String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() {
-        SampleStarsPlugin.initConfig();
+      SimpleConfig.setProperty("datacenter.cache.directory", "target");
+      SampleStarsPlugin.initConfig();
 
         // Suppress STILTS logging, which does not use log4j.
         Logger.getLogger("uk.ac.starlink").setLevel(Level.WARNING);

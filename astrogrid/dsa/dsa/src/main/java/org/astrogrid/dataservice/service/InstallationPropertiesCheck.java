@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.1 2009/05/13 13:20:28 gtr Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,6 +61,7 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkSet("datacenter.url", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.metadoc.file", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.querier.plugin", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.cache.directory", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.sqlmaker.xslt", accum)) { bad = bad+1; }
       if (!checkSet("db.trigfuncs.in.radians", accum)) { bad = bad+1; }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.3 2009/06/08 16:27:04 gtr Exp $
+ * $Id: Querier.java,v 1.4 2009/10/21 19:00:59 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,11 +13,15 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.Vector;
 import java.rmi.server.UID;
+import java.sql.Timestamp;
 import org.apache.commons.logging.Log;
 import org.astrogrid.dataservice.DatacenterException;
+import org.astrogrid.dataservice.jobs.Job;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.slinger.Slinger;
+import org.exolab.castor.jdo.PersistenceException;
 
 /**
  * Represents a single running query.
@@ -75,6 +79,11 @@ public class Querier implements Runnable, PluginListener {
    
    /** Represents size of results */
    private long resultsSize = -1;
+
+   /**
+    * If true, indicates that the tasks has been cancelled.
+    */
+   private boolean cancelled = false;
    
    /** For measuring how long the query took - calculated from status change times*/
 //use status info   private Date timeQueryStarted = null;
@@ -89,16 +98,14 @@ public class Querier implements Runnable, PluginListener {
    /** Logging status information */
    StatusLogger statusLog = new StatusLogger();
    
-
-   /** This is private so that if the mechanism changes and we make the plugins
-    subclasses of queriers, for example, then we don't have to change the rest of the
-    * code.  The query includes details about the results, and the 'aSource' is just
-    * used to indicate where the querier came from - eg a test class, or JSPs, or
-    * CEA, etc */
-   private Querier(Principal forUser, Query query, Object aSource) throws IOException {
-      this.id = generateQueryId();
-      this.user = forUser;
-      this.query = query;
+   public Querier(Principal forUser, Query query, Object aSource) throws IOException {
+     this(generateQueryId(), forUser, query, aSource);
+   }
+   
+   public Querier(String id, Principal u, Query q, Object aSource) throws IOException {
+      this.id = id;
+      this.user = (u == null)? LoginAccount.ANONYMOUS : u;
+      this.query = q;
       this.source = aSource;
       
       //check to see if the query is OK to run - eg the tables are valid
@@ -111,8 +118,8 @@ public class Querier implements Runnable, PluginListener {
       if (source != null) {
          status.addDetail("Source: "+source.toString());
       }
-      status.addDetail("Query: "+query);
-      status.addDetail("User: "+forUser.getName());
+      status.addDetail("Query: " + query);
+      status.addDetail("User: " + user.getName());
 
       //do this as part of the constructor so that we get errors back even on
       //submitted (asynchronous) queries.
@@ -125,21 +132,6 @@ public class Querier implements Runnable, PluginListener {
       
    }
    
-   /** Backwards compatible to take the old account. @deprecated - use the makeQuerier(Principal etc) *
-   public static Querier makeQuerier(Account forUser, Query query, Object source) throws IOException {
-      return makeQuerier(new LoginAccount(forUser.getIndividual()+"@"+forUser.getCommunity(),""), query, source);
-   }
-    */
-   
-   /** Factory method.  Query includes the results definition, and 'source' represents
-    * what clas was used to create this querier (optional) */
-   public static Querier makeQuerier(Principal forUser, Query query, Object source) throws IOException {
-      
-      Querier querier = new Querier(forUser, query, source);
-
-      return querier;
-   }
-
    /**
     * Determines whether two queriers are equal.
     * They are equivalent if their ID strings are equals
@@ -195,9 +187,13 @@ public class Querier implements Runnable, PluginListener {
     */
    public void run() {
      log.info("Starting Query ["+id+"] asynchronously...");
+     if (cancelled) {
+       return;
+     }
      try {
        synchronized(this) {
          running = true;
+         setStatus(new QuerierQuerying(status, ""));
        }
       
        try {
@@ -331,6 +327,7 @@ public class Querier implements Runnable, PluginListener {
     * Abort - stops query (if poss) and tidies up
     */
    public QuerierStatus abort() {
+     cancelled = true;
 
       //if it's already completed stopped, plugin will be null
       if (plugin != null) {
@@ -364,6 +361,7 @@ public class Querier implements Runnable, PluginListener {
    /**
     * For debugging/display
     */
+   @Override
    public String toString() {
       return "Querier ["+getId()+"] ";
    }
@@ -401,11 +399,61 @@ public class Querier implements Runnable, PluginListener {
       log.info("Query ["+id+"] for "+user+", now "+newStatus);
          
       status = newStatus;
+    
+      try {
+        Job job = Job.open(id);
+        job.setPhase(getUwsPhase());
+        switch (status.getState()) {
+          case RUNNING_QUERY:
+            job.setStartTime(new Timestamp(System.currentTimeMillis()));
+            break;
+          case ERROR:
+            job.setErrorMessage(status.asFullMessage());
+            break;
+          case FINISHED:
+          case ABORTED:
+            job.setEndTime(new Timestamp(System.currentTimeMillis()));
+            break;
+          default:
+            break;
+        }
+        job.save();
+      } catch (PersistenceException ex) {
+        log.error("Failed to update the job record for " + id);
+      }
       
       fireStatusChanged(status);
       
       if (status.isFinished()) {
          statusLog.log(status);
+      }
+   }
+
+   /**
+    * Determines the UWS phase from the query status.
+    * 
+    * @return The phase.
+    */
+   private String getUwsPhase() {
+      switch (status.getState()) {
+        case CONSTRUCTED:
+         return "PENDING";
+        case QUEUED:
+          return "QUEUED";
+        case STARTING:
+        case RUNNING_QUERY:
+        case QUERY_COMPLETE:
+        case RUNNING_RESULTS:
+          return "EXECUTING";
+        case FINISHED:
+          return "COMPLETED";
+        case ABORTED:
+         return "ABORTED";
+        case ERROR:
+          return "ERROR";
+        case UNKNOWN:
+        default:
+          return "UNKNOWN";
       }
    }
    
@@ -457,15 +505,14 @@ public class Querier implements Runnable, PluginListener {
       }
    }
 
-   
    /**
     * Helper method to generates a handle for use by a particular instance; uses the current
     * time to help us debug (ie we can look at the temporary directories and
     * see which was the last run). Later we could add service/user information
     * if available
     */
-   protected static String generateQueryId() {
-      Date todayNow = new Date();
+   public static String generateQueryId() {
+      Timestamp todayNow = new Timestamp(System.currentTimeMillis());
        return
          todayNow.getYear()
          + "-"

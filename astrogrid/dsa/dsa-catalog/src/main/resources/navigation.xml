@@ -21,12 +21,18 @@
      </ul>
    </div>
 
-   <div id='menuServer'>
+   <div id='menuMetadata'>
+     <h5>Public metadata</h5>
+      <ul>
+         <li><a href="<%=pathPrefix%>/VOSI/">VOSI resources</a></li>
+      </ul>
+   </div>
+
+   <div id='menuAdmin'>
     <h5>Server administration</h5>
       <ul>
          <li><a href="<%=pathPrefix%>/admin/GenerateMetaDoc">Generate template metadoc</a></li>
          <li><a href="<%=pathPrefix%>/viewMetadata.jsp">View metadata table</a></li>
-         <li><a href="<%=pathPrefix%>/admin/resources.jsp">View XML resources</a></li>
        <%
            // Optionally enable registration (DISABLED when SampleStarsPlugin in use)
            String querierPlugin = ConfigFactory.getCommonConfig().getString(
@@ -39,6 +45,7 @@
            }
        %>
        <li><a href="<%=pathPrefix%>/admin/serverStatus.jsp">View server status</a></li>
+       <li><a href="<%=pathPrefix%>/admin/jobs">View job database</a></li>
      </ul>
    </div>
 
@@ -83,6 +90,7 @@
                out.write("<li><font color='#999999'>Run a multiple cone search</font></li>");
            }
        %>
+       <li><a href="<%=pathPrefix%>/TAP/">TAP queries</a></li>
      </ul>
    </div>
 

@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.1 2009/05/13 13:20:28 gtr Exp $
+/*$Id: InstallationSelfCheck.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,13 +19,11 @@ import java.lang.reflect.Constructor;
 import java.security.Principal;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.HashMap;
-import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
 import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.dataservice.api.nvocone.NvoConeSearcher;
-import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.QuerierPlugin;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
@@ -36,7 +34,6 @@ import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
@@ -47,10 +44,8 @@ import org.xml.sax.SAXException;
 import org.w3c.dom.Document;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.contracts.SchemaMap;
+import org.astrogrid.dataservice.jobs.Job;
 
- // Just used in testCone debugging
-import java.io.InputStreamReader;
-import org.astrogrid.io.Piper;
 
 /** Unit test for checking an installation - checks location of config files, etc.
  * <p>
@@ -83,25 +78,18 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
    }
 
    /**
+    * Checks that the job database is accessible.
+    */
+   public void testJobDatabase() throws Exception {
+     initConfig();
+     assertNotNull("Job database is not available", Job.list());
+   }
+
+   /**
     * Creates a test query from properties, defaulting to cone(30,-80,0.1)
     */
    public Query makeTestQuery(TargetIdentifier target, String format) throws QueryException, ParserConfigurationException, IOException, SAXException {
       initConfig();
-     /*
-      * REMOVED BY KEA, WE DON'T PROVIDE SQL TRANSLATION ANYMORE
-      String sql = ConfigFactory.getCommonConfig().getString("datacenter.testquery.sql", null);
-      if (sql != null) {
-         return SqlParser.makeQuery(sql, target, format);
-      }
-      */
-      //no sql given, make a cone searcher
-      //String ra = ConfigFactory.getCommonConfig().getString("datacenter.testquery.ra","30");
-      //String dec = ConfigFactory.getCommonConfig().getString("datacenter.testquery.dec","-80");
-      //String radius = ConfigFactory.getCommonConfig().getString("datacenter.testquery.radius","0.1");
-      //return SimpleQueryMaker.makeConeQuery(Double.parseDouble(ra),Double.parseDouble(dec),Double.parseDouble(radius), target, format);
-      //return new Query(Double.parseDouble(ra), Double.parseDouble(dec), Double.parseDouble(radius), new ReturnTable(target, format));
-      
-      // Make a standard test query, that's what it's for.
       String catalogID = ConfigFactory.getCommonConfig().getString("datacenter.self-test.catalog", null);
       String tableID = ConfigFactory.getCommonConfig().getString("datacenter.self-test.table", null);
       String catalogName = TableMetaDocInterpreter.getCatalogNameForID(

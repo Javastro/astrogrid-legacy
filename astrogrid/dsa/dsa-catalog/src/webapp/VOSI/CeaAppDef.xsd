@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="urn:astrogrid:schema:CeaApplicationDefinition"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"
+  xmlns:tns="urn:astrogrid:schema:CeaApplicationDefinition"
+  xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance"
+  xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.0rc1"
+  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0">
+
+  <xs:import namespace="http://www.ivoa.net/xml/CEA/base/v1.0rc1" schemaLocation="http://software.astrogrid.org/schema/cea/CEABase/v1.0rc1/CEABase.xsd"/>
+
+  <xs:element name="ceaAppDefinition">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="applicationDefinition" form="unqualified" type="ceab:ApplicationBase" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

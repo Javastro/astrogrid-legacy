@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.2 2009/05/15 16:28:23 gtr Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.3 2009/10/21 19:01:00 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,6 +35,9 @@ import org.astrogrid.applications.manager.observer.AbstractResultsListener;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.community.User;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.dataservice.jobs.Job;
+import org.astrogrid.dataservice.jobs.ResultFile;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.dataservice.service.DataServer;
@@ -83,6 +86,9 @@ public class DatacenterApplicationTest extends TestCase {
    @Override
    protected void setUp() throws Exception {
       super.setUp();
+      // This allows the job database to work properly.
+      SimpleConfig.setProperty("datacenter.cache.directory", "target");
+      Job.initialize();
       TableMetaDocInterpreter.clear();
       SampleStarsPlugin.initConfig();
       ds = new DataServer();
@@ -147,53 +153,64 @@ public class DatacenterApplicationTest extends TestCase {
       output.addParameter(target);
    }
    
-   public void testCreation() {
+   public void testCreation() throws Exception {
       assertNotNull(app);
+      System.out.println(app.getID());
+      Job job = Job.load(app.getID());
+      assertNotNull(job);
+      assertEquals("PENDING", job.getPhase());
    }
    
    public String getQueryStatus() throws IOException {
-      return ds.getQueryStatus(LoginAccount.ANONYMOUS, app.getQuerierId()).asFullMessage();
+      return ds.getQueryStatus(LoginAccount.ANONYMOUS, app.getJobId()).asFullMessage();
    }
    
    public void testRun() throws Exception {
+     Job job = Job.load(app.getID());
+     assertNotNull(job);
+     assertEquals("PENDING", job.getPhase());
 
      //starts application (submits query)
      app.createExecutionTask().run();
-     String qid = app.getQuerierId();
+     String qid = app.getJobId();
      assertNotNull(qid);
      System.out.println("Running querier " + qid);
 
       // wait for app to finish,
-      long endTime = System.currentTimeMillis() + 60 * 1000; // i.e. now plus 60 seconds
+      long timeLimit = System.currentTimeMillis() + 60 * 1000; // i.e. now plus 60 seconds
       while (notFinished(app.getStatus()) ) {
+         Job.load(app.getID());
+         job = Job.load(qid);
+         assertNotNull(job);
          Thread.sleep(1000); //give everything else a chance for a whole second
-         if (System.currentTimeMillis() > endTime) {
-            fail("Query still running after 60 seconds, status: "+getQueryStatus());
+         if (System.currentTimeMillis() > timeLimit) {
+            fail("Job still running after 60 seconds, status: "+ job.getPhase());
          }
-         System.out.println(getQueryStatus());
+         System.out.println(job.getPhase());
       }
       
       
       //check query thinks it completed OK
-      QuerierStatus qStat = ds.getQueryStatus(LoginAccount.ANONYMOUS, app.getQuerierId());
-      assertNotNull(app.getQuerierId());
-      assertNotNull(qStat.asFullMessage());
-      assertNotNull(qStat.getStage());
-      assertEquals("Querier "+app.getQuerierId()+" error: "+qStat.asFullMessage(), QuerierStatus.COMPLETE, qStat.getStage());
+      job = Job.load(qid);
+      assertNotNull(job);
+      System.out.println("Job final phase: " + job.getPhase());
+      assertEquals("COMPLETED", job.getPhase());
       
       // check we completed ok.
       assertEquals("Application status not updated",Status.COMPLETED,app.getStatus());
       // check listener is as expected.
       runListener.asserts();
       resultListener.asserts();
+
       // check results
       ResultListType rl = app.getResult();
       assertNotNull("ResultList is null", rl);
       assertEquals("ResultList should contain only one value", 1,rl.getResultCount());
       assertEquals("Result",rl.getResult(0).getName());
-      String votableString = rl.getResult(0).getValue();
-      assertNotNull("Votable returned is null", votableString);
-      VoTableTestHelper.assertIsVotable(votableString);
+      ResultFile rf = new ResultFile(job.getId());
+      assertNotNull(rf);
+      assertTrue(rf.exists());
+      assertTrue(rf.length() > 0);
       
    }
 
@@ -315,6 +332,21 @@ public class DatacenterApplicationTest extends TestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.3  2009/10/21 19:01:00  gtr
+ V2009.1.01, merged.
+
+ Revision 1.2.2.4  2009/10/08 13:06:25  gtr
+ Fixed.
+
+ Revision 1.2.2.3  2009/10/02 16:47:40  gtr
+ Altered to support purging of the job list.
+
+ Revision 1.2.2.2  2009/09/25 15:05:08  gtr
+ Fixed to work with the revised querier system.
+
+ Revision 1.2.2.1  2009/09/18 13:39:02  gtr
+ datacenter.cache.directory is set to support use of the job database.
+
  Revision 1.2  2009/05/15 16:28:23  gtr
  I added the security wiring to the CEA interface. Authenticated calls to the CEC should now supply credentials for us in the call to VOSpace.
 

@@ -11,9 +11,8 @@
   <section name="Upgrade procedure">
     <p>
       If you already have a functioning installation with a previous
-      version of DSA/Catalogue, then your should follow this procedure to
-      upgrade the software rather than repeating the full, installation
-      procedure.
+      version of DSA/Catalogue, then you should follow this procedure to
+      upgrade the software rather than repeating the full installation.
     </p>
     <ol>
       <li><a href="back-up.html">Back up your current installation.</a></li>
@@ -33,6 +32,10 @@
       <li>Update the <a href="registration.html">registration</a> if so advised
           in the release notes.</li>
     </ol>
+    <p>
+      Please note that the release notes may prescribe important variations and
+      additions to this list of actions.
+    </p>
   </section>
 
 </body>

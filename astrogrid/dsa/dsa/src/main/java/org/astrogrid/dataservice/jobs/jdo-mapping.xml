@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<mapping>
+  <class name="org.astrogrid.dataservice.jobs.Job" identity="id">
+    <map-to table="jobs"/>
+    <field name="id" type="string">
+      <sql name="id" type="varchar"/>
+    </field>
+    <field name="phase" type="string">
+      <sql name="phase" type="varchar"/>
+    </field>
+    <field name="destructionTime" type="timestamp">
+      <sql name="destructionTime" type="timestamp"/>
+    </field>
+    <field name="startTime" type="timestamp">
+      <sql name="startTime" type="timestamp"/>
+    </field>
+    <field name="endTime" type="timestamp">
+      <sql name="endTime" type="timestamp"/>
+    </field>
+    <field name="source" type="string">
+      <sql name="source" type="varchar"/>
+    </field>
+    <field name="errorMessage" type="string">
+      <sql name="errorMessage" type="varchar"/>
+    </field>
+    <field name="query" type="string">
+      <sql name="query" type="varchar"/>
+    </field>
+    <field name="destination" type="string">
+      <sql name="destination" type="varchar"/>
+    </field>
+    <field name="format" type="string">
+      <sql name="format" type="varchar"/>
+    </field>
+  </class>
+</mapping>

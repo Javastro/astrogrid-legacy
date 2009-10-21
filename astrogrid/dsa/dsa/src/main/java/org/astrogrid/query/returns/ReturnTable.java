@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnTable.java,v 1.1 2009/05/13 13:20:40 gtr Exp $
+ * $Id: ReturnTable.java,v 1.2 2009/10/21 19:00:59 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,6 +29,8 @@ public class ReturnTable  extends ReturnSpec {
    public static final String FITS         = MimeTypes.FITS;
   // public static final String VOTABLE_FITSLIST  = MimeTypes.VOTABLE_FITSLIST;
    public static final String VOTABLE_BINARY  = MimeTypes.VOTABLE_BINARY;
+   public static final String VOTABLE_GENERIC = "application/x-votable+xml";
+   public static final String VOTABLE_TEXT = "text/xml";
    
    /** Creates a definition specifying only the target destination */
    public ReturnTable(TargetIdentifier aTarget) {
@@ -48,7 +50,9 @@ public class ReturnTable  extends ReturnSpec {
              formats[i].trim().toLowerCase().equals(VOTABLE) ||
              formats[i].trim().toLowerCase().equals(VOTABLE_BINARY) ||
              formats[i].trim().toLowerCase().equals(HTML) ||
-             formats[i].trim().toLowerCase().equals(FITS)) {
+             formats[i].trim().toLowerCase().equals(FITS) ||
+             formats[i].trim().toLowerCase().equals(VOTABLE_GENERIC) ||
+             formats[i].trim().toLowerCase().equals(VOTABLE_TEXT)){
             return true;
             }
       }

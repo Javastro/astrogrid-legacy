@@ -25,11 +25,13 @@
         <li><a href="deploy.html">Deploy the war file into Tomcat.</a></li>
         <li>Verify that DSA/Catalogue works with its built-in, dummy database. 
             I.e. <a href="self-test.html">run the self-tests</a>.</li>
+        <li><a href="cache-directory.html">Create the cache directory.</a></li>
         <li><a href="astrogrid-properties.html">Reconfigure DSA/Catalogue</a>
             to communicate with your database of choice.</li>
         <li><a href="metadoc-raw.html">Generate the "metadoc" file</a>
             describing your database
             (DSA/Catalogue does this for you by analyzing the database).</li>
+        <li><a href="cache-directory.html">Initialize the job database.</a></li>
         <li><a href="self-test.html">Re-run the self tests.</a></li>
         <li><a href="metadoc-cooked.html">Add scientific metadata to your metadoc file</a>
             (you do this manually).</li>
