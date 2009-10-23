@@ -40,8 +40,17 @@
         tells DSA/Catalogue where to find its properties file.
       </p>
       <p>
-        Download the default properties file.
+        Download the template properties-file.
         Put it in the configuration directory and name it <i>astrogrid.properties</i>.
+      </p>
+      <p>
+        There is no template for the "metadoc" file (i.e. the file that describes
+        the DB schema). When you have installed the DSA/Catalogue web-application
+        the application itself will generate that file for you. If you are upgrading
+        from a previous installation of DSA/Catalogue on this database, then you
+        should copy in the old metadoc file now. Otherwise,
+        you do not need to install the metadoc file at this
+        point in the installation.
       </p>
     </section>
   </body>
