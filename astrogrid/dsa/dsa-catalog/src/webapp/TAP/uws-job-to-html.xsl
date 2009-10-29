@@ -85,6 +85,9 @@
               </xsl:element>
             </form>
         </p>
+        <p>
+          <a href="../async">List of known jobs</a>
+        </p>
     </xsl:template>
 
 </xsl:stylesheet>
