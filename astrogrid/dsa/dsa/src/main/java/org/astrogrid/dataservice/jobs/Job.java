@@ -94,6 +94,11 @@ public class Job {
    */
   String source;
 
+  /**
+   * The entity that started the job.
+   */
+  String owner;
+
   public static void setJdoManager(JDOManager m) {
     jdo = m;
   }
@@ -158,6 +163,7 @@ public class Job {
           "query VARCHAR, " +
           "destination VARCHAR," +
           "format VARCHAR, " +
+          "owner VARCHAR, " +
           "PRIMARY KEY (id));";
       db.getJdbcConnection().createStatement().execute(create);
       db.commit();
@@ -301,6 +307,7 @@ public class Job {
     query = null;
     destination = null;
     format = null;
+    owner = null;
   }
 
 
@@ -382,6 +389,14 @@ public class Job {
 
   public void setFormat(String f) {
     format = f;
+  }
+
+  public String getOwner() {
+    return owner;
+  }
+
+  public void setOwner(String o) {
+    owner = o;
   }
 
   /**

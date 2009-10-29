@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.security.auth.x500.X500Principal;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
@@ -13,6 +15,7 @@ import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.query.Query;
+import org.astrogrid.security.HttpsServiceSecurityGuard;
 import org.exolab.castor.jdo.PersistenceException;
 
 /**
@@ -85,6 +88,7 @@ public class UwsJobListServlet extends AbstractTapServlet {
   @Override
   public void performPost(HttpServletRequest request,
                           HttpServletResponse response) throws IOException,
+                                                               ServletException,
                                                                TapException { 
    if (request.getAttribute("uws.admin") == null) {
       try {
@@ -94,12 +98,13 @@ public class UwsJobListServlet extends AbstractTapServlet {
       }
       Job job = createNewJob(request);
       response.sendRedirect("async/" + job.getId());
+      response.setStatus(response.SC_SEE_OTHER);
     }
     else {
       initializeJobDatabase(request);
-      response.sendRedirect("async");
+      getServletContext().getRequestDispatcher("/TAP/jobs.jsp").forward(request, response);
     }
-    response.setStatus(response.SC_SEE_OTHER);
+    
   }
 
 
@@ -119,6 +124,11 @@ public class UwsJobListServlet extends AbstractTapServlet {
 
       String id = Querier.generateQueryId();
 
+      HttpsServiceSecurityGuard sg = new HttpsServiceSecurityGuard();
+      sg.loadHttpsAuthentication(request);
+      X500Principal p = sg.getX500Principal();
+      String owner = (p == null)? null : p.getName(p.CANONICAL);
+
       // Make the job persistent.
       Job job = new Job();
       job.setId(id);
@@ -126,6 +136,7 @@ public class UwsJobListServlet extends AbstractTapServlet {
       job.setDestructionTime(new Timestamp(System.currentTimeMillis() + (24L*60L*60L*1000L)));
       job.setQuery(q.getQueryText());
       job.setFormat(q.getFormat());
+      job.setOwner(owner);
       job.add();
 
       return job;

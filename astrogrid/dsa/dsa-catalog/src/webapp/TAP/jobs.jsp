@@ -42,6 +42,7 @@ else {
 <table>
   <tr>
     <th>Identifier</th>
+    <th>Owner</th>
     <th>Phase</th>
     <th>Destruction time</th>
     <th>Results format</th>
@@ -53,6 +54,7 @@ else {
 %>
 <tr>
   <td><a href="<%=href%>"><%=j.getId()%></a></td>
+  <td><%=j.getOwner()%></td>
   <td><%=j.getPhase()%></td>
   <td><%=j.getDestructionTime()%></td>
   <td><%=j.getFormat()%></td>

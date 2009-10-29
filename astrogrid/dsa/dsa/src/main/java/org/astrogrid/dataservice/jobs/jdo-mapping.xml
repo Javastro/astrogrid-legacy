@@ -32,5 +32,8 @@
     <field name="format" type="string">
       <sql name="format" type="varchar"/>
     </field>
+    <field name="owner" type="string">
+      <sql name="owner" type="varchar"/>
+    </field>
   </class>
 </mapping>
