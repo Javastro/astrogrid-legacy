@@ -1,5 +1,6 @@
 package org.astrogrid.dataservice.service.tap;
 
+import java.io.IOException;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,10 +35,7 @@ public abstract class UwsJobResourceServlet extends AbstractTapServlet {
    */
   @Override
 	public void init() {
-		baseUrl = ServletHelper.getUrlStem();
-    if (baseUrl.endsWith("/")) {
-       baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/'));
-    }
+		
   }
 
   /**
@@ -47,8 +45,23 @@ public abstract class UwsJobResourceServlet extends AbstractTapServlet {
    *
    * @return The URI (does not end in a slash).
    */
-  public String getTapUri() {
-    return baseUrl + "/TAP";
+  public String getTapUri(HttpServletRequest request) {
+    return getContextUri(request) + "/TAP";
+  }
+
+  /**
+   * Supplies the URI for the context in which this servlet runs; i.e. for
+   * the "top" of the web application.
+   *
+   * @param request The HTTP request.
+   * @return The URI
+   */
+  public String getContextUri(HttpServletRequest request) {
+    return String.format("%s://%s:%d%s",
+                         request.getScheme(),
+                         request.getLocalAddr(),
+                         request.getLocalPort(),
+                         request.getContextPath());
   }
 
   /**
@@ -89,9 +102,22 @@ public abstract class UwsJobResourceServlet extends AbstractTapServlet {
    * @param response The HTTP response.
    */
   protected void redirectToJob(String jobId, HttpServletResponse response) {
-    response.setHeader("Location", getTapUri() + "/async/" + jobId);
+    response.setHeader("Location", "/async/" + jobId);
     response.setStatus(response.SC_SEE_OTHER);
   }
+
+  /**
+   * Redirects the client to the job resource using a 303 "See Other" code.
+   *
+   * @param jobId The job identifier, as it appears in the UWS web-interface.
+   * @param response The HTTP response.
+   */
+  protected void seeOther(String relativeUri,
+                          HttpServletResponse response) throws IOException {
+    response.sendRedirect(relativeUri);
+    response.setStatus(response.SC_SEE_OTHER);
+  }
+
 
   /**
    * Redirects the client to the job-list resource.
@@ -99,7 +125,7 @@ public abstract class UwsJobResourceServlet extends AbstractTapServlet {
    * @param response The HTTP response.
    */
   protected void redirectToJobList(HttpServletResponse response) {
-    response.setHeader("Location", getTapUri() + "/async");
+    response.setHeader("Location", "/async");
     response.setStatus(response.SC_SEE_OTHER);
   }
 

@@ -83,7 +83,8 @@ public class UwsJobDestructionServlet extends UwsJobResourceServlet {
       throw new TapException(e);
     }
 
-    redirectToJob(job.getId(), response);
+    // Redirect to the job resource.
+    seeOther("..", response);
   }
 
   
@@ -125,7 +126,8 @@ public class UwsJobDestructionServlet extends UwsJobResourceServlet {
       throw new TapException(e);
     }
 
-    redirectToJob(job.getId(), response);
+    // Redirect to the job resource.
+    seeOther("../" + job.getId(), response);
   }
 
 }

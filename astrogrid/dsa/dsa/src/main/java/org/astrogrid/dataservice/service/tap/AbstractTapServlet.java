@@ -1,12 +1,17 @@
 package org.astrogrid.dataservice.service.tap;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.cert.CertificateException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.security.HttpsServiceSecurityGuard;
+import org.astrogrid.security.authorization.AccessPolicy;
 
 /**
  * Facilities common to all TAP servlets. Concrete servlets for TAP are
@@ -59,9 +64,9 @@ public abstract class AbstractTapServlet extends HttpServlet {
                       HttpServletResponse response) throws IOException,
                                                            ServletException {
 
-    log.info(String.format("%s %s", request.getMethod(), request.getRequestURI()));
+    String method = request.getMethod();
+    log.info(String.format("%s %s", method, request.getRequestURI()));
     try {
-      String method = request.getMethod();
       if (method.equals("GET")) {
         performGet(request, response);
       }
@@ -85,9 +90,12 @@ public abstract class AbstractTapServlet extends HttpServlet {
     catch (WebResourceNotFoundException e) {
       response.sendError(response.SC_NOT_FOUND);
     }
+    catch (Exception e) {
+      e.printStackTrace();
+      response.sendError(response.SC_INTERNAL_SERVER_ERROR);
+    }
 
   }
-
 
   /**
    * Handles the GET request. Subclasses must override with appropriate

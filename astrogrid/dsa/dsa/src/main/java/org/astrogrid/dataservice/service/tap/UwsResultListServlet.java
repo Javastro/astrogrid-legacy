@@ -39,7 +39,7 @@ public class UwsResultListServlet extends UwsJobResourceServlet {
     // Write the result list. It's the same for all jobs because TAP has
     // exactly one result named 'result'. Include a link to a stylesheet that
     // turns it into HTML.
-    String xsl = getTapUri() + "/uws-results-to-html.xsl";
+    String xsl = "../../../uws-results-to-html.xsl";
     response.setContentType("application.xml");
     PrintWriter out = response.getWriter();
     out.println("<?xml version='1.0'?>");

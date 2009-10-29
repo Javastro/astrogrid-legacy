@@ -1,5 +1,5 @@
 /*
- * $Id: UwsJobServlet.java,v 1.2 2009/10/21 19:00:59 gtr Exp $
+ * $Id: UwsJobServlet.java,v 1.3 2009/10/29 14:54:55 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -53,7 +53,7 @@ public class UwsJobServlet extends UwsJobResourceServlet {
                                                               TapException {
     
     Job job = getJob(request);
-    String xsl = getTapUri() + "/uws-job-to-html.xsl";
+    String xsl = request.getRequestURI().endsWith("/")? "../../uws-job-to-html.xsl" : "../uws-job-to-html.xsl";
     response.setContentType("text/xml");
     PrintWriter out = response.getWriter();
     out.println("<?xml version='1.0'?>");
@@ -82,7 +82,7 @@ public class UwsJobServlet extends UwsJobResourceServlet {
     if (action != null && action.equals("DELETE")) {
       Job job = getJob(request);
       deleteJob(job);
-      redirectToJobList(response);
+      seeOther("../async", response);
     }
 		else {
 			throw new TapException("Inappropriate POST to a UWS job");
@@ -96,7 +96,7 @@ public class UwsJobServlet extends UwsJobResourceServlet {
                                                                  WebResourceNotFoundException {
     Job job = getJob(request);
     deleteJob(job);
-    redirectToJobList(response);
+    seeOther("..", response);
 	}
 
   private void deleteJob(Job job) throws TapException, IOException {

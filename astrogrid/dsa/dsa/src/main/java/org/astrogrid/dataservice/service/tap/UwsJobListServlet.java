@@ -85,31 +85,20 @@ public class UwsJobListServlet extends AbstractTapServlet {
   @Override
   public void performPost(HttpServletRequest request,
                           HttpServletResponse response) throws IOException,
-                                                               TapException {
-    String baseUrl = ServletHelper.getUrlStem();
-    if (baseUrl.endsWith("/")) {
-      baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/'));
-    }
-    String redirectUrl;
-
-    if (request.getAttribute("uws.admin") == null) {
+                                                               TapException { 
+   if (request.getAttribute("uws.admin") == null) {
       try {
         Job.purge();
       } catch (PersistenceException ex) {
         throw new TapException(ex);
       }
       Job job = createNewJob(request);
-      redirectUrl = baseUrl +
-                    request.getServletPath() +
-                    "/" +
-                    job.getId();
+      response.sendRedirect("async/" + job.getId());
     }
     else {
       initializeJobDatabase(request);
-      redirectUrl = baseUrl +
-                    request.getServletPath();
+      response.sendRedirect("async");
     }
-    response.setHeader("Location", redirectUrl);
     response.setStatus(response.SC_SEE_OTHER);
   }
 

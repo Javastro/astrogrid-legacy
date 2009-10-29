@@ -1,5 +1,5 @@
 /*
- * $Id: UwsJobPhaseServlet.java,v 1.2 2009/10/21 19:00:58 gtr Exp $
+ * $Id: UwsJobPhaseServlet.java,v 1.3 2009/10/29 14:54:55 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -87,7 +87,9 @@ public class UwsJobPhaseServlet extends UwsJobResourceServlet {
     else {
 	    throw new TapException("Inappropriate POST to a UWS job-phase");
 		}
-    redirectToJob(job.getId(), response);
+
+    // Redirect to the job resource.
+    seeOther("../" + job.getId(), response);
 	}
 
 }
