@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.AccessControlException;
 import java.security.GeneralSecurityException;
 import java.util.Map;
+import javax.security.auth.x500.X500Principal;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -176,6 +177,9 @@ public class UwsServlet extends HttpServlet {
       String policyClass = SimpleConfig.getProperty("tap.access.policy");
       sg.setAccessPolicy((AccessPolicy) Class.forName(policyClass).newInstance());
       sg.decide(null);
+      X500Principal p = sg.getX500Principal();
+      String caller = (p == null)? null : p.getName(X500Principal.CANONICAL);
+      request.setAttribute("uws.principal", caller);
     }
     catch (GeneralSecurityException e) {
       throw e;

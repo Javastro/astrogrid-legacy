@@ -19,18 +19,21 @@
 <h1>Job list</h1>
 
 <%
-Boolean isAdmin = (Boolean) request.getAttribute("uws.admin");
-String caller = (Boolean) request.getAttribute("uws.principal");
+Boolean admin = (Boolean) request.getAttribute("uws.admin");
+boolean isAdmin = (admin == null)? false : admin;
+String caller = (String) request.getAttribute("uws.principal");
+System.out.println("Caller: " + caller);
 List<Job> jobs;
 try {
   if (isAdmin) {
     jobs = Job.list(); // All jobs
   }
   else {
-    jobs = Job.list(caller); // Anonymous jobs and one owned by this caller
+    jobs = Job.list(caller); // Anonymous jobs and ones owned by this caller
   }
 }
 catch (Exception e) {
+  e.printStackTrace();
   jobs = null;
 }
 
