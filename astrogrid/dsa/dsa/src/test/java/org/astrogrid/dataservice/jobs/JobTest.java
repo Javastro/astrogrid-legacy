@@ -101,6 +101,61 @@ public class JobTest extends TestCase {
     assertEquals("j2", l.get(1).getId());
   }
 
+  public void testListByOwner() throws Exception {
+    Job.initialize();
+
+    Job j1 = new Job();
+    j1.setId("j1");
+    j1.setPhase("QUEUED");
+    j1.setOwner("foo");
+    j1.add();
+
+    Job j2 = new Job();
+    j2.setId("j2");
+    j2.setPhase("COMPLETED");
+    j2.setOwner("bar");
+    j2.add();
+
+    Job j3 = new Job();
+    j3.setId("j3");
+    j3.setPhase("COMPLETED");
+    j3.setOwner("foo");
+    j3.add();
+
+    Job j4 = new Job();
+    j4.setId("j4");
+    j4.setPhase("QUEUED");
+    j4.setOwner("baz");
+    j4.add();
+
+    Job j5 = new Job();
+    j5.setId("j5");
+    j5.setPhase("QUEUED");
+    // This one has no owner - its default state on construction
+    j5.add();
+
+    List<Job> l1 = Job.list("foo");
+    for (Job j : l1) {
+      System.out.println((j.getId() + " " + j.getOwner()));
+    }
+    assertNotNull(l1);
+    assertEquals(3, l1.size());
+    assertEquals("j1", l1.get(0).getId());
+    assertEquals("j3", l1.get(1).getId());
+    assertEquals("j5", l1.get(2).getId());
+
+    List<Job> l2 = Job.list("bar");
+    assertNotNull(l1);
+    assertEquals(2, l2.size());
+    assertEquals("j2", l2.get(0).getId());
+    assertEquals("j5", l2.get(1).getId());
+
+    List<Job> l3 = Job.list(null);
+    assertNotNull(l3);
+    assertEquals(1, l3.size());
+    assertEquals("j5", l3.get(0).getId());
+  }
+
   public void testPurge() throws Exception {
     Job.initialize();
 

@@ -280,6 +280,45 @@ public class Job {
     }
   }
 
+/**
+ * Lists the jobs in the database owned by the given party, plus those
+ * with no owner. If the party's name is null, only un-owned jobs are listed.
+ * C.f. {@link #list()} for listing all jobs regardless of ownership.
+ *
+ * @param owner The party whose jobs are to be listed (may be null).
+ * @return The job list.
+ * @see #list()
+ */
+  public static List<Job> list(String owner) throws PersistenceException {
+    if (jdo == null) {
+      jdo = getJdoManager();
+    }
+    ArrayList<Job> l = new ArrayList<Job>();
+    Database db = jdo.getDatabase();
+    try {
+      db.begin();
+      OQLQuery q = db.getOQLQuery("SELECT j FROM org.astrogrid.dataservice.jobs.Job j");
+      QueryResults r = q.execute();
+      while (r.hasMore()) {
+        Job j = (Job) r.next();
+        if (j.getOwner() == null || (owner != null && j.getOwner().equals(owner))) {
+          l.add(j);
+        }
+      }
+      r.close();
+      q.close();
+      db.commit();
+      return l;
+    }
+
+    finally {
+      if (db.isActive()) {
+        db.rollback();
+      }
+      db.close();
+    }
+  }
+
   /**
    * Deletes from the database all jobs for which the destruction time has
    * passed.

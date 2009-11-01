@@ -19,9 +19,16 @@
 <h1>Job list</h1>
 
 <%
+Boolean isAdmin = (Boolean) request.getAttribute("uws.admin");
+String caller = (Boolean) request.getAttribute("uws.principal");
 List<Job> jobs;
 try {
-  jobs = Job.list();
+  if (isAdmin) {
+    jobs = Job.list(); // All jobs
+  }
+  else {
+    jobs = Job.list(caller); // Anonymous jobs and one owned by this caller
+  }
 }
 catch (Exception e) {
   jobs = null;
