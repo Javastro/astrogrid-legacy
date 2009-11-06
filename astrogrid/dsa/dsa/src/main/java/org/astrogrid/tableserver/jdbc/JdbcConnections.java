@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcConnections.java,v 1.1 2009/05/13 13:20:43 gtr Exp $
+ * $Id: JdbcConnections.java,v 1.2 2009/11/06 18:41:29 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,10 +7,7 @@
 package org.astrogrid.tableserver.jdbc;
 
 import java.lang.reflect.Constructor;
-import java.sql.Connection;
 import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import javax.naming.InitialContext;
@@ -22,17 +19,17 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 
 /**
- * Manages the plugin connections to a JDBC/SQL database.  It looks up from
- * the connection details in the configuration file
+ * A factory for {@code javax.sql.DataSource} instances; hence a manager for
+ * connections to the database.
  * <p>
- *
- * For the moment, makes a new connection each time -
- * ie One jdbcConnection is used for each query because there appear to be some
- * issues with tidying up resultsets before another
- * query can be run, rather than just abandoning the connection...
- *
+ * Data sources are constructed according to the
+ * service configuration. If a data source is available via JNDI, then that
+ * is returned. Otherwise, an instance of
+ * {@link org.astrogrid.tableserver.jdbc.JdbcDataSource} is constructed from
+ * the JDBC details in the configuration: database URL, user-name, password.
  * <p>
- * Remember to close the connection when you're finished!
+ * The JDBC drivers specified in the configuration are loaded when the
+ * first data source is extracted from the factory.
  */
 
 public class JdbcConnections {
@@ -46,8 +43,6 @@ public class JdbcConnections {
    public static final String JDBC_USER_KEY = "datacenter.plugin.jdbc.user";
    /** configuration file key, stores the password for the JDBC connection URL for this database querier */
    public static final String JDBC_PASSWORD_KEY = "datacenter.plugin.jdbc.password";
-   /** configuration file key, stores a set of properties for the connection */
-   //public static final String JDBC_CONNECTION_PROPERTIES_KEY = "DatabaseQuerier.ConnectionProperties";
 
    /** JNDI key where datasource is expected */
    public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/dsa-datasource";
@@ -55,67 +50,28 @@ public class JdbcConnections {
    /** JDBC drivers started, also marker for jdbc drivers been started */
    private static Driver[] drivers = null;
 
-   /** User name for this connection manager */
-   private final String userId;
-   /** password for this connection manager */
-   private final String password;
-   
-   /** Datasource defined in JNDI (or elsewhere!) for this connection manager **/
-   private final DataSource datasource;
-
-   /** If no datasource, connection url  **/
-   private final String jdbcUrl;
-
    private static final Log log = LogFactory.getLog(JdbcConnections.class);
-   
-   /**
-    * Construct from datasource
-    */
-   public JdbcConnections(DataSource givenSource) throws DatabaseAccessException {
-      this.datasource = givenSource;
-
-      this.jdbcUrl = null;
-      this.userId = null;
-      this.password = null;
-      
-      log.info("JDBC Connection manager set to datasource "+datasource);
-
-      if (drivers==null) { startDrivers(); }
-   }
-   
-   /**
-    * No datasource; will use DriverManager to make connections
-    */
-   public JdbcConnections(String databaseUrl, String givenUser, String givenPassword) throws DatabaseAccessException {
-      this.userId = givenUser;
-      this.password = givenPassword;
-      this.jdbcUrl = databaseUrl;
-      this.datasource = null;
-
-      log.info("JDBC Connection manager set to "+jdbcUrl+" ("+userId+")");
-
-      if (drivers==null) { startDrivers(); }
-   }
    
    
    /**
     * Creates appropriate connection manager.  Looks first for JNDI-defined datasource, then for
     * Url/user/etc keys in configuration file
     */
-   public synchronized static JdbcConnections makeFromConfig() throws DatabaseAccessException {
+   public synchronized static DataSource makeFromConfig() throws DatabaseAccessException {
       
-      log.debug("Creating JDBC Connection");
+      startDrivers();
       
       //look in JNDI first
       try {
          Object jndiValue = new InitialContext().lookup(JNDI_DATASOURCE);
          if (jndiValue != null) {
             log.info("JNDI Key "+JNDI_DATASOURCE+" returns datasource "+jndiValue);
-            if (!(jndiValue instanceof DataSource)) {
-               throw new DatabaseAccessException("Key "+JNDI_DATASOURCE+" for JNDI returns "+jndiValue.getClass()+" should be a DataSource");
+            if (jndiValue instanceof DataSource) {
+              return (DataSource) jndiValue;
             }
-            
-            return new JdbcConnections( (DataSource) jndiValue);
+            else {
+              throw new DatabaseAccessException("Key "+JNDI_DATASOURCE+" for JNDI returns "+jndiValue.getClass()+" should be a DataSource");
+            }
          }
       } catch (NamingException e) {
          //not found - just log in passing
@@ -127,52 +83,11 @@ public class JdbcConnections {
       String password = ConfigFactory.getCommonConfig().getString(JDBC_PASSWORD_KEY, null);
       String jdbcURL = ConfigFactory.getCommonConfig().getString(JDBC_URL_KEY, null);
       if ( jdbcURL != null && jdbcURL.length() > 0)  {
-         log.info("JNDI Key "+JDBC_URL_KEY+" returns database url "+jdbcURL);
-         return new JdbcConnections(jdbcURL, userId, password);
+         log.info(JDBC_URL_KEY+" returns database url "+jdbcURL);
+         return new JdbcDataSource(jdbcURL, userId, password);
       }
 
       throw new DatabaseAccessException("No information on how to connect to JDBC - no '"+JNDI_DATASOURCE+"' defined in JNDI or '"+JDBC_URL_KEY+"' key in configuration file");
-   }
-   
-
-   /**
-    *  Creates a connection from the datasource if given, from the
-    * DriverManager if not.
-    */
-   public Connection createConnection() throws SQLException {
-      
-      if (datasource != null) {
-         log.debug("Creating JDBC Connection from DataSource "+datasource);
-
-         //connect (using user/password if given)
-         if (userId != null) {
-            return datasource.getConnection(userId, password);
-         } else {
-            return datasource.getConnection();
-         }
-      }
-      else
-      {
-         log.debug("Creating JDBC Connection from DriverManager, to Url "+jdbcUrl+" ("+userId+")");
-
-         try {
-            //if a user/password are set, use that
-            if (userId != null) {
-               return DriverManager.getConnection(jdbcUrl,userId, password);
-            } else  {
-               return DriverManager.getConnection(jdbcUrl);
-            }
-         }
-         catch (SQLException se) {
-            //add moe info to the sql exception.  Especially the URL, as it is often a mistyped URL that gives 'no suitable driver'
-            SQLException newSe = new SQLException(se.getMessage()+" ["+se.getErrorCode()+"], connecting to "+jdbcUrl,
-                                                  se.getSQLState(), se.getErrorCode());
-            newSe.setStackTrace(se.getStackTrace());
-            throw newSe;
-         
-         }
-      }
-      
    }
 
    
@@ -192,7 +107,7 @@ public class JdbcConnections {
     * synchronized and a flag is set.  So you can check the flag before calling;
     * this is safe double checked locking...
     */
-   public final static synchronized  Driver[] startDrivers() throws DatabaseAccessException {
+   private final static synchronized  Driver[] startDrivers() throws DatabaseAccessException {
       if (drivers == null) {
          //read value
          String classList = ConfigFactory.getCommonConfig().getString(JDBC_DRIVERS_KEY, null);
@@ -219,7 +134,7 @@ public class JdbcConnections {
     * Seperate from startDrivers() above so that subclasses can use it to start
     * particular drivers
     */
-   public static Driver startDriver(String driverClassName) throws DatabaseAccessException {
+   private static Driver startDriver(String driverClassName) throws DatabaseAccessException {
       try {
          log.info("Starting JDBC driver '"+driverClassName+"'...");
          Constructor constr= Class.forName(driverClassName).getConstructor(new Class[]{});

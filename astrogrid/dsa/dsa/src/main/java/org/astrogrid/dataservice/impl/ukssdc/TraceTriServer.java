@@ -1,5 +1,5 @@
 /*
- * $Id: TraceTriServer.java,v 1.1 2009/05/13 13:20:23 gtr Exp $
+ * $Id: TraceTriServer.java,v 1.2 2009/11/06 18:41:29 gtr Exp $
  */
 
 package org.astrogrid.dataservice.impl.ukssdc;
@@ -10,9 +10,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
@@ -31,7 +31,7 @@ import org.astrogrid.webapp.DefaultServlet;
  */
 public class TraceTriServer extends DefaultServlet {
  
-   JdbcConnections connectionManager = null;
+   DataSource connectionManager = null;
    
    public static final String HD_CACHE_KEY = "trace.filecache";
 
@@ -105,7 +105,7 @@ public class TraceTriServer extends DefaultServlet {
         if (connectionManager == null) {
             connectionManager = JdbcConnections.makeFromConfig();
          }
-         jdbcConnection = connectionManager.createConnection();
+         jdbcConnection = connectionManager.getConnection();
          Statement statement = jdbcConnection.createStatement();
 
          //execute query

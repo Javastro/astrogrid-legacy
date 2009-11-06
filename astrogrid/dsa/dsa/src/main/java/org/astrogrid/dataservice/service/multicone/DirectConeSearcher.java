@@ -88,7 +88,7 @@ public class DirectConeSearcher {
             throws ServletException, SQLException,
                    MetadataException, DatabaseAccessException {
         Connection connection = 
-               JdbcConnections.makeFromConfig().createConnection();
+               JdbcConnections.makeFromConfig().getConnection();
         String catalogID = TableMetaDocInterpreter.getCatalogIDForName(
               catalogName); 
         String tableID = TableMetaDocInterpreter.getTableIDForName(

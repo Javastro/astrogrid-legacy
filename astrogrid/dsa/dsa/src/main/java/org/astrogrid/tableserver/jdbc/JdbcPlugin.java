@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.1 2009/05/13 13:20:43 gtr Exp $
+ * $Id: JdbcPlugin.java,v 1.2 2009/11/06 18:41:29 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,8 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import javax.sql.DataSource;
 import org.astrogrid.cfg.ConfigFactory;
-//import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.queriers.status.QuerierComplete;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
@@ -48,7 +48,7 @@ public class JdbcPlugin extends DefaultPlugin {
    public static final String TIMEOUT = "datacenter.sql.timeout";
 
    /** Connection manager */
-   private static JdbcConnections connectionManager = null;
+   private static DataSource dataSource = null;
    
 
    /** performs a synchronous call to the database, submitting the given query
@@ -332,10 +332,10 @@ public class JdbcPlugin extends DefaultPlugin {
    /** Creates a connection to the database */
    protected static synchronized Connection getJdbcConnection() throws IOException, SQLException {
       
-      if (connectionManager == null) {
-         connectionManager = JdbcConnections.makeFromConfig();
+      if (dataSource == null) {
+         dataSource = JdbcConnections.makeFromConfig();
       }
-      return connectionManager.createConnection();
+      return dataSource.getConnection();
 
    }
 

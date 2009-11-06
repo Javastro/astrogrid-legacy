@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.2 2009/05/15 10:54:22 gtr Exp $
+ * $Id: SampleStarsPlugin.java,v 1.3 2009/11/06 18:41:29 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -152,7 +152,7 @@ public class SampleStarsPlugin extends JdbcPlugin
       //connect
       Connection connection = null;
       try {
-         connection = JdbcConnections.makeFromConfig().createConnection();
+         connection = JdbcConnections.makeFromConfig().getConnection();
       }
       catch (SQLException se) {
          throw new DatabaseAccessException("Could not connect to JDBC: "+se);

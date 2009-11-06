@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.3 2009/11/06 18:41:29 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -63,7 +63,7 @@ public class SampleStarsPluginTest extends TestCase {
    /** Test that we can connect to the dummy database */
    public void testDummyCatalog() throws IOException, SQLException {
       
-      Connection connection = JdbcConnections.makeFromConfig().createConnection();
+      Connection connection = JdbcConnections.makeFromConfig().getConnection();
       Statement s = connection.createStatement();
       s.execute("SELECT * FROM SampleStars WHERE RA<100");
       
