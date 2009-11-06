@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcConnections.java,v 1.2 2009/11/06 18:41:29 gtr Exp $
+ * $Id: JdbcConnections.java,v 1.3 2009/11/06 21:10:37 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 
 /**
@@ -44,8 +45,11 @@ public class JdbcConnections {
    /** configuration file key, stores the password for the JDBC connection URL for this database querier */
    public static final String JDBC_PASSWORD_KEY = "datacenter.plugin.jdbc.password";
 
-   /** JNDI key where datasource is expected */
-   public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/dsa-datasource";
+   /**
+    * The configuration key for specifying a data-source name.
+    * That name is then looked up in JNDI.
+    */
+   public final static String JNDI_DATASOURCE_KEY = "datacenter.plugin.jdbc.datasource";
    
    /** JDBC drivers started, also marker for jdbc drivers been started */
    private static Driver[] drivers = null;
@@ -59,38 +63,51 @@ public class JdbcConnections {
     */
    public synchronized static DataSource makeFromConfig() throws DatabaseAccessException {
       
-      startDrivers();
+     startDrivers();
       
-      //look in JNDI first
-      try {
-         Object jndiValue = new InitialContext().lookup(JNDI_DATASOURCE);
-         if (jndiValue != null) {
-            log.info("JNDI Key "+JNDI_DATASOURCE+" returns datasource "+jndiValue);
-            if (jndiValue instanceof DataSource) {
-              return (DataSource) jndiValue;
-            }
-            else {
-              throw new DatabaseAccessException("Key "+JNDI_DATASOURCE+" for JNDI returns "+jndiValue.getClass()+" should be a DataSource");
-            }
-         }
-      } catch (NamingException e) {
-         //not found - just log in passing
-         log.debug("No jndi datasource given (key "+JNDI_DATASOURCE+")");
-      }
+     String dataSourceName = (String) SimpleConfig.getProperty(JNDI_DATASOURCE_KEY, null);
+     String userId = ConfigFactory.getCommonConfig().getString(JDBC_USER_KEY, null);
+     String password = ConfigFactory.getCommonConfig().getString(JDBC_PASSWORD_KEY, null);
+     String jdbcURL = ConfigFactory.getCommonConfig().getString(JDBC_URL_KEY, null);
 
-      //try properties file
-      String userId = ConfigFactory.getCommonConfig().getString(JDBC_USER_KEY, null);
-      String password = ConfigFactory.getCommonConfig().getString(JDBC_PASSWORD_KEY, null);
-      String jdbcURL = ConfigFactory.getCommonConfig().getString(JDBC_URL_KEY, null);
-      if ( jdbcURL != null && jdbcURL.length() > 0)  {
-         log.info(JDBC_URL_KEY+" returns database url "+jdbcURL);
-         return new JdbcDataSource(jdbcURL, userId, password);
-      }
-
-      throw new DatabaseAccessException("No information on how to connect to JDBC - no '"+JNDI_DATASOURCE+"' defined in JNDI or '"+JDBC_URL_KEY+"' key in configuration file");
+     if (dataSourceName != null) {
+       log.info("Getting data source " + dataSourceName + " from JNDI.");
+       return getDataSourceFromJndi(dataSourceName);
+     }
+     else if (jdbcURL != null) {
+       log.info("Wrapping a data source around " + jdbcURL);
+       return new JdbcDataSource(jdbcURL, userId, password);
+     }
+     else {
+       log.error("No connection to the database is configured.");
+       throw new DatabaseAccessException("No information on how to connect to JDBC - neither " +
+                                         JNDI_DATASOURCE_KEY +
+                                         " nor " +
+                                         JDBC_URL_KEY +
+                                         " is set in the configuration file");
+     }
    }
 
-   
+   private static DataSource getDataSourceFromJndi(String dataSourceName) throws DatabaseAccessException {
+     try {
+       Object jndiValue = new InitialContext().lookup("java:comp/env/" + dataSourceName);
+       if (jndiValue == null) {
+         throw new DatabaseAccessException(dataSourceName + " returns a null from JNDI");
+       }
+       if (!(jndiValue instanceof DataSource)) {
+         throw new DatabaseAccessException(
+             dataSourceName +
+             " returns the wrong type of object from JNDI: " +
+             jndiValue.getClass()
+         );
+       }
+       return (DataSource) jndiValue;
+     }
+     catch (NamingException e) {
+       log.error("Can't get a DataSource for " + dataSourceName + " : " + e);
+       throw new DatabaseAccessException("Can't get a DataSource for " + dataSourceName, e);
+     }
+   }  
    
    /**
     * Starts the jdbc driver(s) used to connect to the database; this method
