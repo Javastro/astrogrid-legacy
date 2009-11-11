@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-dsa-catalog</artifactId>
   <packaging>war</packaging>
-  <version>2009.1.02</version>
+  <version>2009.1.03</version>
   <name>AstroGrid DSA/Catalog web-application</name>
   
 
@@ -19,7 +19,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-dsa</artifactId>
-      <version>2009.1.02</version>
+      <version>2009.1.03</version>
     </dependency>
 
     <dependency>
