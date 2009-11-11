@@ -1,5 +1,5 @@
 /*
- * $Id: UwsJobPhaseServlet.java,v 1.3 2009/10/29 14:54:55 gtr Exp $
+ * $Id: UwsJobPhaseServlet.java,v 1.4 2009/11/11 07:12:01 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -7,6 +7,8 @@ package org.astrogrid.dataservice.service.tap;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.jobs.ResultFile;
 import org.astrogrid.dataservice.queriers.Querier;
@@ -34,6 +36,8 @@ import org.astrogrid.query.returns.ReturnTable;
  */
 public class UwsJobPhaseServlet extends UwsJobResourceServlet {
 
+  private static Log log = LogFactory.getLog(UwsJobPhaseServlet.class);
+
   /**
    * Handles an HTTP GET. Writes the state label as the body of the response.
    *
@@ -46,9 +50,8 @@ public class UwsJobPhaseServlet extends UwsJobResourceServlet {
                          HttpServletResponse response) throws IOException,
                                                               WebResourceNotFoundException {
     Job job = getJob(request);
-    String phase = getPhase(job.getId());
     response.setContentType("text/plain");
-    response.getWriter().print(phase);
+    response.getWriter().print(job.getPhase());
 	}
 
   /**

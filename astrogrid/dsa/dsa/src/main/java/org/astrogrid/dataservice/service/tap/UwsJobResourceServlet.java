@@ -129,42 +129,4 @@ public abstract class UwsJobResourceServlet extends AbstractTapServlet {
     response.setStatus(response.SC_SEE_OTHER);
   }
 
-  /**
-   * Reveals the current phase of a given job.
-   *
-   * @return The phase ("UNKNOWN" if the job is not recognized).
-   */
-  protected String getPhase(String jobId) {
-    Querier q = QuerierManager.getManager("dataserver").getQuerier(jobId);
-    if (q == null) {
-      return "UNKNOWN";
-    }
-    else {
-
-      // DSA understands more states of a query than UWS. Translate to the
-      // nearest, appropriate UWS job-state.
-      QueryState s = q.getStatus().getState();
-      switch (s) {
-        case CONSTRUCTED:
-         return "PENDING";
-        case QUEUED:
-          return "QUEUED";
-        case STARTING:
-        case RUNNING_QUERY:
-        case QUERY_COMPLETE:
-        case RUNNING_RESULTS:
-          return "EXECUTED";
-        case FINISHED:
-          return "COMPLETED";
-        case ABORTED:
-         return "ABORTED";
-        case ERROR:
-          return "ERROR";
-        case UNKNOWN:
-        default:
-          return "UNKNOWN";
-      }
-    }
-  }
-
 }
