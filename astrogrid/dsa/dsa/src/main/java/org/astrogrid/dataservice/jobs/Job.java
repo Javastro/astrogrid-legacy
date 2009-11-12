@@ -342,7 +342,7 @@ public class Job {
     startTime = null;
     endTime = null;
     source = null;
-    error = null;
+    error = "OK";
     query = null;
     destination = null;
     format = null;
