@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.4 2009/10/21 19:00:59 gtr Exp $
+ * $Id: Querier.java,v 1.5 2009/11/12 11:10:59 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -63,16 +63,11 @@ public class Querier implements Runnable, PluginListener {
    /** Plugin to run */
    private QuerierPlugin plugin;
    
-   /** List of listeners who will be updated when the status changes */
+   /** List of listeners who will be updated when the current changes */
    private Vector listeners = new Vector();
    
-   /** status of query */
-   private QuerierStatus status;
-
-   /** true if abort called */
-   private boolean aborted = false;
-
-   private boolean running = false;
+   /** current of query */
+   private volatile QuerierStatus status;
    
    /** Represents what created this querier */
    private Object source = null;
@@ -85,17 +80,14 @@ public class Querier implements Runnable, PluginListener {
     */
    private boolean cancelled = false;
    
-   /** For measuring how long the query took - calculated from status change times*/
-//use status info   private Date timeQueryStarted = null;
-   /** For measuring how long query took - calculated from status change times*/
-//use status info   private Date timeQueryCompleted = null;
-   /** For measuring how long query took - calculated from status change times*/
-   //use status infoprivate Date timeQuerierClosed = null;
+   /** For measuring how long the query took - calculated from current change times*/
+//use current info   private Date timeQueryStarted = null;
+   /** For measuring how long query took - calculated from current change times*/
+//use current info   private Date timeQueryCompleted = null;
+   /** For measuring how long query took - calculated from current change times*/
+   //use current infoprivate Date timeQuerierClosed = null;
 
-   /** temporary used for generating unique handles - see generateHandle() */
-   private static java.util.Random random = new java.util.Random();
-
-   /** Logging status information */
+   /** Logging current information */
    StatusLogger statusLog = new StatusLogger();
    
    public Querier(Principal forUser, Query query, Object aSource) throws IOException {
@@ -181,46 +173,26 @@ public class Querier implements Runnable, PluginListener {
    public Object getSource() { return source; }
    
    /**
-    * Runnable implementation - this method is called when the thread to run
-    * this asynchronously is started.  It should just do ask() and handle
-    * any error, because these won't go anywhere otherwise...
+    * Runs a query. See {@link #ask} for details of the execution.
+    * Any exception raised by {@code ask()} is caught and the error recorded
+    * through the querier current.
     */
    public void run() {
-     log.info("Starting Query ["+id+"] asynchronously...");
-     if (cancelled) {
-       return;
-     }
      try {
-       synchronized(this) {
-         running = true;
-         setStatus(new QuerierQuerying(status, ""));
+       log.info("Starting Query ["+id+"] asynchronously");
+       setStatus(new QuerierQuerying(status, ""));
+       ask();
+     }
+     catch (Throwable th) {
+       log.error("Exception during asynchronous query"+id, th);
+       if (!(getStatus() instanceof QuerierError)) {
+         setStatus(new QuerierError(getStatus(), "", th));
        }
-      
-       try {
-         ask();
-       }
-       catch (Throwable th) {
-         log.error("Exception during Asynchronous Run",th);
-         if (!(getStatus() instanceof QuerierError)) {
-           setStatus(new QuerierError(getStatus(), "", th));
-         }
-       }
-       log.info("...Ending asynchronous Query ["+id+"]");
-      
      }
      finally {
-       synchronized(this) {
-         running = false;
-       }
+       log.info("Ending asynchronous Query ["+id+"]");
      }
    }
-
-  /**
-   * Reveals whether the querier is active.
-   */
-  public synchronized boolean isRunning() {
-    return running;
-  }
 
    /** Carries out the query via the plugin to do the query.
     * The plugin does the complete conversion, query and
@@ -234,7 +206,7 @@ public class Querier implements Runnable, PluginListener {
       }
  //     plugin = QuerierPluginFactory.createPlugin(this);
       
-      if (!(getStatus() instanceof QuerierAborted)) { // it may be that the query has been aborted immediately after being created, or while queued, etc
+      if (!isAborted()) { // it may be that the query has been aborted immediately after being created, or while queued, etc
          try {
             plugin.askQuery(user, query, this);
          }
@@ -287,12 +259,6 @@ public class Querier implements Runnable, PluginListener {
       getStatus().setProgressMax(resultsSize);
       plugin = null;  //release plugin reference (-> can be garbage collected)
       query = null;   // release query reference too (can get quite big)
-      /*
-      // This was to save memory - but flushing old jobs is better
-      if (!getStatus().isError()) {
-         clearStatusHistory();  // clean up some details of the status too
-      }
-      */
    }
    
    /**
@@ -302,20 +268,20 @@ public class Querier implements Runnable, PluginListener {
     */
    public long getQueryTimeTaken() {
 
-      //look for QuerierQuerying status
-      QuerierStatus status = getStatus();
+      //look for QuerierQuerying current
+      QuerierStatus current = getStatus();
       QuerierStatus next = null;
-      while ((status != null) && !(status instanceof QuerierQuerying))  {
-         next = status;
-         status = (QuerierStatus) status.getPrevious();
+      while ((current != null) && !(current instanceof QuerierQuerying))  {
+         next = current;
+         current = (QuerierStatus) current.getPrevious();
       }
-      if (status == null) {
+      if (current == null) {
          //hasn't started yet
          return -1;
       }
-      Date queryStarted = status.getTimestamp();
+      Date queryStarted = current.getTimestamp();
       if (next != null) {
-         //the next status timestamp gives us the query completion time
+         //the next current timestamp gives us the query completion time
          return next.getTimestamp().getTime() - queryStarted.getTime();
       }
       else {
@@ -327,17 +293,15 @@ public class Querier implements Runnable, PluginListener {
     * Abort - stops query (if poss) and tidies up
     */
    public QuerierStatus abort() {
-     cancelled = true;
+     setStatus(new QuerierAborted(getStatus()));
 
-      //if it's already completed stopped, plugin will be null
+     // Halt or prevent the execution of the query. If it's already
+     // been executed the plug-in reference will be null.
       if (plugin != null) {
          plugin.abort();
-         setStatus(new QuerierAborted(getStatus()));
+         plugin = null;
       }
-         
-      aborted = true;
-      // Free up for garbage collection
-      plugin = null;
+      
       query = null;
       
       return getStatus();
@@ -346,7 +310,7 @@ public class Querier implements Runnable, PluginListener {
    
    /** For owned classes to test */
    public boolean isAborted() {
-      return aborted;
+     return (status instanceof QuerierAborted);
    }
    
    
@@ -373,7 +337,7 @@ public class Querier implements Runnable, PluginListener {
       return (status.isFinished());
    }
    
-   /** Called by the plugin to register a status change
+   /** Called by the plugin to register a current change
     */
    public void pluginStatusChanged(QuerierStatus newStatus) {
       setStatus(newStatus);
@@ -382,47 +346,39 @@ public class Querier implements Runnable, PluginListener {
    
    
    /**
-    * Sets the status.  NB if the new status is ordered before the existing one,
+    * Sets the current.  NB if the new current is ordered before the existing one,
     * throws an exception (as each querier should only handle one query).
     * Synchronised as the queriers may be running under a different thread
     */
-   public synchronized void setStatus(QuerierStatus newStatus) {
+   public void setStatus(QuerierStatus newStatus) {
 
-      if (status != null) {
-         if ((status instanceof QuerierError) || (newStatus.isBefore(status))) {
-            String msg = "Trying to start a step '"+newStatus+"' when status is already "+status;
-            log.error(msg);
-            throw new IllegalStateException(msg);
-         }
-      }
+     status = newStatus;
+     log.info("Query [" + id + "] for " + user + ", now " +status);
+
+     // Record the change in the job database.
+     try {
+       Job job = Job.open(id);
+       job.setPhase(getUwsPhase());
+       switch (status.getState()) {
+         case RUNNING_QUERY:
+           job.setStartTime(new Timestamp(System.currentTimeMillis()));
+           break;
+         case ERROR:
+           job.setErrorMessage(status.asFullMessage());
+           break;
+         case FINISHED:
+         case ABORTED:
+           job.setEndTime(new Timestamp(System.currentTimeMillis()));
+           break;
+         default:
+           break;
+       }
+       job.save();
+     } catch (PersistenceException ex) {
+       log.error("Failed to update the job record for " + id);
+     }
       
-      log.info("Query ["+id+"] for "+user+", now "+newStatus);
-         
-      status = newStatus;
-    
-      try {
-        Job job = Job.open(id);
-        job.setPhase(getUwsPhase());
-        switch (status.getState()) {
-          case RUNNING_QUERY:
-            job.setStartTime(new Timestamp(System.currentTimeMillis()));
-            break;
-          case ERROR:
-            job.setErrorMessage(status.asFullMessage());
-            break;
-          case FINISHED:
-          case ABORTED:
-            job.setEndTime(new Timestamp(System.currentTimeMillis()));
-            break;
-          default:
-            break;
-        }
-        job.save();
-      } catch (PersistenceException ex) {
-        log.error("Failed to update the job record for " + id);
-      }
-      
-      fireStatusChanged(status);
+     fireStatusChanged(status);
       
       if (status.isFinished()) {
          statusLog.log(status);
@@ -430,7 +386,7 @@ public class Querier implements Runnable, PluginListener {
    }
 
    /**
-    * Determines the UWS phase from the query status.
+    * Determines the UWS phase from the query current.
     * 
     * @return The phase.
     */
@@ -458,14 +414,14 @@ public class Querier implements Runnable, PluginListener {
    }
    
    /**
-    * Returns the status - contains more info than the state
+    * Returns the current - contains more info than the state
     */
    public QuerierStatus getStatus() {
       return status;
    }
 
    /**
-    * Cleans up most of the status detail to save memory once a query
+    * Cleans up most of the current detail to save memory once a query
     * is complete.
     */
    public void clearStatusHistory() {
@@ -473,7 +429,7 @@ public class Querier implements Runnable, PluginListener {
    }
 
    /**
-    * Register a status listener.  This will be informed of changes in status
+    * Register a current listener.  This will be informed of changes in current
     * to the service - IF the service supports such info.  Otherwise it will
     * just get 'starting', 'working' and 'completed' messages based around the
     * basic http exchange.
@@ -488,7 +444,7 @@ public class Querier implements Runnable, PluginListener {
    public void removeListener(QuerierListener aListener) {
       listeners.remove(aListener);
    }
-   /** informs all listeners of the new status change. Not threadsafe... should
+   /** informs all listeners of the new current change. Not threadsafe... should
     * call setStatus() rather than this directly
     */
    private void fireStatusChanged(QuerierStatus newStatus) {
