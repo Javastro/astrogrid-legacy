@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.5 2009/11/12 11:10:59 gtr Exp $
+ * $Id: Querier.java,v 1.6 2009/11/12 13:08:59 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -353,6 +353,7 @@ public class Querier implements Runnable, PluginListener {
    public void setStatus(QuerierStatus newStatus) {
 
      status = newStatus;
+     fireStatusChanged(status);
      log.info("Query [" + id + "] for " + user + ", now " +status);
 
      // Record the change in the job database.
@@ -378,7 +379,7 @@ public class Querier implements Runnable, PluginListener {
        log.error("Failed to update the job record for " + id);
      }
       
-     fireStatusChanged(status);
+     
       
       if (status.isFinished()) {
          statusLog.log(status);
