@@ -34,7 +34,11 @@
         <tr>
           <td><xsl:text>Phase:</xsl:text></td>
           <td><xsl:value-of select="uws:phase"/></td>
-      </tr>
+        </tr>
+        <tr>
+          <td><xsl:text>Status:</xsl:text></td>
+          <td><xsl:value-of select="uws:error"/></td>
+        </tr>
       <tr>
         <td><xsl:text>Start time</xsl:text></td>
         <td><xsl:value-of select="uws:startTime"/></td>
