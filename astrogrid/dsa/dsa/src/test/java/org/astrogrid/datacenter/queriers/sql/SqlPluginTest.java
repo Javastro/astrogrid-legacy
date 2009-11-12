@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.2 2009/10/21 19:00:59 gtr Exp $
+/*$Id: SqlPluginTest.java,v 1.3 2009/11/12 09:10:49 gtr Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.io.account.LoginAccount;
@@ -50,8 +51,13 @@ public class SqlPluginTest extends TestCase {
    /**
     * @see TestCase#setUp()
     */
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
+
+      // Make the job database work. Put a blank database in the Maven target directory.
+      ConfigFactory.getCommonConfig().setProperty("datacenter.cache.directory", "target");
+      Job.initialize();
       
       //set max returns to something reasonably small as some of the results processing is a bit CPU intensive
       ConfigFactory.getCommonConfig().setProperty(Query.MAX_RETURN_KEY, "300");
