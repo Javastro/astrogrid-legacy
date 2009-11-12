@@ -1,5 +1,5 @@
 /*
- * $Id: UwsJobServlet.java,v 1.3 2009/10/29 14:54:55 gtr Exp $
+ * $Id: UwsJobServlet.java,v 1.4 2009/11/12 11:23:38 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -68,6 +68,9 @@ public class UwsJobServlet extends UwsJobResourceServlet {
     out.println("  <uws:results>");
     out.println("    <uws:result id='result'/>");
     out.println("  </uws:results>");
+    out.println("  <uws:errorSummary>");
+    out.println("    <status>" + job.getErrorMessage() + "</status>");
+    out.println("  </uws:errorSummary>");
     out.println("</uws:job>");
     out.close();
 

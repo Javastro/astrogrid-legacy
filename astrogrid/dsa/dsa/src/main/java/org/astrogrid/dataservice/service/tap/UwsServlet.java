@@ -112,6 +112,9 @@ public class UwsServlet extends HttpServlet {
         else if ("destruction".equals(child)) {
           dispatch("UwsJobDestructionServlet", request, response);
         }
+        else if ("error".equals(child)) {
+          dispatch("UwsJobErrorServlet", request, response);
+        }
         else {
           throw new WebResourceNotFoundException();
         }
