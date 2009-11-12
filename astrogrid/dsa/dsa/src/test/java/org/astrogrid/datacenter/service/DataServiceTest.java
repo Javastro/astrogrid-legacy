@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.2 2009/10/21 19:00:59 gtr Exp $
+/*$Id: DataServiceTest.java,v 1.3 2009/11/12 11:25:56 gtr Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,8 +16,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.dataservice.queriers.status.QuerierAborted;
-import org.astrogrid.dataservice.queriers.status.QuerierStatus;
+import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.DataServiceStatus;
 import org.astrogrid.io.account.LoginAccount;
@@ -30,9 +29,6 @@ import org.astrogrid.status.TaskStatus;
 import org.astrogrid.tableserver.VoTableTestHelper;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
-import org.astrogrid.xml.DomHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 /** Tests that the DataService can run queries - ie it tests right from just
  * behind the web (or whatever) interface through to the dummy sql database
@@ -67,6 +63,7 @@ public class DataServiceTest extends TestCase {
     protected void setUp() throws Exception {
        super.setUp();
        SimpleConfig.setProperty("datacenter.cache.directory", "target");
+       Job.initialize();
        SampleStarsPlugin.initConfig();
        
        server = new DataServer();
@@ -250,6 +247,9 @@ public class DataServiceTest extends TestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.3  2009/11/12 11:25:56  gtr
+The job database is initialized at the start of each test.
+
 Revision 1.2  2009/10/21 19:00:59  gtr
 V2009.1.01, merged.
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
+ * $Id: QuerierTest.java,v 1.3 2009/11/12 11:25:56 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,6 +13,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierListener;
 import org.astrogrid.dataservice.queriers.status.QuerierComplete;
@@ -47,6 +48,10 @@ public class QuerierTest extends TestCase {
    @Override
    protected void setUp() throws Exception{
       super.setUp();
+
+      // Make the job database work. Put a blank database in the Maven target directory.
+      ConfigFactory.getCommonConfig().setProperty("datacenter.cache.directory", "target");
+      Job.initialize();
 
       String catalogID = ConfigFactory.getCommonConfig().getString(
             "datacenter.self-test.catalog", null);

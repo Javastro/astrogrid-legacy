@@ -1,29 +1,22 @@
 package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
 import java.security.Principal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.ServletException;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.service.TokenQueue;
-import org.astrogrid.dataservice.service.multicone.DirectConeSearcher;
 import org.astrogrid.dataservice.service.multicone.DsaConeSearcher;
 import org.astrogrid.dataservice.service.multicone.DsaQuerySequenceFactory;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import uk.ac.starlink.table.ColumnInfo;
-import uk.ac.starlink.table.JoinFixAction;
 import uk.ac.starlink.table.RowListStarTable;
 import uk.ac.starlink.table.StarTable;
-import uk.ac.starlink.table.StarTableFactory;
-import uk.ac.starlink.votable.VOTableBuilder;
 import uk.ac.starlink.table.Tables;
 import uk.ac.starlink.ttools.cone.ConeMatcher;
 import uk.ac.starlink.ttools.cone.ConeSearcher;
@@ -37,8 +30,9 @@ public class MulticoneTest extends TestCase {
     }
 
     @Override
-    protected void setUp() {
+    protected void setUp() throws Exception {
       SimpleConfig.setProperty("datacenter.cache.directory", "target");
+      Job.initialize();
       SampleStarsPlugin.initConfig();
 
         // Suppress STILTS logging, which does not use log4j.
