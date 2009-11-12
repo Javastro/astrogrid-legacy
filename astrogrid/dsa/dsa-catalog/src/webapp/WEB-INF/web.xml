@@ -29,7 +29,7 @@
    <!-- Query-managing servlets -->
   <servlet>
     <servlet-name>SubmitCone</servlet-name>
-    <description>Servlet for submitting simple (NVO compatible) cone searches via POST or GET</description>
+    <description>IVOA cone-search</description>
     <servlet-class>org.astrogrid.dataservice.service.cone.SubmitCone</servlet-class>
   </servlet>
 
