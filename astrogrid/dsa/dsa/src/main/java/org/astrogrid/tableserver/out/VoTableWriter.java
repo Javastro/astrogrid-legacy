@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.1 2009/05/13 13:20:51 gtr Exp $
+ * $Id: VoTableWriter.java,v 1.2 2009/11/12 11:25:18 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,7 +7,6 @@
 package org.astrogrid.tableserver.out;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.OutputStreamWriter;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -20,7 +19,6 @@ import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.ucd.UcdVersions;
-import org.astrogrid.ucd.UcdException;
 
 /**
  * For writing out tables in votable.  As far as I'm aware dates are not handled
@@ -149,9 +147,15 @@ public class VoTableWriter implements TableWriter {
             // KEA FUTURE: I added this, but not sure if it should
             // work or not, needs further investigation.
             // Try java type if no public type
-            else if (cols[i].getJavaType() != null) { 
-               printString(VoTypes.getVoTableTypeAttributes(
-                     cols[i].getJavaType()));
+            else if (cols[i].getJavaType() != null) {
+              try {
+                printString(VoTypes.getVoTableTypeAttributes(cols[i].getJavaType()));
+              }
+              catch (IllegalArgumentException e) {
+                log.warn(String.format("Column %s has type %s and we can't handle that; treating it as a string.",
+                         cols[i].getId(), cols[i].getJavaType()));
+                printString(VoTypes.getVoTableTypeAttributes(String.class));
+              }
             }
             else {
               // Use String type as default, since any real data type
@@ -271,8 +275,11 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
- Revision 1.1  2009/05/13 13:20:51  gtr
- *** empty log message ***
+ Revision 1.2  2009/11/12 11:25:18  gtr
+ Data of type java.lang.Object returned from JDBC no longer abort the querty processing.
+
+ Revision 1.1.1.1  2009/05/13 13:20:51  gtr
+
 
  Revision 1.14  2008/05/27 11:07:38  clq2
  merged PAL_KEA_2715
