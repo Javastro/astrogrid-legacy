@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.3 2009/11/06 18:41:29 gtr Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.4 2009/11/12 14:14:00 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.TableResults;
@@ -47,8 +48,9 @@ import org.xml.sax.SAXException;
 public class SampleStarsPluginTest extends TestCase {
 
   @Override
-  public void setUp() {
+  public void setUp() throws Exception {
     SimpleConfig.setProperty("datacenter.cache.directory", "target");
+    Job.initialize();
     SampleStarsPlugin.initConfig();
   }
    

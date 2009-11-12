@@ -10,6 +10,7 @@ package org.astrogrid.datacenter.queriers;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.SimpleQueryMaker;
@@ -40,6 +41,7 @@ public class QuerierManagerTest extends TestCase {
    protected void setUp() throws Exception {
       super.setUp();
       SimpleConfig.setProperty("datacenter.cache.directory", "target");
+      Job.initialize();
       SampleStarsPlugin.initConfig();
    }
    
