@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.1 2009/05/13 13:20:44 gtr Exp $
+ * $Id: SqlResults.java,v 1.2 2009/11/12 16:04:18 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,7 +40,7 @@ import org.astrogrid.tableserver.out.TableWriter;
 public class SqlResults extends TableResults {
    
    protected ResultSet sqlResults;
-   protected static final Log log = org.apache.commons.logging.LogFactory.getLog(SqlResults.class);
+   private static final Log log = org.apache.commons.logging.LogFactory.getLog(SqlResults.class);
    
    /**
     * Construct this wrapper around the given JDBC/SQL ResultSet.  We don't
@@ -467,8 +467,11 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
- Revision 1.1  2009/05/13 13:20:44  gtr
- *** empty log message ***
+ Revision 1.2  2009/11/12 16:04:18  gtr
+ The log is now private.
+
+ Revision 1.1.1.1  2009/05/13 13:20:44  gtr
+
 
  Revision 1.18  2008/05/27 11:07:38  clq2
  merged PAL_KEA_2715
