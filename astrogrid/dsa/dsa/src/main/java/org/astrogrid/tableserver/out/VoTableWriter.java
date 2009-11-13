@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.2 2009/11/12 11:25:18 gtr Exp $
+ * $Id: VoTableWriter.java,v 1.3 2009/11/13 13:50:14 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,7 +33,7 @@ import org.astrogrid.ucd.UcdVersions;
 
 public class VoTableWriter implements TableWriter {
    
-   protected static final Log log = org.apache.commons.logging.LogFactory.getLog(VoTableWriter.class);
+   private static final Log log = org.apache.commons.logging.LogFactory.getLog(VoTableWriter.class);
 
    protected BufferedWriter bufferedOut = null;
    
@@ -275,6 +275,9 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.3  2009/11/13 13:50:14  gtr
+ The log is now private.
+
  Revision 1.2  2009/11/12 11:25:18  gtr
  Data of type java.lang.Object returned from JDBC no longer abort the querty processing.
 
