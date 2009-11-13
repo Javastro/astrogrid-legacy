@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.2 2009/10/21 19:00:59 gtr Exp $
+ * $Id: TableResults.java,v 1.3 2009/11/13 16:22:00 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,10 +17,12 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
+import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.sourcetargets.UrlSourceTarget;
 import org.astrogrid.slinger.targets.TargetIdentifier;
+import org.astrogrid.tableserver.out.ConeSearchVoTableWriter;
 import org.astrogrid.tableserver.out.FilteredTableWriter;
 import org.astrogrid.tableserver.out.HtmlTableWriter;
 import org.astrogrid.tableserver.out.TableWriter;
@@ -78,11 +80,16 @@ public abstract class TableResults implements QueryResults
     * as a mime type*/
    public TableWriter makeTableWriter(TargetIdentifier target, String requestedFormat, Principal user) throws IOException {
 
-      if (requestedFormat.equals(ReturnTable.VOTABLE) ||
-          requestedFormat.equals(ReturnTable.VOTABLE_GENERIC) ||
-          requestedFormat.equals(ReturnTable.VOTABLE_TEXT)) {
+     if (requestedFormat.equals(ReturnTable.VOTABLE) ||
+         requestedFormat.equals(ReturnTable.VOTABLE_GENERIC) ||
+         requestedFormat.equals(ReturnTable.VOTABLE_TEXT)) {
+       if (querier.getQuery().getQuerySource().equals(Query.CONE_SOURCE)) {
+         return new ConeSearchVoTableWriter(target, "Cone-search Results", user);
+       }
+       else {
          return new VoTableWriter(target, "Query Results", user);
-      }
+       }
+     }
       else if (requestedFormat.equals(ReturnTable.VOTABLE_BINARY)) {
          return new VoTableBinaryWriter(target, "Query Results", user);
       }
