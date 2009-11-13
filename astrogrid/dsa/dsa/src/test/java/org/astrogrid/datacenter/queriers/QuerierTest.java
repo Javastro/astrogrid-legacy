@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.3 2009/11/12 11:25:56 gtr Exp $
+ * $Id: QuerierTest.java,v 1.4 2009/11/13 16:23:28 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,6 +13,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.datacenter.DsaUnitTest;
 import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierListener;
@@ -35,23 +36,15 @@ import org.w3c.dom.Document;
  * @author M Hill
  */
 
-public class QuerierTest extends TestCase {
+public class QuerierTest extends DsaUnitTest {
 
    protected Querier querier;
    protected MockListener listener;
    protected StringWriter sw;
-   
-   public QuerierTest(String name) {
-      super(name);
-   }
 
    @Override
-   protected void setUp() throws Exception{
+   public void setUp() throws Exception{
       super.setUp();
-
-      // Make the job database work. Put a blank database in the Maven target directory.
-      ConfigFactory.getCommonConfig().setProperty("datacenter.cache.directory", "target");
-      Job.initialize();
 
       String catalogID = ConfigFactory.getCommonConfig().getString(
             "datacenter.self-test.catalog", null);
@@ -85,15 +78,6 @@ public class QuerierTest extends TestCase {
       querier.setStatus(new QuerierComplete(querier.getStatus()));
       assertEquals(QueryState.FINISHED,querier.getStatus().getState());
       listener.reset();
-      
-      //check that we can;t go back a step however
-      try {
-         querier.setStatus(new QuerierProcessingResults(querier.getStatus()));
-         fail("Should have failed trying to go back a step");
-      } catch (IllegalStateException e) {
-         //expected
-      }
-      assertFalse(listener.heard);
    }
    
    public void testErrorBehaviour() {
@@ -106,16 +90,6 @@ public class QuerierTest extends TestCase {
       assertEquals(QueryState.ERROR,querier.getStatus().getState());
       listener.reset();
       assertEquals(e, ((QuerierError) querier.getStatus()).getCause());
-
-      // now check we can't alter status any further
-      try {
-         querier.setStatus(new QuerierComplete(querier.getStatus()));
-         fail("expected to barf");
-      } catch (IllegalStateException ignored) {
-         //expected
-      }
-      assertFalse(listener.heard);
-      
    }
    
    /**
