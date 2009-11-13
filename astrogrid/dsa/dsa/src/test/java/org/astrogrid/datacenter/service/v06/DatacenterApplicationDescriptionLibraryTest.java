@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
+/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.3 2009/11/13 16:23:43 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,40 +10,31 @@
 **/
 package org.astrogrid.datacenter.service.v06;
 
-import junit.framework.TestCase;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
+import org.astrogrid.datacenter.DsaUnitTest;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.cea.CeaQueuedExecutor;
 import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescriptionLibrary;
-import org.astrogrid.tableserver.test.SampleStarsPlugin;
 
 /** Test the application description library - not much to do here..
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
  *
  */
-public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
-    /**
-     * Constructor for DatacenterApplicationDescriptionLibraryTest.
-     * @param arg0
-     */
-    public DatacenterApplicationDescriptionLibraryTest(String arg0) {
-        super(arg0);
-    }
+public class DatacenterApplicationDescriptionLibraryTest extends DsaUnitTest {
+    
     /*
      * @see TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+  @Override
+    public void setUp() throws Exception {
 
         super.setUp();
-
-        SampleStarsPlugin.initConfig();
 
         dataServer = new DataServer();
         env = new ApplicationDescriptionEnvironment(
@@ -84,6 +75,9 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
 }
 /*
 $Log: DatacenterApplicationDescriptionLibraryTest.java,v $
+Revision 1.3  2009/11/13 16:23:43  gtr
+no message
+
 Revision 1.2  2009/10/21 19:01:00  gtr
 V2009.1.01, merged.
 
