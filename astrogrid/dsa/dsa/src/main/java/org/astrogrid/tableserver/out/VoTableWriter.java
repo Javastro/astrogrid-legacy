@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.3 2009/11/13 13:50:14 gtr Exp $
+ * $Id: VoTableWriter.java,v 1.4 2009/11/16 15:37:32 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -80,39 +80,19 @@ public class VoTableWriter implements TableWriter {
       println("</VOTABLE>");
    }
 
-   public void open() throws IOException {
-      println("<?xml version='1.0' encoding='UTF-8'?>");
-      println("<VOTABLE " 
-         +"xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
-         +"xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  "
-         +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.1/VOTable.xsd'  "
-         +"version='1.1'"
-         +">");
-         
-         /* don't know where to find this info - in the netadata I expect
-          <DEFINITIONS>
-          <COOSYS ID="myJ2000" system="eq_FK5" equinox="2000." epoch="2000."/>
-          </DEFINITIONS>
-          */
-         
-         println("<RESOURCE>");
-         /* don't know where to find this info - in the netadata I expect
-          <PARAM ID="RA" datatype="E" value="200.0"/>
-          <PARAM ID="DE" datatype="E" value="40.0"/>
-          <PARAM ID="SR" datatype="E" value="30.0"/>
-          <PARAM ID="PositionalError" datatype="E" value="0.1"/>
-          <PARAM ID="Credit" datatype="A" arraysize="*" value="Charles Messier, Richard Gelderman"/>
-          */
-
-      // Make sure stream is still ok
-      doAFlush();
-   }
+  public void open() throws IOException {
+    println("<VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.2' " +
+            "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+            "xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.2 " +
+            "http://www.ivoa.net/xml/VOTable/v1.2' " +
+            "version='1.2'>");
+    println("  <RESOURCE>");
+    doAFlush();
+  }
    
-   
-   /** Produces text/html */
-   public String getMimeType() {
-      return MimeTypes.VOTABLE;
-   }
+  public String getMimeType() {
+    return MimeTypes.VOTABLE;
+  }
    
    
    /** Start body - writes out header and preps col array */
@@ -275,6 +255,9 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.4  2009/11/16 15:37:32  gtr
+ VOTables are now v1.2 except for cone search where they are v1.1.
+
  Revision 1.3  2009/11/13 13:50:14  gtr
  The log is now private.
 

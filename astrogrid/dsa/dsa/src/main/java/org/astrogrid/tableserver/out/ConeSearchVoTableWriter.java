@@ -1,5 +1,5 @@
 /*
- * $Id: ConeSearchVoTableWriter.java,v 1.1 2009/11/13 16:21:33 gtr Exp $
+ * $Id: ConeSearchVoTableWriter.java,v 1.2 2009/11/16 15:37:32 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,6 +45,28 @@ public class ConeSearchVoTableWriter extends VoTableWriter {
    public ConeSearchVoTableWriter(OutputStream out, String title, Principal user) throws IOException {
      super(out, title, user);
    }
+
+  /**
+   * Writes the opening of a VOTable-1.1 document.
+   * C.f. the superclass which writes a VOTable-1.2 document.
+   *
+   * @throws IOException If anything goes wrong.
+   */
+  @Override
+  public void open() throws IOException {
+    println("<?xml version='1.0' encoding='UTF-8'?>");
+    println("<VOTABLE "
+       + "xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
+       + "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  "
+       + "xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.1/VOTable.xsd'  "
+       + "version='1.1'"
+       + ">");
+
+    println("<RESOURCE>");
+
+    // Make sure stream is still ok
+    doAFlush();
+  }
    
    
    /**
