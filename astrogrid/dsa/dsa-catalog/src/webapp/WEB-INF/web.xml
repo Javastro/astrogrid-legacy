@@ -147,9 +147,19 @@
     <servlet-class>org.astrogrid.dataservice.service.tap.UwsResultListServlet</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>UwsJobDestructionServlet</servlet-name>
+    <servlet-class>org.astrogrid.dataservice.service.tap.UwsJobDestructionServlet</servlet-class>
+  </servlet>
 
-  <servlet><servlet-name>UwsJobDestructionServlet</servlet-name><servlet-class>org.astrogrid.dataservice.service.tap.UwsJobDestructionServlet</servlet-class></servlet>
-    <servlet-mapping>
+  <servlet>
+    <servlet-name>UwsJobErrorServlet</servlet-name>
+    <servlet-class>org.astrogrid.dataservice.service.tap.UwsJobErrorServlet</servlet-class>
+  </servlet>
+
+
+
+  <servlet-mapping>
     <servlet-name>BrowserAskQuery</servlet-name>
     <url-pattern>/admin/BrowserAskQuery</url-pattern>
   </servlet-mapping>
