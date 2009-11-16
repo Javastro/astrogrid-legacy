@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.dataservice.jobs.Job;
 
 /**
  * Facilities common to all TAP servlets. Concrete servlets for TAP are
@@ -166,6 +168,44 @@ public abstract class AbstractTapServlet extends HttpServlet {
                                                                     TapException,
                                                                     WebResourceNotFoundException {
     response.sendError(response.SC_METHOD_NOT_ALLOWED);
+  }
+
+  /**
+   * Determines the URL for the given job. The job URI is located relative to
+   * the job-list URI as specified in UWS. The job-list URI is determined as
+   * in {@link #getJobListUri(HttpServletRequest,Job)}.
+   *
+   * @param request The HTTP request.
+   * @param job The job for which the URI is sought.
+   * @return The URI (never null).
+   */
+  protected String getJobUri(HttpServletRequest request, Job job) {
+    return String.format("%s/%s", getJobListUri(request), job.getId());
+  }
+
+  /**
+   * Determines the URL for the job list. The base URI is determined, in order of
+   * preference: from the property {@code datacenter.url.secure};
+   * from the property {@code datacenter.url}; from the request URI.
+   * This means that the URL will be in the HTTP scheme if an HTTPS base is known
+   * for the service. The job URI derived from the service URI may be incorrect,
+   * as seen by the client, if the request has been redirected by a proxy
+   * <p>
+   * The root resource for TAP is assumed to be /TAP below the context URI.
+   *
+   * @param request The HTTP request.
+   * @param job The job for which the URI is sought.
+   * @return The URI (never null).
+   */
+  protected String getJobListUri(HttpServletRequest request) {
+    String base = SimpleConfig.getProperty("datacenter.url.secure", null);
+    if (base == null) {
+      base = SimpleConfig.getProperty("datacenter.url", null);
+    }
+    if (base == null) {
+      base = String.format("%s://%s:%d%s", request.getScheme(), request.getLocalName(), request.getLocalPort(), request.getContextPath());
+    }
+    return String.format("%s/TAP/async", base);
   }
 
 }

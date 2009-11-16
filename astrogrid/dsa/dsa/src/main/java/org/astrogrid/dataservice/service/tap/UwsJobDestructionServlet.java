@@ -84,7 +84,8 @@ public class UwsJobDestructionServlet extends UwsJobResourceServlet {
     }
 
     // Redirect to the job resource.
-    seeOther("..", response);
+    response.setHeader("Location", getJobUri(request, job));
+    response.setStatus(response.SC_SEE_OTHER);
   }
 
   
@@ -127,7 +128,8 @@ public class UwsJobDestructionServlet extends UwsJobResourceServlet {
     }
 
     // Redirect to the job resource.
-    seeOther("../" + job.getId(), response);
+    response.setHeader("Location", getJobUri(request, job));
+    response.setStatus(response.SC_SEE_OTHER);
   }
 
 }

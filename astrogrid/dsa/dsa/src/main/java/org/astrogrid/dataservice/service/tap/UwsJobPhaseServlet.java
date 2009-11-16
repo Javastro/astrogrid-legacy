@@ -1,5 +1,5 @@
 /*
- * $Id: UwsJobPhaseServlet.java,v 1.4 2009/11/11 07:12:01 gtr Exp $
+ * $Id: UwsJobPhaseServlet.java,v 1.5 2009/11/16 12:14:09 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -92,7 +92,8 @@ public class UwsJobPhaseServlet extends UwsJobResourceServlet {
 		}
 
     // Redirect to the job resource.
-    seeOther("../" + job.getId(), response);
+    response.setHeader("Location", getJobUri(request, job));
+    response.setStatus(response.SC_SEE_OTHER);
 	}
 
 }

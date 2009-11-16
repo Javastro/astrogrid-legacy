@@ -94,7 +94,7 @@ public class UwsJobListServlet extends AbstractTapServlet {
         throw new TapException(ex);
       }
       Job job = createNewJob(request);
-      response.sendRedirect("async/" + job.getId());
+      response.setHeader("Location", getJobUri(request, job));
       response.setStatus(response.SC_SEE_OTHER);
     }
     else {
