@@ -48,6 +48,8 @@ This DSA/catalog service provides the following IVOA interfaces:
 </em>
 </li>
 
+<li>TAP - IVOA Table Access Protocol</li>
+
 <!--
 <li><a href='services/AxisDataService06'>'Native'</a> - SOAP interface providing most features, including queries using ADQL, a richly featured query language</td></li>
 -->
@@ -56,13 +58,11 @@ This DSA/catalog service provides the following IVOA interfaces:
 
 <h1>Installation Notes</h1>
 <p>
-If you have just installed the DSA/catalog web application, 
-you should now do the following:
+  Please see the documentation index (via the top-left menu on this page) for installation
+  instructions. If you are upgrading an existing DSA installation it is important to
+  read the release notes: these will warn you if you need to adapt your configuration files.
 </p>
-<ol>
-<li>Read the <a href="release.jsp">release notes</a></li>
-<li><a href="configure.jsp">Configure</a> your DSA/catalog installation</li>
-</ol>
+
 
 </div>
 
