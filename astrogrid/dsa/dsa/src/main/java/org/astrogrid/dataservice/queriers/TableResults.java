@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.3 2009/11/13 16:22:00 gtr Exp $
+ * $Id: TableResults.java,v 1.4 2009/11/16 10:11:02 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -82,7 +82,8 @@ public abstract class TableResults implements QueryResults
 
      if (requestedFormat.equals(ReturnTable.VOTABLE) ||
          requestedFormat.equals(ReturnTable.VOTABLE_GENERIC) ||
-         requestedFormat.equals(ReturnTable.VOTABLE_TEXT)) {
+         requestedFormat.equals(ReturnTable.VOTABLE_TEXT) ||
+         requestedFormat.equals(ReturnTable.DEFAULT)) {
        if (querier.getQuery().getQuerySource().equals(Query.CONE_SOURCE)) {
          return new ConeSearchVoTableWriter(target, "Cone-search Results", user);
        }
@@ -102,17 +103,8 @@ public abstract class TableResults implements QueryResults
       else if (requestedFormat.equals(ReturnTable.HTML)) {
          return new HtmlTableWriter(target, "Query Results", querier.getQuery().toHTMLString(), user);
       }
-//      else if (requestedFormat.equals(ReturnCount.COUNT)) {
-//         return new HtmlTableWriter(target, "Query Results", querier.getQuery().toString(), user);
-//      }
-//      else if (format.equals(ReturnTable.FITS)) {
-//         tableWriter = new StilStarTableWriter(new FitsTableWriter(), out);
-//      }
-      else if (requestedFormat.equals(ReturnTable.DEFAULT)) {
-         return new VoTableWriter(target, "Query Results", user);
-      }
       else {
-         throw new IllegalArgumentException("Unknown results format "+requestedFormat+" given");
+         throw new IllegalArgumentException("Unknown results format "+requestedFormat+" ws requested");
       }
    }
    
