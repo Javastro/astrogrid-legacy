@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.6 2009/11/12 13:08:59 gtr Exp $
+ * $Id: Querier.java,v 1.7 2009/11/16 14:59:10 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -370,6 +370,7 @@ public class Querier implements Runnable, PluginListener {
          case FINISHED:
          case ABORTED:
            job.setEndTime(new Timestamp(System.currentTimeMillis()));
+           job.setErrorMessage("Execution was aborted");
            break;
          default:
            break;
