@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ag;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.Date;
@@ -22,6 +23,7 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
@@ -43,7 +45,10 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.w3c.dom.Document;
 
-/** Remote process strategy for Table Access Protocol (TAP v0.3)
+/**
+ * A remote-process stategy for TAP 1.0-20090607 (WD).
+ * This drives only the ADQL/asynchronous aspect of the protocol.
+ *
  * @todo add hooks to delete a job too - find out from guy how long they live for.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 22, 200812:30:12 PM
@@ -154,8 +159,13 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
             info("Initializing query");
             //future - might nee to make myspace ivorns concrete before we go any further.
 
-            final URI endpoint = service.findTapCapability().getInterfaces()[0].getAccessUrls()[0].getValueURI();
+            // Find the URI for the UWS. It is a child of the resource for which the URI
+            // is given in the registration.
+            final URI tap = 
+                service.findTapCapability().getInterfaces()[0].getAccessUrls()[0].getValueURI();
+            final URI endpoint = resolveUri(tap, "async");
             info("Endpoint: " + endpoint);
+            
             final PostMethod createMethod = new PostMethod(endpoint.toString());
             try {
 
@@ -164,12 +174,16 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
                 String format = (String)tool.findXPathValue("input/parameter[name='FORMAT']/value");
                 final ParameterValue dest = (ParameterValue)tool.findXPathValue("output/parameter[name='DEST']");
                 if (format == null) {
-                    format = "application/x-votable+xml;tabledata";
+                    format = "application/x-votable+xml";
                 }
                 createMethod.addParameters(new NameValuePair[] {
-                        new NameValuePair("ADQL",query),
-                        new NameValuePair("FORMAT",format) // this parameter is ignored by current dsa.                      
+                        new NameValuePair("QUERY", query),
+                        new NameValuePair("LANG", "ADQL"),
+                        new NameValuePair("FORMAT", format) // this parameter is ignored by current dsa.                      
                 });
+                
+                // The data destination is specified by the caller;
+                // the data end up outside this service.
                 if (dest != null && dest.getIndirect()) {
                     // store the original, unmangled destination
                     destinationURL = dest.getValue();
@@ -179,13 +193,29 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
                     createMethod.addParameter(new NameValuePair("DEST",mangledDest.getValue()));
                     createMethod.addParameter(new NameValuePair("TargetURI",mangledDest.getValue()));
                 }
+                // The data destination is not specified in the request. The
+                // data will fetch up inside the TAP service. We'll the URL
+                // for the data whene we get the job ID.
+                else {
+                    destinationURL = null;
+                }
                 final int code = http.executeMethod(createMethod); 
                 checkCode(code,createMethod);
 
+                // Our "job ID" is the URI for the job object in the TAP service.
+                // It's an absolute URI in the HTTP scheme.
                 final Header location = createMethod.getResponseHeader("Location");
                 jobID =new URL(location.getValue());
                 info("JobID: " + jobID);
                 setId(mkGlobalExecId(jobID.toString(),service));
+                
+                
+                // Now we have the job ID, we can predict where the data are
+                // by applying the rules of the TAP standard.
+                if (destinationURL == null) {
+                    destinationURL = String.format("%s/results/result", jobID);
+                    LogFactory.getLog(TapStrategyImpl.class).info("Results at: " + destinationURL);
+                }
 
                 // ok. kick it off.
                 postPhaseCommand("RUN");
@@ -237,6 +267,7 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
                 phaseMethod = new GetMethod(phaseURL.toString());       
                 final int code = http.executeMethod(phaseMethod);
                 checkCode(HttpStatus.SC_OK,code,phaseMethod);
+                /* This code applies when XML is returned, but UWS returns text/plain now.
                 final XMLInputFactory fac = XMLInputFactory.newInstance();
                 in = fac.createXMLStreamReader(phaseMethod.getResponseBodyAsStream());
                 while (in.hasNext()){
@@ -246,15 +277,18 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
                         return StringUtils.substringBefore(StringUtils.trim(in.getElementText()),":");
                     }
                 }
-                error("Unable to parse phase information");
-                throw new ServiceException("Unable to parse phase information");                
+                 */
+                return phaseMethod.getResponseBodyAsString();
+                /*error("Unable to parse phase information");
+                throw new ServiceException("Unable to parse phase information");*/         
             } catch (final IOException x) {
                 error("Failed to check progress",x);
                 throw new ServiceException(x.getMessage());
-            } catch (final XMLStreamException x) {
+            } /*catch (final XMLStreamException x) {
                 error("Failed to check progress",x);
-                throw new ServiceException(x.getMessage());               
-            } finally {
+                throw new ServiceException(x.getMessage());            
+            } */
+            finally {
                 if (phaseMethod != null) {
                     phaseMethod.releaseConnection();
                 }
@@ -292,7 +326,8 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
         
         /** check the actual code is the same as the expected response code, and if not log, and then throw */
         private void checkCode(final int expected, final int code, final HttpMethod m) throws ServiceException {
-            if (expected != code ) {
+            if (expected != code) {
+              if (!(isRedirect(expected) && isRedirect(code))) {
                 try { // try to report the response body.
                     final String s = m.getResponseBodyAsString();
                     error("Unexpected response code " + code + "<br>" + s);
@@ -301,6 +336,7 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
                     error("Unexpected response code " + code);
                 }
                 throw new ServiceException("Unexpected response code " + code);
+              }
             }
         }
         
@@ -314,7 +350,17 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
             checkCode(HttpStatus.SC_SEE_OTHER,code,m);
         }
 
-   
+     /**
+      * Determines whether an HHTP status-code indicates a redirect response that
+      * the strategy can follow. Some of the redirection codes are not appropriate
+      * to TAP and are not acknowledged here as redirections.
+      *
+      * @param code The code to be inspected.
+      * @return True if the code is 301, 302, 303 or 307; false otherwise.
+      */
+     private boolean isRedirect(int code) {
+       return (code == 301 || code == 302 || code == 303);
+     }
         
 
         /** create a sub url, respecting existing path of root, and taking care of trailing /, etc 
@@ -456,6 +502,24 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
 
         public Tool getInvocationTool() {
             return tool;
+        }
+    }
+    
+    /**
+     * Resolves a relative URI against an absolute URI, returning
+     * a new, absolute URI. This is a workaround for the bug in
+     * java.net.URI.resolve(URI,String).
+     *
+     * @param base The absolute URI against which to resolve.
+     * @param relative The relative URI to be resolved.
+     * @return The resolved, absolute URI.
+     */
+    private URI resolveUri(URI base, String relative) {
+        try {
+            return new URI(base.toString() + "/" + relative);
+        }
+        catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 
