@@ -5,7 +5,9 @@ import java.io.PrintWriter;
 import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.query.Query;
@@ -31,8 +33,25 @@ import org.astrogrid.io.mime.MimeTypes;
  * @author G Rixon
  */
 public class SubmitCone extends DefaultServlet {
+  private static Log log = LogFactory.getLog(SubmitCone.class.getName());
    
    DataServer server = new DataServer();
+
+   @Override
+   public void init() {
+     // Initialise SampleStars plugin if required
+     // (may not be initialised if admin has not run the self-tests)
+     String plugin = ConfigFactory.getCommonConfig().getString("datacenter.querier.plugin");
+     if (plugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+      try {
+        // This has no effect if the plugin is already initialised
+        SampleStarsPlugin.initialise();
+      } catch (DatabaseAccessException ex) {
+        log.fatal("Can't initialize the sample-stars plugin: " + ex);
+        throw new RuntimeException(ex);
+      }
+     }
+   }
 
    /**
     * Handles an HTTP GET request.
@@ -49,16 +68,7 @@ public class SubmitCone extends DefaultServlet {
    public void doGet(HttpServletRequest request,
                      HttpServletResponse response) throws IOException {
 
-      // Initialise SampleStars plugin if required (may not be initialised
-      // if admin has not run the self-tests)
-      String plugin = ConfigFactory.getCommonConfig().getString(
-           "datacenter.querier.plugin");
-      if (plugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) {
-         // This has no effect if the plugin is already initialised
-         SampleStarsPlugin.initialise();  // Just in case
-      }
-
-      // Check that conesearch interface is enabled
+     // Check that conesearch interface is enabled
       String coneEnabled = ConfigFactory.getCommonConfig().getString(
          "datacenter.implements.conesearch");
       if ( (coneEnabled == null) || 
@@ -114,45 +124,8 @@ public class SubmitCone extends DefaultServlet {
             // to the response stream.
             returnSpec.setTarget(new WriterTarget(response.getWriter(), false));
             
-            if (ServletHelper.isCountReq(request)) {
-               // This one is a blocking request
-               long count = server.askCount(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
-               response.setContentType(MimeTypes.PLAINTEXT);
-               response.getWriter().write(""+count);
-            }
-            else {
-               // This one is a blocking request
-               // TOFIX KONA CHECK VALID CONTENT TYPE FOR NORMAL CONE
-               // (NOT JUST BROWSER)
-               response.setContentType(coneQuery.getResultsDef().getFormat());
-               server.askQuery(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
-            }
-         }
-         else {
-            //otherwise we direct the response to the target and put status 
-            //info to the browser
-            response.setContentType(MimeTypes.HTML);
-
-            response.getWriter().println(
-               "<html>"+
-               "<head><title>Submitting Query</title></head>"+
-               "<body>"+
-               "<p>Submitting, please wait...</p>");
-            response.getWriter().flush();
-
-            // This one is a non-blocking request
-            String id = server.submitQuery(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
-      
-            URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/admin/queryStatus.jsp");
-            //indicate status
-            response.getWriter().println("Cone Query has been submitted, and assigned ID "+id+"."+
-                                          "<a href='"+statusUrl+"?ID="+id+"'>Query Status Page</a>\n");
-            response.getWriter().flush();
-
-            //redirect to status
-            response.getWriter().write("<META HTTP-EQUIV='Refresh' CONTENT='0;URL="+statusUrl+"?ID="+id+"'>"+
-                                      "</body></html>");
-            response.getWriter().flush();
+           response.setContentType(coneQuery.getResultsDef().getFormat());
+           server.askQuery(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
          }
       }
       catch (java.lang.IllegalArgumentException ex) {
