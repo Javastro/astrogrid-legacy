@@ -1,17 +1,12 @@
 package org.astrogrid.dataservice.service.tap;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.cert.CertificateException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.security.HttpsServiceSecurityGuard;
-import org.astrogrid.security.authorization.AccessPolicy;
 
 /**
  * Facilities common to all TAP servlets. Concrete servlets for TAP are
