@@ -73,12 +73,12 @@ public class TapCeaApplication  implements CeaApplication, TapService{
           setDescription("The MIME type in which the table of " + 
           "results is to be encoded");
           setOptions(new String[] {
-                  "application/x-votable+xml;tabledata"
-                  ,"application/x-votable+xml;fits"
-                  ,"application/x-votable+xml;binary"
+                  "application/x-votable+xml",
+                  "text/csv"
           });
+          setDefaultValues(new String[]{"application/x-votable+xml"});
           
-      }}      
+      }}
     };
     private final TapService ts;
     private final Content newContent = new Content();
