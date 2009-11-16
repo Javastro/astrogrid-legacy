@@ -37,7 +37,7 @@
         </tr>
         <tr>
           <td><xsl:text>Status:</xsl:text></td>
-          <td><xsl:value-of select="uws:error"/></td>
+          <td><pre><xsl:value-of select="uws:errorSummary/uws:status"/></pre></td>
         </tr>
       <tr>
         <td><xsl:text>Start time</xsl:text></td>

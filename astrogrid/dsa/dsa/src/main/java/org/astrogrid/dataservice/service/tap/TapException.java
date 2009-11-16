@@ -65,6 +65,7 @@ public class TapException extends Exception {
     pw.println("  </RESOURCE>");
     pw.println("</VOTABLE>");
     pw.close();
+    response.setContentType("text/xml");
   }
 
 }
