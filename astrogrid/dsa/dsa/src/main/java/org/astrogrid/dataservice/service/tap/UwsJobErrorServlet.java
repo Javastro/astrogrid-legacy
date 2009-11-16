@@ -1,5 +1,5 @@
 /*
- * $Id: UwsJobErrorServlet.java,v 1.1 2009/11/12 11:23:38 gtr Exp $
+ * $Id: UwsJobErrorServlet.java,v 1.2 2009/11/16 14:35:19 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -39,6 +39,7 @@ public class UwsJobErrorServlet extends UwsJobResourceServlet {
                                                               WebResourceNotFoundException {
     Job job = getJob(request);
     response.setContentType("text/plain");
-    response.getWriter().print(job.getErrorMessage());
+    TapException te = new TapException(job.getErrorMessage());
+    te.writeTapErrorDocument(response);
 	}
 }

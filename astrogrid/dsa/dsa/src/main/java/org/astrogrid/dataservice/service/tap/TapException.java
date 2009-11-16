@@ -1,6 +1,7 @@
 package org.astrogrid.dataservice.service.tap;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -50,14 +51,20 @@ public class TapException extends Exception {
       message = cause.getMessage();
     }
 
-    // KLUDGE: send a 500 with HTML error message.
-    // TODO write a proper TAP document.
-    if (message == null) {
-      response.sendError(500);
-    }
-    else {
-      response.sendError(500, message);
-    }
+    String code = ("OK".equals(message))? "OK" : "ERROR";
+
+    PrintWriter pw = response.getWriter();
+    pw.println("<?xml version='1.0'?>");
+    pw.println("<VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.2' " +
+               "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+               "xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.2 " +
+               "http://www.ivoa.net/xml/VOTable/v1.2' " +
+               "version='1.2'>");
+    pw.println("  <RESOURCE type='results'>");
+    pw.println("    <INFO name='QUERY_STATUS' value='" + code + "'>" + message + "</INFO>");
+    pw.println("  </RESOURCE>");
+    pw.println("</VOTABLE>");
+    pw.close();
   }
 
 }
