@@ -1,0 +1,287 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+<properties>
+  <title>Release notes for DSA/Catalogue 2009.1.03</title>
+</properties>
+
+<body>
+<section name="Release notes for DSA/Catalogue 2009.1.03">
+
+<p>
+  This release provides an early implementation of the TAP v1.0 protocol.
+  This is a prototype: some TAP features are not implemented and some are
+  implemented imperfectly. The older interfaces still work, so upgrading
+  a production service from v2009.1 is recommended. Any services running
+  DSA/Catalogue 2009.1.01 or 2009.1.02, the first TAP prototypes, should definitely be
+  upgraded.
+</p>
+
+<subsection name="VOTable and UCD changes">
+  <p><i>Since v2009.1.03.</i></p>
+  <p>
+    The version of VOTable emitted by DSA/Catalogue services changes with this
+    release.
+  </p>
+  <ul>
+    <li>Results tables from successful TAP and CEC queries are VOTable-1.2
+        (previously VOTable-1.1).</li>
+    <li>Results tables from successful cone searches are VOTable-1.1
+        (no change).</li>
+    <li>Error documents from failed TAP-queries are are VOTable-1.2
+        (previously VOTable-1.1).</li>
+    <li>Error documents from failed CEC calls and cone searches are
+        usually VOTable-1.0 but VOTable-1.1 is possible (no change).</li>
+  </ul>
+  <p>
+    These changes bring the implementation nearer to the IVOA standards.
+  </p>
+  <p>
+    DSA/Catalogue now emits UCD1+ mark-up for columns in preference to UCD1.
+    Whenever both UCDs are set for a column in the "metadoc" file, DSA will use
+    UCD1+; if only UCD1 is set, it will use that.
+  </p>
+  <p>
+    The property <i>datacenter.ucd.version</i> in <i>astrogrid.properties</i>,
+    which used to select the preferred version, now has no useful effect.
+  </p>
+  <p>
+    The cone-search standard <em>requires</em> a reversion to UCD1 for
+    <i>ID_MAIN</i>, <i>POS_EQ_RA</i> and <i>POS_EQ_DEC</i>. These UCDs are
+    imposed by special-case code for cone-search outputs and override the UCDs
+    in the metadoc.
+  </p>
+</subsection>
+
+<subsection name="TAP features">
+  <p><i>Since v2009.1.01; security features since v2009.1.02.</i></p>
+  <p>
+    The following features of TAP are implemented:
+  </p>
+  <ul>
+    <li>synchronous queries by ADQL;</li>
+    <li>asynchronous queries by ADQL and UWS;</li>
+    <li>VOSI.</li>
+  </ul>
+  <p>
+    These features are not available in this release:
+  </p>
+  <ul>
+    <li>queries by PQL, including positional queries using the POS parameter;</li>
+    <li>metadata queries;</li>
+    <li>table uploads;</li>
+    <li>delivery of results to VOSpace.</li>
+  </ul>
+  <p>
+    Asynchronous queries via TAP leave their results in cache files on the server.
+    These results remain available for 24 hours from the submission time of the
+    query.
+  </p>
+  <p>
+    <i>Since v2009.1.02.</i>
+    In this release, IVOA single-sign-on authentication is implemented for the
+    TAP interface; c.f. 2009.1.01. Access via TAP can be controlled.
+  </p>
+</subsection>
+
+<subsection name="VOSI changes">
+  <p><i>Since v2009.1.01.</i></p>
+  <p>
+    The VOSI resources have been rearranged to support the TAP implementation.
+    In versions up to 2009, there was one set of VOSI resources for each catalogue configured
+    on the web application. In 2009.1.01, there is one set of VOSI resources for
+    the whole web application, but requests to those resources can be parameterized
+    to get data concerning only one catalogue.
+  </p>
+  <p>
+    For example, consider an service S configured to serve catalogues named
+    C1 and C2. In v2009.1, there would have been these VOSI resources:
+  </p>
+  <ul>
+    <li>http://where.ever/S/C1/vosi/capabilities</li>
+    <li>http://where.ever/S/C1/vosi/availability</li>
+    <li>http://where.ever/S/C1/vosi/tables</li>
+    <li>http://where.ever/S/C1/vosi/ceaapplication</li>
+    <li>http://where.ever/S/C2/vosi/capabilities</li>
+    <li>http://where.ever/S/C2/vosi/availability</li>
+    <li>http://where.ever/S/C2/vosi/tables</li>
+    <li>http://where.ever/S/C2/vosi/ceaapplication</li>
+  </ul>
+  <p>
+    In v2009.1.02, the VOSI metadata are available through the following URIs:
+  </p>
+  <ul>
+    <li>http://where.ever/S/VOSI/availability</li>
+    <li>http://where.ever/S/VOSI/capabilities</li>
+    <li>http://where.ever/S/VOSI/tables</li>
+    <li>http://where.ever/S/VOSI/applications</li>
+    <li>http://where.ever/S/VOSI/capabilities?COLLECTION=C1</li>
+    <li>http://where.ever/S/VOSI/tables?COLLECTION=C1</li>
+    <li>http://where.ever/S/VOSI/applications?COLLECTION=C1</li>
+    <li>http://where.ever/S/VOSI/capabilities?COLLECTION=C2</li>
+    <li>http://where.ever/S/VOSI/tables?COLLECTION=C2</li>
+    <li>http://where.ever/S/VOSI/applications?COLLECTION=C2</li>
+  </ul>
+  <p>
+    The basic, unparameterized resources return metadata for all catalogues.
+    The <i>COLLECTION</i> parameter on the resource selects metadata for just
+    one catalogue. The availability resource does not support this parameter.
+  </p>
+</subsection>
+
+<subsection name="Records of queries">
+  <p><i>Since v2009.1.01.</i></p>
+  <p>
+    The progress of queries used to be recorded in memory rather than on disc.
+    This lead to DSA installations forgetting their queries when restarted.
+    Further, when results of queries were not dispatched to VOSpace they too
+    were kept in memory, leading to eventual failure of the service when the
+    heap filled up.
+  </p>
+  <p>
+    Starting with v2009.1.01, all results of queries are kept on disc, in a location
+    specifed during configuration. Please
+    see the description of the <a href="cache-directory.html">cache directory</a>
+    for details.
+  </p>
+</subsection>
+
+<subsection name="Upgrading from v2009.1">
+  <p>
+    The configuration files from the v2009.1 installation are mainly compatible
+    with v2009.1.03:
+  </p>
+  <ul>
+    <li>use the old context file.</li>
+    <li>use the old metadoc file.</li>
+    <li>two extra properties are needed in <i>astrogrid.properties</i>.</li>
+  </ul>
+  <p>
+    This is the recommended sequence for the upgrade.
+  </p>
+  <ol>
+    <li>
+      Delete the existing installation of DSA from Tomcat (use Tomcat's
+      manager web-page and "undeploy" the context).
+    </li>
+    <li>
+      In <i>astrogrid.properties</i>, add the property
+      <i>datacenter.cache.directory</i>, as described in the
+      <a href="cache-directory.html">document</a>.
+    </li>
+    <li>
+      In <i>astrogrid.properties</i>, add the property
+      <i>tap.access.policy</i>. The value must be the fully-qualified name of
+      the access-policy Java-class. If you already have access control on the
+      CEC interface then you can use the same policy-class for TAP. If you
+      want no access control on your TAP interface, then use the policy class
+      <i>org.astrogrid.security.authorization.OpenAccessPolicy</i>. (This class
+      is built in to DSA/Catalogue.)
+    </li>
+    <li>
+      Create the cache directory if it does not exist. Make sure that the
+      directory is writeable by the account running Tomcat.
+    </li>
+    <li>
+      Deploy the new <i>.war</i> file into Tomcat (use the manager web-page,
+      and make sure to specify the location of the context file, or else it will
+      not see your configuration).
+    </li>
+    <li>
+      Initialize the job database as described in the
+      <a href="cache-directory.html">cache-directory document</a>.
+    </li>
+    <li>
+      Refresh the registration to add the URIs for the new interfaces,
+      as described in the <a href="registration.html">registration instructions</a>.
+    </li>
+  </ol>
+</subsection>
+
+<subsection name="Upgrading from v2009.1.01">
+ <p>
+    The configuration files from the v2009.1.01 installation are mainly compatible
+    with v2009.1.03:
+  </p>
+  <ul>
+    <li>use the old context file.</li>
+    <li>use the old metadoc file.</li>
+    <li>one extra properties is needed in <i>astrogrid.properties</i>.</li>
+  </ul>
+  <p>
+    This is the recommended sequence for the upgrade.
+  </p>
+  <ol>
+    <li>
+      Delete the existing installation of DSA from Tomcat (use Tomcat's
+      manager web-page and "undeploy" the context).
+    </li>
+    <li>
+      In <i>astrogrid.properties</i>, add the property
+      <i>tap.access.policy</i>. The value must be the fully-qualified name of
+      the access-policy Java-class. If you already have access control on the
+      CEC interface then you can use the same policy-class for TAP. If you
+      want no access control on your TAP interface, then use the policy class
+      <i>org.astrogrid.security.authorization.OpenAccessPolicy</i>. (This class
+      is built in to DSA/Catalogue.)
+    </li>
+    <li>
+      Delete all the files in the cache directory (the directory identified
+      by the <i>datacenter.cache.directory</i> property in <i>astrogrid.properties</i>.
+      V2009.1.02 uses a different schema for the job database that v2009.1.01, so the
+      database has to be remade from scratch.
+    </li>
+    <li>
+      Deploy the new <i>.war</i> file into Tomcat (use the manager web-page,
+      and make sure to specify the location of the context file, or else it will
+      not see your configuration).
+    </li>
+    <li>
+      Initialize the job database as described in the
+      <a href="cache-directory.html">cache-directory document</a>.
+    </li>
+    <li>
+      Refresh the registration to add the URIs for the new interfaces,
+      as described in the <a href="registration.html">registration instructions</a>.
+    </li>
+  </ol>
+</subsection>
+
+<subsection name="Upgrading from v2009.1.02">
+ <p>
+    The configuration files, job database and registrations from the v2009.1.02
+    installation are completely compatible with v2009.1.03.
+    You can simply replace the code.
+ </p>
+  <p>
+    This is the recommended sequence for the upgrade.
+  </p>
+  <ol>
+    <li>
+      Delete the existing installation of DSA from Tomcat (use Tomcat's
+      manager web-page and "undeploy" the context).
+    </li>
+    <li>
+      Deploy the new <i>.war</i> file into Tomcat (use the manager web-page,
+      and make sure to specify the location of the context file, or else it will
+      not see your configuration).
+    </li>
+  </ol>
+</subsection>
+
+<subsection name="Upgrading from versions before v2009.1">
+  <p>
+    The officially-blessed way is to upgrade to v2009.1 first (see the
+    release notes for that version) and then upgrade to v2009.1.03 using the
+    procedure above. You may be able to combine these two upgrades, but this
+    has a slightly greater chance of causing problems.
+  </p>
+</subsection>
+
+
+</section>
+</body>
+
+</document>
