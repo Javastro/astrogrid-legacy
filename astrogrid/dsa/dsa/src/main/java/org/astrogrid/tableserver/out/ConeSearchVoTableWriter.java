@@ -1,5 +1,5 @@
 /*
- * $Id: ConeSearchVoTableWriter.java,v 1.2 2009/11/16 15:37:32 gtr Exp $
+ * $Id: ConeSearchVoTableWriter.java,v 1.3 2009/11/18 16:33:49 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -220,6 +220,9 @@ public class ConeSearchVoTableWriter extends VoTableWriter {
     * @return True if the given UCD includes all the given words.
     */
    private boolean matchUcd(String ucd, String[] words) {
+     if (ucd == null) {
+       return false;
+     }
      for (int i = 0; i < words.length; i++) {
        if (!ucd.contains(words[i])) {
          return false;
