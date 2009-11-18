@@ -1,5 +1,5 @@
 /*
- * $Id: ConeSearchVoTableWriter.java,v 1.3 2009/11/18 16:33:49 gtr Exp $
+ * $Id: ConeSearchVoTableWriter.java,v 1.4 2009/11/18 16:49:17 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -91,7 +91,7 @@ public class ConeSearchVoTableWriter extends VoTableWriter {
          // mark it up in the VOTable according to the cone-search rules.
          // For subsequent columns so labelled, change the UCD to say
          // "just another ID".
-         if (cols[i].getUcd("1").equals("ID_MAIN") ||
+         if ("ID_MAIN".equals(cols[i].getUcd("1")) ||
              matchUcd(cols[i].getUcd("1+"), new String[]{"meta.id", "meta.main"})) {
            if (!doneIdMain) {
              println(String.format("<FIELD name='%s' ID='%s' ucd='ID_MAIN' datatype='char' arraysize='*'/>",
@@ -108,7 +108,7 @@ public class ConeSearchVoTableWriter extends VoTableWriter {
          // mark it up in the VOTable according to the cone-search rules.
          // For subsequent columns so labelled, change the UCD to say
          // "just another RA".
-         if (cols[i].getUcd("1").equals("POS_EQ_RA_MAIN") ||
+         if ("POS_EQ_RA_MAIN".equals(cols[i].getUcd("1")) ||
              matchUcd(cols[i].getUcd("1+"), new String[]{"pos.eq.ra", "meta.main"})) {
            if (!doneRaMain) {
              println(String.format("<FIELD name='%s' ID='%s' ucd='POS_EQ_RA_MAIN' datatype='%s'/>",
@@ -125,7 +125,7 @@ public class ConeSearchVoTableWriter extends VoTableWriter {
          // mark it up in the VOTable according to the cone-search rules.
          // For subsequent columns so labelled, change the UCD to say
          // "just another declination".
-         if (cols[i].getUcd("1").equals("POS_EQ_DEC_MAIN") ||
+         if ("POS_EQ_DEC_MAIN".equals(cols[i].getUcd("1")) ||
              matchUcd(cols[i].getUcd("1+"), new String[]{"pos.eq.dec", "meta.main"})) {
            if (!doneDecMain) {
              println(String.format("<FIELD name='%s' ID='%s' ucd='POS_EQ_DEC_MAIN' datatype='%s'/>",
