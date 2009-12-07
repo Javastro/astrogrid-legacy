@@ -389,7 +389,7 @@ public class MulticoneServlet extends HttpServlet {
      *
      * @return   maximum permitted cone search radius, in the range 0<max<=180
      */
-    private static double getMaxRadius() {
+    public static double getMaxRadius() {
         final String LIMIT_KEY = "conesearch.radius.limit";
         final double MAX_LIMIT = 180.0;
         String maxRadStr =
