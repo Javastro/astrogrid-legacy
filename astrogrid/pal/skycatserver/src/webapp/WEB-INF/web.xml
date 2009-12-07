@@ -61,6 +61,12 @@
   </servlet>
 
   <servlet>
+    <servlet-name>DirectConeServlet</servlet-name>
+    <description>Simple Cone Search implementation based on direct DB access</description>
+    <servlet-class>org.astrogrid.dataservice.service.multicone.DirectConeServlet</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>BrowserAskQuery</servlet-name>
     <description>Servlet for asking (synchronous) queries via POST or GET suitable for browsers</description>
     <servlet-class>org.astrogrid.dataservice.service.servlet.BrowserAskQuery</servlet-class>
@@ -149,6 +155,11 @@
   <servlet-mapping>
     <servlet-name>MultiCone</servlet-name>
     <url-pattern>MultiCone</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DirectConeServlet</servlet-name>
+    <url-pattern>DirectConeServlet</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
