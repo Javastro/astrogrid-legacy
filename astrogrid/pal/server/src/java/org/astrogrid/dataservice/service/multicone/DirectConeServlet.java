@@ -119,7 +119,8 @@ public class DirectConeServlet extends HttpServlet {
         TokenQueue.Token token = acquireToken();
         final ConeSearcher searcher = DirectConeSearcher
             .createConeSearcher(token, catalogName, tableName, false);
-        final StarTable outTable = searcher.performSearch(ra, dec, radius);
+        final StarTable outTable =
+            new WritableJdbcTable( searcher.performSearch(ra, dec, radius) );
         return new ConeResult() {
             void writeTable(StarTableWriter outHandler, OutputStream out)
                     throws IOException {
