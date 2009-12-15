@@ -40,8 +40,8 @@ import org.astrogrid.acr.ivoa.resource.ConeCapability.Query;
 public class ConeParserUnitTest extends AbstractTestForParser{
 
 	public void testConeService1() throws Exception {
-		ResourceStreamParser p = parse("adilCone.xml");
-		Resource r =assertOnlyOne(p);
+		final ResourceStreamParser p = parse("adilCone.xml");
+		final Resource r =assertOnlyOne(p);
 		validateResource(r);	
 		checkResource(r
 				, "ivo://org.astrogrid.regtest/vocone"
@@ -93,30 +93,30 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		    
 		}); 
 		// services.
-		Service s = validateService(r);
+		final Service s = validateService(r);
 		assertEmpty(s.getRights());
 		assertEquals(1,s.getCapabilities().length);
 		
 		assertTrue(" not an instanceof catalog service",  s instanceof CatalogService);
-		CatalogService catS =(CatalogService)s;
+		final CatalogService catS =(CatalogService)s;
 		assertEmpty(catS.getFacilities());
 		assertEmpty(catS.getInstruments());
 		assertEmpty(catS.getTables());
-		Coverage coverage = catS.getCoverage();
+		final Coverage coverage = catS.getCoverage();
 		checkCoverage(coverage,null,false,false,new String[0]);
 		
-		Capability cap = s.getCapabilities()[0];
+		final Capability cap = s.getCapabilities()[0];
 		checkCapability(cap,"ivo://ivoa.net/std/ConeSearch","ConeSearch",1);
 		
 		assertTrue(cap instanceof ConeCapability);
 		assertSame(cap,((ConeService)s).findConeCapability());
-		Query q = new Query();
+		final Query q = new Query();
 		q.setRa(102.2);
 		q.setDec(28.5);
 		q.setSr(0.5);
 		checkConeCapability(cap,5000,10,false,q);
 		
-		Interface i = cap.getInterfaces()[0];
+		final Interface i = cap.getInterfaces()[0];
 		checkInterface(i,"std","vs:ParamHTTP",null,new SecurityMethod[0],new AccessURL[]{
 		        new AccessURL() {{
 		            setUse("base");
@@ -124,21 +124,21 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		        }}
 		});
 		assertTrue("expected a paramhttp interface",i instanceof ParamHttpInterface);
-		ParamHttpInterface phi = (ParamHttpInterface)i;
+		final ParamHttpInterface phi = (ParamHttpInterface)i;
 		assertNotNull("params must not be null",phi.getParams());
 		assertEquals(0,phi.getParams().length);
 		assertNull(phi.getQueryType());
 		assertNull(phi.getResultType());
 	
-		WebTester wt = basicResourceRendererTests(s);
+		final WebTester wt = basicResourceRendererTests(s);
 		wt.assertTextPresent("Cone");
 		wt.assertTextPresent("5000");
 		wt.assertTextPresent(i.getAccessUrls()[0].getValueURI().toString());
 	}
 	
 	   public void testConeService2() throws Exception {
-	        ResourceStreamParser p = parse("dsaConeCea.xml");
-	        Resource r =assertOnlyOne(p);
+	        final ResourceStreamParser p = parse("dsaConeCea.xml");
+	        final Resource r =assertOnlyOne(p);
 	        validateResource(r);    
 	        checkResource(r
 	                , "ivo://mssl.ucl.ac.uk_full/mysql-first-5-0"
@@ -175,46 +175,46 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	        , new Relationship[] {
 	        }); 
 	        // services.
-	        Service s = validateService(r);
+	        final Service s = validateService(r);
 	        assertEmpty(s.getRights());
 	        assertEquals(2,s.getCapabilities().length);	        
 	        
 	        assertTrue(" not an instanceof catalog service",  s instanceof CatalogService);
-	        CatalogService catS =(CatalogService)s;
+	        final CatalogService catS =(CatalogService)s;
 	        assertEmpty(catS.getFacilities());
 	        assertEmpty(catS.getInstruments());
-	        Coverage coverage = catS.getCoverage();
+	        final Coverage coverage = catS.getCoverage();
 	        checkCoverage(coverage,null,false,false,new String[0]);
-	        TableBean[] tables = catS.getTables();
+	        final TableBean[] tables = catS.getTables();
 	        assertNotNull(tables);
 	        assertEquals(1,tables.length);
 	        assertEquals("TabName_catalogue",tables[0].getName());
 	        assertNull(tables[0].getDescription());
 	        assertEquals(13,tables[0].getColumns().length);
 
-	        ColumnBean columnBean = tables[0].getColumns()[12];
+	        final ColumnBean columnBean = tables[0].getColumns()[12];
 	        assertNotNull(columnBean);
 	        // noticed that this one has a datatype..
 	        assertEquals("ColName_ID_FIELD",columnBean.getName());
 	        assertNotNull(columnBean.getColumnDataType());
-	        TableDataType dataType = columnBean.getColumnDataType();
+	        final TableDataType dataType = columnBean.getColumnDataType();
 	        assertEquals("datatype not provided","*",dataType.getArraysize());
 	        assertEquals("char",dataType.getType());
 	        
-	        Capability cap = s.getCapabilities()[0];
+	        final Capability cap = s.getCapabilities()[0];
 	        checkCapability(cap,"ivo://ivoa.net/std/ConeSearch","ConeSearch",1
 	                ,"Cone search on Catalog CatName_first, table TabName_catalogue"
 	        );
 	        
 	        assertTrue(cap instanceof ConeCapability);
 	        assertSame(cap,((ConeService)s).findConeCapability());
-	        Query q = new Query();
+	        final Query q = new Query();
 	        q.setRa(96.0);
 	        q.setDec(5.0);
 	        q.setSr(0.001);
 	        checkConeCapability(cap,999999999,10,false,q);
 	        
-	        Interface i = cap.getInterfaces()[0];
+	        final Interface i = cap.getInterfaces()[0];
 	        checkInterface(i,null,"vs:ParamHTTP",null,new SecurityMethod[0],new AccessURL[]{
 	                new AccessURL() {{
 	                    setUse("base");
@@ -222,7 +222,7 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	                }}
 	        });
 	    
-	        WebTester wt = basicResourceRendererTests(s);
+	        final WebTester wt = basicResourceRendererTests(s);
 	        wt.assertTextPresent("Cone");
 	        wt.assertTextPresent(cap.getDescription());
 	        wt.assertTextPresent("999999999");       
@@ -230,8 +230,8 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	    }
 
 	   public void testConeService3() throws Exception {
-	        ResourceStreamParser p = parse("heasarcCone.xml");
-	        Resource r =assertOnlyOne(p);
+	        final ResourceStreamParser p = parse("heasarcCone.xml");
+	        final Resource r =assertOnlyOne(p);
 	        validateResource(r);    
 	        checkResource(r
 	                , "ivo://nasa.heasarc/a1"
@@ -282,35 +282,35 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	            }}
 	            
 	        }); 
-	        Source source = r.getContent().getSource();
+	        final Source source = r.getContent().getSource();
 	        assertNotNull(source);
 	        assertNull(source.getFormat());
 	        assertEquals("1984ApJS...56..507W",source.getValue());
 	        // services.
-	        Service s = validateService(r);
+	        final Service s = validateService(r);
 	        assertEmpty(s.getRights());
 	        assertEquals(1,s.getCapabilities().length);
 	        
 	        assertTrue(" not an instanceof catalog service",  s instanceof CatalogService);
-	        CatalogService catS =(CatalogService)s;
+	        final CatalogService catS =(CatalogService)s;
 	        assertEmpty(catS.getFacilities());
 	        assertEmpty(catS.getInstruments());
 	        assertEmpty(catS.getTables());
-	        Coverage coverage = catS.getCoverage();
+	        final Coverage coverage = catS.getCoverage();
 	        checkCoverage(coverage,null,true,true,new String[]{"x-ray"});
 	        
-	        Capability cap = s.getCapabilities()[0];
+	        final Capability cap = s.getCapabilities()[0];
 	        checkCapability(cap,"ivo://ivoa.net/std/ConeSearch","ConeSearch",1);
 	        
 	        assertTrue(cap instanceof ConeCapability);
 	        assertSame(cap,((ConeService)s).findConeCapability());
-	        Query q = new Query();
+	        final Query q = new Query();
 	        q.setRa(355.187220068264992);
 	        q.setDec(-86.132864346081405);
 	        q.setSr(1);
 	        checkConeCapability(cap,99999,180,false,q);
 	        
-	        Interface i = cap.getInterfaces()[0];
+	        final Interface i = cap.getInterfaces()[0];
 	        checkInterface(i,"std","vs:ParamHTTP",null,new SecurityMethod[0],new AccessURL[]{
 	                new AccessURL() {{
 	                    setUse("base");
@@ -318,14 +318,14 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	                }}
 	        });
 	        assertTrue("expected a paramhttp interface",i instanceof ParamHttpInterface);
-	        ParamHttpInterface phi = (ParamHttpInterface)i;
+	        final ParamHttpInterface phi = (ParamHttpInterface)i;
 	        assertNotNull("params must not be null",phi.getParams());
 	        assertEquals(0,phi.getParams().length);
 	        assertEquals("get",phi.getQueryType());
 	        assertEquals("text/xml",phi.getResultType());
 	    
-	        WebTester wt = basicResourceRendererTests(s);
-	        wt.assertTextPresent("Cone");
+	        final WebTester wt = basicResourceRendererTests(s);
+	        wt.assertTextPresent("Catalog");
 	        wt.assertTextPresent("99999");       
 	        wt.assertTextPresent("180");
 	        wt.assertTextPresent(phi.getQueryType());
@@ -333,8 +333,8 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	        wt.assertTextPresent("All-Sky");
 	    }
 	      public void testConeService4() throws Exception {
-	            ResourceStreamParser p = parse("usnobCone.xml");
-	            Resource r =assertOnlyOne(p);
+	            final ResourceStreamParser p = parse("usnobCone.xml");
+	            final Resource r =assertOnlyOne(p);
 	            validateResource(r);    
 	            checkResource(r
 	                    , "ivo://roe.ac.uk/DSA_USNOB/cone"
@@ -367,30 +367,30 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	            }); 
 
 	            // services.
-	            Service s = validateService(r);
+	            final Service s = validateService(r);
 	            assertEmpty(s.getRights());
 	            assertEquals(1,s.getCapabilities().length);
 	            
 	            assertTrue(" not an instanceof catalog service",  s instanceof CatalogService);
-	            CatalogService catS =(CatalogService)s;
+	            final CatalogService catS =(CatalogService)s;
 	            assertEmpty(catS.getFacilities());
 	            assertEmpty(catS.getInstruments());
 	            assertEmpty(catS.getTables());
-	            Coverage coverage = catS.getCoverage();
+	            final Coverage coverage = catS.getCoverage();
 	            checkCoverage(coverage,null,false,false,new String[]{});
 	            
-	            Capability cap = s.getCapabilities()[0];
+	            final Capability cap = s.getCapabilities()[0];
 	            checkCapability(cap,"ivo://ivoa.net/std/ConeSearch","ConeSearch",1);
 	            
 	            assertTrue(cap instanceof ConeCapability);
 	            assertSame(cap,((ConeService)s).findConeCapability());
-	            Query q = new Query();
+	            final Query q = new Query();
 	            q.setRa(120);
 	            q.setDec(20);
 	            q.setSr(0.5);
 	            checkConeCapability(cap,2000,180,false,q);
 	            
-	            Interface i = cap.getInterfaces()[0];
+	            final Interface i = cap.getInterfaces()[0];
 	            checkInterface(i,"std","vs:ParamHTTP",null,new SecurityMethod[0],new AccessURL[]{
 	                    new AccessURL() {{
 	                        setUse("base");
@@ -398,14 +398,14 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	                    }}
 	            });
 	            assertTrue("expected a paramhttp interface",i instanceof ParamHttpInterface);
-	            ParamHttpInterface phi = (ParamHttpInterface)i;
+	            final ParamHttpInterface phi = (ParamHttpInterface)i;
 	            assertNotNull("params must not be null",phi.getParams());
 	            assertEquals("get",phi.getQueryType());
 	            assertEquals("text/xml+votable",phi.getResultType());
 	            assertEquals(3,phi.getParams().length);
 	            
-	            InputParam par = phi.getParams()[2];
-	            SimpleDataType dataType = par.getDataType();
+	            final InputParam par = phi.getParams()[2];
+	            final SimpleDataType dataType = par.getDataType();
 	            assertNotNull(par);
 	            assertNotNull(dataType);
 	            assertNull(dataType.getArraysize());
@@ -417,8 +417,8 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	            assertEquals("degrees",par.getUnit());
 	            assertNull(par.getUse());
 	        
-	            WebTester wt = basicResourceRendererTests(s);
-	            wt.assertTextPresent("Cone");
+	            final WebTester wt = basicResourceRendererTests(s);
+	            wt.assertTextPresent("Catalog");
 	            wt.assertTextPresent("2000");  
 	            wt.assertTextPresent("180");
 	            wt.assertTextPresent(phi.getQueryType());
