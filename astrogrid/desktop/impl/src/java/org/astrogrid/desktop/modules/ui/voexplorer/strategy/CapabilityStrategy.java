@@ -32,7 +32,7 @@ public class CapabilityStrategy extends PipelineStrategy {
 					return selected.contains(NONE_PROVIDED.get(0)); // obvioousluy nt a service.
 				}				
 				for (final Capability cap : c) {
-					final String subj = PrettierResourceFormatter.formatType(cap.getType());
+					final String subj = PrettierResourceFormatter.formatCapabilityType(cap);
 					if (selected.contains(subj)) {
 						return true;
 					}
@@ -65,7 +65,7 @@ public class CapabilityStrategy extends PipelineStrategy {
 			}			
 			final List<String> result = new ArrayList<String>(c.length);
 			for (final Capability cap : c) {
-				result.add(PrettierResourceFormatter.formatType(cap.getType()));
+				result.add(PrettierResourceFormatter.formatCapabilityType(cap));
 //				final URI uri = cap.getStandardID();
 //				if (uri != null) {
 //				    result.add(uri.toString());

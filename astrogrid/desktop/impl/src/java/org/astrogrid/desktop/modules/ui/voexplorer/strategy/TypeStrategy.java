@@ -21,8 +21,7 @@ public final class TypeStrategy extends PipelineStrategy {
 		return new Matcher<Resource>() {
 	
 			public boolean matches(final Resource r) {
-				final String type = r.getType();
-				return selected.contains(PrettierResourceFormatter.formatType(type));
+				return selected.contains(PrettierResourceFormatter.formatResourceType(r));
 			}
 		};
 	}
@@ -33,8 +32,7 @@ public final class TypeStrategy extends PipelineStrategy {
 				new FunctionList.Function<Resource,String>() {
 
 					public String evaluate(final Resource r) {
-						final String rawType = r.getType();
-						return PrettierResourceFormatter.formatType(rawType);
+						return PrettierResourceFormatter.formatResourceType(r);
 					}
 		});
 	}

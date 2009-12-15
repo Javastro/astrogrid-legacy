@@ -69,7 +69,7 @@ private final Bag types = new TreeBag();
 		typeField.setVisible(true);
 		types.clear();
 		for (int i = 0; i < l.length; i++) {
-				types.add(PrettierResourceFormatter.formatType(l[i].getType()));
+				types.add(PrettierResourceFormatter.formatResourceType(l[i]));
 		}
 		fmtResult();		
 	}
@@ -86,7 +86,7 @@ private final Bag types = new TreeBag();
 	
 	@Override
     public void oneSelected(final Resource r) {
-		typeField.setText("Selection: " + PrettierResourceFormatter.formatType(r.getType()));
+		typeField.setText("Selection: " + PrettierResourceFormatter.formatResourceType(r));
 		typeField.setVisible(true);
 	}
 	@Override

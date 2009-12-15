@@ -83,25 +83,20 @@ public final class SystemFilter implements Matcher<Resource> {
         if (std == null) { // an unlabeled std - is it boring or not - we judge not, for now.
             return false;
         }
-        return boringCapabilities.contains(std);
+        final String s = std.toString();
+        return s.contains("VOSI")
+            || s.contains("Delegation")
+            || s.contains("Community")
+            || boringCapabilities.contains(std);
     }
     
-    
-/** a set of the boring capabilities */
+    /** a set of the boring capabilities */
     private static final Set<URI> boringCapabilities = new TreeSet<URI>(
             Arrays.asList(
                     new URI[] {
                             URI.create(StandardIds.CEA_1_0)
                             ,URI.create(StandardIds.MY_PROXY_2)
-                            ,URI.create(StandardIds.POLICY_MANAGER_1_0)
                             ,URI.create(StandardIds.REGISTRY_1_0)
-                            ,URI.create(StandardIds.SECURITY_SERVICE_1_0)
-                            ,URI.create(StandardIds.VOSI_APPLICATION_0_3)
-                            ,URI.create(StandardIds.VOSI_AVAILABILITY_0_3)
-                            ,URI.create(StandardIds.VOSI_CAPABILITIES_0_3)
-                            ,URI.create(StandardIds.VOSI_TABLES_0_3)
-                            // no standard IDs for these yet.
-                            ,URI.create("ivo://org.astrogrid/std/Community/accounts")
                             ,URI.create("ivo://org.astrogrid/std/myspace/v1.0#myspace")
                     }
                     )

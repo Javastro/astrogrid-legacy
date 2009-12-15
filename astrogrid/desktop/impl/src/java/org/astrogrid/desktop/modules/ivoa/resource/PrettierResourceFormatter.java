@@ -7,8 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
@@ -95,7 +93,7 @@ public final class PrettierResourceFormatter {
 		sb.appendTitledObjectNoBR("IVOA-ID",r.getId());		
 		sb.br();
 		
-		sb.appendTitledObjectNoBR("Resource Type",formatType(r.getType()));
+		sb.appendTitledObjectNoBR("Resource Type",formatResourceType(r));
 		// shorten timestamps - just return dates.
 	    final String created = StringUtils.substringBefore(r.getCreated(),"T");
         sb.appendTitledObjectNoBR("Created",created);
@@ -348,30 +346,58 @@ public final class PrettierResourceFormatter {
 
 
 
-	
-	public final static String formatType(final String type) {
-		if (type == null) {
-			return "unspecified";
-		}
-		final String unprefixed = type.indexOf(":") != -1 
+    public final static String formatResourceType(final Resource r) {
+        final String type = r.getType();
+        if (type == null) {
+            return "unspecified";
+        }
+        final String unprefixed = rmPrefix(type);
+        if  (unprefixed.equals("CeaApplication") || unprefixed.equals("CeaHttpApplication")) {
+            return "Remote application (CEA)";
+        }
+        // don't do any more translation - just return it.
+            return unprefixed;
+    }
+    
+    public final static String formatCapabilityType(final Capability c) {
+        final String type = c.getType() == null ? "unspecified" : rmPrefix(c.getType());
+        final String sid = c.getStandardID() == null ? "" : c.getStandardID().toString();
+        if (sid.equals("ivo://ivoa.net/std/ConeSearch") || type.equals("ConeSearch") ) {
+            return "Catalog cone search service";
+        } else if  (sid.equals("ivo://ivoa.net/std/SIA") || type.equals("SimpleImageAccess") ) {
+            return "Image access service (SIAP)";
+        } else if  (sid.equals("ivo://ivoa.net/std/SSA") || type.equals("SimpleSpectrumAccess") ) {
+            return "Spectrum access service (SSAP)";
+            // all covered by the above rule.
+            //ssa:ProtoSpectralAccess
+            //tsa:TheoreticalSpectralAccess
+            //TSA - ivo://ivoa.net/std/TSA        
+        } else if  (sid.equals("ivo://ivoa.net/std/TAP")  ) {
+            return "Table access service (TAP)";
+        } else if  (sid.equals("ivo://org.astrogrid/std/STAP/v1.0") || type.equals("SimpleTimeAccess") ) {
+            return "Time range access service (STAP)";            
+        } else if  (sid.equals("ivo://org.astrogrid/std/CEA/v1.0") || type.equals("CeaApplicationType") || type.equals("CeaHttpApplicationType")) {
+            return "Remote application (CEA)";
+        } else if (sid.equals("ivo://ivoa.net/std/VOSpace")) {
+            return "VOSpace remote storage";
+        } else {
+            return type;
+        }
+
+    }
+
+
+    /** remove a schema prefix, if one exists, otherwise, just pass the string through.
+     * @param type
+     * @return
+     */
+    private static String rmPrefix(final String type) {
+        return type.indexOf(":") != -1 
 			? StringUtils.substringAfterLast( type,":")
 					: type;
-		final String converted = (String)typeMapper.get(unprefixed);
-		return converted == null ?  unprefixed : converted;
-		
-	}	
+    }	
 	
-	
-	public static final Map typeMapper = new HashMap();
-	static {
-		typeMapper.put("ConeSearch","Catalog cone search service");
-		typeMapper.put("SimpleImageAccess", "Image access service (SIAP)");
-		typeMapper.put("SimpleSpectrumAccess","Spectrum access service (SSAP)");
-		typeMapper.put("CeaApplicationType","Remote application (CEA)");
-		typeMapper.put("CeaHttpApplicationType", "Remote application (CEA)");
-		typeMapper.put("SimpleTimeAccess","Time range access service (STAP)");
-	//	typeMapper.put("
-	}
+
 	
 	
 	/**
@@ -468,7 +494,7 @@ public final class PrettierResourceFormatter {
 	        final Capability c = capabilities[capabilitiesIndex];
 	        // display capability-specific info.
 	        if (c instanceof CeaServerCapability) {
-	            sb.append("This resource describes a <b>Remote&nbsp;Application&nbsp;(CEA)&nbsp;Service</b>");
+	            sb.append("This resource describes a <b>Remote&nbsp;application&nbsp;(CEA)&nbsp;service</b>");
 	            sb.br();
 	            formatCapabilityDescription(sb, c);
 	            sb.appendTitledURIs("Provided&nbsp;Tasks",(((CeaServerCapability)c).getManagedApplications()));
@@ -496,7 +522,7 @@ public final class PrettierResourceFormatter {
 	            sb.br();
 	        } else     if (c instanceof ConeCapability) {
 	            final ConeCapability cc = (ConeCapability)c;
-	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/cone16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Cone&nbsp;Search&nbsp;Service</b>");
+	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/cone16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;cone&nbsp;search&nbsp;service</b>");
 	            sb.br();
 	            formatCapabilityDescription(sb, c);
 	            sb.appendLabel("Verbose&nbsp;Parameter");
@@ -533,7 +559,7 @@ public final class PrettierResourceFormatter {
 	            }
 	        } else if (c instanceof SiapCapability) {
 	            final SiapCapability cc = (SiapCapability)c;
-	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/siap16.png'>&nbsp;This resource describes a <b>Image&nbsp;Access&nbsp;Service&nbsp;(SIAP)</b>");
+	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/siap16.png'>&nbsp;This resource describes a <b>Image&nbsp;access&nbsp;service&nbsp;(SIAP)</b>");
 	            sb.br();
 	            formatCapabilityDescription(sb, c);
 	            sb.appendTitledObjectNoBR("Service&nbsp;Type",cc.getImageServiceType());
@@ -589,7 +615,7 @@ public final class PrettierResourceFormatter {
 	            sb.br();
 	        } else if (c instanceof StapCapability) {
 	            final StapCapability sc = (StapCapability)c;
-	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/latest16.png'>&nbsp;This resource describes a <b>Time&nbsp;Series&nbsp;Access&nbsp;Service&nbsp(STAP)</b>");
+	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/latest16.png'>&nbsp;This resource describes a <b>Time&nbsp;range&nbsp;access&nbsp;service&nbsp(STAP)</b>");
 	            sb.br();
 	            formatCapabilityDescription(sb, c);
 	            if (sc.getMaxRecords() > 0) {
@@ -625,7 +651,7 @@ public final class PrettierResourceFormatter {
 	            }	                       
 	        } else if (c instanceof SsapCapability) {
 	            final SsapCapability sc = (SsapCapability)c;
-	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/ssap16.png'>&nbsp;This resource describes a <b>Spectrum&nbsp;Access&nbsp;Service&nbsp;(SSAP)</b>");
+	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/ssap16.png'>&nbsp;This resource describes a <b>Spectrum&nbsp;access&nbsp;service&nbsp;(SSAP)</b>");
 	            sb.br();
 	            formatCapabilityDescription(sb, c);
 	            sb.appendTitledObjectNoBR("Compliance",sc.getComplianceLevel());
@@ -678,18 +704,18 @@ public final class PrettierResourceFormatter {
 	                sb.br();
 	            }      
 	        } else if (c instanceof TapCapability) {
-                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/db16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Query&nbsp;Service&nbsp;(ADQL)</b>");
+                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/db16.png'>&nbsp;This resource describes a <b>Table&nbsp;access&nbsp;service&nbsp;(TAP)</b>");
                 sb.br();
                 formatCapabilityDescription(sb, c);
 	        } else if (c instanceof VospaceCapability) {	
-                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/anystorage16.png'>&nbsp;This resource describes a <b>VOSpace&nbsp;Storage&nbsp;Service</b>");
+                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/anystorage16.png'>&nbsp;This resource describes a <b>VOSpace&nbsp;remote&nbsp;storage&nbsp;service</b>");
                 sb.br();
                 formatCapabilityDescription(sb, c);	            
                 sb.appendLabel("VOSpace&nbsp;Root");
                 sb.appendURI(((VospaceCapability)c).getVospaceRoot());
                 sb.br();
 	        } else if (c.getStandardID() != null && StringUtils.containsIgnoreCase(c.getStandardID().toString(),"availability")) { // loose rule for availability.
-	            sb.append("This resource provides a <b>Service&nbsp;Availability&nbsp;Check</b>");
+	            sb.append("This resource provides a <b>Service&nbsp;availability&nbsp;check</b>");
 	            //sb.br();
 	            //formatCapabilityDescription(sb, c);
 // removed - as availability is now a annotation source.	            
@@ -704,7 +730,7 @@ public final class PrettierResourceFormatter {
 	            ? StringUtils.substringAfterLast( capType,":")
 	                    : capType;
 	            if ("WebBrowser".equals(capTypeUnprefixed)) {
-	                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/browser16.png'>&nbsp;This resource describes a <b>Web&nbsp;Interface</b>");
+	                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/browser16.png'>&nbsp;This resource describes a <b>Web&nbsp;interface</b>");
 	                sb.br();
 	                formatCapabilityDescription(sb, c);
 	            } else if (SystemFilter.isBoringCapability(c)) {
