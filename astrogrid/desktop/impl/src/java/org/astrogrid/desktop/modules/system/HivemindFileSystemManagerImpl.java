@@ -119,13 +119,16 @@ public class HivemindFileSystemManagerImpl extends DefaultFileSystemManager impl
 		}
 
 		public URLStreamHandler createURLStreamHandler(final String protocol) {
-			if (!hasProvider(protocol)) {
+			if (!hasProvider(protocol)) { // intercept here, else these break.
 				return null;
+			} else if (protocol.equals("ftp") || protocol.equals("http") || protocol.equals("file")) {
+			    // these fail if passed to the vfs stream handler - and there's no need, as there's standard implementations. 
+			    return null;
 			} else {
-				return orig.createURLStreamHandler(protocol);
+			        return orig.createURLStreamHandler(protocol);			  
 			}
 		}
 		
 	}
-
+	
 }
