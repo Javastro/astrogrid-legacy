@@ -19,7 +19,7 @@ import uk.ac.starlink.table.WrapperStarTable;
  * @author   Mark Taylor
  * @since    14 Dec 2009
  */
-public class WritableJdbcTable extends WrapperStarTable {
+public class ConeOutputTable extends WrapperStarTable {
 
     private final ValueHandler[] valHandlers_;
 
@@ -28,7 +28,7 @@ public class WritableJdbcTable extends WrapperStarTable {
      *
      * @param   baseTable  input table
      */
-    public WritableJdbcTable( StarTable baseTable ) {
+    public ConeOutputTable( StarTable baseTable ) {
         super( baseTable );
         int ncol = baseTable.getColumnCount();
         valHandlers_ = new ValueHandler[ ncol ];
