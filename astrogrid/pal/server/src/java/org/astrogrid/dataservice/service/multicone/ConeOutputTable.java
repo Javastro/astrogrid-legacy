@@ -11,10 +11,8 @@ import uk.ac.starlink.table.WrapperRowSequence;
 import uk.ac.starlink.table.WrapperStarTable;
 
 /**
- * Adapts a table recovered from a STIL JDBC query so that it can be written
- * as a VOTable.
- * At present, this involves taking time-type columns and turning them 
- * into string values.
+ * Adapts a table recovered from a STIL JDBC query to a form suitable for
+ * output as the result of a Cone Search.
  *
  * @author   Mark Taylor
  * @since    14 Dec 2009
@@ -28,41 +26,41 @@ public class ConeOutputTable extends WrapperStarTable {
      *
      * @param   baseTable  input table
      */
-    public ConeOutputTable( StarTable baseTable ) {
-        super( baseTable );
+    public ConeOutputTable(StarTable baseTable) {
+        super(baseTable);
         int ncol = baseTable.getColumnCount();
-        valHandlers_ = new ValueHandler[ ncol ];
-        for ( int icol = 0; icol < ncol; icol++ ) {
-            valHandlers_[ icol ] =
-                createValueHandler( baseTable.getColumnInfo( icol ) );
+        valHandlers_ = new ValueHandler[ncol];
+        for (int icol = 0; icol < ncol; icol++) {
+            valHandlers_[icol] =
+                createValueHandler(baseTable.getColumnInfo(icol));
         }
     }
 
-    public ColumnInfo getColumnInfo( int icol ) {
-        return valHandlers_[ icol ].getColumnInfo();
+    public ColumnInfo getColumnInfo(int icol) {
+        return valHandlers_[icol].getColumnInfo();
     }
 
-    public Object getCell( long irow, int icol ) throws IOException {
-        return valHandlers_[ icol ].getValue( super.getCell( irow, icol ) );
+    public Object getCell(long irow, int icol) throws IOException {
+        return valHandlers_[icol].getValue(super.getCell(irow, icol));
     }
 
-    public Object[] getRow( long irow ) throws IOException {
-        Object[] row = super.getRow( irow );
-        for ( int icol = 0; icol < row.length; icol++ ) {
-            row[ icol ] = valHandlers_[ icol ].getValue( row[ icol ] );
+    public Object[] getRow(long irow) throws IOException {
+        Object[] row = super.getRow(irow);
+        for (int icol = 0; icol < row.length; icol++) {
+            row[icol] = valHandlers_[icol].getValue(row[icol]);
         }
         return row;
     }
 
     public RowSequence getRowSequence() throws IOException {
-        return new WrapperRowSequence( super.getRowSequence() ) {
-            public Object getCell( int icol ) throws IOException {
-                return valHandlers_[ icol ].getValue( super.getCell( icol ) );
+        return new WrapperRowSequence(super.getRowSequence()) {
+            public Object getCell(int icol) throws IOException {
+                return valHandlers_[icol].getValue(super.getCell(icol));
             }
             public Object[] getRow() throws IOException {
                 Object[] row = super.getRow();
-                for ( int icol = 0; icol < row.length; icol++ ) {
-                    row[ icol ] = valHandlers_[ icol ].getValue( row[ icol ] );
+                for (int icol = 0; icol < row.length; icol++) {
+                    row[icol] = valHandlers_[icol].getValue(row[icol]);
                 }
                 return row;
             }
@@ -76,15 +74,26 @@ public class ConeOutputTable extends WrapperStarTable {
      *          be adjusted
      * @return  new value handler
      */
-    private static ValueHandler createValueHandler( ColumnInfo baseInfo ) {
+    private static ValueHandler createValueHandler(ColumnInfo baseInfo) {
         Class clazz = baseInfo.getContentClass();
-        if ( Timestamp.class.isAssignableFrom( clazz ) ||
-             Time.class.isAssignableFrom( clazz ) ||
-             Date.class.isAssignableFrom( clazz ) ) {
-            return new StringValueHandler( baseInfo );
+        String ucd = baseInfo.getUCD();
+
+        // Stringify JDBC types which can't be written to VOTable.
+        if (Timestamp.class.isAssignableFrom(clazz) ||
+            Time.class.isAssignableFrom(clazz) ||
+            Date.class.isAssignableFrom(clazz)) {
+            return new StringValueHandler(baseInfo);
         }
+
+        // Cone Search standard mandates that the ID_MAIN column is of 
+        // string type.
+        else if ("ID_MAIN".equals(ucd)) {
+            return new StringValueHandler(baseInfo);
+        }
+
+        // Pass anything else through unchanged.
         else {
-            return new CopyValueHandler( baseInfo );
+            return new CopyValueHandler(baseInfo);
         }
     }
 
@@ -106,7 +115,7 @@ public class ConeOutputTable extends WrapperStarTable {
          * @param   baseValue  value to adjust
          * @return  adjusted value
          */
-        abstract Object getValue( Object baseValue );
+        abstract Object getValue(Object baseValue);
     }
 
     /**
@@ -115,13 +124,13 @@ public class ConeOutputTable extends WrapperStarTable {
      */
     private static class CopyValueHandler extends ValueHandler {
         private final ColumnInfo info_;
-        CopyValueHandler( ColumnInfo baseInfo ) {
+        CopyValueHandler(ColumnInfo baseInfo) {
             info_ = baseInfo;
         }
         ColumnInfo getColumnInfo() {
             return info_;
         }
-        Object getValue( Object baseValue ) {
+        Object getValue(Object baseValue) {
             return baseValue;
         }
     }
@@ -131,16 +140,16 @@ public class ConeOutputTable extends WrapperStarTable {
      */
     private static class StringValueHandler extends ValueHandler {
         private final ColumnInfo info_;
-        StringValueHandler( ColumnInfo baseInfo ) {
-            info_ = new ColumnInfo( baseInfo );
-            info_.setContentClass( String.class );
+        StringValueHandler(ColumnInfo baseInfo) {
+            info_ = new ColumnInfo(baseInfo);
+            info_.setContentClass(String.class);
         }
         ColumnInfo getColumnInfo() {
             return info_;
         }
-        Object getValue( Object baseValue ) {
+        Object getValue(Object baseValue) {
             return (String)
-                   ( baseValue == null ? null : baseValue.toString() );
+                   (baseValue == null ? null : baseValue.toString());
         }
     }
 }
