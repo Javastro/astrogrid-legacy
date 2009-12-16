@@ -46,6 +46,7 @@ different location espcially for containers that do not unpack the war file)<br 
 <jsp:useBean class="org.astrogrid.common.j2ee.environment.Environment"
     id="environment" scope="application"/>
 </div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

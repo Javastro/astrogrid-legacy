@@ -46,5 +46,7 @@ if(version.equals("1.0")) { %>
 <p>
 <input name="button" value="Submit" type="submit">
 </form>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body></html>

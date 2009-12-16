@@ -192,6 +192,8 @@ Below you will find various configuration and installation instructions for your
 	</ul>
 
 </p>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

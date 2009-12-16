@@ -149,6 +149,8 @@ the Harvest page to do harvesting or let the automatic harvester pick up entries
 
 
 	<br />
+</div>
+<%@ include file="/style/footer.xml" %>
 	
 
 </body>

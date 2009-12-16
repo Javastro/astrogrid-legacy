@@ -30,6 +30,8 @@ Resource URL: <input name="ResourceUrl" type="text" value="" size="60"/>
 <input type="submit" name="button" value="Submit"/>
 </p>
 </form>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 
 </body>

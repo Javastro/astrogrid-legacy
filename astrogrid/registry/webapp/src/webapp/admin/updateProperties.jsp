@@ -91,5 +91,7 @@ transformer.transform(webXmlSource, webXmlResult);
 <p>
 <a href="viewProperties.jsp">Edit the properties again.</a>
 </p>
-
+<%@ include file="/style/footer.xml" %>
 </body>
+</html>
+

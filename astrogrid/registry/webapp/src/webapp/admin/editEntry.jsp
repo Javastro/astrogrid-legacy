@@ -125,6 +125,8 @@ Singe Resource  - (Remember you can use the Multiple Resources way as well):
 
 
 </pre>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

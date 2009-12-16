@@ -411,5 +411,7 @@
       Service.<BR><BR>Parameters may be required or optional, and should be 
       typed by the format of the input for this keyword. </TD></TR></TBODY></TABLE>
   </div>
+<%@ include file="/style/footer.xml" %>
+
 </body>
 </html>

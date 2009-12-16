@@ -137,5 +137,8 @@ At the time of this writing these schemas were not published.<br />
 /schema/vo-resource-types/CEAService/v1.0/CEAService.xsd<br />
 
 </p>
+</div>
+<%@ include file="/style/footer.xml" %>
+
 </body>
 </html>

@@ -49,4 +49,7 @@ String authID = SimpleConfig.getSingleton().getString("reg.amend.authorityid", "
 <input name="button" value="Submit" type="submit">
 </p>
 </form>
+</div>
+<%@ include file="/style/footer.xml" %>
+
 </body></html>

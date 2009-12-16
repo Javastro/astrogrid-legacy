@@ -1,4 +1,12 @@
-<div id='footer'>
-   <p align='right'>© 2002-2004, AstroGrid</p>
-</div>
+<%
+String projNameF = org.astrogrid.config.SimpleConfig.getSingleton().getString("reg.custom.projectname","ag");
+String fileNF = "footer_" + projNameF + ".xml";
+java.net.URL urlFooter =application.getResource("/style/" + fileNF);
+java.io.BufferedReader brF = new java.io.BufferedReader(new java.io.InputStreamReader(urlFooter.openStream()));
 
+String fileReadStrF = null;
+while( (fileReadStrF = brF.readLine()) != null) {
+  out.write(fileReadStrF);
+}
+brF.close();
+%>

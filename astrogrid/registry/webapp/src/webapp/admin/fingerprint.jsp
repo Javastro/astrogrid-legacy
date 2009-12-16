@@ -327,5 +327,7 @@ if (container.startsWith("Tomcat Web Server/3.2")) {
 }
 %>
 </div>
+<%@ include file="/style/footer.xml" %>
+
 </body>
 </html>

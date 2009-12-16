@@ -38,5 +38,7 @@
           </ul>
         </div>
       </div>
+<%@ include file="/style/footer.xml" %>
+
     </body>
 </html>

@@ -119,6 +119,8 @@ Identifier: <input type="text" name="IVORN" value="ivo://" /><br />
 	      }//if
 %>
 </pre>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

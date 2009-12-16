@@ -144,6 +144,8 @@
 				cal1.time_comp = false;
 			//-->
 			</script>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 
 </body>

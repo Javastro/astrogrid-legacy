@@ -175,5 +175,8 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
 	}//if
 %>
 </pre>
+</div>
+<%@ include file="/style/footer.xml" %>
+
 </body>
 </html>

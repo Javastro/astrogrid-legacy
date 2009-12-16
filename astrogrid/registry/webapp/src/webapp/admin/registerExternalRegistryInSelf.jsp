@@ -91,6 +91,8 @@ if(doc != null) {
 </pre>
 
 <%}%>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

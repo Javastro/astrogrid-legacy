@@ -141,6 +141,8 @@ Require all words: <input type="checkbox" name="orValues" value="true">All words
 </pre>
 
 <% } %>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

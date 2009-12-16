@@ -26,7 +26,6 @@ div.clear hr{
   display: none;
 }
 #projectLogo {
-  font-size: xx-large;
   font-weight: bold;
 }
 #organizationLogo img, #projectLogo img, #projectLogo span{
@@ -67,7 +66,6 @@ div.clear hr{
 #navcolumn h5, #navcolumn ul {
   margin: 0;
   padding: 0;
-  font-size: small;
 }
 #navcolumn li {
   list-style-type: none;
@@ -77,7 +75,6 @@ div.clear hr{
   padding-left: 16px;
   list-style-position: ouside;
   line-height: 1.2em;
-  font-size: smaller;
 }
 #navcolumn li.expanded {
   background-image: url(../images/expanded.gif);
@@ -111,7 +108,6 @@ div.clear hr{
     margin: 0px;
 }
 #lastPublished {
-  font-size: x-small;
 }
 .navSection {
   margin-bottom: 2px;
@@ -119,16 +115,13 @@ div.clear hr{
 }
 .navSectionHead {
   font-weight: bold;
-  font-size: x-small;
 }
 .section {
   padding: 4px;
 }
 #footer {
-  font-size: x-small;
 }
 #breadcrumbs {
-  font-size: x-small;
   margin: 0pt;
 }
 .source {
@@ -142,7 +135,6 @@ div.clear hr{
 
 body, td, select, input, li{
   font-family: Verdana, Helvetica, Arial, sans-serif;
-  font-size: 13px;
 }
 a {
   text-decoration: none;
@@ -182,12 +174,12 @@ h2 {
 }
 p {
   line-height: 1.3em;
-  font-size: small;
 }
 #breadcrumbs {
   border-top: 1px solid #aaa;
   border-bottom: 1px solid #aaa;
   background-color: #ccc;
+  font-size: large;
 }
 #leftColumn {
   margin: 10px 0 0 5px;
@@ -195,9 +187,9 @@ p {
   background-color: #eee;
 }
 #navcolumn h5 {
-  font-size: smaller;
   border-bottom: 1px solid #aaaaaa;
   padding-top: 2px;
+  font-size: 15px;
 }
 
 table.bodyTable th {
@@ -208,7 +200,6 @@ table.bodyTable th {
 }
 
 table.bodyTable th, table.bodyTable td {
-  font-size: 1em;
 }
 
 table.bodyTable tr.a {

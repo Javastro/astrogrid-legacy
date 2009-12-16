@@ -6,15 +6,15 @@
                  org.astrogrid.util.DomHelper,
                  org.astrogrid.registry.server.http.servlets.Log4jInit,
                  org.astrogrid.xmldb.client.XMLDBManager,
-                 org.astrogrid.registry.common.RegistryDOMHelper,                 
-             	  org.astrogrid.registry.server.query.*"
+                 org.astrogrid.registry.common.RegistryDOMHelper,
+             	 org.astrogrid.registry.server.query.*"
    isThreadSafe="false"
    session="false"
 %>
 
 <html>
 <head>
-<title>AstroGrid Registry Access Pages</title>
+<title>VAMDC Registry Access Pages</title>
 <style type="text/css" media="all">
 	<%@ include file="/style/astrogrid.css" %>          
 </style>
@@ -29,8 +29,8 @@
 
 <h1>Welcome</h1>
 <p>
-Welcome to an AstroGrid Registry.  These are the direct access pages for
-Registering your resource with the IVO, and/or investigating what resources
+Welcome to an VAMDC Registry.  These are the direct access pages for
+Registering your resource, and/or investigating what resources
 are available.
 </p>
 <p>
@@ -81,6 +81,7 @@ are available.
 %>
 	<br />
 	
-
+</div>
+<%@ include file="/style/footer.xml" %>
 </body>
 </html>

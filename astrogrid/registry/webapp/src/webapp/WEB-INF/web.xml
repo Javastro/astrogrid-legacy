@@ -546,6 +546,14 @@
 		<env-entry-value>mailto:ktn@star.le.ac.uk</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
+	
+	<env-entry>
+		<description>The user used to query Resources.</description>
+		<env-entry-name>reg.custom.projectname</env-entry-name>
+		<env-entry-value>ag</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
 
 	<env-entry>
 		<description>Used for the Identify verb in OAI.  The earliest date stamp for records/metadata being published.</description>

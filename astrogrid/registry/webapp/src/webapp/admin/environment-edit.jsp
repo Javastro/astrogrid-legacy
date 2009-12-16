@@ -94,6 +94,7 @@ pageContext.setAttribute("entries", entries);
 <p><input type="submit" value="Submit"></p>
 </form>
 </div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

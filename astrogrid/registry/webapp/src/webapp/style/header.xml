@@ -1,20 +1,13 @@
-<div id='banner'>
-    <table border='0' width='100%' cellpadding='8' cellspacing='0'><tr>
-      <td>
-         <a href='http://www.astrogrid.org'>
-         <img border='0' alt='AstroGrid' src='img/aglogo.png' align='left'></img>
-         </a>
-      </td><td>
-         <a href='http://www.astrogrid.org/maven/docs/SNAPSHOT/registry/index.html' id='projectLogo'>
-         <img border='0' alt='Publishers Astrogrid Library' src='img/aglogo.png' align='right'></img>
-         </a>
-      </td>
-   </tr></table>
-</div>
-<div id='breadcrumbs'>
-  <div class='xleft'>AstroGrid Registry</div>
-  <div class='xright'>
-    <a href='http://www.astrogrid.org'>AstroGrid</a>
-  </div>
-  <div class='clear'></div> <!-- switch off left right stuff -->
-</div>
+<%
+String projName = org.astrogrid.config.SimpleConfig.getSingleton().getString("reg.custom.projectname","ag");
+String fileN = "header_" + projName + ".xml";
+//java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(fileN));
+//java.net.URL url =config.getServletContext().getResource("/style" + fileN);
+java.net.URL urlHeader =application.getResource("/style/" + fileN);
+java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(urlHeader.openStream()));
+String fileReadStr = null;
+while( (fileReadStr = br.readLine()) != null) {
+  out.write(fileReadStr);
+}
+br.close();
+%>

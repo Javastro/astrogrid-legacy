@@ -87,6 +87,8 @@
    }//if
 %>
 </pre>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

@@ -57,6 +57,8 @@ if("true".equals(removeRes)) {
 	}
 }
 %>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

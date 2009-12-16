@@ -77,6 +77,8 @@ Upload from text:<br />
 <input type="submit" name="button" value="Submit"/>
 </p>
 </form>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

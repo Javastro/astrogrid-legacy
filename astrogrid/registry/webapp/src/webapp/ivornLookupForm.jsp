@@ -41,5 +41,7 @@ roe.ac.uk/DSA_6dF/rdbms<br/>
 nasa.heasarc/acrs
 </p>
 </form>
+</div>
+<%@ include file="/style/footer.xml" %>
 </body>
 </html>

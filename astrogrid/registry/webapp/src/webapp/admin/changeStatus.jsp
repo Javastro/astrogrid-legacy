@@ -175,6 +175,8 @@ just the custom or selected entries below.<br />
 
 </form>
 </p>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

@@ -52,5 +52,8 @@
 <input type="submit" name="button" value="Submit"/><br />
 </p>
 </form>
+</div>
+<%@ include file="/style/footer.xml" %>
+
 </body>
 </html>

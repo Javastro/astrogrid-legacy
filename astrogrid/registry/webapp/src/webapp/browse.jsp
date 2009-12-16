@@ -169,6 +169,9 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
    }
 %>
 
+</div>
+<%@ include file="/style/footer.xml" %>
+
 
 </body>
 </html>

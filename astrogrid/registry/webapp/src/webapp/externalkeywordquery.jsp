@@ -123,5 +123,8 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
 	   }//if
 %>
 </pre>
+</div>
+<%@ include file="/style/footer.xml" %>
+
 </body>
 </html>

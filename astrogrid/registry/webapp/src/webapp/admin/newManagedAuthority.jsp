@@ -60,4 +60,7 @@ if(Double.valueOf(currentContractVersion).doubleValue() >= 1.0) {
   out.write("Current contract version cannot use this jsp page, please change to 1.0");
 }
 %>
+</div>
+<%@ include file="/style/footer.xml" %>
+
 </body></html>

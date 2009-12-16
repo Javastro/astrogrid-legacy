@@ -39,6 +39,8 @@ Adding resources at <%= resourceUrl %>
    
 %>
 </pre>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

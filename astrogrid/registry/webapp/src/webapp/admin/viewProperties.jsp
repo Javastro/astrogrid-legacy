@@ -60,6 +60,8 @@ Pushing the "update properties" button writes the property values back to the
 deployment-descriptor file. This means that those values will be used when you next restart the
 web application.
 </p>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

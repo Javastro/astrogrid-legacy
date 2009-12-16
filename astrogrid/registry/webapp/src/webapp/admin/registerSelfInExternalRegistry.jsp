@@ -74,5 +74,8 @@ if(nl.getLength() > 0) {
 </pre>
 
 <% } %>
+</div>
+<%@ include file="/style/footer.xml" %>
+
 </body>
 </html>

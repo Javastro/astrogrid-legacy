@@ -58,6 +58,8 @@ Setting Contract Version:
  <input type="submit" name="button" value="Set"/>
 </p>
 </form>
+</div>
+<%@ include file="/style/footer.xml" %>
 
 </body>
 </html>

@@ -107,6 +107,8 @@
    	out.write("</form>");
    }
 %>
+</div>
+<%@ include file="/style/footer.xml" %>
 	
 </body>
 </html>

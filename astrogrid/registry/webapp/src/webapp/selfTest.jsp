@@ -114,5 +114,8 @@ are available.
    
 %>
 	<br />
+</div>
+<%@ include file="/style/footer.xml" %>
+
 </body>
 </html>
