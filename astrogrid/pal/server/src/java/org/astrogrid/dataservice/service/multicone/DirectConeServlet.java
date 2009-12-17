@@ -14,9 +14,13 @@ import org.astrogrid.cfg.ConfigReader;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.dataservice.service.Queues;
 import org.astrogrid.dataservice.service.TokenQueue;
+import uk.ac.starlink.table.RowSequence;
+import uk.ac.starlink.table.SelectorStarTable;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StarTableWriter;
+import uk.ac.starlink.table.ValueInfo;
 import uk.ac.starlink.ttools.cone.ConeSearcher;
+import uk.ac.starlink.ttools.func.Coords;
 import uk.ac.starlink.util.XmlWriter;
 import uk.ac.starlink.votable.DataFormat;
 import uk.ac.starlink.votable.VOTableWriter;
@@ -107,20 +111,57 @@ public class DirectConeServlet extends HttpServlet {
         // Extract the query parameters.
         String catalogName = ServletHelper.getCatalogName(request);
         String tableName = ServletHelper.getTableName(request);
-        double ra = ServletHelper.getRa(request);
-        double dec = ServletHelper.getDec(request);
-        double radius = ServletHelper.getRadius(request);
+        final double ra = ServletHelper.getRa(request);
+        final double dec = ServletHelper.getDec(request);
+        final double radius = ServletHelper.getRadius(request);
         if (radius > MAX_RADIUS) {
             throw new ServletException("SR value " + radius + " greater than "
                                       +"allowed maximum " + MAX_RADIUS);
         }
 
-        // Do the search, using the throttling mechanism.
+        // Do the SQL search, using the throttling mechanism.
         TokenQueue.Token token = acquireToken();
         final ConeSearcher searcher = DirectConeSearcher
             .createConeSearcher(token, catalogName, tableName, false);
-        final StarTable outTable =
-            new ConeOutputTable( searcher.performSearch(ra, dec, radius) );
+        StarTable sqlResultTable = searcher.performSearch(ra, dec, radius);
+
+        // The result of the SQL search may contain rows outside the 
+        // requested cone (probably shouldn't do - may be fixed in later
+        // versions of STILTS).  In case it does, filter here to only those
+        // within the cone.
+        final StarTable coneTable;
+        final int ira = searcher.getRaIndex( sqlResultTable );
+        final int idec = searcher.getDecIndex( sqlResultTable );
+        if ( isDegrees( sqlResultTable.getColumnInfo( ira ) ) &&
+             isDegrees( sqlResultTable.getColumnInfo( idec ) ) ) {
+            coneTable = new SelectorStarTable( sqlResultTable ) {
+                public boolean isIncluded(RowSequence rseq) throws IOException {
+                    Object raCell = rseq.getCell( ira );
+                    Object decCell = rseq.getCell( idec );
+                    double rowRa = raCell instanceof Number
+                                 ? ((Number) raCell).doubleValue()
+                                 : Double.NaN;
+                    double rowDec = decCell instanceof Number
+                                  ? ((Number) decCell).doubleValue()
+                                  : Double.NaN;
+                    double dist =
+                        Coords.skyDistanceDegrees( ra, dec, rowRa, rowDec );
+                    return ! ( dist > radius );
+                }
+            };
+        }
+        else {
+            // shouldn't happen: JdbcConeSearcher should always give RA and Dec
+            // column indices with units of degrees.  But, if it does, all
+            // that will happen is that the service will return some results
+            // outside of the given radius; this is permitted by the standard.
+            coneTable = sqlResultTable;
+        }
+
+        // Finally make some adjustments to the types of columns etc to
+        // render it suitable for output from a cone search, and write the
+        // result.
+        final StarTable outTable = new ConeOutputTable( coneTable );
         return new ConeResult() {
             void writeTable(StarTableWriter outHandler, OutputStream out)
                     throws IOException {
@@ -195,6 +236,17 @@ public class DirectConeServlet extends HttpServlet {
         catch (IOException e) {
             return "";
         }
+    }
+
+    /**
+     * Determines whether a given column has units of degrees.
+     *
+     * @param   info  column metadata
+     * @return   true if the column is known to have units of degrees
+     */
+    private static boolean isDegrees( ValueInfo info ) {
+        String units = info.getUnitString();
+        return units != null && units.trim().toLowerCase().startsWith( "deg" );
     }
 
     /**
