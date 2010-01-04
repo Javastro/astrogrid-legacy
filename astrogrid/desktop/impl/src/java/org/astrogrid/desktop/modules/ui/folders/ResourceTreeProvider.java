@@ -112,6 +112,7 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
         // Subscribe to central updating examples file
         examplesBranch.setSubscription(examplesLocation);
         examplesBranch.setIconName("myspace16.png");
+        examplesBranch.setFixed(true); // indicates that these cannot be edited.
         final DefaultMutableTreeNode examplesNode =
             new DefaultMutableTreeNode(examplesBranch, true);
         final ResourceFolder[] folders = getExampleFolders();
