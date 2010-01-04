@@ -25,6 +25,8 @@ public class Upgrade implements Runnable {
 	private static final String ALT_REGISTRY_ENDPOINT_1_2_3 = "upgrade.1.2.3.alt-registry-endpoint";
 	private static final String RESOURCETREE_EXAMPLES_1_2_3 = "upgrade.1.2.3.resourcetree-examples";
 	
+	private static final String TURN_OFF_PLASTIC_HUB = "turn-off-plastic-hub";
+	
 	public void run() {
 	    
 	    // upgrtade the old default endpoint location.
@@ -52,6 +54,15 @@ public class Upgrade implements Runnable {
 		        // this fires propertychanges, which are listend to by the resourceTreeProvider (if it's already existing)
 		        // and this takes care of propagating the subscruption change into the tree.
 		    }		    		    
+		}
+		
+		if (conf.getKey(TURN_OFF_PLASTIC_HUB) == null) {
+		    conf.setKey(TURN_OFF_PLASTIC_HUB,"done");
+		    logger.info("Deactivating plastic hub - can be re-enabled if required via 'Preferences..'");
+		    final Preference plasHub = conf.find("messaging.start.plastic");
+		    if (plasHub.asBoolean()) {
+		        plasHub.setValue("false");
+		    }
 		}
 	
 

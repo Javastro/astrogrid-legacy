@@ -54,7 +54,7 @@
         </preference>
         <preference name="messaging.start.plastic"
             requires-restart="true" 
-            default-value="true">
+            default-value="false">
             <ui-name>Launch PLASTIC Hub at startup</ui-name>
             <description>When the application starts, if no PLASTIC hub can be found, launch an internal hub</description>
             <units>boolean</units>
