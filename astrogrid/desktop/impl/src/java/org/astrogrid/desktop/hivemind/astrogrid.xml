@@ -365,50 +365,7 @@ TAP EXECUTION STRATEGY
     <contribution configuration-id="processStrategies">
         <object>service:tapStrategy</object> 
     </contribution>
-    
-<!-- 
-==========================
-CERTIFICATE INSTALLER
- -->
-	<service-point id="installCertificates" interface="java.lang.Runnable" visibility="private">
-		Download and install any missing certificates.
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.auth.InstallCertificates">
-				<service>system.ui</service>
-				<string>${astrogrid.workdir}${file.separator}trusted-certificates</string> <!-- must match with the dir passed into the community component -->
-				<configuration>certificateLists</configuration>
-			</construct>
-		</invoke-factory>
-	</service-point>
-
-<!--  runs at startup -->
-	<contribution configuration-id="hivemind.Startup">
-		<startup object="service:installCertificates" />
-	</contribution>		
-	
-<!--  list of anchors -->	
-<configuration-point id="certificateLists">
-		List of urls to download and parse for a list of anchors.
-		<schema>
-			<element name="url">
-				the url of a certificate list
-				<rules>
-					<push-content />
-					<invoke-parent method="addElement" />
-				</rules>
-			</element>
-		</schema>
-	</configuration-point>	
-
-	
-	<!-- contributions to existing configurations -->
-	<contribution configuration-id="certificateLists">
-	  	<url>http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/trust-anchor-list.xml</url>
-	  	<!--  fallback list - unsure whether I should check this or not 
-	  	<url>classpath:/org/astrogrid/desktop/hivemind/fallback-anchorlist.xml</url>
-	  	-->
-	</contribution>	
-	
+ 
 <!-- 
 =========================
 TRANSFORMERS (object -> stirng) for types introduced by this module
