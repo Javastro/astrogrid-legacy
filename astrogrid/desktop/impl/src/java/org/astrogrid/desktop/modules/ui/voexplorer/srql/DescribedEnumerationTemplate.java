@@ -50,8 +50,16 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 			pred.setSelectedIndex(IS);
 		}
 		final String term = ((TermSRQL)clause).getTerm();
-		final DescribedValue u = new DescribedValue(term,"");
-		val.setSelectedItem(u); // works because equals test only works on value, not on description field.
+		//final DescribedValue u = new DescribedValue(term,"");
+		// doen't seem to work. try something else.
+		//val.setSelectedItem(u); // works because equals test only works on value, not on description field.
+		for (int i = 0; i < val.getItemCount(); i++) {
+		    final DescribedValue v = (DescribedValue) val.getItemAt(i);
+		    if (v.getValue().equalsIgnoreCase(term)) {
+		        val.setSelectedIndex(i);
+		        return;
+		    }
+		}
 	}
 
 	@Override
@@ -61,7 +69,7 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 		final TermSRQL ts = new TermSRQL();
 		final Object selectedItem = ((JComboBox)valueField).getSelectedItem();
 		if (selectedItem instanceof DescribedValue) {
-		    ts.setTerm(((DescribedValue)selectedItem).value);
+		    ts.setTerm(((DescribedValue)selectedItem).getValue());
 		} else if (selectedItem instanceof String) {
 		    ts.setTerm((String)selectedItem);
 		} else { // toString it
@@ -111,7 +119,7 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 		@Override
         public Component getListCellRendererComponent(final JList list, Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
 			final DescribedValue u = (DescribedValue)value;
-			value = u.toFullString();
+			value = u.getFullString();
 			return super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
 		}
 		});
@@ -132,25 +140,45 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 
 	/** datastructure used to represent a value - precomputes the formatting */
 	public static final class DescribedValue {		
-		public final String value;
-		public final String fullString;
-		@Override
-        public String toString() {
-			return value;
+		private final String value;
+		private final String displayVal;
+		private final String fullString;
+
+		/** returns the value of 'displayVal' */
+        @Override
+		public String toString() {
+			return displayVal;
 		}
-		public String toFullString() {
-			return fullString;
-		}
+
+		/** construct a described value
+		 * 
+		 * @param v the value - used in ui, and in SRQL quewry
+		 * @param description a description of the value 
+		 */
 		public DescribedValue(final String v, final String description) {
 			super();
 			this.value = v;
+			this.displayVal = v;
 			this.fullString =  v + " : " + description;
 		}
+		
+		/** construct a described value, using a different value in the display than in the srql
+		 * 
+		 * @param displayVal the value to show in ui
+		 * @param v the value to use in the SRQL query
+		 * @param description the description of the value.
+		 */
+	      public DescribedValue(final String displayVal,final String v, final String description) {
+	            super();
+	            this.value = v;
+	            this.displayVal = displayVal;
+	            this.fullString =  displayVal + " : " + description;
+	        }
 		@Override
         public int hashCode() {
 			final int PRIME = 31;
 			int result = 1;
-			result = PRIME * result + ((this.value == null) ? 0 : this.value.hashCode());
+			result = PRIME * result + ((this.getValue() == null) ? 0 : this.getValue().hashCode());
 			return result;
 		}
 		@Override
@@ -165,16 +193,25 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
                 return false;
             }
 			final DescribedValue other = (DescribedValue) obj;
-			if (this.value == null) {
-				if (other.value != null) {
+			if (this.getValue() == null) {
+				if (other.getValue() != null) {
                     return false;
                 }
-			} else if (!this.value.equals(other.value)) {
+			} else if (!this.getValue().equals(other.getValue())) {
                 return false;
             }
 			return true;
 		}
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getFullString() {
+            return fullString;
+        }
 		
 	}
+	
 
 }

@@ -373,7 +373,7 @@ public final class PrettierResourceFormatter {
             //tsa:TheoreticalSpectralAccess
             //TSA - ivo://ivoa.net/std/TSA        
         } else if  (sid.equals("ivo://ivoa.net/std/TAP")  ) {
-            return "Table access service (TAP)";
+            return "Table/Database access (TAP)";
         } else if  (sid.equals("ivo://org.astrogrid/std/STAP/v1.0") || type.equals("SimpleTimeAccess") ) {
             return "Time range access service (STAP)";            
         } else if  (sid.equals("ivo://org.astrogrid/std/CEA/v1.0") || type.equals("CeaApplicationType") || type.equals("CeaHttpApplicationType")) {
@@ -704,7 +704,7 @@ public final class PrettierResourceFormatter {
 	                sb.br();
 	            }      
 	        } else if (c instanceof TapCapability) {
-                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/db16.png'>&nbsp;This resource describes a <b>Table&nbsp;access&nbsp;service&nbsp;(TAP)</b>");
+                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/db16.png'>&nbsp;This resource describes a <b>Table/Database&nbsp;access&nbsp;service&nbsp;(TAP)</b>");
                 sb.br();
                 formatCapabilityDescription(sb, c);
 	        } else if (c instanceof VospaceCapability) {	

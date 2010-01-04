@@ -326,7 +326,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	            vals.add(new DescribedValue("Image","Image access service (SIAP)"));
 	            vals.add(new DescribedValue("Spectral","Spectrum access service (SSAP)"));
 	            vals.add(new DescribedValue("Time","Time range access service (STAP)"));
-	            vals.add(new DescribedValue("/TAP","Table access service (TAP)")); // '/' necessary to match prefix of capability url.
+	            vals.add(new DescribedValue("TAP","/TAP","Table/Database access (TAP)" /*"Table access service (TAP)"*/)); // '/' necessary to match prefix of capability url.
 
 	            vals.add(new DescribedValue("VOSpace","VOSpace remote storage"));
 	            // don't want this - no fun.
