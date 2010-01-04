@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.33 2009/04/17 17:01:47 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.34 2010/01/04 12:55:27 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -497,7 +497,7 @@ public class VOExplorerImpl extends UIComponentImpl
     }
 
     public void editExistingSubscription(final ResourceFolder f) {
-        subscriptionEditPanel.getOkButton().setText("Create");
+        subscriptionEditPanel.getOkButton().setText("Update");
         subscriptionEditPanel.setCurrentlyEditing(f);        
         mainPanel.setShowing(EDIT_SUBSCRIPTION_VIEW);
         resourceLists.setEnabled(false);

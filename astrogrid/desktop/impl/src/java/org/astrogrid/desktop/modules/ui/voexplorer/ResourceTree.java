@@ -405,10 +405,8 @@ public class ResourceTree extends UneditableResourceTree {
      * @param  node  selected node
      */
     private void tailorActionsToResource(final DefaultMutableTreeNode node) {
-        final boolean notFixed;
         final boolean parentNotFixed;
         if (node != null) {
-            notFixed = ! isFixed(node);
             final DefaultMutableTreeNode parent =
                 (DefaultMutableTreeNode) node.getParent();
             if (parent != null) {
@@ -419,12 +417,11 @@ public class ResourceTree extends UneditableResourceTree {
             }
         }
         else {
-            notFixed = false;
             parentNotFixed = false;
         }
         remove.setEnabled(parentNotFixed);
-        properties.setEnabled(notFixed &&
-                              !isBranch((ResourceFolder)node.getUserObject()));
+        properties.setEnabled(isEditable(node));
+                              
         rename.setEnabled(parentNotFixed);
         duplicate.setEnabled(node != null);
         refresh.setEnabled(node != null);
@@ -439,12 +436,36 @@ public class ResourceTree extends UneditableResourceTree {
      * @return   true iff node should not be altered
      */
     private boolean isFixed(final DefaultMutableTreeNode node) {
-
+        
         // Test whether any of the node's ancestors have non-empty 
         // subscriptions.  If so, the whole content will be overwritten next
-        // time the program is run, so any changes would get lost.
-        return getSubscribedAncestor(node) != null;
+        // time the program is run, so any changes would get lost.        
+        final ResourceFolder subscription = getSubscribedAncestor(node);
+        return subscription != null;
     }
+    
+    /** works out whether a node is editable.
+     * this is different to fixed - as a subscription itself may be edited - to point to a different location.
+     * @param node
+     * @return
+     */
+    private boolean isEditable(final DefaultMutableTreeNode node) {
+        if (node == null) {
+            return false;
+        }
+        final ResourceFolder subscription = getSubscribedAncestor(node);
+        if (subscription == null) { // no subscription ancestor
+            return !isBranch((ResourceFolder)node.getUserObject()); // can't edit a folder.
+        }
+        if ( subscription.equals(node.getUserObject()) && ! subscription.isFixed()) { // this object contains the subscritpion - so can be edited
+            return true;
+        }
+        // all we're left with is a node subcontained within a subscription.
+        return false;
+        
+    }
+    
+    
 
     /**
      * Finds the closest ancestor of a given node, including itself, 
