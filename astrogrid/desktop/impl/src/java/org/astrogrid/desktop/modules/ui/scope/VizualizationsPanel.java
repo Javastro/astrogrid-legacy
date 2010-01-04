@@ -84,7 +84,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
         getShowServicesFiltersAction().setEnabled(false);
         
         // load preference.
-        final String view = PREFERENCES.get(PREFERRED_VIEW_KEY,RADIAL_VIEW);
+        final String view = PREFERENCES.get(PREFERRED_VIEW_KEY,SERVICES_VIEW);
         if (HYPERBOLIC_VIEW.equals(view)) {
             flipToHyperbolicView();
         } else if (SERVICES_VIEW.equals(view)) {

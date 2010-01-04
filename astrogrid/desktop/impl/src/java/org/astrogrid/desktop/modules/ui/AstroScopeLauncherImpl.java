@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.102 2009/04/17 17:01:47 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.103 2010/01/04 16:08:06 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -465,9 +465,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                     final JRadioButtonMenuItem hyper = new JRadioButtonMenuItem(flip.getHyperbolicAction());
                     servicesRadioButton = new JRadioButtonMenuItem(flip.getServicesAction());
                     final ButtonGroup bg = new ButtonGroup();
+                    bg.add(servicesRadioButton);
                     bg.add(radial);
                     bg.add(hyper);
-                    bg.add(servicesRadioButton);
+ 
                     if (flip.currentlyHyperbolic()) {
                         hyper.setSelected(true);
                     } else if (flip.currentlyRadial()) {
@@ -475,9 +476,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                     } else if (flip.currentlyServicesTable()) {
                         servicesRadioButton.setSelected(true);
                     }
-                       vmb.radiobox(radial)
+                       vmb.radiobox(servicesRadioButton)
+                       .radiobox(radial)
                            .radiobox(hyper)
-                           .radiobox(servicesRadioButton)
+                           
                        .separator()                           
                        .windowOperationWithIcon(flip.getShowServicesFiltersAction())
                        .separator()
