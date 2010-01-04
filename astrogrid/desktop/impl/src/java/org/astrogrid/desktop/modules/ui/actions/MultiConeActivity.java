@@ -34,7 +34,7 @@ public class MultiConeActivity extends AbstractFileOrResourceActivity {
         setHelpID("activity.multicone");
         setText("Multi Query");
         setIcon(IconHelper.loadIcon("multicone16.png"));
-        setToolTipText("Run Catalog Cone Query on a file with multiple positions and concatenate the output");
+        setToolTipText("Query the selected service using a file containing multiple positions and concatenate the output");
     }
 
     @Override

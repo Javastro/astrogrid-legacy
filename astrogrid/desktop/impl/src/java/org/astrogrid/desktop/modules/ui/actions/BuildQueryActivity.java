@@ -32,7 +32,7 @@ public BuildQueryActivity(final QueryBuilderInternal t) {
 	setHelpID("activity.adql");	
 	setText("Build ADQL");
 	setIcon(IconHelper.loadIcon("db16.png"));
-	setToolTipText("Construct an ADQL query against the selected table descriptions");
+	setToolTipText("Construct an ADQL (CEA) query against the selected table descriptions");
    // setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2,UIComponentMenuBar.MENU_KEYMASK));	
 }
 // thing to invoke

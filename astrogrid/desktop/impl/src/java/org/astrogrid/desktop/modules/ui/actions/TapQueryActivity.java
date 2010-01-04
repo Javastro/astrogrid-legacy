@@ -21,9 +21,9 @@ public final class TapQueryActivity extends AbstractResourceActivity {
 public TapQueryActivity(final QueryBuilderInternal t) {
 	this.t = t;
 	setHelpID("activity.adql");	
-	setText("TAP Query");
+	setText("Table Query");
 	setIcon(IconHelper.loadIcon("db16.png"));
-	setToolTipText("Construct a TAP query against the selected table descriptions");
+	setToolTipText("Construct a Table/Database (TAP) query against the selected table descriptions");
    // setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2,UIComponentMenuBar.MENU_KEYMASK));	
 }
 // thing to invoke

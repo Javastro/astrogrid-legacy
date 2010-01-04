@@ -25,9 +25,9 @@ public final class QueryScopeActivity extends AbstractResourceActivity {
 public QueryScopeActivity(final AstroScopeInternal ai) {
     setHelpID("activity.query");	
 	this.ai = ai;
-	setText("Query");
+	setText("Position Query");
 	setIcon(IconHelper.loadIcon("scope16.png"));
-	setToolTipText("Query the selected services(s)");
+	setToolTipText("Query the selected services(s) by position");
 	//setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1,UIComponentMenuBar.MENU_KEYMASK));
 }
 
