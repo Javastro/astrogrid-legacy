@@ -3,19 +3,18 @@
  */
 package org.astrogrid.desktop.modules.system.pref;
 
+import static org.easymock.EasyMock.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.astrogrid.desktop.hivemind.ServiceBeanUnitTest;
-import org.astrogrid.desktop.modules.system.pref.Preference;
-
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.easymock.EasyMock.*;
 /**
  * @author Noel Winstanley
  * @since Jan 5, 200712:15:47 AM
@@ -113,7 +112,7 @@ public class PreferenceUnitTest extends TestCase {
 	 */
 	public void testGetValue() {
 	    final String value = "fred";
-	    PropertyChangeListener l = createMock(PropertyChangeListener.class);
+	    final PropertyChangeListener l = createMock(PropertyChangeListener.class);
 	    l.propertyChange((PropertyChangeEvent)anyObject());
 // setting a value causes event to be fired.	    
 	    replay(l);
@@ -138,7 +137,7 @@ public class PreferenceUnitTest extends TestCase {
 	
 	public void testPropertyChangeListener() throws Exception {
 	    final String value = "fred";
-        PropertyChangeListener l = createMock(PropertyChangeListener.class);
+        final PropertyChangeListener l = createMock(PropertyChangeListener.class);
          l.propertyChange((PropertyChangeEvent) notNull());
          expectLastCall().times(2);
          
@@ -208,8 +207,13 @@ public class PreferenceUnitTest extends TestCase {
         pref.addAlternative("foo");
         pref.addAlternative("nar");
         pref.addAlternative("bing");
-        assertThat(pref.getAllAlternatives(),equalTo(new String[] {"foo","nar","bing"}));
-        
+      // order dependent.  assertThat(pref.getAllAlternatives(),equalTo(new String[] {"foo","nar","bing"}));
+       final String[] allAlternatives = pref.getAllAlternatives();
+       assertEquals(3, allAlternatives.length);
+       final List<String> l = Arrays.asList(allAlternatives);
+       assertTrue(l.contains("foo"));
+       assertTrue(l.contains("bing"));
+       assertTrue(l.contains("nar"));
 	}
 	
 	public void testOptions() throws Exception {
@@ -224,9 +228,9 @@ public class PreferenceUnitTest extends TestCase {
 	
 	public void testModuleName() throws Exception {
 		assertNull(pref.getModuleName());
-		ServiceBeanUnitTest.MockModule m = new ServiceBeanUnitTest.MockModule();
+		final ServiceBeanUnitTest.MockModule m = new ServiceBeanUnitTest.MockModule();
 		pref.setModule(m);
-		String s = pref.getModuleName();
+		final String s = pref.getModuleName();
 		assertNotNull(s);
 		pref.setModuleName("fred");
 		assertEquals("fred",pref.getModuleName());
