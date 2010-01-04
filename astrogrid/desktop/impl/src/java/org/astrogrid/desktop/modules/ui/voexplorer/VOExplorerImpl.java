@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.34 2010/01/04 12:55:27 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.35 2010/01/04 17:49:59 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -20,10 +20,13 @@ import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Window;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -73,6 +76,7 @@ import org.astrogrid.desktop.modules.ui.actions.VospaceActivity;
 import org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.folders.ResourceBranch;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.ResourceTreeModel;
@@ -96,6 +100,7 @@ public class VOExplorerImpl extends UIComponentImpl
     private final Action stopAction = new StopAction();
     private final BiStateButton foldersButton;
     private final Action refreshAction= new RefreshAction();
+
     
     public static final String EXPORT = "export";
 
@@ -116,8 +121,8 @@ public class VOExplorerImpl extends UIComponentImpl
 		acts = activityBuilder.create(this,new Class[]{
 		        QueryScopeActivity.class
 		        , MultiConeActivity.class
+	            ,TapQueryActivity.class		        
 		       ,BuildQueryActivity.class
-		       ,TapQueryActivity.class
 		       ,VospaceActivity.class
 		       ,TaskRunnerActivity.class
 		       ,WebInterfaceActivity.class
@@ -178,7 +183,9 @@ public class VOExplorerImpl extends UIComponentImpl
 		            .paste()
 		            .selectAll()
 		            .clearSelection()
-		           . invertSelection();
+		           . invertSelection()
+		           .separator()
+		           .windowOperation(new RemoveSelectionFromListAction());
 		    }
 		    @Override
             protected void constructAdditionalMenus() {
@@ -194,6 +201,8 @@ public class VOExplorerImpl extends UIComponentImpl
                                                     
                 final MenuBuilder rmb = new MenuBuilder("Resource",KeyEvent.VK_R)
                     .windowOperation(acts.getActivity(QueryScopeActivity.class))
+                    .windowOperation(acts.getActivity(MultiConeActivity.class))
+                    .windowOperation(acts.getActivity(TapQueryActivity.class))
                     .windowOperation(acts.getActivity(BuildQueryActivity.class))
                     .windowOperation(acts.getActivity(TaskRunnerActivity.class))
                     .windowOperation(acts.getActivity(WebInterfaceActivity.class));
@@ -615,6 +624,62 @@ public class VOExplorerImpl extends UIComponentImpl
     // listens to the selection.
     public void valueChanged(final ListSelectionEvent e) {
         setEnabled(google.resourceTable.getSelectedRowCount() > 0);
+    }
+  }
+  
+  private final class RemoveSelectionFromListAction extends AbstractAction implements ListSelectionListener, TreeSelectionListener {
+
+      public RemoveSelectionFromListAction() {
+          super("Remove Selected Resources from this List");
+          setEnabled(false);
+          google.resourceTable.getSelectionModel().addListSelectionListener(this);
+          resourceLists.addTreeSelectionListener(this);
+      }
+      public void actionPerformed(final ActionEvent e) {
+          final Transferable transferable = google.getSelectionTransferable();
+          final ResourceFolder folder = resourceLists.getSelectedFolder();
+          if (folder == null) {
+              logger.warn("No folder selected - stopping");
+              return;
+          }
+          if (! (folder instanceof StaticList)) {
+              logger.warn("Expected a static list here - can't do anything with a " + folder.getClass().getName());
+              return;
+          }
+          final StaticList sl = (StaticList)folder;
+          try {
+          if (transferable.isDataFlavorSupported(VoDataFlavour.LOCAL_URI)) {
+              sl.getResourceSet().remove(transferable.getTransferData(VoDataFlavour.LOCAL_URI));
+          } else if (transferable.isDataFlavorSupported(VoDataFlavour.LOCAL_URI_ARRAY)) {
+              final URI[] arr = (URI[]) transferable.getTransferData(VoDataFlavour.LOCAL_URI_ARRAY);
+              sl.getResourceSet().removeAll(Arrays.asList(arr));
+          }
+          } catch (final IOException ex) {
+              // oh well.
+              logger.error("Failed to get selected items",ex);
+          } catch (final UnsupportedFlavorException x) {
+            logger.error("UnsupportedFlavorException",x);
+        }
+          // now need to persist changes, and cause list to redisplay.
+          resourceLists.store(sl);
+          //display updated folder contents.
+          
+          // clearing selection and then setting hte selection will trigger a query reload in all circumstances.
+          resourceLists.clearSelection();
+          resourceLists.setSelectedFolder(sl);
+ 
+      }      
+    public void valueChanged(final ListSelectionEvent e) {
+        checkEnabled();
+    }
+
+    public void valueChanged(final TreeSelectionEvent e) {
+        checkEnabled();
+    }
+    
+    private void checkEnabled() {
+        setEnabled( resourceLists.isSelectedFolderAnEditableStaticList()
+                && google.resourceTable.getSelectedRowCount() > 0);
     }
   }
 }

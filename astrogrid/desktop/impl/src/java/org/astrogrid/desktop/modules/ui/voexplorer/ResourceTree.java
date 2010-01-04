@@ -428,6 +428,27 @@ public class ResourceTree extends UneditableResourceTree {
         export.setEnabled(node != null);
     }
 
+    /** returns true only if the selection is non-null, 
+     * and is a static list, editable, and not in a subscription.
+     * @return
+     */
+    public boolean isSelectedFolderAnEditableStaticList() {
+        final TreePath path = getSelectionPath();
+        final DefaultMutableTreeNode node = path == null
+                    ? null
+                    : (DefaultMutableTreeNode) path.getLastPathComponent();
+        if (node == null) {
+            return false;
+        }
+        final ResourceFolder subscription = getSubscribedAncestor(node);
+        if (subscription != null) {
+            return false;
+        }
+        final ResourceFolder folder = getFolder(node);
+        return folder != null && ! folder.isFixed() &&( folder instanceof StaticList);
+        
+    }
+    
     /**
      * Works out whether a node is fixed, meaning that no user-directed 
      * changes in its structure should be permitted.

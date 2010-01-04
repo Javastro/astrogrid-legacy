@@ -14,31 +14,35 @@
 	</head>
 <body>
 <release version="1.3.2.beta2" date="unreleased">
+    <action dev="nw" type="add">
+    VOExplorer: added menu operation 'Edit > Remove Selected Resources from this list' which 
+    allows user to remove items from a static list more conveniently than using the 'edit' view.
+    </action>
     <action dev="nw" type="remove">
         Removed security certificate downloader - no longer needed.
     </action>
     <action dev="nw" type="update">
-    Astroscope: made 'services table' the default view for new users.s
+    Astroscope: made 'services table' the default view for new users.
     </action>
     <action dev="nw" type="remove">
-        Removed plastic hub from starting by default.
+        Removed plastic hub from default startup.
         Can be re-enabled via preferences.
     </action>
     <action dev="nw" type="fix">
-        Enabled editing of URL for existing subscriptions
+        VOExplorer: Enabled editing of URL for existing subscriptions
     </action>
     <action dev="nw" type="update">
-        Improved presentation of TAP services in smart list builder.
+        VOExplorer: Improved presentation of TAP services in smart list builder.
     </action>    
 </release>
 <release version="1.3.2.beta1" date="2009-12-15">
 
     <action dev="nw" type="update">
-        Updated presentation in voexplorer to recognize 
+        VOExplorer: Updated presentation to recognize 
         new standard IDS for VOSI and TAP
     </action>
     <action dev="nw" type="fix">
-    	Worked around a bug that prevented voexplorer 
+    	VOExplorer: Worked around a bug that prevented
     	subscriptions to files in FTP. Bug still applies to
     	SFTP, vospace.
     </action>
