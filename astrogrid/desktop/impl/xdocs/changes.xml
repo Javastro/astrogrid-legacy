@@ -14,6 +14,13 @@
 	</head>
 <body>
 <release version="1.3.2.beta2" date="unreleased">
+    <action dev="nw" type="update">
+    Astroscope: made 'services table' the default view for new users.s
+    </action>
+    <action dev="nw" type="remove">
+        Removed plastic hub from starting by default.
+        Can be re-enabled via preferences.
+    </action>
     <action dev="nw" type="fix">
         Enabled editing of URL for existing subscriptions
     </action>
