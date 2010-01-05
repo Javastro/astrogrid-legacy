@@ -3,16 +3,9 @@
  */
 package org.astrogrid.desktop.modules.system.contributions;
 
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
 import junit.framework.TestCase;
-
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /** tests for the stylesheetcontribution bean.
  * @author Noel Winstanley
@@ -40,14 +33,14 @@ public class StylesheetsContributionUnitTest extends TestCase {
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.StylesheetsContribution.isApplicable(Document)'
 	 */
-	public void testIsApplicableDocument() throws ParserConfigurationException, SAXException, IOException {
-		final Document doc = DomHelper.newDocument("<foo></foo>");
-		assertFalse(sc.isApplicable(doc));
-		sc.setRegexp("<foo"); // doesn't match, as not a prefix - ther's an xml header before this.
-		assertFalse(sc.isApplicable(doc));
-		sc.setRegexp(".*<foo"); // need to include a wildcard. 
-		assertTrue(sc.isApplicable(doc));
-	}
+//	public void testIsApplicableDocument() throws ParserConfigurationException, SAXException, IOException {
+//		final Document doc = DomHelper.newDocument("<foo></foo>");
+//		assertFalse(sc.isApplicable(doc));
+//		sc.setRegexp("<foo"); // doesn't match, as not a prefix - ther's an xml header before this.
+//		assertFalse(sc.isApplicable(doc));
+//		sc.setRegexp(".*<foo"); // need to include a wildcard. 
+//		assertTrue(sc.isApplicable(doc));
+//	}
 
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.StylesheetsContribution.isApplicable(CharSequence)'
