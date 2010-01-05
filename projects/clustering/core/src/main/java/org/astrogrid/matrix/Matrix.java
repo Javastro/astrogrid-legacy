@@ -1,5 +1,5 @@
 /*
- * $Id: Matrix.java,v 1.3 2009/09/22 07:04:16 pah Exp $
+ * $Id: Matrix.java,v 1.4 2010/01/05 21:27:57 pah Exp $
  * 
  * Created on 21 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,7 +13,6 @@
 package org.astrogrid.matrix;
 
 import no.uib.cipr.matrix.AGDenseMatrix;
-import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Vector;
 
 public interface Matrix extends no.uib.cipr.matrix.Matrix {
@@ -47,7 +46,9 @@ public interface Matrix extends no.uib.cipr.matrix.Matrix {
      * Return a single column or row of the matrix
      * @param idx the 0 based index of the row or column to return;
      * @param dorow if true return a row - if false return a column.
+     * 
      * @return
+     * @deprecated use sliceRow or SliceCol instead.
      */
     public Vector slicev(int idx, boolean dorow);
     
@@ -75,6 +76,14 @@ public interface Matrix extends no.uib.cipr.matrix.Matrix {
      * @return
      */
     public Matrix sliceCol(int colstart, int ncols);
+    /**
+     * Returns a new Matrix consisting of only the specified column. This is equivalent to the 
+     * Matlab syntax mat(:, col).
+     * @param colstart
+     * @param ncols
+     * @return
+     */
+    public Vector sliceCol(int col);
     
     /**
      * @return
@@ -185,11 +194,23 @@ public interface Matrix extends no.uib.cipr.matrix.Matrix {
 
 
     Matrix setRow(int k, Vector v);
+    
+    /**
+     * Delete column k from the matrix.
+     * @param k
+     * @return
+     */
+    Matrix delCol(int k);
+    
+    Matrix delRow(int k);
 }
 
 
 /*
  * $Log: Matrix.java,v $
+ * Revision 1.4  2010/01/05 21:27:57  pah
+ * add delete colum/row functions
+ *
  * Revision 1.3  2009/09/22 07:04:16  pah
  * daily checkin
  *

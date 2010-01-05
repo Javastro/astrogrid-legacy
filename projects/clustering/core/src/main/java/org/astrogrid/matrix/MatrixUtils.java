@@ -1,5 +1,5 @@
 /*
- * $Id: MatrixUtils.java,v 1.3 2009/09/22 07:04:16 pah Exp $
+ * $Id: MatrixUtils.java,v 1.4 2010/01/05 21:27:57 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -78,11 +78,11 @@ public class MatrixUtils {
 
     }
 
-    public static Matrix zeros(int n) {
-        return (Matrix) new AGDenseMatrix(n, n).zero();
+    public static AGDenseMatrix zeros(int n) {
+        return (AGDenseMatrix) new AGDenseMatrix(n, n).zero();
     }
-    public static Matrix zeros(int n, int m) {
-        return (Matrix) new AGDenseMatrix(n, m).zero();
+    public static AGDenseMatrix zeros(int n, int m) {
+        return (AGDenseMatrix) new AGDenseMatrix(n, m).zero();
     }
     
     public static Matrix ones(int n) {
@@ -282,6 +282,37 @@ public class MatrixUtils {
          }
     }
     /**
+     * Elementwise product of vectors and double
+     * @param a
+     * @param b
+     * @return
+     */
+    public static Vector times(Vector  a, double b){
+       
+         
+         DenseVector retval = new DenseVector(a);
+         
+         return retval.scale(b);
+     }
+    /**
+     * Elementwise product of vectors and double
+     * @param a
+     * @param b
+     * @return
+     */
+    public static Vector times( double b, Vector  a){
+       
+         
+         DenseVector retval = new DenseVector(a);
+         
+         return retval.scale(b);
+     }
+    
+    public static Matrix times(double b, Matrix a){
+        AGDenseMatrix retval = new AGDenseMatrix(a);
+        return (Matrix) retval.scale(b);
+    }
+   /**
      * Elementwise difference of vectors.
      * @param a
      * @param b
@@ -316,8 +347,19 @@ public class MatrixUtils {
         a.mult(b, c);
         return c;
     }
-    
     /**
+     * C = AB
+     * @param a
+     * @param b
+     * @return
+     */
+    public static AGDenseMatrix mult(no.uib.cipr.matrix.Matrix a, Vector b){
+        AGDenseMatrix c = new AGDenseMatrix(a.numRows(), 1);
+        a.mult(new AGDenseMatrix(b), c);
+        return c;
+    }
+    
+  /**
      * C = AB<sup>T</sup>
      * @param a
      * @param b
@@ -346,7 +388,7 @@ public class MatrixUtils {
      * @param b
      * @return
      */
-    public static AGDenseMatrix multAt(DenseVector v, no.uib.cipr.matrix.Matrix b) {
+    public static AGDenseMatrix multAt(Vector v, no.uib.cipr.matrix.Matrix b) {
         Matrix a = new AGDenseMatrix(v);
         Matrix c = new AGDenseMatrix(a.numColumns(), b.numColumns());
         return (AGDenseMatrix) a.transAmult(b, c);
@@ -414,12 +456,19 @@ public class MatrixUtils {
         return retval;
     }
     
+    public static Vector add(double d, Vector v ){
+        return add(v,d);
+    } 
+    
     public static Matrix add(Matrix q, double eps) {
         AGDenseMatrix retval = new AGDenseMatrix(q.numRows(), q.numColumns());
         for (MatrixEntry matrixEntry : q) {
             retval.set(matrixEntry.row(), matrixEntry.column(), matrixEntry.get()+eps);
         }
         return retval;
+    }
+    public static Matrix add(double eps, Matrix q) {
+        return add(q,eps);
     }
 
     
@@ -434,6 +483,15 @@ public class MatrixUtils {
         return (Matrix) c.add(-1.0, b);
         
     }
+   public static Matrix sub(no.uib.cipr.matrix.Matrix a, double b){
+       Matrix c = new AGDenseMatrix(a);
+       
+       for (MatrixEntry matrixEntry : c) {
+        matrixEntry.set(matrixEntry.get()-b);
+    }
+       return c;
+       
+   }
    
    /**
     * R= d-v = elementwise subtraction.
@@ -448,21 +506,37 @@ public static Vector sub(double d, Vector v){
        }
        return retval;
    }
+public static Vector sub( Vector v,double d){
+    Vector retval = new DenseVector(v.size());
+     for (int i = 0; i < v.size(); i++) {
+         retval.set(i, v.get(i)-d);
+     }
+     return retval;
+ }
     
     /**
-     * produces square identity matrix.
+     * produces square diagonal matrix using val.
      * @param ndim
+     * @param val - the value to put on the diagonal.
      * @return
      */
-    public static Matrix eye(int ndim){
+    public static Matrix eye(int ndim, double val){
        Matrix retval = new AGDenseMatrix(ndim,ndim);
        retval.zero();
        for (int i = 0; i < ndim; i++) {
-        retval.set(i, i, 1.0);
+        retval.set(i, i, val);
     }
        return retval;
     }
-    
+    /**
+     * produces square identity matrix.
+     * @param ndim - the dimension of the matrix
+     * @return
+     */
+    public static Matrix eye(int ndim){
+       return eye(ndim,1.0);
+     }
+   
     
     public static AGDenseMatrix transpose(no.uib.cipr.matrix.Matrix a){
         Matrix retval = new AGDenseMatrix(a.numColumns(), a.numRows());
@@ -546,6 +620,12 @@ public static Vector sub(double d, Vector v){
         return retval;
         
     }
+    /**
+     * raise each member to the power.
+     * @param m
+     * @param exp
+     * @return
+     */
     public static Matrix pow(Matrix m, double exp){
         Matrix retval = new AGDenseMatrix(m.numRows(), m.numColumns());
         for (MatrixEntry matrixEntry : m) {
@@ -561,10 +641,54 @@ public static Vector sub(double d, Vector v){
         return retval;
     }
 
+    
+    public static Matrix recip(Matrix m){
+        Matrix retval = new AGDenseMatrix(m.numRows(), m.numColumns());
+        for (MatrixEntry matrixEntry : m) {
+            retval.set(matrixEntry.row(),matrixEntry.column(), 1.0/matrixEntry.get());
+        }
+        return retval;
+       
+    }
+    public static Vector recip(Vector v) {
+        Vector retval = new DenseVector(v.size());
+        for (int i = 0; i < v.size(); i++) {
+            retval.set(i, 1.0/v.get(i));
+        }
+        return retval;
+    }
+
+    /**
+     * Form the elementwise a/m<sub>ij</sub>.
+     * @param m
+     * @param a
+     * @return
+     */
+    public static Matrix recip( double a, Matrix m){
+        Matrix retval = new AGDenseMatrix(m.numRows(), m.numColumns());
+        for (MatrixEntry matrixEntry : m) {
+            retval.set(matrixEntry.row(),matrixEntry.column(), a/matrixEntry.get());
+        }
+        return retval;
+       
+    }
+    /**
+     * Form the elementwise a/v<sub>i</sub>.
+     * @param m
+     * @param a
+     * @return
+     */
+   public static Vector recip(double a, Vector v) {
+        Vector retval = new DenseVector(v.size());
+        for (int i = 0; i < v.size(); i++) {
+            retval.set(i, a/v.get(i));
+        }
+        return retval;
+    }
 
     
     /**
-     * produces a matrix wich is the sum of the squares of each row.
+     * produces a matrix which is the sum of the squares of each row.
      * @param m
      * @return
      */
@@ -593,6 +717,60 @@ public static Vector sub(double d, Vector v){
         }
         return retval;
     }
+    
+    
+    /**
+     * Forms the vector product of the two vectors -i.e. ab<sup>T</sup>.
+     * @param a
+     * @param b
+     * @return
+     */
+    public static Matrix vprod(Vector a, Vector b){
+        return multBt(new AGDenseMatrix(a), new AGDenseMatrix(b));
+    }
+    
+    /**
+     * Forms the vector product of the two vectors -i.e. aa<sup>T</sup>.
+     * @param a
+     * @param b
+     * @return
+     */
+    public static Matrix vprod(Vector a){
+        return multBt(new AGDenseMatrix(a), new AGDenseMatrix(a));
+    }
+   
+    
+    public static DenseVector delElement(DenseVector v, int i){
+        if(i>= v.size() || i < 0){
+            throw new IllegalArgumentException("element to delete - out of range");
+        }
+        int size = v.size();
+        double[] newarr= new double[size-1];
+        
+        if(i != 0){
+                // copy first half
+            System.arraycopy(v.getData(), 0, newarr, 0, i);
+        }
+        //copy second half
+        if(i < size -1){
+        System.arraycopy(v.getData(), i+1, newarr, i, size -i-1);
+        }
+        return new DenseVector(newarr, false);
+        
+    }
+    
+    public static int min(Vector v){
+        int midx = 0, idx=0;
+        double val = v.get(idx);
+        while(++idx < v.size()){
+            if(v.get(idx) < val){
+                midx = idx;
+                val = v.get(idx);
+            }
+        }
+        return midx;
+    }
+
 }
 
 
@@ -600,6 +778,9 @@ public static Vector sub(double d, Vector v){
 
 /*
  * $Log: MatrixUtils.java,v $
+ * Revision 1.4  2010/01/05 21:27:57  pah
+ * add delete colum/row functions
+ *
  * Revision 1.3  2009/09/22 07:04:16  pah
  * daily checkin
  *
