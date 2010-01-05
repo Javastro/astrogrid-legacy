@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterEStepFull.java,v 1.4 2009/09/20 17:18:01 pah Exp $
+ * $Id: ClusterEStepFull.java,v 1.5 2010/01/05 21:27:13 pah Exp $
  * 
  * Created on 11 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -457,7 +457,7 @@ public class ClusterEStepFull {
         //  we need first calculate its mean
         for (int i = 0 ; i < ndata; i++){
             for (int j = 0 ; j < K; j++){
-                sgm = add(bp.sliceRow(i), eps);
+                sgm = add(bp.sliceRow(j), eps);
                 datai = data_bin.sliceRow(i);
                 aux9.set(i,j, sum(add(times(datai,log(sgm)),times(sub(1.0,datai),log(sub(1.0,sgm))))));
             }
@@ -517,6 +517,9 @@ public class ClusterEStepFull {
 
 /*
  * $Log: ClusterEStepFull.java,v $
+ * Revision 1.5  2010/01/05 21:27:13  pah
+ * basic clustering translation complete
+ *
  * Revision 1.4  2009/09/20 17:18:01  pah
  * checking just prior to bham visit
  *

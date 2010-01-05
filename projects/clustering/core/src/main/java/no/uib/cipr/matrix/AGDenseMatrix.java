@@ -1,5 +1,5 @@
 /*
- * $Id: AGDenseMatrix.java,v 1.5 2009/09/22 07:04:16 pah Exp $
+ * $Id: AGDenseMatrix.java,v 1.6 2010/01/05 21:27:13 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -44,6 +44,10 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
      */
     public AGDenseMatrix(final double[][] values) {
         super(values);
+    }
+    
+    public AGDenseMatrix(){
+        this(new double[][]{{}});
     }
 
     /**
@@ -280,6 +284,13 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
        
        return retval;
     }
+    public Vector sliceCol(final int colstart) {
+        
+        final double vals[] = new double[this.numRows];
+        System.arraycopy(this.data, colstart*this.numRows, vals, 0, this.numRows);
+        
+        return new DenseVector(vals);
+     }
 
     public Matrix ones() {
        Arrays.fill(data, 1.0);
@@ -601,10 +612,63 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
     	
     	
     }
+
+    public Matrix delCol(int k) {
+        if(k >= numColumns || k < 0){
+            throw new IllegalArgumentException("illegal column number");
+            
+        }
+        if (k < numColumns -1){
+            System.arraycopy(data, (k+1)*numRows, data, k*numRows, (numColumns-k-1)*numRows);//IMPL perhaps should copy into fresh array rather than reuse....
+        }
+        numColumns--;
+        return this;
+     
+    }
+
+    public Matrix delRow(int del) {
+ 
+        double[] newarr = new double[(numRows -1)*
+                                     numColumns];
+        int isrc, idest, i = 0, niter;
+        if(del == 0){
+            isrc = 1;
+            idest = 0;
+            niter = numColumns;
+        } else
+        {
+            System.arraycopy(data, 0, newarr, 0, del);
+            isrc = del +1;
+            idest = del;
+            niter = numColumns -1;
+            
+        }
+        while ( i < niter)
+        {
+            System.arraycopy(data, isrc, newarr, idest, numRows -1);
+            isrc += numRows;
+            idest += numRows -1;
+            ++i;
+        }
+        
+        if(del != 0){
+            //copy last bit
+            System.arraycopy(data, isrc, newarr, idest, numRows -1 - del);
+        }
+        data = newarr;
+        numRows--;
+        return this;
+    }
+    
+    
+    
 }
 
 /*
  * $Log: AGDenseMatrix.java,v $
+ * Revision 1.6  2010/01/05 21:27:13  pah
+ * basic clustering translation complete
+ *
  * Revision 1.5  2009/09/22 07:04:16  pah
  * daily checkin
  *

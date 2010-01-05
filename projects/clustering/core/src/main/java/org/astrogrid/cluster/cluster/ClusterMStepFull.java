@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterMStepFull.java,v 1.4 2009/09/20 17:18:01 pah Exp $
+ * $Id: ClusterMStepFull.java,v 1.5 2010/01/05 21:27:13 pah Exp $
  * 
  * Created on 12 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -279,7 +279,7 @@ public class ClusterMStepFull {
                 for (int i = 0; i <dim_mul; i++){
                     mp.set(k,i, sum(times(q.sliceCol(k, 1),data_mul.sliceCol(i, 1)).asVector()));
                 }
-                mp.setColumn(k, mp.sliceRow(k).scale(1.0/(sum(mp.sliceRow(k))+eps)));
+                mp.setRow(k, mp.sliceRow(k).scale(1.0/(sum(mp.sliceRow(k))+eps)));
             }
             mu.append(mp.asVector());
         }
@@ -331,6 +331,9 @@ public class ClusterMStepFull {
 
 /*
  * $Log: ClusterMStepFull.java,v $
+ * Revision 1.5  2010/01/05 21:27:13  pah
+ * basic clustering translation complete
+ *
  * Revision 1.4  2009/09/20 17:18:01  pah
  * checking just prior to bham visit
  *

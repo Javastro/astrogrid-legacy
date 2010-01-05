@@ -1,5 +1,5 @@
 /*
- * $Id: Clustering.java,v 1.6 2009/09/20 17:18:01 pah Exp $
+ * $Id: Clustering.java,v 1.7 2010/01/05 21:27:13 pah Exp $
  * 
  * Created on 26 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -18,17 +18,28 @@ import java.util.List;
 import no.uib.cipr.matrix.AGDenseMatrix;
 import no.uib.cipr.matrix.Vector;
 
+import org.astrogrid.cluster.cluster.ClusterErr.ClusterErrResult;
+import org.astrogrid.cluster.cluster.Mixtures.MixtureKind;
+import org.astrogrid.cluster.cluster.Mixtures.Retval;
 import org.astrogrid.cluster.cluster.RobustClusterErr.RobustClusterErrResult;
 import org.astrogrid.matrix.Matrix;
 import static org.astrogrid.matrix.Algorithms.*;
 import static org.astrogrid.matrix.MatrixUtils.*;
 import static java.lang.Math.*;
 
+/**
+ * @TODO return the latent variable estimates as well.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 4 Jan 2010
+ * @version $Name:  $
+ * @since AIDA Stage 1
+ */
 public class Clustering {
 // 1. clustering for data sets with mixed-type variables% 
 // 3. clustering for real data sets with outliers
 // 4. MML for determing the optimal number of clusters.
 //    function [output errlog]=  R, bestpp, bestmu, bestcov, errlog
+    
+    
       public static class ClusteringResults {
         public final Matrix R;
         public final Vector bestpp;
@@ -126,16 +137,10 @@ public class Clustering {
         i_dim   = 0;
     }
     
-    Matrix R, bestmu, bestcov, lbestmu, lbestcov;
     Matrix vartype;
-    Vector bestpp, O;
+    AGDenseMatrix lbestmu, lbestcov;
     int bestk = mml_max;     // the default value for the optimal no. of classes
-    CovarianceKind ctype = cv_type;    // the covariance type
-    int ndata, ndim, sizeall;
-    List<Double> errlog ;
     ClusteringResults  retval = null;
-    
-    AGDenseMatrix allinfo = new AGDenseMatrix(0,0);
     
     if( !mix_var ){       // no mixed variables
 // no mixed-type variables
@@ -144,97 +149,39 @@ public class Clustering {
             Util.disp("mml for clustering without outlier");
             
             data = data.sliceCol(0, c_dim+e_dim);
-            /*DOLATER
-            [bestk,bestpp,bestmu,bestcov,R]=mixtures4(data, //was data'
+           
+            
+             Retval mixret = Mixtures.mixtures4(data, //was data'
                     mml_min,mml_max,
-                mml_reg,tol,cv_type);
-            
-            System.out.printf("The optimal number of clusters is %d\n", bestk);
-// bestk     -- the optimal number of clusters
-// bestpp    -- the mixture probabilities
-// bestmu    -- the estimated mean of the clusters
-// bestcov   -- the estimated covariance matrix for the clusters
-// R         -- the present 
-            ndata = data.numRows();
-            ndim = c_dim +e_dim;
-            if (cv_type == CovarianceKind.free){    // full covariance            
-                sizeall = 2+bestk+bestk*ndim+bestk*ndim*ndim+ndata*bestk;
-            }else if( cv_type == CovarianceKind.diagonal) {// diagonal covariance
-                sizeall = 2+bestk+bestk*ndim+bestk*ndim+ndata*bestk;
-            }else if( cv_type == CovarianceKind.common){ // spherical covariance
-                sizeall = 2+bestk+bestk*ndim+bestk+ndata*bestk;
-            }
-// allinfo --  all the results obtained from the training. The
-// results includes
-// 1. the size of the information
-// 2. covariance type
-// 3. the optimal number of clusters
-// 4. the mix proportion 
-// 5. the estimated mean
-// 6. the estimated covariance matrix
-// 7. the responsibilities
-// all the information will be included in an ascii data file with
-// fixed rows (the number of rows is ndata)        
-            allinfo.append(sizeall);
-            allinfo.append(bestk);
-            allinfo.append(bestpp);
-            allinfo.append(bestmu.asVector());
-            allinfo.append(bestcov.asVector());
-            allinfo.append(R.asVector());
-            
-// calculate the number of columns needed
-            int colnos;
-            if( rem(sizeall,ndata) != 0){
-                colnos = (int) (floor(sizeall/ndata)+1);
-            }else{
-                colnos = sizeall/ndata;
-            }
-            int allsize = ndata*colnos;
-            allinfo.append(zeros(allsize-sizeall,1).asVector());
-            
-            y = [];        ini = 0;        text = [];
-            for(int k = 0; k <colnos; k++){
-                textk = num2str(k);
-                text = [text, "col", textk, ","];
-                tk = allinfo(ini+1:ini+ndata);
-                y = [y tk];
-                ini = ini + ndata;
-            }
-            textk = num2str(colnos);
-            text = [text, "col", textk];
-            tk = allinfo(ini+1:ini+ndata);
-            y = [y tk];
-            ini = ini+ndata;
-            if (ini!= allsize){
-                Util.disp( "the number of size is not right");
-                return;
-            }
-            
-            output = writeascii(text, y, output);
-            errlog = [];
-            */
-        }
+                mml_reg,tol,cv_type,MixtureKind.Gaussian,1.0);
+             
+             retval = new ClusteringResults(mixret.R, mixret.bestpp, mixret.bestmu, mixret.bestcov.get(mixret.bestk-1), mixret.loglik);
+             System.out.printf("The optimal number of clusters is %d\n", mixret.bestk);
+      }
         if(c_dim != 0 & mml  & outlier){
             Util.disp ("mml for clustering with outlier");
-            /*DOLATER
+          
             
-            data = data(:,1:c_dim+e_dim);
-            [bestk,bestpp,bestmu,bestcov,R]=tmixtures(data //was dat'
+            data = data.sliceCol(0, c_dim+e_dim);
+            
+            Retval mixret = Mixtures.mixtures4(data //was dat'
                   ,mml_min,mml_max,
-                mml_reg,tol,cv_type,1.0);
-            System.out.printf("The optimal number of clusters is %d\n", bestk);
-            */
+                mml_reg,tol,cv_type,MixtureKind.TDistribution,1.0);
+            System.out.printf("The optimal number of clusters is %d\n", mixret.bestk);
+            retval = new ClusteringResults(mixret.R, mixret.bestpp, mixret.bestmu, mixret.bestcov.get(mixret.bestk-1), mixret.loglik);
+          
         }    
 // real data without error information and without outliers
         if(c_dim != 0 & !mml  & !outlier  & !err_dim){
             vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,0},{4,0},{5,0},{6,0}});
            Util.disp("clustering without outlier and without error");
-           /*DOLATER
+          
            
-            [R, bestpp, bestmu, bestcov, errlog] = cluster_err(data, vartype, mml_max, 
+             ClusterErrResult rce = ClusterErr.cluster_err(data, vartype, mml_max, 
                 niters, tol, cv_type);
-                     DOLATER*/
-
+             retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+             
+                     
         }
 // real data without error information, but with outliers
         if(c_dim != 0 & !mml  & outlier & !err_dim ){
@@ -247,8 +194,8 @@ public class Clustering {
             retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
             // still need lbestmu;lbestcv; C;
 
-           lbestmu = rce.lmu; lbestcov =rce.lcv;
-           O = rce.O; 
+            lbestmu = rce.lmu; lbestcov =rce.lcv;
+         
         }
 // real data with error information and without outliers
         if(c_dim == 0 & !mml  & !outlier  & err_dim ){
@@ -257,11 +204,12 @@ public class Clustering {
                 cv_type = CovarianceKind.diagonal;    // we only consider diagnoal covariance matrix
             }
            Util.disp("clustering without outlier and with error");
-           /*DOLATER
+           
             
-            [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, errlog]=cluster_err(data, vartype, mml_max,
+            ClusterErrResult rce = ClusterErr.cluster_err(data, vartype, mml_max,
                 niters, tol, cv_type);        
-            */       
+            retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+       
         }
 // real data with error information and outlier
         if(c_dim == 0 & !mml  & outlier & err_dim){
@@ -278,32 +226,29 @@ public class Clustering {
 // use mixture of binomial distribution
            vartype = new AGDenseMatrix(new double[][]{{1,0},{2,0},{3,b_dim},{4,0},{5,0},{6,0}}); 
            Util.disp("clustering for binary data");
-           /*DOLATER
+           
 
-            [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, errlog] = 
-                cluster_err(data, vartype, mml_max, niters, 
-                tol, cv_type);
+             ClusterErrResult rce = ClusterErr.cluster_err(data, vartype, mml_max, niters, 
+            tol, cv_type);
 
-        */
+            retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+
            }
         if(m_dim != 0){
            Util.disp("clustering for categorical data");
             
             vartype = new AGDenseMatrix(new double[][]{{1,0},{2,0},{3,0},{4,m_dim},{5,0},{6,0}});
-            /*DOLATER
-            [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, errlog] = 
-                cluster_err(data, vartype, mml_max, niters, tol, cv_type);
-            */  
+            ClusterErrResult rce = ClusterErr.cluster_err(data, vartype, mml_max, niters, tol, cv_type);
+            retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+
         }
         if(i_dim != 0){
-            vartype = new AGDenseMatrix(new double[][]{{1,0},{2,0},{3,0},{4,0},{5,i_dim},{6,0}});
+           vartype = new AGDenseMatrix(new double[][]{{1,0},{2,0},{3,0},{4,0},{5,i_dim},{6,0}});
            Util.disp("clustering for integer data");
-           /*DOLATER
-
-            [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, errlog] = 
-                cluster_err(data, vartype, mml_max, niters, 
-                tol, cv_type);
-            */    
+           ClusterErrResult rce = ClusterErr.cluster_err(data, vartype, mml_max, niters, 
+        tol, cv_type);
+           retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+ 
         }
     }
 // Taking error information into consideration and outliers
@@ -318,7 +263,7 @@ public class Clustering {
             data, vartype, mml_max, niters, tol, cv_type);    
          
          retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
-         // still need lbestmu;lbestcv; C;
+         //FIXME still need lbestmu;lbestcv; C;
          
          //R = rce., bestpp; bestmu; bestcov;  errlog;
     }
@@ -327,35 +272,36 @@ public class Clustering {
 // with mixed variable types  
         vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,e_dim},{3,b_dim},{4,m_dim},{5,i_dim},{6,e_dim}});
        Util.disp("clustering for mix-type data with error and without outlier");
-/*DOLATER
+
         if(cv_type == CovarianceKind.free){
-            cv_type = 1;
+            cv_type = CovarianceKind.diagonal;
         }
-        ndata = size(data,1);
-        [R, bestpp, bestmu, bestcov, lbestmu, lbestcv, errlog] = cluster_err(data, 
+        ClusterErrResult rce = ClusterErr.cluster_err(data, 
             vartype, mml_max, niters, tol, cv_type);    
-        */
+        retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+
     }
 // No error information, with outliers
     if(mix_var  & !err_dim  & outlier){
 // with mixed variable types 
 // first specify the variable types
        Util.disp("clustering for mix-type data without error and with outlier");
-       /*DOLATER       
+          
         vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,b_dim},{4,m_dim},{5,i_dim},{6,0}});
-        [R, bestpp, bestmu, bestcov, lbestmu, lbestcv, C, errlog]=robust_cluster_err(
+        RobustClusterErrResult rce = RobustClusterErr.robust_cluster_err(
             data, vartype, mml_max, niters, tol, cv_type);
-        */
+        retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+
     }
 // No error information, no outliers
     if(mix_var  & !err_dim  & !outlier){
 // with mixed variable types  
        Util.disp("clustering for mix-type data without error and without outlier");
-       /*DOLATER
+      
         vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,b_dim},{4,m_dim},{5,i_dim},{6,0}});
-        [R, bestpp, bestmu, bestcov, lbestmu, lbestcov, errlog] = 
-            cluster_err(data, vartype,mml_max,niters, tol, cv_type);
-         */
+        ClusterErrResult rce = ClusterErr.cluster_err(data, vartype,mml_max,niters, tol, cv_type);
+        retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+
     }  
     
     return retval;
@@ -369,6 +315,9 @@ public class Clustering {
 }
 /*
  * $Log: Clustering.java,v $
+ * Revision 1.7  2010/01/05 21:27:13  pah
+ * basic clustering translation complete
+ *
  * Revision 1.6  2009/09/20 17:18:01  pah
  * checking just prior to bham visit
  *

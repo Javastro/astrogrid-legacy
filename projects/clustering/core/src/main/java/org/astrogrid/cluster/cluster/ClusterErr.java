@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterErr.java,v 1.3 2009/09/16 16:53:06 pah Exp $
+ * $Id: ClusterErr.java,v 1.4 2010/01/05 21:27:12 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -18,6 +18,7 @@ import java.util.List;
 import no.uib.cipr.matrix.AGDenseMatrix;
 import no.uib.cipr.matrix.Vector;
 
+import org.astrogrid.cluster.cluster.ClusterMStep.Retval;
 import org.astrogrid.matrix.Matrix;
 import static org.astrogrid.matrix.MatrixUtils.*;
 import static org.astrogrid.matrix.Algorithms.*;
@@ -153,7 +154,7 @@ public class ClusterErr {
         }
         if (ndim_mul != 0){
         //     mp = ones(K, ndim_mul)/K;
-            Matrix mp = dirichlet_sample(ones(1,ndim_mul),K);
+            Matrix mp = dirichlet_sample(ones(1,ndim_mul).asVector(),K);
             mu.append(mp.asVector());
         }
         if (ndim_int != 0){
@@ -170,25 +171,31 @@ public class ClusterErr {
         boolean stop = false;
         int iter = 0;
         java.util.List<Double> loglik = new ArrayList<Double>();
-
+        AGDenseMatrix q = null;
         while (!stop){
             //----------------------------------------------------------------------
             //   E-step
             //----------------------------------------------------------------------
-            q = clustering_e_step(alldata, datatype, K, mu, cv, lmu, lcv, p, 
+              q = ClusterEStep.clustering_e_step(alldata, datatype, K, mu, cv, lmu, lcv, p, 
                 cv_type);
             //----------------------------------------------------------------------
             //   M-step
             //----------------------------------------------------------------------
-            [mu cv lmu lcv p] = clustering_m_step(alldata, datatype, K, q, lcv, 
+             Retval mretval = ClusterMStep.clustering_m_step(alldata, datatype, K, q, lcv, 
                 cv_type);
+             mu = mretval.mu;
+             cv = mretval.cv;
+             lmu = mretval.lmu;
+             lcv = mretval.lcv;
+             p = mretval.p;
+             
             //----------------------------------------------------------------------
             //   bound
             //----------------------------------------------------------------------
-            double loglike = clustering_bound(alldata, datatype, K, mu, cv, lmu, lcv, p,
+            double loglike = ClusterBound.clustering_bound(alldata, datatype, K, mu, cv, lmu, lcv, p,
                 q, cv_type);
 
-            fprintf("In generation %d, the log likelihood bound is %f\n", iter, loglike);
+            System.out.printf("In generation %d, the log likelihood bound is %f\n", iter, loglike);
             
             loglik.add(loglike);
             if (iter > 0 && abs((loglik.get(iter)-loglik.get(iter-1))/loglik.get(iter-1))<tol){
@@ -199,6 +206,9 @@ public class ClusterErr {
             }
             iter = iter + 1;    
         }
+        
+        
+        return new ClusterErrResult(q, p, mu, cv, lmu, lcv, loglik);
    
     }
 }
@@ -206,6 +216,9 @@ public class ClusterErr {
 
 /*
  * $Log: ClusterErr.java,v $
+ * Revision 1.4  2010/01/05 21:27:12  pah
+ * basic clustering translation complete
+ *
  * Revision 1.3  2009/09/16 16:53:06  pah
  * daily edit
  *
