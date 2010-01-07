@@ -6,9 +6,6 @@ package org.astrogrid.desktop.modules.system;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -17,13 +14,10 @@ import javax.swing.ImageIcon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.apache.commons.collections.Factory;
-import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /** System tray implementation for Java6 libraries.
  * reuses much of the machinery of the fallback system tray.
@@ -34,7 +28,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 20, 200710:30:07 AM
  */
-public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInternal, ActionListener {
+public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInternal {
 
 	private final Preference appToLaunch;
 
@@ -83,7 +77,8 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
             logger.info("Starting Java 1.6 Systemtray");
             try {
                 ReflectionHelper.call(systemTray,"add",trayIcon);
-                ReflectionHelper.call(trayIcon,"addActionListener",this);
+                // don't want to add an action listener after all.
+                //ReflectionHelper.call(trayIcon,"addActionListener",this);
             } catch (final Throwable x) {
                 logger.warn("Failed to call SystemTray.add() - belatedly falling back",x);
                 java6Failed = true;
@@ -254,20 +249,22 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
 	        }		
 	    }
 	}
-	/** show main window, or create a new one */
-    public void actionPerformed(final ActionEvent e) {
-        final UIComponent win = context.findMainWindow();
-        if (win == null || win instanceof HeadlessUIComponent) {
-            final String factoryName = appToLaunch.getValue();
-            final Factory o = context.getWindowFactories().get(factoryName);
-            if (o != null ) {
-                o.create();
-            }
-        } else {
-            win.setVisible(true);
-            final Window w = (Window)win.getComponent();
-            w.toFront();
-            w.requestFocus();
-        }
-    }
+	// don't implement an action listener - can be disruptive - displaing the wrong window.
+//	/** show main window, or create a new one */
+//    public void actionPerformed(final ActionEvent e) {
+//        System.err.println(e.getSource());
+//        final UIComponent win = context.findMainWindow();
+//        if (win == null || win instanceof HeadlessUIComponent) {
+//            final String factoryName = appToLaunch.getValue();
+//            final Factory o = context.getWindowFactories().get(factoryName);
+//            if (o != null ) {
+//                o.create();
+//            }
+//        } else {
+//            win.setVisible(true);
+//            final Window w = (Window)win.getComponent();
+//            w.toFront();
+//            w.requestFocus();
+//        }
+//    }
 }
