@@ -15,6 +15,9 @@ public abstract class ResourceFolder extends Folder{
 	/** whether this resource is 'fixed' - cannot be removed by user.*/
 	private boolean fixed = false;
 
+	
+	/** a description of this folder - can be displayed as a tooltip */
+	private String description;
     /**
      * URL of XML specification of this item.  If non-null the item
      * may/should be regenerated from the XML at this location if possible.
@@ -56,6 +59,14 @@ public abstract class ResourceFolder extends Folder{
 
 	public boolean isFixed() {
 		return fixed;
+	}
+	
+	public void setDescription(final String s) {
+	    this.description = s;
+	}
+	
+	public String getDescription() {
+	     return this.description;
 	}
 
     /**

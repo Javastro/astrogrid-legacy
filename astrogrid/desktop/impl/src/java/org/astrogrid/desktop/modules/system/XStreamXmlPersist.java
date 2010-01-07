@@ -84,6 +84,7 @@ public class XStreamXmlPersist implements XmlPersist {
         xstream.useAttributeFor(ResourceFolder.class,"subscription");
         xstream.useAttributeFor(Folder.class,"name");
         xstream.useAttributeFor(Folder.class,"iconName");
+        xstream.useAttributeFor(ResourceFolder.class,"description");
 
         xstream.alias("branch",BranchBean.class);
         xstream.alias("resource-branch",ResourceBranch.class);

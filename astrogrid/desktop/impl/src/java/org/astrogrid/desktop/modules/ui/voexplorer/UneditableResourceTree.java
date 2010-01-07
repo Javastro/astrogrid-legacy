@@ -10,6 +10,7 @@ import java.util.Enumeration;
 import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -23,6 +24,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.ResourceTreeModel;
@@ -62,7 +64,8 @@ public class UneditableResourceTree extends JTree {
         model.addTreeModelListener(expander);
         expander.ensureRootExpanded();
 
-        setCellRenderer(RESOURCE_RENDERER);        
+        setCellRenderer(RESOURCE_RENDERER);  
+        ToolTipManager.sharedInstance().registerComponent(this);
     }
     /**
      * Returns the folder associated with a given tree node.
@@ -266,6 +269,10 @@ public class UneditableResourceTree extends JTree {
                 label.setText(folder.getName());
                 label.setIcon(folder.getIcon());
                 label.setDisabledIcon(null);
+                final String desc = folder.getDescription();
+                if (StringUtils.isNotEmpty(desc)) {
+                    label.setToolTipText(desc);
+                }
             }
             return comp;
         }
