@@ -22,7 +22,6 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 /** Open QueryBuilder for the selected resource.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20074:13:13 PM
- * @TEST unit test where possible.
  */
 public final class BuildQueryActivity extends AbstractFileOrResourceActivity {
 /**
@@ -31,9 +30,9 @@ public final class BuildQueryActivity extends AbstractFileOrResourceActivity {
 public BuildQueryActivity(final QueryBuilderInternal t) {
 	this.t = t;
 	setHelpID("activity.adql");	
-	setText("Build ADQL");
+	setText("ADQL Query");
 	setIcon(IconHelper.loadIcon("db16.png"));
-	setToolTipText("Construct an ADQL (CEA) query against the selected table descriptions");
+	setToolTipText("Construct an ADQL (CEA) Query against the selected table descriptions");
    // setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2,UIComponentMenuBar.MENU_KEYMASK));	
 }
 // thing to invoke
