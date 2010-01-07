@@ -913,7 +913,7 @@
             <properties>
                <upgraded>2008-04-14</upgraded>              
                 <dist.bundle>true</dist.bundle>
-                <strip>false</strip><!-- started whinging about missing piccolo -->
+                <strip>false</strip><!-- can't strip this anymore - not worth delving into. -->
             </properties>
         </dependency>        
           <dependency>
