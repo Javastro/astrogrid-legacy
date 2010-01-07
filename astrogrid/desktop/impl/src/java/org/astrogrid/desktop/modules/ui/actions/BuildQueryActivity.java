@@ -13,6 +13,7 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.QueryBuilderInternal;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
@@ -189,10 +190,12 @@ private final QueryBuilderInternal t;
 	// accept a single database schema, or a single queriable service.
 	@Override
     public boolean invokable(final Resource resource) {
-		return
-		        (resource instanceof CatalogService && resource instanceof CeaService)
-		    ||
-				 (resource instanceof CeaApplication && hasAdqlParameter((CeaApplication)resource));
+		return (! (resource instanceof TapService)) // if it's TAP, just presnent that activity - not this one.
+		    && (
+		            (resource instanceof CatalogService && resource instanceof CeaService)
+		            ||
+		            (resource instanceof CeaApplication && hasAdqlParameter((CeaApplication)resource))
+		      );
 
 	}
 
