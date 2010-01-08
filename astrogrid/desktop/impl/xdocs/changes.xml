@@ -14,6 +14,12 @@
 	</head>
 <body>
 <release version="1.3.2.beta3" date="unreleased">
+    <action dev="nw" action="update">
+    VOExplorer: updated examples lists, added a 'sandbox', moved 'recent changes' to top level
+    </action>
+    <action dev="nw" action="add">
+    VOExplorer: added 'description' field to xml representation of a resource list. If set, displays as a tooltip in the voexplorer resource tree.
+    </action>
     <action dev="nw" action="remove">
     VOExplorer: removed 'build cea query' option when resource also has a TAP capability.
     </action>

@@ -405,6 +405,7 @@ public class ResourceTree extends UneditableResourceTree {
      * @param  node  selected node
      */
     private void tailorActionsToResource(final DefaultMutableTreeNode node) {
+        final boolean isFixed = node != null && getFolder(node).isFixed();
         final boolean parentNotFixed;
         if (node != null) {
             final DefaultMutableTreeNode parent =
@@ -419,10 +420,10 @@ public class ResourceTree extends UneditableResourceTree {
         else {
             parentNotFixed = false;
         }
-        remove.setEnabled(parentNotFixed);
-        properties.setEnabled(isEditable(node));
+        remove.setEnabled(! isFixed && parentNotFixed);
+        properties.setEnabled(! isFixed && isEditable(node));
                               
-        rename.setEnabled(parentNotFixed);
+        rename.setEnabled(! isFixed && parentNotFixed);
         duplicate.setEnabled(node != null);
         refresh.setEnabled(node != null);
         export.setEnabled(node != null);

@@ -10,6 +10,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
@@ -35,6 +36,8 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
      */
     private final String examplesLocation;
     private static final String EXAMPLES_NODE_NAME = "Examples";
+    private static final String SANDBOX_NODE_NAME = "Sandbox";
+    private static final String RECENT_NODE_NAME ="Recent Changes";
 
     /**
      * Constructor.
@@ -56,55 +59,96 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
         examplesPreference.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(final PropertyChangeEvent evt) {
-                refreshExamples((DefaultMutableTreeNode)getDefaultTreeModel().getRoot());
+                refreshPreCannedLists((DefaultMutableTreeNode)getDefaultTreeModel().getRoot());
             }
         });
     }
 
     /**
      * Loads the tree representation from its persistent home on disk, and
-     * doctors it if necessary to contain an Examples folder.  This will
+     * doctors it if necessary to contain the precanned folders.  This will
      * normally only be necessary when loading a resources persisted by
      * an earlier version of this class.
-     * Note however that it means the user cannot delete the Examples node
-     * persistently.  I claim this is a Feature.
+     * Note however that it means the user cannot delete the precanned nodes
+     * permenently.  I claim this is a Feature.
      */
     @Override
     public DefaultMutableTreeNode load() throws IOException, ServiceException {
         final DefaultMutableTreeNode root = super.load();
         if (root != null && root.getAllowsChildren()) {
-            refreshExamples(root);
+            refreshPreCannedLists(root); 
         }
         return root;
     }
-
-    /** adjusts tree to remove any obselete examples nodes,
-     * and ensures that a current exammples node is present.
-     * @param root
-     */
-    private void refreshExamples(final DefaultMutableTreeNode root) {
-        final DefaultMutableTreeNode examplesNode = findExamples(root);
-        if (examplesNode == null) { // no examples node
-            root.insert(createExamplesNode(), 0);
-        } else { // an obsolete examples note - either no subscription, or pointing to a different location than current preference.
-            final ResourceFolder examplesFolder = (ResourceFolder) examplesNode.getUserObject();                
-            if (examplesFolder.getSubscription() == null || ! examplesLocation.equals(examplesFolder.getSubscription())) {
-            root.remove(examplesNode);
-            root.insert(createExamplesNode(),0);
-            }
-        }
-    }
-
+    /** overridden to prepopulate with examples, sandbox, and recent changes */
     @Override
     public DefaultMutableTreeNode getDefaultRoot() {
         final DefaultMutableTreeNode root =
             new DefaultMutableTreeNode(new ResourceBranch("Resource Lists"), true);
-        root.insert(createExamplesNode(), 0);
+        root.insert(createRecentNode(),0);
+        root.insert(createExamplesNode(), 1); 
+        root.insert(createSandboxNode(),2);
         return root;
     }
 
+    /** adjusts tree to remove any obselete examples nodes,
+     * and ensures that a current exammples, sandbox, recent changes node is present.
+     * @param root
+     */
+    private void refreshPreCannedLists(final DefaultMutableTreeNode root) {
+        final DefaultMutableTreeNode recent = findResourceFolder(root, XQueryList.class, RECENT_NODE_NAME);
+        if (recent == null || ! root.equals(recent.getParent())) { // no changes
+            root.insert(createRecentNode(),0);
+        }
+        final DefaultMutableTreeNode examplesNode = findResourceFolder(root, ResourceBranch.class, EXAMPLES_NODE_NAME);
+        if (examplesNode == null || ! root.equals(examplesNode.getParent())) { // no examples node
+            root.insert(createExamplesNode(), 1);
+        } else { // an obsolete examples note - either no subscription, or pointing to a different location than current preference.
+            final ResourceFolder examplesFolder = (ResourceFolder) examplesNode.getUserObject();                
+            if (examplesFolder.getSubscription() == null || ! examplesLocation.equals(examplesFolder.getSubscription())) {
+            root.remove(examplesNode);
+            root.insert(createExamplesNode(),1);
+            }
+        }
+
+        final DefaultMutableTreeNode sandbox = findResourceFolder(root, ResourceBranch.class,SANDBOX_NODE_NAME);
+        if (sandbox == null || ! root.equals(sandbox.getParent())) {
+            root.insert(createSandboxNode(),2);
+        }
+    }
+    
+    // above code handles all required changes apart from changing contents of an existing examples folder
+    // but this should update when we edit the subscription.
+
+
+
+    /** seatch for a particular folder
+     * @param searchRoot tree node to search from
+     * @param searchClass the class of folder to look for.
+     * @param searchName the name of the folder to look for
+     * @return the first matching folder, or null.
+     */
+    private DefaultMutableTreeNode findResourceFolder(
+            final DefaultMutableTreeNode searchRoot,
+            final Class<? extends ResourceFolder> searchClass,
+            final String searchName) {
+        if (searchRoot.getAllowsChildren()) {
+            for (final Enumeration<DefaultMutableTreeNode> en = searchRoot.children(); en.hasMoreElements();) {
+                final DefaultMutableTreeNode child = en.nextElement();
+                final ResourceFolder folder = (ResourceFolder) child.getUserObject();
+                if ( searchClass.isInstance(folder) 
+                    && searchName.equals(folder.getName())
+                    ) {
+                    return child;
+                }
+            }
+        }
+        return null;
+    }
+    
+    // create the pre-canned nodes.
     /**
-     * Generates a list of example folders.
+     * Generates the list of example folders. - acts as a backup for the examples subscription - these appear if the subscription is not available.
      */
     private DefaultMutableTreeNode createExamplesNode() {
         final ResourceBranch examplesBranch = new ResourceBranch(EXAMPLES_NODE_NAME);
@@ -113,144 +157,168 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
         examplesBranch.setSubscription(examplesLocation);
         examplesBranch.setIconName("myspace16.png");
         examplesBranch.setFixed(true); // indicates that these cannot be edited.
-        final DefaultMutableTreeNode examplesNode =
-            new DefaultMutableTreeNode(examplesBranch, true);
-        final ResourceFolder[] folders = getExampleFolders();
+        examplesBranch.setDescription("Example lists - not editable");
+        final DefaultMutableTreeNode examplesNode =new DefaultMutableTreeNode(examplesBranch, true);
+        final ResourceFolder[] folders = exampleTemplate();
         for (int i = 0; i < folders.length; i++) {
             examplesNode.add(new DefaultMutableTreeNode(folders[i], false));
         }
         return examplesNode;
     }
-
-    /**
-     * Determines whether the given node has an Examples element as a child.
-     *
-     * @param  node  node to test
-     * @return  the MutableTreeNode containing the examples resource folder, or null if not present
-     */
-    private DefaultMutableTreeNode findExamples(final DefaultMutableTreeNode node) {
-        if (node.getAllowsChildren()) {
-            for (final Enumeration en = node.children(); en.hasMoreElements();) {
-                final DefaultMutableTreeNode child =
-                    (DefaultMutableTreeNode) en.nextElement();
-                final ResourceFolder folder = (ResourceFolder) child.getUserObject();
-                if (folder instanceof ResourceBranch 
-                    && EXAMPLES_NODE_NAME.equals(folder.getName())
-                    ) {
-                    return child;
-                }
-            }
-        }
-        return null;
+    
+    /** crearte the recent changes list */
+    private DefaultMutableTreeNode createRecentNode() {
+        final XQueryList list = new XQueryList("Recent Changes",
+                "let $thresh := current-dateTime() - xs:dayTimeDuration('P10D')\n" // 10 days
+                + "let $dthresh := current-date() - xs:dayTimeDuration('P10D')\n" // 10 days
+                + "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')]\n"
+                + "where  ($r/@updated castable as xs:dateTime and xs:dateTime($r/@updated) > $thresh)\n"
+                + "or ($r/@updated castable as xs:date and xs:date($r/@updated) > $dthresh)\n"
+                + "or ($r/@created castable as xs:dateTime and xs:dateTime($r/@created) > $thresh)\n"
+                + "or ($r/@created castable as xs:date and xs:date($r/@created) > $dthresh)\n"
+                + "return $r"
+        ); //@todo need to find a way to avoid caching - or to control the caching period of this entry.
+        // I suppose `efault cache is 3 days - that's not too bad.
+         list.setFixed(true);
+         list.setDescription("Recent changes to the registry. May be slow.");
+         list.setIconName("latest16.png");
+         
+         return new DefaultMutableTreeNode(list,false);
+         
     }
+    /** create the sandbox node */
+    private DefaultMutableTreeNode createSandboxNode() {
+        final ResourceBranch b = new ResourceBranch(SANDBOX_NODE_NAME);
+        b.setDescription("Editable examples");
+        b.setFixed(true); // cannot edit this folder, but can edit items below it.
+        b.setIconName("annotate16.png");
+        final DefaultMutableTreeNode sandboxNode =new DefaultMutableTreeNode(b, true);
+        final ResourceFolder[] folders = sandboxTemplate();
+        for (int i = 0; i < folders.length; i++) {
+            sandboxNode.add(new DefaultMutableTreeNode(folders[i], false));
+        }
+        return sandboxNode;        
+    }
+    
+    
+    /////////////////////////////////////////////////////////
+    // templates only below here.
 
-  
+
+    
+    private static ResourceFolder[] sandboxTemplate() {
+        final ResourceFolder[] folders;
+        try {
+            folders = new ResourceFolder[] {
+                    new SmartList("IR redshift","(ucd = REDSHIFT) AND (waveband = Infrared)")
+
+                    , new StaticList("SWIFT follow up",new String[]{
+                            "ivo://fs.usno/cat/usnob"
+                            ,"ivo://nasa.heasarc/rassvars"
+                            ,"ivo://nasa.heasarc/rassbsc"
+                            ,"ivo://nasa.heasarc/iraspsc"
+                            ,"ivo://nasa.heasarc/rassfsc"
+                            ,"ivo://sdss.jhu/services/DR5CONE"
+                            ,"ivo://ned.ipac/Basic_Data_Near_Position"
+                            ,"ivo://nasa.heasarc/xmmssc"
+                            ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
+                    })
+
+                    , new SmartList("Radio images","(waveband = Radio) and (capability = Image)")
+
+                    , new SmartList("Vizier AGN tables","(publisher = CDS) and (subject = agn) and (subject = not magnetic")                    
+            };
+        } catch (final InvalidArgumentException e) {
+            throw new ProgrammerError(e);
+        }
+        return folders;
+    }
+   
     /**
      * Returns an array of canned defaults for populating the tree.
      * the subscribed version will take precedence over these, if available.
      */
-    private static ResourceFolder[] getExampleFolders() {
+    private static ResourceFolder[] exampleTemplate() {
         ResourceFolder[] folders;
         try {
             folders = new ResourceFolder[] {
-                    new XQueryList("Recent Changes",
-                            "let $thresh := current-dateTime() - xs:dayTimeDuration('P10D')\n" // 10 days
-                            + "let $dthresh := current-date() - xs:dayTimeDuration('P10D')\n" // 10 days
-                            + "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')]\n"
-                            + "where  ($r/@updated castable as xs:dateTime and xs:dateTime($r/@updated) > $thresh)\n"
-                            + "or ($r/@updated castable as xs:date and xs:date($r/@updated) > $dthresh)\n"
-                            + "or ($r/@created castable as xs:dateTime and xs:dateTime($r/@created) > $thresh)\n"
-                            + "or ($r/@created castable as xs:date and xs:date($r/@created) > $dthresh)\n"
-                            + "return $r"
-                    ) //@todo need to find a way to avoid caching - or to control the caching period of this entry.
-                    // I suppose default cache is 3 days - that's not too bad.
-                    , new StaticList("VO taster list", new String[]{
-      "ivo://org.astrogrid/MERLINImager"
-      ,"ivo://wfau.roe.ac.uk/ukidssDR2-dsa/wsa/ceaApplication"
-      ,"ivo://irsa.ipac/2MASS-PSC"
-      ,"ivo://nasa.heasarc/fermilbsl"
-      ,"ivo://wfau.roe.ac.uk/xmm_dsa/wsa"
-      ,"ivo://stecf.euro-vo/SSA/HST/FOS"
-      ,"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
-      ,"ivo://stecf.euro-vo/siap/hst/preview"
-      ,"ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR"
-      ,"ivo://uk.ac.starlink/stilts"
-      ,"ivo://sdss.jhu/services/DR5CONE"
-      ,"ivo://nasa.heasarc/rc3"
-      ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
-      ,"ivo://uk.ac.cam.ast/IPHAS/images/SIAP"
-      ,"ivo://mast.stsci/siap-cutout/goods.hst"
+                    new StaticList("VO taster list", new String[]{
+                            "ivo://org.astrogrid/MERLINImager"
+                            ,"ivo://wfau.roe.ac.uk/ukidssDR2-dsa/wsa/ceaApplication"
+                            ,"ivo://irsa.ipac/2MASS-PSC"
+                            ,"ivo://nasa.heasarc/fermilbsl"
+                            ,"ivo://wfau.roe.ac.uk/xmm_dsa/wsa"
+                            ,"ivo://stecf.euro-vo/SSA/HST/FOS"
+                            ,"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
+                            ,"ivo://stecf.euro-vo/siap/hst/preview"
+                            ,"ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR"
+                            ,"ivo://uk.ac.starlink/stilts"
+                            ,"ivo://sdss.jhu/services/DR5CONE"
+                            ,"ivo://nasa.heasarc/rc3"
+                            ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
+                            ,"ivo://uk.ac.cam.ast/IPHAS/images/SIAP"
+                            ,"ivo://mast.stsci/siap-cutout/goods.hst"
                     })
                     // examples by service type
                     , new StaticList("Cone search examples", new String[]{
-                                "ivo://fs.usno/cat/usnob"
-                                , "ivo://irsa.ipac/2MASS-PSC"
-                                , "ivo://nasa.heasarc/first"
-                                , "ivo://sdss.jhu/services/DR5CONE"
-                                , "ivo://nasa.heasarc/iraspsc"
-                                , "ivo://irsa.ipac/2MASS-XSC"
-                                , "ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
-                                , "ivo://nasa.heasarc/rc3"
-                                , "ivo://wfau.roe.ac.uk/rosat-dsa/wsa"
-                                ,"ivo://nasa.heasarc/xmmssc"
-                                ,"ivo://wfau.roe.ac.uk/ukidssDR2-dsa/wsa/ceaApplication"
+                            "ivo://fs.usno/cat/usnob"
+                            , "ivo://irsa.ipac/2MASS-PSC"
+                            , "ivo://nasa.heasarc/first"
+                            , "ivo://sdss.jhu/services/DR5CONE"
+                            , "ivo://nasa.heasarc/iraspsc"
+                            , "ivo://irsa.ipac/2MASS-XSC"
+                            , "ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
+                            , "ivo://nasa.heasarc/rc3"
+                            , "ivo://wfau.roe.ac.uk/rosat-dsa/wsa"
+                            ,"ivo://nasa.heasarc/xmmssc"
+                            ,"ivo://wfau.roe.ac.uk/ukidssDR2-dsa/wsa/ceaApplication"
                     })
+                    
                     , new StaticList("Image access examples",new String[]{
-       "ivo://wfau.roe.ac.uk/sss-siap"
-      ,"ivo://nasa.heasarc/skyview/rass"
-      ,"ivo://mast.stsci/siap/vla-first"
-      ,"ivo://cadc.nrc.ca/siap/jcmt"
-       ,"ivo://cadc.nrc.ca/siap/hst"
-      ,"ivo://org.astrogrid/HDFImager"
-      ,"ivo://irsa.ipac/2MASS-ASKYW-AT"
-      ,"ivo://nasa.heasarc/skyview/nvss"
-      ,"ivo://uk.ac.cam.ast/IPHAS/images/SIAP"
-      ,"ivo://mast.stsci/siap-cutout/goods.hst"
-     ,"ivo://wfau.roe.ac.uk/ukidssdr2-siap"
+                            "ivo://wfau.roe.ac.uk/sss-siap"
+                            ,"ivo://nasa.heasarc/skyview/rass"
+                            ,"ivo://mast.stsci/siap/vla-first"
+                            ,"ivo://cadc.nrc.ca/siap/jcmt"
+                            ,"ivo://cadc.nrc.ca/siap/hst"
+                            ,"ivo://org.astrogrid/HDFImager"
+                            ,"ivo://irsa.ipac/2MASS-ASKYW-AT"
+                            ,"ivo://nasa.heasarc/skyview/nvss"
+                            ,"ivo://uk.ac.cam.ast/IPHAS/images/SIAP"
+                            ,"ivo://mast.stsci/siap-cutout/goods.hst"
+                            ,"ivo://wfau.roe.ac.uk/ukidssdr2-siap"
                     })
+                    
                     , new SmartList("Spectrum access examples","capability = Spectral")
-                    ,new SmartList("Remote applications","resourcetype = CeaApplication")
-                    ,new StaticList("Queryable database examples",new String[]{
-  "ivo://wfau.roe.ac.uk/ukidssDR2-dsa/wsa"
-      ,"ivo://wfau.roe.ac.uk/xmm_dsa/wsa"
-      ,"ivo://wfau.roe.ac.uk/iras-dsa/wsa"
-      ,"ivo://wfau.roe.ac.uk/6df-dsa/wsa"
-      ,"ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED"
-      ,"ivo://uk.ac.cam.ast/INT-WFS/merged-object-catalogue/INT_WFS_Merged_Object_catalogue"
-      ,"ivo://wfau.roe.ac.uk/ukidssDR4-v1/wsa"
-      ,"ivo://wfau.roe.ac.uk/first-dsa/wsa"
-      ,"ivo://uk.ac.cam.ast/INT-WFS/observation-catalogue/INT_WFS_DQC"
-      ,"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
-      ,"ivo://wfau.roe.ac.uk/rosat-dsa/wsa"
-      ,"ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR"
-      ,"ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa"
-      ,"ivo://wfau.roe.ac.uk/glimpse-dsa/wsa"
-      ,"ivo://wfau.roe.ac.uk/twomass-dsa/wsa"
-      ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
-                    })
                     
-                    // examples by wavelength / field.
-                    ,new SmartList("IR redshift","(ucd = REDSHIFT) AND (waveband = Infrared)")
-                    ,new SmartList("Solar services","subject=solar")
-                    , new StaticList("SWIFT follow up",new String[]{
-        "ivo://fs.usno/cat/usnob"
-      ,"ivo://nasa.heasarc/rassvars"
-      ,"ivo://nasa.heasarc/rassbsc"
-      ,"ivo://nasa.heasarc/iraspsc"
-      ,"ivo://nasa.heasarc/rassfsc"
-      ,"ivo://sdss.jhu/services/DR5CONE"
-      ,"ivo://ned.ipac/Basic_Data_Near_Position"
-      ,"ivo://nasa.heasarc/xmmssc"
-      ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
-                    })
-                    , new SmartList("Radio images","(waveband = Radio) and (capability = Image)")
-                    ,new SmartList("Vizier AGN tables","(publisher = CDS) and (subject = agn) and (subject = not magnetic")
-                    ,new SmartList("VOEvent services","default=voevent")
+                    , new SmartList("Remote applications","resourcetype = CeaApplication")
                     
+                    , new StaticList("Queryable database examples",new String[]{
+                            "ivo://wfau.roe.ac.uk/ukidssDR2-dsa/wsa"
+                            ,"ivo://wfau.roe.ac.uk/xmm_dsa/wsa"
+                            ,"ivo://wfau.roe.ac.uk/iras-dsa/wsa"
+                            ,"ivo://wfau.roe.ac.uk/6df-dsa/wsa"
+                            ,"ivo://uk.ac.cam.ast/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED"
+                            ,"ivo://uk.ac.cam.ast/INT-WFS/merged-object-catalogue/INT_WFS_Merged_Object_catalogue"
+                            ,"ivo://wfau.roe.ac.uk/ukidssDR4-v1/wsa"
+                            ,"ivo://wfau.roe.ac.uk/first-dsa/wsa"
+                            ,"ivo://uk.ac.cam.ast/INT-WFS/observation-catalogue/INT_WFS_DQC"
+                            ,"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
+                            ,"ivo://wfau.roe.ac.uk/rosat-dsa/wsa"
+                            ,"ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR"
+                            ,"ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa"
+                            ,"ivo://wfau.roe.ac.uk/glimpse-dsa/wsa"
+                            ,"ivo://wfau.roe.ac.uk/twomass-dsa/wsa"
+                            ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
+                    })
+
+                    , new SmartList("Solar services","subject=solar")
+                    
+                    , new SmartList("VOEvent services","default=voevent")
+
             };
         }
         catch (final InvalidArgumentException e) {
-            throw new RuntimeException("Programming error", e);
+            throw new ProgrammerError( e);
         }
         for (int i = 0; i < folders.length; i++) {
             folders[i].setFixed(true);

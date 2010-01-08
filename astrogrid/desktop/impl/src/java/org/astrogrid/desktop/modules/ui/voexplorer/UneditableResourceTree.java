@@ -24,7 +24,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.ResourceTreeModel;
@@ -269,10 +268,7 @@ public class UneditableResourceTree extends JTree {
                 label.setText(folder.getName());
                 label.setIcon(folder.getIcon());
                 label.setDisabledIcon(null);
-                final String desc = folder.getDescription();
-                if (StringUtils.isNotEmpty(desc)) {
-                    label.setToolTipText(desc);
-                }
+                label.setToolTipText(folder.getDescription());
             }
             return comp;
         }
