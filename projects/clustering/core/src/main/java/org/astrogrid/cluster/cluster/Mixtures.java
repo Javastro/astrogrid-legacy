@@ -1,5 +1,5 @@
 /*
- * $Id: Mixtures.java,v 1.4 2010/01/05 21:27:13 pah Exp $
+ * $Id: Mixtures.java,v 1.5 2010/01/09 17:30:44 pah Exp $
  * 
  * Created on Sep 16, 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -100,12 +100,12 @@ public class Mixtures {
         //   2000, 2001, 2002
         //
         boolean verb=true; // verbose mode; change to zero for silent mode
-        int bins = 40; // number of bins for the univariate data histograms for visualization
+//        int bins = 40; // number of bins for the univariate data histograms for visualization
         List<Double> dl = new ArrayList<Double>(); // vector to store the consecutive values of the cost function
-        int dimens = y.numColumns(),npoints = y.numRows();
+        int dimens = y.numRows(),npoints = y.numColumns();
         int npars;
         List<Matrix>  estcov=new ArrayList<Matrix>(kmax);
-        Matrix estmu= new AGDenseMatrix(npoints,kmax);
+        Matrix estmu= new AGDenseMatrix(dimens,kmax);
         List<Double> loglike = new ArrayList<Double>();
         List<Integer> kappas = new ArrayList<Integer>();
 
@@ -132,7 +132,7 @@ public class Mixtures {
             npars = (dimens + dimens*(dimens+1)/2);
             break;
         }
-        int nparsover2 = npars / 2;
+        double nparsover2 = npars / 2.0;
         // % we choose which axes to use in the plot,
         // % in case of higher dimensional data (>2)
         // % Change this to have other axes being shown
@@ -142,16 +142,17 @@ public class Mixtures {
         int k = kmax;
         // indic will contain the assignments of each data point to
         // the mixture components, as result of the E-step
-        Matrix indic = new AGDenseMatrix(npoints,k);
-        Matrix normindic = new AGDenseMatrix(npoints,k);
-        Matrix semi_indic = new AGDenseMatrix(npoints,k);
+        Matrix indic = new AGDenseMatrix(k,npoints);
+        Matrix normindic = new AGDenseMatrix(k,npoints);
+        Matrix semi_indic = new AGDenseMatrix(k,npoints);
         // Initialization: we will initialize the means of the k components
         // with k randomly chosen data points. Randperm(n) is a MATLAB function
         // that generates random permutations of the integers from 1 to n.
-        int[] randindex = randperm(npoints);
+        int[] randindex = {13,   106 ,   58 ,   64} //randperm(npoints)
+            ;
 
         for (int i= 0; i < k; i++){
-            estmu.setColumn(i, y.sliceCol(randindex[i]));
+            estmu.setColumn(i, y.sliceCol(randindex[i]-1));
         }
         // the initial estimates of the mixing probabilities are set to 1/k
         DenseVector estpp =  (DenseVector) ones(1,k).asVector().scale(1.0/k);
@@ -162,7 +163,7 @@ public class Mixtures {
             // the covariances are initialized to diagonal matrices proportional
             // to 1/10 of the mean variance along all the axes.
             // Of course, this can be changed
-            estcov.set(i,diag(ones(1,dimens).asVector().scale(max(diag(globcov.scale(1/10.0))))));
+            estcov.add(i,diag(ones(1,dimens).asVector().scale(max(diag(times(globcov,1/10.0))))));
         }
         // having the initial means, covariances, and probabilities, we can
         // initialize the indicator functions following the standard EM equation
@@ -181,16 +182,16 @@ public class Mixtures {
         // we can use the indic variables (unnormalized) to compute the
         // loglikelihood and store it for later plotting its evolution
         // we also compute and store the number of components
-        int countf = 1;
+        int countf = 0;
 
         double lltmp=sum(log(sum(add(Double.MIN_VALUE,indic))));
 
-        loglike.set(countf, lltmp);
+        loglike.add(lltmp);
 
         double dlength = -loglike.get(countf) + (nparsover2*sum(log(estpp))) + 
         (nparsover2 + 0.5)*k*log(npoints);
-        dl.set(countf, dlength);
-        kappas.set(countf, k);
+        dl.add(countf, dlength);
+        kappas.add(k);
         // the transitions vectors will store the iteration
         // number at which components are killed.
         // transitions1 stores the iterations at which components are
@@ -205,7 +206,7 @@ public class Mixtures {
         Matrix bestmu = new AGDenseMatrix(estmu);
         List<Matrix> bestcov = new ArrayList<Matrix>(estcov) ;//IMPL deeper copy needed?
         int bestk = k;
-        Matrix R = divide( indic,(add(Double.MIN_VALUE,repmat(new AGDenseMatrix(sum(indic,1)),k,1))));
+        Matrix R = divide( indic,(add(Double.MIN_VALUE,repmatt(sum(indic,1),k,1))));
 
         boolean k_cont = true;   // auxiliary variable for the outer loop
         while(k_cont){ // the outer loop will take us down from kmax to kmin comp.
@@ -217,27 +218,27 @@ public class Mixtures {
                     // in verbose mode, we keep displaying the minimum of the
                     // mixing probability estimates to see how close we are
                     // to killing one component
-                    //             disp(sprintf('k = %2d,  minestpp = %0.5g', k, min(estpp)));
+                                 Util.disp(String.format("k = %2d,  minestpp = %10.5f", k, estpp.get(min(estpp))));
                 }
                 // we begin at component 1
-                int comp = 1;
+                int comp = 0;
                 // and can only go to the last component, k.
                 // Since k may change during the process, we can not use a for loop
-                while (comp <= k ) {
+                while (comp < k ) {
                     // we start with the M step
                     // first, we compute a normalized indicator function
-                    //clear indic
+                    indic = new AGDenseMatrix(k,npoints);
                     for (int i = 0; i < k; i++) {
                         indic.setRow(i, times(semi_indic.sliceRow(i),estpp.get(i)));
                     }
 
-                    normindic = divide(indic,(add(Double.MIN_VALUE,repmat(new AGDenseMatrix(sum(indic,1)),k,1))));
+                    normindic = divide(indic,(add(Double.MIN_VALUE,repmatt(sum(indic,1),k,1))));
                     Matrix normu = null;
                     if(mk == MixtureKind.TDistribution){
                         Matrix d = new AGDenseMatrix(k,npoints);
                         for (int i =0; i<k; ++i){
                             Matrix in = inv(add(estcov.get(i), eye(dimens,Double.MIN_VALUE)));   // inv(Sigma)
-                            Matrix centered = sub(y,multAt(estmu.sliceCol(i),ones(1,npoints)));
+                            Matrix centered = sub(y,mult((DenseVector)estmu.sliceCol(i),ones(1,npoints)));
                             d.setRow(i, sum(times(centered,mult(in,centered))));
                         }
 
@@ -253,12 +254,12 @@ public class Mixtures {
                     Matrix aux = null;
                     switch(mk){
                     case Gaussian:
-                        aux = times(repmat(normindic.sliceRow(comp),dimens,1),y);
+                        aux = times(repmatt(normindic.sliceRow(comp),dimens,1),y);
                         estmu.setColumn(comp, times(normalize,sum(aux,2)));
                         break;
                     case TDistribution:
                         double normalize1 = 1.0/sum(normu.sliceRow(comp));
-                        aux = times(repmat(normu.sliceRow(comp),dimens,1),y);
+                        aux = times(repmatt(normu.sliceRow(comp),dimens,1),y);
                         estmu.setColumn(comp, sum(aux,2).scale(normalize1));
                         break;
                     }
@@ -345,7 +346,7 @@ public class Mixtures {
                             semi_indic.setRow(comp, multinorm(y,estmu.sliceCol(comp),estcov.get(comp)));
                             break;
                         case TDistribution:
-                            semi_indic.setRow(comp, multinorm(y,estmu.sliceCol(comp),estcov.get(comp)));
+                            semi_indic.setRow(comp, t_multinorm(y,estmu.sliceCol(comp),estcov.get(comp),1.0));
                             break;
                         }
                         // and go on to the next component
@@ -361,8 +362,8 @@ public class Mixtures {
                 // increment the iterations counter
                 countf = countf + 1;
 
-                //clear indic
-                //clear semi_indic
+                indic = new AGDenseMatrix(k,npoints);
+                semi_indic = new AGDenseMatrix(k,npoints);
                 for (int i = 0; i < k; i++) {
                     switch(mk){
                     case Gaussian:
@@ -378,7 +379,7 @@ public class Mixtures {
                 //                if (k!=1) {
                 // if the number of surviving components is not just one, we compute
                 // the loglikelihood from the unnormalized assignment variables
-                loglike.set(countf, sum(log(add(Double.MIN_VALUE,sum(indic)))));
+                loglike.add( sum(log(add(Double.MIN_VALUE,sum(indic)))));
                 //                } else {
                 // if it is just one component, it is even simpler
                 //                    loglike.set(countf, sum(log(add(Double.MIN_VALUE,indic))));
@@ -387,13 +388,12 @@ public class Mixtures {
                 // of components
                 dlength = -loglike.get(countf) + (nparsover2*sum(log(estpp))) + 
                 (nparsover2 + 0.5)*k*log(npoints);
-                dl.set(countf,  dlength);
-                kappas.set(countf, k);
+                dl.add(dlength);
+                kappas.add(k);
                 // compute the change in loglikelihood to check if we should stop
                 double deltlike = loglike.get(countf) - loglike.get(countf-1);
                 if ((verb)) {
-                    //             disp(sprintf('deltaloglike/th = %0.7g', abs(deltlike/loglike
-                    //                 (countf-1))/th));
+                                 Util.disp(String.format("deltaloglike/th = %14.7g", abs(deltlike/loglike.get(countf-1))/th));
                 }
 
                 if ((abs(deltlike/loglike.get(countf-1)) < th)|| gen++>10) {
@@ -424,7 +424,7 @@ public class Mixtures {
 
                 estmu = estmu.delCol(indminp);
                 estcov.remove(indminp);
-                delElement(estpp, indminp);
+                estpp=delElement(estpp, indminp);
 
                 k=k-1;
                 // we renormalize the mixing probabilities after killing the component
@@ -434,8 +434,8 @@ public class Mixtures {
                 //increment the iterations counter
                 countf = countf+1;
                 // and compute the loglikelihhod function and the description length
-                //clear indic
-                //clear semi_indic
+                indic = new AGDenseMatrix(k,npoints);
+                semi_indic = new AGDenseMatrix(k,npoints);
                 for (int i = 0; i < k; i++) {
                     switch(mk){
                     case Gaussian:
@@ -448,12 +448,12 @@ public class Mixtures {
                     indic.setRow(i, times(semi_indic.sliceRow(i),estpp.get(i)));
                 }
 
-                loglike.set(countf,sum(log(add(Double.MIN_VALUE,sum(indic)))));
-                dl.set(countf, -loglike.get(countf) + (nparsover2*sum(log(estpp))) + 
+                loglike.add(sum(log(add(Double.MIN_VALUE,sum(indic)))));
+                dl.add( -loglike.get(countf) + (nparsover2*sum(log(estpp))) + 
                         (nparsover2 + 0.5)*k*log(npoints));
 
 
-                kappas.set(countf,  k);
+                kappas.add(k);
 
             } else { //this else corresponds to "if k > kmin"
                 //of course, if k is not larger than kmin, we must stop
@@ -471,6 +471,9 @@ public class Mixtures {
 
 /*
  * $Log: Mixtures.java,v $
+ * Revision 1.5  2010/01/09 17:30:44  pah
+ * behaving as matlab version
+ *
  * Revision 1.4  2010/01/05 21:27:13  pah
  * basic clustering translation complete
  *
