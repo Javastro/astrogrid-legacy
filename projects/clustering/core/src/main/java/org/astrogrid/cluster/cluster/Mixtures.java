@@ -1,5 +1,5 @@
 /*
- * $Id: Mixtures.java,v 1.5 2010/01/09 17:30:44 pah Exp $
+ * $Id: Mixtures.java,v 1.6 2010/01/09 17:32:38 pah Exp $
  * 
  * Created on Sep 16, 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -148,7 +148,7 @@ public class Mixtures {
         // Initialization: we will initialize the means of the k components
         // with k randomly chosen data points. Randperm(n) is a MATLAB function
         // that generates random permutations of the integers from 1 to n.
-        int[] randindex = {13,   106 ,   58 ,   64} //randperm(npoints)
+        int[] randindex = randperm(npoints)
             ;
 
         for (int i= 0; i < k; i++){
@@ -471,6 +471,9 @@ public class Mixtures {
 
 /*
  * $Log: Mixtures.java,v $
+ * Revision 1.6  2010/01/09 17:32:38  pah
+ * make initial mu random again.
+ *
  * Revision 1.5  2010/01/09 17:30:44  pah
  * behaving as matlab version
  *
