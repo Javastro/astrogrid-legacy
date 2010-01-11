@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterEStepFull.java,v 1.5 2010/01/05 21:27:13 pah Exp $
+ * $Id: ClusterEStepFull.java,v 1.6 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 11 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -79,7 +79,8 @@ public class ClusterEStepFull {
             data_nr = data.sliceCol(d,ndim_nr );
             gmu_nr = reshape(mu.asVector(nm,nm+K*ndim_nr-1), K, ndim_nr);
             nm = nm + K*ndim_nr;
-            switch (cv_type){
+            gcv_nr_d = new AGDenseMatrix(K,ndim_nr);
+           switch (cv_type){
                 case free:
                     for (int k = 0; k < K; k++){
                         gcv_nr_f[k] = reshape(cv.asVector(n0,n0+ndim_nr*ndim_nr -1),
@@ -88,8 +89,10 @@ public class ClusterEStepFull {
                     }
                     break;
                 case diagonal:
-                    gcv_nr_d = reshape(cv.asVector(n0,n0+K*ndim_nr -1), K, ndim_nr);
-                    n0 = n0 + K*ndim_nr;
+                    for( int k=0; k < K; k++){
+                        gcv_nr_d.setRow(k,  reshape(cv.asVector(n0,n0+ndim_nr -1), 1, ndim_nr));
+                        n0 = n0 + ndim_nr;
+                   }
                     break;
                 case common:
                     gcv_nr_c = cv.asVector(n0);
@@ -104,6 +107,7 @@ public class ClusterEStepFull {
             data_er = data.sliceCol(d,ndim_er);
             gmu = reshape(lmu.asVector(ne,ne+K*ndim_er-1),K, ndim_er);
             ne = ne + K*ndim_er;
+            gcv_d = new AGDenseMatrix(K,ndim_er);
             switch (cv_type) {
                 case free:
                     for (int k = 0; k < K ; k++){
@@ -113,8 +117,10 @@ public class ClusterEStepFull {
                     }
                     break;
                 case diagonal:
-                    gcv_d = reshape(lcv.asVector(n1,n1+K*ndim_er-1), K, ndim_er);
-                    n1 = n1 + K*ndim_er;
+                    for(int k=0; k < K; k++){
+                        gcv_d.setRow(k,reshape(lcv.asVector(n1,n1+ndim_er-1), 1, ndim_er));
+                        n1 = n1 + ndim_er;
+                       }
                     break;
                 case common:
                     gcv_c = lcv.asVector(n1);
@@ -227,7 +233,7 @@ public class ClusterEStepFull {
                             );
                         // the expectation of w^T Sigma^{-1}w
                         
-                        C.set(n,k, epdw.get(n,k)-2*multBt(mult(qmu[n][k],inv(gcv_f[k]))
+                        C.set(n,k, epdw.get(n,k)-2*multBt(multAt(qmu[n][k],inv(gcv_f[k]))
                             ,gmu.sliceRowM(k)).get(0, 0)+multABAT(gmu.sliceRowM(k),inv(gcv_f[k])).get(0,0));
                         break;
                     case diagonal:
@@ -362,7 +368,7 @@ public class ClusterEStepFull {
                     case common:
                         aux1.set(n,k, -ndim_er/2.0*log(2*Math.PI)-log(det(diag(S.sliceRow(n))))/2.0-
                             (multABAT(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))).asScalar() - 
-                            2*multBt(mult(qmu[n][k],inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
+                            2*multBt(multAt(qmu[n][k],inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
                             trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k])) 
                             + multATBA(qmu[n][k],inv(diag(S.sliceRow(n)))).asScalar()
                              )/2.0);
@@ -517,6 +523,9 @@ public class ClusterEStepFull {
 
 /*
  * $Log: ClusterEStepFull.java,v $
+ * Revision 1.6  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.5  2010/01/05 21:27:13  pah
  * basic clustering translation complete
  *

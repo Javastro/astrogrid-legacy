@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterBound.java,v 1.2 2010/01/05 21:27:13 pah Exp $
+ * $Id: ClusterBound.java,v 1.3 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 21 Sep 2009 by Paul Harrison (pharriso@eso.org)
  * Copyright 2009 ESO. All rights reserved.
@@ -55,11 +55,12 @@ public class ClusterBound {
 	        Vector gcv_c = null;
 
 	for ( int i = 0; i < no_of_data_types; i++){
-	    if(datatype.get(i,1) == 1     ){ // continuous data without errors
-	        ndim_nr = (int)datatype.get(i,2);
+	    if(datatype.get(i,0) == 1     ){ // continuous data without errors
+	        if((ndim_nr = (int)datatype.get(i,1)) > 0){
 	        data_nr = alldata.sliceCol(d,ndim_nr);
 	        gmu_nr = reshape(mu.asVector(nm, nm+K*ndim_nr -1), K, ndim_nr);
 	        nm = nm + K*ndim_nr;
+	           gcv_nr_d = new AGDenseMatrix(K,ndim_nr);
 	        switch(cv_type) {
 	            case free:
 	                for ( int k = 0; k < K; k++){
@@ -69,20 +70,24 @@ public class ClusterBound {
 	                }
 	                break;
 	            case diagonal:
-	                
-	                    gcv_nr_d = reshape(cv.asVector(n0, n0+K*ndim_nr -1), K, ndim_nr);
-	                    n0 = n0 + ndim_nr;
+	                   for( int k=0; k < K; k++){
+	                        gcv_nr_d.setRow(k,  reshape(cv.asVector(n0,n0+ndim_nr -1), 1, ndim_nr));
+	                        n0 = n0 + ndim_nr;
+	                   }
+	 	                    
 	                break;
 	            case common:
 	                gcv_nr_c = cv.asVector(n0);
                         break;
 	        }
 	        d = d + ndim_nr;
+	        }
 	    }
-	    else if(datatype.get(i,1) == 2 ){ // continous data with errors
-	        ndim_er = (int)datatype.get(i,2);
+	    else if(datatype.get(i,0) == 2 ){ // continous data with errors
+	        if((ndim_er = (int)datatype.get(i,1))>0){
 	        data_er = alldata.sliceCol(d, ndim_er);
                 gmu = reshape(lmu.asVector(ne, ne+K*ndim_er -1),K,ndim_er);
+                gcv_d = new AGDenseMatrix(K,ndim_er);
 	        switch(cv_type) {
 	            case free:
 	                for ( int k = 0; k < K; k++){
@@ -92,10 +97,10 @@ public class ClusterBound {
 	                }
 	                break;
 	            case diagonal:
-	                
-	                gcv_d = reshape(lcv.asVector(n1, n1+K*ndim_er -1), K, ndim_er);
-                        n1 = n1 + K*ndim_er;
-	                
+	                    for(int k=0; k < K; k++){
+	                        gcv_d.setRow(k,reshape(lcv.asVector(n1,n1+ndim_er-1), 1, ndim_er));
+	                        n1 = n1 + ndim_er;
+	                       }
 	                break;
 	            case common:
 	                gcv_c =  lcv.asVector(n1);
@@ -103,29 +108,33 @@ public class ClusterBound {
 	        }
 	        d = d + ndim_er;
 	    }
-	    else if (datatype.get(i,1) == 3 ) { 
-	        ndim_bin = (int) datatype.get(i,2);
+	    }
+	    else if (datatype.get(i,0) == 3 ) { 
+	        if((ndim_bin = (int) datatype.get(i,1))>0){
 	        data_bin = alldata.sliceCol(d, ndim_bin);
                 bp = reshape(mu.asVector(nm, nm+K*ndim_bin -1), K, ndim_bin);
 	        nm = nm + K*ndim_bin;
 	        d = d  + ndim_bin;
+	        }
 	    }
-	    else if (datatype.get(i,1) == 4 ) { 
-	        ndim_mul = (int) datatype.get(i,2);
+	    else if (datatype.get(i,0) == 4 ) { 
+	        if((ndim_mul = (int) datatype.get(i,1))>0){
 	        data_mul = alldata.sliceCol(d, ndim_mul );
                 mp = reshape(mu.asVector(nm, nm+K*ndim_mul -1), K, ndim_mul);
 	        nm = nm + K*ndim_mul;
 	        d = d + ndim_mul;
+	        }
 	    }
-	    else if (datatype.get(i,1) == 5 ) { 
-	        ndim_int = (int)datatype.get(i,2);       
+	    else if (datatype.get(i,0) == 5 ) { 
+	        if((ndim_int = (int)datatype.get(i,1))>0){      
 	        data_int = alldata.sliceCol(d, ndim_int );
                 ip = reshape(mu.asVector(nm, nm+K*ndim_int -1), K, ndim_int);
 	        nm = nm + K*ndim_int;
 	        d  = d + ndim_int;
+	        }
 	    }
-	    else if (datatype.get(i,1) == 6 ) { 
-	        int ndim_error = (int) datatype.get(i,2);
+	    else if (datatype.get(i,0) == 6 ) { 
+	        int ndim_error = (int) datatype.get(i,1);
 	        if(ndim_error != ndim_er){ //
 	            throw new IllegalArgumentException( "The dimension of measurement errors and ");
 	        }        
@@ -157,17 +166,17 @@ public class ClusterBound {
 	            switch(cv_type) {
 	                case free:
 	                    Matrix gcvk = add(gcv_f[k],diag(S.sliceRow(n)));
-	                    aux1.set(n,k,-ndim_er/2*log(2*PI)-log(det(gcvk))/2-1/2*
+	                    aux1.set(n,k,-ndim_er/2.0*log(2*PI)-log(det(gcvk))/2.0-1/2.0*
 	                        multABAT(sub(data_er.sliceRowM(n),gmu.sliceRowM(k)),inv(gcvk)).asScalar());
 	                        break;
 	                case diagonal:
 	                    Vector covk = add(gcv_d.sliceRow(k),S.sliceRow(n));
-	                    aux1.set(n,k,-ndim_er/2*log(2*PI)-sum(log(covk))/2-1.0/2*
+	                    aux1.set(n,k,-ndim_er/2.0*log(2*PI)-sum(log(covk))/2.0-1.0/2.0*
 	                        multABAT(sub(data_er.sliceRowM(n),gmu.sliceRowM(k)),inv(diag(covk))).asScalar());
 	                        break;
 	                case common:
 	                    covk = add(S.sliceRow(n),gcv_c.get(k));
-	                    aux1.set(n,k,-ndim_er/2*log(2*PI)-sum(log(covk))/2-1/2*
+	                    aux1.set(n,k,-ndim_er/2.0*log(2*PI)-sum(log(covk))/2.0-1/2.0*
 	                    multABAT(sub(data_er.sliceRowM(n),gmu.sliceRowM(k)),inv(diag(covk))).asScalar());
 	                        break;
 	                default:
@@ -186,16 +195,16 @@ public class ClusterBound {
 	            switch(cv_type) {
 	                case diagonal:
 	                    Vector covk = gcv_nr_d.sliceRow(k);
-	                    aux2.set(n,k,ndim_nr/2*log(2*PI)-sum(log(covk))/2-
-	                        1/2*multABAT(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)),inv(diag(covk))).asScalar());
+	                    aux2.set(n,k,-ndim_nr/2.0*log(2*PI)-sum(log(covk))/2.0-
+	                        1/2.0*multABAT(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)),inv(diag(covk))).asScalar());
 	                    break;
 	                case common:
 	                    double covkc = gcv_nr_c.get(k);
-	                    aux2.set(n,k,-ndim_nr/2*log(2*PI)-ndim_nr*log(covkc)/2 
+	                    aux2.set(n,k,-ndim_nr/2.0*log(2*PI)-ndim_nr*log(covkc)/2.0 
 	                        -0.5*multBt(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)),sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k))).asScalar()/covkc);
 	                    break;
 	                case free:
-	                    aux2.set(n,k,-ndim_nr/2*log(2*PI)-log(det(gcv_nr_f[k]))/2 
+	                    aux2.set(n,k,-ndim_nr/2.0*log(2*PI)-log(det(gcv_nr_f[k]))/2.0 
 	                        -0.5*multABAT(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)),
 	                        inv(gcv_nr_f[k])).asScalar());
 	                    break;

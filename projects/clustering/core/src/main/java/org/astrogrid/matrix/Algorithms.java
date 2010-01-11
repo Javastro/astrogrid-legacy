@@ -1,5 +1,5 @@
 /*
- * $Id: Algorithms.java,v 1.3 2009/09/20 17:18:01 pah Exp $
+ * $Id: Algorithms.java,v 1.4 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 8 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -18,11 +18,18 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.math.special.Gamma;
+import org.netlib.blas.BLAS;
+import org.netlib.blas.Dtrsv;
+import org.netlib.lapack.LAPACK;
+
 import no.uib.cipr.matrix.AGDenseMatrix;
 import no.uib.cipr.matrix.DenseCholesky;
 import no.uib.cipr.matrix.DenseMatrix;
+import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.Vector;
+
+import static java.lang.Math.*;
 
 /**
  * Some general matrix based algorithms.
@@ -308,6 +315,7 @@ public class Algorithms {
     }
  
     static public Matrix dist3_diag(Matrix x, Matrix centres, Matrix covars){
+      //I think that there is actually a mistake in the MatLab code and the Mahalanobis distance is not correctly computed....However trying to copy the existing code.
         int ndata = x.numRows(), ndim = x.numColumns();
         int K = centres.numRows(), T =centres.numColumns();
         Matrix n2 = new AGDenseMatrix(ndata, K);
@@ -332,18 +340,15 @@ public class Algorithms {
                     AGDenseMatrix diffs = (AGDenseMatrix) sub(x , mult(ones(ndata, 1) , centres.sliceRowM(i)));
                     // Use Cholesky decomposition of covariance matrix to speed computation
                     
-                    DenseCholesky c = DenseCholesky.factorize(covars[i].transpose());
-                   
-                    DenseMatrix temp = c.solve(transpose(diffs));
-                    for(int j = 0; j < ndata; j++){
-                        double sum = 0;
-                        for (int k =0 ; k < K; k++){
-                            sum += temp.get(k,j)*temp.get(k,j);
-                        }
-                    n2.set(j,i, sum);
+                     DenseCholesky c = DenseCholesky.factorize(covars[i]);
+                    
+                     no.uib.cipr.matrix.Matrix temp = new DenseMatrix(ndim, ndata);
+                    transpose(c.getU()).solve(transpose(diffs), temp);
+                    
+                    n2.setColumn(i,sum(times(temp,temp),1));
                     }
         //             n2(:,i) = sum(diffs 
-                }
+                
         return n2;
         }
     
@@ -364,11 +369,64 @@ public class Algorithms {
     public static int rem(int a, int b){
         return a % b;
     }
+    
+    
+    public static Vector multinorm(Matrix x, Vector m, Matrix covar ){
+        // Evaluates a multidimensional Gaussian
+        // of mean m and covariance matrix covar
+        // at the array of points x
+        //
+        int dim = x.numRows(), npoints=x.numColumns();
+        covar = add(covar, eye(dim,Double.MIN_VALUE));
+        double dd = det(covar);
+        Matrix in = inv(covar);
+        // covar
+        // pause
+        double ff = pow((2*PI),(-dim/2.0))*pow((dd),(-0.5));
+        Matrix centered = sub(x,repmat(m, 1, npoints));
+        Vector y;
+        if (dim != 1)
+           y =  exp(sum(times(centered,(mult(in,centered)))).scale(-0.5)).scale(ff);
+        else
+           y =  exp(mult(in,pow(centered,2)).asVector().scale(-0.5) ).scale(ff);
+        return y;
+
+    }
+    public static Vector t_multinorm(Matrix x, Vector m, Matrix covar, double v ){
+        // Evaluates a multidimensional student t- of mean m and covariance matrix covar
+        // at the array of points x
+        //
+        //   y -- 1 x T
+        int dim = x.numRows(), npoints=x.numColumns();
+        covar = add(covar, eye(dim,Double.MIN_VALUE));
+        double dd = det(covar);
+        Matrix in = inv(covar);
+        double ff = gamma(0.5*(v+dim))/(pow(PI*v,0.5*dim) * gamma(v/2) * sqrt(dd));
+        Matrix centered = sub(x,repmat(m, 1, npoints));
+        Vector y = new DenseVector(npoints);
+        if (dim != 1){
+            for (int j  = 0; j <npoints; j++){
+                double d = multAt(centered.sliceCol(j),mult(in,centered.sliceCol(j))).asScalar();
+                y.set(j, ff / (  pow(1 + d/v,0.5*(v + dim))    ));
+            }
+            //y = ff * exp(-0.5*sum(centered.*(in*centered)));
+            //y = ff * ( (1.0 + sum(centered.*(in*centered)) / v) .^(-0.5*(v+dim)) );
+        }
+        else
+           y =  pow(add(1.0 , pow(mult(in,centered).asVector(),2).scale(1.0/v)) , (-0.5*(v+dim)) ).scale(ff);
+        
+      return y;
+    }
+       
+    
 }
 
 
 /*
  * $Log: Algorithms.java,v $
+ * Revision 1.4  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.3  2009/09/20 17:18:01  pah
  * checking just prior to bham visit
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterMStepFull.java,v 1.5 2010/01/05 21:27:13 pah Exp $
+ * $Id: ClusterMStepFull.java,v 1.6 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 12 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -71,11 +71,12 @@ public class ClusterMStepFull {
         DenseVector qmu[][] = new DenseVector[ndata][K];
         for(int i = 0; i <no_of_data_types; i++){
             if (datatype.get(i,0) == 1){     // continuous data without errors
-                ndim_nr = (int) datatype.get(i,1);
+                if((ndim_nr = (int) datatype.get(i,1)) != 0){
                 data_nr = data.sliceCol(d, ndim_nr );
                 d = d + ndim_nr;
+                }
             } else if (datatype.get(i,0) == 2){ // continous data with errors
-                ndim_er = (int) datatype.get(i,1);
+                if((ndim_er = (int) datatype.get(i,1)) != 0){
                 for (int n = 0; n <ndata; n++){
                     for (int k = 0; k <K; k++){
                         switch (cv_type) {
@@ -106,18 +107,22 @@ public class ClusterMStepFull {
                     }
                 }            
                 d = d + ndim_er;
+                }
             } else if (datatype.get(i,0) == 3){
-                ndim_bin = (int) datatype.get(i,1);
+                if((ndim_bin = (int) datatype.get(i,1)) != 0){
                 data_bin = data.sliceCol(d, ndim_bin );
                 d = d  + ndim_bin;
+                }
             } else if (datatype.get(i,0) == 4){
-                ndim_mul = (int) datatype.get(i,1);
+                if((ndim_mul = (int) datatype.get(i,1)) != 0){
                 data_mul = data.sliceCol(d, ndim_mul );
                 d = d + ndim_mul;
+                }
             } else if (datatype.get(i,0) == 5){
-                ndim_int = (int) datatype.get(i,1);       
+                if((ndim_int = (int) datatype.get(i,1)) != 0){     
                 data_int = data.sliceCol(d, ndim_int);
                 d = d + ndim_int;
+                }
             } else if (datatype.get(i,0) == 6){
                 int ndim_error = (int) datatype.get(i,1);
                 if (ndim_error != ndim_er){
@@ -171,7 +176,7 @@ public class ClusterMStepFull {
                             mtmp.transBmult(1.0, mtmp, mtmp2);
                             gcvt = (Matrix) gcvt.add(q.get(n,k)*a.get(n,k)/b.get(n,k), add(qcv[n][k],mtmp2));
                         }
-                        gcv_f[k] = (Matrix) gcvt.scale(1.0/(sum(q.sliceCol(k, 1).asVector())+eps));
+                        gcv_f[k] = (Matrix) gcvt.scale(1.0/(sum(add(q.sliceCol(k, 1).asVector(),eps))));
                         lcv.append((DenseVector)gcv_f[k].asVector());
                         break;
                     case diagonal:
@@ -181,7 +186,7 @@ public class ClusterMStepFull {
                                 tmp = tmp + q.get(n,k)*a.get(n,k)/b.get(n,k)*(Math.pow(qmu[n][k].get(i)- 
                                     gmu.get(k,i),2)+qcv[n][k].get(i,i));
                             }
-                            gcv_d.set(k,i, tmp/ (sum(q.sliceCol(k, 1).asVector())+eps));
+                            gcv_d.set(k,i, tmp/ (sum(add(q.sliceCol(k, 1).asVector(),eps))));
                         }
                         lcv.append(gcv_d.sliceRow(k));
                         break;
@@ -227,7 +232,7 @@ public class ClusterMStepFull {
                             tmp = multAt(tmp,tmp);
                             gcvt.add(q.get(n,k)*a.get(n,k)/b.get(n,k), tmp);
                         }
-                        gcv_nr[k] = (Matrix) gcvt.scale(1.0/(sum(q.sliceCol(k, 1).asVector())+eps));
+                        gcv_nr[k] = (Matrix) gcvt.scale(1.0/(sum(add(q.sliceCol(k, 1).asVector(),eps))));
                         
                         cv.append(gcv_nr[k].asVector());
                         break;
@@ -238,7 +243,7 @@ public class ClusterMStepFull {
                                 tmp = tmp + q.get(n,k)*a.get(n,k)/b.get(n,k)*Math.pow(data_nr.get(n,i)-
                                     gmu_nr.get(k,i),2);
                             }
-                            gcv_nr_d.set(k,i,tmp/ (sum(q.sliceCol(k, 1).asVector())+eps));
+                            gcv_nr_d.set(k,i,tmp/ (sum(add(q.sliceCol(k, 1).asVector(),eps))));
                         }
                         cv.append(gcv_nr_d.sliceRow(k));
                         break;
@@ -249,7 +254,7 @@ public class ClusterMStepFull {
                             tmpt=tmpt+q.get(n,k)*tmp.dot(tmp);
                         }
                         
-                        cv.append(tmpt/(ndim_nr*sum(q.sliceCol(k, 1).asVector())+eps));
+                        cv.append(tmpt/(ndim_nr*sum(add(q.sliceCol(k, 1).asVector(),eps))));
                         break;
                 }
             }
@@ -279,7 +284,7 @@ public class ClusterMStepFull {
                 for (int i = 0; i <dim_mul; i++){
                     mp.set(k,i, sum(times(q.sliceCol(k, 1),data_mul.sliceCol(i, 1)).asVector()));
                 }
-                mp.setRow(k, mp.sliceRow(k).scale(1.0/(sum(mp.sliceRow(k))+eps)));
+                mp.setRow(k, mp.sliceRow(k).scale(1.0/(sum(add(mp.sliceRow(k),eps)))));
             }
             mu.append(mp.asVector());
         }
@@ -290,7 +295,7 @@ public class ClusterMStepFull {
             ndata = data_int.numRows();
             for (int k = 0; k <K; k++){
                 for (int i = 0; i <dim_int; i++){
-                    ip.set(k,i,sum(times(q.sliceCol(k,1),data_int.sliceCol(i,1)).asVector())/(sum(q.sliceCol(k,1).asVector())+eps));
+                    ip.set(k,i,sum(times(q.sliceCol(k,1),data_int.sliceCol(i,1)).asVector())/(sum(add(q.sliceCol(k,1).asVector(),eps))));
                 }
             }
             mu.append(ip.asVector());
@@ -331,6 +336,9 @@ public class ClusterMStepFull {
 
 /*
  * $Log: ClusterMStepFull.java,v $
+ * Revision 1.6  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.5  2010/01/05 21:27:13  pah
  * basic clustering translation complete
  *

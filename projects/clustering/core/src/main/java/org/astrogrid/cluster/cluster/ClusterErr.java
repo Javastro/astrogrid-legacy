@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterErr.java,v 1.4 2010/01/05 21:27:12 pah Exp $
+ * $Id: ClusterErr.java,v 1.5 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -66,41 +66,41 @@ public class ClusterErr {
         int ndim_nr = 0, ndim_er= 0, ndim_bin = 0, ndim_mul = 0 , ndim_int = 0,
         ndim_error = 0;
         Matrix data_nr = null, data_er = null, data_bin = null, data_int = null,  data_mul = null;
-        AGDenseMatrix datadim = new AGDenseMatrix(0,0);
+ // not used       AGDenseMatrix datadim = new AGDenseMatrix(0,0);
         Matrix S;
         for (int i = 0 ; i <no_of_data_types; i++){
-            if (datatype.get(i,1) == 1 ){    // continuous data without errors
-                ndim_nr = (int) datatype.get(i,2);
+            if (datatype.get(i,0) == 1 ){    // continuous data without errors
+                ndim_nr = (int) datatype.get(i,1);
                 data_nr = alldata.sliceCol(d, ndim_nr);
-                datadim = datadim.append(data_nr);
+//                datadim = datadim.append(data_nr);
                 d = d + ndim_nr;
             }
-            else if (datatype.get(i,1) == 2) { // continous data with errors
-                ndim_er = (int) datatype.get(i,2);
+            else if (datatype.get(i,0) == 2) { // continous data with errors
+                ndim_er = (int) datatype.get(i,1);
                 data_er = alldata.sliceCol(d, ndim_er);
-                datadim = datadim.append(ndim_er);
+//                datadim = datadim.append(ndim_er);
                 d = d + ndim_er;
             }
-            else if (datatype.get(i,1) == 3){ // binary 
-                ndim_bin = (int) datatype.get(i,2);
+            else if (datatype.get(i,0) == 3){ // binary 
+                ndim_bin = (int) datatype.get(i,1);
                 data_bin = alldata.sliceCol(d, ndim_bin);
-                datadim = datadim.append(ndim_bin);
+//               datadim = datadim.append(ndim_bin);
                 d = d  + ndim_bin;
             }
-            else if (datatype.get(i,1) == 4) { // multinomial
-                ndim_mul = (int) datatype.get(i,2);
+            else if (datatype.get(i,0) == 4) { // multinomial
+                ndim_mul = (int) datatype.get(i,1);
                 data_mul = alldata.sliceCol(d, ndim_mul);
-                datadim = datadim.append(ndim_mul);
+//                datadim = datadim.append(ndim_mul);
                 d = d + ndim_mul;
             }
-            else if (datatype.get(i,1) == 5) {   // integer
-                ndim_int = (int) datatype.get(i,2);       
+            else if (datatype.get(i,0) == 5) {   // integer
+                ndim_int = (int) datatype.get(i,1);       
                 data_int = alldata.sliceCol(d, ndim_int);
-                datadim = datadim.append(ndim_int);
+//               datadim = datadim.append(ndim_int);
                 d= d + ndim_int;
             }
-            else if (datatype.get(i,1) == 6 ) {  // error 
-                ndim_error = (int) datatype.get(i,2);
+            else if (datatype.get(i,0) == 6 ) {  // error 
+                ndim_error = (int) datatype.get(i,1);
                 if (ndim_error != ndim_er){
                     throw new IllegalArgumentException( "The dimension of measurement errors and ");
                 }        
@@ -120,13 +120,13 @@ public class ClusterErr {
             Vector ini_cov = diag(cov(data_er));
             switch (cv_type){
                 case free:
-                	lcv.append(new AGDenseMatrix(diag(ini_cov), 1, K).asVector());
+                	lcv.append(new AGDenseMatrix(diag(ini_cov), K, 1).asVector());
                     break;
                 case diagonal:
                 	lcv.append( new AGDenseMatrix(ini_cov,K,1).asVector());
                     break;
                 case common:
-                	lcv.append(ones(1,K).asVector().scale(max(ini_cov)));
+                	lcv.append(ones(K,1).asVector().scale(max(ini_cov)));
                     break;
             }
             lmu =  new AGDenseMatrix(gmu.asVector());
@@ -136,13 +136,13 @@ public class ClusterErr {
             Vector ini_cov_nr = diag(cov(data_nr));
             switch (cv_type){
                 case free:
-                	cv = new AGDenseMatrix(diag(ini_cov_nr).asVector(), 1, K);
+                	cv = new AGDenseMatrix(diag(ini_cov_nr).asVector(), K, 1);
                     break;
                 case diagonal:
-                	cv = new AGDenseMatrix(ini_cov_nr, 1, K);
+                	cv = new AGDenseMatrix(ini_cov_nr, K, 1);
                     break;
                 case common:
-                	 cv = (AGDenseMatrix) ones(1,K).scale(max(ini_cov_nr));
+                	 cv = (AGDenseMatrix) ones(K,1).scale(max(ini_cov_nr));
                     break;
             }
             mu = new AGDenseMatrix(gmu_nr.asVector());
@@ -216,6 +216,9 @@ public class ClusterErr {
 
 /*
  * $Log: ClusterErr.java,v $
+ * Revision 1.5  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.4  2010/01/05 21:27:12  pah
  * basic clustering translation complete
  *

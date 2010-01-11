@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterEStep.java,v 1.2 2010/01/05 21:27:13 pah Exp $
+ * $Id: ClusterEStep.java,v 1.3 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 21 Sep 2009 by Paul Harrison (pharriso@eso.org)
  * Copyright 2009 ESO. All rights reserved.
@@ -56,6 +56,7 @@ public class ClusterEStep {
 	        data_nr = data.sliceCol( d, ndim_nr);
 	        gmu_nr = reshape(mu.asVector(nm,nm+K*ndim_nr-1), K, ndim_nr);
 	        nm = nm + K*ndim_nr;
+	        gcv_nr_d = new AGDenseMatrix(K,ndim_nr);
 	        switch(cv_type) {
 	            case free:
 	                for ( int k = 0; k < K; k++){
@@ -65,10 +66,10 @@ public class ClusterEStep {
 	                }
 	                break;
 	            case diagonal:
-	               
-	                    gcv_nr_d = reshape(cv.asVector(n0,n0+K*ndim_nr -1), K, ndim_nr);
-	                    n0 = n0 + K*ndim_nr;
-	               
+	               for( int k=0; k < K; k++){
+	                    gcv_nr_d.setRow(k,  reshape(cv.asVector(n0,n0+ndim_nr -1), 1, ndim_nr));
+	                    n0 = n0 + ndim_nr;
+	               }
 	                break;
 	            case common:
 	                gcv_nr_c = cv.asVector(n0);
@@ -81,6 +82,7 @@ public class ClusterEStep {
 	        if((ndim_er = (int) datatype.get(i,1))>0){
 	        data_er = data.sliceCol(d, ndim_er);
 	        gmu = reshape(lmu.asVector(ne,ne+K*ndim_er-1), K, ndim_er);
+	        gcv_d = new AGDenseMatrix(K,ndim_er);
 	        switch(cv_type) {
 	            case free:
 	                for ( int k = 0; k < K; k++){
@@ -90,10 +92,10 @@ public class ClusterEStep {
 	                }
 	                break;
 	            case diagonal:
-	              
-	                    gcv_d = reshape(lcv.asVector(n1,n1+K*ndim_er-1), K, ndim_er);
+	                   for(int k=0; k < K; k++){
+	                    gcv_d.setRow(k,reshape(lcv.asVector(n1,n1+ndim_er-1), 1, ndim_er));
 	                    n1 = n1 + ndim_er;
-	               
+	                   }
 	                break;
 	            case common:
 	                gcv_c = lcv.asVector(n1); 
@@ -103,25 +105,28 @@ public class ClusterEStep {
 	        d = d + ndim_er;
 	    }
 	    else if (datatype.get(i,0) == 3){
-	        ndim_bin = (int) datatype.get(i,1);
+	        if((ndim_bin = (int) datatype.get(i,1))>0){
 	        data_bin = data.sliceCol(d,ndim_bin);
 	        bp = reshape(mu.asVector(nm,nm+K*ndim_bin-1), K, ndim_bin);
 	        nm = nm + K*ndim_bin;
 	        d = d  + ndim_bin;
+	        }
 	    }
 	    else if (datatype.get(i,0) == 4){
-	        ndim_mul = (int) datatype.get(i,1);
+	        if((ndim_mul = (int) datatype.get(i,1))>0){
 	        data_mul = data.sliceCol(d,ndim_mul);
 	        mp = reshape(mu.asVector(nm,nm+K*ndim_mul-1), K, ndim_mul);
 	        nm = nm + K*ndim_mul;
 	        d = d + ndim_mul;
+	        }
 	    }
 	    else if (datatype.get(i,0) == 5){
-	        ndim_int = (int) datatype.get(i,1);
+	        if((ndim_int = (int) datatype.get(i,1))>0){
 	        data_int = data.sliceCol(d,ndim_int);
 	        ip = reshape(mu.asVector(nm,nm+K*ndim_int -1), K, ndim_int);
 	        nm = nm + K*ndim_int;
 	        d = d + ndim_int;
+	        }
 	    }
 	    else if (datatype.get(i,0) == 6){
 	        ndim_error = (int) datatype.get(i,1);
@@ -155,17 +160,17 @@ public class ClusterEStep {
 	            switch(cv_type) {
 	                case free:
 	                   Matrix gcvk = add(gcv_f[k],diag(S.sliceRow(n)));
-	                    aux1.set(n,k,-ndim_er/2*log(2*PI)-log(det(gcvk))/2-1/2*
+	                    aux1.set(n,k,-ndim_er/2.0*log(2*PI)-log(det(gcvk))/2.0-1/2.0*
 	                        multABAT(sub(data_er.sliceRowM(n),gmu.sliceRowM(k)),inv(gcvk)).asScalar());
 	                        break;
 	                case diagonal:
 	                    Vector covk = add(gcv_d.sliceRow(k),S.sliceRow(n));
-	                    aux1.set(n,k,-ndim_er/2*log(2*PI)-sum(log(covk))/2-1/2*
+	                    aux1.set(n,k,-ndim_er/2.0*log(2*PI)-sum(log(covk))/2.0-1/2.0*
 	                        multABAT(sub(data_er.sliceRowM(n),gmu.sliceRowM(k)),inv(diag(covk))).asScalar());
 	                        break;
 	                case common:
 	                    covk = add(gcv_c.get(k),S.sliceRow(n));
-	                    aux1.set(n,k,-ndim_er/2*log(2*PI)-sum(log(covk))/2-1/2*
+	                    aux1.set(n,k,-ndim_er/2.0*log(2*PI)-sum(log(covk))/2.0-1/2.0*
 	                        multABAT(sub(data_er.sliceRowM(n),gmu.sliceRowM(k)),inv(diag(covk))).asScalar());
 	                        break;
 	                default:
@@ -184,17 +189,17 @@ public class ClusterEStep {
 	            switch(cv_type) {
 	                case diagonal:
 	                    Vector covkd = gcv_nr_d.sliceRow(k);
-	                    aux2.set(n,k,-ndim_nr/2*log(2*PI)-sum(log(covkd))/2-
-	                        1/2*multABAT(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)),inv(diag(covkd))).asScalar());
+	                    aux2.set(n,k,-ndim_nr/2.0*log(2*PI)-sum(log(covkd))/2.0-
+	                        1/2.0*multABAT(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)),inv(diag(covkd))).asScalar());
 	                        break;
 	                case common:
 	                    double covk = gcv_nr_c.get(k);
-	                    aux2.set(n,k,-ndim_nr/2*log(2*PI)-ndim_nr*log(covk)/2 
-	                        -1/2*sub(data_nr.sliceRow(n),gmu_nr.sliceRow(k)).dot(sub(data_nr.sliceRow(n),gmu_nr.sliceRow(k)))/covk);
+	                    aux2.set(n,k,-ndim_nr/2.0*log(2*PI)-ndim_nr*log(covk)/2.0 
+	                        -1/2.0*sub(data_nr.sliceRow(n),gmu_nr.sliceRow(k)).dot(sub(data_nr.sliceRow(n),gmu_nr.sliceRow(k)))/covk);
 	                        break;
 	                case free:
-	                    aux2.set(n,k,-ndim_nr/2*log(2*PI)-log(det((gcv_nr_f[k]
-	                        )))/2-1/2*multABAT(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)),
+	                    aux2.set(n,k,-ndim_nr/2.0*log(2*PI)-log(det((gcv_nr_f[k]
+	                        )))/2.0-1/2.0*multABAT(sub(data_nr.sliceRowM(n),gmu_nr.sliceRowM(k)),
 	                        inv((gcv_nr_f[k]))).asScalar());
 	                        break;
 	                default:
@@ -278,6 +283,9 @@ public class ClusterEStep {
 
 /*
  * $Log: ClusterEStep.java,v $
+ * Revision 1.3  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.2  2010/01/05 21:27:13  pah
  * basic clustering translation complete
  *

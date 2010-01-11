@@ -1,5 +1,5 @@
 /*
- * $Id: Minimize.java,v 1.1 2010/01/05 21:27:13 pah Exp $
+ * $Id: Minimize.java,v 1.2 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 29 Dec 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -11,6 +11,7 @@
  */ 
 
 package org.astrogrid.cluster.cluster;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -24,7 +25,7 @@ import static java.lang.Math.*;
 
 public class Minimize {
 
-    static Vector minimize(Vector X, String f, int length, Object... args){
+    static Vector minimize(String f, int length, Object... args){
         // Minimize a continuous differentialble multivariate function. Starting point
         // is given by "X" (D by 1), and the function named in the string "f", must
         // return a function value and a vector of partial derivatives. The Polack-
@@ -63,9 +64,12 @@ public class Minimize {
 
         Method func;
         Class clazz;
+        Vector X = (Vector) args[0];
+       
+        
         try {
             clazz = Class.forName("org.astrogrid.cluster.cluster.Objective");
-            func = clazz.getMethod(f, null);
+            func = clazz.getMethod(f, new Class[]{Object.class,Vector.class,Vector.class,Matrix.class,Matrix.class});
         } catch (Exception e) {
             throw new IllegalArgumentException("cannot instantiate the funtion to be minimized ",e);
         } 
@@ -79,6 +83,7 @@ public class Minimize {
         double f1;
         Vector df1;
         try {
+            
             Objective.result result = (org.astrogrid.cluster.cluster.Objective.result) func.invoke(null, args);                      // get function value and gradient
             f1 = result.getF();
             df1 = result.getDf();
@@ -92,6 +97,7 @@ public class Minimize {
                 i = i + ((length>0)?1:0);                                      // count iterations?!
                 Vector X0 = new DenseVector(X); double f0 = f1; Vector df0 = new DenseVector(df1);                   // make a copy of current values
                 X.add(z1,s);                                             // begin line search
+                args[0]=X;
                 result = (org.astrogrid.cluster.cluster.Objective.result) func.invoke(null, args);
                 double f2 = result.getF(); Vector df2 = result.getDf();
                 i = i + ((length<0)?1:0);                                          // count epochs?!
@@ -106,7 +112,7 @@ public class Minimize {
                 boolean success = false; double limit = -1;                     // initialize quanteties
                 double A,B,z2;
                 while (true){
-                    while ((f2 > f1+z1*RHO*d1) || (d2 > -SIG*d1) && (M > 0)){
+                    while (((f2 > f1+z1*RHO*d1) || (d2 > -SIG*d1)) && (M > 0)){
                         limit = z1;                                         // tighten the bracket
                         if (f2 > f1){
                             z2 = z3 - (0.5*d3*z3*z3)/(d3*z3+f2-f3);                 // quadratic fit
@@ -116,12 +122,13 @@ public class Minimize {
                             B = 3*(f3-f2)-z3*(d3+2*d2);
                             z2 = (sqrt(B*B-A*d2*z3*z3)-B)/A;       // numerical error possible - ok!
                         }
-                        if( z2 ==Double.NaN || z2 == Double.NEGATIVE_INFINITY || z2 == Double.POSITIVE_INFINITY){
+                        if( Double.isNaN(z2) || z2 == Double.NEGATIVE_INFINITY || z2 == Double.POSITIVE_INFINITY){
                             z2 = z3/2;                  // if we had a numerical problem then bisect
                         }
                         z2 = max(min(z2, INT*z3),(1-INT)*z3);  // don't accept too close to limits
                         z1 = z1 + z2;                                           // update the step
                         X.add(z2,s);
+                        args[0]=X;
                         result = (org.astrogrid.cluster.cluster.Objective.result) func.invoke(null, args);
                         f2 = result.getF();
                         df2 = result.getDf();
@@ -145,7 +152,7 @@ public class Minimize {
                     B = 3*(f3-f2)-z3*(d3+2*d2);
                     z2 = -d2*z3*z3/(B+sqrt(B*B-A*d2*z3*z3));        // num. error possible - ok!
 
-                    if(  z2 == Double.NaN || z2 == Double.NEGATIVE_INFINITY || z2 == Double.POSITIVE_INFINITY || z2 < 0 ){  // num prob or wrong sign?
+                    if(  Double.isNaN(z2)  || z2 == Double.NEGATIVE_INFINITY || z2 == Double.POSITIVE_INFINITY || z2 < 0 ){  // num prob or wrong sign?
                         //disp('z2 is nan or inf or not real')
                         if (limit < -0.5)                               // if we have no upper limit
                             z2 = z1 * (EXT-1);                 // the extrapolate the maximum amount
@@ -166,6 +173,7 @@ public class Minimize {
                     }
                     f3 = f2; d3 = d2; z3 = -z2;                  // set point 3 equal to point 2
                     z1 = z1 + z2; X.add(z2,s);                      // update current estimates
+                    args[0]=X;
                     result = (org.astrogrid.cluster.cluster.Objective.result) func.invoke(null,args);
                     f2 = result.getF();
                     df2 = result.getDf();
@@ -212,6 +220,9 @@ public class Minimize {
 
 /*
  * $Log: Minimize.java,v $
+ * Revision 1.2  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.1  2010/01/05 21:27:13  pah
  * basic clustering translation complete
  *

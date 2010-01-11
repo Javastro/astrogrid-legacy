@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterBoundFull.java,v 1.3 2009/09/14 19:08:43 pah Exp $
+ * $Id: ClusterBoundFull.java,v 1.4 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 12 Dec 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -65,6 +65,7 @@ public class ClusterBoundFull {
                 data_nr = data.sliceCol(d, ndim_nr );
                 gmu_nr = reshape(mu.asVector(nm, nm+K*ndim_nr -1), K, ndim_nr);
                 nm = nm + K*ndim_nr;
+                gcv_nr_d = new AGDenseMatrix(K,ndim_nr);
                 switch (cv_type) {
                     case free:
                         for ( int k = 0; k < K; k++) {
@@ -74,8 +75,10 @@ public class ClusterBoundFull {
                         }
                         break;
                     case diagonal:
-                        gcv_nr_d = reshape(cv.asVector(n0, n0+K*ndim_nr -1), K, ndim_nr);
-                        n0 = n0 + K*ndim_nr;
+                        for( int k=0; k < K; k++){
+                            gcv_nr_d.setRow(k,  reshape(cv.asVector(n0,n0+ndim_nr -1), 1, ndim_nr));
+                            n0 = n0 + ndim_nr;
+                       }
                         break;
                     case common:
                         gcv_nr_c = cv.asVector(n0);
@@ -234,7 +237,7 @@ public class ClusterBoundFull {
                         case common:
                             aux1.set(n,k,-ndim_er/2.0*log(2*PI)-log(det(diag(S.sliceRow(n))))/2.0-
                                 (multABAT(data_er.sliceRowM(n),inv(diag(S.sliceRow(n)))).asScalar() - 
-                                2*multBt(mult(qmu[n][k], inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
+                                2*multBt(multAt(qmu[n][k], inv(diag(S.sliceRow(n)))),data_er.sliceRowM(n)).asScalar() +
                                 trace(mult(inv(diag(S.sliceRow(n))),qcv[n][k])) 
                                 + multATBA(qmu[n][k], inv(diag(S.sliceRow(n)))).asScalar())/2.0);
                             
@@ -402,6 +405,9 @@ public class ClusterBoundFull {
 
 /*
  * $Log: ClusterBoundFull.java,v $
+ * Revision 1.4  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.3  2009/09/14 19:08:43  pah
  * code runs clustering, but not giving same results as matlab exactly
  *

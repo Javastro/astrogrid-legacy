@@ -1,5 +1,5 @@
 /*
- * $Id: Clustering.java,v 1.7 2010/01/05 21:27:13 pah Exp $
+ * $Id: Clustering.java,v 1.8 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 26 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -151,7 +151,7 @@ public class Clustering {
             data = data.sliceCol(0, c_dim+e_dim);
            
             
-             Retval mixret = Mixtures.mixtures4(data, //was data'
+             Retval mixret = Mixtures.mixtures4(transpose(data), //was data'
                     mml_min,mml_max,
                 mml_reg,tol,cv_type,MixtureKind.Gaussian,1.0);
              
@@ -164,7 +164,7 @@ public class Clustering {
             
             data = data.sliceCol(0, c_dim+e_dim);
             
-            Retval mixret = Mixtures.mixtures4(data //was dat'
+            Retval mixret = Mixtures.mixtures4(transpose(data) //was dat'
                   ,mml_min,mml_max,
                 mml_reg,tol,cv_type,MixtureKind.TDistribution,1.0);
             System.out.printf("The optimal number of clusters is %d\n", mixret.bestk);
@@ -173,7 +173,7 @@ public class Clustering {
         }    
 // real data without error information and without outliers
         if(c_dim != 0 & !mml  & !outlier  & !err_dim){
-            vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,0},{4,0},{5,0},{6,0}});
+           vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,0},{4,0},{5,0},{6,0}});
            Util.disp("clustering without outlier and without error");
           
            
@@ -315,6 +315,9 @@ public class Clustering {
 }
 /*
  * $Log: Clustering.java,v $
+ * Revision 1.8  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.7  2010/01/05 21:27:13  pah
  * basic clustering translation complete
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: Objective.java,v 1.1 2010/01/05 21:27:13 pah Exp $
+ * $Id: Objective.java,v 1.2 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 22 Dec 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -11,6 +11,7 @@
  */ 
 
 package org.astrogrid.cluster.cluster;
+import no.uib.cipr.matrix.AGDenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Vector;
 
@@ -38,8 +39,8 @@ public class Objective {
     public static result objectiveSpherical(Object cvk, Vector q, Vector mu, Matrix data_er, Matrix S){
         // returns the objective function and gradient w.r.t cvk, which is a 
 
-        if(cvk instanceof Double){
-            double cvkd = ((Double)cvk).doubleValue();
+        if(cvk instanceof Vector){
+            double cvkd = ((Vector)cvk).get(0);
 
             double cv = pow(cvkd,2.0);
             int ndata = data_er.numRows();
@@ -65,11 +66,11 @@ public class Objective {
 
 
 
-    public result objectiveFull(Object cvkm, Vector q, Vector mu, Matrix data_er, Matrix S){
+    public static result objectiveFull(Object cvkm, Vector q, Vector mu, Matrix data_er, Matrix S){
         // returns the objective function and gradient w.r.t cvk, which is a 
 
-        if (cvkm instanceof Matrix) {
-            Matrix cvk = (Matrix)cvkm;
+        if (cvkm instanceof Vector) {
+            Matrix cvk = new AGDenseMatrix((Vector)cvkm);
             int ndata = data_er.numRows();
             int ndim = data_er.numColumns();
             cvk = reshape(cvk, ndim, ndim);
@@ -95,7 +96,7 @@ public class Objective {
         }
     }
 
-    public result objectiveDiag(Object cvk, Vector q, Vector mu, Matrix data_er, Matrix S){
+    public static result objectiveDiag(Object cvk, Vector q, Vector mu, Matrix data_er, Matrix S){
         // returns the objective function and gradient w.r.t cvk, which is a 
         if (cvk instanceof Vector) {
             Vector cvkv = (Vector) cvk;
@@ -106,7 +107,7 @@ public class Objective {
             int ndim  = data_er.numColumns();
             double f = 0.0;
             for (int n = 0; n < ndata; n++){
-                f = f + q.get(n)*(-1/2*sum(log(add(cv,S.sliceRow(n))))-1/2*sum(divide(pow(sub(data_er.sliceRow(n),mu),2.0), 
+                f = f + q.get(n)*(-1/2.0*sum(log(add(cv,S.sliceRow(n))))-1/2.0*sum(divide(pow(sub(data_er.sliceRow(n),mu),2.0), 
                         (add(cv , S.sliceRow(n))))));
             }
             f = -f;
@@ -131,6 +132,9 @@ public class Objective {
 
 /*
  * $Log: Objective.java,v $
+ * Revision 1.2  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.1  2010/01/05 21:27:13  pah
  * basic clustering translation complete
  *

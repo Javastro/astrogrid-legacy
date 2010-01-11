@@ -1,5 +1,5 @@
 /*
- * $Id: RobustClusterErr.java,v 1.5 2009/09/20 17:18:01 pah Exp $
+ * $Id: RobustClusterErr.java,v 1.6 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -72,7 +72,7 @@ public class RobustClusterErr {
     // datatype is a 6x2 matrix, containing the combined data information;
     // data(:,2) = 0 means no such variable type
     int no_of_data_types = datatype.numRows();
-    Matrix data_nr = null, data_er = null, data_bin = null, data_int = null,  data_mul = null;
+    Matrix data_nr = null, data_er = null, data_bin = null, data_int = null,  data_mul = null, S=null;
     int n0 = 0, ndim_er = 0, ndim_nr = 0, ndim_bin = 0, ndim_mul = 0 , ndim_int = 0, ndim_error = 0;
     for ( int i = 0; i < no_of_data_types; i++){
         if( datatype.get(i,0) == 1  ){   // continuous data without errors
@@ -105,10 +105,11 @@ public class RobustClusterErr {
             if (ndim_error != ndim_er){
                 logger.error ("The dimension of measurement errors and ");
             }
-                    
-//            S = data.slice(-1,-1, n0, n0+ndim_error -1);
-//            // error inforamtion
-//            S = S + 1.0e-6*ones(ndata, ndim_er);
+
+            // error informtion -IMPL never used.....
+
+            S = data.sliceCol( n0, ndim_error );
+            S.add(1.0e-6,ones(ndata, ndim_er));
             n0 = n0 + ndim_error;
         }
     }
@@ -134,7 +135,8 @@ public class RobustClusterErr {
         lmu = new AGDenseMatrix(gmu.asVector());
     }
     if (ndim_nr != 0){
-       Matrix gmu_nr = centre_kmeans(data_nr, K, ndim_nr);    
+       Matrix gmu_nr = centre_kmeans(data_nr, K, ndim_nr)
+       ;    
     //     save robust_gmu_nr gmu_nr;
     //     load robust_gmu_nr;
         Vector ini_cov_nr = diag(cov(data_nr));
@@ -259,6 +261,9 @@ public class RobustClusterErr {
 
 /*
  * $Log: RobustClusterErr.java,v $
+ * Revision 1.6  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.5  2009/09/20 17:18:01  pah
  * checking just prior to bham visit
  *

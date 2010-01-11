@@ -1,5 +1,5 @@
 /*
- * $Id: AGDenseMatrix.java,v 1.6 2010/01/05 21:27:13 pah Exp $
+ * $Id: AGDenseMatrix.java,v 1.7 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 27 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -409,6 +409,12 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
         
         
         return new AGDenseMatrix(numRows, numColumns, indata);
+        
+        //IMPL could do more simply with - need to test speed to see which is better...
+        //DenseMatrix A = ...
+        //DenseMatrix I = Matrices.identity(n);
+        //DenseMatrix AI = I.copy();
+        //A.solve(I, AI);
          
     }
     
@@ -666,6 +672,9 @@ public class AGDenseMatrix extends DenseMatrix implements Matrix {
 
 /*
  * $Log: AGDenseMatrix.java,v $
+ * Revision 1.7  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.6  2010/01/05 21:27:13  pah
  * basic clustering translation complete
  *

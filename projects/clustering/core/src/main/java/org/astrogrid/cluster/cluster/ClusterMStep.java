@@ -1,5 +1,5 @@
 /*
- * $Id: ClusterMStep.java,v 1.2 2010/01/05 21:27:13 pah Exp $
+ * $Id: ClusterMStep.java,v 1.3 2010/01/11 21:22:46 pah Exp $
  * 
  * Created on 21 Sep 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 AstroGrid. All rights reserved.
@@ -58,16 +58,19 @@ public class ClusterMStep {
         int n1 = 0, d = 0;
         Matrix qcv[][] = new AGDenseMatrix[ndata][K];//FIXME these are probably not correct
         DenseVector qmu[][] = new DenseVector[ndata][K];
-        Matrix gmu_nr = null,gcv_nr[] = new AGDenseMatrix[K], gcv_nr_d = new AGDenseMatrix(K,ndim_nr), gmu = null, gcv_f[] = new AGDenseMatrix[K], gcv_d = new AGDenseMatrix(K, ndim_er);
+        Matrix gmu_nr = null,gcv_nr[] = new AGDenseMatrix[K], gcv_nr_d = null, gmu = null, gcv_f[] = new AGDenseMatrix[K], gcv_d = null;
         for ( int i = 0; i < no_of_data_types; i++){
-            if(datatype.get(i,1) == 1     ){ // continuous data without errors
-                ndim_nr = (int)datatype.get(i,2);
+            if(datatype.get(i,0) == 1     ){ // continuous data without errors
+                if((ndim_nr = (int)datatype.get(i,1)) != 0){
                 data_nr = alldata.sliceCol(d,ndim_nr);
+                gcv_nr_d = new AGDenseMatrix(K,ndim_nr);
                 d = d + ndim_nr;
+                }
             }
-            else if(datatype.get(i,1) == 2 ){ // continous data with errors
-                ndim_er = (int)datatype.get(i,2);
+            else if(datatype.get(i,0) == 2 ){ // continous data with errors
+                if((ndim_er = (int)datatype.get(i,1)) != 0){
                 data_er = alldata.sliceCol(d,ndim_er);
+                gcv_d = new AGDenseMatrix(K, ndim_er);
                 switch(cv_type) {
 
                 case free:
@@ -87,24 +90,28 @@ public class ClusterMStep {
                     gcv_c = lcv.asVector(n1); 
                 }
                 d = d + ndim_er;
+                }
             }
-            else if (datatype.get(i,1) == 3) {
-                ndim_bin = (int)datatype.get(i,2);
+            else if (datatype.get(i,0) == 3) {
+                if((ndim_bin = (int)datatype.get(i,1)) != 0){
                 data_bin = alldata.sliceCol(d,ndim_bin);
                 d = d  + ndim_bin;
+                }
             }
-            else if (datatype.get(i,1) == 4) {
-                ndim_mul =(int) datatype.get(i,2);
+            else if (datatype.get(i,0) == 4) {
+                if((ndim_mul =(int) datatype.get(i,1)) != 0){
                 data_mul = alldata.sliceCol(d,ndim_mul);
                 d = d + ndim_mul;
+                }
             }
-            else if (datatype.get(i,1) == 5) {
-                ndim_int = (int)datatype.get(i,2);       
+            else if (datatype.get(i,0) == 5) {
+                if((ndim_int = (int)datatype.get(i,1)) != 0){       
                 data_int = alldata.sliceCol(d,ndim_int);
                 d = d + ndim_int;
+                }
             }
-            else if (datatype.get(i,1) == 6) {
-                int ndim_error =(int) datatype.get(i,2);
+            else if (datatype.get(i,0) == 6) {
+                int ndim_error =(int) datatype.get(i,1);
                 if(ndim_error != ndim_er){ //
                     throw new IllegalArgumentException( "The dimension of measurement errors and ");
                 }        
@@ -144,7 +151,7 @@ public class ClusterMStep {
                         break;
                     }
                 }
-                gmu.setRow(k , multBt(inv(tmpt),tmpg));        
+                gmu.setRow(k , mult(inv(tmpt),tmpg).asVector());        
             }
             lmu.append( gmu.asVector());
             //%%%%%%%%%%%%%%%%%%
@@ -155,7 +162,7 @@ public class ClusterMStep {
 
                 case free:
                     Matrix cvk = pow((gcv_f[k]),0.5);
-                    Vector tmpcv = Minimize.minimize(cvk.asVector(), "objectiveFull", 10, q.sliceCol(k), 
+                    Vector tmpcv = Minimize.minimize("objectiveFull", 10, cvk.asVector(), q.sliceCol(k), 
                             gmu.sliceRow(k), data_er, S);
                     Matrix tmpcvm = pow(reshape(tmpcv,ndim_er,ndim_er),2.0);
                     lcv.append(tmpcvm.asVector());
@@ -163,14 +170,14 @@ public class ClusterMStep {
                 case diagonal:
 
                     Vector cvkv = pow(gcv_d.sliceRow(k),0.5);               
-                    tmpcv =Minimize.minimize(cvkv,"objectiveDiag",10,q.sliceCol(k),gmu.sliceRow(k),
+                    tmpcv =Minimize.minimize("objectiveDiag",10,cvkv,q.sliceCol(k),gmu.sliceRow(k),
                             data_er, S);                
                     lcv.append(pow(tmpcv,2));
                     break;
 
                 case common:
                     Vector cvk_c = new DenseVector(new double[]{gcv_c.get(k)});
-                    tmpcv = Minimize.minimize(cvk_c,"objectiveSpherical",10,q.sliceCol(k), gmu.sliceRow(k),
+                    tmpcv = Minimize.minimize("objectiveSpherical",10,cvk_c,q.sliceCol(k), gmu.sliceRow(k),
                             data_er, S);
                     gcv_c.set(k , pow(tmpcv.get(0),2.0));
                     lcv.append(gcv_c.get(k));
@@ -297,6 +304,9 @@ public class ClusterMStep {
 
 /*
  * $Log: ClusterMStep.java,v $
+ * Revision 1.3  2010/01/11 21:22:46  pah
+ * reasonable numerical stability and fidelity to MATLAB results achieved
+ *
  * Revision 1.2  2010/01/05 21:27:13  pah
  * basic clustering translation complete
  *
