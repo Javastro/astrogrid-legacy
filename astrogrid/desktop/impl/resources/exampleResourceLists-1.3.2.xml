@@ -1,5 +1,5 @@
 <branch>
-  <node class="resource-branch" name="Examples" iconName="myspace16.png" fixed="true" subscription="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/exampleResourceLists-1.3.2.xml"/>
+  <node class="resource-branch" description="Example lists - not editable" name="Examples" iconName="myspace16.png" fixed="true" subscription="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/exampleResourceLists-1.3.2.xml"/>
   <children>
  <resource-list name="VO taster list" iconName="doc16.png" fixed="true">
       <resource>ivo://wfau.roe.ac.uk/sdssdr7-dsa/dsa</resource>
