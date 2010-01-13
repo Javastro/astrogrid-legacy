@@ -24,6 +24,7 @@ public class Upgrade implements Runnable {
 	private final ConfigurationInternal conf;
 	private static final String ALT_REGISTRY_ENDPOINT_1_2_3 = "upgrade.1.2.3.alt-registry-endpoint";
 	private static final String RESOURCETREE_EXAMPLES_1_2_3 = "upgrade.1.2.3.resourcetree-examples";
+	private static final String RESOURCETREE_EXAMPLES_1_3_2 = "upgrade.1.3.2.vodesktop-examples-subscription";
 	
 	private static final String TURN_OFF_PLASTIC_HUB = "turn-off-plastic-hub";
 	
@@ -62,6 +63,18 @@ public class Upgrade implements Runnable {
 		    final Preference plasHub = conf.find("messaging.start.plastic");
 		    if (plasHub.asBoolean()) {
 		        plasHub.setValue("false");
+		    }
+		}
+		
+		// resource tree locations adjuisted again in v 1.3.2 - as now some of the examples have been moved out into the 'sandbox'
+		if (conf.getKey(RESOURCETREE_EXAMPLES_1_3_2) == null) {
+		    //record we've looked at this
+		    conf.setKey(RESOURCETREE_EXAMPLES_1_3_2,"done");
+		    logger.info("Checking location of examples subscription");
+		    final Preference rExamples = conf.find("resourcetree.examples.location");
+		    if("http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/exampleResourceLists-a.xml".equals(rExamples.getValue())) {
+		        logger.info("Resetting examples subscription to new default");
+		        rExamples.setValue(rExamples.getDefaultValue()); // and this fires the appropriate events.
 		    }
 		}
 	
