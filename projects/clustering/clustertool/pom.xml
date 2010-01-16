@@ -2,14 +2,15 @@
   <parent>
     <artifactId>cluster-root</artifactId>
     <groupId>org.astrogrid.cluster</groupId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.astrogrid.cluster</groupId>
   <artifactId>clustertool</artifactId>
   <name>Clustertool</name>
+  <url>http://software.astrogrid.org/doc/projects/clustering/clustertool/</url>
   <version>0.9-SNAPSHOT</version>
-  <description>tool to do statistical clustering</description>
+  <description>GUI code for the clustertool application</description>
   <build>
   	<sourceDirectory>src</sourceDirectory>
   	<testSourceDirectory>test</testSourceDirectory>
@@ -34,6 +35,12 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+      <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+         <siteDirectory>site</siteDirectory>
+       </configuration>
+      </plugin>
   	
   	</plugins>
   </build>
@@ -41,7 +48,7 @@
   	<dependency>
   		<groupId>org.astrogrid.cluster</groupId>
   		<artifactId>core</artifactId>
-  		<version>0.2-SNAPSHOT</version>
+  		<version>1.0-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>org.astrogrid</groupId>

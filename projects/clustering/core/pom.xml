@@ -2,18 +2,19 @@
 <project   xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<description>The is project contains the core code that makes up the algorithmic part of the clustertool application.</description>
+	<url>http://software.astrogrid.org/doc/projects/clustering/core/</url>
   <parent>
     <artifactId>cluster-root</artifactId>
     <groupId>org.astrogrid.cluster</groupId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.astrogrid.cluster</groupId>
   <artifactId>core</artifactId>
-  <name>core</name>
+  <name>Core Clustering Algorithms</name>
   <packaging>jar</packaging>
-  <version>0.2-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
+  <version>1.0-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

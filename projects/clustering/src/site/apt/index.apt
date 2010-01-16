@@ -1,0 +1,19 @@
+         --- 
+         Clustering Tool 
+         --- 
+         Paul Harrison
+         --- 
+         10-Jan-2010
+         --- 
+
+Robust Clustering Tool
+
+	The software within this project implements algorithms for finding statistical clusters in multivariate data in the presence of measurement
+	errors as described in 
+	{{http://www.machinelearning.org/proceedings/icml2007/papers/137.pdf}} by Sun, Kabán & Raychaudhury. The software is a Java translation of the original coding that was implemented in MATLAB. This version of the code has several advantages
+	
+	* A commercial MATLAB licence is not necessary to run the code.
+	
+	* The code is VO enabled to make it easier to work with other tools and data sources available to the VO.
+	
+	* The Java implementation is faster than the MATLAB implementation.

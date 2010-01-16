@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id: site.xml,v 1.1 2010/01/16 11:02:01 pah Exp $ -->
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+  <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
+    <name>AstroGrid</name>
+    <src>http://www.template.bham.ac.uk/images/crest.gif</src>
+    <href>http://www.sr.bham.ac.uk/algorithms/</href>
+  </bannerRight>
+
+<publishDate position="navigation-top" format="yyyy-MM-dd"/> 
+<version position="left"/>
+ <!-- need to get a nicer powered by logo... -->
+  <poweredBy>
+    <logo name="Astrogrid" href="http://www.astrogrid.org/"
+          img="http://www.astrogrid.org/images/AGlogo.png"/>
+  </poweredBy>
+  <body>
+    <links>
+      <item name="University of Birmingham" href="http://www.sr.bham.ac.uk/algorithms/"/>
+      <item name="Astrogrid" href="http://www.astrogrid.org/" />
+      <item name="IVOA" href="http://www.ivoa.net/"/>
+     </links>
+    <breadcrumbs>
+       <item name="Clustering Home " href="http://software.astrogrid.org/doc/projects/clustering/index.html"/>
+    </breadcrumbs>
+     <menu name="ClusterTool">
+       <item name="Home" href="index.html"/>
+       <item name="Download" href="index.html"/>
+       <item name="Installing" href="installation.html"/>
+       <item name="Using " href="using.html" collapse="false">
+          <item name="Interaction with other tools" href="samp.html"/>
+          <item name="As CEA service" href="CEA.html"/>
+       </item>
+       <item name="Acknowledging" href="acknowledge.html" />
+       <item name="Developing" href="translation.html"/>
+     </menu>
+ 
+    <menu ref="modules" />
+     
+   </body>
+</project>

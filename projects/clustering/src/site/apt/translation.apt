@@ -1,0 +1,35 @@
+         --- 
+         Clustering Tool Development
+         --- 
+         Paul Harrison
+         --- 
+         10-Jan-2010
+         --- 
+
+Development of Clustering Tool
+
+* Original Translation
+
+  The java code that makes up this application was translated from MATLAB based code. For the main algorithmic parts of the 
+  application, the original organisation of the code has been retained as far as possible, in order to take advantage of any algorithmic optimizations in the original, as wall as allowing reference to be made to the original code when testing/debugging etc.
+  However, as java is a rather different language characteristics compared with MATLAB, i.e. Java is object oriented and strongly typed without operator overloading, there are 
+  fairly radical rewritings of the lines that make up the individual expressions within a functional block.
+  
+
+* Code Organisation
+
+** Main Modules
+
+The code is divided into two main modules.
+
+    * The main algorithmic code is in the "core" subdirectory.
+  
+    * The main GUI code is located within the "clustertool" subdirectory.
+
+* 3rd Party Libraries
+
+  The bulk of the matrix based functionality is implemented using the {{{http://code.google.com/p/matrix-toolkits-java/} Matrix toolkit for Java}} library. This library is, in turn, layered upon
+  {{{http://code.google.com/p/netlib-java/} netlib java}} library which is a pure java implementation of LAPACK and BLAS. If necessary (for large matrices) the backend can be compiled with native LAPACK and BLAS libraries, but this does increase the build complexity, and is to be avoided unless specific performance issues are being experienced.
+  
+
+* Building with Maven.
