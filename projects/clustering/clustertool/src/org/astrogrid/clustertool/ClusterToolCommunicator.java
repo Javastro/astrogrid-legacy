@@ -6,8 +6,10 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 
+import org.astrogrid.clustertool.samp.Transmitter;
+
 /**
- * Abstract interface for inter-application messaging requirements of TOPCAT.
+ * Abstract interface for inter-application messaging requirements of ClusterTool.
  * This can be implemented by SAMP or PLASTIC (or others).
  *
  * @author   Mark Taylor
@@ -48,19 +50,6 @@ public interface ClusterToolCommunicator {
      */
     Transmitter getTableTransmitter();
 
-
-
-
-  
-
-
-
-   
-
-
-  
-
-   
 
     /**
      * Attempts to start a messaging hub suitable for use with this object.

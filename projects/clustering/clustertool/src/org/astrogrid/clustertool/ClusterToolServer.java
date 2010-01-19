@@ -1,6 +1,6 @@
 
 /*
- * $$Id: ClusterToolServer.java,v 1.2 2009/09/14 19:09:26 pah Exp $$
+ * $$Id: ClusterToolServer.java,v 1.3 2010/01/19 21:27:38 pah Exp $$
  *
  * Created on 28-Aug-2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright Astrogrid. All rights reserved.
@@ -26,7 +26,7 @@ import org.astrogrid.samp.httpd.UtilServer;
 
 
 /**
- * Provides HTTP server functionality for TOPCAT.
+ * Provides HTTP server functionality for ClusterTool.
  * This includes a web server for dynamically generated content and an
  * XML-RPC server for use with SAMP.
  * This class is a singleton.

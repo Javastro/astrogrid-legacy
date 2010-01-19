@@ -1,5 +1,5 @@
 /*
- * $Id: Clustering.java,v 1.8 2010/01/11 21:22:46 pah Exp $
+ * $Id: Clustering.java,v 1.9 2010/01/19 21:27:38 pah Exp $
  * 
  * Created on 26 Nov 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,6 +13,7 @@
 package org.astrogrid.cluster.cluster;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import no.uib.cipr.matrix.AGDenseMatrix;
@@ -43,15 +44,43 @@ public class Clustering {
       public static class ClusteringResults {
         public final Matrix R;
         public final Vector bestpp;
-        public final Matrix bestmu;
-        public final Matrix bestcov;
+        public final Matrix mu;
+        public final Matrix cov;
+        public final Matrix lmu;
+        public final Matrix lcov;
+        public final int nclass;
+
         public final List<Double> errlog;
-        public ClusteringResults(Matrix R, Vector bestpp, Matrix bestmu, Matrix bestcov, List<Double> errlog) {
+        /**
+         * Constructor where there is full latent variables available.
+         * @param R
+         * @param bestpp
+         * @param bestmu
+         * @param bestcov
+         * @param lmu
+         * @param lcov
+         * @param errlog
+         */
+//        public ClusteringResults(int nclass, Matrix R, Vector bestpp, Matrix bestmu, List<Matrix> bestcov, Matrix lmu, List<Matrix> lcov, List<Double> errlog) {
+//            this.R = R;
+//            this.bestpp = bestpp;
+//            this.mu = bestmu;
+//            this.cov = bestcov;
+//            this.errlog = errlog;
+//            this.lmu = lmu;
+//            this.lcov = lcov;
+//            this.nclass = nclass;
+//        }
+        public ClusteringResults(int nclass, Matrix R, Vector bestpp, Matrix bestmu, Matrix bestcov,  List<Double> errlog){
             this.R = R;
             this.bestpp = bestpp;
-            this.bestmu = bestmu;
-            this.bestcov = bestcov;
+            this.mu = bestmu;
+            this.cov = bestcov;
             this.errlog = errlog;
+            this.lmu = null;
+            this.lcov = null;
+            this.nclass = nclass;
+            
         }
     };
         
@@ -155,7 +184,7 @@ public class Clustering {
                     mml_min,mml_max,
                 mml_reg,tol,cv_type,MixtureKind.Gaussian,1.0);
              
-             retval = new ClusteringResults(mixret.R, mixret.bestpp, mixret.bestmu, mixret.bestcov.get(mixret.bestk-1), mixret.loglik);
+             retval = new ClusteringResults(bestk, mixret.R, mixret.bestpp, mixret.bestmu, mixret.bestcov.get(mixret.bestk-1), mixret.loglik);
              System.out.printf("The optimal number of clusters is %d\n", mixret.bestk);
       }
         if(c_dim != 0 & mml  & outlier){
@@ -168,7 +197,7 @@ public class Clustering {
                   ,mml_min,mml_max,
                 mml_reg,tol,cv_type,MixtureKind.TDistribution,1.0);
             System.out.printf("The optimal number of clusters is %d\n", mixret.bestk);
-            retval = new ClusteringResults(mixret.R, mixret.bestpp, mixret.bestmu, mixret.bestcov.get(mixret.bestk-1), mixret.loglik);
+            retval = new ClusteringResults(bestk, mixret.R, mixret.bestpp, mixret.bestmu, mixret.bestcov.get(mixret.bestk-1), mixret.loglik);
           
         }    
 // real data without error information and without outliers
@@ -179,7 +208,7 @@ public class Clustering {
            
              ClusterErrResult rce = ClusterErr.cluster_err(data, vartype, mml_max, 
                 niters, tol, cv_type);
-             retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+             retval = new ClusteringResults(mml_max,rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
              
                      
         }
@@ -191,7 +220,7 @@ public class Clustering {
             RobustClusterErrResult rce = RobustClusterErr.robust_cluster_err(data, vartype, 
                 mml_max, niters, tol, cv_type);
  
-            retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+            retval = new ClusteringResults(mml_max,rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
             // still need lbestmu;lbestcv; C;
 
             lbestmu = rce.lmu; lbestcov =rce.lcv;
@@ -208,7 +237,7 @@ public class Clustering {
             
             ClusterErrResult rce = ClusterErr.cluster_err(data, vartype, mml_max,
                 niters, tol, cv_type);        
-            retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+            retval = new ClusteringResults(mml_max,rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
        
         }
 // real data with error information and outlier
@@ -218,7 +247,7 @@ public class Clustering {
            RobustClusterErrResult rce = RobustClusterErr.robust_cluster_err(
                    data, vartype, mml_max, niters, tol, cv_type);    
                 
-                retval = new ClusteringResults(rce.q, rce.p, rce.lmu, rce.lcv, rce.loglik);
+                retval = new ClusteringResults(mml_max,rce.q, rce.p, rce.lmu, rce.lcv, rce.loglik);
         
         }
         
@@ -231,7 +260,7 @@ public class Clustering {
              ClusterErrResult rce = ClusterErr.cluster_err(data, vartype, mml_max, niters, 
             tol, cv_type);
 
-            retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+            retval = new ClusteringResults(mml_max,rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
 
            }
         if(m_dim != 0){
@@ -239,7 +268,7 @@ public class Clustering {
             
             vartype = new AGDenseMatrix(new double[][]{{1,0},{2,0},{3,0},{4,m_dim},{5,0},{6,0}});
             ClusterErrResult rce = ClusterErr.cluster_err(data, vartype, mml_max, niters, tol, cv_type);
-            retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+            retval = new ClusteringResults(mml_max,rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
 
         }
         if(i_dim != 0){
@@ -247,7 +276,7 @@ public class Clustering {
            Util.disp("clustering for integer data");
            ClusterErrResult rce = ClusterErr.cluster_err(data, vartype, mml_max, niters, 
         tol, cv_type);
-           retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+           retval = new ClusteringResults(mml_max, rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
  
         }
     }
@@ -262,7 +291,7 @@ public class Clustering {
          RobustClusterErrResult rce = RobustClusterErr.robust_cluster_err(
             data, vartype, mml_max, niters, tol, cv_type);    
          
-         retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+         retval = new ClusteringResults(mml_max, rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
          //FIXME still need lbestmu;lbestcv; C;
          
          //R = rce., bestpp; bestmu; bestcov;  errlog;
@@ -278,7 +307,7 @@ public class Clustering {
         }
         ClusterErrResult rce = ClusterErr.cluster_err(data, 
             vartype, mml_max, niters, tol, cv_type);    
-        retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+        retval = new ClusteringResults(mml_max, rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
 
     }
 // No error information, with outliers
@@ -290,7 +319,7 @@ public class Clustering {
         vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,b_dim},{4,m_dim},{5,i_dim},{6,0}});
         RobustClusterErrResult rce = RobustClusterErr.robust_cluster_err(
             data, vartype, mml_max, niters, tol, cv_type);
-        retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+        retval = new ClusteringResults(mml_max, rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
 
     }
 // No error information, no outliers
@@ -300,7 +329,7 @@ public class Clustering {
       
         vartype = new AGDenseMatrix(new double[][]{{1,c_dim},{2,0},{3,b_dim},{4,m_dim},{5,i_dim},{6,0}});
         ClusterErrResult rce = ClusterErr.cluster_err(data, vartype,mml_max,niters, tol, cv_type);
-        retval = new ClusteringResults(rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
+        retval = new ClusteringResults(mml_max,rce.q, rce.p, rce.mu, rce.cv, rce.loglik);
 
     }  
     
@@ -315,6 +344,9 @@ public class Clustering {
 }
 /*
  * $Log: Clustering.java,v $
+ * Revision 1.9  2010/01/19 21:27:38  pah
+ * better display of covariances + cli operation
+ *
  * Revision 1.8  2010/01/11 21:22:46  pah
  * reasonable numerical stability and fidelity to MATLAB results achieved
  *
