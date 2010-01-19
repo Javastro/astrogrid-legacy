@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.41 2009/04/17 17:01:46 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.42 2010/01/19 14:45:55 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.HashSet;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -364,13 +365,17 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
 		public ListWorker(final UIComponent parent, final Collection<URI> ids) {
 			super(parent, "Loading List");
 			this.ids = ids;
+			this.notSeen = new HashSet<URI>(ids);
 		}
 		
 		public ListWorker(final String title,final UIComponent parent, final Collection<URI> ids) {
 			super(parent, "Loading " + title);
 			this.ids = ids;
+            this.notSeen = new HashSet<URI>(ids);			
 		}		
+		// don't know if it's safe to modify this, sadly.
 		private final Collection<URI> ids;
+		private final HashSet<URI> notSeen;
 		
 		@Override
         protected Void construct() throws Exception {   
@@ -383,7 +388,38 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
 			return null;
 		}
 		
+		@Override
+		public void process(final Resource r) {
+		    super.process(r);
+		    // extra defensive here.
+		    if (r != null && r.getId() != null) {
+		        notSeen.remove(r.getId());
+		    }
+		}
+		/**
+		 * overridden: checks whether any of the requested resources was not found, and displays a warning.
+		 */
+		@Override
+		protected void doFinished(final Void result) {
+		    super.doFinished(result);
+		    // try to display a popup 
+		    switch(notSeen.size()) {
+		        case 0: // no problems 
+		            return;		   
+		        case 1:
+		            parent.showTransientWarning("A resource in this list was not found ",notSeen.iterator().next().toString());
+		            return;
+		        default: // many	        
+		            final StringBuilder sb = new StringBuilder();
+		            for (final URI u : notSeen) {
+		                sb.append(u);
+		                sb.append("<br>");
+		            }
+		            parent.showTransientWarning("Some resources in the list were not found ",sb.toString());
+		    }
+		}
 	}
+	
 	// no state - so can be reused between instances.
 	//seems unneeded static final SRQLVisitor feedbackVisitor = new KeywordSRQLVisitor();	
 	static final Builder briefXQueryBuilder = new HeadClauseSRQLVisitor();
@@ -938,6 +974,9 @@ implements ListEventListener<Resource>, ListSelectionListener, ChangeListener, T
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.42  2010/01/19 14:45:55  nw
+added warning for missing item in staticlist.
+
 Revision 1.41  2009/04/17 17:01:46  nw
 MultiCone.
 
