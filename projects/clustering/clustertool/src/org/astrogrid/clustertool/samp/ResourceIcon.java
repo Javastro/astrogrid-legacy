@@ -1,5 +1,5 @@
 /*
- * $Id: ResourceIcon.java,v 1.2 2009/09/17 07:03:19 pah Exp $
+ * $Id: ResourceIcon.java,v 1.1 2010/01/19 21:25:14 pah Exp $
  * 
  * Created on Sep 14, 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -10,7 +10,7 @@
  *
  */ 
 
-package org.astrogrid.clustertool;
+package org.astrogrid.clustertool.samp;
 
 import javax.swing.ImageIcon;
 
@@ -33,6 +33,9 @@ public class ResourceIcon {
 
 /*
  * $Log: ResourceIcon.java,v $
+ * Revision 1.1  2010/01/19 21:25:14  pah
+ * moved here for neatness
+ *
  * Revision 1.2  2009/09/17 07:03:19  pah
  * GUI refinements
  *

@@ -1,4 +1,4 @@
-package org.astrogrid.clustertool;
+package org.astrogrid.clustertool.samp;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -6,6 +6,10 @@ import java.net.URL;
 import java.util.Map;
 import javax.swing.Action;
 import javax.swing.JMenu;
+
+import org.astrogrid.clustertool.ClusterToolSampControl;
+import org.astrogrid.clustertool.ClusterToolServer;
+import org.astrogrid.clustertool.ClustertoolView;
 import org.astrogrid.samp.Client;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.SampUtils;

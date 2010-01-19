@@ -1,5 +1,5 @@
 /*
- * $$Id: Transmitter.java,v 1.2 2009/09/17 07:03:19 pah Exp $$
+ * $$Id: Transmitter.java,v 1.1 2010/01/19 21:25:14 pah Exp $$
  *
  * Created on 28-Aug-2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright Astrogrid. All rights reserved.
@@ -9,7 +9,7 @@
  * with this distribution in the LICENSE.txt file.
  *
  */ 
-package org.astrogrid.clustertool;
+package org.astrogrid.clustertool.samp;
 
 import javax.swing.Action;
 import javax.swing.JMenu;

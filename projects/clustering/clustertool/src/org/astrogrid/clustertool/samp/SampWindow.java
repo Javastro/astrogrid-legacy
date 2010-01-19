@@ -9,12 +9,13 @@
  * Created on Sep 14, 2009, 5:54:09 PM
  */
 
-package org.astrogrid.clustertool;
+package org.astrogrid.clustertool.samp;
 
 import java.awt.BorderLayout;
 
 import javax.swing.Action;
 
+import org.astrogrid.clustertool.ClustertoolApp;
 import org.astrogrid.samp.gui.GuiHubConnector;
 
 

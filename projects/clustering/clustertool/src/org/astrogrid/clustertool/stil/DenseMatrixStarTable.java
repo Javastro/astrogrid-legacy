@@ -1,5 +1,5 @@
 /*
- * $Id: DenseMatrixStarTable.java,v 1.2 2009/09/20 17:17:59 pah Exp $
+ * $Id: DenseMatrixStarTable.java,v 1.1 2010/01/19 21:25:14 pah Exp $
  * 
  * Created on Sep 14, 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -10,7 +10,7 @@
  *
  */ 
 
-package org.astrogrid.clustertool;
+package org.astrogrid.clustertool.stil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,6 +61,9 @@ public class DenseMatrixStarTable extends RandomStarTable {
 
 /*
  * $Log: DenseMatrixStarTable.java,v $
+ * Revision 1.1  2010/01/19 21:25:14  pah
+ * moved here for neatness
+ *
  * Revision 1.2  2009/09/20 17:17:59  pah
  * checking just prior to bham visit
  *

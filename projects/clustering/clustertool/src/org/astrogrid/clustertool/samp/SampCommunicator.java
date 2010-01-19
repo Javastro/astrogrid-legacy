@@ -1,5 +1,5 @@
 /*
- * $$Id: SampCommunicator.java,v 1.2 2009/09/14 19:09:26 pah Exp $$
+ * $$Id: SampCommunicator.java,v 1.1 2010/01/19 21:25:14 pah Exp $$
  *
  * Created on 28-Aug-2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright Astrogrid. All rights reserved.
@@ -9,7 +9,7 @@
  * with this distribution in the LICENSE.txt file.
  *
  */ 
-package org.astrogrid.clustertool;
+package org.astrogrid.clustertool.samp;
 
 
 import java.awt.BorderLayout;
@@ -28,6 +28,11 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.astrogrid.clustertool.BasicAction;
+import org.astrogrid.clustertool.ClusterToolCommunicator;
+import org.astrogrid.clustertool.ClusterToolSampControl;
+import org.astrogrid.clustertool.ClusterToolServer;
+import org.astrogrid.clustertool.ClustertoolView;
 import org.astrogrid.samp.gui.GuiHubConnector;
 import org.astrogrid.samp.gui.MessageTrackerHubConnector;
 import org.astrogrid.samp.xmlrpc.HubMode;
