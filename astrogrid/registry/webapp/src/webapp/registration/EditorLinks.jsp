@@ -12,14 +12,15 @@ String encodedIvorn = URLEncoder.encode(ivorn, "UTF-8");
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Editing options for a registry entry</title>
-    </head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <style type="text/css" media="all">
-      <%@ include file="/style/astrogrid.css" %>          
+      <%@ include file="/style/astrogrid.css" %>
     </style>
+    <%@ include file="/style/link_options.xml" %>
+    </head>
     <body>
-      
+
 <%@ include file="/style/header.xml" %>
 <%@ include file="/style/navigation.xml" %>
 
@@ -34,5 +35,7 @@ String encodedIvorn = URLEncoder.encode(ivorn, "UTF-8");
           <li><a href="../admin/editEntry.jsp?IVORN=<%=encodedIvorn%>">Edit XML text</a> (low level)</li>
         </ul>
      </div>
+    <%@ include file="/style/footer.xml" %>
    </body>
 </html>
+

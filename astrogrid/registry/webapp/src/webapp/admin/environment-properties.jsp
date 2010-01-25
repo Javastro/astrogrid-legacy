@@ -1,15 +1,43 @@
-<%@page contentType="text/plain"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
-
-<jsp:useBean class="org.astrogrid.common.j2ee.environment.Environment" 
-    id="environment" scope="application"/>
-# Properties for context <c:out value="${environment.contextPath}"/>
-
-<%
-org.astrogrid.common.j2ee.environment.EnvEntry[] entries = environment.getEnvEntry();
-pageContext.setAttribute("entries", entries);
+<%@ page import="org.astrogrid.config.SimpleConfig,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+                 org.w3c.dom.NodeList,
+                 org.w3c.dom.Element,
+                 org.w3c.dom.Document,
+                 org.astrogrid.util.DomHelper,
+                 org.astrogrid.registry.server.http.servlets.Log4jInit,
+                 org.astrogrid.xmldb.client.XMLDBManager,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.server.query.*,
+                 org.astrogrid.store.Ivorn,
+                 org.apache.axis.utils.XMLUtils,
+                 java.util.*,
+                 java.io.*"
+   isThreadSafe="false"
+   session="false"
 %>
-<c:forEach var="e" items="${entries}">
-# <c:out value="${e.description}"/>
-<c:out value="${e.name}"/>=<c:out value="${e.replacementValue}"/>
-</c:forEach>
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Environmental properties</title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
+<style type="text/css" media="all">
+    <%@ include file="/style/astrogrid.css" %>
+</style>
+<%@ include file="/style/link_options.xml" %>
+</head>
+<body>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
+<div id='bodyColumn'>
+
+<SCRIPT LANGUAGE="JavaScript" type="text/javascript">
+      <!--
+      document.write('<iframe src="environment-properties_body.jsp?IVORN=ivo://vamdc/org.astrogrid.registry.RegistryService" name="main" scrolling="yes" FRAMEBORDER="0" width="90%" height="700"><\/iframe>');
+      // -->
+</SCRIPT>
+
+</div>
+<%@ include file="/style/footer.xml" %>
+</body>
+</html>

@@ -80,7 +80,11 @@
             errorTemp = afe.getMessage();
          }     
       }//if
+  }else {
+     update = false;
+     errorTemp = "No update was done, did not find a File or URL or txt to perform an update of a resource.";
   }
+
 %>
 
 <html>

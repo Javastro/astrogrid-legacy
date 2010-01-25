@@ -11,8 +11,8 @@
                  org.apache.axis.utils.XMLUtils, 
                  org.apache.commons.fileupload.*, 
                  java.io.*"
-    session="false" %>
-
+    session="false"
+%>
 <%
   boolean validateError = false;
   boolean doValidate = false;
@@ -65,9 +65,9 @@
             validateError = true;
             errorTemp = afe.getMessage();
          }
-       }//if
+      }//if
       
-  } else if(request.getParameter("addFromText") != null &&
+   } else if(request.getParameter("addFromText") != null &&
      request.getParameter("addFromText").trim().length() > 0) {
     doc = DomHelper.newDocument(request.getParameter("Resource").trim());
      update = true;
@@ -81,15 +81,21 @@
             errorTemp = afe.getMessage();
          }     
       }//if
+   }else {
+     update = false;
+     errorTemp = "No update was done, did not find a File or URL or txt to perform an update of a resource.";
   }
 %>
-
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>Edit Registry Entry</title>
+<meta http-equiv="Content-type" content="text/xhtml; charset=iso-8859-1">
 <style type="text/css" media="all">
    <%@ include file="/style/astrogrid.css" %>          
 </style>
+<%@ include file="../style/link_options.xml" %>
 </head>
 
 <body>
@@ -101,8 +107,8 @@
 
 <p>Service returns:</p>
 
+   <font color="red"><%=errorTemp%></font>
 <pre>
-   <font color="red"><%=errorTemp %></font>
 <%
    if(update) {
       Document result = null;
@@ -112,8 +118,8 @@
       if (result != null) {
         DomHelper.DocumentToWriter(result, out);
       }
-     
    }
+
 %>
 </pre>
 </div>

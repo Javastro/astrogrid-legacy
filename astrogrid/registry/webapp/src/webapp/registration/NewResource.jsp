@@ -1,28 +1,37 @@
-<%@page contentType="text/html"%>
-<%@page pageEncoding="UTF-8"%>
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
-
+<%@ page import="org.astrogrid.config.SimpleConfig,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+                 org.w3c.dom.NodeList,
+                 org.w3c.dom.Element,
+                 org.w3c.dom.Document,
+                 org.astrogrid.util.DomHelper,
+                 org.astrogrid.registry.server.http.servlets.Log4jInit,
+                 org.astrogrid.xmldb.client.XMLDBManager,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.server.query.*,
+                 org.astrogrid.store.Ivorn,
+                 org.apache.axis.utils.XMLUtils,
+                 java.util.*,
+                 java.io.*"
+   isThreadSafe="false"
+   session="false"
+%>
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>New registry entry</title>
+<head>
+<title>Submit New Resource</title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
 <style type="text/css" media="all">
-   <%@ include file="/style/astrogrid.css" %>          
+    <%@ include file="/style/astrogrid.css" %>
 </style>
-    </head>
-    <body>
-      
-    <%@ include file="/style/header.xml" %>
-    <%@ include file="/style/navigation.xml" %>
-    
+<%@ include file="/style/link_options.xml" %>
+</head>
+<body>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
     <jsp:useBean id="pa" class="org.astrogrid.registry.registration.PublishingAuthorities" scope="page"/>
-    
       <div id='bodyColumn'>
-        
-        <h1>Creating a new registry entry</h1>
- 
+        <h1>Create Entry</h1>
         <form action="NewIdentifier" method="post">
           <p>
             Formal name for the new entry:
@@ -34,31 +43,31 @@
               <%}%>
             </select>
             /
-            <input type="text" name="resourceKey" size="32"/>
-            (<a href="help/naming.html">help</a></td>)
+            <input type="text" name="resourceKey" size="32">
+            (<a href="help/naming.jsp">help</a>)
           </p>
           <p>This entry describes:</p>
-          <ul>
-            <li><input type="radio" name="xsiType" value="vr:Service"/>A virtual observatory service.</li>
-            <li><input type="radio" name="xsiType" value="vs:CatalogService"/>Catalog service.</li>
-            <li><input type="radio" name="xsiType" value="vs:DataCollection"/>A data collection.</li>
-            <li><input type="radio" name="xsiType" value="va:Application"/>An application.</li>
-	    	<li><input type="radio" name="xsiType" value="vr:Organisation"/>An organization.</li>
-	    	<li><input type="radio" name="xsiType" value="vr:Resource"/>None of the above; just a generic resource.</li>
+          <dl>
+            <dt><dd><input type="radio" name="xsiType" value="vr:Service"> A virtual observatory service.
+            <dt><dd><input type="radio" name="xsiType" value="vs:CatalogService"> Catalog service.
+            <dt><dd><input type="radio" name="xsiType" value="vs:DataCollection"> A data collection.
+            <dt><dd><input type="radio" name="xsiType" value="va:Application"> An application.
+            <dt><dd><input type="radio" name="xsiType" value="vr:Organisation"> An organization.
+            <dt><dd><input type="radio" name="xsiType" value="vr:Resource"> None of the above; just a generic resource.
 	    	<!--
 	    		User can do an applicatin and then put in a harvestvosi to turn it into cea if needed.
 	    		But normally CEA will register everything the whole resource itself.
-            <li><input type="radio" name="xsiType" value="cea:CeaApplication"/>A CEA application.</li>	    	
+            <dt><dd><input type="radio" name="xsiType" value="cea:CeaApplication">A CEA application.
 	    	-->
-	  </ul>
-          <p><input type="submit" value="Create this entry"/></p>
+	  </dl>
+          <p><input type="submit" value="Create this entry"></p>
         </form>
-        <hr/>
+        <hr>
         <p>
           If the drop-down menu in the entry name has no choices, then you
           need to configure the registry before entering resources.
         </p>
       </div>
-      
-    </body>
+<%@ include file="/style/footer.xml" %>
+</body>
 </html>

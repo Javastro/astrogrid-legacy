@@ -1,35 +1,39 @@
 <%@ page import="org.astrogrid.config.SimpleConfig,
- 	  		     org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.w3c.dom.NodeList,
                  org.w3c.dom.Element,
-                 org.w3c.dom.Document,   
+                 org.w3c.dom.Document,
                  org.astrogrid.util.DomHelper,
                  org.astrogrid.registry.server.http.servlets.Log4jInit,
                  org.astrogrid.xmldb.client.XMLDBManager,
                  org.astrogrid.registry.common.RegistryDOMHelper,
-             	 org.astrogrid.registry.server.query.*"
+                 org.astrogrid.registry.server.query.*,
+                 org.astrogrid.store.Ivorn,
+                 org.apache.axis.utils.XMLUtils,
+                 java.util.*,
+                 java.io.*"
    isThreadSafe="false"
    session="false"
 %>
-
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>VAMDC Registry Access Pages</title>
+<title>Registry Access Pages</title>
+<meta http-equiv="Content-type" content="text/xhtml; charset=iso-8859-1">
 <style type="text/css" media="all">
-	<%@ include file="/style/astrogrid.css" %>          
+    <%@ include file="/style/astrogrid.css" %>
 </style>
-</title>
+<%@ include file="/style/link_options.xml" %>
 </head>
-
 <body>
 <%@ include file="/style/header.xml" %>
 <%@ include file="/style/navigation.xml" %>
-
 <div id='bodyColumn'>
 
 <h1>Welcome</h1>
 <p>
-Welcome to an VAMDC Registry.  These are the direct access pages for
+Welcome to Registry.  These are the direct access pages for
 Registering your resource, and/or investigating what resources
 are available.
 </p>
@@ -57,18 +61,18 @@ are available.
    }//if
    
    if(!dbInit) {
-   	out.write("<font color='red'>Could not detect that your database was initalizaed with the eXist default xml database</font><br />");
+   	out.write("<font color='red'>Could not detect that your database was initalizaed with the eXist default xml database</font><br>");
    }
    if(!logInit) {
-   	out.write("<font color='red'>Could not initalize logging, See <a href='regdocs/configure.jsp'>Configure</a></font><br />");
+   	out.write("<font color='red'>Could not initalize logging, See <a href='regdocs/configure.jsp'>Configure</a></font><br>");
    }
    
    if (newRegistry) {
       out.write("This Registry has not yet been configured; click <a href='regdocs/configure.jsp'>here</a> to set it up");
    }
    else {
-      out.write("This Registry main authorityid <b>"+SimpleConfig.getSingleton().getString("reg.amend.authorityid")+"</b>");
-      out.write("<br />Click <a href='viewResourceEntry.jsp?IVORN=" + ivoStr + "'>here</a> to see the main Registry type for this registry and all authority ids managed by this registry.");
+      out.write("This Registry main authority ID <b>"+SimpleConfig.getSingleton().getString("reg.amend.authorityid")+"</b>");
+      out.write("<br><br>Click <a href='viewResourceEntry.jsp?IVORN=" + ivoStr + "'>here</a> to see the main Registry type for this registry and all authority IDs managed by this registry.");
    }
    
    if(!contractVersion.equals("1.0")) {
@@ -79,8 +83,7 @@ are available.
 	   " <a href='" + request.getContextPath() + "/currentContractSession.jsp'>here</a>/font>");
    }
 %>
-	<br />
-	
+
 </div>
 <%@ include file="/style/footer.xml" %>
 </body>

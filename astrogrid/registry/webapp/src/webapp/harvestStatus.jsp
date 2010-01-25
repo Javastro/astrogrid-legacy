@@ -1,7 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.harvest.*,
                  org.astrogrid.store.Ivorn,
                  org.astrogrid.registry.server.query.*,
- 	  			 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,

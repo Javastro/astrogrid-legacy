@@ -1,25 +1,39 @@
-<%@page contentType="text/html"%>
-<%@page pageEncoding="UTF-8"%>
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
-
+<%@ page import="org.astrogrid.config.SimpleConfig,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+                 org.w3c.dom.NodeList,
+                 org.w3c.dom.Element,
+                 org.w3c.dom.Document,
+                 org.astrogrid.util.DomHelper,
+                 org.astrogrid.registry.server.http.servlets.Log4jInit,
+                 org.astrogrid.xmldb.client.XMLDBManager,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.server.query.*,
+                 org.astrogrid.store.Ivorn,
+                 org.apache.axis.utils.XMLUtils,
+                 java.util.*,
+                 java.io.*"
+   isThreadSafe="false"
+   session="false"
+%>
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
-    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
-      <title>Tree view of IVOA registry</title>
-      <style type="text/css" media="all">
-        @import url("<%=request.getContextPath()%>/style/astrogrid.css");
-      </style>
-    </head>
-    <body>
-      <%@ include file="/style/header.xml" %>
-      <%@ include file="/style/navigation.xml" %>
-      <div id="bodyColumn">
-        <div class="contentBox">
-          <h1>Tree view of IVOA registry</h1>
+<head>
+<title>Tree View of Registry</title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
+<style type="text/css" media="all">
+    <%@ include file="/style/astrogrid.css" %>
+</style>
+<%@ include file="/style/link_options.xml" %>
+</head>
+<body>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
+<div id="bodyColumn">
+     <div class="contentBox">
+          <h1>Registry Tree</h1>
           <p>
-            This is a browseable view of the IVOA registry as a tree
+            This is a browseable view of registry as a tree
             structure. Links ending in a slash lead to branches; 
             links with no slash at the end lead to resource documents for the
             things registered.
@@ -36,9 +50,8 @@
           <ul>
             <li><a href="<%=request.getContextPath()%>/tree/">ivo://</a></li>
           </ul>
-        </div>
-      </div>
-<%@ include file="/style/footer.xml" %>
-
+       </div>
+    </div>
+    <%@ include file="/style/footer.xml" %>
     </body>
 </html>

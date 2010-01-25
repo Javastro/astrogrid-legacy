@@ -1,40 +1,43 @@
-<%@ page import="org.astrogrid.registry.server.query.*,
-                 org.astrogrid.store.Ivorn,
-  	             org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
-                 org.w3c.dom.Document,
-                 org.w3c.dom.Element,
+<%@ page import="org.astrogrid.config.SimpleConfig,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.w3c.dom.NodeList,
-                 org.astrogrid.io.Piper,
+                 org.w3c.dom.Element,
+                 org.w3c.dom.Document,
                  org.astrogrid.util.DomHelper,
+                 org.astrogrid.registry.server.http.servlets.Log4jInit,
+                 org.astrogrid.xmldb.client.XMLDBManager,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.server.query.*,
+                 org.astrogrid.store.Ivorn,
                  org.apache.axis.utils.XMLUtils,
-                 java.net.*,
                  java.util.*,
                  java.io.*"
    isThreadSafe="false"
-   pageEncoding="UTF-8"
-   contentType="text/xml"                 
-   session="false" %>
-<%
-   ISearch server = JSPHelper.getQueryService(request);
-   Document entry;   try {   entry = server.getQueryHelper().getResourceByIdentifier(request.getParameter("IVORN"));
-   }catch(Exception e) {
-    entry = null;
-   }
-
-   if(entry == null) {
-       out.write("<Error>No entry returned</Error>");
-   }else {
-	   NodeList nl = entry.getElementsByTagNameNS("*","Resource");
-	   if (nl.getLength() == 0) {
-	       out.write("<Error>No entry returned</Error>");
-	   } else {
-	      if(request.getParameter("XML") == null ||
-	         !request.getParameter("XML").equals("true")) {
-			  out.write("<?xml-stylesheet type='text/xsl' href='ResourceToDublinCoreDisplay.xsl'?>");
-		  }
-	      XMLUtils.ElementToWriter((Element)nl.item(0),out);
-	   }
- 	}
-
-   
+   session="false"
 %>
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>VAMDC Registry Access Pages</title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
+<style type="text/css" media="all">
+    <%@ include file="/style/astrogrid.css" %>
+</style>
+<%@ include file="/style/link_options.xml" %>
+</head>
+<body>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
+<div id='bodyColumn'>
+
+<SCRIPT LANGUAGE="JavaScript" type="text/javascript">
+      <!--
+      document.write('<iframe src="viewResourceEntry_body.jsp?IVORN=ivo://vamdc/org.astrogrid.registry.RegistryService" name="main" scrolling="yes" FRAMEBORDER="0" width="90%" height="700"><\/iframe>');
+      // -->
+</SCRIPT>
+
+</div>
+<%@ include file="/style/footer.xml" %>
+</body>
+</html>

@@ -1,20 +1,36 @@
 <%@page contentType="text/html"%>
-<%@page pageEncoding="UTF-8"%>
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
-
+<%@page pageEncoding="iso-8859-1"%>
+<%@ page import="org.astrogrid.config.SimpleConfig,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+                 org.w3c.dom.NodeList,
+                 org.w3c.dom.Element,
+                 org.w3c.dom.Document,
+                 org.astrogrid.util.DomHelper,
+                 org.astrogrid.registry.server.http.servlets.Log4jInit,
+                 org.astrogrid.xmldb.client.XMLDBManager,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.server.query.*,
+                 org.astrogrid.store.Ivorn,
+                 org.apache.axis.utils.XMLUtils,
+                 java.util.*,
+                 java.io.*"
+   isThreadSafe="false"
+   session="false"
+%>
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
-    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
-      <title>Resource IDs beginning with <%=request.getAttribute("ivorn")%></title>
-      <style type="text/css" media="all">
-        @import url("<%=request.getContextPath()%>/style/astrogrid.css");
-      </style>
-    </head>
-    <body>
-      <%@ include file="/style/header.xml" %>
-      <%@ include file="/style/navigation.xml" %>
+<head>
+<title>Resource IDs beginning with <%=request.getAttribute("ivorn")%></title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
+<style type="text/css" media="all">
+    <%@ include file="/style/astrogrid.css" %>
+</style>
+<%@ include file="/style/link_options.xml" %>
+</head>
+<body>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
       <div id="bodyColumn">
         <div class="contentBox">
           <h1>Resource IDs beginning with <%=request.getAttribute("ivorn")%></h1>
@@ -31,6 +47,6 @@
         </div>
       </div>
 <%@ include file="/style/footer.xml" %>
-
-    </body>
+</body>
 </html>
+

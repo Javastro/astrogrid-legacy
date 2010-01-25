@@ -2,26 +2,27 @@
                  org.w3c.dom.*,
                  org.astrogrid.util.DomHelper,
                  org.astrogrid.config.SimpleConfig,
- 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  java.net.*,
                  java.util.*,
                  java.io.*"
-    session="false" %>
-
+    session="false"
+%>
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Edit Registry Entry</title>
+<title>Low Level (XML) Back Door Submit</title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
 <style type="text/css" media="all">
-   <%@ include file="/style/astrogrid.css" %>          
+    <%@ include file="/style/astrogrid.css" %>
 </style>
+<%@ include file="/style/link_options.xml" %>
 </head>
-
 <body>
 <%@ include file="/style/header.xml" %>
 <%@ include file="/style/navigation.xml" %>
-
 <div id='bodyColumn'>
-
 <%
    String resource = "";
    Document resourceDoc = null;
@@ -57,49 +58,48 @@
 	}//if
 %>
 
-<h1>Add/Update Entry</h1>
-<p>
-This page is similiar to Enter resource, but calls add/update method that the harvester uses in that it
-updates any Resource even if it is not managed by this Registry. This is normally dangerous, you should let the 
-harvester grab resources, but it can be usefull to quickly get in or repair a resource.
-<font color='blue'>Warning this will use your current Contract Version-VOResource Version for the update, see your menu to 
-check it is correct.</font>
-</p>
+<h1>Override Entry</h1>
 
+<font color='red'>Warning: This is similiar to
+'Edit Entry' option, but calls
+add/update method that the harvester uses in that it
+updates any Resource even if it is not managed by this
+Registry. This is normally dangerous, you should let the 
+harvester grab resources, but it can be usefull to
+quickly get in or repair a resource.
+</font>
 
-<p>
-<a href="../reg_xml_samples/updates">Sample area of xml for updates</a>
-</p>
+<dl>
+<dt><dd><a href="xmlSamples.jsp">Sample area of xml for updates</a>
+</dl>
 
 Upload from a local file:
 <form enctype="multipart/form-data" method="post" action="addResourceEntry_backdoor.jsp">
-<input type="file" name="docfile" />
-<input type="hidden" name="addFromFile" value="true" />
-<input type="submit" name="uploadFromFile" value="upload" />
+<input type="file" name="docfile">
+<input type="hidden" name="addFromFile" value="true">
+<input type="submit" name="uploadFromFile" value="upload">
 </form>
-<br />
+<br>
 Upload from a url:
 <form method="post" action="addResourceEntry_backdoor.jsp">
-<input type="text" name="docurl" />
-<input type="hidden" name="addFromURL" value="true" />
-<input type="submit" name="uploadFromURL" value="upload" />
-
+<input type="text" name="docurl">
+<input type="hidden" name="addFromURL" value="true">
+<input type="submit" name="uploadFromURL" value="upload">
 </form>
-
-Upload from text:<br />
+<br>
+Upload from text:<br>
 <form action="addResourceEntry_backdoor.jsp" method="post">
-<input type="hidden" name="addFromText" value="true" />
+<input type="hidden" name="addFromText" value="true">
 <p>
-<textarea name="Resource" rows="30" cols="90">
+<textarea name="Resource" rows="24" cols="80">
 <%= resource %>
 </textarea>
 </p>
 <p>
-<input type="submit" name="button" value="Submit"/>
+<input type="submit" name="button" value="Submit">
 </p>
 </form>
 </div>
 <%@ include file="/style/footer.xml" %>
-
 </body>
 </html>

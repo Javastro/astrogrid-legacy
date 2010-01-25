@@ -1,7 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-  			     org.astrogrid.registry.server.*,
- 	  			 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
-				 org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.server.*,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.store.Ivorn,
                  org.xmldb.api.base.ResourceSet,
                  org.w3c.dom.Document,
@@ -13,15 +13,19 @@
                  java.net.*,
                  java.util.*,
                  java.io.*"
-    session="false" %>
-
+    session="false"
+%>
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head><title>Browse Registred Resources</title>
+<head>
+<title>Browse Registred Resources</title>
+<meta http-equiv="Content-type" content="text/xhtml; charset=iso-8859-1">
 <style type="text/css" media="all">
    <%@ include file="/style/astrogrid.css" %>          
 </style>
+<%@ include file="/style/link_options.xml" %>
 </head>
-
 <body>
 <%@ include file="/style/header.xml" %>
 <%@ include file="/style/navigation.xml" %>
@@ -41,57 +45,56 @@
    if (ivornpart == null) { ivornpart = ""; }
 %>
 
-<h1>Registry Browser</h1>
+<h1>Browse Registry</h1>
 
 <!-- Navigation keys/controls -->
 
-<form method='get'>
+<form method="get" id="googlesearch" name="googlesearch" action="http://www.google.com/univ/ucl">
 <p>
-<br/>
-Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart %>'/>
-<input type="submit" name="button" value='List'/>
+<br>
+Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart %>'>
+<input type="submit" name="button" value='List'>
 </p>
 </form>
 
 <p>
    
 <!--
-<form action="browse.jsp" method="get"><input type="submit" title='Prev' name="Index" value="<%= offset-25 %>"/></form>
+<form action="browse.jsp" method="get"><input type="submit" title='Prev' name="Index" value="<%= offset-25 %>"></form>
 </td>
 <td align='right'>
-<form action="browse.jsp" method="get"><input type="submit" title='Next' name="Index" value="<%= offset+25 %>"/></form>
+<form action="browse.jsp" method="get"><input type="submit" title='Next' name="Index" value="<%= offset+25 %>"></form>
 </td>
 -->
 <%
-   //out.write("*"+ivornpart+"*:<br/");
+    //out.write("*"+ivornpart+"*:<br>");
    
-   Document entries = null;   
-   ResourceSet resultSet;
-   if ( (ivornpart != null) && (ivornpart.trim().length() > 0) ) {
-   		resultSet = server.getQueryHelper().getResourcesByAnyIdentifier(ivornpart);
+    Document entries = null;   
+    ResourceSet resultSet;
+    if ( (ivornpart != null) && (ivornpart.trim().length() > 0) ) {
+        resultSet = server.getQueryHelper().getResourcesByAnyIdentifier(ivornpart);
         if(resultSet == null || resultSet.getSize() == 0) {
-	        entries = null;
+            entries = null;
         } else {   		
-	   		if(resultSet.getSize() > 50) {
-	   			do {
-	   			  resultSet.removeResource(50);
-	   			} while(resultSet.getSize() > 50);
-	   		}
-		 	entries = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
-   		 }
-   }
-   else {
-         resultSet = server.getQueryHelper().getAll();
-         if(resultSet == null || resultSet.getSize() == 0) {
-                   entries = null;
-         } else {         
-	         if(resultSet.getSize() > 50) {
-	   			do {
-	   			  resultSet.removeResource(50);
-	   			}while(resultSet.getSize() > 50);
-	   		 }
-	   		 entries = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
-   		 }
+            if(resultSet.getSize() > 50) {
+            do {
+                resultSet.removeResource(50);
+            } while(resultSet.getSize() > 50);
+        }
+        entries = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
+        }
+    } else {
+        resultSet = server.getQueryHelper().getAll();
+        if(resultSet == null || resultSet.getSize() == 0) {
+            entries = null;
+        } else {         
+            if(resultSet.getSize() > 50) {
+                do {
+                    resultSet.removeResource(50);
+                } while(resultSet.getSize() > 50);
+           }
+           entries = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
+       }
    }
 
    if (entries == null) {
@@ -100,7 +103,7 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
    else {
 
       out.write("<table border=1>");
-      out.write("<tr><th>Title</th><th>Type</th><th>AuthorityID</th><th>ResourceKey</th><th>Updated</th><th>Actions</th></tr>");
+      out.write("<tr><th>Title</th><th>Type</th><th>Authority ID</th><th>Resource Key</th><th>Updated</th><th>Actions</th></tr>");
       
       NodeList resources = entries.getElementsByTagNameNS("*","Resource");
 
@@ -132,11 +135,11 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
          String xsiType = resourceElement.getAttribute("xsi:type");
          out.write("<td>"+setFG+xsiType+endFG+"</td>");
          if(xsiType.indexOf(":") != -1) {
-           xsiType = xsiType.substring(xsiType.indexOf(":")+1);
+            xsiType = xsiType.substring(xsiType.indexOf(":")+1);
          }
             //authr
-			String authority = RegistryDOMHelper.getAuthorityID(resourceElement);
-			String resource = RegistryDOMHelper.getResourceKey(resourceElement);
+            String authority = RegistryDOMHelper.getAuthorityID(resourceElement);
+            String resource = RegistryDOMHelper.getResourceKey(resourceElement);
             String ivoStr = RegistryDOMHelper.getIdentifier(resourceElement);
             ivoStr = ivoStr.substring(6);
             
@@ -157,12 +160,12 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
             //last update date
             out.write("<td>"+setFG+resourceElement.getAttribute("updated")+endFG+"</td>");
             out.write("<td>");
-            out.write("<a href=viewResourceEntry.jsp?IVORN="+ivoStr+">View</a>, ");
-            out.write("<a href=viewResourceEntry.jsp?XML=true&IVORN="+ivoStr+">XML</a>, ");
-            out.write("<a href=registration/EditorLinks.jsp?IVORN="+ivoStr+">Edit</a>");
+            out.write("<a href='viewResourceEntry.jsp?IVORN="+ivoStr+"'>View</a>, ");
+            out.write("<a href='viewResourceEntry_body.jsp?XML=true&amp;IVORN="+ivoStr+"'>XML</a>, ");
+            out.write("<a href='registration/EditorLinks.jsp?IVORN="+ivoStr+"'>Edit</a>");
 
             out.write("</td>");
-         out.write("</font></tr>\n");
+         out.write("</tr>\n");
       }
       out.write("</table>");
    
@@ -171,7 +174,5 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
 
 </div>
 <%@ include file="/style/footer.xml" %>
-
-
 </body>
 </html>

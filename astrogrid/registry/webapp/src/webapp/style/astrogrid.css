@@ -32,17 +32,16 @@ div.clear hr{
   margin: 8px;
 }
 #projectLogo span{
-    border: 1px solid;
-    padding: 4px 10px 4px 10px;
-    background-color: #eee;
-    cursor: pointer;
+  border: 1px solid;
+  padding: 4px 10px 4px 10px;
+  background-color: #eee;
+  cursor: pointer;
 }
 .xleft, #organizationLogo img{
   float:left;
 }
 .xright, #projectLogo img, #projectLogo span{
   float:right;
-  text-shadow: #7CFC00;
 }
 #banner {
   border-bottom: 1px solid #fff;
@@ -51,17 +50,17 @@ div.clear hr{
   border: none;
 }
 #footer, #breadcrumbs {
-  padding: 3px 10px 3px 10px;
+  padding: 4px 4px 4px 4px;
 }
 #leftColumn {
- width: 18%;
- float:left;
+  width: 18%;
+  float:left;
 }
 #bodyColumn {
   margin-left: 20%;
 }
 #navcolumn {
-  padding: 8px 4px 0 8px;
+  padding: 8px 4px 4px 8px;
 }
 #navcolumn h5, #navcolumn ul {
   margin: 0;
@@ -73,7 +72,7 @@ div.clear hr{
   background-repeat: no-repeat;
   background-position: 0 0.4em;
   padding-left: 16px;
-  list-style-position: ouside;
+  list-style-position: outside;
   line-height: 1.2em;
 }
 #navcolumn li.expanded {
@@ -97,15 +96,15 @@ div.clear hr{
   height: 30px;
 }
 #search img {
-    margin: 0px;
-    display: block;
+  margin: 0px;
+  display: block;
 }
 #search #q, #search #btnG {
-    border: 1px solid #999;
-    margin-bottom:10px;
+  border: 1px solid #999;
+  margin-bottom:10px;
 }
 #search form {
-    margin: 0px;
+  margin: 0px;
 }
 #lastPublished {
 }
@@ -120,6 +119,7 @@ div.clear hr{
   padding: 4px;
 }
 #footer {
+  bottom: auto;
 }
 #breadcrumbs {
   margin: 0pt;
@@ -159,18 +159,18 @@ a.newWindow, a.newWindow:link, a.newWindow:visited, a.newWindow:active, a.newWin
 h1 {
   padding: 4px 4px 4px 6px;
   border: 1px solid #999;
-  color: #900;
+  color: #009;
   background-color: #ddd;
-  font-weight:900;
-  font-size: x-large;
+  font-weight: 500;
+  font-size: large;
 }
 h2 {
   padding: 4px 4px 4px 6px;
   border: 1px solid #aaa;
-  color: #900;
+  color: #009;
   background-color: #eee;
   font-weight: normal;
-  font-size: large;
+  font-size: medium;
 }
 p {
   line-height: 1.3em;
@@ -180,15 +180,18 @@ p {
   border-bottom: 1px solid #aaa;
   background-color: #ccc;
   font-size: large;
+  font-weight: 900;
+  text-align: center;
 }
 #leftColumn {
-  margin: 10px 0 0 5px;
+  margin: 12px 0 10px 5px;
   border: 1px solid #999;
   background-color: #eee;
 }
 #navcolumn h5 {
   border-bottom: 1px solid #aaaaaa;
   padding-top: 2px;
+  font-weight: 500;
   font-size: 15px;
 }
 

@@ -1,27 +1,56 @@
-<%@ page import="org.astrogrid.config.SimpleConfig, javax.naming.*"
+<%@ page import="org.astrogrid.config.SimpleConfig,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+                 org.w3c.dom.NodeList,
+                 org.w3c.dom.Element,
+                 org.w3c.dom.Document,
+                 org.astrogrid.util.DomHelper,
+                 org.astrogrid.registry.server.http.servlets.Log4jInit,
+                 org.astrogrid.xmldb.client.XMLDBManager,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.server.query.*,
+                 org.astrogrid.store.Ivorn,
+                 org.apache.axis.utils.XMLUtils,
+                 java.util.*,
+                 java.io.*,
+                 javax.naming.*"
    isThreadSafe="false"
    session="false"
 %>
-
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>AstroGrid Registry Setup Pages</title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
 <style type="text/css" media="all">
    <%@ include file="/style/astrogrid.css" %>          
 </style>
-</title>
+<%@ include file="/style/link_options.xml" %>
 </head>
-
 <body>
 <%@ include file="/style/header.xml" %>
 <%@ include file="/style/navigation.xml" %>
-
 <div id='bodyColumn'>
 
 <h1>Self-registration</h1>
 
 <%
    String authorityID = request.getParameter("AuthorityID");
+boolean contUpdate = true;
+    if(authorityID == null || authorityID.length() <= 0) {
+      out.write("ERROR: No AuthorityID found or submitted please hit back and try again.");
+    }else {
+    String tmp = request.getParameter("Title");
+    if(tmp == null || tmp.length() <= 0) { out.write("ERROR: Title a required parameter was not submitted."); contUpdate = false;}
+    tmp = request.getParameter("Publisher");
+    if(tmp == null || tmp.length() <= 0) { out.write("ERROR: Publisher a required parameter was not submitted."); contUpdate = false;}
+    tmp =  request.getParameter("ContactName");
+    if(tmp == null || tmp.length() <= 0) { out.write("ERROR: ContactName a required parameter was not submitted."); contUpdate = false;}
+    tmp = request.getParameter("ContactEmail");
+    if(tmp == null || tmp.length() <= 0) { out.write("ERROR: ContactEmail a required parameter was not submitted."); contUpdate = false;}
+}
+if(contUpdate) {
+
 %>
 
 <p>This is the generated Registry Resource and the corresponding types Authority and Organisation:
@@ -31,10 +60,11 @@ changed correctly when updating.</i>
 
 <form action="addResourceEntry.jsp" method="post">
 <p>
-<input type="checkbox" name="validate" value="true">Validate</input>
+<input type="checkbox" name="validate" value="true">Validate</input><br>
+<br>
 <input type="hidden" name="addFromText" value="true" />
 
-<textarea name="Resource" cols='80' rows='20'>
+<textarea name="Resource" cols='80' rows='24'>
 <%
 String version = request.getParameter("version");
 if(version.equals("1.0")) { %>
@@ -53,6 +83,7 @@ if(version.equals("1.0")) { %>
 <input name="button" value="Register" type="submit">
 </form>
 </div>
+<%}%>
 <%@ include file="/style/footer.xml" %>
-
-</body></html>
+</body>
+</html>

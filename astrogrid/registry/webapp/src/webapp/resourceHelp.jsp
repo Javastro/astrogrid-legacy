@@ -1,23 +1,23 @@
 <%@ page session="false" %>
-
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>XForms</title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
 <style type="text/css" media="all">
-   <%@ include file="/style/astrogrid.css" %>          
+    <%@ include file="/style/astrogrid.css" %>
 </style>
+<%@ include file="/style/link_options.xml" %>
 </head>
-
 <body>
 <%@ include file="/style/header.xml" %>
 <%@ include file="/style/navigation.xml" %>
-
-
 <div id='bodyColumn'>
 
 <h1>Resource Help</h1>
 
-<TABLE cellSpacing=16 border=2>
+<TABLE cellSpacing=1 border=1>
   <TBODY>
   <TR>
     <TD vAlign=top><A name=AuthorityID></A>AuthorityID </TD>
@@ -191,7 +191,8 @@
     <TD vAlign=top>Information about rights held in and over the 
     resource.<BR></TD></TR>
   <TR>
-    <TD vAlign=top>Coverage:<BR></TD>
+    <TD vAlign=top bgcolor='#eeeeee'><b>Coverage</b>:</TD>
+    <TD bgcolor='#eeeeee'> </TD>
     <TD vAlign=top><BR></TD></TR>
   <TR>
     <TD vAlign=top><A name=SpatialCoverage></A>Spatial Coverage</TD>
@@ -200,7 +201,7 @@
       <TABLE cellPadding=4 border=0>
         <TBODY>
         <TR>
-          <TD>All Sky </TD>
+          <TD>All Sky</TD>
           <TD colSpan=2>The resource covers the whole sky.</TD></TR>
         <TR>
           <TD>Circle Region</TD>
@@ -252,7 +253,7 @@
           <TD>
           <TD>Maximum Latitude Position</TD>
           <TD>The maximum latitude of the region in the described coordinate 
-            frame, given in degrees. </TD></TR></TR>
+            frame, given in degrees. </TD></TR>
         <TR>
           <TD><A name=CoordinateFrame></A>Coordinate Frame </TD>
           <TD colSpan=2>The Coordinate Frames supported include:</TD></TR>
@@ -283,7 +284,7 @@
         <TR>
           <TD>
           <TD>SuperGalactic</TD>
-          <TD>Supergalactic coordinates (J2000)</TD>&gt; </TR>
+          <TD>Supergalactic coordinates (J2000)</TD></TR>
         <TR>
           <TD><A name=SpatialResolution></A>Spatial Resolution</TD>
           <TD colSpan=2>The spatial (angular) resolution that is typical of 
@@ -292,11 +293,11 @@
           <TD><A name=RegionofRegard></A>Region of Regard</TD>
           <TD colSpan=2>The intrinsic size scale, given in arcseconds, 
             associated with data items contained in a resource.</TD></TR>
-        <TR></TR></TBODY></TABLE></TD>
+        </TBODY></TABLE></TD>
   <TR>
     <TD vAlign=top><A name=SpectralDescription></A>Spectral<BR></TD>
     <TD vAlign=top>The spectral coverage of the resource.<BR><BR>
-      <TABLE cellPadding=4 border=1>
+      <TABLE cellPadding=4 border=0>
         <TBODY>
         <TR>
           <TD vAlign=top><A name=Waveband></A>Waveband<BR></TD>
@@ -358,7 +359,8 @@
     <TD vAlign=top>The temporal resolution that is typical of the observations 
       of interest, in seconds. </TD></TR>
   <TR>
-    <TD vAlign=top>Service Based Parameters:<BR></TD>
+    <TD vAlign=top bgcolor='#eeeeee'><b>Service Based Parameters</b>:</TD>
+    <TD bgcolor='#eeeeee'> </TD>
     <TD vAlign=top><BR></TD></TR>
   <TR>
     <TD vAlign=top><A name=ImageServiceType></A>Image Service Type<BR></TD>
@@ -412,6 +414,5 @@
       typed by the format of the input for this keyword. </TD></TR></TBODY></TABLE>
   </div>
 <%@ include file="/style/footer.xml" %>
-
 </body>
 </html>

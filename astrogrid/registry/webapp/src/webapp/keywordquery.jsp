@@ -1,7 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-				 org.astrogrid.registry.server.*,
-				 org.astrogrid.registry.common.RegistryDOMHelper,
-  	  		     org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+                 org.astrogrid.registry.server.*,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.astrogrid.store.Ivorn,
                  org.xmldb.api.base.ResourceSet,
                  org.w3c.dom.Document,
@@ -14,33 +14,37 @@
                  java.util.*,
                  org.apache.commons.fileupload.*,                  
                  java.io.*"
-    session="false" %>
+    session="false"
+%>
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Keyword Search Query</title>
+<title>Keyword Search</title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
 <style type="text/css" media="all">
    <%@ include file="/style/astrogrid.css" %>          
 </style>
+<%@ include file="/style/link_options.xml" %>
 </head>
-
 <body>
 <%@ include file="/style/header.xml" %>
 <%@ include file="/style/navigation.xml" %>
-
 <div id='bodyColumn'>
 
-<h1>Query Registry</h1>
+<h1>Keyword Search</h1>
 
 <p>
-   Keyword search.  Place words seperated by spaces. <br />
+   Keyword search.  Place words seperated by spaces. <br>
 </p>
 
-<form method="post">
-<input type="hidden" name="keywordquery" value="true" />
-<br />
-Keywords: <input type="text" name="keywords"/><br />
-Require all words: <input type="checkbox" name="orValues" value="true">All words</input>
-<input type="submit" name="keywordquerysubmit" value="Query" />
+<form method="post" action="keywordquery.jsp">
+<input type="hidden" name="keywordquery" value="true">
+<br>
+Keywords: <input type="text" name="keywords"><br>
+<br>
+Require all words: <input type="checkbox" name="orValues" value="true">All words
+<input type="submit" name="keywordquerysubmit" value="Query">
 </form>
 
 
@@ -59,13 +63,13 @@ Require all words: <input type="checkbox" name="orValues" value="true">All words
    }
    String maxCount = SimpleConfig.getSingleton().getString("exist.query.returncount", "25");
 %>
-<br />
+<br>
 
 <p>
 <font color="red"><%=error%></font>
 </p>
 
-<strong>If no errors the Query results will be below:<br />Only a max of <%= maxCount %> entries will be shown:</strong><br />
+<strong>If no errors the Query results will be below:<br>Only a max of <%= maxCount %> entries will be shown:</strong><br>
 
 <pre>
 <%
@@ -128,8 +132,8 @@ Require all words: <input type="checkbox" name="orValues" value="true">All words
          
       }//for
          
-         out.write("</table> <hr />");      
-         out.write("The xml<br />");
+         out.write("</table> <hr>");      
+         out.write("The xml<br>");
         String testxml = DomHelper.DocumentToString(entry);
          testxml = testxml.replaceAll("<","&lt;");
         testxml = testxml.replaceAll(">","&gt;");
@@ -143,6 +147,5 @@ Require all words: <input type="checkbox" name="orValues" value="true">All words
 <% } %>
 </div>
 <%@ include file="/style/footer.xml" %>
-
 </body>
 </html>

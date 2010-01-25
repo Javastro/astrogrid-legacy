@@ -69,7 +69,7 @@ Upload from text:<br />
 <form action="addResourceEntry.jsp" method="post">
 <input type="hidden" name="addFromText" value="true" />
 <p>
-<textarea name="Resource" rows="30" cols="90">
+<textarea name="Resource" rows="24" cols="80">
 <%= resource %>
 </textarea>
 </p>

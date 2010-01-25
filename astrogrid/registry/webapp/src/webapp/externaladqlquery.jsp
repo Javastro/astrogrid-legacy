@@ -75,7 +75,7 @@ Enter SQL (actually adqls).  This will only send adql 0.7.4 at the moment use ab
 <br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQueryv<%=JSPHelper.getContractVersion(request).replace('.','_') %> "/><br />
 <input type="hidden" name="performquery" value="true" />
 <i>Only for ADQL 0.7.4</i><br />
-<textarea name="Resource" rows="30" cols="90"></textarea>
+<textarea name="Resource" rows="24" cols="80"></textarea>
 </p>
 <p>
 <input type="submit" name="button" value="Submit"/><br />

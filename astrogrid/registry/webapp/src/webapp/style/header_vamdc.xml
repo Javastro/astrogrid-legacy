@@ -1,12 +1,9 @@
 <div id='banner'>
-<link href="css/alarge.css" rel="alternate stylesheet" type="text/css" media="screen" title="alarge"/>
-<link href="css/amedium.css" rel="alternate stylesheet" type="text/css" media="screen" title="amedium"/>
-<link href="css/asmall.css" rel="alternate stylesheet" type="text/css" media="screen" title="asmall"/>
 <script src="style/styleswitcher.js" type="text/javascript"></script>
     <table border='0' width='100%' cellpadding='8' cellspacing='0'><tr>
       <td>
          <a href='http://www.vamdc.eu'>
-         <img border='0' alt='VAMDC' src='img/vamdc_logo.png' align='left'></img>
+         <img border='0' alt='VAMDC' src='img/vamdc_logo.png' align='left'>
          </a>
       </td>
       <td>
@@ -24,10 +21,7 @@
       </td>
    </tr></table>
   <div id="breadcrumbs">
-  <div class='xleft'>VAMDC Registry</div>
-  <div class='xright'>
-    <a href='http://www.vamdc.eu'>VAMDC</a>
-  </div>
+  VAMDC Registry
   <div class='clear'></div> <!-- switch off left right stuff -->
   </div>
 </div>

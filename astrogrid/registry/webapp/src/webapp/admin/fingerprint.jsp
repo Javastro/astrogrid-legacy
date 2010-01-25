@@ -1,23 +1,26 @@
 <%@ page import="java.io.*,
-             java.net.*,
-             java.util.*,
-             org.astrogrid.config.*"
-    session="false" %>
+                 java.net.*,
+                 java.util.*,
+                 org.astrogrid.config.*"
+    session="false"
+%>
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>System Fingerprint</title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
 <style type="text/css" media="all">
-   <%@ include file="/style/astrogrid.css" %>          
+    <%@ include file="/style/astrogrid.css" %>
 </style>
+<%@ include file="/style/link_options.xml" %>
 </head>
-<body bgcolor=#ffffff>
+<body>
 <%@ include file="/style/header.xml" %>
 <%@ include file="/style/navigation.xml" %>
-
 <div id='bodyColumn'>
 
 <%!
-
     /*
      * Fingerprint the users system. This is mainly for use in
      * diagnosing classpath problems. It is intended to dump out
@@ -61,7 +64,8 @@
 
     /**
      * Split up a classpath-like variable. Returns a list of files.
-     * TODO: this can't cope with relative paths. I think theres code in BCEL that
+     * TODO: this can't cope with relative paths.
+     * I think theres code in BCEL that
      * can be used for this?
      */
     File[] splitClasspath(String path) throws IOException {
@@ -167,7 +171,7 @@
         out.print("<h2>");
         out.print(title);
         out.println("</h2>");
-        out.println("<table>");
+        out.println("<table width='100%'>");
         for (int i=0; i<jars.length; i++) {
             out.println("<tr>"+getFileVersion(jars[i])+"</tr>");
         }
@@ -180,8 +184,8 @@
     }
 
 %>
-<h1>System Fingerprint</h1>
 
+<h1>System Info</h1>
 <h2>Interface call</h2>
 <pre>
 <%
@@ -189,11 +193,8 @@
     out.println("Servlet "+request.getServletPath());
     out.println("Context path "+request.getContextPath());
     out.println("Context type "+request.getContentType());
-    
 %>
 </pre>
-
-<hr />
 <h2>Datacenter Configuration</h2>
 <pre>
 <%
@@ -208,9 +209,7 @@
 %>
 </pre>
 
-<hr />
 <h2>System Properties</h2>
-
 <%
     /**
      * Dump the system properties
@@ -232,9 +231,8 @@
     }
 %>
 
-<hr />
 <h2>JVM and Server Version</h2>
-<table>
+<table width="100%">
 <tr>
     <td>Servlet Engine</td>
     <td><%= getServletConfig().getServletContext().getServerInfo() %></td>
@@ -328,6 +326,5 @@ if (container.startsWith("Tomcat Web Server/3.2")) {
 %>
 </div>
 <%@ include file="/style/footer.xml" %>
-
 </body>
 </html>

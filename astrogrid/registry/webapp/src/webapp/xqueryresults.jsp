@@ -1,7 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-				 org.astrogrid.registry.server.*,
-				 org.astrogrid.registry.common.RegistryDOMHelper,
- 	  		     org.astrogrid.registry.server.http.servlets.helper.JSPHelper, 
+                 org.astrogrid.registry.server.*,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper, 
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -17,8 +17,9 @@
                  java.util.*,
                  org.apache.commons.fileupload.*,                  
                  java.io.*"
-   				 contentType="text/xml"                  
-    			 session="false" %>
+         contentType="text/xml"                  
+    	 session="false"
+%>
 <%
    if(request.getParameter("ResourceXQuery").trim().length() > 0) {  
        Document xqueryDOM;

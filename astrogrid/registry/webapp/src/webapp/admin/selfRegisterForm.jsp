@@ -1,21 +1,34 @@
-<%@ page import="org.astrogrid.config.SimpleConfig"
+<%@ page import="org.astrogrid.config.SimpleConfig,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+                 org.w3c.dom.NodeList,
+                 org.w3c.dom.Element,
+                 org.w3c.dom.Document,
+                 org.astrogrid.util.DomHelper,
+                 org.astrogrid.registry.server.http.servlets.Log4jInit,
+                 org.astrogrid.xmldb.client.XMLDBManager,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
+                 org.astrogrid.registry.server.query.*,
+                 org.astrogrid.store.Ivorn,
+                 org.apache.axis.utils.XMLUtils,
+                 java.util.*,
+                 java.io.*"
    isThreadSafe="false"
    session="false"
 %>
-
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>AstroGrid Registry Setup Pages</title>
+<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
 <style type="text/css" media="all">
-   <%@ include file="/style/astrogrid.css" %>          
+    <%@ include file="/style/astrogrid.css" %>
 </style>
-</title>
+<%@ include file="/style/link_options.xml" %>
 </head>
-
 <body>
 <%@ include file="/style/header.xml" %>
 <%@ include file="/style/navigation.xml" %>
-
 <div id='bodyColumn'>
 
 <h1>Self-registration</h1>
@@ -32,8 +45,8 @@ String authID = SimpleConfig.getSingleton().getString("reg.amend.authorityid", "
 
 <form action="selfRegisterCheck.jsp" method="post">
 <p>
-<input type="hidden" name="version" value="<%=org.astrogrid.registry.server.http.servlets.helper.JSPHelper.getQueryService(request).getResourceVersion()%>" />
-<input type="hidden" name="AuthorityID" value="<%=authID%>" />
+<input type="hidden" name="version" value="<%=org.astrogrid.registry.server.http.servlets.helper.JSPHelper.getQueryService(request).getResourceVersion()%>">
+<input type="hidden" name="AuthorityID" value="<%=authID%>">
 <table>
  <tr><td>Authority ID </td><td> <%=authID%></td></tr>
  <tr><td>Title        </td><td> <input type="text" name="Title"></td></tr>
@@ -42,7 +55,7 @@ String authID = SimpleConfig.getSingleton().getString("reg.amend.authorityid", "
  <tr><td>Contact email</td><td> <input type="text" name="ContactEmail"></td></tr>
  <tr><td>Full Registry</td><td><select name="fullregistry"><option value="false">No</option><option value="true">Yes</option></select></td></tr>
   <tr><td>Description</td><td> <input type="text" name="ContentDescription"></td></tr>
-  <tr><td>Reference URL:</td><td> <input type="text" name="ContentRefURL"></td></tr>
+  <tr><td>Reference URL</td><td> <input type="text" name="ContentRefURL"></td></tr>
   <tr><td>Facility Name</td><td> <input type="text" name="Facility"></td></tr>
 </table>
 <p>
