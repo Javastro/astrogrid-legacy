@@ -1,5 +1,5 @@
 /*
- * $Id: VosProtocol.java,v 1.2 2009/06/18 10:57:08 gtr Exp $
+ * $Id: VosProtocol.java,v 1.3 2010/01/27 17:17:04 gtr Exp $
  * 
  * Created on 3 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -30,8 +30,14 @@ import org.astrogrid.vospace.v11.client.system.SystemDelegateResolver;
 import org.astrogrid.vospace.v11.client.system.SystemDelegateResolverImpl;
 
 /**
- * A {@link Protocol} for communicating with VOSpace. 
- * @TODO at the moment this has a very simplistic implementation - should be looked at again when the VOSpace delegate improves.
+ * An {@link org.astrogrid.applications.parameter.protocol.Protocol}
+ * for communicating with VOSpace.
+ * <p>
+ * This is a dummy; the Application sub-type for DSA actually has the proper
+ * code for VOSpace as a special case and this protocol is not actually used.
+ * However, CEA requires that there be a protocol matching the vos scheme so
+ * here it is.
+ *
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 4 Sep 2008
  * @version $Name:  $
  * @since VOTech Stage 7

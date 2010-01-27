@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.3 2010/01/27 17:17:05 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -96,13 +96,9 @@ public class TableMetaDocInterpreter
     * ensure that the "metadoc" variable is accessed safely by multiple 
     * threads. */
    public static void initialize(URL metadocUrl) throws MetadataException {
-     log.info("Loading table metadata from " + metadocUrl);
      synchronized (TableMetaDocInterpreter.class) {
-        if (metadoc != null) { //Initialized already
-          //log.error("KONA METADOC ALREADY LOADED!");
-          return;
-        }
-        else { // metadoc is null
+        if (metadoc == null) {
+          log.info("Loading table metadata from " + metadocUrl);
            try {
              // Initialise SampleStars plugin if required 
              // (may not be initialised if admin has not run the self-tests)
@@ -118,9 +114,7 @@ public class TableMetaDocInterpreter
                throw new MetadataException(dbe.getMessage());
             }
             try {
-               //log.error("KONA LOADING METADOC!");
                metadoc = loadAndValidateMetadoc(metadocUrl);
-               //log.error("KONA FINISHED LOADING METADOC!");
             }
             catch (FileNotFoundException e) {
               String message =

@@ -1,5 +1,5 @@
 /*
- * $Id: UwsJobPhaseServlet.java,v 1.5 2009/11/16 12:14:09 gtr Exp $
+ * $Id: UwsJobPhaseServlet.java,v 1.6 2010/01/27 17:17:05 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -78,6 +78,7 @@ public class UwsJobPhaseServlet extends UwsJobResourceServlet {
 			  ReturnSpec returnSpec = new ReturnTable(rf, job.getFormat());
 			  Query adqlQuery = new Query(job.getQuery(), returnSpec);
         Querier q = new Querier(job.getId(), null, adqlQuery, "");
+        q.setHasJob();
         QuerierManager.getManager("dataserver").submitQuerier(q);
       }
       catch (Throwable t) {

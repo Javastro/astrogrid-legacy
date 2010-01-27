@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.8 2009/11/16 15:38:41 gtr Exp $
+ * $Id: Querier.java,v 1.9 2010/01/27 17:17:04 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -75,20 +75,13 @@ public class Querier implements Runnable, PluginListener {
    /** Represents size of results */
    private long resultsSize = -1;
 
-   /**
-    * If true, indicates that the tasks has been cancelled.
-    */
-   private boolean cancelled = false;
-   
-   /** For measuring how long the query took - calculated from current change times*/
-//use current info   private Date timeQueryStarted = null;
-   /** For measuring how long query took - calculated from current change times*/
-//use current info   private Date timeQueryCompleted = null;
-   /** For measuring how long query took - calculated from current change times*/
-   //use current infoprivate Date timeQuerierClosed = null;
-
    /** Logging current information */
    StatusLogger statusLog = new StatusLogger();
+
+  /**
+   * Indicates whether the querier is associated with an asynchronous job.
+   */
+  boolean hasJob = false;
    
    public Querier(Principal forUser, Query query, Object aSource) throws IOException {
      this(generateQueryId(), forUser, query, aSource);
@@ -155,6 +148,13 @@ public class Querier implements Runnable, PluginListener {
      return id.hashCode();
    }
 
+  /**
+   * Specifies that the querier has an associated job and should update the
+   * latter when the status changes.
+   */
+  public void setHasJob() {
+    hasJob = true;
+  }
    
    /** Returns this instances handle    */
    public String getId() {       return id;   }
@@ -343,52 +343,58 @@ public class Querier implements Runnable, PluginListener {
       setStatus(newStatus);
    }
    
-   
-   
-   /**
-    * Sets the current.  NB if the new current is ordered before the existing one,
-    * throws an exception (as each querier should only handle one query).
-    * Synchronised as the queriers may be running under a different thread
-    */
-   public void setStatus(QuerierStatus newStatus) {
+  /**
+   * Sets the current.  NB if the new current is ordered before the existing one,
+   * throws an exception (as each querier should only handle one query).
+   * Synchronised as the queriers may be running under a different thread
+   */
+  public void setStatus(QuerierStatus newStatus) {
+    status = newStatus;
+    fireStatusChanged(status);
+    log.info("Query [" + id + "] for " + user + ", now " +status);
 
-     status = newStatus;
-     fireStatusChanged(status);
-     log.info("Query [" + id + "] for " + user + ", now " +status);
+    // If the query came from an asynchronous interface, there will be
+    // an associated job: update it now.
+    if (hasJob) {
+      updateJob();  
+    }
+    
+    if (status.isFinished()) {
+      statusLog.log(status);
+    }
+  }
 
-     // Record the change in the job database.
-     try {
-       Job job = Job.open(id);
-       job.setPhase(getUwsPhase());
-       switch (status.getState()) {
-         case RUNNING_QUERY:
-           job.setStartTime(new Timestamp(System.currentTimeMillis()));
-           break;
-         case ERROR:
-           job.setErrorMessage(status.asFullMessage());
-           break;
-         case FINISHED:
-           job.setEndTime(new Timestamp(System.currentTimeMillis()));
-           job.setErrorMessage("OK");
-           break;
-         case ABORTED:
-           job.setEndTime(new Timestamp(System.currentTimeMillis()));
-           job.setErrorMessage("Execution was aborted");
-           break;
-         default:
-           break;
-       }
-       job.save();
-     } catch (PersistenceException ex) {
-       log.error("Failed to update the job record for " + id);
-     }
-      
-     
-      
-      if (status.isFinished()) {
-         statusLog.log(status);
+  /**
+   * Updates the job record to match the current querier-status. Any errors
+   * in this update are logged but not throws as exceptions.
+   */
+  protected void updateJob() {
+    try {
+      Job job = Job.open(id);
+      job.setPhase(getUwsPhase());
+      switch (status.getState()) {
+        case RUNNING_QUERY:
+          job.setStartTime(new Timestamp(System.currentTimeMillis()));
+          break;
+        case ERROR:
+          job.setErrorMessage(status.asFullMessage());
+          break;
+        case FINISHED:
+          job.setEndTime(new Timestamp(System.currentTimeMillis()));
+          job.setErrorMessage("OK");
+          break;
+        case ABORTED:
+          job.setEndTime(new Timestamp(System.currentTimeMillis()));
+          job.setErrorMessage("Execution was aborted");
+          break;
+        default:
+          break;
       }
-   }
+      job.save();
+    } catch (PersistenceException ex) {
+      log.error("Failed to update the job record for " + id);
+    }
+  }
 
    /**
     * Determines the UWS phase from the query current.

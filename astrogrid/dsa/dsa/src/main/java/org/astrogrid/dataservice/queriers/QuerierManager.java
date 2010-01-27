@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.5 2009/10/21 19:00:59 gtr Exp $
+/*$Id: QuerierManager.java,v 1.6 2010/01/27 17:17:04 gtr Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
-import org.astrogrid.dataservice.queriers.status.QuerierQueued;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 
 /**
@@ -67,6 +67,11 @@ public class QuerierManager {
    */
    ThreadPoolExecutor executor;
 
+   /**
+    * Semaphore controlling the number of concurrent, synchronous queries.
+    */
+   private Semaphore synchronousQueries;
+
    /** Maximum number of simultaneous asynchronous queriers allowed */
    private int maxAsynchQueriers = 5;  // Default to 5
 
@@ -79,19 +84,23 @@ public class QuerierManager {
    /** Special ID used to create a test querier for testing getStatus,. etc */
    public final static String TEST_QUERIER_ID = "TestQuerier:";
 
-   /** Constructor. Protected because we want to force people to use the factory method   */
-   protected QuerierManager(String givenId) {
-     tasks = new LinkedBlockingQueue<Runnable>(ASYNC_QUEUE_SIZE);
+  /**
+   * Constructor. Protected because we want to force people to use the factory method
+   */
+  protected QuerierManager(String givenId) {
+    tasks = new LinkedBlockingQueue<Runnable>(ASYNC_QUEUE_SIZE);
 
-      this.managerId = givenId;
+    this.managerId = givenId;
 
-      // Try the old property first 
-      maxAsynchQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.queries",maxAsynchQueriers);  // Default is initialised setting
+    // Try the old property first 
+    maxAsynchQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.queries",maxAsynchQueriers);  // Default is initialised setting
 
-      // Now replace with the new property if present 
-      maxAsynchQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.async.queries",maxAsynchQueriers);  // Default is initialised setting
+    // Now replace with the new property if present 
+    maxAsynchQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.async.queries",maxAsynchQueriers);  // Default is initialised setting
 
-      maxSynchQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.sync.queries",maxAsynchQueriers);  // Default is initialised setting
+    // The number of concurrent, synchronous queries is controlled by a semaphore.
+    maxSynchQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.sync.queries", maxSynchQueriers);  // Default is initialised setting
+    synchronousQueries = new Semaphore(maxSynchQueriers);
 
     // Construct the executor to have a fixed-size pool of worker threads with
     // the configured maximum-size. It has to be this way, because the executor
@@ -152,83 +161,66 @@ public class QuerierManager {
 	}
 
 
-  /** 
-   * Checks how many running blocking queriers there are;  if this is less
-   * than the allowed limit, returns true, otherwise returns false.
-   * This method is for use by blocking (synchronous) queries;  
-   * if the queue is full, blocking queries such as conesearches 
-   * should be rejected.
+  /**
+   * Runs a querier synchronously. If the number of concurrent, synchronous
+   * queries would exceed the configured limit, rejects the query by setting
+   * the querier status and throwing an exception.
+   *
+   * @param querier The querier to be run.
+   * @return The querier status (also set in the queier argument).
+   * @throws IOException If the configured limit on queries would be exceeded.
    */
-   protected synchronized boolean startBlockingQuerier() {
-      if (
-         (maxSynchQueriers == -1) || // No limit
-         (numSynchQueriers < maxSynchQueriers) // Below limit 
-      ) {
-         numSynchQueriers = numSynchQueriers + 1;
-         return true;
+  public QuerierStatus askQuerier(Querier querier)  throws IOException {
+    boolean hasPermit = synchronousQueries.tryAcquire();
+    if (hasPermit) {
+      try {
+        querier.ask();
+        return querier.getStatus();
       }
-      return false;
-   }
-
-   /**
-    * Decrements the number of running blocking queriers.
-    * Used by a blocking querier to indicate it has finished and free
-    * up a slot for a new blocking query.
-    */
-   protected synchronized void finishBlockingQuerier() {
-      // This should always be true, but just in case...
-      if (numSynchQueriers > 0) {
-         numSynchQueriers = numSynchQueriers - 1;
+      finally {
+        synchronousQueries.release();
       }
-   }
+    }
+    else {
+      IOException e =
+          new IOException("The server is too busy to handle your query, please try again later");
+      querier.setStatus(new QuerierError(querier.getStatus(),
+                        "Service is too busy to accept this query.",
+                        e));
+      throw e;
+    }
+  }
 
-   /**
-    * Adds the given querier to this manager, runs it, and returns the status;
-    * synchronous (blocking); not queued.  Excess synchronous tasks are
-    * rejected straight away.
-    */
-   public QuerierStatus askQuerier(Querier querier)  throws IOException {
-     tasks.add(querier);
-     if (startBlockingQuerier() == true) {
-       try {
-         querier.ask();
-         return querier.getStatus();
-       }
-       finally {
-         finishBlockingQuerier();
-       }
-     }
-     else {
-       IOException e =
-         new IOException("The server is too busy to handle your query, please try again later");
-       querier.setStatus(new QuerierError(querier.getStatus(),
-                                         "Service is too busy to accept this query.",
-                                         e));
-       throw e;
-     }
-   }
+  /**
+   * Runs a querier synchronously, for the special case of a COUNT query.
+   * If the number of concurrent, synchronous queries would exceed the
+   * configured limit, rejects the query by setting the querier status and
+   * throwing an exception.
+   *
+   * @param querier The querier to be run.
+   * @return The count of matching rows.
+   * @throws IOException If the configured limit on queries would be exceeded.
+   */
+  public long askCount(Querier querier)  throws IOException {
+    boolean hasPermit = synchronousQueries.tryAcquire();
+    if (hasPermit) {
+      try {
+        return querier.askCount();
+      }
+      finally {
+        synchronousQueries.release();
+      }
+    }
+    else {
+      IOException e =
+          new IOException("The server is too busy to handle your query, please try again later");
+      querier.setStatus(new QuerierError(querier.getStatus(),
+                        "Service is too busy to accept this query.",
+                        e));
+      throw e;
+    }
+  }
 
-   /** Adds the given querier to this manager, and asks the querier for the
-    * count (number of matches).  Synchronous, returning the number of matches
-    */
-   public long askCount(Querier querier)  throws IOException {
-     if (startBlockingQuerier() == true) {
-       try {
-         return querier.askCount();
-       }
-       finally {
-         finishBlockingQuerier();
-       }
-     }
-     else {
-       IOException e =
-         new IOException("The server is too busy to handle your query, please try again later");
-       querier.setStatus(new QuerierError(querier.getStatus(),
-                                         "Service is too busy to accept this query.",
-                                         e));
-       throw e;
-     }
-   }
 
   /**
    * Shuts down the service, aborting all running queries.

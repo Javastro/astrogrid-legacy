@@ -1,5 +1,5 @@
 /*
- * $Id: Fingerprint.java,v 1.1 2009/05/13 13:20:56 gtr Exp $
+ * $Id: Fingerprint.java,v 1.2 2010/01/27 17:17:03 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,36 +18,19 @@ import java.io.PrintWriter;
  * @author M Hill, from N Winstanley's fingerprint.jsp page from Brian Ewis
  */
 
-public class Fingerprint
-{
+public class Fingerprint {
 
-    /**
-     * Returns an HTML details on theIdentify the version of a jar file. This uses a properties file
-     * containing known names and sizes in the format
-     * 'name(size)=version'. Version strings should be like 'xerces-1.4'
-     * ie they should include the name of the library.
-     */
-    public String getFileVersion(File file) throws IOException {
-        String key="<td>"+file.getName()+"</td>";
-        key+= "<td>"+file.length()+"</td>";
-        Date timestamp=new Date(file.lastModified());
-        key+= "<td>"+timestamp.toString()+"</td>";
-        return key;
-
-        /* TODO: implement
-        String value=versionProps.getProperty(key);
-        if (value==null) {
-            // make it possible to have jars without version nos
-            value=versionProps.getProperty(file.getName());
-        }
-        if (value==null) {
-            // fall back on something obvious
-            value=key;
-            Date timestamp=new Date(file.lastModified());
-            value+=" / "+timestamp.toString();
-        }
-        return value;
-        */
+  /**
+   * Supplies an HTML fragment describing properties of a file.
+   *
+   * @param file The file to be analyzed.
+   * @return The HTML.
+   */
+  public String getFileVersion(File file) throws IOException {
+    return String.format("<td>%s</td><td>%d</td><td>%s</td>",
+                         file.getName(),
+                         file.length(),
+                         new Date(file.lastModified()).toString());
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlHelper.java,v 1.1 2009/05/13 13:20:56 gtr Exp $
+ * $Id: HtmlHelper.java,v 1.2 2010/01/27 17:17:04 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,20 +17,22 @@ import org.astrogrid.io.account.LoginAccount;
 /**
  * A set of methods for helping serving data in HTML form, eg for servlets
  * or JSPs
- * <p>
+ *
  * @author M Hill
  */
 
-public class HtmlHelper
-{
+public class HtmlHelper {
 
-   /**
-    * Gets the user details from the request
-    * @todo at the moment just returns anonymous
+  /**
+    * Gets the user details from the request.
+    *
+    * @param request The HTTP request.
+    * @return The authenticated principal, or LoginAccount.ANONYMOUS if the user is anonymous.
     */
-   public static Principal getUser(HttpServletRequest request)  {
-      return LoginAccount.ANONYMOUS;
-   }
+  public static Principal getUser(HttpServletRequest request) {
+    Principal user = request.getUserPrincipal();
+    return (user == null)? LoginAccount.ANONYMOUS : user;
+  }
 
    
    /** Convenience routine for returning the correct 'HTML' snippet that

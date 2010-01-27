@@ -1,5 +1,5 @@
 /*
- * $Id: ConeSearchVoTableWriter.java,v 1.5 2009/11/18 17:26:20 gtr Exp $
+ * $Id: ConeSearchVoTableWriter.java,v 1.6 2010/01/27 17:17:05 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -111,8 +111,10 @@ public class ConeSearchVoTableWriter extends VoTableWriter {
          if ("POS_EQ_RA_MAIN".equals(cols[i].getUcd("1")) ||
              matchUcd(cols[i].getUcd("1+"), new String[]{"pos.eq.ra", "meta.main"})) {
            if (!doneRaMain) {
-             println(String.format("<FIELD name='%s' ID='%s' ucd='POS_EQ_RA_MAIN' datatype='%s'/>",
-                     cols[i].getName(), cols[i].getId(), "double"));
+             String dataType = (cols[i].getPublicType() == null)? "double" : cols[i].getPublicType();
+             String unit = (cols[i].getUnits() == null)? "deg" : cols[i].getUnits().toString();
+             println(String.format("<FIELD name='%s' ID='%s' ucd='POS_EQ_RA_MAIN' datatype='%s' unit='%s'/>",
+                     cols[i].getName(), cols[i].getId(), dataType, unit));
              doneRaMain = true;
              continue;
            }
@@ -128,8 +130,10 @@ public class ConeSearchVoTableWriter extends VoTableWriter {
          if ("POS_EQ_DEC_MAIN".equals(cols[i].getUcd("1")) ||
              matchUcd(cols[i].getUcd("1+"), new String[]{"pos.eq.dec", "meta.main"})) {
            if (!doneDecMain) {
-             println(String.format("<FIELD name='%s' ID='%s' ucd='POS_EQ_DEC_MAIN' datatype='%s'/>",
-                     cols[i].getName(), cols[i].getId(), "double"));
+             String dataType = (cols[i].getPublicType() == null)? "double" : cols[i].getPublicType();
+             String unit = (cols[i].getUnits() == null)? "deg" : cols[i].getUnits().toString();
+             println(String.format("<FIELD name='%s' ID='%s' ucd='POS_EQ_DEC_MAIN' datatype='%s' unit='%s'/>",
+                     cols[i].getName(), cols[i].getId(), dataType, unit));
              doneDecMain = true;
              continue;
            }

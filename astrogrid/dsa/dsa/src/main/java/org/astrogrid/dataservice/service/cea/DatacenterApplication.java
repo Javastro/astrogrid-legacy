@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.7 2009/10/21 19:01:00 gtr Exp $
+/*$Id: DatacenterApplication.java,v 1.8 2010/01/27 17:17:04 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -180,6 +180,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             query.getResultsDef().setFormat(resultsFormat);
             String label = "CEC job "+ids.getJobStepId();
             Querier querier = new Querier(jobId, acc, query, label);
+            querier.setHasJob();
             querier.addListener(this);
             
             setStatus(Status.INITIALIZED);
