@@ -430,6 +430,16 @@ cvs friendly variant thereof)</li>
 <li>Inform people </li>
 </ol>
 <p></p>
+<h2>
+How do build a local copy of the application?</h2>
+<pre>
+  cd api
+  maven astrogrid-install-artifact
+  cd ../impl
+  maven astrogrid-build-artifact
+</pre>
+After this, an executable jar file will be found in $BASE/desktop/impl/target
+<ol>
 <hr></hr>
 <h2>
 <a name="How_do_I_just_build_the_source"></a>
