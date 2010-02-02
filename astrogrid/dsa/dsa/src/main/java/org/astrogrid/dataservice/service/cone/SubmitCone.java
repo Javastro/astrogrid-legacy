@@ -122,11 +122,16 @@ public class SubmitCone extends HttpServlet {
   private void writeErrorAsVotable(Throwable           th,
                                    HttpServletResponse response) throws IOException {
     response.setContentType("text/xml");
+    response.setCharacterEncoding("UTF-8");
     String error = th.getMessage();
-    error = error.replaceAll("&", "&amp;");
-    error = error.replaceAll("<", "&lt;");
-    error = error.replaceAll(">", "&gt;");
-
+    if (error == null) {
+      error = "(unknown error)";
+    }
+    else {
+      error = error.replaceAll("&", "&amp;");
+      error = error.replaceAll("<", "&lt;");
+      error = error.replaceAll(">", "&gt;");
+    }
     PrintWriter writer = response.getWriter();
     writer.println("<?xml version='1.0' encoding='UTF-8'?>");
     writer.println("<!DOCTYPE VOTABLE SYSTEM \"http://us-vo.org/xml/VOTable.dtd\">");
