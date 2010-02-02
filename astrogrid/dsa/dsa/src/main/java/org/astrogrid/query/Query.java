@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.1 2009/05/13 13:20:38 gtr Exp $
+ * $Id: Query.java,v 1.2 2010/02/02 17:30:37 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,12 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import org.apache.xmlbeans.XmlException;
+import org.astrogrid.adql.AdqlCompiler;
+import org.astrogrid.adql.v1_0.beans.FromType;
+import org.astrogrid.adql.v1_0.beans.SelectDocument;
+import org.astrogrid.adql.v1_0.beans.SelectType;
+import org.astrogrid.adql.v1_0.beans.TableType;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.io.Piper;
 import org.astrogrid.query.returns.ReturnSpec;
@@ -18,35 +24,8 @@ import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
-
-// AG ADQL stuff
-import org.astrogrid.adql.AdqlCompiler;
-
-// XMLBeans stuff
-import org.apache.xmlbeans.* ;
-import org.astrogrid.adql.v1_0.beans.*;
-/*
-// For validation of beans
-import java.util.ArrayList;
-import java.util.Iterator;
-*/
-
-// For legacy DOM interface 
 import org.w3c.dom.Element;
 import org.astrogrid.xml.DomHelper;
-
-/* For xslt */
-/*
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-*/
 
 /**
  * A "native" model of an ADQL query, which includes a representation
@@ -99,9 +78,6 @@ public class Query  {
    // entry using xmlbeans. 
    private final static String FROM_ADQL =
       "<Table xsi:type=\"tableType\" Alias=\"a\" Name=\"INSERT_TABLE\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"/>";
-   
-   /** For xmlbeans validation against schema */
-   private static XmlOptions xmlOptions;
    
    /**
     * The collection of credentials associated with the query.
@@ -459,6 +435,7 @@ public class Query  {
    /**
     * For humans/debugging
     */
+   @Override
    public String toString() {
       StringBuffer s = new StringBuffer("{Query: ");
       if (selectDocument != null) {
