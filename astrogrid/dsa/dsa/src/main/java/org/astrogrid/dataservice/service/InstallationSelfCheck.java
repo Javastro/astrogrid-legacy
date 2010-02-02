@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
+/*$Id: InstallationSelfCheck.java,v 1.3 2010/02/02 21:44:44 gtr Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.dataservice.service;
 
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -289,7 +288,7 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
         hm = rs.managedAuthorities();
       }      
       catch (Exception e) {
-         // Do something
+         throw new IOException("Can't talk to the registry: " + e.getMessage());
       }
       // Check for authority ID
       if (!hm.containsKey(authorityID)) {
