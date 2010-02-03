@@ -105,7 +105,7 @@ public class UwsJobDestructionServlet extends UwsJobResourceServlet {
     // Read the body of the request.
     String s = request.getParameter("DESTRUCTION");
     if (s == null || s.trim().length() == 0) {
-      throw new TapException("The DESTRCTION parameter was not set");
+      throw new TapException("The DESTRUCTION parameter was not set");
     }
 
     // Parse as ISO8601.
