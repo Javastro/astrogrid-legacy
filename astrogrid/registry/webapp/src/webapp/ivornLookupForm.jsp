@@ -47,8 +47,8 @@ Resource Identifier
 </p>
 <p>
 Examples:<br>
-ivo://roe.ac.uk/DSA_6dF/rdbms<br>
-ivo://nasa.heasarc/acrs
+roe.ac.uk/DSA_6dF/rdbms<br>
+nasa.heasarc/acrs
 </p>
 </form>
 </div>

@@ -49,7 +49,7 @@
 
 <!-- Navigation keys/controls -->
 
-<form method="get" id="googlesearch" name="googlesearch" action="http://www.google.com/univ/ucl">
+<form method="get" action="browse.jsp">
 <p>
 <br>
 Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart %>'>

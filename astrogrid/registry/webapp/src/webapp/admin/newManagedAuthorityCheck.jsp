@@ -36,20 +36,6 @@
 <h1>Self-registration</h1>
 <%
     String authorityID = request.getParameter("AuthorityID");
-    boolean contUpdate = true;
-    if(authorityID == null || authorityID.length() <= 0) {
-      out.write("ERROR: No AuthorityID found or submitted please hit back and try again.");
-    }else {
-    String tmp = request.getParameter("Title");
-    if(tmp == null || tmp.length() <= 0) { out.write("ERROR: Title a required parameter was not submitted."); contUpdate = false;}
-    tmp = request.getParameter("Publisher");
-    if(tmp == null || tmp.length() <= 0) { out.write("ERROR: Publisher a required parameter was not submitted."); contUpdate = false;}
-    tmp =  request.getParameter("ContactName");
-    if(tmp == null || tmp.length() <= 0) { out.write("ERROR: ContactName a required parameter was not submitted."); contUpdate = false;}
-    tmp = request.getParameter("ContactEmail");
-    if(tmp == null || tmp.length() <= 0) { out.write("ERROR: ContactEmail a required parameter was not submitted."); contUpdate = false;}
-}
-if(contUpdate) {
 %>
 This is the generated Authority Resource:
 <i>Created and Updated date attributes on the Resources
@@ -83,7 +69,6 @@ if(version.equals("1.0")){
 <input name="button" value="Register" type="submit">
 </form>
 </div>
-<%}%>
 <%@ include file="/style/footer.xml" %>
 </body>
 </html>

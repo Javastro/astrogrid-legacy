@@ -81,10 +81,7 @@
             errorTemp = afe.getMessage();
          }     
       }//if
-   }else {
-     update = false;
-     errorTemp = "No update was done, did not find a File or URL or txt to perform an update of a resource.";
-  }
+   }
 %>
 <!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
@@ -118,8 +115,8 @@
       if (result != null) {
         DomHelper.DocumentToWriter(result, out);
       }
+     
    }
-
 %>
 </pre>
 </div>

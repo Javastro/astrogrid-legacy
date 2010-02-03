@@ -33,7 +33,7 @@
 
 <SCRIPT LANGUAGE="JavaScript" type="text/javascript">
       <!--
-      document.write('<iframe src="viewResourceEntry_body.jsp?IVORN=ivo://vamdc/org.astrogrid.registry.RegistryService" name="main" scrolling="yes" FRAMEBORDER="0" width="90%" height="700"><\/iframe>');
+      document.write('<iframe src="viewResourceEntry_body.jsp?IVORN=<%=request.getParameter("IVORN")%>" name="main" scrolling="yes" FRAMEBORDER="0" width="90%" height="700"><\/iframe>');
       // -->
 </SCRIPT>
 

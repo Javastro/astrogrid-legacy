@@ -1,0 +1,79 @@
+<div id='leftColumn'>
+ <div id='navcolumn'>
+   <div id='menuServer'>
+      <h5>Home Pages</h5>
+      <ul>
+        <li class="none"><a href="<%=request.getContextPath()%>/index.jsp">Welcome</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/index.jsp">Setup &amp; Admin</a></li>
+<%
+   org.astrogrid.registry.server.query.ISearch search = org.astrogrid.registry.server.http.servlets.helper.JSPHelper.getQueryService(request);
+   String contractVersion = search.getContractVersion();
+   String voResourceVersion = search.getResourceVersion();
+%>
+         <!--  <li class="none"><a href="<%=request.getContextPath()%>/currentContractSession.jsp" >3.Current Contract - (<%=contractVersion%>,<%=voResourceVersion%>)</a></li>-->
+      </ul>
+   </div>
+   <div id='menuQuery'>
+      <h5>Investigation</h5>
+      <ul>
+        <li class="none"><a href="<%=request.getContextPath()%>/ivornLookupForm.jsp">View Resource</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/browse.jsp">Browse Registry</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/keywordquery.jsp">Keyword Search</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/xquerysearch.jsp">Registry XQuery</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/tree-root.jsp">Registry Tree</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/harvestInfo.jsp">Harvest Status</a></li>
+      </ul>
+   </div>
+   <div id="menuRegister">
+     <h5>Registry</h5>
+     <ul>
+       <% if(!contractVersion.equals("0.1")) { %>
+        <li class="none"><a href="<%=request.getContextPath()%>/registration/NewResource.jsp">Create Entry</a></li>
+       <%}%>
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/editEntry.jsp">Edit Entry</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/editEntry_backdoor.jsp">Override Entry</a></li>
+     </ul>
+     <h5>Administration</h5>
+      <ul>
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/harvestResource.jsp">Harvest Registry</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/harvestVOSI.jsp">Harvest VOSI</a></li>         
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/getRegistryFromHarvest.jsp">External Registry</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/newManagedAuthority.jsp">Add Authority</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/removeResource.jsp">Remove Resource</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/environment-main.jsp">Edit Properties</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/changeStatus.jsp">Change Status</a></li>         
+        <li class="none"><a href="<%=request.getContextPath()%>/admin/fingerprint.jsp">System Info</a></li>
+      </ul>
+   </div>
+   <div id='menuDB'>
+      <h5>Database</h5>
+      <ul>
+        <li class="none"><a href="<%=request.getContextPath()%>/dbclients.jsp">Client &amp; WebDav</a></li>
+      </ul>
+   </div>   
+   <div id='menuDocs'>
+      <h5>Document</h5>
+      <ul>
+        <li class="none"><a href="<%=request.getContextPath()%>/regdocs/installation.jsp">Installation</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/regdocs/configure.jsp">Configuration</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/regdocs/cookbook.jsp">FAQ</a></li>         
+        <li class="none"><a href="<%=request.getContextPath()%>/regdocs/eXist_reference.jsp">eXist Reference</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/regdocs/registry_reference.jsp">Registry Reference</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/regdocs/uninstall.jsp">Uninstall</a></li>
+        <li class="none"><a href="<%=request.getContextPath()%>/regdocs/upgrading.jsp">Upgrading</a></li>
+       	<li class="none"><a href="<%=request.getContextPath()%>/resourceHelp.jsp">Resource Help</a></li>
+       	<!--<li class="none"><a href="<%=request.getContextPath()%>/installation.jsp">Installation</a></li> -->       	          
+      </ul>
+   </div>
+<SCRIPT LANGUAGE="JavaScript" type="text/javascript">
+      <!--
+      document.write('&nbsp;&nbsp;&nbsp;<A HREF="http://validator.w3.org/check?uri='+location.href +'">');
+      document.write('<img alt="This website passes W3C HTML 4.01 Quality Assurance" id="quality" src="<%=request.getContextPath()%>/img/valid-html401-blue.png" border="0" height="24">');
+      document.write('<\/A>');
+      // -->
+</SCRIPT>
+
+  <!-- Copyright &copy; 2009 VAMDC -->
+  <br>
+ </div>
+</div>
