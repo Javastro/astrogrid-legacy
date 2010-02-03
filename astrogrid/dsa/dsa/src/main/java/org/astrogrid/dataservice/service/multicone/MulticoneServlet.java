@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -22,12 +21,9 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.ConfigReader;
 import org.astrogrid.cfg.PropertyNotFoundException;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.service.Queues;
 import org.astrogrid.dataservice.service.TokenQueue;
 import org.astrogrid.dataservice.service.ServletHelper;
-import org.astrogrid.security.HttpsServiceSecurityGuard;
-import org.astrogrid.security.authorization.AccessPolicy;
 import uk.ac.starlink.table.OnceRowPipe;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StarTableFactory;
@@ -70,7 +66,7 @@ import uk.ac.starlink.votable.VOTableWriter;
  * @author   Mark Taylor
  * @since    4 Sep 2007
  */
-public class MulticoneServlet extends HttpServlet {
+public class MulticoneServlet extends SecuredServlet {
 
     /**
      * Request parameter name for column giving Right Ascension in degrees
@@ -128,13 +124,6 @@ public class MulticoneServlet extends HttpServlet {
 
     private static final Log log = LogFactory.getLog(MulticoneServlet.class);
 
-    private AccessPolicy policy;
-
-    @Override
-    public void init() {
-        policy = getConeSearchAccessPolicy();
-    }
-
     /**
      * Called for an HTTP POST.  The input VOTable is the body of the request.
      */
@@ -154,16 +143,11 @@ public class MulticoneServlet extends HttpServlet {
                                        "in the config file");
         }
 
-        // Check authorization
         try {
-            HttpsServiceSecurityGuard guard = new HttpsServiceSecurityGuard();
-            guard.loadHttpsAuthentication(request);
-            guard.setAccessPolicy(policy);
-            guard.decide(null);
+          checkAuthorization(request);
         }
         catch (Exception e) {
-          log.warn(e);
-          response.sendError(response.SC_FORBIDDEN);
+          response.sendError(response.SC_FORBIDDEN, e.getMessage());
           return;
         }
 
@@ -515,26 +499,11 @@ public class MulticoneServlet extends HttpServlet {
          * Returns a parameter which is got either from the underlying
          * implementation or from the supplied RequestParams object.
          */
+        @Override
         public String getParameter(String name) {
             String value = super.getParameter(name);
             return value == null ? params.getParameter(name)
                                  : value;
-        }
-    }
-
-    /**
-     * Instantiates the access policy. The policy object is re-used for all
-     * queries by this servlet.
-     */
-    private AccessPolicy getConeSearchAccessPolicy() {
-        String policyClassName =
-                SimpleConfig.getProperty("cone.search.access.policy");
-        try {
-            return (AccessPolicy) Class.forName(policyClassName).newInstance();
-        }
-        catch (Exception ex) {
-            log.fatal(ex);
-          throw new RuntimeException("Can't load the access policy for cone search", ex);
         }
     }
 }
