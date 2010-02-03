@@ -1,5 +1,6 @@
 package org.astrogrid.dataservice.jobs;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.List;
 import junit.framework.TestCase;
@@ -20,7 +21,8 @@ public class JobTest extends TestCase {
    */
   @Override
   public void setUp() throws Exception {
-    ConfigFactory.getCommonConfig().setProperty("datacenter.cache.directory", "target");
+    ConfigFactory.getCommonConfig().setProperty("datacenter.cache.directory", "target/cache");
+    new File("target/cache").mkdirs();
   }
   
 
@@ -39,6 +41,19 @@ public class JobTest extends TestCase {
     assertNotNull(j2);
     assertEquals("test", j2.getId());
     assertEquals("QUEUED", j2.getPhase());
+
+    // Prove it can find the DB for itself, without help from initialize().
+    Job.setJdoManager(null);
+    Job j3 = new Job();
+    j3.setId("retest");
+    j3.setPhase("QUEUED");
+    j3.add();
+
+    Job.setJdoManager(null);
+    Job j4 = Job.load("retest");
+    assertNotNull(j4);
+    assertEquals("retest", j4.getId());
+    assertEquals("QUEUED", j4.getPhase());
   }
 
   public void testOpenSaveAndLoad() throws Exception {
@@ -60,6 +75,27 @@ public class JobTest extends TestCase {
     assertNotNull(j3);
     assertEquals("test", j3.getId());
     assertEquals("COMPLETED", j3.getPhase());
+
+    // Prove it can find the DB for itself, without help from initialize().
+    Job.setJdoManager(null);
+    j2 = Job.open("test");
+    j2.setOwner("Fred");
+    j2.save();
+
+    Job j4 = Job.load("test");
+    assertNotNull(j4);
+    assertEquals("test", j4.getId());
+    assertEquals("Fred", j4.getOwner());
+
+    // Check the error handling.
+    Job j5 = new Job();
+    try {
+      j5.save();
+      fail("Shouldn't be able to save a job withou and open transaction.");
+    }
+    catch (PersistenceException e) {
+      // Expected.
+    }
   }
 
   public void testDelete() throws Exception {
@@ -79,6 +115,22 @@ public class JobTest extends TestCase {
       // Expected.
     }
 
+    // Prove it can find the DB for itself, without help from initialize().
+    Job j2 = new Job();
+    j2.setId("j2");
+    j2.setPhase("QUEUED");
+    j2.add();
+
+    Job.setJdoManager(null);
+    Job.delete("j2");
+
+    try {
+      Job.load("j2");
+      fail("Shouldn't be able to load a job after it is deleted.");
+    }
+    catch (PersistenceException e) {
+      // Expected.
+    }
   }
 
   public void testList() throws Exception {
@@ -95,6 +147,14 @@ public class JobTest extends TestCase {
     j2.add();
 
     List<Job> l = Job.list();
+    assertNotNull(l);
+    assertEquals(2, l.size());
+    assertEquals("j1", l.get(0).getId());
+    assertEquals("j2", l.get(1).getId());
+
+    // Prove it can find the DB for itself, without help from initialize().
+    Job.setJdoManager(null);
+    l = Job.list();
     assertNotNull(l);
     assertEquals(2, l.size());
     assertEquals("j1", l.get(0).getId());
@@ -177,6 +237,15 @@ public class JobTest extends TestCase {
     Job.purge();
 
     List<Job> jobs = Job.list();
+    assertNotNull(jobs);
+    assertEquals(1, jobs.size());
+    assertEquals("new", jobs.get(0).getId());
+
+    // Prove it can find the DB for itself, without help from initialize().
+    Job.setJdoManager(null);
+    Job.purge();
+
+    jobs = Job.list();
     assertNotNull(jobs);
     assertEquals(1, jobs.size());
     assertEquals("new", jobs.get(0).getId());
