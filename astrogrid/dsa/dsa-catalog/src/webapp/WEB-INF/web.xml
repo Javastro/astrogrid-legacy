@@ -55,6 +55,13 @@
   </servlet>
 
   <servlet>
+    <servlet-name>DirectCone</servlet-name>
+    <description>Cone-search servlet with direct creation of native SQL;
+      avoids use of ADQL to improve performance.</description>
+    <servlet-class>org.astrogrid.dataservice.service.multicone.DirectConeServlet</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>BrowserAskQuery</servlet-name>
     <description>Servlet for asking (synchronous) queries via POST or GET suitable for browsers</description>
     <servlet-class>org.astrogrid.dataservice.service.servlet.BrowserAskQuery</servlet-class>
@@ -183,6 +190,11 @@
   <servlet-mapping>
     <servlet-name>MultiCone</servlet-name>
     <url-pattern>MultiCone</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>DirectCone</servlet-name>
+    <url-pattern>/DirectCone</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
