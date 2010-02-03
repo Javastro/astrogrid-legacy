@@ -1,4 +1,4 @@
-/*$Id: VoTableTestHelper.java,v 1.1 2009/05/13 13:21:05 gtr Exp $
+/*$Id: VoTableTestHelper.java,v 1.2 2010/02/03 14:21:49 gtr Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,9 @@
  **/
 package org.astrogrid.tableserver;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import junit.framework.TestCase;
 import org.astrogrid.xml.DomHelper;
-import org.astrogrid.xml.ErrorRecorder;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.astrogrid.test.AstrogridAssert;
@@ -27,6 +25,8 @@ import org.astrogrid.contracts.SchemaMap;
 public class VoTableTestHelper extends TestCase {
 
    public static Document assertIsVotable(String candidate) throws IOException, SAXException {
+
+
 
      // Check that the VOTable response is schema-valid XML
      // NB: This doesn't actually test that the returned VOTable
