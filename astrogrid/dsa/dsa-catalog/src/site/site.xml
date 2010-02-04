@@ -23,6 +23,7 @@
       <item name="Generating the metadoc" href="metadoc-raw.html"/>
       <item name="Annotating the metadoc" href="metadoc-cooked.html"/>
       <item name="Registration" href="registration.html"/>
+      <item name="Security" href="security.html"/>
     </menu>
     <menu name="Templates">
       <item name="Context file" href="context.xml"/>

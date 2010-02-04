@@ -9,12 +9,296 @@
 
 <body>
 <section name="Release notes for DSA/Catalogue">
+  <p>
+    These notes record the cumulative changes in sucessive DSA-versions
+    since the last release of 2008. The changes are complete up to version
+    2010.1.
+  </p>
+  <p>
+    Version 2010.1 improves cone-search security. Sites should upgrade to this
+    version if they have secured cone-search interfaces.
+  </p>
+
+  <subsection name="DirectCone servlet">
+    <p><i>Since 2010.1</i></p>
+    <p>
+      The established cone-search service is mapped at the URI
+      <i>/SubmitCone</i> and registered. There is an alternative, experimental
+      implementation at <i>/DirectCone</i> which is not currently registered.
+      The new version writes SQL directly and avoids the overhead of translating
+      ADQL. Any deployers wishing to use this implementation could manually
+      change their registrations.
+    </p>
+  </subsection>
+
+  <subsection name="Security for MultiCone">
+    <i>Since 2010.1.</i>
+    <p>
+      The security arrangements for the normal cone-search are now extended to
+      the MultiCone interface and the DirectCone version of cone-search. The
+      same access-policy applies to all three.
+    </p>
+  </subsection>
+  
+  <subsection name="VOTable and UCD changes">
+  <p><i>Since v2009.1.03.</i></p>
+  <p>
+    The version of VOTable emitted by DSA/Catalogue services changes with this
+    release.
+  </p>
   <ul>
-    <li><a href="release-notes-2009.1.03.html">Version 2009.1.03</a>.</li>
-    <li><a href="release-notes-2009.1.02.html">Version 2009.1.02</a>.</li>
-    <li><a href="release-notes-2009.1.01.html">Version 2009.1.01</a>.</li>
-    <li><a href="release-notes-2009.1.html">Version 2009.1</a>.</li>
+    <li>Results tables from successful TAP and CEC queries are VOTable-1.2
+        (previously VOTable-1.1).</li>
+    <li>Results tables from successful cone searches are VOTable-1.1
+        (no change).</li>
+    <li>Error documents from failed TAP-queries are are VOTable-1.2
+        (previously VOTable-1.1).</li>
+    <li>Error documents from failed CEC calls and cone searches are
+        usually VOTable-1.0 but VOTable-1.1 is possible (no change).</li>
   </ul>
+  <p>
+    These changes bring the implementation nearer to the IVOA standards.
+  </p>
+  <p>
+    DSA/Catalogue now emits UCD1+ mark-up for columns in preference to UCD1.
+    Whenever both UCDs are set for a column in the "metadoc" file, DSA will use
+    UCD1+; if only UCD1 is set, it will use that.
+  </p>
+  <p>
+    The property <i>datacenter.ucd.version</i> in <i>astrogrid.properties</i>,
+    which used to select the preferred version, now has no useful effect.
+  </p>
+  <p>
+    The cone-search standard <em>requires</em> a reversion to UCD1 for
+    <i>ID_MAIN</i>, <i>POS_EQ_RA</i> and <i>POS_EQ_DEC</i>. These UCDs are
+    imposed by special-case code for cone-search outputs and override the UCDs
+    in the metadoc.
+  </p>
+</subsection>
+
+  <subsection name="TAP features">
+  <p><i>Since v2009.1; security features since v2009.1.02; some TAP details
+  since 2009.1.01.</i></p>
+  <p>
+    The following features of TAP are implemented:
+  </p>
+  <ul>
+    <li>synchronous queries by ADQL;</li>
+    <li>asynchronous queries by ADQL and UWS;</li>
+    <li>VOSI.</li>
+  </ul>
+  <p>
+    These features are not available in this release:
+  </p>
+  <ul>
+    <li>queries by PQL, including positional queries using the POS parameter;</li>
+    <li>metadata queries;</li>
+    <li>table uploads;</li>
+    <li>delivery of results to VOSpace.</li>
+  </ul>
+  <p>
+    Asynchronous queries via TAP leave their results in cache files on the server.
+    These results remain available for 24 hours from the submission time of the
+    query.
+  </p>
+  <p>
+    <i>Since v2009.1.01.</i>
+    In this release, IVOA single-sign-on authentication is implemented for the
+    TAP interface; c.f. 2009.1.01. Access via TAP can be controlled.
+  </p>
+</subsection>
+
+<subsection name="VOSI changes">
+  <p><i>Since v2009.1.01.</i></p>
+  <p>
+    The VOSI resources have been rearranged to support the TAP implementation.
+    In versions up to 2009, there was one set of VOSI resources for each catalogue configured
+    on the web application. In 2009.1.01, there is one set of VOSI resources for
+    the whole web application, but requests to those resources can be parameterized
+    to get data concerning only one catalogue.
+  </p>
+  <p>
+    For example, consider an service S configured to serve catalogues named
+    C1 and C2. In v2009.1, there would have been these VOSI resources:
+  </p>
+  <ul>
+    <li>http://where.ever/S/C1/vosi/capabilities</li>
+    <li>http://where.ever/S/C1/vosi/availability</li>
+    <li>http://where.ever/S/C1/vosi/tables</li>
+    <li>http://where.ever/S/C1/vosi/ceaapplication</li>
+    <li>http://where.ever/S/C2/vosi/capabilities</li>
+    <li>http://where.ever/S/C2/vosi/availability</li>
+    <li>http://where.ever/S/C2/vosi/tables</li>
+    <li>http://where.ever/S/C2/vosi/ceaapplication</li>
+  </ul>
+  <p>
+    In v2009.1.02, the VOSI metadata are available through the following URIs:
+  </p>
+  <ul>
+    <li>http://where.ever/S/VOSI/availability</li>
+    <li>http://where.ever/S/VOSI/capabilities</li>
+    <li>http://where.ever/S/VOSI/tables</li>
+    <li>http://where.ever/S/VOSI/applications</li>
+    <li>http://where.ever/S/VOSI/capabilities?COLLECTION=C1</li>
+    <li>http://where.ever/S/VOSI/tables?COLLECTION=C1</li>
+    <li>http://where.ever/S/VOSI/applications?COLLECTION=C1</li>
+    <li>http://where.ever/S/VOSI/capabilities?COLLECTION=C2</li>
+    <li>http://where.ever/S/VOSI/tables?COLLECTION=C2</li>
+    <li>http://where.ever/S/VOSI/applications?COLLECTION=C2</li>
+  </ul>
+  <p>
+    The basic, unparameterized resources return metadata for all catalogues.
+    The <i>COLLECTION</i> parameter on the resource selects metadata for just
+    one catalogue. The availability resource does not support this parameter.
+  </p>
+</subsection>
+
+<subsection name="Records of queries">
+  <p><i>Since v2009.1.01.</i></p>
+  <p>
+    The progress of queries used to be recorded in memory rather than on disc.
+    This lead to DSA installations forgetting their queries when restarted.
+    Further, when results of queries were not dispatched to VOSpace they too
+    were kept in memory, leading to eventual failure of the service when the
+    heap filled up.
+  </p>
+  <p>
+    Starting with v2009.1.01, all results of queries are kept on disc, in a location
+    specifed during configuration. Please
+    see the description of the <a href="cache-directory.html">cache directory</a>
+    for details.
+  </p>
+</subsection>
+
+
+  <subsection name="Upgrading">
+    <p>
+      There are many changes in configuration since 2008. To upgrade to the
+      current version, look up the current version of your installation in the
+      list below and apply the changes as described in the following sub-sections.
+    </p>
+    <ul>
+      <li>2009.1.04: no configuration changes.</li>
+      <li>2009.1.03: no configuration changes.</li>
+      <li>2009.1.02: update UCD version.</li>
+      <li>2009.1.01: set <i>datacenter.cache.directory</i>;
+                     set <i>tap.access.policy</i>;
+                     reinitialize job database.</li>
+      <li>2009.1: update UCD version;
+                  set <i>datacenter.cache.directory</i>;
+                  set <i>cone.search.access.policy</i>;
+                  set <i>tap.access.policy</i>;
+                  reinitialize job database;
+                  reregister.</li>
+      <li>2008 series:  update UCD version;
+                        set <i>datacenter.url.secure</i>;
+                        set <i>datacenter.cache.directory</i>;
+                        set <i>cone.search.access.policy</i>;
+                        set <i>tap.access.policy</i>;
+                        reinitialize job database;
+                        reregister.</li>
+      <li>Older versions: start again with a new configuration.</li>
+    </ul>
+    <dl>
+      <dt>Update UCD version</dt>
+      <dd>
+        DSA now uses only the UCD1+ entries from the
+        <a href="metadoc-cooked.html">metadoc</a>. If you previously had
+        <i>datacenter.ucd.version</i> set to "1" in
+        <a href="astrogrid-properties.html"><i>astrogrid.properties</i></a> and
+        UCD1 entries in your metadoc, then you should change the metadoc to
+        use equivalent UCD1+ values. You should delete <i>datacenter.ucd.version</i>
+        from <i>astrogrid.properties</i> as it no longer has any effect.
+      </dd>
+      <dd>
+        If you defer this reconfiguration, queries will still work, but the
+        UCD attributes in the VOTables will be missing or blank where columns
+        do not have UCD1+ mark-up in the metadoc.
+      </dd>
+      <dt>datacenter.cache.directory</dt>
+      <dd>
+        Set this property in
+        <a href="astrogrid-properties.html"><i>astrogrid.properties</i></a>.
+        It determines where records of asynchronous queries are kept.
+      </dd>
+      <dt>datacenter.url.secure</dt>
+      <dd>
+        Set this property in 
+        <a href="astrogrid-properties.html"><i>astrogrid.properties</i></a>.
+        It determines the base URI for registration of secure interfaces.
+      </dd>
+      <dt>cone.search.access.policy</dt>
+      <dd>
+        Set this property in
+        <a href="astrogrid-properties.html"><i>astrogrid.properties</i></a>.
+        It determines the <a href="security.html">security</a> for
+        cone-search interfaces.
+      </dd>
+      <dt>tap.access.policy</dt>
+      <dd>
+        Set this property in
+        <a href="astrogrid-properties.html"><i>astrogrid.properties</i></a>.
+        It determines the <a href="security.html">security</a> for
+        cone-search interfaces.
+      </dd>
+      <dt>Reinitialize job database</dt>
+      <dd>
+        While the DSA is not running, delete all files in the directory
+        configured by <i>datacenter.cache.directory</i> leaving the directory
+        empty; do not delete the directory itself. If the directory does not
+        yet exist, create it.
+      </dd>
+      <dd>
+        Now start DSA.
+      </dd>
+      <dd>
+        With a web-browser, go to the front page of your DSA web-application.
+        Follow the "view job database" link from the menu on the left of the
+        page. This takes you to an administration page and you will have to
+        give a password.
+      </dd>
+      <dd>
+        Press the button marked "Destroy and recreate the database". You should
+        now see headings for an empty table of jobs.
+      </dd>
+      <dd>
+        This action is necessary when the schema of the job database changes.
+        In this case, just pressing the button won't work unless you first
+        clear out the old files from the cache directory. If the schema hasn't
+        changed, you can initialize the database using the button without
+        deleting the files.
+      </dd>
+      <dt>Reregister</dt>
+      <dd>
+        When DSA grows a new interface, or if the interfaces URIs change, it's
+        time to update the registration. Only the machine-readable details of
+        the interfaces change; you don't need to re-enter the other details by
+        hand.
+      </dd>
+      <dd>
+        With a web-browser, go to the front page of your web application.
+        Follow the link "Manage registrations" in the menu on the left of
+        the page. This takes you to an administration page and you will have to
+        give a password.
+      </dd>
+      <dd>
+        On the registration page, read the guidance and then press the
+        "Load service metadata" button. This will update the technical part of
+        your registration in your publishing registry.
+      </dd>
+      <dd>
+        There will be a delay, typically two hours, before the registration
+        changes appear in the main registries visible to users. During this
+        time, users won't be able to work the interfaces that have changed in
+        your web application because they see the wrong addresses. You might
+        prefer to take your DSA installation off-line until the registration
+        has propagated.
+      </dd>
+    </dl>
+  </subsection>
+
+
+
 </section>
 </body>
 

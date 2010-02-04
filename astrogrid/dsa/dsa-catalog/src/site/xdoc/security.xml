@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Securing DSA/Catalogue</title>
+  </properties>
+
+  <body>
+    <section name="Securing DSA/Catalogue">
+      <p>
+        The DSA/Catalogue web-application supports access control on several
+        interfaces.
+      </p>
+      <ul>
+        <li>the CEC interface (using digital signatures on SOAP messages);</li>
+        <li>the cone-search interfaces (using HTTPS with client certificates);</li>
+        <li>the TAP interface (using HTTPS with client certificates);</li>
+        <li>the administration interface (using local passwords).</li>
+      </ul>
+      <p>
+        When installing DSA/Catalogue, you need to secure at least the
+        administration interfaces, even if you do not wish to control access
+        to the science interfaces. You also need to explicitly turn <em>off</em>
+        the access control on interfaces where it is not needed.
+      </p>
+      <p>
+        This page summarizes the configuration of access control. Instructions
+        for setting up security are repeated in other pages describing
+        configuration.
+      </p>
+
+      <subsection name="The administration password">
+        <p>
+          The password protection for the administration pages is administered
+          by the <a href="tomcat.html">servlet container</a>. I.e., the
+          accounts and passwords are defined the configuration of the container
+          and are not part of the IVOA single-sign-on system. The DSA/Catalogue
+          web-application instructs the container to allow administration
+          access only for user-accounts with the role <i>dsaadmin</i>.
+        </p>
+      </subsection>
+
+      <subsection name="HTTPS">
+        <p>
+          The HTTPS protocol is operated by the servlet container,
+          <a href="tomcat.html">servlet container</a>. There are two
+          configurations.
+        </p>
+        <ul>
+          <li><em>If you want to protect (by encryption) the administration
+          passwords but do not need to secure the cone-search or TAP
+          interfaces</em> use HTTPS with client authentication <em>off</em>.</li>
+          <li><em>If you want to secure the cone-search and/or TAP
+          interfaces</em> use HTTPS with client authentication <em>on</em>.</li>
+        </ul>
+        <p>
+          In each case, the CEC interface must remain accessible through plain
+          HTTP. Do not configure your servlet container for HTTPS alone.
+        </p>
+      </subsection>
+
+      <subsection name="Access policy">
+        <p>
+          An access policy determines authorization for an authenticated user
+          to proceed with their requested access. In DSA/Catalogue, a policy
+          is represented by a Java class chosen by configuration settings.
+        </p>
+        <p>
+          These are the configuration settings for access policy:
+        </p>
+        <dl>
+          <dt>cea.access.policy</dt>
+          <dd>applies to the CEC interface;</dd>
+          <dt>cone.search.access.policy</dt>
+          <dd>applies to the cone-search interfaces, including multicone;</dd>
+          <dt>tap.access.policy</dt>
+          <dd>applies to the TAP interface.</dd>
+        </dl>
+        <p>
+          These properties are set in
+          <a href="astrogrid-properties.html"><i>astrogrid.properties</i></a>.
+        </p>
+        <p>
+          You should normally set the same policy for these three properties. In
+          each case, the value of the property is the fully-qualified name of
+          the policy class.
+        </p>
+        <p>
+          Three basic policy-classes are supplied with DSA/Catalogue:
+        </p>
+        <dl>
+          <dt>org.astrogrid.security.authorization.OpenAccessPolicy</dt>
+          <dd>allows all access;</dd>
+          <dt>org.astrogrid.security.authorization.AuthenticatedAccessPolicy</dt>
+          <dd>denies access to anonymous requests and requests that fail authentication;</dd>
+          <dt>org.astrogrid.security.authorization.NoAccessPolicy</dt>
+          <dd>denies all access, turning off a group of interfaces.</dd>
+        </dl>
+        <p>
+          The default is <i>NoAccessPolicy</i>, so you must configure the policies
+          explicitly to open your science interfaces.
+        </p>
+        <p>
+          To allow access to selected users, you need to write your own policy
+          class. Your policy could refer to a simple list of names, perhaps
+          read from a file, or it could send out to an external security system
+          on your site for a decision. For details, please see the programming
+          notes for the AstroGrid security-library.
+        </p>
+        <p>
+          If there is sufficient demand, some extra policy classes could be
+          included in later releases of DSA/Catalogue. E.g., authorized
+          users could be read from a configuration file installed with the
+          web application, or from a database table.
+        </p>
+      </subsection>
+
+      <subsection name="HTTP access to secured interfaces">
+        <p>
+          When you use HTTPS, the interfaces are still reachable via plain HTTP.
+          The system's response to a plain-HTTP request to a secured interface
+          depends on the type of interface.
+        </p>
+        <ul>
+          <li>CEC: HTTP access is normal; security does not use HTTPS.</li>
+          <li>Cone search and TAP: the web application receives the request
+              but the access policy rejects it because it is anonymous.</li>
+          <li>Administration: the request is accepted, the password
+              authentication operates and the controls "work"; but the
+              password is sent in clear text and could be copied by an attacker.</li>
+        </ul>
+      </subsection>
+
+      <subsection name="Registration">
+        <p>
+          When the cone-search and/or TAP interfaces are secured with HTTPS,
+          the registered URIs for these interfaces must be the HTTPS versions
+          and not the normal, plain-HTTP URIs. This choice is controlled by
+          the property <i>cone.seach.secure</i> which can be set either
+          <i>true</i> to use HTTPS or <i>false</i> to use HTTP. The actual
+          URIs are derived from the properties <i>datacenter.url</i> for the
+          plain-HTTP URIs and <i>datacenter.url.secure</i> for the HTTPS URIs.
+          These properties are set in
+          <a href="astrogrid-properties.html"><i>astrogrid.properties</i></a>.
+        </p>
+      </subsection>
+
+    </section>
+  </body>
+
+</document>
