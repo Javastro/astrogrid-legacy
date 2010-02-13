@@ -217,7 +217,9 @@ public abstract class DefaultHarvestService {
                               //get the status document where the date can be found
                               Document statDoc = rha.getStatus(tempIdent, versionNumber);
                               log.debug("StatDoc toString = " + DomHelper.DocumentToString(statDoc));
-                              dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+                              //dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+                              dateString = DomHelper.getNodeTextValue(statDoc,"MostRecentResourceUpdateMillis");
+                              
                               //lastResumptionToken = DomHelper.getNodeTextValue(statDoc,"LastResumptionToken");
                               log.debug("dateString found in statDoc to be used for harvesting = " + dateString);                              
                           } catch(IOException ioe) {
@@ -408,7 +410,7 @@ public abstract class DefaultHarvestService {
            }
            try {
                if(doc.getDocumentElement() != null && doc.getDocumentElement().getElementsByTagNameNS("*","metadata").getLength() > 0) {
-                   results += rha.harvestingUpdate(doc, versionNumber);
+                   results += rha.harvestingUpdate(doc, identifier, versionNumber);
                    /*
                    if(versionNumber.equals(("0.10")) {
                 	   log.debug("transform to 1.0 version and do an update for 1.0");                	   
@@ -514,7 +516,7 @@ public abstract class DefaultHarvestService {
                          
                          //(new HarvestThread(ras,soapDoc.getDocumentElement())).start();
                          if(soapDoc.getDocumentElement().getElementsByTagNameNS("*","metadata").getLength() > 0)
-                             results += rha.harvestingUpdate(soapDoc, versionNumber);
+                             results += rha.harvestingUpdate(soapDoc, identifier, versionNumber);
                          //if(isRegistryType) {
                             NodeList nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
                             if(nl.getLength() > 0) {

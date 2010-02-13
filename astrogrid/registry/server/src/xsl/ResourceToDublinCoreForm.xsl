@@ -23,8 +23,9 @@
         <link rel="stylesheet" type="text/css" href="style/astrogrid.css"></link>
       </head>
       <body>
-        <h1>Core metadata: editor</h1>
         <div id='bodyColumn'> 
+
+        <h1>Core metadata: editor</h1>
         <form action="DublinCore" method="post">
           <div>
             <input type="hidden" name="IVORN">

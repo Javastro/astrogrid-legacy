@@ -418,10 +418,13 @@ public abstract class RegistryAdminService {
                          managedAuthorityFound = true;
                 }//for
                 if(!managedAuthorityFound) {
+                	/*
                     log.error("Server Error: " + "Trying to update the main Registry Type for this Registry with no matching Managed AuthorityID with the Identifiers AuthorityID; The AuthorityID = " + ident);
                     error = true;
                     soapErrorMessage += "Trying to update the main Registry Type for this Registry with no matching Managed AuthorityID with the Identifiers AuthorityID; The AuthorityID = " + ident;
                     //return SOAPFaultException.createAdminSOAPFaultException("No matching authority id found",new RegistryException("Trying to update the main Registry Type for this Registry with no matching Managed AuthorityID with the Identifiers AuthorityID; The AuthorityID = " + ident));
+                     * 
+                     */
                 }
                 if(error) {
                     continue;

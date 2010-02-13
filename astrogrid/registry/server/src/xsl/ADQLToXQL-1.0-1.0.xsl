@@ -71,7 +71,7 @@
    <!--
    <xsl:value-of select="$declare_elems"/>
    -->
-   <xsl:text>//</xsl:text><xsl:value-of select="$resource_elem"/><xsl:text>[</xsl:text>
+   <xsl:text>//</xsl:text><xsl:value-of select="$resource_elem"/><xsl:text>[(@status='active') and </xsl:text>
       <xsl:if test="ad:Condition">
     	  <xsl:text>(</xsl:text>
 	      <xsl:apply-templates select="ad:Condition"/>
@@ -82,7 +82,7 @@
       <xsl:template match="ri:Where">
    <xsl:value-of select="$declare_elems"/>
    <xsl:text>
-      //</xsl:text><xsl:value-of select="$resource_elem"/><xsl:text>[</xsl:text>
+      //</xsl:text><xsl:value-of select="$resource_elem"/><xsl:text>[(@status='active') and </xsl:text>
       <xsl:if test="ad:Condition">
     	  <xsl:text>(</xsl:text>
 	      <xsl:apply-templates select="ad:Condition"/>

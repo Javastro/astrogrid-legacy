@@ -46,7 +46,7 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
     /**
      * Logging variable for writing information to the logs
      */
-     private static final Log log = LogFactory.getLog(RegistryQueryService.class);    
+    private static final Log log = LogFactory.getLog(RegistryQueryService.class);    
 
     public static final String QUERY_WSDL_NS = "http://www.ivoa.net/wsdl/RegistrySearch/v1.0";
     
@@ -62,6 +62,10 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
 
     public RegistryQueryService() {
         super(QUERY_WSDL_NS, CONTRACT_VERSION, VORESOURCE_VERSION);     
+    }
+    
+    public RegistryQueryService(String wsdlNS, String contractVersion, String voVersion) {
+        super(wsdlNS, contractVersion, voVersion);     
     }
    
     public String getWSDLNameSpace() {return this.QUERY_WSDL_NS;}

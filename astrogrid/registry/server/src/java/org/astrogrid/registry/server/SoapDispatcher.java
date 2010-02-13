@@ -35,8 +35,7 @@ public class SoapDispatcher {
 	  interfaceMappings = new Hashtable();
 	  //Small hashtable for determing the query interface.
 	  interfaceMappings.put("http://www.ivoa.net/wsdl/RegistrySearch/v1.0","1.0");
-	  interfaceMappings.put("http://www.ivoa.net/wsdl/RegistrySearch/v0.9","0.9");
-	  interfaceMappings.put("http://www.ivoa.net/wsdl/RegistrySearch/v0.1","0.1");
+	  interfaceMappings.put("http://www.helio-vo.eu//wsdl/RegistrySearch/v0.1","1.0SandBox");
   }
 
   /**
@@ -51,24 +50,37 @@ public class SoapDispatcher {
 	 try {
 		 //get the soap request.
 	     XMLStreamReader reader = context.getInMessage().getXMLStreamReader();
-	     //form a DOM for the request.
+
+	     //form a DOM of the request.
 		 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	     DocumentBuilder builder = dbf.newDocumentBuilder();
 	     Document inputDoc = STAXUtils.read(builder,reader,true);
+	     //all the soap requests in the body will have a namespaceuri that 
+	     //corresponds to the wsdl namespace given.
+	     //And the first root element should be the method name I want to call.
 	     String inputURI = inputDoc.getDocumentElement().getNamespaceURI();
 	     ISearch query;
+	     
+	     //Create a QueryService based on the uri.
+	     //Originally there were multiple QueryServices but now were coming down to just
+	     //the main 1.0 one.
 	     if(interfaceMappings.containsKey(inputURI)) {
 	    	 //okay get the ISearch query interface.
 	    	 query = QueryFactory.createQueryService((String)interfaceMappings.get(inputURI));
 	  	 }else {
 	  		 //very old clients just might not match which must be 0.1
 	  		 //query interface.
-	    	 query = QueryFactory.createQueryService("0.1");
+	    	 query = QueryFactory.createQueryService("1.0");
 	  	 }
 	     XMLStreamReader responseReader = null;
 	     if(query != null) {
 	    	 
+	    	 //Ok get the local name from the root element of the soap request
+	    	 //it should match the method name I want to call.
 	    	 String interfaceName = inputDoc.getDocumentElement().getLocalName().intern();
+	    	 //since this service will be used a lot, supposedly .intern() can be quicker
+	    	 //than .equals() so lets try it out.
+	    	 //each method should return a XMLStreamReader that is streamed back to the client.
 	    	 if(interfaceName == "Search".intern()) {
 	    		 responseReader = query.Search(inputDoc);	    		 
 	    	 }else if(interfaceName == "XQuerySearch".intern()) {

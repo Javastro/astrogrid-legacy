@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.IOException;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -48,8 +49,8 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
     /**
      * Logging variable for writing information to the logs
      */
-   private static final Log log = 
-                               LogFactory.getLog(RegistryHarvestAdmin.class);
+	  private static final Log log =
+          LogFactory.getLog(RegistryHarvestAdmin.class);
    
    /**
     * Default constructor which currently does not set or do anything.
@@ -57,6 +58,47 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
    public RegistryHarvestAdmin() {
        super(null,null,null);
    }
+   
+   /**
+    * Method: addStatNewDate
+    * Description: Adds Date information to the status document for a 
+    * XML Resource.  The name of the status document is based around the 
+    * identifier (normally identifier for a Registry type) since this method is
+    * called from Harvesting.  The Date stored is used in the next harvest cycle to
+    * call a Registry based on a 'from' date to get recently changed Resources.
+    * 
+    * @param identifier - unique string for the XML Resource, since this is called from the 
+    * harvest mechanism it is typically the identifier for a Registry type.
+    * @param versionNumber - XML Resource version number (0.10 or 1.0).  Used for determining the
+    * collection/table to store the document in the database e.g. statv{versionNumber}
+    */
+   public void addStatResourceHarvestDate(String identifier, String versionNumber, Date updateResDate) throws RegistryException {
+   	   log.debug("begin addStatNewDate identifier = " + identifier + " version = " + versionNumber);
+       Document statDoc = getStatus(identifier, versionNumber);
+       if(statDoc != null) {
+       	   log.debug("statDoc not null add Date elements");
+           DateFormat shortDT = DateFormat.getDateTimeInstance();
+           NodeList nl = statDoc.getElementsByTagNameNS("*","MostRecentResourceUpdateMillis");
+           if(nl.getLength() > 0) {
+               nl.item(0).getFirstChild().setNodeValue(String.valueOf(updateResDate.getTime()));
+           }else {
+               Element elem2 = statDoc.createElement("MostRecentResourceUpdateMillis");
+               elem2.appendChild(statDoc.createTextNode(String.valueOf(updateResDate.getTime())));
+               statDoc.getDocumentElement().appendChild(elem2);
+           }
+           nl = statDoc.getElementsByTagNameNS("*","MostRecentResourceUpdate");
+           if(nl.getLength() > 0) {
+               nl.item(0).getFirstChild().setNodeValue(shortDT.format(updateResDate));
+           }else {
+               Element elem = statDoc.createElement("MostRecentResourceUpdate");
+               elem.appendChild(statDoc.createTextNode(shortDT.format(updateResDate)));
+               statDoc.getDocumentElement().appendChild(elem);
+           }
+           log.debug("storeStat");
+           storeStat(identifier, versionNumber, statDoc);
+       }
+       log.debug("end addStatNewDate");
+   }   
 
    /**
     * Method: addStatNewDate
@@ -317,7 +359,7 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
      * @param verisonNumber the version of the registry to be updated, this discovers the colleciton/table name
      * that is being updated.
      */
-   public String harvestingUpdate(Document update, String versionNumber) throws XMLDBException, InvalidStorageNodeException, IOException {
+   public String harvestingUpdate(Document update, String identifier, String versionNumber) throws XMLDBException, InvalidStorageNodeException, IOException {
        log.debug("start updateNoCheck");
        Node root = null;
        String ident = null;
@@ -326,8 +368,19 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        AuthorityList tempAuthorityListKey = null;
        AuthorityList tempAuthorityListVal = null;
        boolean validateResourceXML = true;
+       String updateFormat = "yyyy-MM-dd'T'HH:mm:ss";
        String returnString = "List below of Invalid Resources not updated and then a list of Updated Resources\r\n";
        XSLHelper xs = new XSLHelper();
+       
+       SimpleDateFormat sdf = new SimpleDateFormat(updateFormat);
+       Date compareDate = null;
+       try {
+    	   compareDate = sdf.parse("1980-01-01T00:00:00");
+       }catch(java.text.ParseException pe) {
+    	   pe.printStackTrace();
+       }
+       //Date updateDate = new Date();
+       //String updateDateString = sdf.format(updateDate);
        
        if(update == null) {
            throw new IOException("Error nothing to update 'null sent as Document'");
@@ -524,7 +577,9 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        //a little faster instead of open, store, close each individual resource.
        //Now we can open, store all, close.
        Collection harvestColl = xdbRegistry.getCollection(collectionName,true);
+       Date updateRes = null;
        try {
+    
        	//loop through the resources.
        for(int i = 0;i < resourceNum;i++) {
           updateResource = true;
@@ -556,6 +611,16 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
                   if(typeAttribute != null) {
                       nodeVal = typeAttribute.getNodeValue();
                   }
+                  String updateString = currentResource.getAttribute("updated");
+                  try { 
+                	  updateRes = sdf.parse(updateString);                  
+                	  if(compareDate != null && updateRes != null && updateRes.after(compareDate)) {
+                		  compareDate = sdf.parse(updateString);
+                	  }
+                  }catch(java.text.ParseException pe) {
+                  	   pe.printStackTrace();
+                  }
+
                   log.debug(
                   "Checking xsi:type for a Registry: = " 
                   + nodeVal);
@@ -629,12 +694,26 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
                       
           }//else
        }//for
+       try {
+	       if(resourceNum > 0 && compareDate.before(sdf.parse("1982-01-01T00:00:00"))) {
+	    	   log.error("Error: No 'updated' dates were found on the Resources to set the Status of Last Harvest Date.");
+	    	   //log.er
+	       }else {
+	    	   addStatResourceHarvestDate(identifier, versionNumber, compareDate);    	   
+	       }
+       }catch(java.text.ParseException pe) {
+    	   pe.printStackTrace();
+       }catch(org.astrogrid.registry.RegistryException re) {
+    	   re.printStackTrace();
+       }
+       
        }finally {
        	//close the collection were done.
            xdbRegistry.closeCollection(harvestColl);
            //System.out.println("harvesting update took this long with remove= " + (System.currentTimeMillis() - begin));
        }
        log.debug("end updateNoCheck");
+       
        //return string should have comma seperated list of identifiers updated.       
        return returnString;
    }

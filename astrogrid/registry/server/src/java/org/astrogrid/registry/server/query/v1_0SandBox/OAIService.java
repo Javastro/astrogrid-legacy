@@ -1,4 +1,4 @@
-package org.astrogrid.registry.server.query.v0_1;
+package org.astrogrid.registry.server.query.v1_0SandBox;
 
 
 import org.astrogrid.registry.server.query.DefaultOAIService;
@@ -13,11 +13,11 @@ import org.astrogrid.registry.server.query.DefaultOAIService;
  *
  * @author Kevin Benson
  */
-public class OAIService extends DefaultOAIService implements org.astrogrid.registry.server.query.IOAIHarvestService {
+public class OAIService extends DefaultOAIService  implements org.astrogrid.registry.server.query.IOAIHarvestService  {
     
-    public static final String OAI_WSDL_NS = "http://www.ivoa.net/wsdl/RegistryHarvest/v0.1";
+    public static final String OAI_WSDL_NS = "http://www.ivoa.net/wsdl/RegistryHarvest/v1.0";
     
-    public static final String CONTRACT_VERSION = "0.1";    
+    public static final String CONTRACT_VERSION = "1.0";    
 
     public OAIService() {
         super(OAI_WSDL_NS, CONTRACT_VERSION);       

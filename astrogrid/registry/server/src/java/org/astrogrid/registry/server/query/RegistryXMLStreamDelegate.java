@@ -78,7 +78,8 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
 	    super();
 	  	this.resSet = resSet;
 	  	this.identOnly = identOnly;
-	  	//create a StreamReader for the xml string wrapper.  And since this is in the beginning set it as the current parent.	  	
+	  	//create a StreamReader for the xml string wrapper.  
+	  	//And since this is in the beginning set it as the current parent.	  	
 	  	wrapperStreamReader = STAXUtils.createXMLStreamReader(new StringReader(xmlWrapper));
 	  	setParent(wrapperStreamReader);
 	  }  
@@ -119,17 +120,21 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
     //okay resourceset size is 0 and  not on the wrapper(header/footer) reader.
     //so lets set it back to the wrapper reader and return an end_element.  This
     //should now put it is back on the end element for the footer area.
+    //Also means we are done, we go in this if statement then return the last
+    //END element event.
   	if(resSet.getSize() == 0 && !currentReaderisWrapper) {
   		setParent(wrapperStreamReader);
   		currentReaderisWrapper = true;
   		//we can return END_ELEMENT since that is where we left off for the footer area.
   		return wrapperStreamReader.END_ELEMENT;
   	}
+  	//get the next tag event.
   	current = super.next();
-  	//We are at an end element and nothing has been checked for
-  	//resourceSet yet.  So check if there are any and begin processing the
-  	//first resource after that hasNext()
-  	//will take over with the iteration.
+  	
+  	//The below if statement will only happen once then hasNext() will take over.
+  	//We are at an end element of the wrapper and nothing has been checked for
+  	//ResourceSet yet.  So check if there are any resources to stream back and begin processing the
+  	//first resource after that hasNext() will take over with the iteration.
   	if(current == wrapperStreamReader.END_ELEMENT && resSet.getSize() > 0) {
 	   //log.info("resset size = " + resSet.getSize() + " here is the string in next() and resources still left = " + getResourceContent(resSet.getResource((resSet.getSize() - 1)),identOnly));
   	   resXMLStreamReader = STAXUtils.createXMLStreamReader
@@ -141,9 +146,11 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
   	   //no longer on the wrapper elements.
   	   currentReaderisWrapper = false;
   	   //okay we should have our content in the stream reader
-  	   //remove the resource from the collection.
+  	   //remove the resource from the collection collection..
   	   resSet.removeResource((resSet.getSize() - 1));
-  	   //log.info("just removed some kind of resource size = " + resSet.getSize());
+  	   //call super.nextTag() because super.next() will return a START_DOCUMENT int/event
+  	   //and nextTag() will be a START_ELEMENT which is what we want an element.
+  	   
   	   return super.nextTag();
   	}
   	
@@ -171,11 +178,13 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
   	//check if we are processing xml in the ResourceSet.
   	try {
     if(resXMLStreamReader != null) {
-    	//okay were at the end of the document go to the next resource if there are any.
+    	//okay current is false so were at the end of the document/resource.
+    	//go to the next resource if there are any.
     	if(!current) {
     		if(resSet.getSize() > 0) {
+    		//close the current streamer and will open another below.
     	    resXMLStreamReader.close();
-    	    //log.info("hasNext() resset size = " + resSet.getSize() + " here is the string in hasNext() and resources still left = " + getResourceContent(resSet.getResource((resSet.getSize() - 1)), identOnly));
+
     	    //Make a StreamReader out of a Single Resource.
     	    //Calls getResourceContent in the ResultStreamer subclass in case there is 
     	    //anything special to be done to the Resource first.
@@ -189,19 +198,18 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
 	  	   //okay we should have our content in the stream reader
   		   //remove the resource from the collection.
   	   	   resSet.removeResource((resSet.getSize() - 1));
-  	  	   //log.info("just removed some kind of resource size = " + resSet.getSize());  	   	   
   	   	   return true;
   	   	   }else {
   	   	     //okay we went through some kind of resourceset and now done.
   	   	     //lets set the reader to null.  Return true.  The 
   	   	     //next() method will set it back to the footer part of the
   	   	     //wrapperelements.
-  	   		 //log.info("no more resources left time to set xmlstreamreader to null and return true in hasNext() because there is still the wrapper");
   	   	     resXMLStreamReader = null;
   	   	     return true;
   	   	   }
     	}else {
     	  //were not at the end of the document and in the Resource somewhere.
+    	  //so just keep going.
     	  return current;
     	}
     }//if
