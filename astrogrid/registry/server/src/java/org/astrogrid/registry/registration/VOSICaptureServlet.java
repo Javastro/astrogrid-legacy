@@ -45,7 +45,7 @@ public class VOSICaptureServlet extends RegistrarServlet {
     }
     String encodedIvorn = URLEncoder.encode(ivornString, "UTF-8");
     URL resourceUrl = new URL(this.getContextUri(request) +
-            "/viewResourceEntry.jsp?IVORN=" +
+            "/viewResourceEntry_body.jsp?IVORN=" +
             encodedIvorn);
     String xsiType = null;
     try {
@@ -115,7 +115,7 @@ public class VOSICaptureServlet extends RegistrarServlet {
     	URL transformUrl;
     	RegistryTransformer transformer;
     	  URL resourceUrl = new URL(this.getContextUri(request) +
-                  "/viewResourceEntry.jsp?IVORN=" +
+                  "/viewResourceEntry_body.jsp?IVORN=" +
                   encodedIvorn);
       if(vosiUri != null && vosiUri.trim().length() > 0) {
     	  System.out.println("transforming with GetCapabilities");

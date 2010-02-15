@@ -86,7 +86,7 @@ public class CapabilitiesServlet extends RegistrarServlet {
       URL transformUrl = this.getClass().getResource("/xsl/GetCapabilities.xsl");
       RegistryTransformer transformer = new RegistryTransformer(transformUrl);
       URL resourceUrl = new URL(this.getContextUri(request) +
-                                "/viewResourceEntry.jsp?IVORN=" +
+                                "/viewResourceEntry_body.jsp?IVORN=" +
                                 encodedIvorn);
       transformer.setTransformationSource(resourceUrl);
       transformer.setTransformationParameter("vosi-uri", vosiUri);

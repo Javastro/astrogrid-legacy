@@ -56,7 +56,7 @@ public class CoverageServlet extends RegistrarServlet {
       }
       String encodedIvorn = URLEncoder.encode(ivorn.toString(), "UTF-8");
       String resourceUri = this.getContextUri(request) +
-                           "/viewResourceEntry.jsp?IVORN=" +
+                           "/viewResourceEntry_body.jsp?IVORN=" +
                            encodedIvorn;
       
       // Generate the modification date in XSD format.
