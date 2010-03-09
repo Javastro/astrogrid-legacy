@@ -68,7 +68,7 @@
                   </xsl:choose>
                 </select>
               </td>
-              <td><a href="help/status.html">help</a></td>
+              <td><a href="../help/status.html">help</a></td>
             </tr>
             <tr>
               <td><strong>Title</strong></td>
@@ -77,7 +77,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="title"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/title.html">help</a></td>
+              <td><a href="../help/title.html">help</a></td>
             </tr>
             <tr>
               <td><strong>Publisher's name</strong></td>
@@ -86,7 +86,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/publisher"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/publisher.html">help</a></td>
+              <td><a href="../help/publisher.html">help</a></td>
             </tr>
             <tr>
               <td>Publisher's IVO identifier</td>
@@ -95,7 +95,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/publisher/@ivo-id"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/publisher.html">help</a></td>
+              <td><a href="../help/publisher.html">help</a></td>
             </tr>
             <tr>
               <td><strong>Creator's name</strong></td>
@@ -104,7 +104,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/creator/name"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/creator.html">help</a></td>
+              <td><a href="../help/creator.html">help</a></td>
             </tr>
             <tr>
               <td>Creator's IVO identifier</td>
@@ -113,7 +113,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/creator/name/@ivo-id"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/creator.html">help</a></td>
+              <td><a href="../help/creator.html">help</a></td>
             </tr>
             <tr>
               <td>URL of creator's logo</td>
@@ -122,7 +122,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/creator/logo"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/creator.html">help</a></td>
+              <td><a href="../help/creator.html">help</a></td>
             </tr>
             <tr>
               <td>Release-date of resource</td>
@@ -131,7 +131,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/date"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/date-and-version.html">help</a></td>
+              <td><a href="../help/date-and-version.html">help</a></td>
             </tr>
             <tr>
               <td>Version of resource</td>
@@ -140,7 +140,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/version"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/date-and-version.html">help</a></td>
+              <td><a href="../help/date-and-version.html">help</a></td>
             </tr>
             <tr>
               <td><strong>Name of contact person</strong></td>
@@ -149,7 +149,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/contact/name"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/contact.html">help</a></td>
+              <td><a href="../help/contact.html">help</a></td>
             </tr>
             <tr>
               <td>Postal address of contact person</td>
@@ -158,7 +158,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/contact.html"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/contact.html">help</a></td>
+              <td><a href="../help/contact.html">help</a></td>
             </tr>
             <tr>
               <td><strong>Email address of contact person</strong></td>
@@ -167,7 +167,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/contact/email"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/contact.html">help</a></td>
+              <td><a href="../help/contact.html">help</a></td>
             </tr>
             <tr>
               <td>Telephone number of contact person</td>
@@ -176,7 +176,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="curation/contact.html"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/curation/contact.html">help</a></td>
+              <td><a href="../help/contact.html">help</a></td>
             </tr>
             <tr>
               <td><strong>Keywords describing this resource</strong></td>
@@ -185,7 +185,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="content/subject"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/content/subject.html">help</a></td>
+              <td><a href="../help/subject.html">help</a></td>
             </tr>
             <tr>
               <td><strong>Text describing this resource</strong></td>
@@ -194,7 +194,7 @@
                   <xsl:value-of select="content/description"/>
                 </textarea>
               </td>
-              <td><a href="help/content/description.html">help</a></td>
+              <td><a href="../help/description.html">help</a></td>
             </tr>
             <tr>
               <td>Source of the resource content</td>
@@ -203,7 +203,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="content/source"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/content/source.html">help</a></td>
+              <td><a href="../help/source.html">help</a></td>
             </tr>
             <tr>
               <td><strong>URL for web page describing this resource</strong></td>
@@ -212,7 +212,7 @@
                   <xsl:attribute name="value"><xsl:value-of select="content/referenceURL"/></xsl:attribute>
                 </input>
               </td>
-              <td><a href="help/content/referenceURL.html">help</a></td>
+              <td><a href="../help/referenceURL.html">help</a></td>
             </tr>
             <tr>
               <td><strong>Type of the resource content</strong></td>
@@ -396,7 +396,7 @@
                   </xsl:choose>
                 </select>
               </td>
-              <td><a href="help/content/type.html">help</a></td>
+              <td><a href="../help/type.html">help</a></td>
             </tr>
             <tr>
               <td>Intended audience</td>
@@ -460,7 +460,7 @@
                   </xsl:choose>
                 </select>
               </td>
-              <td><a href="help/content/contentLevel.html">help</a></td>
+              <td><a href="../help/contentLevel.html">help</a></td>
             </tr>
            	<xsl:choose>
 				<xsl:when test="not($vosiURL)"> 
@@ -478,7 +478,7 @@
           </p>
         </form>
         <hr/>
-        <p>You may wish to open the <a href='../resourceHelp.jsp'>Resource Help page</a> in a separate window. It has help for all core and coverage information.</p>
+        <p>You may wish to open the Resource Help (see menu) in a separate window. It has help for all core and coverage information.</p>
         <p>
           Items in bold must have entries; others may be left blank and
           will not then appear in the registry entry.
