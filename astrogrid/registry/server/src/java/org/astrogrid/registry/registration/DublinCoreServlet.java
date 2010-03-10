@@ -48,7 +48,7 @@ public class DublinCoreServlet extends RegistrarServlet {
       RegistryTransformer transformer = 
           new RegistryTransformer(transformUrl, response.getWriter());
       URL resourceUrl = new URL(this.getContextUri(request) +
-                                "/viewResourceEntry_body.jsp?XML=true&IVORN=" +
+                                "/main/viewResourceEntry_body.jsp?XML=true&IVORN=" +
                                 encodedIvorn);
       transformer.setTransformationSource(resourceUrl);
       if(vosiURL != null && vosiURL.trim().length() > 0) {
@@ -80,7 +80,7 @@ public class DublinCoreServlet extends RegistrarServlet {
       URI ivorn = new URI(request.getParameter("IVORN"));
       String encodedIvorn = URLEncoder.encode(ivorn.toString(), "UTF-8");
       String resourceUri = this.getContextUri(request) +
-                           "/viewResourceEntry_body.jsp?IVORN=" +
+                           "/main/viewResourceEntry_body.jsp?IVORN=" +
                            encodedIvorn;
       
       // Generate the modification date in XSD format.
@@ -90,7 +90,7 @@ public class DublinCoreServlet extends RegistrarServlet {
       URL transformUrl = this.getClass().getResource("/xsl/DublinCore.xsl");
       RegistryTransformer transformer = new RegistryTransformer(transformUrl);
       URL resourceUrl = new URL(this.getContextUri(request) +
-                                "/viewResourceEntry_body.jsp?IVORN=" +
+                                "/main/viewResourceEntry_body.jsp?IVORN=" +
                                 encodedIvorn);
       transformer.setTransformationSource(resourceUrl);
       transformer.setTransformationParameter("updated", updated);
@@ -129,7 +129,7 @@ public class DublinCoreServlet extends RegistrarServlet {
       }
       // Redirect the browser to a summary view of this resource.
       String redirectUri = this.getContextUri(request) + 
-                         "/browse.jsp?IvornPart=" + 
+                         "/main/browse.jsp?IvornPart=" + 
                          encodedIvorn;
       response.setStatus(response.SC_SEE_OTHER);
       response.setHeader("Location", redirectUri);     

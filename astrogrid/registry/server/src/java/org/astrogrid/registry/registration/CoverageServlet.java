@@ -56,7 +56,7 @@ public class CoverageServlet extends RegistrarServlet {
       }
       String encodedIvorn = URLEncoder.encode(ivorn.toString(), "UTF-8");
       String resourceUri = this.getContextUri(request) +
-                           "/viewResourceEntry_body.jsp?IVORN=" +
+                           "/main/viewResourceEntry_body.jsp?IVORN=" +
                            encodedIvorn;
       
       // Generate the modification date in XSD format.
@@ -93,7 +93,7 @@ public class CoverageServlet extends RegistrarServlet {
       
       // Redirect the browser to a summary view of this resource.
       String redirectUri = this.getContextUri(request) + 
-                         "/browse.jsp?IvornPart=" + 
+                         "/main/browse.jsp?IvornPart=" + 
                          encodedIvorn;
       response.setStatus(response.SC_SEE_OTHER);
       response.setHeader("Location", redirectUri);     

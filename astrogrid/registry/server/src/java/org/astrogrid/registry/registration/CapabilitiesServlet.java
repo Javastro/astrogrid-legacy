@@ -86,7 +86,7 @@ public class CapabilitiesServlet extends RegistrarServlet {
       URL transformUrl = this.getClass().getResource("/xsl/GetCapabilities.xsl");
       RegistryTransformer transformer = new RegistryTransformer(transformUrl);
       URL resourceUrl = new URL(this.getContextUri(request) +
-                                "/viewResourceEntry_body.jsp?IVORN=" +
+                                "/main/viewResourceEntry_body.jsp?IVORN=" +
                                 encodedIvorn);
       transformer.setTransformationSource(resourceUrl);
       transformer.setTransformationParameter("vosi-uri", vosiUri);
@@ -103,7 +103,7 @@ public class CapabilitiesServlet extends RegistrarServlet {
     
     // On successful registration, send the client to a summary of the resource.
     String redirectUri = this.getContextUri(request) + 
-                         "/browse.jsp?IvornPart=" + 
+                         "/main/browse.jsp?IvornPart=" + 
                          encodedIvorn;
     response.setStatus(response.SC_SEE_OTHER);
     response.setHeader("Location", redirectUri);    
