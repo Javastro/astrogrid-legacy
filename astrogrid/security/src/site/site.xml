@@ -13,7 +13,8 @@
       <item name="Delegation protocol" href="delegation.html"/>
       <item name="MyProxy support" href="myproxy-sign-on.html"/>
       <item name="Release notes" href="release-notes.html"/>
-      <item name="Download" href="http://www.astrogrid.org/maven2/org/astrogrid/astrogrid-security/${project.version}/astrogrid-security-${project.version}.jar"/>
+      <item name="Download binary" href="http://www.astrogrid.org/maven2/org/astrogrid/astrogrid-security/${project.version}/astrogrid-security-${project.version}.jar"/>
+      <item name="Download sources" href="http://www.astrogrid.org/maven2/org/astrogrid/astrogrid-security/${project.version}/astrogrid-security-${project.version}-sources.jar"/>
     </menu>
     <menu ref="reports"/>
   </body>
