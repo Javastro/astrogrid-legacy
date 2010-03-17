@@ -1,13 +1,12 @@
-package org.astrogrid.security.rfc3820.tomcat;
+package org.astrogrid.security.rfc3820.tomcat6;
 
 import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.X509TrustManager;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.security.rfc3820.CertificateChainValidator;
+import org.apache.juli.logging.Log;
+import org.apache.juli.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
@@ -23,7 +22,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  */
 public class RFC3820TrustManager implements X509TrustManager {
   
-  static Log log = LogFactory.getLog(RFC3820Implementation.class);
+  static Log log = LogFactory.getLog(RFC3820TrustManager.class);
   
   /**
    * The validator for the certificate path.
@@ -40,12 +39,18 @@ public class RFC3820TrustManager implements X509TrustManager {
    * Constructs a RFC3820TrustManager.
    */
   public RFC3820TrustManager(X509Certificate[] anchors) {
+    log.info("Number of trust anchors: " + anchors.length);
+    for (X509Certificate x : anchors) {
+      log.info("Trust anchor: " + x.getSubjectX500Principal());
+    }
+    this.anchors = anchors;
     try {
       if (Security.getProvider("BC") == null) {
         Security.addProvider(new BouncyCastleProvider());
       }
       this.validator = new CertificateChainValidator(anchors);
     } catch (GeneralSecurityException ex) {
+      log.error("Can't initialize the BC provider: " + ex);
       throw new RuntimeException(ex);
     }
   }

@@ -15,45 +15,59 @@
  *  limitations under the License.
  */
 
-package org.astrogrid.security.rfc3820.tomcat;
+package org.astrogrid.security.rfc3820.tomcat6;
 
 import java.net.Socket;
-import javax.net.ssl.SSLSocket;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.apache.tomcat.util.net.SSLImplementation;
 import org.apache.tomcat.util.net.SSLSupport;
 import org.apache.tomcat.util.net.ServerSocketFactory;
+import javax.net.ssl.SSLSession;
+import org.apache.juli.logging.Log;
+import org.apache.juli.logging.LogFactory;
 
 /**
- * An implementation of SSL for Tomcat that supports RFC3820.
- * This is copied from the JSSE-based SSL implementation supplied with Tomcat 
- * and does, indeed, use the JSSE for most functions. The socket factory is
- * specific to this implementation in order to inject the RFC3820 support.
- * This class is simply a facade that ensures the use of the correct
- * socket factory.
+ * JSSEImplementation:
+
+   Concrete implementation class for JSSE
  *
- * @author Guy Rixon
-*/     
-public class RFC3820Implementation extends SSLImplementation
+ * This class is copied from the Tomcat-6.0.26 code-base.
+
+   @author EKR
+*/
+        
+public class JSSEImplementation extends SSLImplementation
 {
-    static Log logger = LogFactory.getLog(RFC3820Implementation.class);
-    
-    public RFC3820Implementation() throws ClassNotFoundException {
-      super();
+    static final String SSLSocketClass = "javax.net.ssl.SSLSocket";
+
+    static Log logger =  LogFactory.getLog(JSSEImplementation.class);
+
+    private JSSEFactory factory = null;
+
+    public JSSEImplementation() throws ClassNotFoundException {
+        // Check to see if JSSE is floating around somewhere
+        Class.forName(SSLSocketClass);
+        factory = new JSSEFactory();
     }
 
+
     public String getImplementationName(){
-      return "Astrogrid-RFC3820";
+      return "AstroGrid-JSSE-RFC3820";
     }
       
     public ServerSocketFactory getServerSocketFactory()  {
-        ServerSocketFactory ssf = new RFC3820SocketFactory();
+        ServerSocketFactory ssf = factory.getSocketFactory();
         return ssf;
     } 
 
     public SSLSupport getSSLSupport(Socket s) {
-        SSLSupport ssls = new JSSESupport((SSLSocket)s);
+        SSLSupport ssls = factory.getSSLSupport(s);
         return ssls;
     }
+
+    public SSLSupport getSSLSupport(SSLSession session) {
+        SSLSupport ssls = factory.getSSLSupport(session);
+        return ssls;
+    }
+
 }

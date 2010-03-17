@@ -1,26 +1,42 @@
-package org.astrogrid.security.rfc3820.tomcat;
+package org.astrogrid.security.rfc3820.tomcat5;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.cert.Certificate;
 import java.security.KeyStore;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
- * JUnit tests for RFC3820TrustManager.
+ * JUnit-4 tests for RFC3820TrustManager.
  *
  * @author Guy Rixon
  */
-public class RFC3820TrustManagerTest extends TestCase {
-  
+public class RFC3820TrustManagerTest {
+
+  @Test
   public void testGoodChain() throws Exception {
     RFC3820TrustManager sut 
         = new RFC3820TrustManager(this.loadAnchors());
+
+    // Check that it accepts an EEC signed by the given CA.
     sut.checkClientTrusted(this.loadClientChain(), "foo");
+
+
+    // Check that it doesn't forget the anchors. See BZ2991.
+    assertArrayEquals(loadAnchors(), sut.getAcceptedIssuers());
   }
+
+  @Test(expected=CertificateException.class)
+  public void testCheckServerTrusted() throws Exception {
+    RFC3820TrustManager sut
+        = new RFC3820TrustManager(this.loadAnchors());
+    sut.checkServerTrusted(loadClientChain(), null);
+  }
+
   
   private X509Certificate[] loadClientChain() throws Exception {
     KeyStore store = KeyStore.getInstance("JKS");

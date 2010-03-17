@@ -2,24 +2,91 @@
 
 <document>
 
-  <title>Release notes for security facade</title>
-  
+  <title>Release notes for security-facade library</title>
+
   <body>
-  	
-    <section name="Release notes for security facade">
-      <ul>
-        <li><a href="release-notes-2009.1.html">Version 2009.1</a></li>
-        <li><a href="release-notes-2008.2.01.html">Version 2008.2.01</a></li>
-        <li><a href="release-notes-2008.2.html">Version 2008.2</a></li>
-        <li><a href="release-notes-2008.2.a06.html">Version 2008.2.a06</a></li>
-        <li><a href="release-notes-2008.2.a05.html">Version 2008.2.a05</a></li>
-        <li><a href="release-notes-2008.2.a04.html">Version 2008.2.a04</a></li>
-        <li><a href="release-notes-2008.2.a03.html">Version 2008.2.a03</a></li>
-        <li><a href="release-notes-2008.2.a02.html">Version 2008.2.a02</a></li>
-        <li><a href="release-notes-2008.2.a01.html">Version 2008.2.a01</a></li>
-      </ul>
+
+    <section name="Release notes for the security-facade library">
+
+      <p>
+        V2010.1 fixes bugs in the implementation HTTPS for Apache Tomcat. If
+        you plan to use this implementation with Java 6, or with Tomcat 6,
+        or both, then you need this upgrade.
+      </p>
+      <p>
+        V2009.1 includes one new feature and some important bug-fixes.
+        Application programmers should upgrade from the v2008.2 series
+        as soon as possible.
+      </p>
+
+      <subsection name="Fixed: BZ2991: SSL support for Tomcat">
+        <p><em>Since v2010.1.</em></p>
+        <p>
+          The library has long included an SSL implementation for Apache Tomcat.
+          The implementation in library versions up to and including 2009.1 is
+          compatible with Java 5 and Tomcat 5.5, but incompatible with both
+          Java 6 and Tomcat 6.0. When used with Tomcat 6.0, the old
+          implementation crashes Tomcat's HTTPS connector on start-up (a "class
+          not found" exception is logged). When used with Tomcat 5.5 and Java 6,
+          it causes an attempts to authenticate to fail silently (nothing is
+          logged).
+        </p>
+        <p>
+          V2010.1 has a new implementation of SSL based on code copied from
+          Tomcat 6.0.26. This works with both Tomcat 5.5 and Tomcat 6.0, and
+          with Java 6. The old implementation is withdrawn and its classes are
+          no longer included in the library.
+        </p>
+        <p>
+          When switching to the new version of the security library, you will
+          need to change your Tomcat configuration slightly. Please check the
+          <a href="https-authentication.html">HTTPS instructions</a>.
+        </p>
+      </subsection>
+
+      <subsection name="Preliminary support for MyProxy">
+        <p><em>Since v2009.1.</em></p>
+        <p>
+          It is now possible to sign on using a MyProxy service instead of
+          a community accounts service. This is a preliminary release of this
+          feature, lightly tested, and may not work in all circumstances.
+          Please see the <a href="myproxy-sign-on.html">MyProxy</a> page
+          for details.
+        </p>
+      </subsection>
+
+      <subsection name="Fixed: problems with multiple copies of credentials">
+        <p><em>Since v2009.1.</em></p>
+        <p>
+          The facade API treats certain kinds of credential and principal
+          as singletons: a signed-on user has zero or one private key,
+          certificate chain, etc.
+          In all versions before the 2009.1 series, the security-facade
+          library failed to enforce this when security items are added to
+          a <i>SecurityGuard</i>. It accepted multiple copies of each kind
+          of item and returned a random selection from the set when asked
+          to return a singleton. This is fixed in 2009.1. Now, each subsequent
+          input of a security item overwrites the previous item of that kind.
+        </p>
+      </subsection>
+
+      <subsection name="Fixed: race conditions in credential delegation">
+        <p><em>Since v2009.1.</em></p>
+        <p>
+          In all versions before the 2009.1 series, there is a race condition
+          in the implementation of the IVOA credential-delegation protocol.
+          Each request to the <i>DelegationServlet</i> to start a delegation
+          created a new key-pair for the given identity, over-writing the
+          previous key-pair. Because the delegation protocol is not atomic,
+          there was a race condition between multiple clients and the service
+          extracting the delegation credentials such that the latter service
+          could extract a certificate chain and private key that did not match.
+          This has been fixed in 2009.1 by making the key pair immutable after
+          the first delegation is started.
+        </p>
+      </subsection>
     </section>
-  
+
   </body>
-  
-</document>
+
+ </document>

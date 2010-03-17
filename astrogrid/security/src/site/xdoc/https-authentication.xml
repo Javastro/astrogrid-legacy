@@ -117,27 +117,34 @@ sg.loadHttpsAuthentication(request);
 
    <subsection name="For Tomcat">
      <p>
-       The security-facade package <i>org.astrogrid.security.rfc3820.tomcat</i>
-       contains an implementation of SSL that supports RFC3820 (proxy certificates).
+       The security-facade packages <i>org.astrogrid.security.rfc3820.tomcat5</i>
+       and <i>org.astrogrid.security.rfc3820.tomcat6</i> contain
+       an implementation of SSL that supports RFC3820 (proxy certificates).
        This can be added to a Tomcat installation to bring that installation
-       up to IVOA standards.
+       up to IVOA standards. The former package works with Tomcat 5.5 and the
+       latter with Tomcat 6.0.
      </p>
      <p>
        The SSL code is an intimate part of the Tomcat server and the jars must
-       be added to the directory <i>server/lib</i> within the Tomcat
-       installation. Simply including the jars with a web-application doesn't work.
+       be added to the Tomcat installation itself. For Tomcat 5.5, put the
+       jars in Tomcat's <i>server/lib</i> directory. For Tomcat 6.0, put them in
+       Tomcat's <i>lib directory</i>.
+       Simply including the jars within a web-application doesn't work.
      </p>
      <p>
        The following jars must be added.
      </p>
      <ul>
        <li>astrogrid-security</li>
-       <li>cog-jglobus</li>
-       <li>cog-cryptix</li>
-       <li>cog-cryptix32</li>
-       <li>cog-cryptix-asn1</li>
        <li>Bouncy Castle JCE "provider"</li>
      </ul>
+     <p>
+       Previous versions of the security library needed Globus and Crytix jars.
+       Starting with v2010.1, these are no longer needed for the SSL
+       implementation and should be removed from Tomcat. (Classes in those jars
+       are still needed by some other parts of the security libary and the jars
+       should not be removed from web applications.)
+     </p>
      <p>
                     Operation of HTTPS with client authentication requires two
                     sets of cryptographic credentials: a private key and

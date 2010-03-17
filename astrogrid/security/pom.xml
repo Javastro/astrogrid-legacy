@@ -8,12 +8,14 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <packaging>jar</packaging>
-  <version>2009.1</version>
+  <version>2010.1</version>
+
   <parent>
     <groupId>org.astrogrid</groupId>
     <artifactId>astrogrid-base</artifactId>
     <version>2009.1</version>
   </parent>
+
   <properties>
     <astrogrid_name>security</astrogrid_name>
   </properties>
@@ -21,7 +23,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>2007.2.01</version>
+      <version>2009.1</version>
     </dependency>
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
@@ -63,10 +65,9 @@
       </dependency>
 
       <dependency>
-        <groupId>bouncycastle</groupId>
-        <type>jar</type>
+        <groupId>org.bouncycastle</groupId>
         <artifactId>bcprov-jdk15</artifactId>
-        <version>140</version>
+        <version>1.45</version>
       </dependency>
 
       <dependency>
@@ -76,12 +77,12 @@
         <type>jar</type>
       </dependency>
 
-      <dependency>
-        <groupId>tomcat</groupId>
-        <artifactId>tomcat-util</artifactId>
-        <version>5.5.20</version>
-        <scope>provided</scope>
-      </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>coyote</artifactId>
+      <version>6.0.26</version>
+      <scope>provided</scope>
+    </dependency>
 
       <dependency>
         <groupId>org.astrogrid</groupId>
@@ -98,7 +99,7 @@
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-contracts</artifactId>
-        <version>2008.2</version>
+        <version>2009.1</version>
         <type>jar</type>
       </dependency>
 
@@ -116,9 +117,9 @@
       </dependency>
 
       <dependency>
-        <groupId>servletapi</groupId>
-        <artifactId>servletapi</artifactId>
-        <version>2.4</version>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
         <scope>provided</scope>
       </dependency>
 

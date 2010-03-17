@@ -1,10 +1,16 @@
 <body>
 <p>
-Certficate-chain handling according to RFC3820. This package handles certificate
+Certificate-chain handling according to RFC3820. This package handles certificate
 chains that may include proxy credentials.
 </p>
 <p>
-The classes in this package support the security facade but are not part of it.
-They should not be used directly by applications.
+The classes in this package support the security facade but are not part of the
+public API. They should not be used directly by applications.
+</p>
+<p>
+  The sub-packages <i>tomcat5</i> and <i>tomcat6</i> contain RFC3820-enabled
+  implementations of SSL for Apache Tomcat, versions 5.5 and 6.0 respectively.
+  Due to structural issues in Tomcat, the sub-packages replicate classes from
+  this current package.
 </p>
 </body>
