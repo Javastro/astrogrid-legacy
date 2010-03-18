@@ -97,7 +97,7 @@
             if (authority == null || authority.trim().length() <= 0) {
                 out.write("<td>null?!</td>");
             } else {
-                out.write("<td><a href='../browse.jsp?IvornPart="+authority+"'>"+authority+"</a></td>\n");
+                out.write("<td><a href='../main/browse.jsp?IvornPart="+authority+"'>"+authority+"</a></td>\n");
             }
             if (resource == null || resource.trim().length() <= 0) {
                 out.write("<td>null?!</td>");
@@ -107,8 +107,8 @@
             //last update date
             out.write("<td>"+setFG+resourceElement.getAttribute("updated")+endFG+"</td>");
             out.write("<td>");
-            out.write("<a href='../viewResourceEntry.jsp?IVORN="+ivoStr+"'>View</a>, ");
-            out.write("<a href='../viewResourceEntry_body.jsp?XML=true&amp;IVORN="+ivoStr+"'>XML</a>, ");
+            out.write("<a href='../main/viewResourceEntry.jsp?IVORN="+ivoStr+"'>View</a>, ");
+            out.write("<a href='../main/viewResourceEntry_body.jsp?XML=true&amp;IVORN="+ivoStr+"'>XML</a>, ");
             out.write(" <a href='harvestStatus.jsp?IVORN="+ivoStr+"'>Status</a>");
             out.write("</td>");                        
             out.write("</tr>\n");

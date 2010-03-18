@@ -28,7 +28,7 @@ String endpoint = request.getScheme() +
                   ":" + 
                   new Integer(request.getLocalPort()).toString() +
                   environment.getContextPath() +
-                  "/environment-tomcat.jsp";
+                  "/main/environment-tomcat.jsp";
 org.astrogrid.io.Piper.pipe((new URL(endpoint)).openStream(),new java.io.FileOutputStream(contextFile));
 %>
 <div id='bodyColumn'>

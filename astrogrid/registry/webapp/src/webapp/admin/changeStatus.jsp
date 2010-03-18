@@ -144,8 +144,8 @@ just the custom or selected entries below.<br>
             //last update date
             out.write("<td>"+setFG+resourceElement.getAttribute("updated")+endFG+"</td>");
             out.write("<td>");
-            out.write("<a href='../viewResourceEntry.jsp?IVORN="+java.net.URLEncoder.encode(("ivo://" + ivoStr),"iso-8859-1")+"'>View,</a>  ");
-            out.write("<a href='../viewResourceEntry_body.jsp?XML=true&amp;IVORN="+java.net.URLEncoder.encode(("ivo://" + ivoStr),"iso-8859-1")+"'>XML</a>, ");
+            out.write("<a href='../main/viewResourceEntry.jsp?IVORN="+java.net.URLEncoder.encode(("ivo://" + ivoStr),"iso-8859-1")+"'>View,</a>  ");
+            out.write("<a href='../main/viewResourceEntry_body.jsp?XML=true&amp;IVORN="+java.net.URLEncoder.encode(("ivo://" + ivoStr),"iso-8859-1")+"'>XML</a>, ");
             out.write(" <a href='harvestStatus.jsp?IVORN="+java.net.URLEncoder.encode(("ivo://" + ivoStr),"iso-8859-1")+"'>Status</a>"
 );
             out.write("<select name='status_" + ivoStr + "'>");
