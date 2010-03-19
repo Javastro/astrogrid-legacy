@@ -44,7 +44,7 @@
             </select>
             /
             <input type="text" name="resourceKey" size="32">
-            (<a href="help/naming.jsp">help</a>)
+            (<a href="../help/naming.jsp">help</a>)
           </p>
           <p>This entry describes:</p>
           <dl>

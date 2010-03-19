@@ -32,11 +32,11 @@
                    request.getParameter("appResource").equals("true")) { %>
               <td>URL for getting application data</td>
               <td><input type="text" name="VOSI_AppData" size="48"/></td>
-              <td><a href="help/capabilities.html">help</a></td>                
+              <td><a href="../help/capabilities.html">help</a></td>                
               <% } else { %>
               <td>URL for getting service capabilities.</td>
               <td><input type="text" name="VOSI_Capabilities" size="48"/></td>
-              <td><a href="help/capabilities.html">help</a></td>
+              <td><a href="../help/capabilities.html">help</a></td>
               <% } %>
             </tr>
           </table>
