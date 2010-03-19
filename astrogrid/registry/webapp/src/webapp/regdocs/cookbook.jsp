@@ -108,7 +108,7 @@ Most common install of the registry has an XML database named
 eXist installed inside the webapp and could
 potentially be dangerous when uninstalling or upgrading the
 registry may lose the data requiring a restore.  
-See <a href='regdocs/eXist_reference.jsp'>eXist Reference</a>
+See <a href='eXist_reference.jsp'>eXist Reference</a>
 on how to move the internal database out. 
 <br>
 <br>
