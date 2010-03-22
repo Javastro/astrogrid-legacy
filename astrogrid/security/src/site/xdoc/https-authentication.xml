@@ -245,7 +245,7 @@ sg.loadHttpsAuthentication(request);
                   The <i>SSLImplementation</i> attribute names the class
                   that introduces the SSL implementation. If this attribute
                   is ommited (or misspelt!) then Tomcat defaults silently to
-                  its native implemenation.
+                  its native implementation.
                 </p>
                 <p>
                   The other important attributes work as follows.
