@@ -215,15 +215,6 @@ sg.loadHttpsAuthentication(request);
      scheme="https" secure="true" clientAuth="true" sslProtocol="TLS"
      keystoreFile="/home/agrid/ag01.jks"
      truststoreFile="/home/agrid/ag01.jks"
-     SSLImplementation="org.astrogrid.security.rfc3820.tomcat.RFC3820Implementation"/&gt;
-                </pre>
-                <pre>
-     &lt;Connector port="8443"
-     acceptCount="100" connectionTimeout="20000" disableUploadTimeout="true"
-     maxSpareThreads="75" maxThreads="150" minSpareThreads="25"
-     scheme="https" secure="true" clientAuth="true" sslProtocol="TLS"
-     keystoreFile="/home/agrid/ag01.jks"
-     truststoreFile="/home/agrid/ag01.jks"
      SSLImplementation="org.astrogrid.security.rfc3820.tomcat5.JSSEImplementation"/&gt;
                 </pre>
                 <p>
