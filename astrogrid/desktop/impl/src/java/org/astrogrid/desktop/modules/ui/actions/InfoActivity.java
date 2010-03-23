@@ -3,16 +3,14 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
-import java.util.Iterator;
 
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 
-import org.apache.commons.collections.Bag;
-import org.apache.commons.collections.bag.TreeBag;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
+import org.astrogrid.desktop.modules.system.Tuple;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageTableFormat;
@@ -46,7 +44,9 @@ public InfoActivity() {
 
 private final JTextArea typeField;
 
-private final Bag types = new TreeBag();
+private final ResourceSummarizer summarizer = new ResourceSummarizer();
+
+
 
 	@Override
     public void noneSelected() {
@@ -57,9 +57,9 @@ private final Bag types = new TreeBag();
 	@Override
     public void manySelected(final FileObjectView[] l) {
 		typeField.setVisible(true);
-		types.clear();
-		for (int i = 0; i < l.length; i++) {
-				    types.add(StorageTableFormat.findBestContentType(l[i]));
+		summarizer.clear();
+		for (final FileObjectView v: l) {
+		    summarizer.add(v);
 		}
 		fmtResult();		
 	}
@@ -67,19 +67,17 @@ private final Bag types = new TreeBag();
 	@Override
     public void someSelected(final Resource[] l) {
 		typeField.setVisible(true);
-		types.clear();
-		for (int i = 0; i < l.length; i++) {
-				types.add(PrettierResourceFormatter.formatResourceType(l[i]));
+		summarizer.clear();
+		for (final Resource r: l) {
+		    summarizer.add(r);
 		}
 		fmtResult();		
 	}
 
 	private void fmtResult() {
 		typeField.setText("Selected:");
-		for (final Iterator i = types.uniqueSet().iterator(); i.hasNext();) {
-			final String t = (String) i.next();
-			final int count = types.getCount(t);
-			typeField.append("\n  " + count + " " + t);
+		for ( final Tuple<Integer, String> s : summarizer) {
+	          typeField.append("\n  " + s.fst() + " " + s.snd());
 		}
 	}
 

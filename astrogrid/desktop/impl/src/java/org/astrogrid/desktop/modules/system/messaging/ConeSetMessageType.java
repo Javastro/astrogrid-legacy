@@ -15,7 +15,8 @@ public class ConeSetMessageType extends TypedResourceSetMessageType {
     public static final ConeSetMessageType instance = new ConeSetMessageType();
     
     @Override
-    protected final String suffix() {
+    public
+    final String suffix() {
         return ".cone";
     }
     

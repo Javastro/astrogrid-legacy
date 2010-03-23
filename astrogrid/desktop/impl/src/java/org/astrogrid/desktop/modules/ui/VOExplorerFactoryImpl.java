@@ -12,16 +12,26 @@ import java.util.Set;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.system.messaging.AbstractMessageSender;
 import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageSender;
 import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageType;
+import org.astrogrid.desktop.modules.system.messaging.CeaAdqlSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.CeaSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.ConeSetMessageType;
 import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.system.messaging.MessageSender;
 import org.astrogrid.desktop.modules.system.messaging.MessageType;
 import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageSender;
 import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.SiapSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.SsapSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.StapSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.TapSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.TypedResourceSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.VospaceSetMessageType;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 import org.astrogrid.samp.Response;
 
@@ -42,6 +52,14 @@ public class VOExplorerFactoryImpl  implements VOExplorerFactoryInternal {
     static {
         final Set<MessageType<?>> m = new HashSet();
         m.add(ResourceSetMessageType.instance);
+        m.add(ConeSetMessageType.instance);
+        m.add(SiapSetMessageType.instance);
+        m.add(SsapSetMessageType.instance);
+        m.add(TapSetMessageType.instance);
+        m.add(StapSetMessageType.instance);
+        m.add(VospaceSetMessageType.instance);
+        m.add(CeaSetMessageType.instance);
+        m.add(CeaAdqlSetMessageType.instance);
         m.add(BibcodeMessageType.instance);
         myMessages = Collections.unmodifiableSet(m);
     }
@@ -99,8 +117,8 @@ public class VOExplorerFactoryImpl  implements VOExplorerFactoryInternal {
 
     public <S extends MessageSender> S createMessageSender(final MessageType<S> type)
             throws UnsupportedOperationException {
-        if (type instanceof ResourceSetMessageType) {
-            return (S) new MyResourceConsumer();
+        if (type instanceof ResourceSetMessageType) { // and all it's subtypes.
+            return (S) new MyResourceConsumer((ResourceSetMessageType) type);
         } else if (type instanceof BibcodeMessageType) {
             return (S) new MyBibcodeConsumer();
         
@@ -113,19 +131,29 @@ public class VOExplorerFactoryImpl  implements VOExplorerFactoryInternal {
     /** consumes a resourceset message */
     private class MyResourceConsumer extends AbstractMessageSender implements ResourceSetMessageSender {
 
-        public MyResourceConsumer() {
+        // the type of the received message. - indicates which subtype it is.
+        private final ResourceSetMessageType mtype;
+
+        public MyResourceConsumer(final ResourceSetMessageType mtype) {
             super(VOExplorerFactoryImpl.this);
+            this.mtype = mtype;
         }
 
         public Response sendResourceSet(final List<URI> resList, final String setName) {
           
             final String title;
+            String prefix = "Resources";
+            // if it's a subclass mtype, we can produce a nicer prefix..
+            if (mtype instanceof TypedResourceSetMessageType) {
+                final String s = ((TypedResourceSetMessageType)mtype).suffix().substring(1); // drop leading '.'
+                prefix = StringUtils.capitalize(s) + " " + prefix;
+            }
             if (setName != null) {
-                title = "Resource Set : " + setName;
+                title = prefix +  ": " + setName;
             } else if (getSource() != null) {
-                title = "Resources from " + getSource().getName();
+                title = prefix + " from " + getSource().getName();
             } else {
-                title = "Resource Set";
+                title = prefix;
             }
                        
             // got all the info we need. display the ui on the EDT.

@@ -10,7 +10,8 @@ package org.astrogrid.desktop.modules.system.messaging;
 public class StapSetMessageType extends TypedResourceSetMessageType {
     public static final StapSetMessageType instance = new StapSetMessageType();
     @Override
-    protected final String suffix() {
+    public
+    final String suffix() {
         return ".stap";
     }
 

@@ -8,7 +8,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.system.Tuple;
 import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.system.messaging.MessageType;
 import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageSender;
@@ -58,15 +60,51 @@ import org.astrogrid.samp.Response;
             {
                 setTransient(true);
             }
+            
+            private final ResourceSummarizer summarizer = new ResourceSummarizer();
+            
             @Override
             protected Response construct() throws Exception {
+
+                summarizer.clear();
+                // pack all the resource ids into a list.
                 final List<URI> us = new ArrayList(resources.size());
                 for (final Resource resource : resources) {
+                    summarizer.add(resource);
                     us.add(resource.getId());
                 }
+
                 final ResourceSetMessageSender sender = samp.createMessageSender(mtype);
-                return sender.sendResourceSet(us,null);             
+                return sender.sendResourceSet(us,mkTitle());             
             }
+            
+            /** construct a title for this message */
+            private String mkTitle() {
+                if (resources.size() == 1) { // pluck a field from the single resource.
+                    final Resource r =resources.get(0);
+                    if (StringUtils.isNotBlank(r.getShortName())) {
+                        return r.getShortName();
+                    } else {
+                        return r.getTitle();
+                    }
+                } else {
+                    // format a summary of the resources to use as a title for the message
+                    final StringBuilder title = new StringBuilder();
+                    boolean first = true;
+                    for (final Tuple<Integer,String> tuple : summarizer) {
+                        if (first) {
+                            first = false;
+                        } else {
+                            title.append(", ");
+                        }
+                        title.append(tuple.fst())
+                        .append(" ")
+                        .append(tuple.snd());
+                    }
+                    return title.toString();
+                }
+            }
+            
             @Override
             protected void doFinished(final Response response) {
                 if (response.isOK()) {    

@@ -12,7 +12,8 @@ public class SiapSetMessageType extends TypedResourceSetMessageType {
     public static final SiapSetMessageType instance = new SiapSetMessageType();
     
     @Override
-    protected final String suffix() {
+    public
+    final String suffix() {
         return ".siap";
     }
 

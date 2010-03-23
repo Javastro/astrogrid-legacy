@@ -10,7 +10,8 @@ package org.astrogrid.desktop.modules.system.messaging;
 public class TapSetMessageType extends TypedResourceSetMessageType {
     public static final TapSetMessageType instance = new TapSetMessageType();
     @Override
-    protected final String suffix() {
+    public
+    final String suffix() {
         return ".tap";
     }
 

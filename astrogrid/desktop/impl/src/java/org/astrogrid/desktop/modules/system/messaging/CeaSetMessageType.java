@@ -10,7 +10,8 @@ package org.astrogrid.desktop.modules.system.messaging;
 public class CeaSetMessageType extends TypedResourceSetMessageType {
     public static final CeaSetMessageType instance = new CeaSetMessageType();
     @Override
-    protected final String suffix() {
+    public
+    final String suffix() {
         return ".cea";
     }
 

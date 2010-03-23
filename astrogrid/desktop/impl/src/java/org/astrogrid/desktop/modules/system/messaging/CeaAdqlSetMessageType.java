@@ -10,7 +10,8 @@ package org.astrogrid.desktop.modules.system.messaging;
 public class CeaAdqlSetMessageType extends TypedResourceSetMessageType {
     public static final CeaAdqlSetMessageType instance = new CeaAdqlSetMessageType();
     @Override
-    protected final String suffix() {
+    public
+    final String suffix() {
         return ".cea-adql";
     }
 

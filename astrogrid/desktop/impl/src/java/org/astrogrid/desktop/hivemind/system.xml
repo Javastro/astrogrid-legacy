@@ -1092,7 +1092,7 @@ MAC SETUP
         <default symbol="interop.app.icon" value="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/AGlogo.png" />
         <default symbol="interop.app.ivorn" value="ivo://org.astrogrid/ar" />
         <default symbol="interop.app.url" value="http://www.astrogrid.org" />
-        <default symbol="interop.app.contact" value="noel.winstanley@manchester.ac.uk" />           
+        <default symbol="interop.app.contact" value="noel.winstanley@googlemail.com" />           
     </contribution>
     
 

@@ -9,10 +9,10 @@ import java.net.URI;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 23, 20101:26:57 PM
  */
- abstract class TypedResourceSetMessageType extends ResourceSetMessageType {
+ public abstract class TypedResourceSetMessageType extends ResourceSetMessageType {
 
     //implementors must provide this - deifnes the suffix to add to end of the base resource mtype
-    protected abstract String suffix() ;
+    public abstract String suffix() ;
     // adjust the message name
     @Override
     protected final String getSampMType() {
@@ -22,7 +22,7 @@ import java.net.URI;
     // stub out the plastic side - not supported
     @Override
     protected final URI getPlasticMessageType() {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override

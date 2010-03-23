@@ -10,7 +10,8 @@ package org.astrogrid.desktop.modules.system.messaging;
 public class SsapSetMessageType extends TypedResourceSetMessageType {
     public static final SsapSetMessageType instance = new SsapSetMessageType();
     @Override
-    protected final String suffix() {
+    public
+    final String suffix() {
         return ".ssap";
     }
 

@@ -10,7 +10,8 @@ package org.astrogrid.desktop.modules.system.messaging;
 public class VospaceSetMessageType extends TypedResourceSetMessageType {
     public static final VospaceSetMessageType instance = new VospaceSetMessageType();
     @Override
-    protected final String suffix() {
+    public
+    final String suffix() {
         return ".vospace";
     }
 
