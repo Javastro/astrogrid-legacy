@@ -13,12 +13,21 @@ import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.SystemTrayInternal;
 import org.astrogrid.desktop.modules.system.messaging.BibcodeMessageType;
+import org.astrogrid.desktop.modules.system.messaging.CeaAdqlSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.CeaSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.ConeSetMessageType;
 import org.astrogrid.desktop.modules.system.messaging.ExternalMessageTarget;
 import org.astrogrid.desktop.modules.system.messaging.FitsImageMessageType;
 import org.astrogrid.desktop.modules.system.messaging.Messaging;
 import org.astrogrid.desktop.modules.system.messaging.ResourceSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.SiapSetMessageType;
 import org.astrogrid.desktop.modules.system.messaging.SpectrumMessageType;
+import org.astrogrid.desktop.modules.system.messaging.SsapSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.StapSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.TapSetMessageType;
+import org.astrogrid.desktop.modules.system.messaging.VospaceSetMessageType;
 import org.astrogrid.desktop.modules.system.messaging.VotableMessageType;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import ca.odell.glazedlists.CollectionList;
 import ca.odell.glazedlists.EventList;
@@ -65,40 +74,58 @@ protected void loadChildren() {
 }
 // Model interface implementation- maps a single plastic app to 0 or more activities.
 public List<Activity> getChildren(final ExternalMessageTarget target) {
+    
      final List<Activity> butts = new ArrayList<Activity>();
+     
      if (target.accepts(VotableMessageType.instance)) {
-        AbstractActivity activity = new PlasticVotableActivity(target);
-        activity.setUIParent(uiParent.get());
-        butts.add(activity);	
-        activity = new PlasticVotableActivity.Fallback(target);
-        activity.setUIParent(uiParent.get());
-        butts.add(activity);            
+        butts.add( new PlasticVotableActivity(target));
+        butts.add(new PlasticVotableActivity.Fallback(target));
     } 
     if (target.accepts(FitsImageMessageType.instance)) {
-        AbstractActivity activity = new MessageFitsActivity(target);
-        activity.setUIParent(uiParent.get());
-        butts.add(activity);
-        activity = new MessageFitsActivity.Fallback(target);
-        activity.setUIParent(uiParent.get());
-        butts.add(activity);         
+        butts.add(new MessageFitsActivity(target));
+        butts.add( new MessageFitsActivity.Fallback(target));
     }
     if (target.accepts(SpectrumMessageType.instance)) {
-        AbstractActivity activity = new MessageSpectrumActivity(target);
-        activity.setUIParent(uiParent.get());
-        butts.add(activity);		
-        activity = new MessageSpectrumActivity.Fallback(target);
-        activity.setUIParent(uiParent.get());
-        butts.add(activity);        
+        butts.add(new MessageSpectrumActivity(target));
+        butts.add(new MessageSpectrumActivity.Fallback(target));
     }		
     if (target.accepts(ResourceSetMessageType.instance)) {
-        final Activity activity = new MessageRegistryActivity(target);
-        activity.setUIParent(uiParent.get());
-        butts.add(activity);
+        butts.add(new MessageResourcesActivity(target));
     }
     if (target.accepts(BibcodeMessageType.instance)) {
-        final Activity activity = new MessageBibcodeActivity(target);
-        activity.setUIParent(uiParent.get());
-        butts.add(activity);
+        butts.add(new MessageBibcodeActivity(target));
+    }
+    
+    // typed resource set messages 
+    if(target.accepts(CeaSetMessageType.instance)) {
+        butts.add(new MessageCeaActivity(target));
+    }
+    if(target.accepts(CeaAdqlSetMessageType.instance)) {
+        butts.add(new MessageCeaAdqlActivity(target));
+    }
+    if(target.accepts(ConeSetMessageType.instance)) {
+        butts.add(new MessageConeActivity(target));
+    }
+    if(target.accepts(SiapSetMessageType.instance)) {
+        butts.add(new MessageSiapActivity(target));
+    }
+    if(target.accepts(SsapSetMessageType.instance)) {
+        butts.add(new MessageSsapActivity(target));
+    }
+    if(target.accepts(StapSetMessageType.instance)) {
+        butts.add(new MessageStapActivity(target));
+    }
+    if(target.accepts(TapSetMessageType.instance)) {
+        butts.add(new MessageTapActivity(target));
+    }
+    if(target.accepts(VospaceSetMessageType.instance)) {
+        butts.add(new MessageVospaceActivity(target));
+    }
+    // ok, now initialize each of the buttons.
+    final UIComponent parent = uiParent.get();
+    for (final Activity a: butts) {
+        a.setUIParent(parent);
+        
     }
     return butts;
 }

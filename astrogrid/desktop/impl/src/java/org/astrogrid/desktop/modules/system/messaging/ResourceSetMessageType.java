@@ -21,7 +21,7 @@ import org.astrogrid.samp.client.SampException;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 16, 20091:21:30 PM
  */
-public final  class ResourceSetMessageType extends MessageType<ResourceSetMessageSender> {
+public  class ResourceSetMessageType extends MessageType<ResourceSetMessageSender> {
 
     private final static URI VORESOURCE_LOADSET = URI.create("ivo://votech.org/voresource/loadList");
     private final static String SAMP_MTYPE = "voresource.loadlist";
@@ -90,7 +90,7 @@ public final  class ResourceSetMessageType extends MessageType<ResourceSetMessag
                 if (setName != null) {
                     params.put("name",setName);
                 }
-                final Message msg = new Message(SAMP_MTYPE,params);
+                final Message msg = new Message(getSampMType(),params);
                 return t.getHubConnector().callAndWait(t.getId(),msg,DEFAULT_TIMEOUT);
             } catch (final SampException x) {
                 final ErrInfo err = new ErrInfo(x);

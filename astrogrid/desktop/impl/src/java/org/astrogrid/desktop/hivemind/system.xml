@@ -1007,6 +1007,14 @@ MAC SETUP
         <object>instance:org.astrogrid.desktop.modules.system.messaging.SelectRowListMessageType</object>
         <object>instance:org.astrogrid.desktop.modules.system.messaging.SpectrumMessageType</object>
         <object>instance:org.astrogrid.desktop.modules.system.messaging.VotableMessageType</object>
+        <!-- resource set subtype messages -->
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.CeaAdqlSetMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.CeaSetMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.ConeSetMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.SiapSetMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.SsapSetMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.TapSetMessageType</object>
+        <object>instance:org.astrogrid.desktop.modules.system.messaging.VospaceSetMessageType</object>
     </contribution>
     
     <!--  list of internal message targets -->
