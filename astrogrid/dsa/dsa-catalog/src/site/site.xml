@@ -12,6 +12,7 @@
       <item name="DSA/Catalogue home-page" href="index.html"/>
       <item name="Release notes" href="release-notes.html"/>
       <item name="Compatibility" href="compatibility.html"/>
+      <item name="Download binary" href="http://www.astrogrid.org/maven2/org/astrogrid/astrogrid-dsa-catalog/${project.version}/astrogrid-dsa-catalog-${project.version}.war"/>
     </menu>
     <menu name="Installation">
       <item name="Installation procedure" href="installation-procedure.html"/>
