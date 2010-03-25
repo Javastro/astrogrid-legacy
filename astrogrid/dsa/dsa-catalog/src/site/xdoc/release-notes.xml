@@ -12,22 +12,49 @@
   <p>
     These notes record the cumulative changes in sucessive DSA-versions
     since the last release of 2008. The changes are complete up to version
-    2010.1.
+    2010.2.
   </p>
   <p>
-    Version 2010.1 improves cone-search security. Sites should upgrade to this
-    version if they have secured cone-search interfaces.
+    Version 2010.2 fixes a problem with character encoding of results. Sites
+    should upgrade to this version.
   </p>
 
-  <subsection name="DirectCone servlet">
-    <p><i>Since 2010.1</i></p>
+  <subsection name="Fixed: character encoding problems">
+    <p><i>Since 2010.2</i></p>
     <p>
-      The established cone-search service is mapped at the URI
-      <i>/SubmitCone</i> and registered. There is an alternative, experimental
-      implementation at <i>/DirectCone</i> which is not currently registered.
-      The new version writes SQL directly and avoids the overhead of translating
-      ADQL. Any deployers wishing to use this implementation could manually
-      change their registrations.
+      In the 2009 and 2010.1 releases, the character encoding for TAP results
+      is not specified. Software reading the output VOTables assumes UTF-8, and
+      this leads to problems if the RDBMS returns results that are in, e.g.,
+      ISO-LATIN-1. The VOTables are then unreadable.
+    </p>
+    <p>
+      In v2010.2, the encoding is set to UTF-8 in the servlets that emit VOTables.
+      For the TAP interface, the encoding is also noted in the XML declaration
+      of the data stream.
+    </p>
+  </subsection>
+
+  <subsection name="Fixed: character encoding problems">
+    <p><i>Since 2010.2</i></p>
+    <p>
+      In the 2009 and 2010.1 releases, the character encoding for TAP results
+      is not specified. Software reading the output VOTables assumes UTF-8, and
+      this leads to problems if the RDBMS returns results that are in, e.g.,
+      ISO-LATIN-1. The VOTables are then unreadable.
+    </p>
+    <p>
+      In v2010.2, the encoding is set to UTF-8 in the servlets that emit VOTables.
+      For the TAP interface, the encoding is also noted in the XML declaration
+      of the data stream.
+    </p>
+  </subsection>
+
+  <subsection name="Dependencies updates">
+    <p><i>Since 2010.2</i></p>
+    <p>
+      Various 3rd-party jars included in DSA/Catalogue have been upgraded to
+      their most-recentreleases. These include STIL (now v2.8), AstroGrid security
+      (now v2010.1) and the Bouncy-Castle JSSE provider (now v1.45).
     </p>
   </subsection>
 
