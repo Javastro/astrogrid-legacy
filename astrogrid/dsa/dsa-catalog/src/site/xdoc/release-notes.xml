@@ -34,21 +34,6 @@
     </p>
   </subsection>
 
-  <subsection name="Fixed: character encoding problems">
-    <p><i>Since 2010.2</i></p>
-    <p>
-      In the 2009 and 2010.1 releases, the character encoding for TAP results
-      is not specified. Software reading the output VOTables assumes UTF-8, and
-      this leads to problems if the RDBMS returns results that are in, e.g.,
-      ISO-LATIN-1. The VOTables are then unreadable.
-    </p>
-    <p>
-      In v2010.2, the encoding is set to UTF-8 in the servlets that emit VOTables.
-      For the TAP interface, the encoding is also noted in the XML declaration
-      of the data stream.
-    </p>
-  </subsection>
-
   <subsection name="Dependencies updates">
     <p><i>Since 2010.2</i></p>
     <p>
