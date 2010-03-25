@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.9 2010/01/27 17:17:04 gtr Exp $
+ * $Id: Querier.java,v 1.10 2010/03/25 10:25:52 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -472,46 +472,14 @@ public class Querier implements Runnable, PluginListener {
       }
    }
 
-   /**
-    * Helper method to generates a handle for use by a particular instance; uses the current
-    * time to help us debug (ie we can look at the temporary directories and
-    * see which was the last run). Later we could add service/user information
-    * if available
-    */
-   public static String generateQueryId() {
-      Timestamp todayNow = new Timestamp(System.currentTimeMillis());
-       return
-         todayNow.getYear()
-         + "-"
-         + doubleDigits(todayNow.getMonth())
-         + "-"
-         + doubleDigits(todayNow.getDate())
-         + "_"
-         + doubleDigits(todayNow.getHours())
-         + "."
-         + doubleDigits(todayNow.getMinutes())
-         + "."
-         + doubleDigits(todayNow.getSeconds())
-         + "_"
-			+ new UID().toString();	// To guarantee uniqueness
-			/*
-         //plus botched bit... not really unique
-         + (random.nextInt(8999999) + 1000000);
-			*/
-      
-   }
-   
-   /** Returns number as two digits */
-   private static String doubleDigits(int i) {
-      if (i<10) {
-         return "0"+i;
-      }
-      else {
-         return ""+i;
-      }
-   }
-         
-   
+  /**
+   * Supplies a unique identifier.
+   *
+   * @return The identifier.
+   */
+  public static String generateQueryId() {
+    return new UID().toString();   
+  }
 
    
 }

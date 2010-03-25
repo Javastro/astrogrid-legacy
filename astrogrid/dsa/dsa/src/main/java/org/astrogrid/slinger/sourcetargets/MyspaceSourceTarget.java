@@ -1,5 +1,5 @@
 /*
- * $Id: MyspaceSourceTarget.java,v 1.1 2009/05/13 13:20:41 gtr Exp $
+ * $Id: MyspaceSourceTarget.java,v 1.2 2010/03/25 10:25:52 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,11 +11,8 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
 import org.astrogrid.io.account.LoginAccount;
-import org.astrogrid.slinger.sources.SourceIdentifier;
-import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.slinger.agfm.FileManagerConnection;
-import org.astrogrid.slinger.homespace.HomespaceName;
 /*
 import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
 import org.astrogrid.community.common.exception.CommunityServiceException;
@@ -86,6 +83,7 @@ public class MyspaceSourceTarget implements SourceTargetIdentifier {
       getConnection().setRequestProperty ("Content-Type", mimeType);
    }
 
+   @Override
    public String toString() {
       return "[Destination: '"+name.toString()+"']";
    }

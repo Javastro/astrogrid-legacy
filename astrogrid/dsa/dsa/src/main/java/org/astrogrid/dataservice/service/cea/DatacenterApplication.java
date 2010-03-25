@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.8 2010/01/27 17:17:04 gtr Exp $
+/*$Id: DatacenterApplication.java,v 1.9 2010/03/25 10:25:52 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 
-import java.net.URISyntaxException;
 import java.security.Principal;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -59,10 +58,8 @@ import org.astrogrid.query.QueryState;
 import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
-import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.slinger.homespace.HomespaceName;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StarTableWriter;
 import uk.ac.starlink.votable.VOTableWriter;
@@ -502,11 +499,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          // and choose behaviour accordingly
          final InputStream in;
          if (isIndirect) {
-            SourceIdentifier si = null;
-            String sourceUri = transformTarget(inputVotable);
-            //String sourceUri = inputVotable;
-            si = URISourceTargetMaker.makeSourceTarget(sourceUri);
-            in = si.openInputStream();
+            in = URISourceTargetMaker.makeSourceTarget(inputVotable, getGuard()).openInputStream();
          }
          else {
             in = new ByteArrayInputStream(inputVotable.getBytes());
@@ -637,50 +630,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       }
    }
 
-
-   /**
-    * If the incoming URI describing the target location is an IVORN, it might be
-    * an account or it might be a real IVORN.  Examines it to see if it is of the
-    * form of an account (ie ivo://community/individual) and if so, checks to see
-    * if the Registry can resolve it.  If it is of the right form, and the registry
-    * cannot resolve it, turns it into a homespacename
-    * KONA Jan 2008 NOTE - This seems to work with latest VOExplorer for 
-    * input parameter urls, but worth checking again later
-    */
-   protected String transformTarget(String targetUri) throws IllegalArgumentException, URISyntaxException {
-      
-      int hashIdx = targetUri.indexOf("#");
-      String key = targetUri.substring(0,hashIdx).substring(6);
-      int slashIdx = key.indexOf("/");
-
-      /* just assume it's a homespace ivorn for now
-      if (!IVORN.isIvorn(targetUri)) { return targetUri; } //some other URI
-
-      int hashIdx = targetUri.indexOf("#");
-      if (hashIdx == -1) {
-         throw new IllegalArgumentException("Target URI "+targetUri+" has no path given");
-      }
-      String key = targetUri.substring(0,hashIdx).substring(6);
-      int slashIdx = key.indexOf("/");
-      if ((slashIdx != -1) && (slashIdx == key.lastIndexOf("/"))) { //if there is only one slash
-         
-         //check it can't be resolved
-         try {
-            new IVORN(targetUri).resolve();
-            //it resolved OK, so it's a real IVORN.  Leave unchanged
-            return targetUri;
-         }
-         catch (IOException rre) { } //carry on, it's not resolvable (normally), so...
-       */
-         //assume any exception means it can't be found, so it must be a 'homespace' id.  Can't do much better than that at the mo anyway
-         HomespaceName homespace = HomespaceName.fromIvorn(targetUri);
-         logger.info("Converting incoming '"+targetUri+"' to '"+homespace+"'");
-         return homespace.toURI();
-//      }
-//      return targetUri;
-   }
-
-   /** Implemented by calling abot on the querier object - so if the underlyng database back end supports abort, the cec does too
+   /** Implemented by calling abort on the querier object - so if the underlyng database back end supports abort, the cec does too
     * @see org.astrogrid.applications.Application#attemptAbort()
     */
    @Override

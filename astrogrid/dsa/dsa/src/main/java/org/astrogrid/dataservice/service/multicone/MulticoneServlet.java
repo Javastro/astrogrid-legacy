@@ -280,6 +280,7 @@ public class MulticoneServlet extends SecuredServlet {
         }
 
         // Serializes the output table to the servlet response object.
+        response.setCharacterEncoding("UTF-8");
         response.setContentType(outputHandler.getMimeType());
         OutputStream ostrm = response.getOutputStream();
         outputHandler.writeStarTable(outTable, ostrm);

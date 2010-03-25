@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Schema for a generic list of capabilities. The capability sub-types for
+cone-search and CEA, which have additional syntax are specifcally supported.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="urn:astrogrid:schema:Capabilities"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"
+  xmlns:tns="urn:astrogrid:schema:Capabilities"
+  xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance"
+  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0">
+  
+  <xs:import namespace="http://www.ivoa.net/xml/VOResource/v1.0" schemaLocation="http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd"/>
+  
+  <xs:import namespace="http://www.ivoa.net/xml/ConeSearch/v1.0" schemaLocation="http://www.ivoa.net/xml/ConeSearch/ConeSearch-v1.0.xsd"/>
+
+  <xs:import namespace="http://www.ivoa.net/xml/CEA/v1.0rc1" schemaLocation="http://software.astrogrid.org/schema/vo-resource-types/CEAService/v1.0rc1/CEAService.xsd"/>
+
+  <xs:element name="capabilities">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="capability" form="unqualified" type="vr:Capability" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

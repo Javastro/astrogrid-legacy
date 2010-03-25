@@ -8,13 +8,16 @@
        org.astrogrid.dataservice.service.*"
    isThreadSafe="false"
    session="false"
+   contentType="text/html"
+   pageEncoding="UTF-8"
 %>
 <% String pathPrefix = ".."; // For the navigation include %>
 
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <title>Register <%=DataServer.getDatacenterName() %></title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 <style type="text/css" media="all">@import url("../style/astrogrid.css");</style>
 </head>
 
@@ -107,6 +110,5 @@ obtain a username and password.
 
 </div>
 
-<%@ include file='../footer.xml' %>
 </body>
 </html>

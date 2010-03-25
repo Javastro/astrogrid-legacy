@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.dataservice.jobs.Job;
 
 /**
@@ -48,7 +49,8 @@ public class UwsJobDestructionServlet extends UwsJobResourceServlet {
   public void performPut(HttpServletRequest request,
                          HttpServletResponse response) throws IOException,
                                                               TapException,
-                                                              WebResourceNotFoundException {
+                                                              WebResourceNotFoundException,
+                                                              DsaConfigurationException {
     Job job = getJob(request);
 
     // Read the body of the request.
@@ -99,7 +101,8 @@ public class UwsJobDestructionServlet extends UwsJobResourceServlet {
   public void performPost(HttpServletRequest request,
                           HttpServletResponse response) throws IOException,
                                                                TapException,
-                                                               WebResourceNotFoundException {
+                                                               WebResourceNotFoundException,
+                                                               DsaConfigurationException {
     Job job = getJob(request);
 
     // Read the body of the request.

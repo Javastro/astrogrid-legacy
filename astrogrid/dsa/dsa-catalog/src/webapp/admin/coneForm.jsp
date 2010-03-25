@@ -1,24 +1,19 @@
-<%@ page import="java.io.*,
-         java.net.*,
-         org.astrogrid.dataservice.metadata.*,
-         org.astrogrid.dataservice.metadata.queryable.*,
-         org.astrogrid.cfg.ConfigFactory,
-         org.astrogrid.dataservice.metadata.*,
-         org.astrogrid.dataservice.metadata.queryable.*,
-         org.astrogrid.dataservice.service.*,
-         org.astrogrid.tableserver.metadata.*,
-         org.astrogrid.tableserver.jdbc.*"
-   isThreadSafe="false"
-   session="false"
+<%@ page 
+  import="org.astrogrid.dataservice.Configuration,
+          org.astrogrid.tableserver.metadata.TableInfo"
+  isThreadSafe="false"
+  session="false"
+  contentType="text/html"
+  pageEncoding="UTF-8"
 %>
 <% String pathPrefix = ".."; // For the navigation include %>
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<title>Cone Query Form for <%=DataServer.getDatacenterName() %> </title>
-<style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
-</style>
+<title>Cone-search Query Form</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<style type="text/css" media="all">@import url("../style/astrogrid.css");</style>
 </head>
 
 
@@ -28,72 +23,75 @@
 
 <div id='bodyColumn'>
 
-<body>
+  <h1>Run a cone search</h1>
 <%
-//   if (ConfigFactory.getCommonConfig().getString(SqlWriter.CONE_SEARCH_TABLE_KEY, null) == null) {
-//      out.write("This server is not configured for cone searches");
-//   }
-//   else
-   {
+  if (!Configuration.isConeSearchEnabled()) {
 %>
-     <h1>Submit a Region Query to <%=DataServer.getDatacenterName() %></h1>
-     <p>
+  <p>Cone search is disabled in this installation.</p>
 <%
-      String doesCone = ConfigFactory.getCommonConfig().getString(
-            "datacenter.implements.conesearch");
-      if ((doesCone == null) || (!"true".equals(doesCone.toLowerCase()))) {
-         out.write("Conesearch is disabled in this DSA/catalog installation.");
-      }
-      else {
-         TableInfo[] tables = 
-             TableMetaDocInterpreter.getConesearchableTables();
-         if (tables.length == 0) {
-            out.write("No conesearchable tables are specified in the DSA/catalog metadoc file");
-         }
-         else {
-            out.write("Please choose the table to apply the cone search to: ");
-
-            /*SearchGroup[] coneGroups = queryable.getSpatialGroups();
-            for (int i = 0; i < coneGroups.length; i++) {
-               SearchField[] coneFields = queryable.getSpatialFields(coneGroups[i]);
-               for (int j = 0; j < coneFields.length; j++) {
-                  out.write(coneFields[j].getId()+" ");
-               }
-               out.write(", ");
-            }
-            */
-            out.write("<form action=\"../SubmitCone\" method=\"get\">");
-            out.write("<select name=\"DSACATTAB\" id=\"DSACATTAB\">");
-            for (int i = 0; i < tables.length; i++) {
-               String fullTable = tables[i].getCatalogName() + "." + 
-                  tables[i].getName();
-               out.write("<option value=\""+ fullTable + 
-                     "\">" + fullTable + "</option>");
-            }
-            out.write("</select>");
-      %>
-             <p>
-               <table border='0'>
-               <tr><td align='right'>Right Ascension in decimal degrees, J2000 <td><input type="text" name="RA"/></tr>
-               <tr><td align='right'>Declination in decimal degrees, J2000   <td><input type="text" name="DEC" /></tr>
-               <tr><td align='right'>Search radius in decimal degrees         <td><input type="text" name="SR" /></tr>
-               </table>
-             </p>
-              <p>
-                <%@ include file='resultsForm.xml' %>
-                <input type="submit" name='Submit' value="Search Cone"  />
-                <input type='hidden' name='UserName' value='JSP'>
-                <input type='hidden' name='TargetResponse' value='true'>
-              </p>
-         </form>
+  }
+  else if (!Configuration.hasConesearchableTables()) {
+%>
+  <p>No cone-searchable tables are specified in the database-configuration ("metadoc") file.</p>
 <%
-         }
-      }
    }
+   else {
+%>
+<form action='../SubmitCone' method='get'>
+   <table border='0'>
+     <tr>
+       <td>Database table</td>
+       <td>
+         <select name='DSACATTAB'>
+<%
+            TableInfo[] tables = Configuration.getConesearchableTables();
+            for (int i = 0; i < tables.length; i++) {
+                String fullTable = tables[i].getCatalogName() + "."
+                                 + tables[i].getName();
+                out.println("      <option value='" + fullTable + "'>" +
+                            fullTable + "</option>");
+            }
+%>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>RA in J2000 degrees</td>
+      <td><input type="text" name="RA"></td>
+    </tr>
+    <tr>
+      <td>Declination in J2000 degrees</td>
+      <td><input type="text" name="DEC"></td>
+    </tr>
+    <tr>
+      <td>Search radius in degrees</td>
+      <td><input type="text" name="SR"></td>
+    </tr>
+    <tr>
+      <td>Results Format</td>
+      <td>
+        <select name="Format">
+          <option selected="selected">HTML</option>
+          <option>VOTable</option>
+          <option>VOTable-binary</option>
+          <option>CSV</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><input type="submit" name="Submit" value="Run the cone search"></td>
+    </tr>
+  </table>
+  <p>
+    <input type="hidden" name="UserName" value="JSP">
+    <input type="hidden" name="TargetResponse" value="true">
+  </p>
+</form>
+<%
+    }
 %>
 
 </div>
-
 </body>
 </html>
-

@@ -1,14 +1,16 @@
-<%@ page import="org.astrogrid.dataservice.service.DataServer,
-                 org.astrogrid.dataservice.service.ServletHelper, 
-                 org.astrogrid.cfg.ConfigFactory"
+<%@ page
    isThreadSafe="false"
    session="false"
+   contentType="text/html"
+   pageEncoding="UTF-8"
 %>
 <% String pathPrefix = ".."; // For the navigation include %>
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <title>TAP controls</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 <style type="text/css" media="all">@import url("../style/astrogrid.css");</style>
 </head>
 

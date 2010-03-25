@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.query.Query;
@@ -86,7 +87,8 @@ public class UwsJobListServlet extends AbstractTapServlet {
   public void performPost(HttpServletRequest request,
                           HttpServletResponse response) throws IOException,
                                                                ServletException,
-                                                               TapException { 
+                                                               TapException,
+                                                               DsaConfigurationException {
    if (request.getAttribute("uws.admin") == null) {
       try {
         Job.purge();
@@ -124,7 +126,7 @@ public class UwsJobListServlet extends AbstractTapServlet {
       HttpsServiceSecurityGuard sg = new HttpsServiceSecurityGuard();
       sg.loadHttpsAuthentication(request);
       X500Principal p = sg.getX500Principal();
-      String owner = (p == null)? null : p.getName(p.CANONICAL);
+      String owner = (p == null)? null : p.getName(X500Principal.CANONICAL);
 
       // Make the job persistent.
       Job job = new Job();

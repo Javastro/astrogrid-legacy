@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.4 2009/06/10 09:38:41 gtr Exp $
+/*$Id: ConeResources.java,v 1.5 2010/03/25 10:25:53 gtr Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,12 +8,11 @@
  * with this distribution in the LICENSE.txt file.
  *
  **/
-package astrogrid.dataservice.service.cone;
+package org.astrogrid.dataservice.service.cone;
 
 import java.io.IOException;
-import org.astrogrid.cfg.ConfigFactory;
-//import org.astrogrid.dataservice.service.ServletHelper;
-import org.astrogrid.dataservice.metadata.MetadataHelper;
+import org.astrogrid.dataservice.Configuration;
+import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.metadata.TableInfo;
 
@@ -26,71 +25,36 @@ public class ConeResources {
     * Returns Capability XML for cone searchable tables in the 
     * specified catalog.
     */
-   public static String getConeCapabilities(String catalogName) throws IOException {
+   public static String getConeCapabilities(String catalogName) throws IOException,
+                                                                       DsaConfigurationException {
       String coneList = "";
-      String coneConfig = ConfigFactory.getCommonConfig().getString(
-         "datacenter.implements.conesearch","false");
-      if ("true".equals(coneConfig.toLowerCase())) {
+      if (Configuration.isConeSearchEnabled()) {
          String catalogID = 
             TableMetaDocInterpreter.getCatalogIDForName(catalogName);
          TableInfo[] coneTables = 
             TableMetaDocInterpreter.getConesearchableTables(catalogID);
          for (int i = 0; i < coneTables.length; i++) {
-            coneList = coneList + getVoConeCapability(
-                  coneTables[i].getCatalogName(),
-                  coneTables[i].getName());
+            coneList = coneList +
+                       getVoConeCapability(coneTables[i].getCatalogName(),
+                                           coneTables[i].getName());
          }
       }
       return coneList;
    }
 
   protected static String getVoConeCapability(String catName,
-                                              String tabName) throws IOException {
-
-    int maxRows;
-    double maxRadius;
-    String maxRowStr = ConfigFactory.getCommonConfig().getString("datacenter.max.return");
-    if ((maxRowStr == null) || ("".equals(maxRowStr))) {
-      //NB shouldn't get here
-      maxRows = 999999999; // A very big and obviously silly number
-    }
-    else if (maxRowStr.equals("0")) {
-      // No limit - use a dummy value
-       maxRows = 999999999; // A very big and obviously silly number
-    }
-    else {
-      try {
-        maxRows = Integer.parseInt(maxRowStr);
-      }
-      catch (NumberFormatException nfe) {
-        throw new IOException("Datacenter is misconfigured: datacenter.max.return has illegal value '" + maxRowStr + "'");
-      }
-    }
-    // Get max search radius
-    String maxRadStr = ConfigFactory.getCommonConfig().getString("conesearch.radius.limit");
-    if ((maxRadStr == null) || ("".equals(maxRadStr))) {
-      //NB shouldn't get here
-      maxRadius = 180.0;
-    }
-    else {
-      try {
-        maxRadius = Double.parseDouble(maxRadStr);
-      }
-      catch (NumberFormatException nfe) {
-        throw new IOException("Datacenter is misconfigured: conesearch.radius.limit has illegal value '" + maxRadStr + "'");
-      }
-    }
-
+                                              String tabName) throws IOException,
+                                                                     DsaConfigurationException {
     // There is one URL for secured cone-searches and
     // another for insecure searches. In any given installation, all the
     // cone-search endpoints will be insecure or all will be secure.
-    if (MetadataHelper.isConeSearchSecure()) {
+    if (Configuration.isConeSearchSecure()) {
       return String.format(
         "  <capability xsi:type='cs:ConeSearch'\n" +
         "      standardID='ivo://ivoa.net/std/ConeSearch'>\n" +
         "    <description>%s, %s: cone search</description>\n" +
         "    <interface xsi:type='vs:ParamHTTP' role='std'>\n" +
-        "      <accessURL use='base'>%sSubmitCone?DSACAT=%s&amp;DSATAB=%s&amp;</accessURL>\n" +
+        "      <accessURL use='base'>%s/SubmitCone?DSACAT=%s&amp;DSATAB=%s&amp;</accessURL>\n" +
         "      <securityMethod standardID='ivo://ivoa.net/sso#tls-with-client-certificate'/>\n" +
         "    </interface>\n" +
         "    <maxSR>%f</maxSR>\n" +
@@ -104,11 +68,11 @@ public class ConeResources {
         "  </capability>\n",
         catName,
         tabName,
-        MetadataHelper.getInstallationSecureBaseURL(),
+        Configuration.getSecureBaseUri(),
         catName,
         tabName,
-        maxRadius,
-        maxRows);
+        Configuration.getConeSearchRadiusLimit(),
+        Configuration.getConeSearchRowLimit());
      }
      else {
        return String.format(
@@ -116,7 +80,7 @@ public class ConeResources {
          "      standardID='ivo://ivoa.net/std/ConeSearch'>\n" +
          "    <description>%s, %s: cone search</description>\n" +
          "    <interface xsi:type='vs:ParamHTTP' role='std'>\n" +
-         "      <accessURL use='base'>%sSubmitCone?DSACAT=%s&amp;DSATAB=%s&amp;</accessURL>\n" +
+         "      <accessURL use='base'>%s/SubmitCone?DSACAT=%s&amp;DSATAB=%s&amp;</accessURL>\n" +
          "    </interface>\n" +
          "    <maxSR>%f</maxSR>\n" +
          "    <maxRecords>%d</maxRecords>\n" +
@@ -129,11 +93,11 @@ public class ConeResources {
          "  </capability>\n",
          catName,
          tabName,
-         MetadataHelper.getInstallationBaseURL(),
+         Configuration.getBaseUri(),
          catName,
          tabName,
-         maxRadius,
-         maxRows);
+         Configuration.getConeSearchRadiusLimit(),
+         Configuration.getConeSearchRowLimit());
     }
       
   }

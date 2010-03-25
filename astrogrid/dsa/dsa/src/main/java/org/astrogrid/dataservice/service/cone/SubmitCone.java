@@ -152,6 +152,7 @@ public class SubmitCone extends HttpServlet {
   private void executeConeSearch(HttpServletRequest  request,
                                  HttpServletResponse response) throws Throwable {
     response.setContentType("text/xml");
+    response.setCharacterEncoding("UTF-8");
     String catalogName = ServletHelper.getCatalogName(request);
     String tableName = ServletHelper.getTableName(request);
     double radius = ServletHelper.getRadius(request);

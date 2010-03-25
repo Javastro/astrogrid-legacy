@@ -2,7 +2,8 @@ package org.astrogrid.dataservice.service.vosi;
 
 import java.io.Writer;
 import javax.servlet.ServletException;
-import astrogrid.dataservice.service.cone.ConeResources;
+import org.astrogrid.dataservice.service.cone.ConeResources;
+import org.astrogrid.dataservice.Configuration;
 import org.astrogrid.dataservice.service.cea.v1_0.CeaResources;
 
 /**
@@ -22,22 +23,21 @@ public class CapabilityServlet extends VosiServlet {
   protected void output(String[] catalogNames,
                         String   chosenCatalog,
                         Writer   writer) throws ServletException {
-
-    String tapUri          = getRootUri() + "TAP";
-    String capabilitiesUri = getRootUri() + "VOSI/capabilities";
-    String availabilityUri = getRootUri() + "VOSI/availability";
-    String tablesUri       = getRootUri() + "VOSI/tables";
-    String ceaAppUri       = getRootUri() + "VOSI/applications";
-    String delegationsUri  = getRootUri() + "delegations";
-    if (chosenCatalog != null) {
-      capabilitiesUri = capabilitiesUri + "?COLLECTION=" + chosenCatalog;
-      tablesUri       = tablesUri       + "?COLLECTION=" + chosenCatalog;
-      ceaAppUri       = ceaAppUri       + "?COLLECTION=" + chosenCatalog;
-    }
-
-
-    
     try {
+      String browserUri      = Configuration.getProperty("web.browser.ui", null);
+      String tapUri          = (Configuration.isTapSecure())?
+                                Configuration.getSecureBaseUri().toString() + "/TAP" :
+                                Configuration.getBaseUri().toString() + "/TAP";
+      String capabilitiesUri = Configuration.getBaseUri().toString() + "/VOSI/capabilities";
+      String availabilityUri = Configuration.getBaseUri().toString() + "/VOSI/availability";
+      String tablesUri       = Configuration.getBaseUri().toString() + "/VOSI/tables";
+      String ceaAppUri       = Configuration.getBaseUri().toString() +  "/VOSI/applications";
+      String delegationsUri  = Configuration.getBaseUri().toString() + "/delegations";
+      if (chosenCatalog != null) {
+        capabilitiesUri = capabilitiesUri + "?COLLECTION=" + chosenCatalog;
+        tablesUri       = tablesUri       + "?COLLECTION=" + chosenCatalog;
+        ceaAppUri       = ceaAppUri       + "?COLLECTION=" + chosenCatalog;
+      }
 
       // Write the processing instruction for transforming this XML to HTML.
       writer.write("<?xml-stylesheet type='text/xsl' href='capabilities.xsl'?>\n");
@@ -54,9 +54,20 @@ public class CapabilityServlet extends VosiServlet {
           "   xsi:schemaLocation=\n" +
           "     \"http://www.ivoa.net/xml/VOResource/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd\n" +
           "      http://www.ivoa.net/xml/VODataService/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v1.0/VODataService.xsd\n" +
-          "      http://www.ivoa.net/xml/ConeSearch/v1.0 http://software.astrogrid.org/schema/vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd \n" +
+          "      http://www.ivoa.net/xml/ConeSearch/v1.0 http://www.ivoa.net/xml/ConeSearch/ConeSearch-v1.0.xsd \n" +
           "      http://www.ivoa.net/xml/CEA/v1.0rc1 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v1.0rc1/CEAService.xsd\n" +
           "      urn:astrogrid:schema:Capabilities Capabilities.xsd\">\n");
+
+      // Output the web-browser capability if such is configured.
+      // This is an optional, vanilla capability containing an alternate,
+      // web-browser interface for the database independent of DSA.
+      if (browserUri != null) {
+        writer.write("<capability>\n");
+        writer.write("  <interface xsi:type='vr:WebBrowser'>\n");
+        writer.write("    <accessURL use='full'>" + browserUri + "</accessURL>\n");
+        writer.write("  </interface>\n");
+        writer.write("</capability>\n");
+      }
 
       // Output the conesearch capabilities. There may be one batch per catalogue.
       if (chosenCatalog == null) {
@@ -70,11 +81,21 @@ public class CapabilityServlet extends VosiServlet {
       }
 
       // Output the TAP capability.
-      writer.write("<capability standardID='ivo://ivoa.net/std/TAP'>\n");
-      writer.write("  <interface xsi:type='vs:ParamHTTP'>\n");
-      writer.write("    <accessURL use='full'>" + tapUri + "</accessURL>\n");
-      writer.write("  </interface>\n");
-      writer.write("</capability>\n");
+      if (Configuration.isTapSecure()) {
+        writer.write("<capability standardID='ivo://ivoa.net/std/TAP'>\n");
+        writer.write("  <interface xsi:type='vs:ParamHTTP'>\n");
+        writer.write("    <accessURL use='full'>" + tapUri + "</accessURL>\n");
+        writer.write("    <securityMethod standardID='ivo://ivoa.net/sso#tls-with-client-certificate'/>\n");
+        writer.write("  </interface>\n");
+        writer.write("</capability>\n");
+      }
+      else {
+        writer.write("<capability standardID='ivo://ivoa.net/std/TAP'>\n");
+        writer.write("  <interface xsi:type='vs:ParamHTTP'>\n");
+        writer.write("    <accessURL use='full'>" + tapUri + "</accessURL>\n");
+        writer.write("  </interface>\n");
+        writer.write("</capability>\n");
+      }
        
 
       // Output the CEA capabilities.

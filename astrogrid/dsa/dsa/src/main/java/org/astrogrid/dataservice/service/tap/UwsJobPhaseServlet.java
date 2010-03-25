@@ -1,5 +1,5 @@
 /*
- * $Id: UwsJobPhaseServlet.java,v 1.6 2010/01/27 17:17:05 gtr Exp $
+ * $Id: UwsJobPhaseServlet.java,v 1.7 2010/03/25 10:25:52 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.jobs.ResultFile;
 import org.astrogrid.dataservice.queriers.Querier;
@@ -67,7 +68,8 @@ public class UwsJobPhaseServlet extends UwsJobResourceServlet {
 	public void performPost(HttpServletRequest  request,
                           HttpServletResponse response) throws IOException,
                                                                TapException,
-                                                               WebResourceNotFoundException {
+                                                               WebResourceNotFoundException,
+                                                               DsaConfigurationException {
     Job job = getJob(request);
     String phase= request.getParameter("PHASE");
     if (phase != null && phase.equals("RUN")) {

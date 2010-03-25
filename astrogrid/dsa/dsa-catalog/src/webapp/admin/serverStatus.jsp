@@ -11,21 +11,23 @@
        org.astrogrid.cfg.ConfigFactory"
    isThreadSafe="false"
    session="false"
+   contentType="text/html"
+   pageEncoding="UTF-8"
 %>
 <% String pathPrefix = ".."; // For the navigation include %>
 
 <%!
     DataServer server = new DataServer();
 %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <%= ServletHelper.makeRefreshSnippet(10,
          new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/admin/serverStatus.jsp").toString()
       ) %>
 <title><%= DataServer.getDatacenterName() %> Status</title>
-<style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
-</style>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<style type="text/css" media="all">@import url("../style/astrogrid.css");</style>
 </head>
 <body>
 <%@ include file="../header.xml" %>

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
@@ -67,6 +66,7 @@ public class DirectConeServlet extends SecuredServlet {
         // rather than the more sensible "text/x-votable+xml".
         OutputStream out = new BufferedOutputStream(response.getOutputStream());
         response.setContentType("text/xml");
+        response.setCharacterEncoding("UTF-8");
 
         // Attempt the cone search based on the received request.
         boolean success;

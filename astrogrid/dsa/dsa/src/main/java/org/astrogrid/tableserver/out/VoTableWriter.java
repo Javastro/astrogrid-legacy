@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.4 2009/11/16 15:37:32 gtr Exp $
+ * $Id: VoTableWriter.java,v 1.5 2010/03/25 10:25:53 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -174,36 +174,55 @@ public class VoTableWriter implements TableWriter {
       doAFlush();
    }
    
-   /** Writes the given array of values out */
-   public void writeRow(Object[] colValues) throws IOException {
-      
-      printString("<TR>");
-      for (int i=0;i<colValues.length;i++) {
-         if (cols[i] != null) { //skip columns with no metadata
-            if (colValues[i] instanceof Date) {
-               printString("<TD>"+ (float) (((Date) colValues[i]).getTime()/1000) +"</TD>");
-            }
-            else {
-               if ( (colValues[i] == null) || (colValues[i].equals("null")) ){
-                 //From VOTable spec: "In the TABLEDATA data representation, 
-                 //the default representation of a ``null'' value is an 
-                 //empty column (i.e. <TD></TD>)";
-                 printString("<TD></TD>");
-               }
-               else {
-                 String output = makeSafeString( (String)colValues[i] );
-                 printString("<TD>"+output+"</TD>");
-               }
-            }
-         }
+  /** Writes the given array of values out */
+  public void writeRow(Object[] colValues) throws IOException {
+    printString("<TR>");
+    for (int i=0; i < colValues.length; i++) {
+      if (cols[i] != null) { //skip columns with no metadata
+        printString(formatCell(colValues[i]));
       }
-      println("</TR>");
+    }
+    println("</TR>");
 
-      rowsWritten = rowsWritten + 1;
-      if (rowsWritten % FLUSHFREQUENCY == 0) {
-         // Make sure stream is still ok
-         doAFlush();
-      }
+    rowsWritten = rowsWritten + 1;
+    if (rowsWritten % FLUSHFREQUENCY == 0) {
+      doAFlush();
+    }
+  }
+
+   /**
+    * Supplies the XML encoding of a cell of a table for a given value.
+    * The cell is an XML TD element, as specified in the VOTable standard.
+    * Java Dates are encoded as counts of seconds since the start of
+    * 1970. Null values are encoded as empty cells (with opening and closing
+    * tags, not as an empty XML element; the unit test depends on this).
+    * Strings are modified to turn XML's reserved characters &, < and > into
+    * character entities {@code &amp;}, {@code &lt;} and {@code &gt;}. All
+    * other kinds of data are represented by the output of their
+    * {@code toString()} methods.
+    *
+    * @param x The datum to be encoded in the cell.
+    * @return The XML fragment for the cell.
+    */
+   protected String formatCell(final Object x) {
+     if (x == null) {
+       return "<TD></TD>";
+     }
+     else if (x instanceof Date) {
+       Date d = (Date) x;
+       double milliseconds = (double) d.getTime();
+       return "<TD>"+ (milliseconds/1000.0) +"</TD>";
+     }
+     else if (x instanceof String) {
+       String safe = (String) x;
+       safe = safe.replaceAll("&", "&amp;");
+       safe = safe.replaceAll("<", "&lt;");
+       safe = safe.replaceAll(">", "&gt;");
+       return "<TD>" + safe + "</TD>";
+     }
+     else {
+       return "<TD>" + x + "</TD>";
+     }
    }
 
    public void endTable() throws IOException {
@@ -252,160 +271,3 @@ public class VoTableWriter implements TableWriter {
       return output;
    }
 }
-
-/*
- $Log: VoTableWriter.java,v $
- Revision 1.4  2009/11/16 15:37:32  gtr
- VOTables are now v1.2 except for cone search where they are v1.1.
-
- Revision 1.3  2009/11/13 13:50:14  gtr
- The log is now private.
-
- Revision 1.2  2009/11/12 11:25:18  gtr
- Data of type java.lang.Object returned from JDBC no longer abort the querty processing.
-
- Revision 1.1.1.1  2009/05/13 13:20:51  gtr
-
-
- Revision 1.14  2008/05/27 11:07:38  clq2
- merged PAL_KEA_2715
-
- Revision 1.13.2.1  2008/05/01 10:52:54  kea
- Fixes relating to:  BZ2127 BZ2657 BZ2720 BZ2721
-
- Revision 1.13  2008/04/02 14:20:44  clq2
- KEA_PAL2654
-
- Revision 1.12.30.1  2008/03/31 17:15:38  kea
- Fixes for conesearch error reporting.
-
- Revision 1.12  2007/06/08 13:16:12  clq2
- KEA-PAL-2169
-
- Revision 1.11.2.2  2007/06/08 13:06:41  kea
- Ready for trial merge.
-
- Revision 1.11.2.1  2007/04/23 16:45:19  kea
- Checkin of work in progress.
-
- Revision 1.11  2007/03/02 13:43:45  kea
- Added proper error checking to PrintWriter output stream writers in these
- classes;  failures were going undetected as PrintWriters do not throw
- exceptions.  See bugzilla bug 2139.
-
- Revision 1.10  2007/02/20 12:22:15  clq2
- PAL_KEA_2062
-
- Revision 1.9.4.2  2007/02/13 15:54:29  kea
- A useful utility from Mark Taylor to help with binary votable output.
-
- Revision 1.9.4.1  2007/02/01 11:16:50  kea
- Fix to bug whereby double columns were being reported as floats in VOTable
- (bug 2078);  extra debug logging.
-
- Revision 1.9  2006/10/17 10:11:41  clq2
- PAL_KEA_1869
-
- Revision 1.8.2.1  2006/10/12 16:40:15  kea
- Tweaks while fixing registration issues (see bugzilla ticket 1920)
-
- Revision 1.8  2006/09/26 15:34:43  clq2
- SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
-
- Revision 1.7.10.2  2006/09/19 12:19:47  kea
- Fixing TabularDB registrations to use system-default UCD version;
- moved ucd version management stuff to org.astrogrid.ucd package.
-
- Revision 1.7.10.1  2006/09/14 14:53:03  kea
- Updating.
-
- Revision 1.7  2006/06/15 16:50:10  clq2
- PAL_KEA_1612
-
- Revision 1.6.26.2  2006/06/15 14:08:04  kea
- Nearly ready to branch.
-
- Revision 1.6.26.1  2006/06/13 21:05:17  kea
- Getting tests working fully after Jeff's new ADQLbeans jar.
-
- Revision 1.6  2005/11/21 12:54:18  clq2
- DSA_KEA_1451
-
- Revision 1.5.38.1  2005/11/15 15:38:46  kea
- Layout change only.
-
- Revision 1.5  2005/05/27 16:21:02  clq2
- mchv_1
-
- Revision 1.4.10.3  2005/05/13 16:56:32  mch
- 'some changes'
-
- Revision 1.4.10.2  2005/04/28 17:14:49  mch
- fix to not add 'unit' if unit is empty
-
- Revision 1.4.10.1  2005/04/21 17:20:51  mch
- Fixes to output types
-
- Revision 1.4  2005/03/30 21:51:25  mch
- Fix to return Votable fits list for url list
-
- Revision 1.3  2005/03/30 18:54:03  mch
- fixes to results format
-
- Revision 1.2  2005/03/30 15:52:15  mch
- debug etc for bad sql types
-
- Revision 1.1  2005/03/21 18:45:55  mch
- Naughty big lump of changes
-
- Revision 1.4  2005/03/10 15:13:48  mch
- Seperating out fits, table and xdb servers
-
- Revision 1.3  2005/03/10 13:49:52  mch
- Updating metadata
-
- Revision 1.2  2005/03/01 15:58:33  mch
- Changed to use starlinks tamfits library
-
- Revision 1.1.1.1  2005/02/17 18:37:34  mch
- Initial checkin
-
- Revision 1.1.1.1  2005/02/16 17:11:24  mch
- Initial checkin
-
- Revision 1.1.2.10  2005/01/24 12:14:28  mch
- Fixes to VizieR proxy and resource stuff
-
- Revision 1.1.2.9  2005/01/13 18:57:31  mch
- Fixes to metadata mostly
-
- Revision 1.1.2.8  2004/12/13 21:53:14  mch
- Made the java types the intermediate types, added types to Xsv and html output
-
- Revision 1.1.2.7  2004/12/08 18:36:40  mch
- Added Vizier, rationalised SqlWriters etc, separated out TableResults from QueryResults
-
- Revision 1.1.2.6  2004/12/07 21:21:09  mch
- Fixes after a days integration testing
-
- Revision 1.1.2.5  2004/12/07 00:49:42  mch
- minor changes to put rows on one line (compact)
-
- Revision 1.1.2.4  2004/12/06 02:50:30  mch
- a few bug fixes
-
- Revision 1.1.2.3  2004/12/05 19:33:16  mch
- changed skynode to 'raw' soap (from axis) and bug fixes
-
- Revision 1.1.2.2  2004/11/30 02:32:18  mch
- fix to 0-base of writerows
-
- Revision 1.1.2.1  2004/11/30 01:26:42  mch
- added tablewriters
-
-
-
- */
-
-
-

@@ -10,6 +10,8 @@
        org.astrogrid.dataservice.service.*"
    isThreadSafe="false"
    session="false"
+   contentType="text/html"
+   pageEncoding="UTF-8"
 %>
 <%
    String pathPrefix = "..";
@@ -29,10 +31,12 @@ String[] ids = TableMetaDocInterpreter.getCatalogIDs();
 String[] names = TableMetaDocInterpreter.getCatalogNames();
 %>
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 
 <head>
 <title>XML (VOSI) Resources</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 <style type="text/css" media="all">@import url("../style/astrogrid.css");</style>
 </head>
 
@@ -110,6 +114,5 @@ for (int i = 0; i < ids.length; i++) {
 
 </div>
 
-<%@ include file='../footer.xml' %>
 </body>
 </html>

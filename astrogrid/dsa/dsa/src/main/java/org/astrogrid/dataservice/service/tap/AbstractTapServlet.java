@@ -1,13 +1,15 @@
 package org.astrogrid.dataservice.service.tap;
 
 import java.io.IOException;
+import java.net.URI;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.dataservice.Configuration;
+import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.dataservice.jobs.Job;
 
 /**
@@ -87,6 +89,9 @@ public abstract class AbstractTapServlet extends HttpServlet {
     catch (WebResourceNotFoundException e) {
       response.sendError(response.SC_NOT_FOUND);
     }
+    catch (DsaConfigurationException e) {
+      response.sendError(response.SC_INTERNAL_SERVER_ERROR, "The service has a configuration problem");
+    }
     catch (Exception e) {
       e.printStackTrace();
       response.sendError(response.SC_INTERNAL_SERVER_ERROR);
@@ -109,7 +114,8 @@ public abstract class AbstractTapServlet extends HttpServlet {
                             HttpServletResponse response) throws IOException,
                                                                  ServletException,
                                                                  TapException,
-                                                                 WebResourceNotFoundException {
+                                                                 WebResourceNotFoundException,
+                                                                 DsaConfigurationException {
     response.sendError(response.SC_METHOD_NOT_ALLOWED);
   }
 
@@ -128,7 +134,8 @@ public abstract class AbstractTapServlet extends HttpServlet {
                              HttpServletResponse response) throws IOException,
                                                                   ServletException,
                                                                   TapException,
-                                                                  WebResourceNotFoundException {
+                                                                  WebResourceNotFoundException,
+                                                                  DsaConfigurationException {
     response.sendError(response.SC_METHOD_NOT_ALLOWED);
   }
 
@@ -147,7 +154,8 @@ public abstract class AbstractTapServlet extends HttpServlet {
                             HttpServletResponse response) throws IOException,
                                                                  ServletException,
                                                                  TapException,
-                                                                 WebResourceNotFoundException {
+                                                                 WebResourceNotFoundException,
+                                                                 DsaConfigurationException {
     response.sendError(response.SC_METHOD_NOT_ALLOWED);
   }
 
@@ -166,7 +174,8 @@ public abstract class AbstractTapServlet extends HttpServlet {
                                HttpServletResponse response) throws IOException,
                                                                     ServletException,
                                                                     TapException,
-                                                                    WebResourceNotFoundException {
+                                                                    WebResourceNotFoundException,
+                                                                    DsaConfigurationException {
     response.sendError(response.SC_METHOD_NOT_ALLOWED);
   }
 
@@ -179,7 +188,7 @@ public abstract class AbstractTapServlet extends HttpServlet {
    * @param job The job for which the URI is sought.
    * @return The URI (never null).
    */
-  protected String getJobUri(HttpServletRequest request, Job job) {
+  protected String getJobUri(HttpServletRequest request, Job job) throws DsaConfigurationException {
     return String.format("%s/%s", getJobListUri(request), job.getId());
   }
 
@@ -197,15 +206,9 @@ public abstract class AbstractTapServlet extends HttpServlet {
    * @param job The job for which the URI is sought.
    * @return The URI (never null).
    */
-  protected String getJobListUri(HttpServletRequest request) {
-    String base = SimpleConfig.getProperty("datacenter.url.secure", null);
-    if (base == null) {
-      base = SimpleConfig.getProperty("datacenter.url", null);
-    }
-    if (base == null) {
-      base = String.format("%s://%s:%d%s", request.getScheme(), request.getLocalName(), request.getLocalPort(), request.getContextPath());
-    }
-    return String.format("%s/TAP/async", base);
+  protected String getJobListUri(HttpServletRequest request) throws DsaConfigurationException {
+    URI base = (Configuration.isTapSecure()) ? Configuration.getSecureBaseUri() : Configuration.getBaseUri();
+    return String.format("%s/TAP/async", base.toString());
   }
 
 }

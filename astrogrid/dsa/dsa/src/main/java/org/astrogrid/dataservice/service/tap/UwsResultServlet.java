@@ -38,8 +38,10 @@ public class UwsResultServlet extends UwsJobResourceServlet {
                                                               TapException {
     Job job = getJob(request);
     ResultFile result = new ResultFile(job.getId());
-    response.setContentType(result.getMimeType());
+    response.setContentType("application/x-votable+xml:");
+    response.setCharacterEncoding("UTF-8");
     Writer out = response.getWriter();
+    out.write("<?xml version='1.0' encoding='UTF-8'?>\n");
     Reader in = new FileReader(result);
     Piper.bufferedPipe(in, out);
     in.close();

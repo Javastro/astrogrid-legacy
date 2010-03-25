@@ -5,8 +5,9 @@
 package org.astrogrid.dataservice.service.cea.v1_0;
 
 import java.io.IOException;
-import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.contracts.StandardIds;
+import org.astrogrid.dataservice.Configuration;
+import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.dataservice.metadata.InstallationIvorn;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
@@ -211,29 +212,50 @@ public class CeaResources {
          */
    }
 
-   public static String getCeaServerCapabilities(String catalogName) throws IOException {
-      String endpoint =
-           ConfigFactory.getCommonConfig().getString("datacenter.url");
-      if (!endpoint.endsWith("/")) {
-         endpoint = endpoint + "/";  // Add trailing separator if missing
-      }
-      String appId = (catalogName == null)?
-          InstallationIvorn.makeIvorn("ceaApplication") :
-          InstallationIvorn.makeIvorn(catalogName+"/ceaApplication");
+  /**
+   * Supplies the XML text of the CEA capability. The name of the managed
+   * application is infered from the given catalogue-name.
+   *
+   * @param catalogName The name of the catalogue.
+   * @return The XML text.
+   * @throws IOException If the IVORN for the application cannot be inferred from the configuration.
+   * @throws DsaConfigurationException If the base URL for the service is not configured.
+   */
+  public static String getCeaServerCapabilities(String catalogName) throws DsaConfigurationException, IOException {
+    String endpoint = Configuration.getBaseUri() + "/services/CommonExecutionConnectorService";
 
-      StringBuffer cap = new StringBuffer();
-      cap.append("  <capability xsi:type=\"cea:CeaCapability\" standardID=\"" +
-            StandardIds.CEA_1_0 + "\">\n");
+    String appId = (catalogName == null)?
+        InstallationIvorn.makeIvorn("ceaApplication") :
+        InstallationIvorn.makeIvorn(catalogName+"/ceaApplication");
+
+    StringBuffer cap = new StringBuffer();
+    if (Configuration.isCecSecure()) {
+      cap.append("  <capability xsi:type=\"cea:CeaCapability\" standardID=\"" + StandardIds.CEA_1_0 + "\">\n");
       cap.append("    <description>Access to two applications: general ADQL query, and asynchronous cone-search where relevant/enabled.</description>\n");
       cap.append("    <interface  xsi:type=\"cea:CECInterface\">\n");
-      cap.append("      <accessURL use='full'>" + endpoint + 
-            "services/CommonExecutionConnectorService</accessURL>\n");
+      cap.append("      <accessURL use='full'>" + endpoint + "</accessURL>\n");
+      cap.append("      <securityMethod standardID='ivo://ivoa.net/sso#soap-digital-signature'/>\n");
       cap.append("    </interface>\n");
       cap.append("    <managedApplications>\n");
       cap.append("      <ApplicationReference>" + appId + "</ApplicationReference>\n");
       cap.append("    </managedApplications>\n");
       cap.append("  </capability>\n");
       return cap.toString();
-   }
+    }
+    else {
+      cap.append("  <capability xsi:type=\"cea:CeaCapability\" standardID=\"" + StandardIds.CEA_1_0 + "\">\n");
+      cap.append("    <description>Access to two applications: general ADQL query, and asynchronous cone-search where relevant/enabled.</description>\n");
+      cap.append("    <interface  xsi:type=\"cea:CECInterface\">\n");
+      cap.append("      <accessURL use='full'>" + endpoint + "</accessURL>\n");
+      cap.append("    </interface>\n");
+      cap.append("    <managedApplications>\n");
+      cap.append("      <ApplicationReference>" + appId + "</ApplicationReference>\n");
+      cap.append("    </managedApplications>\n");
+      cap.append("  </capability>\n");
+      return cap.toString();
+    }
+    
+  }
+
 
 }

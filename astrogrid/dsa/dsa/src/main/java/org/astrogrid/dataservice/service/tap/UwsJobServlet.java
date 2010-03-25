@@ -1,5 +1,5 @@
 /*
- * $Id: UwsJobServlet.java,v 1.6 2009/11/16 15:13:55 gtr Exp $
+ * $Id: UwsJobServlet.java,v 1.7 2010/03/25 10:25:52 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.jobs.ResultFile;
 import org.astrogrid.dataservice.queriers.QuerierManager;
@@ -80,7 +81,8 @@ public class UwsJobServlet extends UwsJobResourceServlet {
 	public void performPost(HttpServletRequest  request,
                           HttpServletResponse response) throws IOException,
                                                                TapException,
-                                                               WebResourceNotFoundException{
+                                                               WebResourceNotFoundException,
+                                                               DsaConfigurationException {
     String action = request.getParameter("ACTION");
     if (action != null && action.equals("DELETE")) {
       Job job = getJob(request);
@@ -97,7 +99,8 @@ public class UwsJobServlet extends UwsJobResourceServlet {
 	public void performDelete(HttpServletRequest  request,
 			                      HttpServletResponse response) throws IOException,
                                                                  TapException,
-                                                                 WebResourceNotFoundException {
+                                                                 WebResourceNotFoundException,
+                                                                 DsaConfigurationException {
     Job job = getJob(request);
     deleteJob(job);
     response.setHeader("Location", getJobListUri(request));

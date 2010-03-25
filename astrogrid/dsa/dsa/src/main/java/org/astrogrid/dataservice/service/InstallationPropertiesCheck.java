@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.3 2010/03/25 10:25:53 gtr Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,8 @@ import java.util.Vector;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
+import org.astrogrid.dataservice.Configuration;
+import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 
 
@@ -121,20 +123,6 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkUnset("datacenter.resource.plugin.2", accum)) { bad = bad+1; }
       if (!checkUnset("datacenter.resource.plugin.3", accum)) { bad = bad+1; }
 
-      // Check resource version settings
-      // v0.10 stuff is no longer in use
-      if (!checkUnset("datacenter.resource.register.v0_10", accum)) { 
-         bad = bad+1; 
-      }
-      if (!checkSet("datacenter.resource.register.v1_0", accum)) { 
-         bad = bad+1;
-      }
-      /*
-      // CURRENTLY DON'T HAVE AN AUTHORITY ID PLUGIN!
-      // Check for authority ID setting
-      if (!checkSet("datacenter.resource.register.authID", accum)) { bad = bad+1; }
-      */
-
       // Check registry and other compulsory settings
       // OLD publishing endpoint
       if (!checkUnset("org.astrogrid.registry.admin.endpoint", accum)) { bad = bad+1; }
@@ -142,10 +130,6 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkSet("org.astrogrid.registry.query.endpoint", accum)) { bad = bad+1; }
       if (!checkSet("org.astrogrid.registry.query.altendpoint", accum)) { bad = bad+1; }
       if (!checkSet("cea.component.manager.class", accum)) { bad = bad+1; }
-
-      // These ones aren't compulsory:
-      // datacenter.ucd.version
-      //
 
       // These ones are used by the jdbc plugin
       if ("org.astrogrid.tableserver.jdbc.JdbcPlugin".equals(plugin)) {
@@ -158,6 +142,21 @@ public class InstallationPropertiesCheck extends TestCase {
       }
 
       if (!checkSet("cea.access.policy", accum)) { bad = bad + 1; }
+
+      try {
+        if (Configuration.isConeSearchEnabled() || Configuration.isMultiConeEnabled()) {
+          if (!checkSet("cone.search.access.policy", accum)) {
+            bad++;
+          }
+        }
+      }
+      catch (DsaConfigurationException e) {
+        throw new RuntimeException(e);
+      }
+
+      if (!checkSet("tap.access.policy", accum)) {
+        bad++;
+      }
 
       // Needed for filestore client
       if (!checkSet("org.astrogrid.filestore.chunked.send", accum)) { bad = bad+1; }

@@ -25,57 +25,56 @@ table.bodyTable th, table.bodyTable td {
   padding: 2px 4px 2px 4px;
   vertical-align: top;
 }
-div.clear{
-  clear:both;
-  visibility: hidden;
-}
-div.clear hr{
-  display: none;
-}
-#projectLogo {
-  font-size: xx-large;
-  font-weight: bold;
-}
-#organizationLogo img, #projectLogo img, #projectLogo span{
-  margin: 8px;
-}
-#projectLogo span{
-    border: 1px solid;
-    padding: 4px 10px 4px 10px;
-    background-color: #eee;
-    cursor: pointer;
-}
-.xleft, #organizationLogo img{
-  float:left;
-}
-.xright, #projectLogo img, #projectLogo span{
-  float:right;
-  text-shadow: #7CFC00;
-}
+
 #banner {
-  border-bottom: 1px solid #fff;
+    width: 100%;
 }
-#banner img {
-  border: none;
+
+#logos {
+    text-align: right;
+    background-image: url(astrogrid-logo.gif);
+    background-repeat: no-repeat;
+    color: #900;
+    background-color: white;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 0 5px 0 0;
+    margin: 0px;
 }
-#footer, #breadcrumbs {
-  padding: 3px 10px 3px 10px;
+
+#copyright {
+    text-align: right;
+    font-size: x-small;
+    border-top: 1px solid #aaa;
+    border-bottom: 1px solid #aaa;
+    padding: 0 5px 0 0;
+    margin: 0;
+    background-color: #ccc;
+    color: black;
 }
-#leftColumn {
- width: 18%;
- float:left;
-}
+
 #bodyColumn {
   margin-left: 20%;
+  margin-right: 5px;
 }
+
 #navcolumn {
+  width: 18%;
+  float:left;
   padding: 8px 4px 0 8px;
+  margin: 10px 0 0 5px;
+  border: 1px solid #999;
+  background-color: #eee;
+  color: black;
 }
-#navcolumn h5 {
+
+#navcolumn h2 {
   margin: 10px 0px 0px 0px;
-  padding: 0;
-  font-size: small;
+  font-size: smaller;
+  border-bottom: 1px solid #aaaaaa;
+  padding: 2px 0 0 0;
 }
+
 #navcolumn ul {
   margin: 5px 0px 0px 0px;
   padding: 0;
@@ -88,62 +87,11 @@ div.clear hr{
   background-repeat: no-repeat;
   background-position: 0 0.4em;
   padding-left: 16px;
-  list-style-position: ouside;
+  list-style-position: outside;
   line-height: 1.5em;
   font-size: smaller;
 }
-#navcolumn li.expanded {
-  background-image: url(../images/expanded.gif);
-}
-#navcolumn li.collapsed {
-  background-image: url(../images/collapsed.gif);
-}
-#poweredBy {
-  text-align: center;
-}
-#navcolumn img {
-  margin-top: 10px;
-  margin-bottom: 3px;
-}
-#poweredBy img {
-  display:block;
-  margin: 20px 0 20px 17px;
-  border: 1px solid black;
-  width: 90px;
-  height: 30px;
-}
-#search img {
-    margin: 0px;
-    display: block;
-}
-#search #q, #search #btnG {
-    border: 1px solid #999;
-    margin-bottom:10px;
-}
-#search form {
-    margin: 0px;
-}
-#lastPublished {
-  font-size: x-small;
-}
-.navSection {
-  margin-bottom: 2px;
-  padding: 8px;
-}
-.navSectionHead {
-  font-weight: bold;
-  font-size: x-small;
-}
-.section {
-  padding: 4px;
-}
-#footer {
-  font-size: x-small;
-}
-#breadcrumbs {
-  font-size: x-small;
-  margin: 0pt;
-}
+
 .source {
   padding: 12px;
   margin: 1em 7px 1em 7px;
@@ -157,6 +105,7 @@ body, td, select, input, li{
   font-family: Verdana, Helvetica, Arial, sans-serif;
   font-size: 13px;
 }
+
 a {
   text-decoration: none;
 }
@@ -169,14 +118,7 @@ a:visited  {
 a:active, a:hover {
   color:#69c;
 }
-a.externalLink, a.externalLink:link, a.externalLink:visited, a.externalLink:active, a.externalLink:hover {
-  background: url(../images/external.png) right center no-repeat;
-  padding-right: 15px;
-}
-a.newWindow, a.newWindow:link, a.newWindow:visited, a.newWindow:active, a.newWindow:hover {
-  background: url(../images/newwindow.png) right center no-repeat;
-  padding-right: 18px;
-}
+
 h1 {
   padding: 4px 4px 4px 6px;
   border: 1px solid #999;
@@ -185,7 +127,8 @@ h1 {
   font-weight:900;
   font-size: x-large;
 }
-h2 {
+
+#bodyColumn h2 {
   padding: 4px 4px 4px 6px;
   border: 1px solid #aaa;
   color: #900;
@@ -193,88 +136,8 @@ h2 {
   font-weight: normal;
   font-size: large;
 }
-p {
-  line-height: 1.3em;
-  font-size: small;
-}
-#breadcrumbs {
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #aaa;
-  background-color: #ccc;
-}
-#leftColumn {
-  margin: 10px 0 0 5px;
-  border: 1px solid #999;
-  background-color: #eee;
-}
-#navcolumn h5 {
-  font-size: smaller;
-  border-bottom: 1px solid #aaaaaa;
-  padding-top: 2px;
-}
-
-table.bodyTable th {
-  color: white;
-  background-color: #bbb;
-  text-align: left;
-  font-weight: bold;
-}
-
-table.bodyTable th, table.bodyTable td {
-  font-size: 1em;
-}
-
-table.bodyTable tr.a {
-  background-color: #ddd;
-}
-
-table.bodyTable tr.b {
-  background-color: #eee;
-}
 
 .source {
   border: 1px solid #999;
 }
-div.boxedCode {
-  background: #EEEEEE;
-  border: 1px solid #999;
-}
 
-span.xmldarkgreen {
-  color: #003300;
-}
-span.xmldarkred {
-  color: #330000;
-}
-span.xmlorange {
-  color: #FF3300;
-}
-span.xmlpurple {
-  color: #990099;
-}
-span.xmlblue {
-  color: #0000FF;
-}
-span.bluecomment{
-  color: #0000FF;
-  font-style: italic;
-}
-div.greenback {
-   background: #CCFFCC;
-}
-div.redback {
-   background: #FFCCCC;
-}
-div.yellowback {
-   background: #FFFFCC;
-}
-
-table.bordertable {
-  border: 1px solid #666;
-  background: #EEE;
-}
-
-table.bordertable td {
-   border: 1px solid #666;
-   padding:5px;
-}

@@ -1,19 +1,4 @@
 <div id='banner'>
-    <table border='0' width='100%' cellpadding='8' cellspacing='0'><tr>
-      <td>
-         <a href='http://www.astrogrid.org'>
-         <img border='0' alt='AstroGrid' src='http://www.astrogrid.org/images/AGlogo' align='left'></img>
-         </a>
-      </td><td>
-         <a href='http://www.astrogrid.org/maven/docs/HEAD/pal/index.html' id='projectLogo'>AstroGrid DSA/catalog</a>
-      </td>
-   </tr></table>
-</div>
-<div id='breadcrumbs'>
-  <div class='xleft'>AstroGrid DSA/catalog service</div>
-  <div class='xright'>
-    <a href='http://www.astrogrid.org'>AstroGrid</a>
-    | <a href='http://www.astrogrid.org/maven/docs/HEAD/pal/index.html'>Latest DSA/catalog</a>
-  </div>
-  <div class='clear'></div> <!-- switch off left right stuff -->
+  <p id='logos'>AstroGrid DSA/Catalogue</p>
+  <p id='copyright'>&copy; 2002-2010 <a href='http://www.astrogrid.org'>AstroGrid</a></p>
 </div>

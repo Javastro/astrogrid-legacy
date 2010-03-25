@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 
 /**
@@ -68,20 +67,6 @@ public abstract class VosiServlet extends HttpServlet {
                                  String   chosenCatalog,
                                  Writer   writer) throws IOException,
                                                          ServletException;
-
-  /**
-   * Reveals the base URI of the web application.
-   *
-   * @return The URI.
-   */
-  protected String getRootUri() {
-    String endpoint =
-        ConfigFactory.getCommonConfig().getString("datacenter.url");
-    if (!endpoint.endsWith("/")) {
-      endpoint = endpoint + "/";  // Add trailing separator if missing
-    }
-    return endpoint;
-  }
 
   /**
    * Reveals the time at which the web application was started.
