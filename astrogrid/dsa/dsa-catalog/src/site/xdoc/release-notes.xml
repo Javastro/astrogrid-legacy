@@ -12,12 +12,44 @@
   <p>
     These notes record the cumulative changes in sucessive DSA-versions
     since the last release of 2008. The changes are complete up to version
-    2010.2.
+    2010.3.
   </p>
   <p>
-    Version 2010.2 fixes a problem with character encoding of results. Sites
-    should upgrade to this version.
+    Version 2010.3 allows a choice of output formats for TAP queries. All sites
+    should install this update.
   </p>
+
+  <subsection name="Choice of output formats">
+    <p><i>Since 2010.3.</i></p>
+    <p>
+      Queries to the TAP, CEC and cone-search interfaces may now select the
+      output format. Available formats are VOTable, CSV, TSV and HTML; FITS
+      and pretty-printed text are not available.
+    </p>
+    <p>
+      The format parameter can take the MIME type for the format
+      or one of the keywords <i>votable</i>, <i>csv</i>, <i>tsv</i> or <i>html</i>.
+      The MIME type for TSV is <i>text/tab-separated-values</i>, not
+      <i>text/tsv</i>. The MIME type for VOTable is <i>application/x-votable+xml</i>
+      but <i>text/xml</i> is also accepted; if the latter is set for the
+      format parameter then the results will have exactly this MIME type.
+    </p>
+    <p>
+      In previous versions, some format support was available for CEC and cone
+      search (but with a different and shorter list of format names) and TAP
+      was restricted to VOTable. In the current release, all the interfaces
+      use TAP's format-naming scheme and support the same formats.
+    </p>
+    </subsection>
+
+  <subsection name="Presentation of VOSI-tables results">
+    <p><i>Since 2010.3.</i></p>
+    <p>
+      The XML representation of the VOSI-tables resource now has a linked
+      stylesheet to show it as HTML in a web browser. The underlying
+      XML-representation is unchanged.
+    </p>
+  </subsection>
 
   <subsection name="Fixed: character encoding problems">
     <p><i>Since 2010.2</i></p>
