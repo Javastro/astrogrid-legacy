@@ -20,6 +20,9 @@ import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.dataservice.Configuration;
+import org.astrogrid.dataservice.service.tap.TapOutputFormat;
+import org.astrogrid.query.returns.ReturnTable;
 
 
 /**
@@ -54,10 +57,12 @@ public class SubmitCone extends HttpServlet {
     }
 
     // The cone-search interface may be turned off in the service configuration.
-    String enabledProperty = ConfigFactory.getCommonConfig().getString("datacenter.implements.conesearch");
-    isEnabled = (enabledProperty != null) &&
-                 !enabledProperty.toLowerCase().equals("false");
-
+    try {
+      isEnabled = Configuration.isConeSearchEnabled();
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
    /**
@@ -151,14 +156,16 @@ public class SubmitCone extends HttpServlet {
    */
   private void executeConeSearch(HttpServletRequest  request,
                                  HttpServletResponse response) throws Throwable {
-    response.setContentType("text/xml");
-    response.setCharacterEncoding("UTF-8");
     String catalogName = ServletHelper.getCatalogName(request);
     String tableName = ServletHelper.getTableName(request);
     double radius = ServletHelper.getRadius(request);
     double ra = ServletHelper.getRa(request);
     double dec = ServletHelper.getDec(request);
-    ReturnSpec returnSpec = ServletHelper.makeReturnSpec(request);
+    TapOutputFormat format = new TapOutputFormat(request.getParameter("Format"));
+    response.setContentType(format.toString());
+    response.setCharacterEncoding("UTF-8");
+    ReturnSpec returnSpec = new ReturnTable(new WriterTarget(response.getWriter(), false));
+    returnSpec.setFormat(format.toString());
 
     String raColName = TableMetaDocInterpreter.getConeRAColumnByName(catalogName, tableName);
     String decColName = TableMetaDocInterpreter.getConeDecColumnByName(catalogName, tableName);
@@ -174,8 +181,6 @@ public class SubmitCone extends HttpServlet {
                                 radius,
                                 returnSpec);
 
-    returnSpec.setTarget(new WriterTarget(response.getWriter(), false));
-    response.setContentType(coneQuery.getResultsDef().getFormat());
     String label = request.getRemoteHost()+
                    " (" +
                    request.getRemoteAddr() +

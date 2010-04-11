@@ -69,36 +69,7 @@ public class TapAdqlQuery {
     }
 
     // Validate and record the output format.
-    String f = request.getParameter("FORMAT");
-    if (f == null) {
-      format = "application/x-votable+xml";
-    } else {
-      f = f.trim().toLowerCase();
-      if (f.equals("application/x-votable+xml")) {
-        format = f;
-      }
-      else if (f.equals("votable")) {
-        format = "application/x-votable+xml";
-      }
-      else if (f.equals("text/xml")) {
-        format = f;
-      }
-      else if (f.equals("text/csv")) {
-        format = f;
-      }
-      else if (f.equals("csv")) {
-        format = "text/csv";
-      }
-      else if (f.equals("text/html")) {
-        format = f;
-      }
-      else if (f.equals("html")) {
-        format = "text/html";
-      }
-      else {
-        throw new TapException(String.format("Format %s is not supported here", f));
-      }
-    }
+    format = new TapOutputFormat(request.getParameter("FORMAT")).toString();
   }
 
   /**

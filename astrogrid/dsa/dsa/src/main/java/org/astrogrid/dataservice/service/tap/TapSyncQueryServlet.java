@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
@@ -23,11 +23,6 @@ import org.astrogrid.slinger.targets.WriterTarget;
 public class TapSyncQueryServlet extends AbstractTapServlet {
 
   /**
-   * The engine for executing queries.
-   */
-  DataServer server = new DataServer();
-
-  /**
    * Handles a GET request.
    * The request parameters define the query to be executed.
    *
@@ -42,15 +37,14 @@ public class TapSyncQueryServlet extends AbstractTapServlet {
                                                                  TapException {
     String language = getQueryLanguage(request);
     String adql = getQueryText(request, language);
-    String format = getOutputFormat(request);
+    TapOutputFormat format = new TapOutputFormat(request.getParameter("FORMAT"));
     Query query = makeQuery(request, adql, format, response);
-    Principal principal = query.getGuard().getX500Principal();
-    principal = (principal == null)? LoginAccount.ANONYMOUS : principal;
+    Principal principal = query.getGuard().getX500Principal(); // May be null
     String source = String.format("%s (%s) via TAP, synchronous query",
                                   request.getRemoteHost(),
                                   request.getRemoteAddr());
     try {
-      server.askQuery(principal, query, source);
+      new Querier(principal, query, source).ask();
     } catch (Throwable ex) {
       throw new TapException(ex);
     }
@@ -119,45 +113,9 @@ public class TapSyncQueryServlet extends AbstractTapServlet {
     }
   }
 
-  /**
-   * Determines the format of the output document. If the FORMAT parameter is
-   * missing, the default is application/x-votable+xml.
-   *
-   * @param request The HTTP request.
-   * @return The MIME type.
-   * @throws TapException If the format is an empty parameter.
-   * @throws TapException If the requested format is not supported.
-   */
-  protected String getOutputFormat(HttpServletRequest request) throws TapException {
-    // Determine the requested format for output. We only do VOTable.
-    String format = request.getParameter("FORMAT");
-    if (format == null) {
-      return "application/x-votable+xml";
-    } else {
-      format = format.trim();
-      if (format.length() == 0) {
-        throw new TapException("Parameter FORMAT (output format) was empty");
-      }
-      else if (format.toLowerCase().equals("votable")) {
-        return "application/x-votable+xml";
-      }
-      else if (format.equals("application/x-votable+xml")) {
-        return format;
-      }
-      else if (format.equals("text/xml")) {
-        return format;
-      }
-      else {
-        throw new TapException(String.format("Output format %s is not supported here", format));
-      }
-    }
-  }
-
-
-
   protected Query makeQuery(HttpServletRequest  request,
                             String              adql,
-                            String              format,
+                            TapOutputFormat     format,
                             HttpServletResponse response) throws IOException,
                                                                  TapException {
 
@@ -173,7 +131,9 @@ public class TapSyncQueryServlet extends AbstractTapServlet {
     query.getResultsDef().setTarget(new WriterTarget(response.getWriter(), false));
     
     // Set the MIME type for the output.
-    response.setContentType(format);
+    response.setContentType(format.toString());
+    query.getResultsDef().setFormat(format.toString());
+    
     // How does the server know it's to be ADQL? Is it a default?
     
     // Set the user's name. This is mainly used for logging.

@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.4 2009/11/16 10:11:02 gtr Exp $
+ * $Id: TableResults.java,v 1.5 2010/04/11 21:19:20 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,6 +17,7 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
@@ -94,17 +95,17 @@ public abstract class TableResults implements QueryResults
       else if (requestedFormat.equals(ReturnTable.VOTABLE_BINARY)) {
          return new VoTableBinaryWriter(target, "Query Results", user);
       }
-      else if (requestedFormat.equals(ReturnTable.CSV)) {
+      else if (requestedFormat.equals(MimeTypes.CSV)) {
          return new XsvTableWriter(target, "Query Results", ",", user);
       }
-      else if (requestedFormat.equals(ReturnTable.TSV)) {
+      else if (requestedFormat.equals(MimeTypes.TSV)) {
          return new XsvTableWriter(target, "Query Results", "\t", user);
       }
-      else if (requestedFormat.equals(ReturnTable.HTML)) {
+      else if (requestedFormat.equals(MimeTypes.HTML)) {
          return new HtmlTableWriter(target, "Query Results", querier.getQuery().toHTMLString(), user);
       }
       else {
-         throw new IllegalArgumentException("Unknown results format "+requestedFormat+" ws requested");
+         throw new IllegalArgumentException("Unknown format " + requestedFormat + " was requested");
       }
    }
    

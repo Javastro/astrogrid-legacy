@@ -48,6 +48,7 @@ public abstract class VosiServlet extends HttpServlet {
 
      response.setContentType("text/xml");
      response.setCharacterEncoding("UTF-8");
+     writer.write("<?xml version='1.0' encoding='UTF-8'?>\n");
 
      String chosenCatalog = request.getParameter("COLLECTION");
      String[] catalogNames = TableMetaDocInterpreter.getCatalogNames();

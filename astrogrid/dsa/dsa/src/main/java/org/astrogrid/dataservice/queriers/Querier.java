@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.10 2010/03/25 10:25:52 gtr Exp $
+ * $Id: Querier.java,v 1.11 2010/04/11 21:19:20 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -74,9 +74,6 @@ public class Querier implements Runnable, PluginListener {
    
    /** Represents size of results */
    private long resultsSize = -1;
-
-   /** Logging current information */
-   StatusLogger statusLog = new StatusLogger();
 
   /**
    * Indicates whether the querier is associated with an asynchronous job.
@@ -357,10 +354,6 @@ public class Querier implements Runnable, PluginListener {
     // an associated job: update it now.
     if (hasJob) {
       updateJob();  
-    }
-    
-    if (status.isFinished()) {
-      statusLog.log(status);
     }
   }
 

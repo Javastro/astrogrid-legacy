@@ -22,6 +22,7 @@ public class TableServlet extends VosiServlet {
 
     try {
       writer.write(
+           "<?xml-stylesheet type='text/xsl' href='tables.xsl'?>\n" +
            "<tab:tables\n" +
            "   xmlns:vr='http://www.ivoa.net/xml/VOResource/v1.0'\n" +
            "   xmlns:vs='http://www.ivoa.net/xml/VODataService/v1.0'\n" +

@@ -1,5 +1,5 @@
 /*
- * $Id: MimeTypes.java,v 1.1 2009/05/13 13:20:36 gtr Exp $
+ * $Id: MimeTypes.java,v 1.2 2010/04/11 21:19:20 gtr Exp $
  *
  */
 
@@ -18,8 +18,8 @@ public interface MimeTypes  {
    public static final String PLAINTEXT   = "text/plain"  ;
    public static final String XML         = "text/xml"  ;
    public static final String HTML        = "text/html"  ;
-   public static final String TSV        = "text/tab-separated-values"  ; //tab separated
-   public static final String CSV        = "text/comma-separated-values"  ; //not official?
+   public static final String TSV         = "text/tab-separated-values";
+   public static final String CSV         = "text/csv";
 
    public static final String JOB      = "text/xml +org.astrogrid.job"      ;
    public static final String WORKFLOW = "text/xml +org.astrogrid.workflow" ;

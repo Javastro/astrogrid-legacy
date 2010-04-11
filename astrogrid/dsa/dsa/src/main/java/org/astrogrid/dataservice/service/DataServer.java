@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.3 2009/10/21 19:01:00 gtr Exp $
+ * $Id: DataServer.java,v 1.4 2010/04/11 21:19:20 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -167,12 +167,6 @@ public class DataServer
          throw th;
       }
    }
-
-   /**
-    * Returns the status object */
-   public static DataServiceStatus getStatus() {
-      return status;
-   }
    
    /**
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
@@ -200,62 +194,6 @@ public class DataServer
       }
       
       return submitQuerier(querier, false);
-   }
-
-   /**
-    * Submits a (non-blocking) ADQL/XML/OM query with a given ID.
-    * Results will be output to given Agsl.  Source indicates
-    * which interface is submitting
-    */
-   public String submitQuery(String id, Principal user, Query query, Object source) throws Throwable {
-
-      Querier querier = null;
-      try {
-         querier = new Querier(id, user, query, source);
-      }
-      catch (Throwable th) {
-         //if there's an error, log it, make sure the querier state is correct, and rethrow to
-         //be dealt with correctly up the tree
-         if (querier != null) {
-            try {
-               if (!(querier.getStatus() instanceof QuerierError)) {
-                  querier.setStatus(new QuerierError(querier.getStatus(), "",th));
-               }
-            } catch (Throwable th2) {} ; //ignore
-         }
-         log.error("submitQuery("+user+", "+query+")", th);
-         throw th;
-      }
-
-      return submitQuerier(querier, false);
-   }
-
-   /**
-    * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
-    * reference id.  Results will be output to given Agsl.  Source indicates
-    * which interface is submitting
-    */
-   public String submitPendingQuery(Principal user, Query query, Object source) throws Throwable {
-
-      Querier querier = null;
-      try {
-         querier = new Querier(user, query, source);
-      }
-      catch (Throwable th) {
-         //if there's an error, log it, make sure the querier state is correct, and rethrow to
-         //be dealt with correctly up the tree
-         if (querier != null) {
-            try {
-               if (!(querier.getStatus() instanceof QuerierError)) {
-                  querier.setStatus(new QuerierError(querier.getStatus(), "",th));
-               }
-            } catch (Throwable th2) {} ; //ignore
-         }
-         log.error("submitPendingQuery("+user+", "+query+")", th);
-         throw th;
-      }
-      
-      return submitQuerier(querier, true);
    }
 
    /**
@@ -312,13 +250,6 @@ public class DataServer
    }
    
    /**
-    * Returns the querier corresponding to the given id
-    */
-   public Querier getQuerier(String queryId) {
-      return querierManager.getQuerier(queryId);
-   }
-   
-   /**
     * Returns status of a query. NB the id given is the *datacenter's* id
     */
    public QuerierStatus getQueryStatus(Principal user, 
@@ -339,20 +270,6 @@ public class DataServer
    
       log.warn(user+" is aborting query "+queryId);
       return querier.abort();
-   }
-   
-   public void deleteQuery(Principal user, String queryId) throws IOException {
-      log.warn(user+" is deleting query "+queryId);
-		querierManager.fullyDeleteQuery(queryId);
-   }
-
-   public void deleteQuery(String queryId) throws IOException {
-		 querierManager.fullyDeleteQuery(queryId);
-   }
-   
-   /** Returns the valid formats for this service as an array of strings */
-   public static String[] getFormats() throws QuerierPluginException {
-      return QuerierPluginFactory.createPlugin(null).getFormats();
    }
    
 }

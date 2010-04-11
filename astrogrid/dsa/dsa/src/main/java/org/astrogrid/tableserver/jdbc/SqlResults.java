@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.2 2009/11/12 16:04:18 gtr Exp $
+ * $Id: SqlResults.java,v 1.3 2010/04/11 21:19:20 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,7 +25,6 @@ import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.tableserver.metadata.TooManyColumnsException;
-import org.astrogrid.tableserver.metadata.TooManyTablesException;
 import org.astrogrid.tableserver.out.TableWriter;
 
 /**
@@ -467,6 +466,12 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.3  2010/04/11 21:19:20  gtr
+ Branch pre-2010_3 is merged.
+
+ Revision 1.2.6.1  2010/04/08 11:19:27  gtr
+ I removed an unused import.
+
  Revision 1.2  2009/11/12 16:04:18  gtr
  The log is now private.
 

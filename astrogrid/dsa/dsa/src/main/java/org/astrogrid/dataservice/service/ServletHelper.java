@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.1 2009/05/13 13:20:29 gtr Exp $
+ * $Id: ServletHelper.java,v 1.2 2010/04/11 21:19:20 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.io.account.LoginAccount;
-import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.returns.ReturnImage;
 import org.astrogrid.query.returns.ReturnSpec;
@@ -134,23 +133,6 @@ public class ServletHelper
       return returnSpec;
    }
 
-   /**
-    * Convenience routine for JSPs; extracts the limit value from a request
-    * if present. */
-   public static long getLimit(HttpServletRequest request) {
-      String limit = request.getParameter("Limit");
-      long limitVal;
-      if ( (limit != null) && (limit.trim().length()>0)) {
-         try {
-            limitVal = Long.parseLong(limit, 10);
-         }
-         catch(NumberFormatException e) {
-           throw new IllegalArgumentException("Bad value '" + limit + "' for limit, expected valid integer");
-         }
-         return limitVal;
-      }
-      return Query.LIMIT_NOLIMIT;
-   }
 
    /**
     * Convenience routine for JSPs; returns true if this is an 'ask count' request
@@ -220,69 +202,6 @@ public class ServletHelper
         throw new IllegalArgumentException("Limit is ignored!");
       }
       */
-   }
-   
-   /** Creates a Circle function condition from parameters in the given request.
-    * Accepts POS=(ra,dec) and RA=ra&DEC=dec, and SIZE and SR for search radius.
-    * Accepts all-lower case as well as all-upper case
-    */
-   /*
-   public static CircleCondition makeCircleCondition(HttpServletRequest request) {
-      
-      String radiusparam = request.getParameter("SIZE");
-      if (radiusparam == null) { radiusparam = request.getParameter("size"); }
-      if (radiusparam == null) { radiusparam = request.getParameter("SR"); }
-      if (radiusparam == null) { radiusparam = request.getParameter("sr"); }
-      if (radiusparam == null) { radiusparam = request.getParameter("RADIUS"); }
-      if (radiusparam == null) { radiusparam = request.getParameter("radius"); }
-      if (radiusparam == null) {
-         throw new IllegalArgumentException("No Radius given as SIZE or SR or RADIUS");
-      }
-      double radius = Double.parseDouble(radiusparam);
-      
-      double ra;
-      double dec;
-
-      String pos = request.getParameter("POS");
-      if (pos == null)     {  request.getParameter("pos"); }
-      if (pos != null) {
-         int comma = pos.indexOf(",");
-         ra = Double.parseDouble(pos.substring(0,comma));
-         dec = Double.parseDouble(pos.substring(comma+1));
-         return new CircleCondition(ra, dec, radius);
-      }
-
-      String raparam = request.getParameter("RA");
-      if (raparam == null) {  raparam = request.getParameter("ra"); }
-      if (raparam == null) {  raparam = request.getParameter("Ra"); }
-      if (raparam == null) {
-         throw new IllegalArgumentException("No RA given");
-      }
-      
-      String decparam = request.getParameter("DEC");
-      if (decparam == null) { decparam = request.getParameter("dec"); }
-      if (decparam == null) { decparam = request.getParameter("Dec"); }
-      if (raparam == null) {
-         throw new IllegalArgumentException("No DEC given");
-      }
-      
-      ra = Double.parseDouble(raparam);
-      dec = Double.parseDouble(decparam);
-      
-      return new CircleCondition(ra, dec, radius);
-   }
-   */
-
-   /** Convenience routine for extracting the input Query string in a TAP
-	 * query*/
-   public static String getQuery(HttpServletRequest request)
-   {
-      String query = request.getParameter("QUERY");
-		if ((query == null) || ("".equals(query))) {
-			throw new IllegalArgumentException(
-					"QUERY parameter (input ADQL query string) is missing or empty");
-      }
-      return query;
    }
    
    /** Convenience routine for extracting the catalog name of a conesearch */
@@ -434,17 +353,6 @@ public class ServletHelper
              "Bad DEC '" + decparam + "' given, expected real number");
       }
    }
-   
-   /** Convenience routine for extracting an input ADQL query string */
-   public static String getAdql(HttpServletRequest request)
-   {
-      String adqlString = request.getParameter("ADQL");
-      if (adqlString == null) { adqlString = request.getParameter("adql"); }
-      if (adqlString == null) {
-         throw new IllegalArgumentException("No input query given as parameter 'ADQL'");
-      }
-      return adqlString;
-   }
 
    /** Convenience routine for returning the correct 'HTML' snippet that
     * refreshes the page given by the URL - which should point to the same page
@@ -463,34 +371,6 @@ public class ServletHelper
       else {
          return "<LINK href='"+cssName+"' rel='stylesheet' type='text/css'>";
       }
-   }
-
-   /** Convenience routine that returns the complete <HEAD> element for the
-    * standard datacenter page */
-   public static String getHeadElement(String title) {
-      return "<HEAD>\n"+
-             "  <TITLE>"+title+" ("+DataServer.getDatacenterName()+")</TITLE>\n"+
-             "  "+getCssLink()+"\n"+
-             "</HEAD>\n";
-   }
-
-   
-   /** Retruns the available formats as a list of <option>format</option>
-    * in a single string */
-   public static String getFormatOptions() throws IOException {
-      String f[] = DataServer.getFormats();
-      
-      String ops = "";
-      for (int i = 0; i < f.length; i++) {
-         String option = MimeNames.humanFriendly(f[i]);
-         if ("HTML".equals(option)) {
-            ops = ops + "<option SELECTED>"+MimeNames.humanFriendly(f[i])+"</option>";
-         }
-         else {
-            ops = ops + "<option>"+MimeNames.humanFriendly(f[i])+"</option>";
-         }
-      }
-      return ops;
    }
    
    /**
@@ -582,10 +462,4 @@ public class ServletHelper
       return exceptionAsHtmlPage(title, th, "");
    }
    
-   /** For quick tests/debugging */
-   public static void main(String[] args) throws IOException
-   {
-      String t = getFormatOptions();
-      System.out.println(t);
-   }
 }
