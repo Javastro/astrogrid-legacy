@@ -40,6 +40,13 @@
           <include>**/*.xsl</include>
         </includes>
       </resource>
+      <resource>
+        <targetPath>org/astrogrid/tableserver/metadata</targetPath>
+        <directory>${basedir}/src/main/java/org/astrogrid/tableserver/metadata</directory>
+        <includes>
+          <include>*.xsd</include>
+        </includes>
+      </resource>
     </resources>
     <testResources>
       <testResource>
