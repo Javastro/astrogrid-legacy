@@ -17,6 +17,7 @@ import org.astrogrid.dataservice.metadata.MetadataException;
  *
  * @author M Hill
  * @author K Andrews
+ * @author Guy Rixon
  */
 public class MetadocInterpreterTest extends TestCase {
 
@@ -27,15 +28,15 @@ public class MetadocInterpreterTest extends TestCase {
             "datacenter.querier.plugin", 
             "org.astrogrid.tableserver.test.SampleStarsPlugin");
       TableMetaDocInterpreter.clear();
-      TableMetaDocInterpreter.initialize(
-            getMetadocUrlFromFilename(
-            "metadocs/good_metadoc.xml"));
+      TableMetaDocInterpreter.initialize(getMetadocUrlFromFilename("metadocs/good_metadoc.xml"));
    }
 
    protected URL getMetadocUrlFromFilename(String metadocFilename) 
          throws MalformedURLException {
-       return new URL(MetadocInterpreterTest.class.getResource(
-               metadocFilename).toString());
+     assertNotNull("Metadoc file-name is null", metadocFilename);
+     URL u = MetadocInterpreterTest.class.getResource(metadocFilename);
+     assertNotNull("Metadoc " + metadocFilename + " is not found as a resource", u);
+     return u;
    }
 
    /** Tests for basic metadoc validity */
