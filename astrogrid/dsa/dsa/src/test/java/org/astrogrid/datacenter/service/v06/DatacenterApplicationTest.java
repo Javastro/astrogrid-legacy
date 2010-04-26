@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.3 2009/10/21 19:01:00 gtr Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.4 2010/04/26 10:54:49 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,13 +38,11 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.jobs.ResultFile;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
-import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.cea.DatacenterApplication;
 import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescription;
 import org.astrogrid.io.Piper;
 import org.astrogrid.io.account.LoginAccount;
-import org.astrogrid.tableserver.VoTableTestHelper;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.PrecannedPlugin;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -121,7 +118,7 @@ public class DatacenterApplicationTest extends TestCase {
    protected TestResultListener resultListener;
    
    /** populates the tool object - as a direct call */
-   protected void populateTool(Tool tool) {
+   protected void populateTool(Tool tool) throws Exception {
       tool.setInterface(DatacenterApplicationDescription.ADQL_IFACE);
       Input input = new Input();
       Output output = new Output();
@@ -132,12 +129,9 @@ public class DatacenterApplicationTest extends TestCase {
       query.setIndirect(false);
       
       InputStream is = this.getClass().getResourceAsStream(SAMPLE_QUERY_RESOURCE);
+      assertNotNull("Cannot read " + SAMPLE_QUERY_RESOURCE + " as a resource", is);
       StringWriter out = new StringWriter();
-      try {
-         Piper.pipe(new InputStreamReader(is),out);
-      } catch (Exception e) {
-         Assert.fail("Could not read query " + e.getMessage());
-      }
+      Piper.pipe(new InputStreamReader(is),out);
       query.setValue(out.toString());
       input.addParameter(query);
       
@@ -332,6 +326,9 @@ public class DatacenterApplicationTest extends TestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.4  2010/04/26 10:54:49  gtr
+ Fixed: was reporting spurious failures (JUnit-3 bug?)
+
  Revision 1.3  2009/10/21 19:01:00  gtr
  V2009.1.01, merged.
 
