@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-dsa</artifactId>
   <packaging>jar</packaging>
-  <version>2010.3</version>
+  <version>2010.4</version>
   <name>DSA library</name>
 
   <parent>
@@ -50,6 +50,7 @@
           <include>**/*.sql</include>
           <include>**/*.xml</include>
           <include>**/*.xsl</include>
+          <include>**/*.xsd</include>
           <include>**/*.fits</include>
           <include>**/*.properties</include>
           <include>**/data</include>
