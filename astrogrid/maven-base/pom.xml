@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.21 2009/07/10 16:50:36 pah Exp $ -->
+<!-- $Id: pom.xml,v 1.22 2010/05/06 19:53:21 pah Exp $ -->
    <!--
       This pom is intended to contain the "version" information for the astrogrid (and other commonly used) components.
       In addition it contains the basic project information - however it *must not* contain any specific build information - this is contained in the
@@ -14,10 +14,10 @@
    <groupId>org.astrogrid</groupId>
    <artifactId>astrogrid-versions</artifactId>
    <name>Astrogrid Master Version POM</name>
-   <version>2009.1</version>
+   <version>2010.1-SNAPSHOT</version>
    <properties>
      <!-- note properties use _ rather than . as a word separator so that they can be used as substitution variables in velocity docs -->
-     <astrogrid_release>2009.1</astrogrid_release>
+     <astrogrid_release>2010.1</astrogrid_release>
      <astrogrid_doc_server_root>scpexe://maven.astrogrid.org/software/doc/</astrogrid_doc_server_root>
      <astrogrid_doc_URL_root>http://software.astrogrid.org/doc/</astrogrid_doc_URL_root>
      
@@ -27,14 +27,14 @@
      <astrogrid_adql2_version>2009.1</astrogrid_adql2_version>
      <astrogrid_common_version>2009.1</astrogrid_common_version>
      <astrogrid_community_version>2009.1</astrogrid_community_version>
-     <astrogrid_contracts_version>2009.1</astrogrid_contracts_version>
-     <astrogrid_cea_version>2009.1</astrogrid_cea_version>
-     <astrogrid_desktop_version>1.3</astrogrid_desktop_version>
-     <astrogrid_dsa_version>2009.1</astrogrid_dsa_version>
-     <astrogrid_ivoaobj_version>2009.1</astrogrid_ivoaobj_version>
+     <astrogrid_contracts_version>2010.1-SNAPSHOT</astrogrid_contracts_version>
+     <astrogrid_cea_version>2.0-SNAPSHOT</astrogrid_cea_version>
+     <astrogrid_desktop_version>1.3.2</astrogrid_desktop_version>
+     <astrogrid_dsa_version>2010.2</astrogrid_dsa_version>
+     <astrogrid_ivoaobj_version>1.1-SNAPSHOT</astrogrid_ivoaobj_version>
      <astrogrid_registry_version>2009.1</astrogrid_registry_version>
-     <astrogrid_samp_version>0.3-1</astrogrid_samp_version>
-     <astrogrid_security_version>2009.1</astrogrid_security_version>
+     <astrogrid_samp_version>1.0</astrogrid_samp_version>
+     <astrogrid_security_version>2010.1</astrogrid_security_version>
      <astrogrid_vospace_version>2009.1</astrogrid_vospace_version>
    </properties>
    
