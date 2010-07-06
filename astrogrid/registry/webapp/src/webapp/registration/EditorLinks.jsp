@@ -40,7 +40,8 @@ String encodedIvorn = URLEncoder.encode(ivorn, "iso-8859-1");
         <h1>Editing options for <%=ivorn%></h1>
         <ul>
           <% if(!contractVersion.equals("0.1")) { %>
-          <li><a href="DublinCore.jsp?IVORN=<%=encodedIvorn%>">Edit core information</a></li>
+          <!--<li><a href="DublinCore.jsp?IVORN=<%=encodedIvorn%>">Edit core information</a></li>-->
+          <li><a href="DublinCore?IVORN=<%=encodedIvorn%>">Edit core information</a></li>
           <li><a href="ServiceMetadataForm.jsp?IVORN=<%=encodedIvorn%>">Edit metadata (service/application) via VOSI</a></li>
           <li><a href="CoverageForm.jsp?IVORN=<%=encodedIvorn%>">Edit coverage</a></li>
           <% } %>

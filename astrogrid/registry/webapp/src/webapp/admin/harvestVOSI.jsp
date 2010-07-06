@@ -107,8 +107,8 @@
             //last update date
             out.write("<td>"+setFG+resourceElement.getAttribute("updated")+endFG+"</td>");
             out.write("<td>");
-            out.write("<a href=../viewResourceEntry.jsp?IVORN="+ivoStr+">View</a> ");
-            out.write("<a href='../viewResourceEntry_body.jsp?XML=true&amp;IVORN="+ivoStr+"'>XML</a>, ");
+            out.write("<a href=../main/viewResourceEntry.jsp?IVORN="+ivoStr+">View</a> ");
+            out.write("<a href='../main/viewResourceEntry_body.jsp?XML=true&amp;IVORN="+ivoStr+"'>XML</a>, ");
             out.write(" <a href='harvestStatus.jsp?IVORN="+ivoStr+"'>Status</a>");
             out.write("</td>");                        
             out.write("</font></tr>\n");

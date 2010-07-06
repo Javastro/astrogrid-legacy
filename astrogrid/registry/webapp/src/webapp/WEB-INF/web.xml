@@ -288,6 +288,11 @@
       <servlet-name>TreeServlet</servlet-name>
       <url-pattern>/tree/*</url-pattern>
     </servlet-mapping>
+    
+    <servlet-mapping>
+      <servlet-name>TreeServlet</servlet-name>
+      <url-pattern>/main/tree/*</url-pattern>
+    </servlet-mapping>
 
   <!-- various MIME type mappings ====================================== -->
 

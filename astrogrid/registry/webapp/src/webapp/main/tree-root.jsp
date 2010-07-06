@@ -48,7 +48,7 @@
             see the original XML.
           </p>
           <ul>
-            <li><a href="<%=request.getContextPath()%>/main/tree-branch.jsp">ivo://</a></li>
+            <li><a href="<%=request.getContextPath()%>/main/tree/">ivo://</a></li>
           </ul>
        </div>
     </div>

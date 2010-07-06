@@ -64,7 +64,6 @@ public class TreeServlet extends HttpServlet {
                        HttpServletResponse response) throws ServletException, 
                                                             IOException {
     String path = request.getPathInfo();
-    
     // Show a web page for the root of the tree.
     if (path == null) {
       showTreeRoot(request, response);
@@ -93,7 +92,7 @@ public class TreeServlet extends HttpServlet {
   private void showTreeRoot(HttpServletRequest  request, 
                             HttpServletResponse response) throws IOException, 
                                                                  ServletException {
-    request.getRequestDispatcher("/tree-root.jsp").forward(request, response);
+    request.getRequestDispatcher("/main/tree-root.jsp").forward(request, response);
   }
 
   private void showPathBranch(HttpServletRequest  request, 
@@ -109,12 +108,12 @@ public class TreeServlet extends HttpServlet {
                     "where $x/@status='active' " +
                     "and fn:starts-with($x/identifier,'" + ivorn + "') " +
                     "return string(substring($x/identifier, 6))";
-    System.out.println("Query is " + xquery);
+//    System.out.println("Query is " + xquery);
     try {
       Set hrefs = new TreeSet();
       XMLDBRegistry xdb = new XMLDBRegistry();
       ResourceSet rs = xdb.query(xquery,"astrogridv1_0");
-      System.out.println("Resources found: " + rs.getSize());
+  //    System.out.println("Resources found: " + rs.getSize());
       
       // From the resources resulting from the XQuery, build a sorted set of
       // hrefs that can be used in a web page. The hrefs are relative. Using
@@ -144,7 +143,7 @@ public class TreeServlet extends HttpServlet {
       // The hrefs are relative.
       request.setAttribute("ivorn", ivorn);
       request.setAttribute("hrefs", hrefs);
-      request.getRequestDispatcher("/tree-branch.jsp").forward(request, response);
+      request.getRequestDispatcher("/main/tree-branch.jsp").forward(request, response);
    
     } catch (XMLDBException ex) {
       response.sendError(response.SC_INTERNAL_SERVER_ERROR, ex.getMessage());

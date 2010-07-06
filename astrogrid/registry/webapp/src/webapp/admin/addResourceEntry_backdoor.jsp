@@ -1,6 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.admin.*,
                  org.astrogrid.registry.server.harvest.*,
                  org.astrogrid.store.Ivorn,
+                 org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.registry.common.RegistryValidator,
                  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  junit.framework.AssertionFailedError,
@@ -83,12 +84,16 @@
   }
 %>
 
+<!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>Edit Registry Entry</title>
+<meta http-equiv="Content-type" content="text/xhtml; charset=iso-8859-1">
 <style type="text/css" media="all">
    <%@ include file="/style/astrogrid.css" %>          
 </style>
+<%@ include file="../style/link_options.xml" %>
 </head>
 
 <body>
@@ -106,8 +111,8 @@
    if(update) {
       Document result = null;
       RegistryHarvestAdmin server = new RegistryHarvestAdmin();      
-      
-      server.harvestingUpdate(doc,org.astrogrid.registry.server.http.servlets.helper.JSPHelper.getQueryService(request).getResourceVersion());
+      String ivoStr = RegistryDOMHelper.getIdentifier(doc.getDocumentElement());
+      server.harvestingUpdate(doc,ivoStr, org.astrogrid.registry.server.http.servlets.helper.JSPHelper.getQueryService(request).getResourceVersion());
       out.write("<p>Attempt at updating Registry, if any errors occurred it will be printed below<br /></p>");
       if (result != null) {
         DomHelper.DocumentToWriter(result, out);
