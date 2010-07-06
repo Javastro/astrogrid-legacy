@@ -62,28 +62,33 @@ public class VOSIHarvest extends RegistrarServlet {
 			if(capList.getLength() > 0) {
 				if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#capabilities") ||
 					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.4#capabilities")	||
-					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#capabilities")) {
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#capabilities") ||
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://ivoa.net/std/VOSI#capabilities")) {
 					//System.out.println("try to set cap value");
 					urlText= ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
-					for(int j = 0;j < urlText.getLength();j++) {
-						if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
-							//System.out.println("yes text node lets try to concat");
-							capURL += urlText.item(j).getNodeValue();
+					if(capURL.length() == 0) {
+						for(int j = 0;j < urlText.getLength();j++) {
+							if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
+								//System.out.println("yes text node lets try to concat");
+								capURL += urlText.item(j).getNodeValue();
+							}
 						}
 					}
 					System.out.println("cap url set = " + capURL);
-				}                                                                 ivo://org.astrogrid/std/VOSI/v0.3#tables
+				}                                                 //                ivo://org.astrogrid/std/VOSI/v0.3#tables
 				if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#tables") ||
 					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.4#tables") ||
 					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#tables")) {
 					//System.out.println("try to set tableURL");
 					urlText = ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
-					for(int j = 0;j < urlText.getLength();j++) {
-						if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
-							//System.out.println("yes text node lets try to concat on tableURL");
-							tableURL += urlText.item(j).getNodeValue();
+					if(tableURL.length() == 0) {
+						for(int j = 0;j < urlText.getLength();j++) {
+							if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
+								//System.out.println("yes text node lets try to concat on tableURL");
+								tableURL += urlText.item(j).getNodeValue();
+							}
 						}
-					}					
+					}
 					System.out.println("table url set = " + tableURL);
 				}
 				if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#ceaApplication") ||
@@ -91,12 +96,14 @@ public class VOSIHarvest extends RegistrarServlet {
 					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#ceaApplication")) {
 					//System.out.println("try to set ceaURL");
 					urlText = ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
-					for(int j = 0;j < urlText.getLength();j++) {
-						if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
-							//System.out.println("yes text node lets try to concat on ceaURL");
-							ceaURL += urlText.item(j).getNodeValue();
-						}
-					}					
+					if(ceaURL.length() == 0) {
+						for(int j = 0;j < urlText.getLength();j++) {						
+							if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
+								//System.out.println("yes text node lets try to concat on ceaURL");
+								ceaURL += urlText.item(j).getNodeValue();							
+							}
+						}					
+					}
 					System.out.println("cea url set = " + ceaURL);
 				}
 				//remove any other capability there because the xsl stylesheet
@@ -111,13 +118,16 @@ public class VOSIHarvest extends RegistrarServlet {
 		
 		if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#capabilities") ||
 			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.4#capabilities") ||
-			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#capabilities")) {
+			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#capabilities") ||
+			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://ivoa.net/std/VOSI#capabilities")) {
 			//System.out.println("try to set cap value");
 			urlText= ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
-			for(int j = 0;j < urlText.getLength();j++) {
-				if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
-					//System.out.println("yes text node lets try to concat");
-					capURL += urlText.item(j).getNodeValue();
+			if(capURL.length() == 0) {
+				for(int j = 0;j < urlText.getLength();j++) {
+					if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
+						//System.out.println("yes text node lets try to concat");
+						capURL += urlText.item(j).getNodeValue();
+					}
 				}
 			}
 			System.out.println("cap url set = " + capURL);
@@ -127,12 +137,14 @@ public class VOSIHarvest extends RegistrarServlet {
 			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#tables") ) {
 			//System.out.println("try to set tableURL");			
 			urlText = ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
-			for(int j = 0;j < urlText.getLength();j++) {
-				if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
-					//System.out.println("yes text node lets try to concat on tableURL");
-					tableURL += urlText.item(j).getNodeValue();
+			if(tableURL.length() == 0) {
+				for(int j = 0;j < urlText.getLength();j++) {
+					if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
+						//System.out.println("yes text node lets try to concat on tableURL");
+						tableURL += urlText.item(j).getNodeValue();
+					}
 				}
-			}					
+			}
 			System.out.println("table url set = " + tableURL);
 		}
 		if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#ceaApplication") ||
@@ -140,12 +152,14 @@ public class VOSIHarvest extends RegistrarServlet {
 			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#ceaApplication")) {
 			//System.out.println("try to set ceaURL");
 			urlText = ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
-			for(int j = 0;j < urlText.getLength();j++) {
-				if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
-					//System.out.println("yes text node lets try to concat on ceaURL");
-					ceaURL += urlText.item(j).getNodeValue();
+			if(ceaURL.length() == 0) {
+				for(int j = 0;j < urlText.getLength();j++) {
+					if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
+						//System.out.println("yes text node lets try to concat on ceaURL");
+						ceaURL += urlText.item(j).getNodeValue();
+					}
 				}
-			}					
+			}
 			System.out.println("cea url set = " + ceaURL);
 		}		
 		

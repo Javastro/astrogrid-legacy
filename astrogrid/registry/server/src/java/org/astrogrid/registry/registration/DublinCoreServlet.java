@@ -115,7 +115,10 @@ public class DublinCoreServlet extends RegistrarServlet {
       transformer.setTransformationParameter("contentSource", request.getParameter("content.source"));      
       transformer.setTransformationParameter("type", request.getParameter("content.type"));
       transformer.setTransformationParameter("contentLevel", request.getParameter("content.contentLevel"));
-      transformer.setTransformationParameter("vosiURL", request.getParameter("vosiURL"));      
+      transformer.setTransformationParameter("vosiURL", request.getParameter("vosiURL"));
+      //System.out.println("web url = " + request.getParameter("capability.interface.webbrowserRefURL"));
+      transformer.setTransformationParameter("webbrowserRefURL", request.getParameter("capability.interface.webbrowserRefURL"));
+      
       transformer.transform();
       register(ivorn, transformer.getResultAsDomNode());
 

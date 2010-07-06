@@ -243,6 +243,7 @@ public abstract class DefaultHarvestService {
                                //rha.clearOAILastUpdateInfo(tempIdent + "/" + resKey,versionNumber);
                            	  //call beginHarvest which is in the subclass (contract version RegistryHarvestService)
                                beginHarvest(elem,dt, lastResumptionToken);
+                               dt = null;
                                //rha.addStatNewDate(tempIdent + "/" + resKey, versionNumber);
                                //rha.harvestingUpdate(DomHelper.newDocument(DomHelper.ElementToString(elem)), versionNumber);
                            }
@@ -326,7 +327,7 @@ public abstract class DefaultHarvestService {
          //call the service
          //remember to look at the date
       	  log.debug("its a webservice call it via soap");
-          results =  runHarvestSoap(accessURL, lastResumptionToken, setName, dt, identifier);
+          results =  runHarvestSoap(accessURL, lastResumptionToken, setName, dt, identifier, "");
           //rha.addResumptionToken(identifier,versionNumber,"NONE");
           return results;
       }else if(invocationType != null && 
@@ -352,7 +353,7 @@ public abstract class DefaultHarvestService {
             }
             //log.debug("Grabbing Document from this url = " + accessURL + ending);
 
-            results =  runHarvestGet(accessURL + "?verb=ListRecords", ending, lastResumptionToken, identifier);
+            results =  runHarvestGet(accessURL + "?verb=ListRecords", ending, lastResumptionToken, identifier, "");
             //rha.addResumptionToken(identifier,versionNumber,"NONE");
             return results;
          }catch(ParserConfigurationException pce) {
@@ -370,11 +371,11 @@ public abstract class DefaultHarvestService {
       return null;
    }//beginHarvest
        
-       public String runHarvestGet(String accessURL, String urlQuery, String resumptionToken, String identifier) throws RegistryException {
+       public String runHarvestGet(String accessURL, String urlQuery, String resumptionToken, String identifier, String resultInfo) throws RegistryException {
            Document doc = null;
            int failureCount = 0;           
            boolean resumptionSuccess = false;
-           String results = "";
+           String results = resultInfo;
            while(failureCount <= 2 && !resumptionSuccess) {
                try {
                    log.debug("harvest call url = " + accessURL + urlQuery);
@@ -442,7 +443,8 @@ public abstract class DefaultHarvestService {
               //Though technically resumptionToken do not guarantee to save state and give you the same
               //results.
               //rha.addResumptionToken(identifier,versionNumber,nd.getFirstChild().getNodeValue());
-              runHarvestGet(accessURL, urlQuery, nd.getFirstChild().getNodeValue(), identifier);
+              //System.out.println("RESUMPTIONTOKEN RESULTS:====" + results);
+              results += runHarvestGet(accessURL, urlQuery, nd.getFirstChild().getNodeValue(), identifier, "");
            }//if
            return results;
        }//runHarvestGet
@@ -493,10 +495,10 @@ public abstract class DefaultHarvestService {
            return sbeRequest;           
        }
               
-       public String runHarvestSoap(String accessURL, String resumptionToken, String setName, Date fromDate, String identifier) throws RegistryException {
+       public String runHarvestSoap(String accessURL, String resumptionToken, String setName, Date fromDate, String identifier, String resultInfo) throws RegistryException {
            
            //create a call object
-           String results = "";
+           String results = resultInfo;
            Call callObj = getCall(accessURL);
                  //log.info("FULL SOAP REQUEST FOR HARVEST = " + DomHelper.DocumentToString(doc));                 
                  try {
@@ -511,7 +513,7 @@ public abstract class DefaultHarvestService {
                          if(resumptionToken != null)
                          if(soapDoc.getDocumentElement().getElementsByTagNameNS("http://www.openarchives.org/OAI/2.0","error").getLength() > 0 ||
                             soapDoc.getDocumentElement().getElementsByTagNameNS("oai","error").getLength() > 0) {
-                             runHarvestSoap(accessURL, null, setName, fromDate,identifier);
+                             runHarvestSoap(accessURL, null, setName, fromDate,identifier,results);
                          }
                          
                          //(new HarvestThread(ras,soapDoc.getDocumentElement())).start();
@@ -520,7 +522,7 @@ public abstract class DefaultHarvestService {
                          //if(isRegistryType) {
                             NodeList nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
                             if(nl.getLength() > 0) {
-                                runHarvestSoap(accessURL, nl.item(0).getFirstChild().getNodeValue(), setName, fromDate, identifier);
+                                runHarvestSoap(accessURL, nl.item(0).getFirstChild().getNodeValue(), setName, fromDate, identifier, results);
                             }//if
                      }//if
                   } catch(RemoteException re) {

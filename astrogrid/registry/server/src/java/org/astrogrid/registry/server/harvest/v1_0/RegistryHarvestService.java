@@ -138,8 +138,12 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
       if(accessURL.indexOf("?wsdl") != -1) {
           accessURL = accessURL.substring(0,accessURL.indexOf("?wsdl"));
       }
-      
       log.info("The access URL = " + accessURL + " invocationType = " + typeAttribute.getNodeValue() + " identifier = " + identifier);
+      if(dt != null) {
+    	   log.info(" with date = " + dt.toString());
+      }else {
+    	  log.info("dt date is null");
+      }
       try {
           String results = beginHarvest(accessURL, typeAttribute.getNodeValue(),dt, lastResumptionToken, identifier, null);
 //        here we need to add new harvestdate to the stat

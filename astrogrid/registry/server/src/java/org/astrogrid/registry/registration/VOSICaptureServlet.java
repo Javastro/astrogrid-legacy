@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.astrogrid.util.DomHelper;
 
 
@@ -48,6 +49,8 @@ public class VOSICaptureServlet extends RegistrarServlet {
             "/main/viewResourceEntry_body.jsp?IVORN=" +
             encodedIvorn);
     String xsiType = null;
+    NodeList urlText = null;
+    String capURL = "";
     try {
 	    Document checkDoc = DomHelper.newDocument(resourceUrl);
 	    org.w3c.dom.NodeList nl = checkDoc.getElementsByTagNameNS("*","Resource");
@@ -55,6 +58,25 @@ public class VOSICaptureServlet extends RegistrarServlet {
 	    	throw new ServletException("Could not find Resource in the Registry.  Identifier given but is not correct.");
 	    }
 	    xsiType = ((Element)nl.item(0)).getAttributeNS("http://www.w3.org/2001/XMLSchema-instance","type");
+	    NodeList capList = ((Element)nl.item(0)).getElementsByTagName("capability");
+	   
+	    for(int k = 0;k < capList.getLength();k++) {
+	    	if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#capabilities") ||
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.4#capabilities")	||
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#capabilities") ||
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://ivoa.net/std/VOSI#capabilities")) {
+	    		urlText= ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
+	    		if(capURL.length() == 0) {
+					for(int j = 0;j < urlText.getLength();j++) {
+						if(urlText.item(j).getNodeType() == Node.TEXT_NODE) {
+							//System.out.println("yes text node lets try to concat");
+							capURL += urlText.item(j).getNodeValue();
+						}//if
+					}//for
+	    		}//if
+	    		k = capList.getLength();
+	    	}//if
+	    }//for
     }catch(javax.xml.parsers.ParserConfigurationException pc) {
     	throw new ServletException("Parser Configuration Exception happened when trying to read the given Resource out of the registry.");    	
     }catch(org.xml.sax.SAXException se) {
@@ -64,6 +86,10 @@ public class VOSICaptureServlet extends RegistrarServlet {
                          encodedIvorn;
     if( xsiType != null && xsiType.endsWith("Application") ) {
     	redirectUri += "&appResource=true";
+    }
+    if(urlText != null && capURL.trim().length() > 0) {
+    	redirectUri += "&" + URLEncoder.encode(capURL, "UTF-8");
+    	
     }
     request.getRequestDispatcher(redirectUri).forward(request, response);
   }

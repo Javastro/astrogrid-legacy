@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
     xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" 
     exclude-result-prefixes="vr ri">
@@ -155,7 +156,7 @@
               <td>Postal address of contact person</td>
               <td>
                 <input type="text" size="48" name="curation.contact.address">
-                  <xsl:attribute name="value"><xsl:value-of select="curation/contact.html"/></xsl:attribute>
+                  <xsl:attribute name="value"><xsl:value-of select="curation/contact/address"/></xsl:attribute>
                 </input>
               </td>
               <td><a href="../help/contact.html">help</a></td>
@@ -173,7 +174,7 @@
               <td>Telephone number of contact person</td>
               <td>
                 <input type="text" size="48" name="curation.contact.telephone">
-                  <xsl:attribute name="value"><xsl:value-of select="curation/contact.html"/></xsl:attribute>
+                  <xsl:attribute name="value"><xsl:value-of select="curation/contact/telephone"/></xsl:attribute>
                 </input>
               </td>
               <td><a href="../help/contact.html">help</a></td>
@@ -403,7 +404,7 @@
               <td>
                 <select name="content.contentLevel">
                   <xsl:choose>
-                    <xsl:when test="@status='Research'">
+                    <xsl:when test="content/contentLevel='Research'">
                       <option selected="yes">Research</option>
                     </xsl:when>
                     <xsl:otherwise>
@@ -411,7 +412,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:choose>
-                    <xsl:when test="@status='General'">
+                    <xsl:when test="content/contentLevel='General'">
                       <option selected="yes">General</option>
                     </xsl:when>
                     <xsl:otherwise>
@@ -419,7 +420,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:choose>
-                    <xsl:when test="@status='Elementary Education'">
+                    <xsl:when test="content/contentLevel='Elementary Education'">
                       <option selected="yes">Elementary education</option>
                     </xsl:when>
                     <xsl:otherwise>
@@ -427,7 +428,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:choose>
-                    <xsl:when test="@status='Middle School Education'">
+                    <xsl:when test="content/contentLevel='Middle School Education'">
                       <option selected="yes">Middle School Education</option>
                     </xsl:when>
                     <xsl:otherwise>
@@ -435,7 +436,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:choose>
-                    <xsl:when test="@status='Secondary Education'">
+                    <xsl:when test="content/contentLevel='Secondary Education'">
                       <option selected="yes">Secondary Education</option>
                     </xsl:when>
                     <xsl:otherwise>
@@ -443,7 +444,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:choose>
-                    <xsl:when test="@status='Community College'">
+                    <xsl:when test="content/contentLevel='Community College'">
                       <option selected="yes">Community College</option>
                     </xsl:when>
                     <xsl:otherwise>
@@ -451,7 +452,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:choose>
-                    <xsl:when test="@status='University'">
+                    <xsl:when test="content/contentLevel='University'">
                       <option selected="yes">University</option>
                     </xsl:when>
                     <xsl:otherwise>
@@ -465,6 +466,19 @@
            	<xsl:choose>
 				<xsl:when test="not($vosiURL)"> 
 					<!-- parameter has not been supplied don't do anything -->
+					<xsl:if test="count(capability) &lt;= 1">
+						<xsl:if test="contains(@xsi:type,'Service')">
+				            <tr>
+				              <td>WebBrowser Capability URL <xsl:value-of select="@type"/> </td>
+				              <td>
+				                <input type="text" size="48" name="capability.interface.webbrowserRefURL">
+				                  <xsl:attribute name="value"><xsl:value-of select="capability/interface/accessURL"/></xsl:attribute>
+				                </input>
+				              </td>
+				              <td><a href="../help/contact.html">help</a></td>
+				            </tr>
+				         </xsl:if>
+			         </xsl:if>					
 				</xsl:when>
 				<xsl:otherwise> 
 					<input type="hidden" name="vosiURL">
