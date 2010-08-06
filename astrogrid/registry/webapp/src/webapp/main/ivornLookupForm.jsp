@@ -19,7 +19,7 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>VAMDC Registry Access Pages</title>
+<title>Registry Access Pages</title>
 <meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
 <style type="text/css" media="all">
    <%@ include file="/style/astrogrid.css" %>          

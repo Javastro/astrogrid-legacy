@@ -50,7 +50,7 @@ manage the indexes in the database.
 This page will allow you to add Indexes to your database,
 by default only indexes on text is done.  Click on this
 link to add more indexes and a default set of indexes
-are shown that is commonly added to the VAMDC full registries.
+are shown that is commonly added to the full registries.
 <dl>
 <dt><dd><a href="addIndexCheck.jsp">Click here</a> to add or update indexes.
 </dl>
@@ -58,7 +58,7 @@ are shown that is commonly added to the VAMDC full registries.
 <h2>Initial Configuration</h2>
 You must 'self register' the Registry with itself in
 order for it to work. You must also set the configuration
-property <code>org.vamdc.registry.authorityid</code> to
+property <code>reg.amend.authorityid</code> to
 the authority that this Registry will manage. The second
 link for the custom sends you to the Add/Edit
 entry page where you may upload a custom full Registry
@@ -76,7 +76,7 @@ a url to what is known as a OAI interface. Go to
 <dl>
 <dt><dd><a href="ivoa_registry.jsp">RofR Validation and Registration</a>
 </dl>
-All VAMDC registries have an OAI interface url and
+All registries have an OAI interface url and
 for this registry it should be (Note if your on a proxy system
 the below url might not be correct please correct it to
 the correct url/domain)
