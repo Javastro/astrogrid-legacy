@@ -2,10 +2,10 @@ Contents of the zip:
 ====================
 
 README ....................................This readme file
-astrogrid-adqlparser-base-2009.1.jar ......Base parser that produces XML from ADQL
-astrogrid-adqlparser-sv-2009.1.jar ........Server version that manages a pool of base parsers
-astrogrid-adqlparser-utils-2009.1.jar .....Basic utilities, some used in testing
-astrogrid-adqlbeans-2009.1.jar ............XMLBeans generated against an AQDL schema
+astrogrid-adqlparser-base-2010.1.jar ......Base parser that produces XML from ADQL
+astrogrid-adqlparser-sv-2010.1.jar ........Server versions that can manages a pool of base parsers
+astrogrid-adqlparser-utils-2010.1.jar .....Basic utilities, some used in testing
+astrogrid-adqlbeans-2010.1.jar ............XMLBeans generated against an AQDL schema
 adqli.sh ..................................Shell script for running one of the utilities (requires editing)
 log4j.properties ..........................a basic log4j properties file
 
@@ -21,7 +21,7 @@ xmlbeans-qname-2.3.0.jar
 Style Sheets:
 =============
 There are a selection of xsl style sheets included within the server version jar file.
-At present they cover SqlServer, MySql, PostgreSql, Sybase and Hsqldb.
+At present they cover SqlServer, MySql, PostgreSql, Sybase, Oracle and Hsqldb.
 
 There is also one that I use in development which echoes back ADQL.
 I use this with the interactive test programme (see the adqli.sh script), which allows

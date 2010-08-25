@@ -13,7 +13,7 @@
 	       </p>
   		</subsection>
   		
-  		<subsection name="Initialization Callback">
+  		<subsection name="Initialization Callback (AdqlParserSV only)">
     		<p>
     		   Each base parser should be initialized correctly. On first use of a parser instance this callback is 
     		   invoked upon it so that any settings can be set by the controlling environment.       
@@ -22,17 +22,24 @@
   		</subsection>
   		
 
-  		<subsection name="Post-Parse Callback">
+  		<subsection name="Post-Parse Callback (AdqlParserSV only)">
     		<p>
     		   Once an ADQL query has been parsed into XML, this callback is invoked, passing a reference
     		   using XMLBeans. The controlling environment then has the option to alter the query directly using
     		   XMLBeans. After the callback returns, the query is translated given the set style sheet.
 	       </p>
   		</subsection>
+  		
+  		<subsection name="AdqlParserSVNC">
+    		<p>
+    		   This version of the parser does not rely upon callbacks, but the invoker must manage the different phases of the process
+    		   if manipulation of the intermediate XML is desired prior to any transformation by XSLT.
+	       </p>
+  		</subsection>
        
         <subsection name="Style Sheets">
     		<p>
-    		   After the post-parse callback (see above), the query is translated into SQL using the set style sheet.
+    		   The query is translated into SQL using the set style sheet.
     		   There is a method for setting the style sheet, which applies to all the parsers within the pool. There
     		   are a sample of style sheets within the project which cover the major RDBMS manufacturers.
     		</p>

@@ -5,12 +5,9 @@ package org.astrogrid.adql;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.xml.stream.utils.NestedThrowable;
-import org.astrogrid.adql.beans.TableType;
-import org.astrogrid.adql.beans.JoinTableType;
-import org.astrogrid.adql.beans.FromTableType;
-import java.util.Stack; 
 import org.astrogrid.adql.AdqlParser.SyntaxOption;
+import org.astrogrid.adql.beans.JoinTableType;
+import org.astrogrid.adql.beans.TableType;
 
 public class AST_TableReference extends SimpleNode {
  

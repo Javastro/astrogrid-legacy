@@ -1,0 +1,18 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Provide a list of moving objects consistent with an asteroid.
+-- Also a simple query, but we introduce the 'as' syntax, which allows us to
+-- name derived quantities in the result file.
+
+SELECT
+    p.objID, 
+    sqrt( power(p.rowv,2) + power(p.colv, 2) ) as velocity 
+FROM PhotoObj as p
+WHERE
+    (power(p.rowv,2) + power(p.colv, 2)) > 50 
+    and p.rowv >= 0 and p.colv >=0 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select p.objID, SQRT( (POWER(p.rowv, 2)  + POWER(p.colv, 2) )  )  velocity From PhotoObj p  Where  ( ( (POWER(p.rowv, 2)  + POWER(p.colv, 2) )  )   > 50)  And  ( (p.rowv >= 0)  And  (p.colv >= 0) )  

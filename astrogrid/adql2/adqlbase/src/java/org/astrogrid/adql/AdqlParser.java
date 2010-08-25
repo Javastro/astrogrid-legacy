@@ -377,9 +377,9 @@ public class AdqlParser {
     } ;
          
      private int prettyPrintIndent = 2 ;
-     private ArrayList tableReferences = new ArrayList() ;
-     private ArrayList columnReferences = new ArrayList() ;
-     private ArrayList aliasSelections = new ArrayList() ;    
+     private ArrayList<XmlObject> tableReferences = new ArrayList<XmlObject>() ;
+     private ArrayList<XmlObject> columnReferences = new ArrayList<XmlObject>() ;
+     private ArrayList<XmlObject> aliasSelections = new ArrayList<XmlObject>() ;    
 
     /**
      * Enables different areas of syntax checking to be turned off/on at runtime,
@@ -497,11 +497,11 @@ public class AdqlParser {
           */
          COORDSYS               ( 0x08000000 ) ;
          
-         public long setting ;
+         private long setting ;
          
          SyntaxOption( long setting ) {
              this.setting = setting ;
-         }        
+         }
          
      } ;
      
@@ -874,10 +874,10 @@ public class AdqlParser {
 				         + selectDoc.xmlText(opts) ) ;
 			}
             if( isSemanticProcessing() ) {
-                HashMap tables = checkAliases() ;
+                HashMap<String, XmlObject> tables = checkAliases() ;
                 checkColumnReferences( tables) ;
                 if( metadataQuery != null ) {
-                     HashMap tables2 = checkTablesForExistence() ;
+                     HashMap<String, XmlObject> tables2 = checkTablesForExistence() ;
                      checkColumnsForExistence( tables2 ) ;
                 }
             } 
@@ -908,7 +908,7 @@ public class AdqlParser {
         if( reservedWordsEncountered.size() > 0 ) {
             StringBuffer b = new StringBuffer() ;
             b.append( "Possible incorrect use of reserved word(s): " ) ;
-            Iterator it = reservedWordsEncountered.iterator() ;
+            Iterator<String> it = reservedWordsEncountered.iterator() ;
             while( it.hasNext() ) {
                 b.append( (String) it.next() ) ;
                 if( it.hasNext() ) {
@@ -946,32 +946,32 @@ public class AdqlParser {
     }
 	
 	private void logReportOnErrors( XmlObject xmlObject ) {
-        if( !DETAILED_ERROR_REPORT_ENABLED )
-            return ;
-		 ArrayList list = adqlstox.tracker.getErrors() ;
-	     if( list.size() > 0 ) {
-	     	 StringBuffer buffer = new StringBuffer() ;
-	     	 buffer.append( "Errors encountered..." ) ;
-             Iterator it = list.listIterator() ;	                 
-             int i = 1 ;
-             while( it.hasNext() ) {
-                  Tracker.Error e = (Tracker.Error)it.next() ;
-                  buffer
-                     .append( "\nError No " )
-                     .append( i )
-                     .append( ":\n   " ) 
-                     .append( e.getShortMessage() ) 
-                     .append( "\nat position:\n   " ) 
-                     .append( e.toPosition() ) ;
-                  i++ ;
+        if( DETAILED_ERROR_REPORT_ENABLED ) {
+        	 ArrayList list = adqlstox.tracker.getErrors() ;
+    	     if( list.size() > 0 ) {
+    	     	 StringBuffer buffer = new StringBuffer() ;
+    	     	 buffer.append( "Errors encountered..." ) ;
+                 Iterator it = list.listIterator() ;	                 
+                 int i = 1 ;
+                 while( it.hasNext() ) {
+                      Tracker.Error e = (Tracker.Error)it.next() ;
+                      buffer
+                         .append( "\nError No " )
+                         .append( i )
+                         .append( ":\n   " ) 
+                         .append( e.getShortMessage() ) 
+                         .append( "\nat position:\n   " ) 
+                         .append( e.toPosition() ) ;
+                      i++ ;
+                 }
+                 log.debug( buffer.toString() ) ;
+    	     }
+             if( xmlObject != null ) {
+                 XmlOptions opts = getSaveOptions( true ) ;
+                    log.debug( "Compilation produced: " 
+                             + xmlObject.xmlText(opts) ) ;
              }
-             log.debug( buffer.toString() ) ;
-	     }
-         if( xmlObject != null ) {
-             XmlOptions opts = getSaveOptions( true ) ;
-                log.debug( "Compilation produced: " 
-                         + xmlObject.xmlText(opts) ) ;
-         }
+        }	
 	}
 
 	
@@ -1500,12 +1500,12 @@ public class AdqlParser {
         SelectDocument selectDoc = SelectDocument.Factory.newInstance() ;
         AST_Select selectNode = (AST_Select)adqlstox.jjtree.rootNode() ;
         selectNode.buildXmlTree( selectDoc.addNewSelect() ) ;
-        XmlObject xmlObject = (XmlObject)selectNode.getGeneratedObject() ;               
+//        XmlObject xmlObject = (XmlObject)selectNode.getGeneratedObject() ;               
         if( isSemanticProcessing() ) {
-            HashMap tables = checkAliases() ;
+            HashMap<String, XmlObject> tables = checkAliases() ;
             checkColumnReferences( tables) ;
             if( metadataQuery != null ) {
-                 HashMap tables2 = checkTablesForExistence() ;
+                 HashMap<String, XmlObject> tables2 = checkTablesForExistence() ;
                  checkColumnsForExistence( tables2 ) ;
             }
         } 
@@ -1599,11 +1599,11 @@ public class AdqlParser {
     /**
      * Crude check of table aliases and aliased expressions
      */   
-    private HashMap checkAliases() throws ParseException {
+    private HashMap<String,XmlObject> checkAliases() throws ParseException {
         if( log.isTraceEnabled() ) enterTrace( "checkTableAliases" ) ;
-        HashMap tables = new HashMap() ;
+        HashMap<String,XmlObject> tables = new HashMap<String,XmlObject>() ;
         
-        ListIterator it = tableReferences.listIterator() ; 
+        ListIterator<XmlObject> it = tableReferences.listIterator() ; 
         while( it.hasNext() ) {
             Object obj = it.next() ;
             //
@@ -1654,7 +1654,7 @@ public class AdqlParser {
         //
         if( log.isDebugEnabled() ) {
             log.debug( "Print of tables..." ) ;
-            Iterator tit = tables.keySet().iterator() ;
+            Iterator<String> tit = tables.keySet().iterator() ;
             while( tit.hasNext() ) {
                 log.debug( tit.next() ) ;
             }
@@ -1663,7 +1663,7 @@ public class AdqlParser {
         //
         // Having formed a collection containing all tables
         // we can now check aliased expressions...
-        HashSet aliasedExpressionSet = new HashSet() ;
+        HashSet<String> aliasedExpressionSet = new HashSet<String>() ;
         it = aliasSelections.listIterator() ;
         while( it.hasNext() ) {
             AliasSelectionItemType asit = (AliasSelectionItemType)it.next() ;            
@@ -1688,10 +1688,10 @@ public class AdqlParser {
         return tables ;
     }
 	
-    private void checkColumnReferences( HashMap tables ) {
+    private void checkColumnReferences( HashMap<String, XmlObject> tables ) {
         if( log.isTraceEnabled() ) enterTrace( "checkColumnReferences" ) ;
         
-        ListIterator iterator = columnReferences.listIterator() ;
+        ListIterator<XmlObject> iterator = columnReferences.listIterator() ;
         while( iterator.hasNext() ) {
             String qualifiedName ;
             Object obj = iterator.next() ;
@@ -1721,15 +1721,15 @@ public class AdqlParser {
         if( log.isTraceEnabled() ) exitTrace( "checkColumnReferences" ) ;
     }
     
-    private HashMap checkTablesForExistence() {
+    private HashMap<String, XmlObject> checkTablesForExistence() {
         if( log.isTraceEnabled() ) enterTrace( "checkTablesForExistence" ) ;
         //
         // Check that tables are indeed known tables...
         
         // Hash map to hold valid tables...
-        HashMap validTables = new HashMap() ;
+        HashMap<String, XmlObject> validTables = new HashMap<String, XmlObject>() ;
         
-        ListIterator it = tableReferences.listIterator() ;
+        ListIterator<XmlObject> it = tableReferences.listIterator() ;
         while( it.hasNext() ) { 
             Object obj = it.next() ;
             if( obj instanceof TableType ) {
@@ -1761,13 +1761,13 @@ public class AdqlParser {
         return validTables ;        
     }
 
-    private void checkColumnsForExistence( HashMap tables ) {
+    private void checkColumnsForExistence( HashMap<String, XmlObject> tables ) {
         if( log.isTraceEnabled() ) enterTrace( "checkColumnsForExistence" ) ;
         String tableQualifier ;
-        ListIterator it = columnReferences.listIterator() ;
+        ListIterator<XmlObject> it = columnReferences.listIterator() ;
         while( it.hasNext() ) {
             
-            Object obj = it.next() ;
+        	XmlObject obj = it.next() ;
             if( obj instanceof AllSelectionItemType ) 
                 continue ;
             ColumnReferenceType crt = (ColumnReferenceType)obj ;
@@ -1936,7 +1936,7 @@ public class AdqlParser {
                 if( log.isDebugEnabled() ) {
                     log.debug( "parser.getToken(1).image: \"" + adqlstox.getToken(1).image + "\"" ) ;
                 }
-                ArrayList rTokens = new ArrayList() ;
+                ArrayList<Token> rTokens = new ArrayList<Token>() ;
                 int i = 1 ;
                 Token t = adqlstox.getToken(i) ;
                 try {
@@ -1950,7 +1950,7 @@ public class AdqlParser {
                 }
                 StringBuffer buffer = new StringBuffer( 32 + (rTokens.size() * 8) ) ;
                 buffer.append( UNEXPECTED_REMAINDER ) ;
-                ListIterator iterator = rTokens.listIterator() ;
+                ListIterator<Token> iterator = rTokens.listIterator() ;
                 while( iterator.hasNext() ) {
                     buffer.append( ((Token)iterator.next()).image ).append( ' ' ) ;
                 }
@@ -2585,7 +2585,7 @@ public class AdqlParser {
      * @param t A table reference.
      */
     protected void addTableReference( Object t ) {
-        this.tableReferences.add( t ) ;
+        this.tableReferences.add( (XmlObject)t ) ;
     }
     
     /**
@@ -2938,7 +2938,7 @@ public class AdqlParser {
         this.debugIdentifiers = debugIdentifiers;
     }
     
-    private HashMap reservedWordHints = new HashMap() ;
+    private HashMap<Integer, String> reservedWordHints = new HashMap<Integer, String>() ;
     
     /**
      * The misuse of a reserved word will produce an error, but one that may be difficult to interpret. 
@@ -2991,7 +2991,7 @@ public class AdqlParser {
         reservedWordHints.clear() ;
     }
     
-    private LinkedHashSet reservedWordsEncountered = new LinkedHashSet() ;
+    private LinkedHashSet<String> reservedWordsEncountered = new LinkedHashSet<String>() ;
     
     /**
      * This method is the principle method used in attempting to detect clashes; that is: the misuse
@@ -3043,14 +3043,14 @@ public class AdqlParser {
     }
     
     /**
-     * ADQL has its own set of reserved words all (eg: REGION). This method returns
+     * ADQL has its own set of reserved words (eg: REGION). This method returns
      * that list.
      * 
      * @return The array of ADQL reserved words.
      */
     public static String[] getADQLReservedWords() {
         int rwCount = AdqlStoXConstants.TRUNCATE - AdqlStoXConstants.AREA + 1 ;
-        ArrayList rwList = new ArrayList( rwCount ) ;
+        ArrayList<String> rwList = new ArrayList<String>( rwCount ) ;
         for( int i=0; i<rwCount; i++ ) {
             String rw = AdqlStoXConstants.tokenImage[AdqlStoXConstants.AREA+i] ;
             rwList.add( rw.substring( 1, rw.length()-1 ) ) ;

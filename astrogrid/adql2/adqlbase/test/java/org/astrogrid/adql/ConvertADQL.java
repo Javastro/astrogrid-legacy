@@ -26,12 +26,16 @@ import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
 /**
- * ConvertADQL
+ * A class specifically designed to support conversions within a test environment.
+ * Conversions here cover Adql xml v0.73, v0.7.4, v0.8, v0.9, v1.0 and v1.0a1 to v2.0.
+ * The function is now undertaken by <code>AdqlConverter</code>, which is suitable
+ * for a live, pooled environment; ie: the functionality has been moved out of the test 
+ * environment.
  * 
- * 
- *
  * @author Jeff Lusted jl99@star.le.ac.uk
- * Sep 26, 2006
+ *  Sep 26, 2006
+ * @see org.astrogrid.adql.AdqlConverter
+ * @deprecated 
  */
 public class ConvertADQL {
     

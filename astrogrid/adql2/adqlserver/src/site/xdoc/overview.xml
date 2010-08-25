@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <document>
     <properties>
-        <title>ADQL Parser Server Version - Overview</title>
+        <title>ADQL Parser Server Versions - Overview</title>
     </properties>
     <body>
     <section name="Overview">
        <p>
-          The AdqlParserSV manages a pool of base parsers in a thread safe manner.
-          The base parser is not thread safe and this is a simple way of circumventing the restriction. 
+          There are two server versions of the parser: AdqlParserSV and AdqlParserSVNC, which implement the interface IAdqlParser. 
+          Both implementations manage a pool of base parsers in a thread safe manner.
+          The base parser is not thread safe and this is a simple way of circumventing the restriction.
+          The AdqlParserSV version is based around callbacks for initialization and also to enable some manipulation of the XML prior to transforming 
+          into SQL.
+          The AdqlParserSVNC version has no callbacks. Different phases of the parser can be invoked to achieve the same effects as the version based around callbacks.
+          Details are given in the respective javadocs.
+           
        </p>
       
     </section>

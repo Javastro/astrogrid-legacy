@@ -39,6 +39,14 @@
         | Ensures all elements have the updated namespace
         +-->
 	<xsl:template match="ad1:*">
+	   <!-- xsl:element name="debug-updated-namespace">
+	   		<xsl:attribute name="current-context">
+            	<xsl:value-of select="name()" />		 	    		
+			</xsl:attribute>
+			<xsl:attribute name="context-self">
+            	<xsl:value-of select="self::node" />		 	    		
+			</xsl:attribute>
+	   	</xsl:element -->
        <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">
 			<xsl:apply-templates select="@*|node()"/>
 		</xsl:element>
@@ -49,6 +57,14 @@
         | apart from the namespace and prefix change.
         +-->
 	<xsl:template match="*[ namespace-uri() = $ad1NS ]">
+	    <!-- xsl:element name="debug-namespace-change">
+	   		<xsl:attribute name="current-context">
+            	<xsl:value-of select="name()" />		 	    		
+			</xsl:attribute>
+			<xsl:attribute name="context-self">
+            	<xsl:value-of select="self::node" />		 	    		
+			</xsl:attribute>
+	   	</xsl:element -->
         <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">	     	
 			<xsl:apply-templates select="@*|node()"/>	
 		</xsl:element> 
@@ -270,26 +286,37 @@
 	<!--+
         | Template for type attributes belonging to Schema-instance.
         +--> 
-    <xsl:template match="@xsi:type">
-		<xsl:attribute name="xsi:type" namespace="{$xsiNS}">
+    <xsl:template match="@xsi:type">		
 			<xsl:choose>
+				<!-- Drop the type for the top Select, which is anonymous -->
+				<xsl:when test="contains( . , 'selectType') and .. = /">
+					
+				</xsl:when>
 				<!-- correction of a typo -->
-			    <xsl:when test="substring-after( . , ':' ) = 'jointTableQualifierType'">
+			    <xsl:when test="contains( . , 'jointTableQualifierType')">
+			    	<xsl:attribute name="xsi:type" namespace="{$xsiNS}">
 			 	    <xsl:value-of select="$ad2Prefix" />
 			 	    <xsl:text>:joinTableQualifierType</xsl:text>
+			 	    </xsl:attribute>
 			 	</xsl:when>
 			 	<!-- change the prefix for ADQL version 1 to version 2 -->
 			 	<xsl:when test="substring-before( . , ':' ) = $ad1Prefix">
+			 		<xsl:attribute name="xsi:type" namespace="{$xsiNS}">
 			 	    <xsl:value-of select="$ad2Prefix" />
 			 	    <xsl:text>:</xsl:text>
 			 		<xsl:value-of select="substring-after( . , ':' )" />
+			 		</xsl:attribute>
 			 	</xsl:when>
-			 	<!-- copy anything else as is -->
+			 	<!-- ? -->
 				<xsl:otherwise>
-					<xsl:value-of select="." />
+					<xsl:attribute name="xsi:type" namespace="{$xsiNS}">
+					<xsl:value-of select="$ad2Prefix" />
+			 	    <xsl:text>:</xsl:text>
+			 		<xsl:value-of select="." />
+			 		</xsl:attribute>
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:attribute>
+		
 	</xsl:template>
 	
 	<!--+

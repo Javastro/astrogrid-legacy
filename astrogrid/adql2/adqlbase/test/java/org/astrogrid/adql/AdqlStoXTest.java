@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.3 2009/06/17 10:43:09 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.4 2010/08/25 11:04:43 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -23,22 +23,19 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.ListIterator;
 
-import org.astrogrid.adql.metadata.*;
-import org.astrogrid.adql.AdqlParser.SyntaxOption ;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
+import org.astrogrid.adql.AdqlParser.SyntaxOption;
 import org.astrogrid.adql.beans.SelectDocument;
 import org.astrogrid.xml.DomHelper;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.w3c.dom.Document;
-import org.apache.xmlbeans.XmlCursor;
-
-import org.apache.log4j.Logger ;
-import org.apache.log4j.Level ;
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
 
 /**
  * AdqlStoXTest
@@ -62,12 +59,24 @@ public class AdqlStoXTest extends XMLTestCase {
     final static String GOOD_SOURCE = "Select * From catalogue as a Where (a.POS_EQ_RA<100) And (( a.POS_EQ_RA>100 )" +   
                                       "And (ACOS((( SIN( a.POS_EQ_DEC ) * SIN( 100 ) ) + (COS(a.POS_EQ_DEC) * " +  
                                       "( COS(100)  * COS( (a.POS_EQ_RA - 100) ) )))) <= 100 ));" ;
+    final static String CONE_SOURCE = "SELECT  *  FROM  catalogue  WHERE (" +
+    								  "(catalogue.POS_EQ_DEC<2.5)  and " +
+    								  "(catalogue.POS_EQ_DEC>1.5) ) " +
+    								  "AND ( (catalogue.POS_EQ_RA >= 4.0) AND " +
+    						          "(catalogue.POS_EQ_RA <= 5.0 ) ) " +
+    								  "AND " +
+    								  "((2 * ASIN( SQRT( POWER( SIN( (RADIANS(catalogue.POS_EQ_DEC) - " +
+    								  "(0.03490658503988659) ) / 2 ) ,2) + " +
+    								  "COS(0.03490658503988659) * COS(RADIANS(catalogue.POS_EQ_DEC)) * " +
+    								  "POWER( SIN( (RADIANS(catalogue.POS_EQ_RA) - 0.017453292519943295) / 2 ), 2)" +
+    								  ")))< 0.008726646259971648)" ;
 
     private static AdqlParser sParser = null ;
 //    private static Container metadata ; 
 	private static boolean sInitialized = false ; 
 	private static boolean sBadInitializedStatus = false ;
 	private static File sDirectoryOfREADME = null ;
+	private static AdqlConverter sConvertor ;
     
     public static HashMap sImplicitNamespaces = new HashMap() ;
     static {
@@ -80,10 +89,7 @@ public class AdqlStoXTest extends XMLTestCase {
 	private File currentSFile ; 
 	private File currentXFile ;
     
-    private String fragmentContext ;
-    
-    private ConvertADQL convertor ;
-    
+    private String fragmentContext ; 
     private static long accumulatedTime ;
     private static int testMethodCount ;
     private long startTime ;
@@ -94,8 +100,8 @@ public class AdqlStoXTest extends XMLTestCase {
 //        System.setProperty( "javax.xml.transform.TransformerFactory"
 //                           ,"net.sf.saxon.TransformerFactoryImpl" ) ;
         
-      System.setProperty( "javax.xml.transform.TransformerFactory"
-                        ,"com.icl.saxon.TransformerFactoryImpl" ) ;
+//      System.setProperty( "javax.xml.transform.TransformerFactory"
+//                        ,"com.icl.saxon.TransformerFactoryImpl" ) ;
     }
 
 	/* (non-Javadoc)
@@ -169,6 +175,8 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10weeds_complexSelect01() throws Exception { execTest() ; }
     public void testOf_v10_coneSearch01() throws Exception { execTest() ; }
     public void testOf_v10_coneSearch02() throws Exception { execTest() ; }
+    public void testOf_v10_coneSearch03() throws Exception { execTest() ; }
+    public void testOf_v10_coneSearch04() throws Exception { execTest() ; }
     public void testOf_v20_coordsysRegion() throws Exception { execTest() ; }
     public void testOf_v20_distanceFromPoint() throws Exception { execTest() ; }
     public void testOf_v10_delimitedIdentifier() throws Exception { execTest() ; }
@@ -394,7 +402,7 @@ public class AdqlStoXTest extends XMLTestCase {
     
     // JL note:
     // need to try the next two tests for memory on separate threading basis as well.
-    public void _testMemoryUsageWithReinit() throws OutOfMemoryError {
+    public void testMemoryUsageWithReinit() throws OutOfMemoryError {
         // NB: (JL) I've tried this with the setting set to 1000000 and it worked.
         //
         // Turn off all logging.
@@ -467,7 +475,7 @@ public class AdqlStoXTest extends XMLTestCase {
                
     }
     
-    public void _testMemoryUsageWithoutReinit() throws OutOfMemoryError {
+    public void testMemoryUsageWithoutReinit() throws OutOfMemoryError {
         //
         // Turn off all logging.
         // Precaution in case the log level is set inappropriately,
@@ -535,6 +543,61 @@ public class AdqlStoXTest extends XMLTestCase {
         finally {
             repository.setThreshold( savedLevel ) ;
         }
+    }
+    
+
+    public void testMultipleConeSearchesWithReinit() throws OutOfMemoryError {
+        // Turn off all logging.
+        // Precaution in case the log level is set inappropriately,
+        // in which case we would be testing the ability of the logging
+        // system to survive rather than the parser.
+        // A single parse at trace level can produce many hundreds of lines of print.
+        Level savedLevel ;
+        Logger logger = Logger.getRootLogger();
+        LoggerRepository repository = logger.getLoggerRepository() ;
+        savedLevel = repository.getThreshold() ;
+        repository.setThreshold( Level.OFF ) ;
+
+        //
+        // Set options to the widest syntax...
+        sParser.setSyntax( AdqlParser.V20_X ) ;
+        final int total = 10000 ;
+        System.out.println( "testMultipleConeSearchesWithReinit() underway: " + total + " queries." ) ;
+        // This one continues to use the parser instance used so far in all the above tests.   
+
+        try {
+            for( int i=0; i<total; i++ ) {
+
+                StringReader source = new StringReader( CONE_SOURCE ) ;
+
+                try {           
+                    getParser( source ).parseToXmlBeans();
+                } 
+                catch ( AdqlException aex ) {  
+                    System.out.println( "testMultipleConeSearchesWithReinit produced: " + aex.getClass().getName() ) ;
+                    String[] ms = aex.getErrorMessages() ;
+                    for( int j=0; j<ms.length; j++ ) {
+                        System.out.println( ms[j] ) ;                      
+                    }
+                }
+                catch ( Throwable th ) {
+                    System.out.println( "testMultipleConeSearchesWithReinit produced: " + th.getClass().getName() ) ;
+                    if( th instanceof OutOfMemoryError ) {
+                        throw (OutOfMemoryError)th;
+                    }
+                    assertTrue( "Unexpected exception: " + th.getClass().getName(), false ) ;
+                    break ;
+                }
+                if( i != 0 && i%1000 == 0 ) {
+                    System.out.println( i + " finished" ) ;
+                }
+            }
+            System.out.println( "testMultipleConeSearchesWithReinit() finished." ) ;
+        }
+        finally {
+            repository.setThreshold( savedLevel ) ;
+        }
+               
     }
     
     public void execFragmentHeadersAndTrailers() throws Exception {
@@ -687,12 +750,12 @@ public class AdqlStoXTest extends XMLTestCase {
 //        if( log.isDebugEnabled() ) {
 //            log.debug( "fileContents: " + fileContents ) ;
 //        }
-        String namespace = ConvertADQL.getCovertibleNameSpace( fileContents ) ;
+        String namespace = AdqlConverter.getCovertibleNameSpace( fileContents ) ;
         String controlledVersion ;
         String convertedXml ;
         if( namespace != null ) {
             System.out.println( "Xml file requires converting. Namespace: " + namespace ) ;
-            convertedXml = getConvertor().convertV10ToV20( new StringReader( fileContents ) ) ;
+            convertedXml = sConvertor.convertV10ToV20( new StringReader( fileContents ) ) ;
             controlledVersion = XmlObject.Factory.parse( convertedXml ).xmlText( opts ) ;
             System.out.println( "Converts to: " ) ;
             System.out.println( controlledVersion + "\n==") ;
@@ -755,13 +818,6 @@ public class AdqlStoXTest extends XMLTestCase {
             sParser.ReInit(source);
         }
         return sParser ;
-    }
-    
-    private ConvertADQL getConvertor() {
-        if ( this.convertor == null ) {
-            this.convertor = new ConvertADQL() ;
-        }
-        return this.convertor ;
     }
 	
 	private void init() throws InitializationException {
@@ -845,7 +901,9 @@ public class AdqlStoXTest extends XMLTestCase {
                     
                 }
                     
-			}			
+			}	
+			sConvertor = new AdqlConverter() ;
+            System.out.println( "Transformer used: " + sConvertor.getTransformerUsed() ) ;
 			sBadInitializedStatus = false ;
 			sInitialized = true ;
 		}
@@ -984,9 +1042,19 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.3  2009/06/17 10:43:09  jl99
- * Merge of adql v2 parser with maven 2 build. Site docs still to do.
+ * Revision 1.4  2010/08/25 11:04:43  jl99
+ * Adaptation of ADQL parser to provide suitable pooling strategy for DSA.
+ * Version: 2010.1
  *
+/* Revision 1.3.2.2  2010/01/20 15:33:45  jl99
+/* Rejigged server version(s) to fit in more with possible DSA adjustments.
+/*
+/* Revision 1.3.2.1  2009/12/04 15:31:42  jl99
+/* Additional unit tests.
+/*
+/* Revision 1.3  2009/06/17 10:43:09  jl99
+/* Merge of adql v2 parser with maven 2 build. Site docs still to do.
+/*
 /* Revision 1.2.2.1  2009/06/05 10:37:54  jl99
 /* Mavenizing for maven 2.
 /*

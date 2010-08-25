@@ -1,0 +1,16 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select Top 100 SIN(RADIANS(a.POS_EQ_RA) ) , 
+               COS(RADIANS(a.POS_EQ_RA) ) , 
+               TAN(RADIANS(a.POS_EQ_RA) ) , 
+               COT(RADIANS(a.POS_EQ_RA) ) , 
+               ASIN(RADIANS(a.POS_EQ_RA) ) , 
+               ACOS(RADIANS(a.POS_EQ_RA) ) , 
+               ATAN(RADIANS(a.POS_EQ_RA) ) , 
+               ATAN2(RADIANS(a.POS_EQ_RA), RADIANS(a.POS_EQ_DEC))  
+From catalogue as a 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select SIN((0.0174532925 * a.POS_EQ_RA) ) , COS((0.0174532925 * a.POS_EQ_RA) ) , TAN((0.0174532925 * a.POS_EQ_RA) ) , (1.0 / TAN((0.0174532925 * a.POS_EQ_RA) )) , ASIN((0.0174532925 * a.POS_EQ_RA) ) , ACOS((0.0174532925 * a.POS_EQ_RA) ) , ATAN((0.0174532925 * a.POS_EQ_RA) ) , ATAN2((0.0174532925 * a.POS_EQ_RA) , (0.0174532925 * a.POS_EQ_DEC) )  From catalogue a Where rownum<=100 

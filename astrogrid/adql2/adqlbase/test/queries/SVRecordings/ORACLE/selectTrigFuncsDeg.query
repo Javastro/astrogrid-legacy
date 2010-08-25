@@ -1,0 +1,16 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select Top 100 SIN(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               COS(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               TAN(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               COT(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               ASIN(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               ACOS(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               ATAN(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               ATAN2(DEGREES(RADIANS(a.POS_EQ_RA)), DEGREES(RADIANS(a.POS_EQ_DEC)) )  
+From catalogue as a 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select SIN((57.2957795 * (0.0174532925 * a.POS_EQ_RA) ) ) , COS((57.2957795 * (0.0174532925 * a.POS_EQ_RA) ) ) , TAN((57.2957795 * (0.0174532925 * a.POS_EQ_RA) ) ) , (1.0 / TAN((57.2957795 * (0.0174532925 * a.POS_EQ_RA) ) )) , ASIN((57.2957795 * (0.0174532925 * a.POS_EQ_RA) ) ) , ACOS((57.2957795 * (0.0174532925 * a.POS_EQ_RA) ) ) , ATAN((57.2957795 * (0.0174532925 * a.POS_EQ_RA) ) ) , ATAN2((57.2957795 * (0.0174532925 * a.POS_EQ_RA) ) , (57.2957795 * (0.0174532925 * a.POS_EQ_DEC) ) )  From catalogue a Where rownum<=100 

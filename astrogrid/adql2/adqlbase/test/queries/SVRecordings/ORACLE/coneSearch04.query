@@ -1,0 +1,17 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT  *  FROM  catalogue  WHERE (
+    (catalogue.POS_EQ_DEC<2.5)  and
+    (catalogue.  POS_EQ_DEC>1.5) ) AND 
+    ( (catalogue.POS_EQ_RA >= 4.0) AND 
+    (catalogue.POS_EQ_RA <= 5.0 ) ) AND  
+  ((2 * ASIN( SQRT( POWER( SIN( (RADIANS(catalogue.POS_EQ_DEC) -
+  (0.03490658503988659) ) / 2 ) ,2) +
+  COS(0.03490658503988659) * COS(RADIANS(catalogue.POS_EQ_DEC)) *
+  POWER( SIN( (RADIANS(catalogue.POS_EQ_RA) - 0.017453292519943295) / 2 ), 2)
+  )))< 0.008726646259971648)
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select * From catalogue  Where  ( ( ( (catalogue.POS_EQ_DEC < 2.5) )  And  ( (catalogue.POS_EQ_DEC > 1.5) ) ) )  And  ( ( ( ( (catalogue.POS_EQ_RA >= 4.0) )  And  ( (catalogue.POS_EQ_RA <= 5.0) ) ) )  And  ( ( ( (2 * ASIN(SQRT( (POWER(SIN( ( ( ((0.0174532925 * catalogue.POS_EQ_DEC)  -  (0.03490658503988659)  )  )   / 2)  ) , 2)  +  (COS(0.03490658503988659)  *  (COS((0.0174532925 * catalogue.POS_EQ_DEC) )  * POWER(SIN( ( ( ((0.0174532925 * catalogue.POS_EQ_RA)  - 0.017453292519943295)  )   / 2)  ) , 2) )  )  )  ) ) )  )   < 0.008726646259971648) ) )  

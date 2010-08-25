@@ -8,16 +8,12 @@
 **/
 package org.astrogrid.adql;
 
-import org.apache.xmlbeans.*;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
 
-// import org.astrogrid.adql.AdqlCompilerSVTest.SVTestInitializationException;
-import org.astrogrid.adql.metadata.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xmlbeans.XmlObject;
 
 /**
  * InteractiveSV

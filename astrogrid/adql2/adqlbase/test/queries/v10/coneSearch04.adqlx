@@ -1,0 +1,134 @@
+<Select xmlns="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SelectionList>
+    <Item xsi:type="adql:allSelectionItemType" xmlns:adql="http://www.ivoa.net/xml/v2.0/adql"/>
+  </SelectionList>
+  <From>
+    <Table xsi:type="adql:tableType" Name="catalogue" xmlns:adql="http://www.ivoa.net/xml/v2.0/adql"/>
+  </From>
+  <Where>
+    <Condition xsi:type="adql:intersectionSearchType" xmlns:adql="http://www.ivoa.net/xml/v2.0/adql">
+      <Condition xsi:type="adql:closedSearchType">
+        <Condition xsi:type="adql:intersectionSearchType">
+          <Condition xsi:type="adql:closedSearchType">
+            <Condition xsi:type="adql:comparisonPredType" Comparison="&lt;">
+              <Arg xsi:type="adql:columnReferenceType" Name="POS_EQ_DEC" Table="catalogue"/>
+              <Arg xsi:type="adql:atomType">
+                <Literal Value="2.5" xsi:type="adql:realType"/>
+              </Arg>
+            </Condition>
+          </Condition>
+          <Condition xsi:type="adql:closedSearchType">
+            <Condition xsi:type="adql:comparisonPredType" Comparison=">">
+              <Arg xsi:type="adql:columnReferenceType" Name="POS_EQ_DEC" Table="catalogue"/>
+              <Arg xsi:type="adql:atomType">
+                <Literal Value="1.5" xsi:type="adql:realType"/>
+              </Arg>
+            </Condition>
+          </Condition>
+        </Condition>
+      </Condition>
+      <Condition xsi:type="adql:intersectionSearchType">
+        <Condition xsi:type="adql:closedSearchType">
+          <Condition xsi:type="adql:intersectionSearchType">
+            <Condition xsi:type="adql:closedSearchType">
+              <Condition xsi:type="adql:comparisonPredType" Comparison=">=">
+                <Arg xsi:type="adql:columnReferenceType" Name="POS_EQ_RA" Table="catalogue"/>
+                <Arg xsi:type="adql:atomType">
+                  <Literal Value="4.0" xsi:type="adql:realType"/>
+                </Arg>
+              </Condition>
+            </Condition>
+            <Condition xsi:type="adql:closedSearchType">
+              <Condition xsi:type="adql:comparisonPredType" Comparison="&lt;=">
+                <Arg xsi:type="adql:columnReferenceType" Name="POS_EQ_RA" Table="catalogue"/>
+                <Arg xsi:type="adql:atomType">
+                  <Literal Value="5.0" xsi:type="adql:realType"/>
+                </Arg>
+              </Condition>
+            </Condition>
+          </Condition>
+        </Condition>
+        <Condition xsi:type="adql:closedSearchType">
+          <Condition xsi:type="adql:comparisonPredType" Comparison="&lt;">
+            <Arg xsi:type="adql:closedExprType">
+              <Arg xsi:type="adql:binaryExprType" Oper="*">
+                <Arg xsi:type="adql:atomType">
+                  <Literal Value="2" xsi:type="adql:integerType"/>
+                </Arg>
+                <Arg xsi:type="adql:trigonometricFunctionType" Name="ASIN">
+                  <Arg xsi:type="adql:mathFunctionType" Name="SQRT">
+                    <Arg xsi:type="adql:binaryExprType" Oper="+">
+                      <Arg xsi:type="adql:mathFunctionType" Name="POWER">
+                        <Arg xsi:type="adql:trigonometricFunctionType" Name="SIN">
+                          <Arg xsi:type="adql:binaryExprType" Oper="/">
+                            <Arg xsi:type="adql:closedExprType">
+                              <Arg xsi:type="adql:binaryExprType" Oper="-">
+                                <Arg xsi:type="adql:mathFunctionType" Name="RADIANS">
+                                  <Arg xsi:type="adql:columnReferenceType" Name="POS_EQ_DEC" Table="catalogue"/>
+                                </Arg>
+                                <Arg xsi:type="adql:closedExprType">
+                                  <Arg xsi:type="adql:atomType">
+                                    <Literal Value="0.03490658503988659" xsi:type="adql:realType"/>
+                                  </Arg>
+                                </Arg>
+                              </Arg>
+                            </Arg>
+                            <Arg xsi:type="adql:atomType">
+                              <Literal Value="2" xsi:type="adql:integerType"/>
+                            </Arg>
+                          </Arg>
+                        </Arg>
+                        <Arg xsi:type="adql:atomType">
+                          <Literal Value="2" xsi:type="adql:integerType"/>
+                        </Arg>
+                      </Arg>
+                      <Arg xsi:type="adql:binaryExprType" Oper="*">
+                        <Arg xsi:type="adql:trigonometricFunctionType" Name="COS">
+                          <Arg xsi:type="adql:atomType">
+                            <Literal Value="0.03490658503988659" xsi:type="adql:realType"/>
+                          </Arg>
+                        </Arg>
+                        <Arg xsi:type="adql:binaryExprType" Oper="*">
+                          <Arg xsi:type="adql:trigonometricFunctionType" Name="COS">
+                            <Arg xsi:type="adql:mathFunctionType" Name="RADIANS">
+                              <Arg xsi:type="adql:columnReferenceType" Name="POS_EQ_DEC" Table="catalogue"/>
+                            </Arg>
+                          </Arg>
+                          <Arg xsi:type="adql:mathFunctionType" Name="POWER">
+                            <Arg xsi:type="adql:trigonometricFunctionType" Name="SIN">
+                              <Arg xsi:type="adql:binaryExprType" Oper="/">
+                                <Arg xsi:type="adql:closedExprType">
+                                  <Arg xsi:type="adql:binaryExprType" Oper="-">
+                                    <Arg xsi:type="adql:mathFunctionType" Name="RADIANS">
+                                      <Arg xsi:type="adql:columnReferenceType" Name="POS_EQ_RA" Table="catalogue"/>
+                                    </Arg>
+                                    <Arg xsi:type="adql:atomType">
+                                      <Literal Value="0.017453292519943295" xsi:type="adql:realType"/>
+                                    </Arg>
+                                  </Arg>
+                                </Arg>
+                                <Arg xsi:type="adql:atomType">
+                                  <Literal Value="2" xsi:type="adql:integerType"/>
+                                </Arg>
+                              </Arg>
+                            </Arg>
+                            <Arg xsi:type="adql:atomType">
+                              <Literal Value="2" xsi:type="adql:integerType"/>
+                            </Arg>
+                          </Arg>
+                        </Arg>
+                      </Arg>
+                    </Arg>
+                  </Arg>
+                </Arg>
+              </Arg>
+            </Arg>
+            <Arg xsi:type="adql:atomType">
+              <Literal Value="0.008726646259971648" xsi:type="adql:realType"/>
+            </Arg>
+          </Condition>
+        </Condition>
+      </Condition>
+    </Condition>
+  </Where>
+</Select>

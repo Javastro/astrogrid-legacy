@@ -10,7 +10,7 @@
 	<parent>
 		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
-		<version>2009.1</version>
+		<version>2010.1</version>
 	</parent>
 	<scm>
   	<connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/adql2/adqlbundle/</connection>

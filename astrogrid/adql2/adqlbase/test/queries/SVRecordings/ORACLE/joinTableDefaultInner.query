@@ -1,0 +1,11 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select cata.* 
+from cata join catb 
+     on sin(cata.col1) between abs(catb.col1 - catb.col2) and abs(catb.col1 + catb.col2) 
+where cata.ra between 12.3 and 12.4 and cata.dec between 2.6 and 2.7 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select cata.* From cata JOIN catb ON SIN(cata.col1)  Between ABS( (catb.col1 - catb.col2)  )  And ABS( (catb.col1 + catb.col2)  )    Where  (cata.ra Between 12.3 And 12.4 )  And  (cata.dec Between 2.6 And 2.7 )  

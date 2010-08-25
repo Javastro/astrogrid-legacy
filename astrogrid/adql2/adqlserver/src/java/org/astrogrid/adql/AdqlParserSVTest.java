@@ -7,7 +7,6 @@
  *
 **/
 package org.astrogrid.adql;
- 
 
 import java.io.File;
 import java.io.FileFilter;
@@ -18,6 +17,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -26,11 +26,14 @@ import javax.xml.transform.TransformerException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.adql.AdqlParserSV.InvalidStateException;
+import org.astrogrid.adql.InvalidStateException;
 
 /**
- * AdqlParserSVTest
- *
+ * A command line/batch testing programme used in the Astrogrid development project for ADQL
+ * to test pooling of parsers, converters and transformers in a multi-threading environment.
+ * Unfortunately this does not use any JUnit testing facilities, but does use the ADQL queries
+ * defined for the purposes of unit testing from the Astrogrid project, and is therefore
+ * specific to the Astrogrid development environment for this project.
  *
  * @author Jeff Lusted jl99@star.le.ac.uk
  * Aug 7, 2007
@@ -46,10 +49,14 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
         "Options:\n" +
         "-s=style_sheet_name\n" +
         "-d=directory_path\n" +
+        "-c=y[es] or n[o]\n" +
         "Where:\n" +
+        "  -s is the only mandatory option.\n" +
         "  \"style_sheet_name\" is the name of the style sheet used to convert ADQL/x to SQL variant.\n" +
-        "  \"directory_path\" is a fully qualified path of a directory where output files will be written.\n" +    
-        "NOTE: Existing files will not be overwritten.\n" ;
+        "  \"directory_path\" is a fully qualified path of a directory where output files will be written.\n" +
+        "  Existing files will not be overwritten.\n" +
+        "  -c option indicates testing the version with callbacks [yes] or the version without callbacks [no].\n" +
+        "  -c defaults to without callbacks if not specified" ;
     
     private static final String ADQL_HEADER =
         "+=====================================================+\n" +
@@ -64,7 +71,7 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
     private final static String README = "README_FOR_QUERIES" ;
     private final static String BAD_INIT_MESSAGE = "AdqlParserSVTest. Initialization failed: " ;
     private final static int TEST_MAX_PARSERS = 4 ;
-    private final static int TEST_THREADS = 5 ;
+    private final static int TEST_THREADS = 4 ;
     private final static String SVRECORDINGS = "SVRecordings" ;
     
     private class AdqlQueryUnit {
@@ -73,18 +80,30 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
         boolean valid ;
     }
     
-    private HashMap queries = new HashMap( 256 ) ;
-    private Iterator queryIterator ;
-    private AdqlParserSV parser ;
-   
-    private static long accumulatedTime ;
-    private long startTime ;
-    private long endTime ;
+    private HashMap<String, AdqlQueryUnit> queries = new HashMap<String, AdqlQueryUnit>( 256 ) ;
+    private Iterator<AdqlQueryUnit> queryIterator ;
+    private IAdqlParser parser ;
     private int queryCount = 0 ;
     private String styleSheetName ;
-    private String recordingDirectoryName ;
     private String recordingDirPath ;
+    private boolean bCallBackTest = false ;
     
+    /**
+     *  Usage: AdqlParserSVTest [options] <br/>
+     *  Options: <br/>
+     *	-s=style_sheet_name <br/>
+     *  -d=directory_path <br/>
+     *  -c=y[es] or n[o] <br/>
+     *  Where: <br/>
+     *    -s is the only mandatory option. <br/>
+     *    "style_sheet_name" is the name of the style sheet used to convert ADQL/x to SQL variant. <br/>
+     *    "directory_path" is a fully qualified path of a directory where output files will be written. <br/>
+     *    Existing files will not be overwritten. <br/>
+     *    -c option indicates testing the version with callbacks [yes] or the version without callbacks [no]. <br/>
+     *    -c defaults to without callbacks if not specified <br/> 
+     * 
+     * @param args The command line arguments
+     */
     public static void main(String args[]) {
         if( log.isTraceEnabled() ) log.trace( "entry: main()" ) ;
         
@@ -95,15 +114,18 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
             svTest.print( USAGE ) ;
         }
         else {
-//            svTest.print( "args: -d=" + svTest.recordingDirectoryName +
-//                          " -s=" +svTest.styleSheetName ) ;
-            svTest.print( "args: -d=" + svTest.recordingDirPath +
-                               " -s=" +svTest.styleSheetName ) ;
+            svTest.print( "args:\n " +
+            		      "  -d=" + svTest.recordingDirPath +
+            		   "\n   -s=" + svTest.styleSheetName +
+            		   "\n   -c=" + svTest.getCallbackArg() ) ;
             try {
-                svTest.init() ;
+                svTest.init() ;              
+                svTest.print( "Started parsing: " + new Date() ) ;
                 svTest.parseQueries() ;
                 svTest.waitForCompletion() ;
-                svTest.print( "Query count: " + svTest.queryCount ) ;
+                svTest.print( "Finished parsing: " + new Date()) ;
+                svTest.print( "Query count: " + svTest.queryCount ) ;                
+                svTest.print( "Transformer used for conversion: " + svTest.getTransformerUsed() ) ;
             }
             catch( Exception ex ) {
                 svTest.print( "AdqlParserSVTest failed.", ex ) ;
@@ -123,8 +145,15 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
                     retVal = true ;
                 }
                 else if( args[i].startsWith( "-d=" ) ) { 
-//                    this.recordingDirectoryName = args[i].substring(3) ;
                     this.recordingDirPath = args[i].substring(3) ;
+                }
+                else if( args[i].startsWith( "-c=" ) ) {
+                	String cArg = args[i].substring(3).toLowerCase() ;
+                	if( cArg.length() >= 1 ) {
+                		if( cArg.startsWith( "y" ) ) {
+                			this.bCallBackTest = true ;
+                		}
+                	}
                 }
                 else {
                     break ;
@@ -132,6 +161,13 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
             }             
         }       
         return retVal ;
+    }
+    
+    private String getCallbackArg() {
+    	if( bCallBackTest == true ) {
+    		return "yes" ;
+    	}
+    	return "no" ;
     }
     
     public AdqlParserSVTest() {
@@ -152,19 +188,15 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
         if( this.queryIterator == null ) {
             queryIterator = queries.values().iterator() ;
         }
-        if( queryIterator.hasNext() ) {
-            AdqlQueryUnit aqu = (AdqlQueryUnit)queryIterator.next() ;
-            print( Thread.currentThread().getName() + " -> returning query: " + aqu.file.getName() ) ;
+        if( queryIterator.hasNext() ) {        	
+        	AdqlQueryUnit aqu = queryIterator.next() ;
+        	print( Thread.currentThread().getName() + " -> returning query: " + aqu.file.getName() ) ;
             queryCount++ ;
-            return aqu ;
+        	return aqu ;
         }
         print( Thread.currentThread().getName() + " -> returning null query" ) ;
         return null ;
     }
- 
-//    private Container getMetaData() { 
-//        return TestMetaDataLoader.getMetaData() ;
-//    }
     
     private void init() throws SVTestInitializationException {
         initFiles() ;
@@ -185,12 +217,11 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
                         break ;
                     }
                     catch( InterruptedException iex ) {
-                        
+                        ;
                     }
                 }               
             }
         }
-        print( "Compilations complete." ) ;
         if( log.isTraceEnabled() ) log.trace( "exit: waitForCompletion()" ) ;
     }
     
@@ -254,11 +285,24 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
     private void initParser() throws SVTestInitializationException {
         if( log.isTraceEnabled() ) log.trace( "entry: initParser()" ) ;
         try {
-            this.parser = new AdqlParserSV() ;
-            parser.setMaxParsers( TEST_MAX_PARSERS ) ;
-            parser.setStyleSheet( getStyleSheet() ) ;
-            parser.registerParseInitCallBack( this ) ;
-            parser.registerPostParseCallBack( this ) ;
+        	
+        	if( bCallBackTest == true ) {
+        	    AdqlParserSV parserWithCallbacks = new AdqlParserSV() ;
+                parserWithCallbacks.setMaxParsers( TEST_MAX_PARSERS ) ;
+                parserWithCallbacks.setStyleSheet( getStyleSheet() ) ;
+                parserWithCallbacks.registerParseInitCallBack( this ) ;
+                parserWithCallbacks.registerPostParseCallBack( this ) ;
+                this.parser = parserWithCallbacks ;
+        	}
+        	else {
+        	    AdqlParserSVNC parserWithoutCallbacks = new AdqlParserSVNC() ;
+        		parserWithoutCallbacks.setMaxParsers( TEST_MAX_PARSERS ) ;
+        		parserWithoutCallbacks.setStyleSheet( getStyleSheet() ) ;        		
+        		parserWithoutCallbacks.setStrictSyntax( AdqlParser.V20_AGX ) ;
+        		parserWithoutCallbacks.setUserDefinedFunctionPrefix( "" ) ;  
+        		this.parser = parserWithoutCallbacks ;
+        	}
+        	 print( "Using: " + parser.getClass().getSimpleName() ) ;
         }
         catch( Exception ex ) {
             throw new SVTestInitializationException( BAD_INIT_MESSAGE, ex ) ;
@@ -308,6 +352,11 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
     public class SVTestInitializationException extends Exception {
 
         /**
+		 * 
+		 */
+		private static final long serialVersionUID = 2574764618980363675L;
+
+		/**
          * @param message
          * @param cause
          */
@@ -325,7 +374,6 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
     }
     
     private String getStyleSheet() throws IOException {
-//        InputStream is = AdqlParserSV.class.getResourceAsStream( this.styleSheetName ) ;
         InputStream is = AdqlParserSV.class.getClassLoader().getResourceAsStream( this.styleSheetName ) ;
         StringBuffer buffer =  new StringBuffer( 1024 ) ;
         int c = is.read() ;
@@ -338,23 +386,9 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
     }
     
     private void recordQueryResult( AdqlQueryUnit qu, String sql ) {
-//        if( this.recordingDirectoryName == null ) 
-//            return ;
         if( this.recordingDirPath == null ) 
             return ;
         try {         
-//            URL readme = this.getClass().getResource( README ) ;
-//            File directoryOfREADME = 
-//                new File( new URI( readme.toString() ) ).getParentFile() ;
-//            String path = directoryOfREADME.getAbsolutePath() 
-//                        + File.separator 
-//                        + SVRECORDINGS
-//                        + File.separator
-//                        + this.recordingDirectoryName
-//                        + File.separator
-//                        + qu.file.getName().split( "\\.")[0]
-//                        + ".query" ;
-
             String path = recordingDirPath 
                         + File.separator 
                         + qu.file.getName().split( "\\.")[0]
@@ -396,12 +430,24 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
         }
     }
     
+    /**
+     * Basic invocation of a set of queries to be parsed into SQL.
+     * Used by multiple threads.
+     * 
+     * @see java.lang.Runnable#run()
+     */
     public void run() {
         int threadQueryCount = 0 ;
         AdqlQueryUnit qu = getOneQuery() ;
         while( qu != null ) {
             try {
-                String sql = parser.parseToSQL( qu.query ) ;
+                String sql ;
+                if( bCallBackTest ) {
+                	sql = parser.parseToSQL( qu.query ) ;
+                }
+                else {
+                	sql = parser.transformToSQL( parser.parseToXML( qu.query ) ) ;
+                }
                 print( Thread.currentThread().getName() + " -> Parsed without mishap: " + qu.file.getName() ) ;
                 recordQueryResult( qu, sql ) ;
             }
@@ -429,8 +475,10 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
             }
             catch( Throwable th ) {
                 print( Thread.currentThread().getName(), th ) ;
+                th.printStackTrace() ;
             }
             threadQueryCount++ ;
+        	Thread.yield() ;
             qu = getOneQuery() ;
         } 
         log.debug( threadQueryCount + " queries completed: " + Thread.currentThread().getName() ) ;
@@ -461,26 +509,33 @@ public class AdqlParserSVTest implements AdqlParserSV.ParserInitCallBack
         public boolean accept( File file ) {
             if( file.isDirectory() 
                 &&
-                !file.getName().equals( "SVRecordings" ) ) { 
+                !file.getName().equals( SVRECORDINGS ) ) { 
                 return true ;
             }
             return false ;
         }
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.astrogrid.adql.AdqlParserSV.PostParseCallBack#execMidPoint(org.apache.xmlbeans.XmlObject)
      */
     public XmlObject execMidPoint(XmlObject xo) {
         return xo;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.astrogrid.adql.AdqlParserSV.ParserInitCallBack#execInit(org.astrogrid.adql.AdqlParser)
      */
     public void execInit(AdqlParser ap) {
         ap.setSyntax( AdqlParser.V20_AGX ) ;
         ap.setUserDefinedFunctionPrefix( "" ) ;    
+    }
+    
+    private String getTransformerUsed() {
+    	if( this.parser instanceof AdqlParserSV ) {
+    		return ((AdqlParserSV)this.parser).getTransformerUsed() ;
+    	}
+    	return ((AdqlParserSVNC)this.parser).getTransformerUsed() ;
     }
     
 }

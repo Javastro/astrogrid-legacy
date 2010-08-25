@@ -1,0 +1,21 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Give me the PSF colors of all stars brighter than g=20 that have PSP_STATUS = 2.
+-- Another simple multi-table query.
+
+SELECT
+    s.psfMag_g, 	-- or whatever you want from each object
+    s.run, 
+    s.camCol, 
+    s.rerun, 
+    s.field 
+FROM Star s, Field f
+WHERE s.fieldID = f.fieldID
+    and s.psfMag_g < 20 
+    and f.pspStatus = 2 ;
+
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select s.psfMag_g, s.run, s.camCol, s.rerun, s.field From Star s, Field f  Where  (s.fieldID = f.fieldID)  And  ( (s.psfMag_g < 20)  And  (f.pspStatus = 2) )  

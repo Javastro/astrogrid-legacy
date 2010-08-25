@@ -1,0 +1,8 @@
+SELECT  *  FROM  catalogue  WHERE (
+    (catalogue.POS_EQ_DEC<2.5)  and
+    (catalogue.  POS_EQ_DEC>1.5) ) AND
+  ((2 * ASIN( SQRT( POWER( SIN( (RADIANS(catalogue.POS_EQ_DEC) -
+  (0.03490658503988659) ) / 2 ) ,2) +
+  COS(0.03490658503988659) * COS(RADIANS(catalogue.POS_EQ_DEC)) *
+  POWER( SIN( (RADIANS(catalogue.POS_EQ_RA) - 0.017453292519943295) / 2 ), 2)
+  )))< 0.008726646259971648)

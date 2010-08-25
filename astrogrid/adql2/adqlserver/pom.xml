@@ -7,12 +7,12 @@
   <packaging>jar</packaging>
   <version>${astrogrid_adql2_version}</version>
   <name>Astrogrid ADQL Parser Server Version</name>
-  <description>This project contains a program which manages a pool of Astrogrid ADQL parsers.</description>
+  <description>This project contains two approaches to managing a pool of Astrogrid ADQL parsers.</description>
   <url>${astrogrid_doc_URL_root}/p/adql2/${project.version}/adqlserver</url>
 	<parent>
 		<artifactId>astrogrid-adqlparser</artifactId>
 		<groupId>org.astrogrid</groupId>
-		<version>2009.1</version>
+		<version>2010.1</version>
 	</parent> 
   <build>
     <sourceDirectory>src/java</sourceDirectory>

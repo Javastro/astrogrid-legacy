@@ -1,0 +1,11 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select 
+    a.*, ABS(a.POS_EQ_DEC) as absPOS_EQ_DEC, a.PHOT_FLUX_PEAK+a.PHOT_FLUX_INT as flux
+From catalogue as a 
+Order By POS_EQ_RA ASC, absPOS_EQ_DEC DESC, flux ASC ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select a.*, ABS(a.POS_EQ_DEC)  absPOS_EQ_DEC,  (a.PHOT_FLUX_PEAK + a.PHOT_FLUX_INT)   flux From catalogue a  Order By POS_EQ_RA ASC, absPOS_EQ_DEC DESC, flux ASC 

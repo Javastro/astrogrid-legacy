@@ -12,9 +12,13 @@ import org.apache.xmlbeans.*;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
+import org.astrogrid.adql.beans.SelectDocument;
 import org.astrogrid.adql.metadata.*;
 
 /**
@@ -86,7 +90,7 @@ public class Interactive implements MetadataQuery {
     private static String fragmentName ;
     private static Container metadata ;  
     private static String metaDataFileName = null ;
-    private static String userDefinedPrefix = "udf_" ;
+    private static String userDefinedPrefix = "" ;
     private static AdqlTransformer TRANSFORMER ;
     
     private static String[] RESERVED_WORDS = { "first" , "match", "area", "next", "distance", "region", "substring" } ;
@@ -132,13 +136,20 @@ public class Interactive implements MetadataQuery {
                  StringReader source = getQuerySource() ;
                  String queryXml ;
                  if( bFullMode == true ) {
-                     queryXml = getParser( source ).parseToXmlText() ; 
-                     print( "\nParser produced:" ) ;
-                     print( "\n" + queryXml ) ;  
-                     if( TRANSFORMER != null ) {
-                         print( "\n\nTransformer produced:" ) ;
-                         print( "\n" + TRANSFORMER.transformToAdqls( queryXml ) ) ;
-                     } 
+//                     queryXml = getParser( source ).parseToXmlText() ; 
+//                     print( "\nParser produced:" ) ;
+//                     print( "\n" + queryXml ) ;  
+                     
+                     SelectDocument sd = getParser( source ).parseToXmlBeans() ; 
+                     
+                     print( sd.toString() ) ;
+                     
+                     isValidAdql( sd ) ;
+                                         
+//                     if( TRANSFORMER != null ) {
+//                         print( "\n\nTransformer produced:" ) ;
+//                         print( "\n" + TRANSFORMER.transformToAdqls( queryXml ) ) ;
+//                     } 
                  }
                  else {
                      if( fragmentName == null ) {
@@ -262,7 +273,8 @@ public class Interactive implements MetadataQuery {
          if( PARSER == null ) {
              PARSER = new AdqlParser( source );  
              PARSER.setSemanticProcessing( true ) ;
-             PARSER.setSyntax( AdqlParser.V20 ) ;
+//             PARSER.setSyntax( AdqlParser.V20 ) ;
+             PARSER.setSyntax( AdqlParser.V20_X ) ;
              if( metaDataFileName != null ) {
                  metadata = MetaDataLoader.getMetaData( metaDataFileName ) ;
                  PARSER.setMetadataQuery( interactive ) ;
@@ -369,6 +381,25 @@ public class Interactive implements MetadataQuery {
             }
         }       
         return retVal ;
+    }
+    
+    private static boolean isValidAdql(SelectDocument selectDoc) 
+    {
+      // Check that the document is schema-valid
+      // Set up the validation error listener.
+      ArrayList validationErrors = new ArrayList();
+      XmlOptions xmlOptions = new XmlOptions();
+      xmlOptions.setErrorListener(validationErrors);
+       
+      boolean isValid = selectDoc.validate(xmlOptions);
+      if (!isValid) {
+        print ("!!!! XML is not schema-valid !!!!! ");
+        Iterator iter = validationErrors.iterator();
+        while (iter.hasNext()) {
+          print(">> " + iter.next() + "\n");
+        }
+      }
+      return isValid;
     }
     
 }

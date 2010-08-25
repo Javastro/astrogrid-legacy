@@ -3,12 +3,12 @@
 # Executes an interactive command line conversation with the ADQL base parser.
 #
 # Copy required jars to a suitable directory and place its path here...
-ADQL=/home/YOUR_HOME_HERE/adql-2009-1
+ADQL=/home/YOUR_HOME_HERE/adql-2010-1
 
 CLASSPATH2=.
-CLASSPATH2=$CLASSPATH2:$ADQL/astrogrid-adqlparser-utils-2009.1.jar
-CLASSPATH2=$CLASSPATH2:$ADQL/astrogrid-adqlparser-base-2009.1.jar
-CLASSPATH2=$CLASSPATH2:$ADQL/astrogrid-adqlbeans-2009.1.jar
+CLASSPATH2=$CLASSPATH2:$ADQL/astrogrid-adqlparser-utils-2010.1.jar
+CLASSPATH2=$CLASSPATH2:$ADQL/astrogrid-adqlparser-base-2010.1.jar
+CLASSPATH2=$CLASSPATH2:$ADQL/astrogrid-adqlbeans-2010.1.jar
 CLASSPATH2=$CLASSPATH2:$ADQL/xmlbeans-2.3.0.jar
 CLASSPATH2=$CLASSPATH2:$ADQL/jsr173_1.0_api-1.0.jar
 CLASSPATH2=$CLASSPATH2:$ADQL/log4j-1.2.8.jar

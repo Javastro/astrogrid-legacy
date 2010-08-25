@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-adqlparser</artifactId>
-  <version>2009.1</version>
+  <version>2010.1</version>
   <parent>
   	<artifactId>astrogrid-base</artifactId>
   	<groupId>org.astrogrid</groupId>
@@ -32,7 +32,7 @@
           Another concerns the generation of XMLBeans that are indispensable for manipulating the intermediate XML
           form of a query. 
           
-          Apart from the base parser, which is not thread safe, there is a server version which handles thread safety.
+          Apart from the base parser, which is not thread safe, there are two server versions available which handle thread safety.
           Other utility programmes are included that are used as aids within the development environment.
           </description>
   <url>${astrogrid_doc_URL_root}/p/adql2/${project.version}</url>
@@ -70,4 +70,7 @@
       <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/</url>
     </site>  
  </distributionManagement>
+  <properties>
+  	<astrogrid_adql2_version>2010.1</astrogrid_adql2_version>
+	</properties>
 </project>
