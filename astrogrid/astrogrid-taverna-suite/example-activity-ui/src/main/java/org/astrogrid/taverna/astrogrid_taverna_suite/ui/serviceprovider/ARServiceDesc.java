@@ -9,18 +9,23 @@ import javax.swing.Icon;
 import net.sf.taverna.t2.servicedescriptions.ServiceDescription;
 import net.sf.taverna.t2.workflowmodel.processor.activity.Activity;
 
-import org.astrogrid.taverna.astrogrid_taverna_suite.CEAActivity;
-import org.astrogrid.taverna.astrogrid_taverna_suite.CEAActivityConfigurationBean;
+import org.astrogrid.taverna.astrogrid_taverna_suite.ARActivity;
+import org.astrogrid.taverna.astrogrid_taverna_suite.ARActivityConfigurationBean;
 
-public class ARServiceDesc extends ServiceDescription<CEAActivityConfigurationBean> {
+import org.astrogrid.acr.builtin.ComponentDescriptor;
+import org.astrogrid.acr.builtin.MethodDescriptor;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
+
+
+public class ARServiceDesc extends ServiceDescription<ARActivityConfigurationBean> {
 
 	/**
 	 * The subclass of Activity which should be instantiated when adding a service
 	 * for this description 
 	 */
 	@Override
-	public Class<? extends Activity<CEAActivityConfigurationBean>> getActivityClass() {
-		return CEAActivity.class;
+	public Class<? extends Activity<ARActivityConfigurationBean>> getActivityClass() {
+		return ARActivity.class;
 	}
 
 	/**
@@ -30,12 +35,11 @@ public class ARServiceDesc extends ServiceDescription<CEAActivityConfigurationBe
 	 * 
 	 */
 	@Override
-	public CEAActivityConfigurationBean getActivityConfiguration() {
-		CEAActivityConfigurationBean bean = new CEAActivityConfigurationBean();
-		//bean.setCeaInterfaceName(this.ceaInterfaceName);
-		//bean.setCeaIvorn(this.ceaIvorn);
-		//bean.setExampleString(exampleString);
-		//bean.setExampleUri(exampleUri);
+	public ARActivityConfigurationBean getActivityConfiguration() {
+		ARActivityConfigurationBean bean = new ARActivityConfigurationBean();
+		bean.setModuleDescriptor(this.modD);
+		bean.setMethodDescriptor(this.md);
+		bean.setComponentDescriptor(this.cd);
 		return bean;
 	}
 
@@ -101,25 +105,33 @@ private String arName;
 		this.arName = arName;
 	}
 	
+	ModuleDescriptor modD;
+	public void setModuleDescriptor(ModuleDescriptor modD) {
+		this.modD = modD;
+	}
 	
-	// FIXME: Replace example fields and getters/setters with any required
-	// and optional fields. (All fields are searchable in the Service palette,
-	// for instance try a search for exampleString:3)
-	/*
-	private String exampleString;
-	private URI exampleUri;
-	public String getExampleString() {
-		return exampleString;
+	public ModuleDescriptor getModuleDescriptor() {
+		return this.modD;
 	}
-	public URI getExampleUri() {
-		return exampleUri;
+	
+	ComponentDescriptor cd;
+	public void setComponentDescriptor(ComponentDescriptor cd) {
+		this.cd = cd;
 	}
-	public void setExampleString(String exampleString) {
-		this.exampleString = exampleString;
+	
+	public ComponentDescriptor getComponentDescriptor() {
+		return this.cd;
 	}
-	public void setExampleUri(URI exampleUri) {
-		this.exampleUri = exampleUri;
+	
+	
+	MethodDescriptor md;
+	public void setMethodDescriptor(MethodDescriptor md) {
+		this.md = md;
 	}
-	*/
+	
+	public MethodDescriptor getMethodDescriptor() {
+		return this.md;
+	}
+
 
 }

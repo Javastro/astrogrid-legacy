@@ -1,3 +1,4 @@
 org.astrogrid.taverna.astrogrid_taverna_suite.ExampleActivityHealthChecker
 org.astrogrid.taverna.astrogrid_taverna_suite.DSAActivityHealthChecker
 org.astrogrid.taverna.astrogrid_taverna_suite.CEAActivityHealthChecker
+org.astrogrid.taverna.astrogrid_taverna_suite.ARActivityHealthChecker

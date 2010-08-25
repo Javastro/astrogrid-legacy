@@ -51,20 +51,23 @@ public class ARServiceProvider implements ServiceDescriptionProvider {
 						ARServiceDesc arService = new ARServiceDesc();
 						arService.setARPath(new String[]{modules[i].getName(),components[j].getName()});
 						arService.setARName(methods[k].getName());
-						
-					}
-					
-				}
-			}
+						arService.setComponentDescriptor(components[j]);
+						arService.setModuleDescriptor(modules[i]);
+						arService.setMethodDescriptor(methods[k]);
+						results.add(arService);
+					}//for
+				}//for
+				// partialResults() can also be called several times from inside
+				// for-loop if the full search takes a long time
+				callBack.partialResults(results);
+
+			}//for
 		
 			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		
-		// partialResults() can also be called several times from inside
-		// for-loop if the full search takes a long time
-		callBack.partialResults(results);
 		// No more results will be coming
 		callBack.finished();
 	}

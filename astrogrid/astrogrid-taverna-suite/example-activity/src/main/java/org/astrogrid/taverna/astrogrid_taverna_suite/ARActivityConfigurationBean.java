@@ -31,22 +31,13 @@ public class ARActivityConfigurationBean implements Serializable {
 	 * be referenced as well, as long as they are part of the same plugin.
 	 */
 	
-	// TODO: Remove the example fields and getters/setters and add your own	
-	private String exampleString;
-	
+
 	private ModuleDescriptor md;
 	
 	private  ComponentDescriptor cd;
 	
 	private MethodDescriptor methD;
 
-	private URI exampleUri;
-
-	public String getExampleString() {
-		return exampleString;
-	}
-	//ModuleDescriptor md, ComponentDescriptor cd, MethodDescriptor methD
-	
 	public ModuleDescriptor getModuleDescriptor() {
 		return md;
 	}
@@ -60,7 +51,7 @@ public class ARActivityConfigurationBean implements Serializable {
 		return cd;
 	}
 	
-	public void setModuleDescriptor(ComponentDescriptor cd) {
+	public void setComponentDescriptor(ComponentDescriptor cd) {
 		this.cd = cd;
 	}
 	
@@ -73,16 +64,5 @@ public class ARActivityConfigurationBean implements Serializable {
 	}
 
 
-	public void setExampleString(String exampleString) {
-		this.exampleString = exampleString;
-	}
-
-	public URI getExampleUri() {
-		return exampleUri;
-	}
-
-	public void setExampleUri(URI exampleUri) {
-		this.exampleUri = exampleUri;
-	}
 
 }

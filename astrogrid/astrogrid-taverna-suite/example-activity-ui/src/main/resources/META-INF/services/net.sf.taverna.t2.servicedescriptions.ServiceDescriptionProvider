@@ -1,3 +1,4 @@
 org.astrogrid.taverna.astrogrid_taverna_suite.ui.serviceprovider.ExampleServiceProvider
 org.astrogrid.taverna.astrogrid_taverna_suite.ui.serviceprovider.DSAServiceProvider
 org.astrogrid.taverna.astrogrid_taverna_suite.ui.serviceprovider.CEAServiceProvider
+org.astrogrid.taverna.astrogrid_taverna_suite.ui.serviceprovider.ARServiceProvider

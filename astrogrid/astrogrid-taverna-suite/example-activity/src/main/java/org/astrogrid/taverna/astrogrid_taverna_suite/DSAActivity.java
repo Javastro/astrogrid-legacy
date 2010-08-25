@@ -101,12 +101,10 @@ public class DSAActivity extends
 			public void run() {
 				InvocationContext context = callback.getContext();
 				ReferenceService referenceService = context.getReferenceService();
-				// Resolve inputs 				
-				String ceaAppIvorn;
-				String ceaInterfaceName;
-				String optCeaServiceIvorn;
+				//String.class, context);
+				// Resolve inputs 
 				Map<String, T2Reference> outputs = new HashMap<String, T2Reference>();
-				DSATask dt = new DSATask();
+				CEATask dt = new CEATask();
 				dt.execute(inputs, context, outputs);
 				// return map of output data, with empty index array as this is
 				// the only and final result (this index parameter is used if

@@ -28,16 +28,6 @@ public class CEAActivity extends
 		AbstractAsynchronousActivity<CEAActivityConfigurationBean>
 		implements AsynchronousActivity<CEAActivityConfigurationBean> {
 
-	/*
-	 * Best practice: Keep port names as constants to avoid misspelling. This
-	 * would not apply if port names are looked up dynamically from the service
-	 * operation, like done for WSDL services.
-	 */
-	private static final String IN_FIRST_INPUT = "firstInput";
-	private static final String IN_EXTRA_DATA = "extraData";
-	private static final String OUT_MORE_OUTPUTS = "moreOutputs";
-	private static final String OUT_SIMPLE_OUTPUT = "simpleOutput";
-	private static final String OUT_REPORT = "report";
 	
 	private CEAActivityConfigurationBean configBean;
 
@@ -79,8 +69,11 @@ public class CEAActivity extends
 					ParameterReferenceBean []pbo = interfaceBean[i].getOutputs();
 					i = interfaceBean.length;
 					//logger.warn("found it now get ParameterReferenceBeans and try to add inputs that are used for this interface.");
+					System.out.println("PBI length = " +  pbi.length);
 					for(int j = 0; j < pbi.length; j++) {
+						System.out.println("params length = " +  params.length);
 						for(int m = 0;m < params.length;m++) {
+							System.out.println("getName = " + params[m].getName() + " getRef = " + pbi[j].getRef() );
 							if(params[m].getName().equals(pbi[j].getRef())) {
 								pb = params[m];
 							}
@@ -118,33 +111,10 @@ public class CEAActivity extends
 
 	}
 	
-	private void describeDSAInputs()  {
-
-		addInput("CeaApp Ivorn",0,true,null,String.class);
-		addInput("Optional CeaService Ivorn",0,true,null,String.class);
-		
-		addInput("Interface Name",0,true,null,String.class);
-		//inputInterface.setDefaultValue("ADQL");
-
-		addInput("Query",0,true,null,String.class);
-		
-		addInput("Format",0,true,null,String.class);
-		//inputFormat.setDefaultValue("VOTABLE");
-		
-		addInput("Optional Result Saved",0,true,null,Boolean.class);
-		//be good to set to true
-		
-	}
 	
 	
-	private void describeDSAOutputs(){	
-		addOutput("ExecutionID", 0);
-		
-		addOutput("ExecutionInformation", 0);
-		
-		addOutput("ResultList", 1);
-		
-	}
+	
+	
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -159,65 +129,15 @@ public class CEAActivity extends
 						.getContext();
 				ReferenceService referenceService = context
 						.getReferenceService();
-				// Resolve inputs 				
-				String firstInput = (String) referenceService.renderIdentifier(inputs.get(IN_FIRST_INPUT), 
-						String.class, context);
-				String ceaAppIvorn;
-				String ceaInterfaceName;
-				String optCeaServiceIvorn;
-				
-				
-				// Support our configuration-dependendent input
-				//boolean optionalPorts = configBean.getExampleString().equals("specialCase"); 
-				
-				List<byte[]> special = null;
-				// We'll also allow IN_EXTRA_DATA to be optionally not provided
-				/*
-				if (optionalPorts && inputs.containsKey(IN_EXTRA_DATA)) {
-					// Resolve as a list of byte[]
-					special = (List<byte[]>) referenceService.renderIdentifier(
-							inputs.get(IN_EXTRA_DATA), byte[].class, context);
-				}
-				*/
-				
-
-				// TODO: Do the actual service invocation
-//				try {
-//					results = this.service.invoke(firstInput, special)
-//				} catch (ServiceException ex) {
-//					callback.fail("Could not invoke Example service " + configBean.getExampleUri(),
-//							ex);
-//					// Make sure we don't call callback.receiveResult later 
-//					return;
-//				}
-
-				// Register outputs
+			
 				Map<String, T2Reference> outputs = new HashMap<String, T2Reference>();
-				String simpleValue = "simple";
-				T2Reference simpleRef = referenceService.register(simpleValue, 0, true, context);
-				outputs.put(OUT_SIMPLE_OUTPUT, simpleRef);
-
-				// For list outputs, only need to register the top level list
-				List<String> moreValues = new ArrayList<String>();
-				moreValues.add("Value 1");
-				moreValues.add("Value 2");
-				T2Reference moreRef = referenceService.register(moreValues, 1, true, context);
-				outputs.put(OUT_MORE_OUTPUTS, moreRef);
-
-				/*
-				if (optionalPorts) {
-					// Populate our optional output port					
-					// NOTE: Need to return output values for all defined output ports
-					String report = "Everything OK";
-					outputs.put(OUT_REPORT, referenceService.register(report,
-							0, true, context));
-				}
-				*/
-				
+				CEATask dt = new CEATask();
+				dt.execute(inputs, context, outputs);
 				// return map of output data, with empty index array as this is
 				// the only and final result (this index parameter is used if
 				// pipelining output)
 				callback.receiveResult(outputs, new int[0]);
+				
 			}
 		});
 	}
