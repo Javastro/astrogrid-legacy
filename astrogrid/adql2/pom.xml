@@ -34,7 +34,14 @@
           
           Apart from the base parser, which is not thread safe, there are two server versions available which handle thread safety.
           Other utility programmes are included that are used as aids within the development environment.
-          </description>
+  </description>
+  
+  <properties>
+  	 <astrogrid_adql2_version>2010.1</astrogrid_adql2_version>
+  	 <java.version>1.5</java.version>
+  	 <java.target>1.5</java.target>
+  </properties>
+  
   <url>${astrogrid_doc_URL_root}/p/adql2/${project.version}</url>
   
   <developers>
@@ -52,6 +59,14 @@
   </scm>
   <build>
     <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.target}</target>
+				</configuration>
+			</plugin>   
     </plugins>
   </build>
   <modules>
@@ -70,7 +85,5 @@
       <url>${astrogrid_doc_server_root}/p/adql2/${project.version}/</url>
     </site>  
  </distributionManagement>
-  <properties>
-  	<astrogrid_adql2_version>2010.1</astrogrid_adql2_version>
-	</properties>
+
 </project>
