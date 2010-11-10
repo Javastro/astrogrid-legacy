@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/workflowmodel-impl-0.4.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/workflowmodel-api-0.4.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/t2reference-ui-0.3.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/t2reference-core-extensions-0.2.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/t2reference-impl-0.2.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/t2reference-api-0.2.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/acr-interface-2008.2.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/castor-0.9.5-xml.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/astrogrid-common-2007.2c.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/astrogrid-workflow-objects-2007.2wo.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/spring-tx-2.5.4.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/partition-0.4.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/activity-palette-ui-0.2.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/activity-palette-impl-0.2.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/activity-palette-api-0.2.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/contextual-views-impl-0.2.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/contextual-views-api-0.2.jar"/>
+	<classpathentry kind="lib" path="/Development/eclipse/workspace/ar-taverna-2_0/lib/jdom-1.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
