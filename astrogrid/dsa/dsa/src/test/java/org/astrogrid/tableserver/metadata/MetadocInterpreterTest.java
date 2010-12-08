@@ -39,13 +39,26 @@ public class MetadocInterpreterTest extends TestCase {
      return u;
    }
 
-   /** Tests for basic metadoc validity */
-   public void testValidMetadoc() throws MetadataException, IOException
+   /** 
+    * Tests for basic metadoc validity with v1.1 document.
+    */
+   public void testValidMetadoc1_1() throws MetadataException, IOException
    {
       TableMetaDocInterpreter.loadAndValidateMetadoc(
             getMetadocUrlFromFilename(
             "metadocs/good_metadoc.xml"));
    }
+   
+   /** 
+    * Tests for basic metadoc validity with v1.2 document.
+    */
+   public void testValidMetadoc1_2() throws MetadataException, IOException
+   {
+      TableMetaDocInterpreter.loadAndValidateMetadoc(
+            getMetadocUrlFromFilename(
+            "metadocs/good_metadoc_1.2.xml"));
+   }
+
    public void testBadMetadoc_DupCatID() throws IOException
    {
       try {
@@ -938,13 +951,25 @@ public class MetadocInterpreterTest extends TestCase {
       fail("Guessing missing column ID should cause failure");
    }
 
+  /**
+   * Tests the accessor for the utype of a column.
+   */
+  public void testUtypeAccessor() throws Exception {
+    TableMetaDocInterpreter.clear();
+    TableMetaDocInterpreter.initialize(getMetadocUrlFromFilename("metadocs/good_metadoc_1.2.xml"));
 
-   public static void main(String[] args) {
-      junit.textui.TestRunner.run(MetadataTest.class);
-   }
+    // This column has a Utype in the metadoc.
+    ColumnInfo c1 = TableMetaDocInterpreter.getColumnInfoByID("FIRST",
+                                                              "catalogue1",
+                                                              "POS_EQ_RA");
+    assertEquals("Utype is wrong", "foo:bar.baz", c1.getUtype());
+
+    // This column has no Utype in the metadoc.
+    ColumnInfo c2 = TableMetaDocInterpreter.getColumnInfoByID("FIRST",
+                                                              "catalogue1",
+                                                              "POS_EQ_DEC");
+    assertNull("Utype is present when none was configured", c2.getUtype());
+  }
    
    
 }
-
-
-

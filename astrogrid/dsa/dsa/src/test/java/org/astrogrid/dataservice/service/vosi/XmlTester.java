@@ -1,3 +1,6 @@
+/*
+ * (c) Copyright AstroGrid 2010.
+ */
 package org.astrogrid.dataservice.service.vosi;
 
 import java.io.IOException;

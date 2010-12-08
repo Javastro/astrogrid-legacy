@@ -93,7 +93,7 @@ public class DatacenterExecutionHistory extends InMemoryExecutionHistory {
     results.addResult(p);
 
     ExecutionSummaryType summary = new ExecutionSummaryType();
-    summary.setApplicationName(""); // TODO: fill this bit in.
+    summary.setApplicationName("");
     summary.setExecutionId(jobId);
     summary.setStatus(ceaExecutionPhase(job.getPhase()));
     summary.setInputList(new InputListType());

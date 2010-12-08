@@ -1,5 +1,5 @@
 /*
- * $Id: SearchField.java,v 1.1 2009/05/13 13:20:24 gtr Exp $
+ * $Id: SearchField.java,v 1.2 2010/12/08 12:46:35 gtr Exp $
  */
 package org.astrogrid.dataservice.metadata.queryable;
 
@@ -33,6 +33,11 @@ public class SearchField {
 
    //look up of UCDs of different versions (ie 1, 1+)
    private Hashtable ucds = new Hashtable();
+
+   /**
+    * The data-model node, or Utype. Not all fields have a Utype.
+    */
+   private String utype;
 
    //links to more info about the field
    private Vector links = new Vector();
@@ -68,6 +73,24 @@ public class SearchField {
    
    public void setUnits(String units) {
       this.units = new Units(units);
+   }
+
+   /**
+    * Reveals the data-model node, if the field has one.
+    *
+    * @return The Utype (null if no utype known for this field).
+    */
+   public String getUtype() {
+     return utype;
+   }
+
+   /**
+    * Sets the data-model node for this field.
+    *
+    * @param utype (null => field has no utype).
+    */
+   public void setUtype(String utype) {
+     this.utype = utype;
    }
 
    public void setUnits(Units units) {

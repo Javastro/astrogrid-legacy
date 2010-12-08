@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.5 2010/03/25 10:25:53 gtr Exp $
+ * $Id: VoTableWriter.java,v 1.6 2010/12/08 12:46:36 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,7 +18,6 @@ import org.astrogrid.dataservice.metadata.VoTypes;
 import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
-import org.astrogrid.ucd.UcdVersions;
 
 /**
  * For writing out tables in votable.  As far as I'm aware dates are not handled
@@ -51,11 +50,22 @@ public class VoTableWriter implements TableWriter {
       target.setMimeType(MimeTypes.VOTABLE);
       bufferedOut = new BufferedWriter(target.openWriter());
    }
+
+
    /**
     * Construct this wrapping the given stream.
     */
    public VoTableWriter(OutputStream out, String title, Principal user) throws IOException {
       bufferedOut = new BufferedWriter( new OutputStreamWriter (out));
+   }
+
+   /**
+    * Constructs a VOTable writer on a given Writer.
+    *
+    * @param out The Writer to receive the output.
+    */
+   public VoTableWriter(Writer out, String title, Principal user) throws IOException {
+     bufferedOut = new BufferedWriter(out);
    }
    
    protected void printString(String toPrint) throws IOException
@@ -98,8 +108,6 @@ public class VoTableWriter implements TableWriter {
    /** Start body - writes out header and preps col array */
    public void startTable(ColumnInfo[] colinfo) throws IOException {
       
-      String ucdVersion = UcdVersions.getUcdVersion();
-
       this.cols = colinfo;
       
       println("<TABLE>");
@@ -108,9 +116,17 @@ public class VoTableWriter implements TableWriter {
          if (cols[i] != null) { // null columns if it's not been found in the metadoc
          
             printString("<FIELD name='"+cols[i].getName()+"' ");
-            if (cols[i].getId() != null) printString("ID='"+cols[i].getId()+"' ");
-            if (cols[i].getUcd(ucdVersion) != null) printString(" ucd='"+cols[i].getUcd(ucdVersion)+"' ");
-            
+            if (cols[i].getId() != null) {
+              printString("ID='"+cols[i].getId()+"' ");
+            }
+            String ucd = cols[i].getUcd("1+");
+            if (ucd != null) {
+              printString(" ucd='"+ucd+"' ");
+            }
+            if (cols[i].getUtype() != null) {
+              printString(" utype='" + cols[i].getUtype() +"' ");
+            }
+
             //Create the votable type attributes from the metadoc type. 
             //Convert using java class as the medium
             if (cols[i].getPublicType() != null) {

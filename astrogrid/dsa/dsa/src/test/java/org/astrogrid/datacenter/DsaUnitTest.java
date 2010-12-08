@@ -3,6 +3,7 @@ package org.astrogrid.datacenter;
 import junit.framework.TestCase;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.jobs.Job;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 
 /**
@@ -24,6 +25,12 @@ public abstract class DsaUnitTest extends TestCase {
 
     // Make a dummy science-database.
     SampleStarsPlugin.initConfig();
+
+    // Load the metadoc specified by the plug-in.
+    // If this is not done, the test may use an inappropriate
+    // metadoc left over from a previous test.
+    TableMetaDocInterpreter.clear();
+    TableMetaDocInterpreter.initialize();
   }
 
 }

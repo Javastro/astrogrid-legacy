@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.4 2010/01/27 17:17:05 gtr Exp $
+/*$Id: DataServiceTest.java,v 1.5 2010/12/08 12:46:36 gtr Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,7 @@ public class DataServiceTest extends TestCase {
        super.setUp();
        SimpleConfig.setProperty("datacenter.cache.directory", "target");
        Job.initialize();
-       SampleStarsPlugin.initConfig();
+       SampleStarsPlugin.initialise();
        
        server = new DataServer();
        String catalogID = ConfigFactory.getCommonConfig().getString(

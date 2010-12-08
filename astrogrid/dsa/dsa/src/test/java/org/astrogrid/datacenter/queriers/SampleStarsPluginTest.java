@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.4 2009/11/12 14:14:00 gtr Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.5 2010/12/08 12:46:35 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,15 +43,24 @@ import org.xml.sax.SAXException;
  * Tests the dummy querier and resultset.
  * also uses the dummy querier to test behaviours common to all queriers.
  * @author M Hill
+ * @author Guy Rixon
  */
 
 public class SampleStarsPluginTest extends TestCase {
 
+  /**
+   * Sets up the lug-in and its environment. Initializes the job database.
+   * Clears the currently-loaded metadoc (which may be left over from a
+   * different test and therefore not the appropriate one) and loads the
+   * one indicated by the plug-in configuration.
+   */
   @Override
   public void setUp() throws Exception {
     SimpleConfig.setProperty("datacenter.cache.directory", "target");
     Job.initialize();
     SampleStarsPlugin.initConfig();
+    TableMetaDocInterpreter.clear();
+    TableMetaDocInterpreter.initialize();
   }
    
    /** Tests the precanned results.  Plugin test is done through QuerierTest */

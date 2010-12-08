@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.3 2010/04/11 21:19:20 gtr Exp $
+ * $Id: SqlResults.java,v 1.4 2010/12/08 12:46:35 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -377,7 +377,7 @@ public class SqlResults extends TableResults {
 
          int row = 0;
          statusToUpdate.newProgress("Processing Row", getCount());
-         String[] colValues = new String[numCols];
+         Object[] colValues = new Object[numCols];
          while (sqlResults.next() && ((queryLimit <=0) || (row<=queryLimit)))
          {
             row++;
@@ -388,7 +388,7 @@ public class SqlResults extends TableResults {
                if (cols[i-1] != null) { //if there is no column metadata, 
                //then it wasn't found in the metadoc and shouldn't be displayed
                   try {
-                     colValues[i-1] = sqlResults.getString(i);
+                     colValues[i-1] = sqlResults.getObject(i);
                   }
                   catch (SQLException se) {
                      log.warn(se+" reading value of column "+i+" row "+row,se);
@@ -466,6 +466,12 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.4  2010/12/08 12:46:35  gtr
+ Branch pre-2010_4 merged.
+
+ Revision 1.3.2.1  2010/04/28 14:12:36  gtr
+ Results are passed to the table writer as typed objects rather than as strings. This reduces the amount of character escaping needed to make correct XML and reduces the formatting time by up to 2/3.
+
  Revision 1.3  2010/04/11 21:19:20  gtr
  Branch pre-2010_3 is merged.
 

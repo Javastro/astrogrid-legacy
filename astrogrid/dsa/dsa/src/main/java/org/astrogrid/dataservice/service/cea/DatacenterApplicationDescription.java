@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.3 2010/12/08 12:46:36 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -92,7 +92,6 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     }
     
     /** adds self-description bits to the application description
-     *@todo get an astronomer-type to check over this metadata, verify it is sensible, etc.
      */
     protected final void createMetadata(String name) throws ParameterDescriptionNotFoundException {
         this.setName(name);
@@ -225,94 +224,3 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     }
     
 }
-
-
-/*
-$Log: DatacenterApplicationDescription.java,v $
-Revision 1.2  2009/10/21 19:01:00  gtr
-V2009.1.01, merged.
-
-Revision 1.1.1.1.2.1  2009/09/25 15:00:43  gtr
-Refactored: the DataCenter facade is removed.
-
-Revision 1.1.1.1  2009/05/13 13:20:31  gtr
-
-
-Revision 1.9  2008/02/07 17:27:45  clq2
-PAL_KEA_2518
-
-Revision 1.8.8.1  2008/02/07 16:36:15  kea
-Further fixes for 1.0 support, and also MBT's changes merged into my branch.
-
-Revision 1.8  2007/12/04 17:31:39  clq2
-PAL_KEA_2378
-
-Revision 1.6.2.1  2007/11/15 18:19:15  kea
-Multicone fixes, various bugzilla ticket fixes, tweaks after profiling.
-
-Revision 1.7  2007/11/01 11:25:46  kea
-Merging MBT's branch pal-mbt-multicone1.
-
-Revision 1.6.4.1  2007/10/25 14:28:49  mbt
-Rename RA_EXPR and DEC_EXPR to RA_COL and DEC_COL to match their new functions
-
-Revision 1.6  2007/10/17 09:58:19  clq2
-PAL_KEA-2314
-
-Revision 1.5.10.2  2007/10/11 13:53:19  kea
-Still working on multicone stuff.
-
-Revision 1.5.10.1  2007/09/25 17:17:29  kea
-Working on CEA interface for multicone service.
-
-Revision 1.5  2007/06/12 12:12:01  kea
-Adding cone cea interface back.
-
-Revision 1.3.4.3  2007/06/12 11:54:09  kea
-Putting back CEA conesearch.
-
-Revision 1.3.4.2  2007/05/18 16:34:12  kea
-Still working on new metadoc / multi conesearch.
-
-Revision 1.3.4.1  2007/05/16 11:03:52  kea
-Removing siap stuff, not in use.
-
-Revision 1.3  2007/02/20 12:22:14  clq2
-PAL_KEA_2062
-
-Revision 1.2.56.1  2007/02/13 15:58:59  kea
-Added proper OptionList for supported output types (including new
-support for binary VOTable).
-
-Revision 1.2  2005/11/21 12:54:18  clq2
-DSA_KEA_1451
-
-Revision 1.1.1.1.66.1  2005/11/15 15:33:34  kea
-Re-instated cone-search interface (in addition to existing adql interface)
-as JDT says portal can now cope with >1 interface.
-
-Revision 1.1.1.1  2005/02/17 18:37:35  mch
-Initial checkin
-
-Revision 1.1.1.1  2005/02/16 17:11:24  mch
-Initial checkin
-
-Revision 1.2.10.1  2004/11/22 00:57:16  mch
-New interfaces for SIAP etc and new slinger package
-
-Revision 1.2  2004/11/08 02:58:44  mch
-Various fixes and better error messages
-
-Revision 1.1  2004/09/28 15:02:13  mch
-Merged PAL and server packages
-
-Revision 1.3  2004/09/17 01:27:21  nw
-added thread management.
-
-Revision 1.2  2004/07/20 02:14:48  nw
-final implementaiton of itn06 Datacenter CEA interface
-
-Revision 1.1  2004/07/13 17:11:09  nw
-first draft of an itn06 CEA implementation for datacenter
- 
-*/

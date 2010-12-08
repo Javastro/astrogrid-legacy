@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsTableMetaDocGenerator.java,v 1.1 2009/05/13 13:20:44 gtr Exp $
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.2 2010/12/08 12:46:35 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,14 +9,13 @@ package org.astrogrid.tableserver.jdbc;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Vector;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
@@ -186,7 +185,7 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
          SampleStarsPlugin.initialise();  // Just in case
       }
       Connection connection = null;
-      Vector catIDs = new Vector();
+      List catIDs = new ArrayList();
       try {
          connection = JdbcPlugin.getJdbcConnection();
          DatabaseMetaData metadata = connection.getMetaData();
@@ -372,73 +371,6 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
       catch (SQLException e) {
          throw new DatabaseAccessException("Could not get metadata: "+e,e);
       }
-//
-// ZRQ root tag should get closed now.
-//    finally {
-//       out.write("</DatasetDescription>\n");
-//       out.flush();
-//    }
-   }
-   
-   
-   /** Servlet implementation so we can run it nicely from a web interface */
-   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-      try {
-         response.setContentType("text/xml");
-         // Use default catalog for now
-         writeTableMetaDoc(null, response.getWriter());
-         /*
-         String[] cats = new String[1];
-         cats[0] = "AWOPER.\"LVCatalog+\"";
-         writeTableMetaDoc(cats, response.getWriter());
-         */
-
-         /*  KONA PUT ALL THIS STUFF BACK LATER 
-         String manCat = request.getParameter("DSACAT_MANUAL");
-         if ((manCat == null) || ("".equals(manCat))) {
-            Vector vector = new Vector();
-            java.util.Enumeration enumeration = request.getParameterNames();
-            while (enumeration.hasMoreElements()) {
-               String name = (String)enumeration.nextElement();
-               if ((name != null) && (!"".equals(name))) {
-                  if (name.indexOf("DSACAT_") == 0) {
-                     // Found a catalog name
-                     // TOFIX CHECK IF THIS ONE IS SWITCHED ON!!
-                     vector.add(name.substring(7));
-                  }
-               }
-            }
-            if (vector.size() == 0) {
-               // Didn't find cat names, use default
-               writeTableMetaDoc(null, response.getWriter());
-            }
-            else {
-               String[] cats = new String[vector.size()];
-               // Found cat names, use them
-               writeTableMetaDoc(
-                     (String[])vector.toArray(cats), response.getWriter());
-            }
-
-         }
-         else {
-            String[] cats = new String[1];
-            cats[0] = manCat;
-            writeTableMetaDoc(cats, response.getWriter());
-         }
-         */
-      }
-      catch (Throwable th) {
-         doError(response, "Generating Resource Metadata",th);
-      }
-   }
-
-   /** for testing/debugging etc */
-   public static void main(String[] args) {
    }
    
 }
-
-
-
-

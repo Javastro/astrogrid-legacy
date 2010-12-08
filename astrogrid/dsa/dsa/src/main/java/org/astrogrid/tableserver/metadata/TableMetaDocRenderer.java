@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocRenderer.java,v 1.1 2009/05/13 13:20:50 gtr Exp $
+ * $Id: TableMetaDocRenderer.java,v 1.2 2010/12/08 12:46:35 gtr Exp $
  */
 package org.astrogrid.tableserver.metadata;
 
@@ -7,13 +7,6 @@ import java.io.IOException;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
-import org.astrogrid.tableserver.metadata.ColumnInfo;
-import org.astrogrid.tableserver.metadata.TableInfo;
-import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
-import org.astrogrid.ucd.Ucd1Dictionary;
-import org.astrogrid.ucd.Ucd1PlusDictionary;
-import org.astrogrid.units.UnitDictionary;
-import org.w3c.dom.Element;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
@@ -30,8 +23,10 @@ import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 public class TableMetaDocRenderer {
    
    public String renderMetaDoc()  {
-      StringBuffer html = new StringBuffer();
-      html.append("<h2>Table Meta-document for "+DataServer.getDatacenterName()+"</h2>");
+      StringBuilder html = new StringBuilder();
+      html.append("<h2>Table Meta-document for ");
+      html.append(DataServer.getDatacenterName());
+      html.append("</h2>");
       
       // Initialise SampleStars plugin if required (may not be initialised
       // if admin has not run the self-tests)
@@ -49,7 +44,6 @@ public class TableMetaDocRenderer {
          return html.toString();
       }
 
-      Element metadoc = null;
       try {
          String[] catalogNames = TableMetaDocInterpreter.getCatalogNames();
          
@@ -71,76 +65,46 @@ public class TableMetaDocRenderer {
       }
    }
 
-   public void renderTable(StringBuffer html, TableInfo table) 
-            throws MetadataException 
-   {
-      html.append(
-         "<h3>Table '"+table.getName()+"'</h3>"+
-            "<p>"+emptyIfNull(table.getDescription()) +"</p>"+
-            "<p>"+
-            "<table border=1 summary='Column details for table "+table.getName()+"' cellpadding='5%'>"+
-               "<tr>"+
-                  "<th>Column</th>"+
-                  "<th>Type</th>"+
-                  "<th><a href='"+ UnitDictionary.UNIT_REF+"'>Units</a></th>"+
-                  "<th>Dim Eq</th>"+
-                  "<th>Scale</th>"+
-                  "<th><a href='"+ Ucd1Dictionary.REF+"'>UCD1</a></th>"+
-                  "<th><a href='"+ Ucd1PlusDictionary.REF+"'>UCD1+</a></th>"+
-                  "<th>Error</th>"+
-                  "<th>Description</th>"+
-                  "<th>Links</th>"+
-               "</tr>");
-
-      ColumnInfo[] columns = 
-         TableMetaDocInterpreter.getColumnsInfoByName(
-               table.getCatalogName(), table.getName());
+  public void renderTable(StringBuilder html, TableInfo table) throws MetadataException {
+    html.append(htmlElement("h3", "Table " + table.getName()));
+    html.append(htmlElement("p", table.getDescription()));
+    html.append("<table border='1' cellpadding='5%'>");
+    html.append("<tr>");
+    html.append("<th>Column</th>");
+    html.append("<th>Type</th>");
+    html.append("<th><a href='http://vizier.u-strasbg.fr/cgi-bin/Unit'>Units</a></th>");
+    html.append("<th><a href='http://vizier.u-strasbg.fr/doc/UCD/inVizieR.htx'>UCD</a></th>");
+    html.append("<th>Error</th>");
+    html.append("<th>Description</th>");
+    html.append("<th>Links</th>");
+    html.append("</tr>");
+    String catalog = table.getCatalogName();
+    String tableName = table.getName();
+    for (ColumnInfo column : TableMetaDocInterpreter.getColumnsInfoByName(catalog, tableName)) {
+      renderColumn(html, column);
+    }
+    html.append("</table>");
+  }
    
-      for (int col=0;col<columns.length;col++) {
+  public void renderColumn(StringBuilder html, ColumnInfo column) {
+    html.append("<tr>");
+    html.append(htmlElement("td", column.getName()));
+    html.append(htmlElement("td", column.getPublicType()));
+    html.append(htmlElement("td", column.getUnits().toString()));
+    html.append(htmlElement("td", column.getUcd("1+")));
+    html.append(htmlElement("td", column.getErrorField()));
+    html.append(htmlElement("td", column.getDescription()));
+    html.append("</tr>");
+  }
 
-         renderColumn(html, columns[col]);
-      }
-      
-      html.append(
-            "</table>");
-   }
-   
-   public void renderColumn(StringBuffer html, ColumnInfo column) {
-      
-      html.append(
-         "<tr>"+
-            "<th>"+column.getName() +"</th>"+
-            "<td>"+emptyIfNull(column.getPublicType())+"</td>"+
-            "<td>"+column.getUnits().toString() +"</td>"+
-            "<td>"+column.getUnits().getDimEq() +"</td>"+
-            "<td>"+column.getUnits().getDimScale()  +"</td>"+
-            "<td>"+emptyIfNull(column.getUcd("1")) +"</td>"+
-            "<td>"+emptyIfNull(column.getUcd("1+")) +"</td>"+
-            "<td>"+emptyIfNull(column.getErrorField()) +"</td>"+
-            "<td>"+emptyIfNull(column.getDescription()) +"</td>");
-
-      //links
-      String[] links = column.getLinks();
-      for (int i = 0; i < links.length; i++) {
-      //   String name = links[i].getAttribute("Text");
-      //   String link = DomHelper.getValueOf(links[i]);
-//         if ((name == null) || (name.length() ==0)) {
-//            name = link;
-//         }
-         html.append(
-            "<td><a href='"+links[i]+"'>"+links[i]+"</a></td>");
-      }
-
-      html.append(
-         "</tr>");
-   }
-
-   public static String emptyIfNull(String s) {
-      if (s==null) {
-         return "";
-      }
-      else return s;
+   /**
+    * Generates the HTML text for an element.
+    * @param name The element name
+    * @param value The element value.
+    * @return The HTML text.
+    */
+   private String htmlElement(String name, String value) {
+     return String.format("<%s>%s</%s>", name, (value == null)? "" : value, name);
    }
 
 }
-

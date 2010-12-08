@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.3 2010/01/27 17:17:05 gtr Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.4 2010/12/08 12:46:35 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.tableserver.metadata;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.Map;
 import java.util.Vector;
 import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
@@ -21,7 +22,6 @@ import org.astrogrid.dataservice.metadata.StdDataTypes;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import org.astrogrid.test.AstrogridAssert;
-import org.astrogrid.contracts.SchemaMap;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 
@@ -55,10 +55,15 @@ public class TableMetaDocInterpreter
    public final static String TABLE_METADOC_URL_KEY = "datacenter.metadoc.url";
    public final static String TABLE_METADOC_FILE_KEY = "datacenter.metadoc.file";
    public final static String ALLOWED_METADOC_NAMESPACES[] =  {
-      "urn:astrogrid:schema:dsa:TableMetaDoc:v1.1"
+      "urn:astrogrid:schema:dsa:TableMetaDoc:v1.1",
+      "urn:astrogrid:schema:dsa:TableMetaDoc:v1.2"
    };
    public final static String METADOC_NAMESPACE_LATEST =
       "urn:astrogrid:schema:dsa:TableMetaDoc:v1.1";
+   public final static String METADOC_NAMESPACE_EXPERIMENT =
+      "urn:astrogrid:schema:dsa:TableMetaDoc:v1.2";
+
+   public final static Map<String,URL> schemaMap = new AugmentedSchemaMap();
 
    /** Make the constructor private to prevent instantiating this class. */
    private TableMetaDocInterpreter() throws MetadataException
@@ -882,6 +887,14 @@ public class TableMetaDocInterpreter
          info.setUcd(getValueOf(ucdNodes[u]), getAttribute(ucdNodes[u],"version"));
       }
 
+      Element[] utypeNodes = getChildrenByTagName(element, "Utype");
+      if (utypeNodes.length > 0) {
+        info.setUtype(getValueOf(utypeNodes[0]));
+      }
+      else {
+        info.setUtype(null);
+      }
+
       String datatype = nullIfEmpty(getValueOf(element, "Datatype"));
       if (datatype == null) {
          throw new MetadataException("Column "+info.getName()+" has no Datatype element in metadoc");
@@ -975,7 +988,7 @@ public class TableMetaDocInterpreter
          rootElement = urlElement.getNodeName();
       }
       try {
-         AstrogridAssert.assertSchemaValid(urlElement,rootElement,SchemaMap.ALL);
+         AstrogridAssert.assertSchemaValid(urlElement,rootElement,schemaMap);
       }
       catch (Throwable th) {
          throw new MetadataException("Resource metadoc file is invalid: "+th.getMessage(), th);

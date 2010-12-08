@@ -12,12 +12,73 @@
   <p>
     These notes record the cumulative changes in sucessive DSA-versions
     since the last release of 2008. The changes are complete up to version
-    2010.3.
+    2010.4.
   </p>
   <p>
-    Version 2010.3 allows a choice of output formats for TAP queries. All sites
-    should install this update.
+    Version 2010.4 includes new features. All sites should install this update.
   </p>
+
+  <subsection name="Utype support">
+    <p><i>Since 2010.4.</i></p>
+    <p>
+      "Utypes" are references to formal data-models. IVOA's data models are
+      hierarchical structures of prescribed data for representing certain
+      patterns of information such as "spectrum" or "position in the sky", and a
+      utype drawn from one of these data models is a path into this hiearchy that
+      identifies one node. Where an instance of the data model is represented by
+      a row of a table, the fields in that row can be marked up with utypes
+      such that the implied, data-modelled structure can be recovered from the
+      tabular representation.
+    </p>
+    <p>
+      Data models and utypes are an advanced usage of relational storage. A few
+      DSA installations need them but most don't. If you don't need utypes, then
+      DSA 2010.4 will work with your existing configuration.
+    </p>
+    <p>
+      To use utypes in your DSA you must change your metadoc file. First, change
+      the namespace to <i></i> so that the start of the file looks like this:
+    </p>
+    <pre>
+      &lt;DatasetDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns='urn:astrogrid:schema:dsa:TableMetaDoc:v1.2'>
+
+    </pre>
+    <p>
+      The XML schema for the new namespace allows an extra <i>Utype</i> element
+      to be inserted in the column declarations, like this:
+    </p>
+    <pre>
+      &lt;Column ID='POS_EQ_RA' indexed="true">
+        &lt;Name>ColName1_POS_EQ_RA&lt;/Name>
+        &lt;Datatype>double&lt;/Datatype>
+        &lt;Description>Right ascension&lt;/Description>
+        &lt;Units>deg&lt;/Units>
+        &lt;UCD version="1+">pos.eq.ra;meta.main&lt;/UCD>
+        <strong>&lt;Utype>agn:nucleus.pos.ra&lt;/Utype></strong>
+        &lt;SkyPolarCoord>RA&lt;/SkyPolarCoord>
+      &lt;/Column>
+    </pre>
+    <p>
+      Note the position in the sequence: after data type, description, units and
+      UCD but before the polar-coordinate note. The sequence is mandatory; the
+      metadoc will be rejected if you put the utype out of its proper sequence.
+    </p>
+    <p>
+      Utypes are <em>optional</em> in metadocs. You can add them only to selected
+      columns if you wish. You can have at most one per column.
+    </p>
+    <p>
+      The utype in the example above, <i>agn:nucleus.pos.ra</i> is
+      hypothetical. It shows the typical form of a utype: a code identifying
+      a namespace, followed by a colon, followed by a path into a tree structure,
+      with nodes in the path identified by names separated by full stops.
+    </p>
+    <p>
+      With the metadoc updates, the utypes will appear as attributes in the
+      output VOTables.
+    </p>
+  </subsection>
 
   <subsection name="Choice of output formats">
     <p><i>Since 2010.3.</i></p>
@@ -222,6 +283,8 @@
       list below and apply the changes as described in the following sub-sections.
     </p>
     <ul>
+      <li>2010.4: Update metadoc if utype support is desired</li>
+      <li>2010.3: No configuration changes</li>
       <li>2009.1.04: no configuration changes.</li>
       <li>2009.1.03: no configuration changes.</li>
       <li>2009.1.02: update UCD version.</li>
@@ -337,6 +400,13 @@
         your web application because they see the wrong addresses. You might
         prefer to take your DSA installation off-line until the registration
         has propagated.
+      </dd>
+      <dt>Update metadoc version</dt>
+      <dd>
+        Change the namespace declared in your metadoc to
+        <i>urn:astrogrid:schema:dsa:TableMetaDoc:v1.2</i>. This allowes the
+        addition of <i>utype</i> elements as discussed above. After changing
+        the metadoc, reload DSA (or restart Tomcat) to enable the changes.
       </dd>
     </dl>
   </subsection>

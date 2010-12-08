@@ -1,5 +1,5 @@
 /*
- * $Id: Fingerprint.java,v 1.2 2010/01/27 17:17:03 gtr Exp $
+ * $Id: Fingerprint.java,v 1.3 2010/12/08 12:46:36 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -35,8 +35,6 @@ public class Fingerprint {
 
     /**
      * Split up a classpath-like variable. Returns a list of files.
-     * TODO: this can't cope with relative paths. I think theres code in BCEL that
-     * can be used for this?
      */
     private File[] splitClasspath(String path) throws IOException {
         java.util.StringTokenizer st=

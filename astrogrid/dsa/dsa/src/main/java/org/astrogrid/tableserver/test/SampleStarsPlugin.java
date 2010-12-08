@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.3 2009/11/06 18:41:29 gtr Exp $
+ * $Id: SampleStarsPlugin.java,v 1.4 2010/12/08 12:46:36 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,6 +13,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.astrogrid.cfg.ConfigReader;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
@@ -98,6 +100,7 @@ public class SampleStarsPlugin extends JdbcPlugin
       //set where to find the data description meta document
       //this works OK for unit test, but not deployment...
       URL url = SampleStarsPlugin.class.getResource("samplestars.metadoc.xml");
+      System.out.println("Sample-stars metadoc URL: " + url);
       if (url == null) {
          //this works OK for deployment, but not unit tests...
          try {
@@ -108,19 +111,21 @@ public class SampleStarsPlugin extends JdbcPlugin
          }
       }
       ConfigFactory.getCommonConfig().setProperty(TableMetaDocInterpreter.TABLE_METADOC_URL_KEY, url.toString());
-
+      TableMetaDocInterpreter.clear();
+      try {
+        TableMetaDocInterpreter.loadAndValidateMetadoc(url);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+      
       //configure which resources to produce
      // ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.v0_10","disabled");  NO LONGER NEEDED
       ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.v1_0","enabled");
-      // AUTH ID PLUGIN CURRENTLY NOT PROVIDED!
-      //ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.authID","false");
 
       //set up the properties for the authority bit
       ConfigFactory.getCommonConfig().setProperty("datacenter.name", "Default Astrogrid DSA/Catalog running test database");
       //ConfigFactory.getCommonConfig().setProperty("datacenter.publisher", "AstroGrid");
       ConfigFactory.getCommonConfig().setProperty("datacenter.description", "This is a default (unconfigured) DSA/catalog installation.  It accesses a small HSQLDB database containing fictitious tables of stars and galaxies for testing and demonstration purposes.");
-      //ConfigFactory.getCommonConfig().setProperty("datacenter.contact.name", "The AstroGrid Team");
-      //ConfigFactory.getCommonConfig().setProperty("datacenter.contact.email", "astrogrid_dsa@star.le.ac.uk");
 
       ConfigFactory.getCommonConfig().setProperty("default.table","TabName_SampleStars");
       // Conesearch and self-test properties

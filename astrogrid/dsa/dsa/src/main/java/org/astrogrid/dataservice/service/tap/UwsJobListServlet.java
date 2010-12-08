@@ -27,7 +27,7 @@ public class UwsJobListServlet extends AbstractTapServlet {
 
   /**
    * Checks the job database at service start-up, setting incomplete jobs
-   * back to the PENDING state.
+   * back to the pending state.
    */
   @Override
   public void init() {

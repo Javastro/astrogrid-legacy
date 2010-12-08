@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcDataSource.java,v 1.1 2009/11/06 18:41:29 gtr Exp $
+ * $Id: JdbcDataSource.java,v 1.2 2010/12/08 12:46:35 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -124,6 +124,14 @@ public class JdbcDataSource implements DataSource {
 
   public int getLoginTimeout() throws SQLException {
     throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public <T> T unwrap(Class<T> type) throws SQLException {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public boolean isWrapperFor(Class<?> type) throws SQLException {
+    return false;
   }
 
 }
