@@ -13,7 +13,7 @@
       <version>2009.1</version>
    </parent>
    <name>Astrogrid sub-system contracts</name>
-   <version>2009.1</version>
+   <version>2011.1</version>
    <description>
       Contracts for interfaces to major components of AstroGrid. The
       contracts contain the XML schemata for the interfaces plus textual

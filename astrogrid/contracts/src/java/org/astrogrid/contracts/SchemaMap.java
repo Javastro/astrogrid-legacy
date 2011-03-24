@@ -55,6 +55,11 @@ public class SchemaMap {
         ALL.put("http://www.astrogrid.org/schema/CEATypes/v1",SchemaMap.class.getResource("/schema/cea/CEATypes/v1.0/CEATypes.xsd"));
         ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v1",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v1.0/CEAImplementation.xsd"));
         ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v2.0rc1",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v2.0rc1/CEAImplementation.xsd"));
+        
+        //TAPXsams schema:
+        ALL.put("http://www.vamdc.eu/xml/TAPXSAMS/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/TapXSAMS/v1.0/TAPXsams.xsd"));
+        ALL.put("http://www.ivoa.net/xml/TAP/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/TAP/v0.1/TAPRegExt-v0.1.xsd"));
+        
 
         //Contract schemas
         ALL.put("urn:astrogrid:schema:architecture:Contract:v0.1",SchemaMap.class.getResource("/schema/architecture/Contract/v0.1/Contract.xsd"));
@@ -147,6 +152,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.15  2011/03/24 12:21:13  KevinBenson
+New TAPXSAMS and TapRegExt schemas to go into the contracts.
+
 Revision 1.14  2009/06/03 16:57:02  pah
 correct UWS schema to 0.9.2
 

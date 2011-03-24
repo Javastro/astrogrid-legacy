@@ -1,5 +1,5 @@
 /*
- * $Id: Namespaces.java,v 1.4 2009/06/20 14:33:32 pah Exp $
+ * $Id: Namespaces.java,v 1.5 2011/03/24 12:21:13 KevinBenson Exp $
  * 
  * Created on 17 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -49,6 +49,8 @@ public final class Namespaces {
     public static final Namespaces UWS = new Namespaces("uws","http://www.ivoa.net/xml/UWS/v0.9.2");
     public static final Namespaces XLINK = new Namespaces("xlink","http://www.w3.org/1999/xlink");
     public static final Namespaces STC = new Namespaces("stc","http://www.ivoa.net/xml/STC/stc-v1.30.xsd");
+    public static final Namespaces TX = new Namespaces("tx","http://www.vamdc.eu/xml/TAPXSAMS/v1.0");
+    public static final Namespaces TR = new Namespaces("tr","http://www.ivoa.net/xml/TAP/v0.1");
      
 //TODO add the other "current" ones...         
     public static String[] getNamespaceURIs()
@@ -80,6 +82,9 @@ public final class Namespaces {
 
 /*
  * $Log: Namespaces.java,v $
+ * Revision 1.5  2011/03/24 12:21:13  KevinBenson
+ * New TAPXSAMS and TapRegExt schemas to go into the contracts.
+ *
  * Revision 1.4  2009/06/20 14:33:32  pah
  * added xlink stc
  *

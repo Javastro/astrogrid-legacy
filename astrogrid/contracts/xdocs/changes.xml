@@ -5,6 +5,12 @@
     <title>Changes since previous release</title>
   </properties>
   <body>
+  <release version="2011.1" description="new CEA and UWS schema">
+      <action dev="kmb" type="add">
+          Added the VAMDC (TAP-XSAMS and TAP) schemas.  Note the TAP is using an ivoa namespace for a 
+          Tap Registry Extension schema.
+      </action>
+   </release>
     <release version="2009.1" >
     </release>
     <release version="2008.2" description="new CEA and UWS schema">

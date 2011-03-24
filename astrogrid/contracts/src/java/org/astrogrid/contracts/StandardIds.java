@@ -59,6 +59,19 @@ public class StandardIds {
       "ivo://org.astrogrid/std/STAP/v1.0";
   
   /**
+   * Table Access Protcol with XSAMS VAMDC : ivo://vamdc/std/TAP-XSAMS.
+   *
+   */
+  public final static String TAPXSAMS_1_0 = 
+      "ivo://vamdc/std/TAP-XSAMS";
+  
+  /**
+   * Table Access Protocol: ivo://ivoa.net/std/TAP.
+   */
+  public final static String TAP_0_1 = 
+      "ivo://ivoa.net/std/TAP";
+    
+  /**
    * PolicyManager: ivo://org.astrogrid/std/Community/v1.0#PolicyManager.
    * Chosen by AstroGrid during cycle 1 of AG3.
    * PolicyManager is the community's SOAP service for reporting home space.
