@@ -8,7 +8,7 @@
     <parent>
       <artifactId>astrogrid-registry-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2010.1</version>
+      <version>2011.1</version>
   </parent>
   <description>The deployable registry web application</description>
   <scm>
@@ -68,12 +68,12 @@ There are some irritations
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-common</artifactId>
-      <version>2010.1</version>
+      <version>2011.1</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-client-lite</artifactId>
-      <version>2010.1</version>
+      <version>2011.1</version>
     </dependency>
     <!-- 
     <dependency>
@@ -106,7 +106,7 @@ There are some irritations
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-contracts</artifactId>
-      <version>2009.1</version>
+      <version>2011.1</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.xfire</groupId>
@@ -175,7 +175,7 @@ There are some irritations
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-server</artifactId>
-      <version>2010.1</version>
+      <version>2011.1</version>
     </dependency>
     
     <dependency>

@@ -3,7 +3,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-registry-base</artifactId>
   <packaging>pom</packaging>
-  <version>2010.1</version>
+  <version>2011.1</version>
   <name>Astrogrid Registry</name>
   <description>The Registry modules</description>
   <parent>
@@ -12,9 +12,9 @@
       <version>2009.1-SNAPSHOT</version>
   </parent>
   <modules>
-    <module>server</module>
     <module>common</module>
     <module>client-lite</module>
+    <module>server</module>
     <module>webapp</module>
   </modules>
   <properties>
