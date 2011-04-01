@@ -12,11 +12,22 @@
   <p>
     These notes record the cumulative changes in sucessive DSA-versions
     since the last release of 2008. The changes are complete up to version
-    2010.4.
+    2011.1.
   </p>
   <p>
-    Version 2010.4 includes new features. All sites should install this update.
+    Version 2011.1 brings the VOSI implementation closer to the requirements
+    of the TAP standard. All sites should upgrade to this version.
   </p>
+
+  <subsection name="Extra VOSI URLs">
+    <p><i>Since 2011.1.</i></p>
+    <p>
+      The TAP-1.0 standard requires the VOSI resources <i>capabilities</i>,
+      <i>tables</i> and <i>availability</i> to appear as direct siblings of
+      the <i>sync</i> and <i>async</i> resources. The VOSI resources now appear
+      in those places as well as their former locations.
+    </p>
+  </subsection>
 
   <subsection name="Utype support">
     <p><i>Since 2010.4.</i></p>
@@ -283,7 +294,8 @@
       list below and apply the changes as described in the following sub-sections.
     </p>
     <ul>
-      <li>2010.4: Update metadoc if utype support is desired</li>
+      <li>2011.1: no configuration changes.</li>
+      <li>2010.4: Update metadoc if utype support is desired.</li>
       <li>2010.3: No configuration changes</li>
       <li>2009.1.04: no configuration changes.</li>
       <li>2009.1.03: no configuration changes.</li>
