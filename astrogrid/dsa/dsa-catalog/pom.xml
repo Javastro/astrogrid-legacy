@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-dsa-catalog</artifactId>
   <packaging>war</packaging>
-  <version>2010.4</version>
+  <version>2011.1</version>
   <name>AstroGrid DSA/Catalog web-application</name>
   
   <parent>
@@ -18,13 +18,18 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-dsa</artifactId>
-      <version>2010.4</version>
+      <version>2011.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-security</artifactId>
-      <version>2009.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.16</version>
     </dependency>
 
     <dependency>
@@ -36,7 +41,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.4</version>
       <scope>provided</scope>
     </dependency>
 

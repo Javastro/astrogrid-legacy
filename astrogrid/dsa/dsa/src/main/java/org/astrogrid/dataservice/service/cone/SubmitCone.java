@@ -21,7 +21,7 @@ import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.Configuration;
-import org.astrogrid.dataservice.service.tap.TapOutputFormat;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.returns.ReturnTable;
 
 
@@ -161,7 +161,7 @@ public class SubmitCone extends HttpServlet {
     double radius = ServletHelper.getRadius(request);
     double ra = ServletHelper.getRa(request);
     double dec = ServletHelper.getDec(request);
-    TapOutputFormat format = new TapOutputFormat(request.getParameter("Format"));
+    String format = MimeTypes.toMimeType(request.getParameter("Format"));
     response.setContentType(format.toString());
     response.setCharacterEncoding("UTF-8");
     ReturnSpec returnSpec = new ReturnTable(new WriterTarget(response.getWriter(), false));

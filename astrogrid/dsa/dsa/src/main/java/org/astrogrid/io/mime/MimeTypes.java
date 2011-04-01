@@ -1,5 +1,5 @@
 /*
- * $Id: MimeTypes.java,v 1.2 2010/04/11 21:19:20 gtr Exp $
+ * $Id: MimeTypes.java,v 1.3 2011/04/01 09:31:47 gtr Exp $
  *
  */
 
@@ -11,7 +11,47 @@ package org.astrogrid.io.mime ;
  * @see http://www.iana.org/assignments/media-types/
  *
  */
-public interface MimeTypes  {
+public class MimeTypes  {
+
+  /**
+   * Parses a given name and returns the corresponding MIME-type. Null or empty
+   * (zero-length after stripping leading and trailing white space) names are
+   * defaulted to VOtable.
+   *
+   * @param rawName The given name (case doesn't matter; may be null or empty).
+   * @return The MIME type.
+   * @throws IllegalArgumentException If the given name is not recognized, null or empty.
+   */
+  public static String toMimeType(String rawName) {
+    String trimName = (rawName == null)? "votable" : rawName.trim();
+    String lcName = (trimName.length() == 0)? "votable" : trimName.toLowerCase();
+
+    if ("votable".equals(lcName) ||
+        "text/xml".equals(lcName) ||
+        "application/x-votable+xml".equals(lcName) || // default encoding
+        "application/x-votable".equals(lcName) || // Cone-search can use this
+        VOTABLE.equals(lcName)) {
+      return VOTABLE;
+    }
+
+    else if (VOTABLE_BINARY.equals(lcName)) {
+      return VOTABLE_BINARY;
+    }
+
+    else if ("csv".equals(lcName) ||
+             CSV.equals(lcName)) {
+      return CSV;
+    }
+
+    else if ("tsv".equals(lcName) ||
+             TSV.equals(lcName)) {
+      return TSV;
+    }
+
+    else {
+      throw new IllegalArgumentException (trimName + " is not a supported output-format");
+    }
+  }
 
    //text ones
    public static final String TEXT = "text";
@@ -38,10 +78,9 @@ public interface MimeTypes  {
    // "encoding=" part added by KEA at MB's suggestion
    // KONA TOFIX - Conesearch says text/xml;content=x-votable
    // http://www.ivoa.net/Documents/PR/DAL/ConeSearch-20070914.html#req
-   public static final String VOTABLE           = "application/x-votable+xml; encoding=\"TABLEDATA\"";
-   public static final String VOTABLE_BINARY = "application/x-votable+xml; encoding=\"BINARY\"";
-   // This one is not in use
-   //public static final String VOTABLE_FITSLIST  = "application/x-votable+xml; encoding=\"FITSLIST\"";
+   public static final String VOTABLE           = "application/x-votable+xml; encoding=\"tabledata\"";
+   public static final String VOTABLE_BINARY = "application/x-votable+xml; encoding=\"binary\"";
+   
    
 //   public static final String VOLIST   = "text/xml +org.astrogrid.volist"  ;
 

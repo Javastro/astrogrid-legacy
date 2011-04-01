@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.5 2010/04/11 21:19:20 gtr Exp $
+ * $Id: TableResults.java,v 1.6 2011/04/01 09:31:48 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -77,14 +77,22 @@ public abstract class TableResults implements QueryResults
       }
    }
    
-   /** Subclasses override to make spocial table writers.  requested format is given
-    * as a mime type*/
+   /**
+    * Supplies a TableWriter implementation appropriate to the requested format.
+    * Supported MIME-types are those in {@link org.astrogrid.io.mime.MimeTypes}
+    * and an exact match is required on the names there specified. Note that
+    * there are two MIME-types for VOTable, distinguishing the data encoding.
+    *
+    * @param target The target identifier for the query with which the TableWriter is associated.
+    * @param requestedFormat Output format represented as a MIME-type.
+    * @param user User requesting the query with which the Table writer is associated.
+    * @return The table writer.
+    * @throws IllegalArgumentException If the requested format is not supported.
+    * @throws IOException If the format is accepted but the writer cannot be created.
+    */
    public TableWriter makeTableWriter(TargetIdentifier target, String requestedFormat, Principal user) throws IOException {
 
-     if (requestedFormat.equals(ReturnTable.VOTABLE) ||
-         requestedFormat.equals(ReturnTable.VOTABLE_GENERIC) ||
-         requestedFormat.equals(ReturnTable.VOTABLE_TEXT) ||
-         requestedFormat.equals(ReturnTable.DEFAULT)) {
+     if (requestedFormat.equals(MimeTypes.VOTABLE)) {
        if (querier.getQuery().getQuerySource().equals(Query.CONE_SOURCE)) {
          return new ConeSearchVoTableWriter(target, "Cone-search Results", user);
        }
@@ -92,7 +100,7 @@ public abstract class TableResults implements QueryResults
          return new VoTableWriter(target, "Query Results", user);
        }
      }
-      else if (requestedFormat.equals(ReturnTable.VOTABLE_BINARY)) {
+      else if (requestedFormat.equals(MimeTypes.VOTABLE_BINARY)) {
          return new VoTableBinaryWriter(target, "Query Results", user);
       }
       else if (requestedFormat.equals(MimeTypes.CSV)) {

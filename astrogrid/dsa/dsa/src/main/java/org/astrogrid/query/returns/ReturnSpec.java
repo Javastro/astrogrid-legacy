@@ -1,12 +1,12 @@
 /*
- * $Id: ReturnSpec.java,v 1.1 2009/05/13 13:20:40 gtr Exp $
+ * $Id: ReturnSpec.java,v 1.2 2011/04/01 09:31:47 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.query.returns;
 
-import org.astrogrid.io.mime.MimeNames;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.query.QueryException;
 
@@ -73,12 +73,9 @@ public abstract class ReturnSpec  {
    
 //   public void setFormats(String[] someFormats)  {  this.formats = someFormats; }
 
-   /** Give human string format (see MimeNames) or mime type */
+   /** Give human string format or mime type */
    public void setFormat(String aFormat)        {
-      this.format = MimeNames.getMimeType(aFormat);
-      if (this.format == null) {
-         throw new IllegalArgumentException("Format "+aFormat+" not understood");
-      }
+      this.format = MimeTypes.toMimeType(aFormat);
    }
 
    public String getFormat()                    {  return format; }
@@ -109,8 +106,14 @@ public abstract class ReturnSpec  {
 }
 /*
  $Log: ReturnSpec.java,v $
- Revision 1.1  2009/05/13 13:20:40  gtr
- *** empty log message ***
+ Revision 1.2  2011/04/01 09:31:47  gtr
+ Merging branch gtr-3011.
+
+ Revision 1.1.1.1.16.1  2011/03/15 14:08:18  gtr
+ Refactored: MIME-naming code put into MimeTypes.
+
+ Revision 1.1.1.1  2009/05/13 13:20:40  gtr
+
 
  Revision 1.4  2006/06/15 16:50:10  clq2
  PAL_KEA_1612

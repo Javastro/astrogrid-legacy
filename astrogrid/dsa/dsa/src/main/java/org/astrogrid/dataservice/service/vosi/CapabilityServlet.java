@@ -1,7 +1,9 @@
 package org.astrogrid.dataservice.service.vosi;
 
+import java.io.IOException;
 import java.io.Writer;
 import javax.servlet.ServletException;
+import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.dataservice.service.cone.ConeResources;
 import org.astrogrid.dataservice.Configuration;
 import org.astrogrid.dataservice.service.cea.v1_0.CeaResources;
@@ -40,23 +42,25 @@ public class CapabilityServlet extends VosiServlet {
       }
 
       // Write the processing instruction for transforming this XML to HTML.
-      writer.write("<?xml-stylesheet type='text/xsl' href='capabilities.xsl'?>\n");
+      writer.write("<?xml-stylesheet type='text/xsl' href='../VOSI/capabilities.xsl'?>\n");
 
       // Output the capabilities header stuff
       writer.write(
           "<cap:capabilities\n" +
-          "   xmlns:vr=\"http://www.ivoa.net/xml/VOResource/v1.0\"\n" +
-          "   xmlns:vs=\"http://www.ivoa.net/xml/VODataService/v1.0\"\n" +
-          "   xmlns:cs=\"http://www.ivoa.net/xml/ConeSearch/v1.0\"\n" +
-          "   xmlns:cea=\"http://www.ivoa.net/xml/CEA/v1.0rc1\"\n" +
-          "   xmlns:cap=\"urn:astrogrid:schema:Capabilities\"\n" +
-          "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+          "   xmlns:vr='http://www.ivoa.net/xml/VOResource/v1.0'\n" +
+          "   xmlns:vs='http://www.ivoa.net/xml/VODataService/v1.0'\n" +
+          "   xmlns:cs='http://www.ivoa.net/xml/ConeSearch/v1.0'\n" +
+          "   xmlns:tap='http://www.ivoa.net/xml/TAP/v0.1'\n" +
+          "   xmlns:cea='http://www.ivoa.net/xml/CEA/v1.0rc1'\n" +
+          "   xmlns:cap='urn:astrogrid:schema:Capabilities'\n" +
+          "   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'\n" +
           "   xsi:schemaLocation=\n" +
-          "     \"http://www.ivoa.net/xml/VOResource/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd\n" +
+          "     'http://www.ivoa.net/xml/VOResource/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd\n" +
           "      http://www.ivoa.net/xml/VODataService/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v1.0/VODataService.xsd\n" +
           "      http://www.ivoa.net/xml/ConeSearch/v1.0 http://www.ivoa.net/xml/ConeSearch/ConeSearch-v1.0.xsd \n" +
+          "      http://www.ivoa.net/xml/TAP/v0.1 http://vo.ari.uni-heidelberg.de/docs/schemata/TAPRegExt-v0.1.xsd \n" +
           "      http://www.ivoa.net/xml/CEA/v1.0rc1 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v1.0rc1/CEAService.xsd\n" +
-          "      urn:astrogrid:schema:Capabilities Capabilities.xsd\">\n");
+          "      urn:astrogrid:schema:Capabilities Capabilities.xsd'>\n");
 
       // Output the web-browser capability if such is configured.
       // This is an optional, vanilla capability containing an alternate,
@@ -80,22 +84,8 @@ public class CapabilityServlet extends VosiServlet {
         writer.write(ConeResources.getConeCapabilities(chosenCatalog));
       }
 
-      // Output the TAP capability.
-      if (Configuration.isTapSecure()) {
-        writer.write("<capability standardID='ivo://ivoa.net/std/TAP'>\n");
-        writer.write("  <interface xsi:type='vs:ParamHTTP'>\n");
-        writer.write("    <accessURL use='full'>" + tapUri + "</accessURL>\n");
-        writer.write("    <securityMethod standardID='ivo://ivoa.net/sso#tls-with-client-certificate'/>\n");
-        writer.write("  </interface>\n");
-        writer.write("</capability>\n");
-      }
-      else {
-        writer.write("<capability standardID='ivo://ivoa.net/std/TAP'>\n");
-        writer.write("  <interface xsi:type='vs:ParamHTTP'>\n");
-        writer.write("    <accessURL use='full'>" + tapUri + "</accessURL>\n");
-        writer.write("  </interface>\n");
-        writer.write("</capability>\n");
-      }
+      
+      writeTapCapability(writer, tapUri);
        
 
       // Output the CEA capabilities.
@@ -174,6 +164,42 @@ public class CapabilityServlet extends VosiServlet {
      catch (Exception ex) {
         throw new ServletException(ex.getMessage());
      }
+  }
+
+  protected void writeTapCapability(Writer writer, String tapUri)
+      throws DsaConfigurationException, IOException {
+    writer.write("<capability standardID='ivo://ivoa.net/std/TAP' xsi:type='tap:TableAccess'>\n");
+    writer.write("  <interface xsi:type='vs:ParamHTTP'>\n");
+    writer.write("    <accessURL use='full'>" + tapUri + "</accessURL>\n");
+    if (Configuration.isTapSecure()) {
+      writer.write("    <securityMethod standardID='ivo://ivoa.net/sso#tls-with-client-certificate'/>\n");
+    }
+    writer.write("  </interface>\n");
+    writer.write("    <language>\n");
+    writer.write("    <name>ADQL</name>\n");
+    writer.write("    <version>1.0</version>\n");
+    writer.write("    <description>ADQL 1.0</description>");
+    writer.write("  </language>");
+    writer.write("  <outputFormat>\n");
+    writer.write("    <mime>application/x-votable+xml</mime>\n");
+    writer.write("    <alias>votable</alias>\n");
+    writer.write("    <description>VOTable with XML data</description>\n");
+    writer.write("  </outputFormat>\n");
+    writer.write("  <outputFormat>\n");
+    writer.write("    <mime>application/x-votable+xml; encoding=\"binary\"</mime>\n");
+    writer.write("    <description>VOtable with binary data</description>\n");
+    writer.write("  </outputFormat>\n");
+    writer.write("  <outputFormat>\n");
+    writer.write("    <mime>text/csv</mime>\n");
+    writer.write("    <alias>csv</alias>\n");
+    writer.write("    <description>Comma-separated values</description>\n");
+    writer.write("  </outputFormat>\n");
+    writer.write("  <outputFormat>\n");
+    writer.write("    <mime>text/tab-separated-values</mime>\n");
+    writer.write("    <alias>tsv</alias>\n");
+    writer.write("    <description>Tab-separated values</description>\n");
+    writer.write("  </outputFormat>\n");
+    writer.write("</capability>\n");
   }
 
 }

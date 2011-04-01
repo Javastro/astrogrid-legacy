@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-dsa</artifactId>
   <packaging>jar</packaging>
-  <version>2010.4</version>
+  <version>2011.1</version>
   <name>DSA library</name>
 
   <parent>
@@ -99,13 +99,11 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-contracts</artifactId>
-      <version>2009.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>2009.1</version>
     </dependency>
 
     <dependency>
@@ -135,37 +133,31 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-client-lite</artifactId>
-      <version>2008.2.01</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-common</artifactId>
-      <version>2008.2.01</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-client</artifactId>
-      <version>2008.0.01</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-resolver</artifactId>
-      <version>2008.0.01</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-common</artifactId>
-      <version>2008.0.01</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-workflow-objects</artifactId>
-      <version>2007.2wo</version>
     </dependency>
 
     <dependency>
@@ -189,31 +181,26 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-security</artifactId>
-      <version>2009.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filemanager-contract</artifactId>
-      <version>2007.2.01fm</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filemanager-client</artifactId>
-      <version>2008.0b2</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filestore-client</artifactId>
-      <version>2007.2fs</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filestore-common</artifactId>
-      <version>2007.2fs</version>
     </dependency>
 
     <dependency>
@@ -297,13 +284,11 @@
     <dependency>
       <groupId>picocontainer</groupId>
       <artifactId>picocontainer</artifactId>
-      <version>1.1</version>
     </dependency>
 
     <dependency>
       <groupId>concurrent</groupId>
       <artifactId>concurrent</artifactId>
-      <version>1.3.1</version>
     </dependency>
 
     <!-- uk.ac.starlink:ttools needs this but does not declare it in its POM. -->
@@ -316,7 +301,6 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.1</version>
     </dependency>
 
     <dependency>
@@ -328,7 +312,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.4</version>
     </dependency>
 
     <dependency>
@@ -341,7 +324,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.4</version>
       <scope>provided</scope>
     </dependency>
 

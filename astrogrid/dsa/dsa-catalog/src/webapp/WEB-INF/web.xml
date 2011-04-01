@@ -228,18 +228,35 @@
         <servlet-name>TapSyncQueryServlet</servlet-name>
         <url-pattern>/TAP/sync/query</url-pattern>
     </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>AvailabilityServlet</servlet-name>
         <url-pattern>/VOSI/availability</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>AvailabilityServlet</servlet-name>
+        <url-pattern>/TAP/availability</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>CapabilityServlet</servlet-name>
         <url-pattern>/VOSI/capabilities</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>CapabilityServlet</servlet-name>
+        <url-pattern>/TAP/capabilities</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>TableServlet</servlet-name>
         <url-pattern>/VOSI/tables</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TableServlet</servlet-name>
+        <url-pattern>/TAP/tables</url-pattern>
+    </servlet-mapping>
+
+
     <servlet-mapping>
         <servlet-name>ApplicationServlet</servlet-name>
         <url-pattern>/VOSI/applications</url-pattern>

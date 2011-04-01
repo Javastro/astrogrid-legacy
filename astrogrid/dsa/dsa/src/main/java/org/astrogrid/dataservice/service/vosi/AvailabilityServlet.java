@@ -28,7 +28,7 @@ public class AvailabilityServlet extends VosiServlet {
     // Let the DataServer do the testing
     boolean available = DataServer.isAvailable();
 
-    writer.write("<?xml-stylesheet type='text/xsl' href='availability.xsl'?>\n");
+    writer.write("<?xml-stylesheet type='text/xsl' href='../VOSI/availability.xsl'?>\n");
     writer.write(
           "<avail:availability\n" + 
           "   xmlns:avail='http://www.ivoa.net/xml/Availability/v0.4'\n" +

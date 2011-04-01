@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.9 2010/03/25 10:25:52 gtr Exp $
+/*$Id: DatacenterApplication.java,v 1.10 2011/04/01 09:31:48 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,7 +50,7 @@ import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.io.account.LoginAccount;
-import org.astrogrid.io.mime.MimeNames;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.QueryException;
@@ -147,9 +147,6 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
          // Get result target and format
          TargetIdentifier ti = getResultTargetIdentifier();
-         String resultsFormat = getResultsFormat();
-         logger.debug("Selected results format is " + resultsFormat);
-         
          String iName = getApplicationInterface().getName();
          if (
            DatacenterApplicationDescription.MULTICONE_IFACE.equals(iName)
@@ -174,7 +171,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
                query.setParentCatalogReferences(catName);
             }
             query.getResultsDef().setTarget(ti);
-            query.getResultsDef().setFormat(resultsFormat);
+            query.getResultsDef().setFormat(getResultsFormat());
             String label = "CEC job "+ids.getJobStepId();
             Querier querier = new Querier(jobId, acc, query, label);
             querier.setHasJob();
@@ -309,24 +306,29 @@ public class DatacenterApplication extends AbstractApplication implements Querie
      }
    }
 
-   protected String getResultsFormat() throws CeaException
-   {
-      try {
-         ParameterAdapter formatAdapter = findInputParameterAdapter(
-               DatacenterApplicationDescription.FORMAT);
-         if (formatAdapter == null) {
-            // Default to VOTable - for multicone
-            return MimeNames.getMimeType("VOTable"); 
-         }
-         else {
-            return MimeNames.getMimeType(formatAdapter.process().toString());
-         }
-      }
-      catch (Exception ex) {
-         throw new CeaException(
+   /**
+    * Determines the format for the output of the query based on the input
+    * parameters.
+    *
+    * @return The MIME type for the format.
+    * @throws CeaException If the requested format is unsupported.
+    */
+   protected String getResultsFormat() throws CeaException {
+     try {
+       ParameterAdapter formatAdapter =
+           findInputParameterAdapter(DatacenterApplicationDescription.FORMAT);
+       if (formatAdapter == null) {
+         return MimeTypes.VOTABLE;
+       }
+       else {
+         return MimeTypes.toMimeType(formatAdapter.process().toString());
+       }
+     }
+     catch (Exception ex) {
+       throw new CeaException(
                "Query parameter error: couldn't process results format: "+
                ex.getMessage());
-      }
+     }
    }
 
    public String getCatalogNameFromAppIvorn(String ivorn) throws CeaException

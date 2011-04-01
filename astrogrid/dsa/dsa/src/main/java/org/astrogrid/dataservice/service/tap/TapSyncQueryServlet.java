@@ -5,7 +5,7 @@ import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.dataservice.queriers.Querier;
-import org.astrogrid.io.account.LoginAccount;
+import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.security.HttpsServiceSecurityGuard;
@@ -37,8 +37,8 @@ public class TapSyncQueryServlet extends AbstractTapServlet {
                                                                  TapException {
     String language = getQueryLanguage(request);
     String adql = getQueryText(request, language);
-    TapOutputFormat format = new TapOutputFormat(request.getParameter("FORMAT"));
-    Query query = makeQuery(request, adql, format, response);
+    String mimeType = getMimeType(request);
+    Query query = makeQuery(request, adql, mimeType, response);
     Principal principal = query.getGuard().getX500Principal(); // May be null
     String source = String.format("%s (%s) via TAP, synchronous query",
                                   request.getRemoteHost(),
@@ -79,7 +79,7 @@ public class TapSyncQueryServlet extends AbstractTapServlet {
       language = language.trim();
       if (language.length() == 0) {
         throw new TapException("Parameter LANG (query language) was empty");
-      } else if (language.toUpperCase().equals("ADQL")) {
+      } else if (language.toUpperCase().equals("ADQL") || language.toUpperCase().equals("ADQL")) {
         return "ADQL";
       }
       else {
@@ -113,9 +113,26 @@ public class TapSyncQueryServlet extends AbstractTapServlet {
     }
   }
 
+  /**
+   * Determines the MIME-type for the requested format. If no format has been
+   * requested, MIME-type for VOTable/TABLEDATA is returned.
+   *
+   * @param request The HTTP request containing the format request.
+   * @return The MIME type.
+   * @throws TapException If an unsupported format is requested.
+   */
+  protected String getMimeType(HttpServletRequest  request) throws TapException {
+    try {
+     return MimeTypes.toMimeType(request.getParameter("FORMAT"));
+    }
+    catch (Exception e) {
+      throw new TapException(e);
+    }
+  }
+
   protected Query makeQuery(HttpServletRequest  request,
                             String              adql,
-                            TapOutputFormat     format,
+                            String              mimeType,
                             HttpServletResponse response) throws IOException,
                                                                  TapException {
 
@@ -131,8 +148,8 @@ public class TapSyncQueryServlet extends AbstractTapServlet {
     query.getResultsDef().setTarget(new WriterTarget(response.getWriter(), false));
     
     // Set the MIME type for the output.
-    response.setContentType(format.toString());
-    query.getResultsDef().setFormat(format.toString());
+    response.setContentType(mimeType);
+    query.getResultsDef().setFormat(mimeType);
     
     // How does the server know it's to be ADQL? Is it a default?
     

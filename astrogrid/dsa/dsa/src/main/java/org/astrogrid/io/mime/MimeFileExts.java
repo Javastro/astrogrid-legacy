@@ -1,5 +1,5 @@
 /*
- * $Id: MimeFileExts.java,v 1.1 2009/05/13 13:20:36 gtr Exp $
+ * $Id: MimeFileExts.java,v 1.2 2011/04/01 09:31:47 gtr Exp $
  *
  */
 
@@ -12,7 +12,7 @@ package org.astrogrid.io.mime ;
  */
 import java.util.Hashtable;
 
-public class MimeFileExts implements MimeTypes  {
+public class MimeFileExts extends MimeTypes  {
 
    /**
     * Known MIME type values.

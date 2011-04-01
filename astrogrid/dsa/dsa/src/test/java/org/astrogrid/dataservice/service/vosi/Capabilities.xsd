@@ -17,6 +17,8 @@ cone-search and CEA, which have additional syntax are specifcally supported.
 
   <xs:import namespace="http://www.ivoa.net/xml/CEA/v1.0rc1" schemaLocation="http://software.astrogrid.org/schema/vo-resource-types/CEAService/v1.0rc1/CEAService.xsd"/>
 
+  <xs:import namespace="http://www.ivoa.net/xml/TAP/v0.1" schemaLocation="http://vo.ari.uni-heidelberg.de/docs/schemata/TAPRegExt-v0.1.xsd"/>
+  
   <xs:element name="capabilities">
     <xs:complexType>
       <xs:sequence>

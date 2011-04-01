@@ -1,10 +1,11 @@
 package org.astrogrid.dataservice.service.tap;
 
 import javax.servlet.http.HttpServletRequest;
+import org.astrogrid.io.mime.MimeTypes;
 
 /**
  * The TAP instructions for starting an ADQL query. The instructions are
- * constructed by partsing an HTTP request. The object is immutable after
+ * constructed by parsing an HTTP request. The object is immutable after
  * construction.
  *
  * @author Guy Rixon
@@ -52,7 +53,7 @@ public class TapAdqlQuery {
       language = l.trim().toUpperCase();
       if (language.length() == 0) {
         throw new TapException("Parameter LANG (query language) was empty");
-      } else if (!language.equals("ADQL")) {
+      } else if (!language.equals("ADQL") && !language.equals("ADQL-1.0")) {
         throw new TapException(String.format("Query-language %s is not supported here", language));
       }
     }
@@ -69,7 +70,7 @@ public class TapAdqlQuery {
     }
 
     // Validate and record the output format.
-    format = new TapOutputFormat(request.getParameter("FORMAT")).toString();
+    format = MimeTypes.toMimeType(request.getParameter("FORMAT"));
   }
 
   /**
