@@ -14,9 +14,9 @@
   </servlet>
 
   <servlet>
-    <servlet-name>JUnitEETestServlet</servlet-name>
-    <description>JUnitEE test runner</description>
-    <servlet-class>org.junitee.servlet.JUnitEEThreadedServlet</servlet-class>
+    <servlet-name>TestServlet</servlet-name>
+    <description>Runs DSA's self-tests</description>
+    <servlet-class>org.astrogrid.junit.TestServlet</servlet-class>
   </servlet>
 
    <!-- Query-managing servlets -->
@@ -202,9 +202,9 @@
     <url-pattern>/services/*</url-pattern>
   </servlet-mapping>
 
- <servlet-mapping>
-    <servlet-name>JUnitEETestServlet</servlet-name>
-    <url-pattern>/admin/TestServlet/*</url-pattern>
+  <servlet-mapping>
+    <servlet-name>TestServlet</servlet-name>
+    <url-pattern>/admin/test</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
