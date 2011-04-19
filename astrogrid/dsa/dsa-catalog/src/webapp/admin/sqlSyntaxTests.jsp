@@ -1,16 +1,8 @@
 <%-- a JSP that displays the source xml and translated sql, and query results
 for that sql, for a collection of sample queries.
 --%>
-<%@ page import="java.io.*,
-       org.w3c.dom.*,
-       org.astrogrid.io.*,
-       org.astrogrid.ucd.Ucd1Dictionary,
-       org.astrogrid.units.UnitDictionary,
-       org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator,
-       org.astrogrid.dataservice.metadata.*,
-       org.astrogrid.tableserver.metadata.*,
-       org.astrogrid.dataservice.service.*,
-       org.astrogrid.cfg.ConfigFactory"
+<%@ page 
+   import="org.astrogrid.dataservice.service.InstallationSyntaxCheck"
    isThreadSafe="false"
    session="false"
 %>
@@ -18,11 +10,10 @@ for that sql, for a collection of sample queries.
 
 <html>
 <head>
-<title>SQL syntax test page for <%=DataServer.getDatacenterName() %> </title>
+<title>SQL syntax tests</title>
 <style type="text/css" media="all">
           @import url("../style/astrogrid.css");
 </style>
-</title>
 </head>
 
 <body>
@@ -31,7 +22,7 @@ for that sql, for a collection of sample queries.
 
 <div id='bodyColumn'>
 
-<h1>SQL syntax test page for <%=DataServer.getDatacenterName() %></h1>
+<h1>SQL syntax tests</h1>
 
 <p> These tests check whether your Datacenter installation is producing
 SQL suited to your RDBMS backend.  
