@@ -14,6 +14,10 @@ for that sql, for a collection of sample queries.
 <style type="text/css" media="all">
           @import url("../style/astrogrid.css");
 </style>
+<style type='text/css'>
+          .pass {background: #9f9;}
+          .fail {background: #f99;}
+</style>
 </head>
 
 <body>
