@@ -11,9 +11,9 @@
   <h2>Self-tests</h2>
   <ul>
     <li><a href="<%=pathPrefix%>/admin/happyaxis.jsp">Apache Axis self-check</a></li>
-    <li><a href="<%=pathPrefix%>/admin/TestServlet?suite=org.astrogrid.dataservice.service.InstallationPropertiesCheck">Initial properties check</a></li>
-    <li><a href="<%=pathPrefix%>/admin/TestServlet?suite=org.astrogrid.dataservice.service.InstallationSelfCheck">Installation self-test</a></li>
-    <li><a href="<%=pathPrefix%>/admin/TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" >CEA interface self-test</a></li>
+    <li><a href="<%=pathPrefix%>/admin/test?class=org.astrogrid.dataservice.service.InstallationPropertiesCheck">Initial properties check</a></li>
+    <li><a href="<%=pathPrefix%>/admin/test?class=org.astrogrid.dataservice.service.InstallationSelfCheck">Installation self-test</a></li>
+    <li><a href="<%=pathPrefix%>/admin/test?class=org.astrogrid.applications.component.CEAComponentManagerFactory" >CEA interface self-test</a></li>
     <li><a href="<%=pathPrefix%>/admin/sqlSyntaxTests.jsp">SQL syntax test</a> (SLOW!)</li>
   </ul>
 
