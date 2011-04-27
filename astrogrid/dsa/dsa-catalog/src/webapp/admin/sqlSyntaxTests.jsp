@@ -1,8 +1,5 @@
-<%-- a JSP that displays the source xml and translated sql, and query results
-for that sql, for a collection of sample queries.
---%>
 <%@ page 
-   import="org.astrogrid.dataservice.service.InstallationSyntaxCheck"
+   import="org.astrogrid.dataservice.service.InstallationSyntaxCheck, java.io.PrintWriter"
    isThreadSafe="false"
    session="false"
 %>
@@ -10,7 +7,7 @@ for that sql, for a collection of sample queries.
 
 <html>
 <head>
-<title>SQL syntax tests</title>
+<title>SQL-syntax tests</title>
 <style type="text/css" media="all">
           @import url("../style/astrogrid.css");
 </style>
@@ -26,7 +23,7 @@ for that sql, for a collection of sample queries.
 
 <div id='bodyColumn'>
 
-<h1>SQL syntax tests</h1>
+<h1>SQL-syntax tests</h1>
 
 <p> These tests check whether your Datacenter installation is producing
 SQL suited to your RDBMS backend.  
@@ -50,7 +47,7 @@ any broken tests.
 
 <a name="NotesSection"><h1>Reference Notes</h1></a>
 <p>
-This page tests your configuration to ensure that input ADQL/XML queries 
+This page tests your configuration to ensure that input ADQL/S queries
 can be successfully translated into SQL and run against your RDBMS.
 </p>
 
