@@ -12,12 +12,62 @@
   <p>
     These notes record the cumulative changes in sucessive DSA-versions
     since the last release of 2008. The changes are complete up to version
-    2011.1.
+    2011.2.
   </p>
   <p>
-    Version 2011.1 brings the VOSI implementation closer to the requirements
-    of the TAP standard. All sites should upgrade to this version.
+    Version 2011.2 updates the ADQL parser to accept ADQL version 2.0.
   </p>
+
+  <subsection name="ADQL 2.0">
+    <p><i>Since 2011.2.</i></p>
+    <p>
+      The ADQL parser has been updated to a new and major version such that
+      DSA/Catalogue now accepts ADQL 2.0 queries.
+    </p>
+    <p>
+      In previous versions, DSA accepted either ADQL/S (the SQL-like form of the
+      query) or ADQL/X (the XML form) at versions 1.0 and 0.7.4. Now,
+      <em>only</em> ADQL/S 2.0 is supported. Most queries in ADQL/S 1.0 will
+      still work because they are valid in ADQL/S 2.0. Queries in serialized
+      ADQL/X 2.0 <em>might</em> work but are strongly deprecated. Queries in
+      earlier versions of ADQL/X will not work at all.
+    </p>
+    <p>
+      There is one apparent issue with the new parser. <i>ORDER BY</i>
+      clauses do not work at present and the parser will reject them as invalid.
+    </p>
+    <p>
+      The XSLT transformations to convert parsed ADQL have been revised to
+      suit ADQL/X 2.0. If you use a stylesheet built into DSA then this change
+      is already made for you. However, if you wrote your own transformation
+      stylesheet for your installation of DSA/Catalogue then you will need to
+      revise it. You should change the namespace of the matched elements to
+      ADQL/X 2.0: <i>http://www.ivoa.net/xml/v2.0/adql</i>. You may also need
+      to change two templates in the stylesheet. In the template matching the
+      group-by construct, the entire template should be replaced with the
+      following code.
+    </p>
+    <pre>
+  &lt;xsl:template match="ad:GroupBy">
+    &lt;xsl:text>GROUP BY &lt;/xsl:text>
+    &lt;xsl:for-each select="ad:Column">
+      &lt;xsl:apply-templates select="."/>
+      &lt;xsl:choose>
+        &lt;xsl:when test="following-sibling::ad:Column">
+          &lt;xsl:text>, &lt;/xsl:text>
+        &lt;/xsl:when>
+        &lt;xsl:otherwise>
+          &lt;xsl:text> &lt;/xsl:text>
+        &lt;/xsl:otherwise>
+      &lt;/xsl:choose>
+    &lt;/xsl:for-each>
+  &lt;/xsl:template>
+    </pre>
+    <p>
+      In the template matching column references, the selection should be
+      extended to include <i>ad:Column</i>.
+    </p>
+  </subsection>
 
   <subsection name="Extra VOSI URLs">
     <p><i>Since 2011.1.</i></p>
@@ -294,9 +344,10 @@
       list below and apply the changes as described in the following sub-sections.
     </p>
     <ul>
+      <li>2011.2: no configuration changes (but see note about ADQL transformations, above).</li>
       <li>2011.1: no configuration changes.</li>
       <li>2010.4: Update metadoc if utype support is desired.</li>
-      <li>2010.3: No configuration changes</li>
+      <li>2010.3: no configuration changes</li>
       <li>2009.1.04: no configuration changes.</li>
       <li>2009.1.03: no configuration changes.</li>
       <li>2009.1.02: update UCD version.</li>
