@@ -1,5 +1,5 @@
 /*
- * $Id: SearchField.java,v 1.2 2010/12/08 12:46:35 gtr Exp $
+ * $Id: SearchField.java,v 1.3 2011/05/05 14:49:36 gtr Exp $
  */
 package org.astrogrid.dataservice.metadata.queryable;
 
@@ -10,7 +10,6 @@ package org.astrogrid.dataservice.metadata.queryable;
  */
 import java.util.Hashtable;
 import java.util.Vector;
-import org.astrogrid.units.Units;
 
 public class SearchField {
    
@@ -29,7 +28,7 @@ public class SearchField {
    /** The type as given by the packing store - eg the SQL type */
    private String backType;
    private String errorField;
-   private Units units;
+   private String units;
 
    //look up of UCDs of different versions (ie 1, 1+)
    private Hashtable ucds = new Hashtable();
@@ -71,9 +70,6 @@ public class SearchField {
    
    public Class getJavaType()          {        return javaType;   }
    
-   public void setUnits(String units) {
-      this.units = new Units(units);
-   }
 
    /**
     * Reveals the data-model node, if the field has one.
@@ -93,11 +89,11 @@ public class SearchField {
      this.utype = utype;
    }
 
-   public void setUnits(Units units) {
+   public void setUnits(String units) {
       this.units = units;
    }
    
-   public Units getUnits() {
+   public String getUnits() {
       return units;
    }
    

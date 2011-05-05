@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.3 2009/11/12 09:10:49 gtr Exp $
+/*$Id: SqlPluginTest.java,v 1.4 2011/05/05 14:49:36 gtr Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,27 +10,26 @@
  **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.InputStream;
 import java.io.StringWriter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.VoTableTestHelper;
 import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 
 /** test out the vanilla sql querier on the Dummy SQL Plugin
@@ -38,35 +37,27 @@ import org.w3c.dom.Document;
  * @author mch
  *
  */
-public class SqlPluginTest extends TestCase {
+public class SqlPluginTest {
    
    protected static final Log log = LogFactory.getLog(SqlPluginTest.class);
    
-   public SqlPluginTest(String arg0) {
-      super(arg0);
-   }
-   
    QuerierManager manager = QuerierManager.getManager("SqlQuerierTest");
    
-   /**
-    * @see TestCase#setUp()
-    */
-   @Override
-   protected void setUp() throws Exception {
-      super.setUp();
+   @Before
+   public void setUp() throws Exception {
 
-      // Make the job database work. Put a blank database in the Maven target directory.
-      ConfigFactory.getCommonConfig().setProperty("datacenter.cache.directory", "target");
-      Job.initialize();
+     // Make the job database work. Put a blank database in the Maven target directory.
+     SimpleConfig.setProperty("datacenter.cache.directory", "target");
+     Job.initialize();
       
-      //set max returns to something reasonably small as some of the results processing is a bit CPU intensive
-      ConfigFactory.getCommonConfig().setProperty(Query.MAX_RETURN_KEY, "300");
+     //set max returns to something reasonably small as some of the results processing is a bit CPU intensive
+     SimpleConfig.setProperty(Query.MAX_RETURN_KEY, "300");
       
    }
    
-   // Do a simple test query
-   public void testTestQuery() throws Exception 
-   {   
+  // Do a simple test query
+  @Test
+  public void testTestQuery() throws Exception {   
       //make sure the configuration is correct for the plugin
       SampleStarsPlugin.initConfig();
 
@@ -80,38 +71,43 @@ public class SqlPluginTest extends TestCase {
             catalogID,tableID);
 
       StringWriter sw = new StringWriter();
-      Query q = SimpleQueryMaker.makeTestQuery(catalogName, tableName,
+      Query q =
+          new Query("SELECT TOP 100 * FROM " + catalogName + "." + tableName,
           new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
       manager.askQuerier(new Querier(LoginAccount.ANONYMOUS, q, this));
       log.info("Checking results...");
       //System.out.println(sw.toString());
       Document results = VoTableTestHelper.assertIsVotable(sw.toString());
       long numResults = results.getElementsByTagName("TR").getLength();
-      log.info("Number of results = "+numResults);
-      assert (numResults == 100);
+      assertEquals("Wrong number of rows in results", 100, numResults);
    }
-   
+
+  @Test
    public void testCone1() throws Exception {      askCone(30,30,6);  }
    
    //negative dec
+  @Test
    public void testCone2() throws Exception {      askCone(30,-30,6);  }
    
    //across zero ra
+  @Test
    public void testCone3() throws Exception {      askCone(1,-30,6);  }
    
    //around pole, across ra
+  @Test
    public void testCone4() throws Exception {      askCone(1,-87,6);  }
    
    /** Tests that we get back a known set of results from a search on the 'pleidies' dummies
     These are stars grouped < 0.3 degree across on ra=56.75, dec=23.867
     */
+  @Test
    public void testPleidiesCone() throws Exception {
       
       Document results = askCone(56.75, 23.867, 0.3);
       DomHelper.DocumentToStream(results, System.out);
    }
-   
-   public Document askCone(double ra, double dec, double r) throws Exception {
+
+  public Document askCone(double ra, double dec, double r) throws Exception {
       
       //make sure the configuration is correct for the plugin
       SampleStarsPlugin.initConfig();
@@ -131,49 +127,28 @@ public class SqlPluginTest extends TestCase {
       return results;
    }
 
-   public void testAdql1() throws Exception {
-      
-      askAdqlFromFile("dummydb-adql-simple.xml");
-   }
-   
-    // Reinstate this one with an up-to-date query eventually. 
-    /*
-   public void testAdql2() throws Exception {
-      
-      askAdqlFromFile("sample_circle_1_0.xml");
-   }
-   */
-   
-   public void testPleidies() throws Exception {
-      askAdqlFromFile("dummydb-adql-pleidies.xml");
-   }
-   
-   /** Read ADQL input document, run query on dummy SQL plugin, and return VOTable document
-    *
-    * @param queryFile resource file of query
-    */
-   protected void askAdqlFromFile(String queryFile) throws Exception {
-      assertNotNull(queryFile);
-      InputStream is = this.getClass().getResourceAsStream(queryFile);
-      assertNotNull("Could not open query file :" + queryFile,is);
-      
-      StringWriter sw = new StringWriter();
-      ReturnTable rt = new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE);
-      Querier q = new Querier(LoginAccount.ANONYMOUS, new Query(is, rt), this);
-      
-      manager.askQuerier(q);
-      
-      log.info("Checking results...");
-      Document results = VoTableTestHelper.assertIsVotable(sw.toString());
-      long numResults = results.getElementsByTagName("TR").getLength();
-      log.info("Number of results = "+numResults);
-   }
-   
-   
-   /** Test Results  - could add tests to status updates here... */
-   public void testResults() throws Exception  {
-      
-   }
+  @Test
+  public void testAdql1() throws Exception {
+    runAdqlsQuery("SELECT * FROM TabName_SampleStars");
+  }
+
+  @Test
+  public void testPleides() throws Exception {
+    SampleStarsPlugin.initConfig();
+    runAdqlsQuery("SELECT * FROM TabName_SampleStars " +
+                  "WHERE ColName_RA BETWEEN 56.45 AND 57.05 " +
+                  "AND ColName_Dec BETWEEN 23.567 AND 24.167");
+  }
+
+  private void runAdqlsQuery(String adqls) throws Exception {
+    StringWriter sw = new StringWriter();
+    Query q = new Query(adqls, new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
+    Querier sut = new Querier(LoginAccount.ANONYMOUS, q, this);
+    manager.askQuerier(sut);
+    Document results = VoTableTestHelper.assertIsVotable(sw.toString());
+    long numResults = results.getElementsByTagName("TR").getLength();
+    log.info("Number of results = " + numResults);
+  }
    
    public void testResourceMaker() throws Exception {
       setUp();
@@ -194,19 +169,6 @@ public class SqlPluginTest extends TestCase {
       assertEquals("Should be four tables (plates, stars, galaxies, stars2) in metadata", 4, numTables);
       
    }
-   
-   /** Test harness - runs tests
-    */
-   public static void main(String[] args) {
-      junit.textui.TestRunner.run(SqlPluginTest.class);
-   }
-   
-   public static Test suite() {
-      // Reflection is used here to add all the testXXX() methods to the suite.
-      return new TestSuite(SqlPluginTest.class);
-   }
-   
-   
    
 }
 

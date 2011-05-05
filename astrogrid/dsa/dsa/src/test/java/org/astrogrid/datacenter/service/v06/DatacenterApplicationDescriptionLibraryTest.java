@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.4 2010/12/08 12:46:35 gtr Exp $
+/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.5 2011/05/05 14:49:37 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.datacenter.DsaUnitTest;
 import org.astrogrid.dataservice.service.DataServer;
-import org.astrogrid.dataservice.service.cea.CeaQueuedExecutor;
 import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescriptionLibrary;
 
 /** Test the application description library - not much to do here..
@@ -53,7 +52,7 @@ public class DatacenterApplicationDescriptionLibraryTest extends DsaUnitTest {
             }
         };
         */
-        lib = new DatacenterApplicationDescriptionLibrary(/*md,*/dataServer,env,new CeaQueuedExecutor());
+        lib = new DatacenterApplicationDescriptionLibrary(/*md,*/dataServer,env);
     }
     protected ApplicationDescriptionLibrary lib;
     protected DataServer dataServer;

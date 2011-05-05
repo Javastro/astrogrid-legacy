@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.6 2010/01/27 17:17:04 gtr Exp $
+/*$Id: QuerierManager.java,v 1.7 2011/05/05 14:49:36 gtr Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
+import org.astrogrid.dataservice.queriers.status.QuerierQueued;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 
 /**
@@ -144,6 +145,7 @@ public class QuerierManager {
   * Enqueues a query for later execution.
   */
  public void submitQuerier(Querier q) {
+   q.setStatus(new QuerierQueued(q.getStatus()));
    executor.execute(q);
  }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.5 2010/12/08 12:46:35 gtr Exp $
+ * $Id: DataServer.java,v 1.6 2011/05/05 14:49:36 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,7 +23,6 @@ import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.slinger.targets.WriterTarget;
 
 
@@ -123,10 +122,9 @@ public class DataServer
                              catalogID);
          final String testTableName = TableMetaDocInterpreter.getTableNameForID(
                              catalogID,tableID);
-         Query query =  SimpleQueryMaker.makeTinyTestQuery(
-              testCatalogName, testTableName, 
-              new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE)
-         );
+         ReturnTable target = new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE);
+         String adql = "SELECT TOP 5 * FROM " + testTableName + "." + testCatalogName;
+         Query query = new Query(adql, target);
          querier = new Querier(testPrincipal, query, DataServer.class);
          querierManager.askQuerier(querier);
       }

@@ -1,22 +1,15 @@
-/*
- * $Id: Query.java,v 1.2 2010/02/02 17:30:37 gtr Exp $
- *
- * (C) Copyright Astrogrid...
- */
-
 package org.astrogrid.query;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import org.apache.xmlbeans.XmlException;
-import org.astrogrid.adql.AdqlCompiler;
-import org.astrogrid.adql.v1_0.beans.FromType;
-import org.astrogrid.adql.v1_0.beans.SelectDocument;
-import org.astrogrid.adql.v1_0.beans.SelectType;
-import org.astrogrid.adql.v1_0.beans.TableType;
+import org.astrogrid.adql.AdqlParserSVNC;
+import org.astrogrid.adql.beans.FromType;
+import org.astrogrid.adql.beans.SelectDocument;
+import org.astrogrid.adql.beans.SelectType;
+import org.astrogrid.adql.beans.TableType;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.io.Piper;
 import org.astrogrid.query.returns.ReturnSpec;
@@ -123,8 +116,13 @@ public class Query  {
       this.results = new ReturnTable(new WriterTarget(new StringWriter()));
    }
 
-   /** Constructs a Query from a string containing ADQL/xml, with
-    * a default StringWriter return type. 
+
+   /**
+    * Constructs a query from ADQL/S or ADQL/X (allowing only the ADQL 2.0
+    * namespace for ADQL/X).
+    *
+    * @param adqlString The query text in ADQL/S or ADQL/X using the 2.0 namespace.
+    * @throws QueryException If the query text cannot be parsed.
     */
    public Query(String adqlString) throws QueryException 
    {
@@ -204,8 +202,7 @@ public class Query  {
           catalogName, tableName, colUnits, raColName, decColName, 
           coneRA, coneDec, coneRadius);
 
-      StringReader source = new StringReader(adqlString) ;
-      setSelectDocument(compileSelectDocument(source));
+      setSelectDocument(compileSelectDocument(adqlString));
       querySource = CONE_SOURCE;
       this.results = returnSpec;
    }
@@ -437,7 +434,7 @@ public class Query  {
     */
    @Override
    public String toString() {
-      StringBuffer s = new StringBuffer("{Query: ");
+      StringBuilder s = new StringBuilder("{Query: ");
       if (selectDocument != null) {
         try {
           s.append(getAdqlString());
@@ -447,11 +444,13 @@ public class Query  {
           s.append("[AN ERROR OCCURRED]");
         }
       }
-      s.append(" returning "+results+"}");
+      s.append(" returning ");
+      s.append(results);
+      s.append('}');
       return s.toString();
    }
    public String toHTMLString() {
-      StringBuffer s = new StringBuffer("{Query: <br/><tt>");
+      StringBuilder s = new StringBuilder("{Query: <br/><tt>");
       if (selectDocument != null) {
         try {
           s.append(getHtmlAdqlString());
@@ -461,7 +460,9 @@ public class Query  {
           s.append("[AN ERROR OCCURRED]");
         }
       }
-      s.append(" </tt><br/>returning "+results+"}");
+      s.append(" </tt><br/>returning ");
+      s.append(results);
+      s.append('}');
       return s.toString();
    }
    
@@ -497,8 +498,7 @@ public class Query  {
       // Check if we have adql/sql input first 
       if (adqlString.toLowerCase().indexOf("select>") == -1) {
          //Do we have an ADQL/s string instead?
-         StringReader source = new StringReader(adqlString) ;
-         this.selectDocument = compileSelectDocument(source);
+         this.selectDocument = compileSelectDocument(adqlStringIn);
       }
       else {
          // Try XML
@@ -507,24 +507,10 @@ public class Query  {
          adqlString.replaceAll("</table>", "</Table>");
          adqlString.replaceAll("</select>", "</Select>");
 
-        // Check for expected namespace before trying to parse
-         if (adqlString.indexOf(NAMESPACE_1_0) == -1) {
-            // Not adql 1.0 
-            if (adqlString.indexOf(NAMESPACE_0_7_4) == -1) {
-            // Not adql 0.7.4 either 
-               // Not adql 0.7.4 either, barf
-               throw new QueryException(
-                   "Unrecognised ADQL/xml namespace: expecting either " +
-                   NAMESPACE_0_7_4 + " or " +
-                   NAMESPACE_1_0);
-            }
-            else {
-               // Move 0.7.4 into 1.0 (TOFIX temporary until we have translator!)
-               adqlString = tweakNamespace(adqlString);
-            }
-         }
+        
          // Now, parse the XML into an xmlbeans structure.  
-         // This step DOESN'T validate against schema.
+         // This step DOESN'T validate against schema but does
+         // check the namespace. ADQL 2.0 is required.
          try {
             this.selectDocument = SelectDocument.Factory.parse(adqlString.trim());
          }
@@ -689,27 +675,22 @@ public class Query  {
       return adqlString;
    }
 
-   /** Compiles a given ADQL/sql fragment into ADQL/xml beans.
-    */
-   private SelectDocument compileSelectDocument(StringReader source) 
-      throws QueryException
-   {
-      synchronized (Query.class) {
-         try {
-            /*
-            if (compiler == null) {
-               compiler = new AdqlCompiler(source);
-            }
-            else {
-               compiler.ReInit(source);
-            }
-            */
-            AdqlCompiler compiler = new AdqlCompiler(source);
-            return (SelectDocument) compiler.compileToXmlBeans();
-         }
-         catch (Exception e) {
-            throw new QueryException("Could not translate conesearch ADQL/sql query into valid ADQL/xml", e);
-         }
+  /**
+   * Translates ADQL/S into beans representing the query.
+   *
+   * @param source The ADQL/S text.
+   * @return The bean for the top level of the document.
+   * @throws QueryException If parsing fails.
+   */
+  private SelectDocument compileSelectDocument(String source)
+      throws QueryException {
+    synchronized (Query.class) {
+      try {
+        return new AdqlParserSVNC().parseToXML(source);
       }
-   }
+      catch (Exception e) {
+        throw new QueryException("Could not translate ADQL/sql query into valid ADQL/xml", e);
+      }
+    }
+  }
 }

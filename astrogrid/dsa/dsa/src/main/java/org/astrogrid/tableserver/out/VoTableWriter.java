@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.6 2010/12/08 12:46:36 gtr Exp $
+ * $Id: VoTableWriter.java,v 1.7 2011/05/05 14:49:37 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -84,9 +84,10 @@ public class VoTableWriter implements TableWriter {
       println("<?xml version='1.0' encoding='UTF-8'?>");
       println("<!DOCTYPE VOTABLE SYSTEM \"http://us-vo.org/xml/VOTable.dtd\">");
       println("<VOTABLE version=\"1.0\">");
-      println("<DESCRIPTION>Error processing query</DESCRIPTION>");
-      println("<INFO ID=\"Error\" name=\"Error\" value=\"" + 
-            errorDesc + "\"/>");
+      println("  <DESCRIPTION>Error processing query</DESCRIPTION>");
+      println("  <RESOURCE type='results'>");
+      println("    <INFO name='QUERY_STATUS' value='ERROR'>" +  errorDesc + "</INFO>");
+      println("  </RESOURCE>");
       println("</VOTABLE>");
    }
 
@@ -96,7 +97,8 @@ public class VoTableWriter implements TableWriter {
             "xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.2 " +
             "http://www.ivoa.net/xml/VOTable/v1.2' " +
             "version='1.2'>");
-    println("  <RESOURCE>");
+    println("<RESOURCE type='results'>");
+    println("<INFO name='QUERY_STATUS' value='OK'/>");
     doAFlush();
   }
    

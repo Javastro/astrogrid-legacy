@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.5 2010/12/08 12:46:35 gtr Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.6 2011/05/05 14:49:36 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,9 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.xml.parsers.ParserConfigurationException;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.jobs.Job;
@@ -24,7 +22,7 @@ import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.TableResults;
 import org.astrogrid.io.account.LoginAccount;
-import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.NullTarget;
@@ -105,12 +103,13 @@ public class SampleStarsPluginTest extends TestCase {
       QuerierManager manager = QuerierManager.getManager("DummyTest");
 
       StringWriter sw = new StringWriter();
-      //Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new WriterTarget(sw), ReturnTable.VOTABLE), this);
-      Querier q = new Querier(LoginAccount.ANONYMOUS,
-          SimpleQueryMaker.makeTestQuery(catalogName, tableName,
-            new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE)), 
-          this);
-      manager.askQuerier(q);
+
+      String adql = "SELECT TOP 100 * FROM " + catalogName + "." + tableName;
+      //System.out.println(adql);
+      ReturnTable target = new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE);
+      Query query = new Query(adql, target);
+      // Dump the ADQL/X for inspection: query.getSelectDocument().save(System.out);
+      manager.askQuerier(new Querier(LoginAccount.ANONYMOUS, query, this));
       Document resultsDom = DomHelper.newDocument(sw.toString());
    }
       
@@ -129,22 +128,6 @@ public class SampleStarsPluginTest extends TestCase {
 
       //check valid xml
       Document resultsDom = DomHelper.newDocument(metadata);
-   }
-   
-   /**
-    * Assembles and returns a test suite made up of all the testXxxx() methods
-    * of this class.
-    */
-   public static Test suite() {
-      // Reflection is used here to add all the testXXX() methods to the suite.
-      return new TestSuite(SampleStarsPluginTest.class);
-   }
-   
-   /**
-    * Runs the test case.
-    */
-   public static void main(String args[]) {
-      junit.textui.TestRunner.run(suite());
    }
    
 }

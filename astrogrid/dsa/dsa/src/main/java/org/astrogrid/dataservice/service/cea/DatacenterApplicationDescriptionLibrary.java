@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibrary.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
+/*$Id: DatacenterApplicationDescriptionLibrary.java,v 1.3 2011/05/05 14:49:37 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import java.io.IOException;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.dataservice.service.DataServer;
-import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
 import org.astrogrid.dataservice.metadata.InstallationIvorn;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.metadata.MetadataException;
@@ -37,8 +36,7 @@ public class DatacenterApplicationDescriptionLibrary extends BaseApplicationDesc
    *
    */
   public DatacenterApplicationDescriptionLibrary(DataServer                        ds,
-                                                 ApplicationDescriptionEnvironment env,
-                                                 QueuedExecutor                    qe) throws MetadataException,
+                                                 ApplicationDescriptionEnvironment env) throws MetadataException,
                                                                                               IOException {
 
     super(env);
@@ -56,14 +54,14 @@ public class DatacenterApplicationDescriptionLibrary extends BaseApplicationDesc
       String appName = (appIvorn.startsWith("ivo://"))?
            appIvorn.substring(6) :
            appIvorn;
-      addApplicationDescription(new DatacenterApplicationDescription(appName,ds,env,qe));
+      addApplicationDescription(new DatacenterApplicationDescription(appName,ds,env));
     }
        
     String appIvorn = InstallationIvorn.makeIvorn("ceaApplication");
     String appName = (appIvorn.startsWith("ivo://"))?
         appIvorn.substring(6) :
         appIvorn;
-    addApplicationDescription(new DatacenterApplicationDescription(appName,ds,env,qe));
+    addApplicationDescription(new DatacenterApplicationDescription(appName,ds,env));
   }
 
   /**

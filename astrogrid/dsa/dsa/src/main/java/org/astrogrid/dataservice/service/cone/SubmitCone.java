@@ -35,7 +35,7 @@ import org.astrogrid.query.returns.ReturnTable;
  * @author G Rixon
  */
 public class SubmitCone extends HttpServlet {
-  private static Log log = LogFactory.getLog(SubmitCone.class.getName());
+  private static final Log LOG = LogFactory.getLog(SubmitCone.class);
    
   private DataServer server = new DataServer();
 
@@ -51,7 +51,7 @@ public class SubmitCone extends HttpServlet {
         // This has no effect if the plugin is already initialised
         SampleStarsPlugin.initialise();
       } catch (DatabaseAccessException ex) {
-        log.fatal("Can't initialize the sample-stars plugin: " + ex);
+        LOG.fatal("Can't initialize the sample-stars plugin: " + ex);
         throw new RuntimeException(ex);
       }
     }
@@ -108,6 +108,7 @@ public class SubmitCone extends HttpServlet {
       executeConeSearch(request, response);
     }
     catch (Throwable th) {
+      LOG.error("Cone search failed: " + th);
       if (errorsInHtml) {
         throw new ServletException(th);
       }
@@ -161,6 +162,7 @@ public class SubmitCone extends HttpServlet {
     double radius = ServletHelper.getRadius(request);
     double ra = ServletHelper.getRa(request);
     double dec = ServletHelper.getDec(request);
+    LOG.info("Cone search requested: RA=" + ra + " DEC=" + dec + " SR=" + radius);
     String format = MimeTypes.toMimeType(request.getParameter("Format"));
     response.setContentType(format.toString());
     response.setCharacterEncoding("UTF-8");

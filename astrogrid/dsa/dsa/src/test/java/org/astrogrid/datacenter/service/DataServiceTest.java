@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.5 2010/12/08 12:46:36 gtr Exp $
+/*$Id: DataServiceTest.java,v 1.6 2011/05/05 14:49:37 gtr Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,6 @@ import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.VoTableTestHelper;
@@ -70,25 +69,30 @@ public class DataServiceTest extends TestCase {
              catalogID);
        String tableName = TableMetaDocInterpreter.getTableNameForID(
              catalogID,tableID);
-
        
-      query1 = SimpleQueryMaker.makeTestQuery(tableName,
-         new ReturnTable(new WriterTarget(sw1), ReturnTable.VOTABLE));
+      query1 =
+          new Query("Select TOP 20 * FROM " + tableName,
+                    new ReturnTable(new WriterTarget(sw1), ReturnTable.VOTABLE));
 
-      query1c = SimpleQueryMaker.makeTestQuery(catalogName, tableName,
-         new ReturnTable(new WriterTarget(sw1c), ReturnTable.VOTABLE));
+      query1c =
+          new Query("Select TOP 20 * FROM " + catalogName + "." + tableName,
+                    new ReturnTable(new WriterTarget(sw1c), ReturnTable.VOTABLE));
        
-      query2 = SimpleQueryMaker.makeTestQuery(tableName,
-         new ReturnTable(new WriterTarget(sw2), ReturnTable.VOTABLE));
+      query2 =
+          new Query("Select TOP 20 * FROM " + tableName,
+                    new ReturnTable(new WriterTarget(sw2), ReturnTable.VOTABLE));
 
-      query2c = SimpleQueryMaker.makeTestQuery(catalogName, tableName,
-         new ReturnTable(new WriterTarget(sw2c), ReturnTable.VOTABLE));
-      
-      query3 = SimpleQueryMaker.makeTestQuery(tableName,
-         new ReturnTable(new WriterTarget(sw3), ReturnTable.VOTABLE));
+      query2c =
+          new Query("Select TOP 20 * FROM " + catalogName + "." + tableName,
+                    new ReturnTable(new WriterTarget(sw2c), ReturnTable.VOTABLE));
 
-      query3c = SimpleQueryMaker.makeTestQuery(catalogName, tableName,
-         new ReturnTable(new WriterTarget(sw3c), ReturnTable.VOTABLE));
+      query3 =
+          new Query("Select TOP 20 * FROM " + tableName,
+                    new ReturnTable(new WriterTarget(sw3), ReturnTable.VOTABLE));
+
+      query3c =
+          new Query("Select TOP 20 * FROM " + catalogName + "." + tableName,
+                    new ReturnTable(new WriterTarget(sw3c), ReturnTable.VOTABLE));
     }
 
     public void testConeSearch1() throws Throwable 

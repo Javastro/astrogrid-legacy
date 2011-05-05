@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.4 2009/11/13 16:23:28 gtr Exp $
+ * $Id: QuerierTest.java,v 1.5 2011/05/05 14:49:36 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,20 +10,17 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.datacenter.DsaUnitTest;
-import org.astrogrid.dataservice.jobs.Job;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierListener;
 import org.astrogrid.dataservice.queriers.status.QuerierComplete;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
-import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
 import org.astrogrid.io.account.LoginAccount;
+import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryState;
-import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.VoTableTestHelper;
@@ -56,11 +53,9 @@ public class QuerierTest extends DsaUnitTest {
             catalogID,tableID);
 
       sw = new StringWriter();
-      //querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new WriterTarget(sw), ReturnTable.VOTABLE), this);
-      querier = new Querier(LoginAccount.ANONYMOUS,
-          SimpleQueryMaker.makeTestQuery(catalogName, tableName,
-              new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE)), 
-            this);
+      Query query = new Query("SELECT TOP 10 * FROM TabName_SampleStars",
+                              new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
+      querier = new Querier(LoginAccount.ANONYMOUS, query, this);
       listener = new MockListener();
       querier.addListener(listener);
    }
@@ -116,7 +111,7 @@ public class QuerierTest extends DsaUnitTest {
    }
    
    
-   class MockListener implements QuerierListener {
+   protected class MockListener implements QuerierListener {
       List statusList = new ArrayList();
       public void queryStatusChanged(Querier querier) {
          heard = true;

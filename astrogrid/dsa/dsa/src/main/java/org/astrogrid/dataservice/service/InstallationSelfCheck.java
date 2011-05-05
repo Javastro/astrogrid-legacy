@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.3 2010/02/02 21:44:44 gtr Exp $
+/*$Id: InstallationSelfCheck.java,v 1.4 2011/05/05 14:49:36 gtr Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,6 @@ import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
-import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
@@ -95,8 +94,8 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
             catalogID);
       String tableName = TableMetaDocInterpreter.getTableNameForID(
             catalogID,tableID);
-      return SimpleQueryMaker.makeTestQuery(
-            catalogName, tableName, new ReturnTable(target, format));
+      return new Query("SELECT TOP 10 * FROM " + catalogName + "." + tableName,
+                       new ReturnTable(target, format));
    }
 
    /** Checks the querier/plugin operates - runs a test query that will exercise it

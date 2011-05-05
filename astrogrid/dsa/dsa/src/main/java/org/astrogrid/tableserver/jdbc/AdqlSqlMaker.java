@@ -1,4 +1,4 @@
-/*$Id: AdqlSqlMaker.java,v 1.1 2009/05/13 13:20:43 gtr Exp $
+/*$Id: AdqlSqlMaker.java,v 1.2 2011/05/05 14:49:38 gtr Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,7 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Vector;
 import java.util.ArrayList;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -28,6 +26,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xmlbeans.XmlCursor;
 import org.astrogrid.cfg.ConfigFactory;
 
 import org.w3c.dom.Document;
@@ -40,8 +39,12 @@ import org.astrogrid.query.QueryException;
 import org.astrogrid.query.XmlBeanUtilities;
 
 // XMLBeans stuff
-import org.apache.xmlbeans.* ;
-import org.astrogrid.adql.v1_0.beans.*;
+import org.astrogrid.adql.beans.ColumnReferenceType;
+import org.astrogrid.adql.beans.FromType;
+import org.astrogrid.adql.beans.SelectDocument;
+import org.astrogrid.adql.beans.SelectType;
+import org.astrogrid.adql.beans.SelectionListType;
+import org.astrogrid.adql.beans.TableType;
 
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.tableserver.metadata.NameTranslator;
@@ -192,6 +195,9 @@ public class AdqlSqlMaker implements SqlMaker {
             XmlBeanUtilities.setLimit(queryClone, localLimit); // Datacenter limit is smaller
          }
       }
+
+      // Translate from public names in the professed DB-schema to internal
+      // names in the actual schema.
       queryClone = applyNameTransformations(queryClone);
 
       try {
@@ -352,7 +358,7 @@ public class AdqlSqlMaker implements SqlMaker {
                   selectDocument,tableName); // May come back null
             tableType.setName(
                   translator.getTableRealname(catalogName,tableName));
-            if (tableType.isSetArchive()) {
+            if (tableType.isSetCatalog()) {
                // First check if we need to remove the archive to hide
                // it from the sql backend.  If we only have one database
                // exposed (e.g. in SampleStars config), we don't need 
@@ -370,12 +376,11 @@ public class AdqlSqlMaker implements SqlMaker {
                }
                if ("true".equals(hideCat) || "TRUE".equals(hideCat)) {
                   //Don't want to expose the catalog (schema) name
-                  tableType.unsetArchive(); 
+                  tableType.unsetCatalog();
                }
                else {
-                  String archiveName = tableType.getArchive(); 
-                  tableType.setArchive(
-                    translator.getCatalogRealname(catalogName));
+                  String archiveName = tableType.getCatalog();
+                  tableType.setCatalog(translator.getCatalogRealname(catalogName));
                  
                }
             }
@@ -383,29 +388,25 @@ public class AdqlSqlMaker implements SqlMaker {
             // and extract the Name attributes for any columns coming from the 
             // specified table.
             SelectionListType selectionList = selectType.getSelectionList();
+            try {
+              selectionList.save(System.out);
+            }
+            catch (IOException e) {
+              // Ignore
+            }
             if (selectionList == null) { // CAN THIS BE NULL??
                throw new QueryException(
                      "Input SelectionList must not be NULL!");
             }
-            ColumnReferenceType[] columnNames = 
+            ColumnReferenceType[] columns =
                      getColumnReferences(selectDocument);
-            for (int j = 0; j < columnNames.length; j++)
-            {
-               String columnName = columnNames[j].getName();
-               // Column table might be an alias
-               if (
-                  (columnNames[j].getTable().equals(tableName)) ||
-                  (columnNames[j].getTable().equals(tableAlias))
-               ) {
-                  columnNames[j].setName(translator.getColumnRealname(
-                           catalogName,tableName,columnName));
-               }
-               else if (tableAlias != null) {
-                 if (tableAlias.equals(columnNames[j].getTable())) {
-                     columnNames[j].setName(translator.getColumnRealname(
-                              catalogName,tableName,columnName));
-                  }
-               }
+            for (int j = 0; j < columns.length; j++) {
+              if (isInThisTable(tableName, tableAlias, columns[j])) {
+                String newName = translator.getColumnRealname(catalogName,
+                                                              tableName,
+                                                              columns[j].getName());
+                columns[j].setName(newName);
+              }
             }
          }
       }
@@ -442,4 +443,34 @@ public class AdqlSqlMaker implements SqlMaker {
       }
       return (ColumnReferenceType[])colRefs.toArray( new ColumnReferenceType[ colRefs.size() ] ) ;
   }
+
+
+  /**
+   * Determines whether a given column is associated with a named table.
+   * The metadata are fickle here so we include four cases giving a positive result:
+   * <ul>
+   * <li>column's professed table-name matches the name of the given table;</li>
+   * <li>column's professed table-name matches the alias of the given table;</li>
+   * <li>column's professed table-name matches the name of the given table;</li>
+   * <li>column's doesn't know what table it's in;</li>
+   * <li>we have neither name nor alias for the given table.</li>
+   * </ul>
+   * The last two cases are thought to arise only if there is a single table, so
+   * "true" is the best guess. However, these kludges invite bugs.
+   *
+   * @param tableName The name of the given table.
+   * @param tableAlias The alias of the given table.
+   * @param column The metadata for the column.
+   * @return True if the column is associated with the given table.
+   */
+  protected boolean isInThisTable(String tableName,
+                                  String tableAlias,
+                                  ColumnReferenceType column) {
+    String tableForColumn = column.getTable();
+    return (tableForColumn == null ||
+            (tableName == null && tableAlias == null) ||
+            tableForColumn.equals(tableName) ||
+            tableForColumn.equals(tableAlias));
+  }
+  
 }

@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.10 2011/04/01 09:31:48 gtr Exp $
+/*$Id: DatacenterApplication.java,v 1.11 2011/05/05 14:49:37 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
  **/
 package org.astrogrid.dataservice.service.cea;
 
-import EDU.oswego.cs.dl.util.concurrent.Executor;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.OutputStream;
@@ -100,8 +99,6 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    
    protected final Principal acc;
    
-   /** the executor for background tasks */
-   Executor exec;
    
    public String getJobId() { return jobId;   }
    
@@ -111,9 +108,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * @param arg2
     * @param arg3
     */
-   public DatacenterApplication(IDs ids, Tool tool, ApplicationInterface interf, ProtocolLibrary arg3,Executor exec) {
+   public DatacenterApplication(IDs ids, Tool tool, ApplicationInterface interf, ProtocolLibrary arg3) {
       super(ids, tool,interf, arg3);
-      this.exec = exec;
       this.acc = new LoginAccount(ids.getUser().getUserId(),ids.getUser().getCommunity());
       logger.info("CEA DSA initialised, Job ID="+ids.getJobStepId());
       jobId = ids.getId();
@@ -649,6 +645,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * @see org.astrogrid.datacenter.queriers.QuerierListener#queryStatusChanged(org.astrogrid.datacenter.queriers.Querier)
     */
    public void queryStatusChanged(final Querier querier) {
+      querier.updateJob();
       QuerierStatus qs = querier.getStatus();
       QueryState state = qs.getState();
       logger.debug("CEA seen DSA state="+state);

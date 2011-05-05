@@ -4,33 +4,28 @@
 
 package org.astrogrid.query;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.InputStream;
-import java.util.Vector;
 import org.astrogrid.cfg.ConfigFactory;
 
 // XMLBeans stuff
 import org.apache.xmlbeans.* ;
-import org.astrogrid.adql.v1_0.beans.*;
 
 // For validation of beans
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Vector;
+import org.astrogrid.adql.beans.ArrayOfFromTableType;
+import org.astrogrid.adql.beans.ColumnReferenceType;
+import org.astrogrid.adql.beans.FromTableType;
+import org.astrogrid.adql.beans.FromType;
+import org.astrogrid.adql.beans.JoinTableType;
+import org.astrogrid.adql.beans.SelectDocument;
+import org.astrogrid.adql.beans.SelectType;
+import org.astrogrid.adql.beans.SelectionItemType;
+import org.astrogrid.adql.beans.SelectionLimitType;
+import org.astrogrid.adql.beans.SelectionListType;
+import org.astrogrid.adql.beans.TableType;
 
-// For legacy DOM interface 
-import org.astrogrid.xml.DomHelper;
 
-/* For xslt */
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 
 /**
@@ -337,7 +332,7 @@ public class XmlBeanUtilities  {
       if ((tableType == null)) {
          throw new QueryException("Input TableType may not be null!");
       }
-      String catalogName = tableType.getArchive();
+      String catalogName = tableType.getCatalog();
       if ((catalogName == null) || ("".equals(catalogName)))  {
          return null;
       }
@@ -360,14 +355,14 @@ public class XmlBeanUtilities  {
       if (overwrite == false) {
          // Check to see if we have an empty catalog name;  if not,
          // no need to do anything
-         String currName = tableType.getArchive();
+         String currName = tableType.getCatalog();
          if (  (currName != null) && (!currName.equals("")) ) {
             // Already set - don't overwrite
             return;
          }
       }
       // Now overwrite
-      tableType.setArchive(catalogName);
+      tableType.setCatalog(catalogName);
    }
 
    /** Sets the catalog name for any tables that don't already have a catalog

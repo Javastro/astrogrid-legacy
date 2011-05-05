@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.2 2009/10/21 19:01:00 gtr Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.3 2011/05/05 14:49:37 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.dataservice.service.cea;
 
-import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
@@ -30,7 +29,7 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
     /**
      * Commons Logger for this class
      */
-    private static final Log logger = LogFactory.getLog(DatacenterCEAComponentManager.class);
+    private static final Log LOG = LogFactory.getLog(DatacenterCEAComponentManager.class);
 
     /** 
      * Constructs a new {@code DatacenterCEAComponentManager}.
@@ -58,7 +57,6 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
         
         pico.registerComponentImplementation(DatacenterApplicationDescriptionLibrary.class,DatacenterApplicationDescriptionLibrary.class);
         pico.registerComponentImplementation(DataServer.class,DataServer.class);
-        pico.registerComponentImplementation(QueuedExecutor.class,CeaQueuedExecutor.class);
         pico.registerComponentImplementation(Configuration.class, BaseConfiguration.class);
         
         // This is the generic protocol for VOSpace. Eventually, the CEA core

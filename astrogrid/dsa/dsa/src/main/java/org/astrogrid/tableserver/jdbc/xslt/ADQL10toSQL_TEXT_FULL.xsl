@@ -129,16 +129,18 @@
 	</xsl:template>
 	
 	<xsl:template match="ad:GroupBy">
-		<xsl:variable name="list">
-			<xsl:for-each select="ad:Column">
-				<xsl:apply-templates select="."/>
-				<xsl:text>,</xsl:text>
-				<xsl:value-of select="$spaceCharacter"/>
-			</xsl:for-each>
-		</xsl:variable>		
-		<xsl:text>Group By </xsl:text>
-		<xsl:value-of select="substring($list, 1, string-length($list)-2)"/>
-		<xsl:value-of select="$spaceCharacter"/>
+		<xsl:text>GROUP BY </xsl:text>
+    <xsl:for-each select="ad:Column">
+      <xsl:apply-templates select="."/>
+      <xsl:choose>
+        <xsl:when test="following-sibling::ad:Column">
+          <xsl:text>, </xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text> </xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template match="ad:Having"> 	
@@ -304,9 +306,11 @@
 		<xsl:apply-templates select="ad:Arg"/>
 	</xsl:template>
 	
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'columnReferenceType'] | *[@xsi:type = 'columnReferenceType']">
-		<xsl:value-of select="@Table"/>
-		<xsl:text>.</xsl:text>
+	<xsl:template match="ad:Column | *[substring-after(@xsi:type, ':') = 'columnReferenceType'] | *[@xsi:type = 'columnReferenceType']">
+		<xsl:if test="@Table">
+      <xsl:value-of select="@Table"/>
+		  <xsl:text>.</xsl:text>
+    </xsl:if>
 		<xsl:value-of select="@Name"/>
 	</xsl:template>
 	

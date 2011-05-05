@@ -53,7 +53,7 @@ public class TapAdqlQuery {
       language = l.trim().toUpperCase();
       if (language.length() == 0) {
         throw new TapException("Parameter LANG (query language) was empty");
-      } else if (!language.equals("ADQL") && !language.equals("ADQL-1.0")) {
+      } else if (!language.equals("ADQL") && !language.equals("ADQL-2.0")) {
         throw new TapException(String.format("Query-language %s is not supported here", language));
       }
     }

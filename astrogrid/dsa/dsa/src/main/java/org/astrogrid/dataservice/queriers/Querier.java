@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.11 2010/04/11 21:19:20 gtr Exp $
+ * $Id: Querier.java,v 1.12 2011/05/05 14:49:36 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -89,9 +89,6 @@ public class Querier implements Runnable, PluginListener {
       this.user = (u == null)? LoginAccount.ANONYMOUS : u;
       this.query = q;
       this.source = aSource;
-      
-      //check to see if the query is OK to run - eg the tables are valid
-      assertQueryLegal(query);
 
       //make plugin
       plugin = QuerierPluginFactory.createPlugin(this);
@@ -309,15 +306,6 @@ public class Querier implements Runnable, PluginListener {
    public boolean isAborted() {
      return (status instanceof QuerierAborted);
    }
-   
-   
-   /**
-    * Checks to see if the query is legal on this database - ie the tables
-    * specified are allowed to be queried, etc.  Throws an exception if not.
-    */
-   public void assertQueryLegal(Query query) {
-      //also check formats in return spec
-   }
 
    /**
     * For debugging/display
@@ -359,9 +347,9 @@ public class Querier implements Runnable, PluginListener {
 
   /**
    * Updates the job record to match the current querier-status. Any errors
-   * in this update are logged but not throws as exceptions.
+   * in this update are logged but not thrown as exceptions.
    */
-  protected void updateJob() {
+  public void updateJob() {
     try {
       Job job = Job.open(id);
       job.setPhase(getUwsPhase());
@@ -390,11 +378,11 @@ public class Querier implements Runnable, PluginListener {
   }
 
    /**
-    * Determines the UWS phase from the query current.
+    * Determines the UWS phase from the query state.
     * 
     * @return The phase.
     */
-   private String getUwsPhase() {
+   public String getUwsPhase() {
       switch (status.getState()) {
         case CONSTRUCTED:
          return "PENDING";

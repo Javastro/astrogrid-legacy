@@ -8,19 +8,14 @@ import java.io.StringReader;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.adql.AdqlException;
+import org.astrogrid.adql.InvalidStateException;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.ConeConverter;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.adql.AdqlParserSVNC;
+import org.astrogrid.adql.beans.SelectDocument;
 
-import org.astrogrid.adql.AdqlCompiler;
-// XMLBeans stuff
-import org.apache.xmlbeans.* ;
-import org.astrogrid.adql.v1_0.beans.*;
-
-
-
-/* For DOM comparisons */
-import org.custommonkey.xmlunit.*;
 
 /**
  * Unit tests for the ConeConverter class, which produces
@@ -29,9 +24,6 @@ import org.custommonkey.xmlunit.*;
 public class ConeConverterTest extends TestCase   {
 
    AdqlTestHelper helper = new AdqlTestHelper();
-
- /** For converting from ADQL/sql strings to XML Beans */
-   private AdqlCompiler compiler;
    
    private String coneCatalog = "SampleStarsCat";
    private String coneTable = "SampleStars";
@@ -39,6 +31,7 @@ public class ConeConverterTest extends TestCase   {
    private String coneDecCol = "ColName_Dec";
    private String coneUnits = "deg";
 
+   @Override
    protected void setUp()
    {
       // Set conesearch table properties.
@@ -66,9 +59,7 @@ public class ConeConverterTest extends TestCase   {
       assertTrue(adql.indexOf("DEGREES") == -1);
 
       // Test that adql is valid by creating Query with it
-      StringReader source = new StringReader(adql) ;
-      Query query = new Query(
-          (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      Query query = new Query(getAdqlBeans(adql));
    }
    public void testGreatCircleQuery() throws Exception
    {
@@ -83,9 +74,7 @@ public class ConeConverterTest extends TestCase   {
       assertTrue(adql.indexOf("DEGREES") == -1);
 
       // Test that adql is valid by creating Query with it
-      StringReader source = new StringReader(adql) ;
-      Query query = new Query(
-          (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      Query query = new Query(getAdqlBeans(adql));
    }
 
    /* The following suite of tests checks all possible combinations
@@ -109,10 +98,9 @@ public class ConeConverterTest extends TestCase   {
       assertTrue(adql.indexOf("DEGREES") == -1);
 
       // Test that adql is valid by creating Query with it
-      StringReader source = new StringReader(adql) ;
-      Query query = new Query(
-          (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      Query query = new Query(getAdqlBeans(adql));
    }
+
    public void testDegDegGreatCircleQuery() throws Exception
    {
       // Set trig to use degrees
@@ -131,10 +119,9 @@ public class ConeConverterTest extends TestCase   {
       assertTrue(adql.indexOf("DEGREES") == -1);
 
       // Test that adql is valid by creating Query with it
-      StringReader source = new StringReader(adql) ;
-      Query query = new Query(
-          (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      Query query = new Query(getAdqlBeans(adql));
    }
+
    public void testDegRadHaversineQuery() throws Exception
    {
       // Set trig to use degrees
@@ -153,10 +140,9 @@ public class ConeConverterTest extends TestCase   {
       assertTrue(adql.indexOf("DEGREES") != -1);
 
       // Test that adql is valid by creating Query with it
-      StringReader source = new StringReader(adql) ;
-      Query query = new Query(
-          (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      Query query = new Query(adql);
    }
+
    public void testDegRadGreatCircleQuery() throws Exception
    {
       // Set trig to use degrees
@@ -176,9 +162,9 @@ public class ConeConverterTest extends TestCase   {
 
       // Test that adql is valid by creating Query with it
       StringReader source = new StringReader(adql) ;
-      Query query = new Query(
-          (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      Query query = new Query(adql);
    }
+
    public void testRadDegHaversineQuery() throws Exception
    {
       // Set trig to use radians
@@ -197,10 +183,9 @@ public class ConeConverterTest extends TestCase   {
       assertTrue(adql.indexOf("DEGREES") == -1);
 
       // Test that adql is valid by creating Query with it
-      StringReader source = new StringReader(adql) ;
-      Query query = new Query(
-          (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      Query query = new Query(adql);
    }
+
    public void testRadDegGreatCircleQuery() throws Exception
    {
       // Set trig to use radians
@@ -219,10 +204,9 @@ public class ConeConverterTest extends TestCase   {
       assertTrue(adql.indexOf("DEGREES") == -1);
 
       // Test that adql is valid by creating Query with it
-      StringReader source = new StringReader(adql) ;
-      Query query = new Query(
-          (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      Query query = new Query(adql);
    }
+
    public void testRadRadHaversineQuery() throws Exception
    {
       // Set trig to use radians
@@ -241,10 +225,9 @@ public class ConeConverterTest extends TestCase   {
       assertTrue(adql.indexOf("DEGREES") == -1);
 
       // Test that adql is valid by creating Query with it
-      StringReader source = new StringReader(adql) ;
-      Query query = new Query(
-          (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      Query query = new Query(adql);
    }
+
    public void testRadRadGreatCircleQuery() throws Exception
    {
       // Set trig to use radians
@@ -263,9 +246,7 @@ public class ConeConverterTest extends TestCase   {
       assertTrue(adql.indexOf("DEGREES") == -1);
 
       // Test that adql is valid by creating Query with it
-      StringReader source = new StringReader(adql) ;
-      Query query = new Query(
-          (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      Query query = new Query(adql);
    }
 
 
@@ -473,15 +454,9 @@ public class ConeConverterTest extends TestCase   {
    
    /** Creates an ADQL/sql compiler where required, and/or compiles
     *     * a given ADQL/sql fragment.  */
-  private AdqlCompiler getCompiler(StringReader source)
-  {
-     if (compiler == null) {
-        compiler = new AdqlCompiler(source);
-     }
-     else {
-        compiler.ReInit(source);
-     }
-     return compiler;
+  private SelectDocument getAdqlBeans(String adql)
+      throws AdqlException, InvalidStateException {
+    return new AdqlParserSVNC().parseToXML(adql);
   }
 
 }

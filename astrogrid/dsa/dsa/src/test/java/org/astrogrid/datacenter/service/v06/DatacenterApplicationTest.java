@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.4 2010/04/26 10:54:49 gtr Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.5 2011/05/05 14:49:37 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,6 @@
  **/
 package org.astrogrid.datacenter.service.v06;
 
-import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,8 +36,6 @@ import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.cea.DatacenterApplication;
 import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescription;
-import org.astrogrid.io.Piper;
-import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.PrecannedPlugin;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -81,7 +74,7 @@ public class DatacenterApplicationTest extends TestCase {
     * @see TestCase#setUp()
     */
    @Override
-   protected void setUp() throws Exception {
+   public void setUp() throws Exception {
       super.setUp();
       // This allows the job database to work properly.
       SimpleConfig.setProperty("datacenter.cache.directory", "target");
@@ -90,7 +83,12 @@ public class DatacenterApplicationTest extends TestCase {
       SampleStarsPlugin.initConfig();
       ds = new DataServer();
       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY,PrecannedPlugin.class.getName());
-      env = new ApplicationDescriptionEnvironment(
+      runListener = new TestRunListener();
+      resultListener  = new TestResultListener();
+   }
+
+   private DatacenterApplication newApplication() throws Exception {
+     ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(
                        new InMemoryIdGen(),
                        new DefaultProtocolLibrary(),
                        new AppAuthorityIDResolver() {
@@ -98,22 +96,17 @@ public class DatacenterApplicationTest extends TestCase {
                                     return "org.astrogrid.test";
                                  }
                            });
-      appDesc = new DatacenterApplicationDescription("astrogrid.org/test-dsa-catalog/ceaApplication",ds,env,new DirectExecutor());
-      tool = new Tool();
+      DatacenterApplicationDescription appDesc = new DatacenterApplicationDescription("astrogrid.org/test-dsa-catalog/ceaApplication",ds,env);
+      Tool tool = new Tool();
       populateTool(tool);
-      app = (DatacenterApplication)appDesc.initializeApplication("astrogrid.org/test-dsa-catalog/ceaApplication",new User(),tool);
-      runListener = new TestRunListener();
-      resultListener  = new TestResultListener();
+      DatacenterApplication app = (DatacenterApplication)appDesc.initializeApplication("astrogrid.org/test-dsa-catalog/ceaApplication",new User(),tool);
+
       app.addObserver(runListener);
       app.addObserver(resultListener);
+      return app;
    }
    
-   private static final String SAMPLE_QUERY_RESOURCE = "sample-query.xml";
    protected DataServer ds;
-   protected ApplicationDescriptionEnvironment env;
-   protected Tool tool;
-   protected DatacenterApplicationDescription appDesc;
-   protected DatacenterApplication app;
    protected TestRunListener runListener;
    protected TestResultListener resultListener;
    
@@ -124,15 +117,11 @@ public class DatacenterApplicationTest extends TestCase {
       Output output = new Output();
       tool.setInput(input);
       tool.setOutput(output);
+      
       ParameterValue query= new ParameterValue();
       query.setName("Query");
       query.setIndirect(false);
-      
-      InputStream is = this.getClass().getResourceAsStream(SAMPLE_QUERY_RESOURCE);
-      assertNotNull("Cannot read " + SAMPLE_QUERY_RESOURCE + " as a resource", is);
-      StringWriter out = new StringWriter();
-      Piper.pipe(new InputStreamReader(is),out);
-      query.setValue(out.toString());
+      query.setValue("SELECT * FROM TabName_SampleStars");
       input.addParameter(query);
       
       ParameterValue format= new ParameterValue();
@@ -148,6 +137,7 @@ public class DatacenterApplicationTest extends TestCase {
    }
    
    public void testCreation() throws Exception {
+     DatacenterApplication app = newApplication();
       assertNotNull(app);
       System.out.println(app.getID());
       Job job = Job.load(app.getID());
@@ -155,11 +145,8 @@ public class DatacenterApplicationTest extends TestCase {
       assertEquals("PENDING", job.getPhase());
    }
    
-   public String getQueryStatus() throws IOException {
-      return ds.getQueryStatus(LoginAccount.ANONYMOUS, app.getJobId()).asFullMessage();
-   }
-   
    public void testRun() throws Exception {
+     DatacenterApplication app = newApplication();
      Job job = Job.load(app.getID());
      assertNotNull(job);
      assertEquals("PENDING", job.getPhase());
@@ -208,8 +195,9 @@ public class DatacenterApplicationTest extends TestCase {
       
    }
 
-   public void testGetCatalogNameFromAppIvorn() throws CeaException {
-
+   public void testGetCatalogNameFromAppIvorn() throws Exception {
+     DatacenterApplication app = newApplication();
+     
       String s1 = app.getCatalogNameFromAppIvorn(
       "ivo://astrogrid.org/test-dsa-catalog/ceaApplication");
       assertEquals(s1,"");
@@ -322,135 +310,3 @@ public class DatacenterApplicationTest extends TestCase {
       }
    }
 }
-
-
-/*
- $Log: DatacenterApplicationTest.java,v $
- Revision 1.4  2010/04/26 10:54:49  gtr
- Fixed: was reporting spurious failures (JUnit-3 bug?)
-
- Revision 1.3  2009/10/21 19:01:00  gtr
- V2009.1.01, merged.
-
- Revision 1.2.2.4  2009/10/08 13:06:25  gtr
- Fixed.
-
- Revision 1.2.2.3  2009/10/02 16:47:40  gtr
- Altered to support purging of the job list.
-
- Revision 1.2.2.2  2009/09/25 15:05:08  gtr
- Fixed to work with the revised querier system.
-
- Revision 1.2.2.1  2009/09/18 13:39:02  gtr
- datacenter.cache.directory is set to support use of the job database.
-
- Revision 1.2  2009/05/15 16:28:23  gtr
- I added the security wiring to the CEA interface. Authenticated calls to the CEC should now supply credentials for us in the call to VOSpace.
-
- Revision 1.1.1.1  2009/05/13 13:20:59  gtr
-
-
- Revision 1.13  2008/10/13 10:51:35  clq2
- PAL_KEA_2799
-
- Revision 1.12.20.1  2008/09/09 13:14:30  gtr
- I added extra "x not null" checks.
-
- Revision 1.12  2008/02/07 17:27:45  clq2
- PAL_KEA_2518
-
- Revision 1.11.12.1  2008/02/07 16:36:16  kea
- Further fixes for 1.0 support, and also MBT's changes merged into my branch.
-
- Revision 1.11  2007/10/17 09:58:20  clq2
- PAL_KEA-2314
-
- Revision 1.10.2.1  2007/10/11 13:53:20  kea
- Still working on multicone stuff.
-
- Revision 1.10  2007/09/07 09:30:51  clq2
- PAL_KEA_2235
-
- Revision 1.9.8.1  2007/09/04 08:41:37  kea
- Fixing v1.0 registrations and multi-catalog CEA stuff.
-
- Revision 1.9  2007/02/20 12:22:16  clq2
- PAL_KEA_2062
-
- Revision 1.8.32.1  2007/01/18 16:25:00  kea
- Nightly checkin.
-
- Revision 1.8  2006/03/17 17:56:58  clq2
- gtr_1489_cea correted version
-
- Revision 1.6  2006/03/07 21:45:26  clq2
- gtr_1489_cea
-
- Revision 1.5.58.1  2006/01/30 11:39:22  gtr
- I corrected the use of the AppAuthorityResolver interface to match the new CEA code.
-
- Revision 1.5  2005/05/27 16:21:04  clq2
- mchv_1
-
- Revision 1.4.16.3  2005/05/13 10:13:45  mch
- 'some fixes'
-
- Revision 1.4.16.2  2005/05/03 19:35:01  mch
- fixes to tests
-
- Revision 1.4.16.1  2005/04/21 17:20:51  mch
- Fixes to output types
-
- Revision 1.4  2005/03/21 18:45:55  mch
- Naughty big lump of changes
-
- Revision 1.3  2005/03/10 16:42:55  mch
- Split fits, sql and xdb
-
- Revision 1.2  2005/02/28 18:47:05  mch
- More compile fixes
-
- Revision 1.1.1.1  2005/02/17 18:37:35  mch
- Initial checkin
-
- Revision 1.1.1.1  2005/02/16 17:11:25  mch
- Initial checkin
-
- Revision 1.6.12.3  2005/01/13 18:57:31  mch
- Fixes to metadata mostly
-
- Revision 1.6.12.2  2004/11/29 21:52:18  mch
- Fixes to skynode, log.error(), getstem, status logger, etc following tests on grendel
-
- Revision 1.6.12.1  2004/11/22 00:57:16  mch
- New interfaces for SIAP etc and new slinger package
-
- Revision 1.6  2004/11/03 00:17:56  mch
- PAL_MCH Candidate 2 merge
-
- Revision 1.2.8.1  2004/10/20 18:12:45  mch
- CEA fixes, resource tests and fixes, minor navigation changes
-
- Revision 1.2.10.1  2004/10/20 12:43:28  mch
- Fixes to CEA interface to write directly to target
-
- Revision 1.2  2004/10/08 17:14:23  mch
- Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
-
- Revision 1.1  2004/09/28 15:11:33  mch
- Moved server test directory to pal
-
- Revision 1.4  2004/09/17 01:27:06  nw
- added thread management.
-
- Revision 1.3  2004/07/27 13:48:33  nw
- renamed indirect package to protocol,
- renamed classes and methods within protocol package
-
- Revision 1.2  2004/07/20 02:15:05  nw
- final implementaiton of itn06 Datacenter CEA interface
-
- Revision 1.1  2004/07/13 17:11:32  nw
- first draft of an itn06 CEA implementation for datacenter
- 
- */

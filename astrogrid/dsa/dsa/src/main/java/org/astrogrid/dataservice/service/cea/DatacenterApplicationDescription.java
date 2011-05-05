@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.3 2010/12/08 12:46:36 gtr Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.4 2011/05/05 14:49:37 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.dataservice.service.cea;
 
-import EDU.oswego.cs.dl.util.concurrent.Executor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.Application;
@@ -27,7 +26,7 @@ import org.astrogrid.community.User;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/** Descrption object for the datacenter 'application'.
+/** Description object for the datacenter 'application'.
  * Supports two interfaces - a cone search interface, and a full ADQL.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
  *
@@ -76,10 +75,9 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     /** Construct a new DatacenterApplicationDescription
      * @param arg0
      */
-    public DatacenterApplicationDescription(String name,DataServer ds,ApplicationDescriptionEnvironment arg0, Executor exec) {
+    public DatacenterApplicationDescription(String name,DataServer ds,ApplicationDescriptionEnvironment arg0) {
         super(arg0);
         this.ds = ds;
-        this.exec = exec;
             try {
                 this.createMetadata(name);
             }
@@ -211,7 +209,6 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     }
     
     protected final DataServer ds;
-    protected final Executor exec;
     /**
      * @see org.astrogrid.applications.description.ApplicationDescription#initializeApplication(java.lang.String, org.astrogrid.community.User, org.astrogrid.workflow.beans.v1.Tool)
      */
@@ -220,7 +217,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         logger.debug("Initializing new datacenter application " + newID + " " + id);
         final DefaultIDs ids = new DefaultIDs(id,newID, user);
         ApplicationInterface interf = this.getInterface(tool.getInterface());
-        return new DatacenterApplication(ids,tool,interf,env.getProtocolLib(),exec);
+        return new DatacenterApplication(ids,tool,interf,env.getProtocolLib());
     }
     
 }

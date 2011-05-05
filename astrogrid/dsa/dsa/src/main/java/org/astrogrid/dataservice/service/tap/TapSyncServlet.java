@@ -25,17 +25,44 @@ public class TapSyncServlet extends AbstractTapServlet {
    *
    * @param request The HTTP request.
    * @param response The HTTP response.
-   * @throws IOException On failure to output a response.
-   * @throws ServletException On failure to delegate to another servlet.
-   * @throws TapException If the query is improper.
+   * @throws IOException If the request cannot be sent on.
+   * @throws ServletException If the request cannot be sent on.
+   * @throws TapException If the HTTP parameter REQUEST is not set or incorrectly set.
    */
   @Override
-  protected void performGet(HttpServletRequest request,
-                            HttpServletResponse response) throws IOException,
-                                                                 ServletException,
-                                                                 TapException {
+  protected void performGet(HttpServletRequest request, HttpServletResponse response) 
+      throws IOException, ServletException, TapException {
+    forward(request, response);
+  }
 
-    // Examine the query part of the request to find what resource is required.
+  /**
+   * Handles POST requests, which are not allowed.
+   *
+   * @param request The HTTP request.
+   * @param response The HTTP response.
+   * @throws IOException If the request cannot be sent on.
+   * @throws ServletException If the request cannot be sent on.
+   * @throws TapException If the HTTP parameter REQUEST is not set or incorrectly set.
+   */
+  @Override
+  public void performPost(HttpServletRequest request, HttpServletResponse response) 
+      throws IOException, ServletException, TapException {
+    forward(request, response);
+  }
+
+  /**
+   * Forwards valid requests to the appropriate servlet.
+   *
+   * @param request The HTTP request.
+   * @param response The HTTP response.
+   * @throws IOException If the request cannot be sent on.
+   * @throws ServletException If the request cannot be sent on.
+   * @throws TapException If the HTTP parameter REQUEST is not set or incorrectly set.
+   */
+
+   // Examine the query part of the request to find what resource is required.
+  private void forward(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException, TapException {
     String tapRequest = request.getParameter("REQUEST");
     if (tapRequest == null ) {
        throw new TapException("The REQUEST parameter is not set");
@@ -60,19 +87,6 @@ public class TapSyncServlet extends AbstractTapServlet {
     else {
       throw new TapException(String.format("Unsupported value of REQUEST: '%s'", tapRequest));
     }
-  }
-
-  /**
-   * Handles POST requests, which are not allowed.
-   *
-   * @param request The HTTP request.
-   * @param response The HTTP response.
-   * @throws IOException On failure to output a response.
-   */
-  @Override
-  public void performPost(HttpServletRequest request,
-                          HttpServletResponse response) throws IOException {
-    response.sendError(response.SC_METHOD_NOT_ALLOWED);
   }
 
 }

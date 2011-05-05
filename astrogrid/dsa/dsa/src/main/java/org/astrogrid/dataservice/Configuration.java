@@ -112,4 +112,16 @@ public class Configuration {
     return Boolean.parseBoolean(value);
   }
 
+  public static String getTestTable() throws DsaConfigurationException {
+    return getProperty("datacenter.self-test.table");
+  }
+
+  public static String getTestColumn1() throws DsaConfigurationException {
+    return getProperty("datacenter.self-test.column1");
+  }
+
+  public static String getTestColumn2() throws DsaConfigurationException {
+    return getProperty("datacenter.self-test.column2");
+  }
+
 }

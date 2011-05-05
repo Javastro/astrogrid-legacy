@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionTest.java,v 1.1 2009/05/13 13:20:59 gtr Exp $
+/*$Id: DatacenterApplicationDescriptionTest.java,v 1.2 2011/05/05 14:49:37 gtr Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,9 @@
 **/
 package org.astrogrid.datacenter.service.v06;
 
-import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
 import junit.framework.TestCase;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
@@ -38,6 +36,7 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ds = new DataServer();
@@ -50,7 +49,7 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
                      }
                });
           
-        appDesc = new DatacenterApplicationDescription("testdss",ds,env,new DirectExecutor());
+        appDesc = new DatacenterApplicationDescription("testdss",ds,env);
     }
     protected ApplicationDescription appDesc;
     protected DataServer ds;
@@ -84,8 +83,14 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
 
 /*
 $Log: DatacenterApplicationDescriptionTest.java,v $
-Revision 1.1  2009/05/13 13:20:59  gtr
-*** empty log message ***
+Revision 1.2  2011/05/05 14:49:37  gtr
+Branch adql-merge-2 is merged.
+
+Revision 1.1.1.1.18.1  2011/04/19 15:59:48  gtr
+The concurrent:concurrent artifact is no longer used.
+
+Revision 1.1.1.1  2009/05/13 13:20:59  gtr
+
 
 Revision 1.8  2008/02/07 17:27:45  clq2
 PAL_KEA_2518

@@ -177,8 +177,8 @@ public class CapabilityServlet extends VosiServlet {
     writer.write("  </interface>\n");
     writer.write("    <language>\n");
     writer.write("    <name>ADQL</name>\n");
-    writer.write("    <version>1.0</version>\n");
-    writer.write("    <description>ADQL 1.0</description>");
+    writer.write("    <version>2.0</version>\n");
+    writer.write("    <description>ADQL 2.0</description>");
     writer.write("  </language>");
     writer.write("  <outputFormat>\n");
     writer.write("    <mime>application/x-votable+xml</mime>\n");

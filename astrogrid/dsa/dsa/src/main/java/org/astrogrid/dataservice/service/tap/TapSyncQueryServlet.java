@@ -32,23 +32,9 @@ public class TapSyncQueryServlet extends AbstractTapServlet {
    * @throws TapException If the query fails.
    */
   @Override
-  protected void performGet(HttpServletRequest  request,
-                            HttpServletResponse response) throws IOException,
-                                                                 TapException {
-    String language = getQueryLanguage(request);
-    String adql = getQueryText(request, language);
-    String mimeType = getMimeType(request);
-    Query query = makeQuery(request, adql, mimeType, response);
-    Principal principal = query.getGuard().getX500Principal(); // May be null
-    String source = String.format("%s (%s) via TAP, synchronous query",
-                                  request.getRemoteHost(),
-                                  request.getRemoteAddr());
-    try {
-      new Querier(principal, query, source).ask();
-    } catch (Throwable ex) {
-      throw new TapException(ex);
-    }
-
+  protected void performGet(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, TapException {
+    query(request, response);
   }
 
   /**
@@ -59,9 +45,33 @@ public class TapSyncQueryServlet extends AbstractTapServlet {
    * @throws IOException On failure to output a response.
    */
   @Override
-  public void performPost(HttpServletRequest request,
-                          HttpServletResponse response) throws IOException {
-    response.sendError(response.SC_METHOD_NOT_ALLOWED);
+  public void performPost(HttpServletRequest request, HttpServletResponse response) 
+      throws IOException, TapException {
+    query(request, response);
+  }
+
+  /**
+   * Executes a query. The HTTP request defines the query and the results are
+   * written to the HTTP response.
+   *
+   * @param request The HTTP request.
+   * @param response The HTTP response.
+   * @throws TapException If the query cannot be performed.
+   * @throws IOException If the results cannot written to the HTTP response.
+   */
+  protected void query(HttpServletRequest request, HttpServletResponse response)
+      throws TapException, IOException {
+    String language = getQueryLanguage(request);
+    String adql = getQueryText(request, language);
+    String mimeType = getMimeType(request);
+    Query query = makeQuery(request, adql, mimeType, response);
+    Principal principal = query.getGuard().getX500Principal(); // May be null
+    String source = String.format("%s (%s) via TAP, synchronous query", request.getRemoteHost(), request.getRemoteAddr());
+    try {
+      new Querier(principal, query, source).ask();
+    } catch (Throwable ex) {
+      throw new TapException(ex);
+    }
   }
 
   /**
@@ -79,7 +89,7 @@ public class TapSyncQueryServlet extends AbstractTapServlet {
       language = language.trim();
       if (language.length() == 0) {
         throw new TapException("Parameter LANG (query language) was empty");
-      } else if (language.toUpperCase().equals("ADQL") || language.toUpperCase().equals("ADQL")) {
+      } else if (language.toUpperCase().equals("ADQL") || language.toUpperCase().equals("ADQL-2.0")) {
         return "ADQL";
       }
       else {

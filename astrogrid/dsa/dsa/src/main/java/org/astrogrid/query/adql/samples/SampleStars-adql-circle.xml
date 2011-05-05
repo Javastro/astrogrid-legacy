@@ -1,7 +1,10 @@
 <!-- ADQL generated from: {Query: In scope samplestars,look for where [FUNC 'circle'  [StringLiteral] J2000, [Integer] 30, [Integer] 30, [Integer] 6],  returning [Results: target=null, cols=[ColRef samplestars.ra], [ColRef samplestars.dec], ]} -->
 <!-- ADQL generated from SQL: SELECT s.ra, s.dec from samplestars as s where circle(J2000, 30, 30, 6)
  -->
-<Select xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
+<Select
+  xmlns='http://www.ivoa.net/xml/v2.0/adql'
+  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
    <SelectionList>
       <Item xsi:type='columnReferenceType' Table='samplestars' Name='ra' ></Item>
       <Item xsi:type='columnReferenceType' Table='samplestars' Name='dec' ></Item>

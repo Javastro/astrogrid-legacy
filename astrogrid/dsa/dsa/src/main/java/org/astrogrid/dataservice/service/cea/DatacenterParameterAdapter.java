@@ -1,4 +1,4 @@
-/*$Id: DatacenterParameterAdapter.java,v 1.1 2009/05/13 13:20:32 gtr Exp $
+/*$Id: DatacenterParameterAdapter.java,v 1.2 2011/05/05 14:49:37 gtr Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,16 +18,6 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
-import org.astrogrid.io.Piper;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
 
 
 /** The default implementation of {@link org.astrogrid.applications.parameter.ParameterAdapter}
@@ -62,7 +52,9 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter {
      * value itself, if indirect, decides what to do depending on what the
      * parameter is.
      * @return always returns the string value of this parameter
-     *  */
+     *  
+     */
+    @Override
     public Object process() throws CeaException {
         String name = val.getName();
         if (DatacenterApplicationDescription.INPUT_VOTABLE.equals(name)) {
