@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.4 2010/12/08 12:46:36 gtr Exp $
+ * $Id: SampleStarsPlugin.java,v 1.5 2011/05/05 15:05:53 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,8 +13,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigReader;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
@@ -31,8 +31,8 @@ import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
  * @author M Hill
  */
 
-public class SampleStarsPlugin extends JdbcPlugin
-{
+public class SampleStarsPlugin extends JdbcPlugin {
+  private static final Log LOG = LogFactory.getLog(SampleStarsPlugin.class);
    
    private static boolean initialised = false;
 
@@ -100,7 +100,7 @@ public class SampleStarsPlugin extends JdbcPlugin
       //set where to find the data description meta document
       //this works OK for unit test, but not deployment...
       URL url = SampleStarsPlugin.class.getResource("samplestars.metadoc.xml");
-      System.out.println("Sample-stars metadoc URL: " + url);
+      LOG.debug("Sample-stars metadoc URL: " + url);
       if (url == null) {
          //this works OK for deployment, but not unit tests...
          try {
@@ -180,60 +180,6 @@ public class SampleStarsPlugin extends JdbcPlugin
          //populate stars
          createStarTable(connection, "SampleStars");
          createStarTable(connection, "SampleStars2");
-         /*
-         //create table
-         connection.createStatement().execute(
-            "CREATE TABLE SampleStars (Id INTEGER IDENTITY,  Name VARCHAR(30), Ra DOUBLE,  Dec DOUBLE,  Mag DOUBLE, Flag BOOLEAN)  "
-         );
-
-         //create index on table
-         connection.createStatement().execute(
-            "CREATE INDEX ssIndex ON SampleStars (Ra, Dec)  "
-         );
-         
-         
-         //add some stars
-         for (int i=0;i<20;i++) {
-            String flag;
-            if (i/2 == 0) {
-               flag="true";
-            }
-            else {
-               flag="false";
-            }
-            connection.createStatement().execute(
-               "INSERT INTO SampleStars VALUES ("+i+", 'A star', "+(30+i*2)+", "+(30-i*2)+", "+i+","+flag+")"
-            );
-         }
-
-         //add false pleidies.  These are stars grouped < 0.3 degree across on ra=56.75, dec=23.867
-         int id=21;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies LE', 56.6, 23.65, 10, false)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies RE', 56.9, 23.65, 10, true)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Nose', 56.75, 23.87, 8, false)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.5, 23.9, 12, true)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.7, 24.0, 12, false)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.8, 24.0, 12, true)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 57.0, 23.9, 12, false)"); id++;
-
-         //add stars that are outside the above group but nearby
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56.6, 23.6, 10, true)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56, 23, 5, false)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 58, 24.5, 5, true)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56, 24.5, 5, false)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 58, 23, 5, true)"); id++;
-         
-         //add even spread (in coordinate space) of background stars
-         for (double ra=0;ra<360;ra=ra+2) {
-//            StringBuffer sql = new StringBuffer("INSERT INTO SampleStars VALUES ");
-            for (double dec=-90;dec<90;dec=dec+2) {
-//               sql.append(" ("+id+", 'Background', "+ra+", "+dec+", 20) "); id++;
-               connection.createStatement().execute("INSERT INTO SampleStars VALUES  ("+id+", 'Background', "+ra+", "+dec+", 20, false)"); id++;
-            }
-//           connection.createStatement().execute(sql.toString());
-            System.out.print(".");
-         }
-         */
          
          //populate galaxies
          //create table
@@ -334,19 +280,15 @@ public class SampleStarsPlugin extends JdbcPlugin
       
       //add even spread (in coordinate space) of background stars
       for (double ra=0;ra<360;ra=ra+2) {
-//            StringBuffer sql = new StringBuffer("INSERT INTO " + tableName + " VALUES ");
          for (double dec=-90;dec<90;dec=dec+2) {
-//               sql.append(" ("+id+", 'Background', "+ra+", "+dec+", 20) "); id++;
             connection.createStatement().execute("INSERT INTO " + tableName + " VALUES  ("+id+", 'Background', "+ra+", "+dec+", 20, false)"); id++;
          }
-//           connection.createStatement().execute(sql.toString());
-         System.out.print(".");
       }
    }
 
 
 
-   /* Sample SQL statemetns to help with above:
+   /* Sample SQL statements to help with above:
    
    CREATE TABLE Customer (Customer_no INTEGER IDENTITY, firstname VARCHAR(15), lastname VARCHAR(50), address VARCHAR(150), postalcode VARCHAR(7));
 
