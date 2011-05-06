@@ -138,4 +138,8 @@ public class Configuration {
     SimpleConfig.setProperty("datacenter.sqlmaker.xslt", s);
   }
 
+  public static String getSqlMakerClassName() throws DsaConfigurationException {
+    return getProperty("datacenter.querier.plugin.sql.translator", "org.astrogrid.tableserver.jdbc.AdqlSqlMaker2");
+  }
+
 }
