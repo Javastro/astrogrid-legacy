@@ -124,4 +124,12 @@ public class Configuration {
     return getProperty("datacenter.self-test.column2");
   }
 
+  public static String getAdqlStylesheetName() throws DsaConfigurationException {
+    return getProperty("datacenter.sqlmaker.xslt");
+  }
+
+  public static void setAdqlStylesheetName(String s) {
+    SimpleConfig.setProperty("datacenter.sqlmaker.xslt", s);
+  }
+
 }
