@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.2 2009/11/06 18:41:29 gtr Exp $
+ * $Id: JdbcPlugin.java,v 1.3 2011/05/06 12:38:43 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,6 +18,8 @@ import java.sql.Statement;
 import java.util.Date;
 import javax.sql.DataSource;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.dataservice.Configuration;
+import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.dataservice.queriers.status.QuerierComplete;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
@@ -38,11 +40,6 @@ import org.astrogrid.query.QueryException;
  */
 
 public class JdbcPlugin extends DefaultPlugin {
-   
-   
-   /** Adql -> SQL translator class */
-   public static final String SQL_TRANSLATOR = "datacenter.querier.plugin.sql.translator";
-   public static final String DEFAULT_SQL_TRANSLATOR = "org.astrogrid.tableserver.jdbc.AdqlSqlMaker";
    
    /** execute timeout  */
    public static final String TIMEOUT = "datacenter.sql.timeout";
@@ -289,45 +286,28 @@ public class JdbcPlugin extends DefaultPlugin {
       return new SqlResults(querier, results);
    }
    
-   /**
-    * Makes the right SqlQueryMaker for this database
-    */
-   public SqlMaker makeSqlMaker() throws QuerierPluginException {
-      String makerClass = ConfigFactory.getCommonConfig().getString(
-            SQL_TRANSLATOR, DEFAULT_SQL_TRANSLATOR);
-      
-      try {
-         Object o = QuerierPluginFactory.instantiate(makerClass);
-         if (o == null) {
-            throw new QuerierPluginException("Could not create the SQL plugin translator '"+makerClass+"'");
-         }
-         return (SqlMaker) o;
+  /**
+   * Instantiates the right {@code SqlMaker} for this database.
+   *
+   * @throws QuerierPluginException If the translator class is not configured.
+   * @throws QuerierPluginException If the translator class is not available.
+   * @throws QuerierPluginException If the translator class does not implement {@link org.astrogrid.tableserver.jdbc.SqlMaker}.
+   */
+  public SqlMaker makeSqlMaker() throws QuerierPluginException {
+    String makerClass = null;
+    try {
+      makerClass = Configuration.getSqlMakerClassName();
+      Object o = QuerierPluginFactory.instantiate(makerClass);
+      if (o == null) {
+        throw new QuerierPluginException("Could not create the SQL plugin translator '"+makerClass+"'");
       }
-      catch (ClassCastException cce) {
-         String msg = "The class '"+makerClass+
-           "' (specified in configuration key '"+SQL_TRANSLATOR+
-           "') is not a subclass of " + SqlMaker.class.getName()+
-           "; please check your configuration";
-         log.error(msg, cce);
-         throw new QuerierPluginException(msg, cce);
-      }
-      catch (ClassNotFoundException e) {
-         String msg = "Could not find class '"+makerClass+
-           "' (specified in configuration key '"+SQL_TRANSLATOR+
-           "'); please check your configuration.";
-         log.error(msg, e);
-         throw new QuerierPluginException(msg, e.getCause());
-      }
-      catch (Throwable th) {
-         if (th instanceof InvocationTargetException) {
-            th = th.getCause();  //extract cause - don't care about the invocation bit
-         }
-         String msg = "Problem instantiating SQL Maker "+makerClass+", config key="+SQL_TRANSLATOR+", please see logs for more information";
-         log.error(msg, th);
-         log.error(msg, th.getCause());
-         throw new QuerierPluginException(msg, th);
-      }
-   }
+      return (SqlMaker) o;
+    }
+    catch (Throwable t) {
+      log.fatal(t);
+      throw new QuerierPluginException(t);
+    }
+  }
    
    /** Creates a connection to the database */
    protected static synchronized Connection getJdbcConnection() throws IOException, SQLException {

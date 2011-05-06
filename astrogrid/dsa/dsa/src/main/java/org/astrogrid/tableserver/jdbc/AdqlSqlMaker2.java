@@ -1,4 +1,4 @@
-/*$Id: AdqlSqlMaker2.java,v 1.1 2011/05/06 12:32:35 gtr Exp $
+/*$Id: AdqlSqlMaker2.java,v 1.2 2011/05/06 12:38:43 gtr Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -134,7 +134,7 @@ public class AdqlSqlMaker2 implements SqlMaker {
    * Annuls the compiled copy of the transformation.
    * This method is only for unit testing.
    */
-  protected void clearTemplates() {
+  protected static void clearTemplates() {
     AdqlSqlMaker2.templates = null;
   }
    

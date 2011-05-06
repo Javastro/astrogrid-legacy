@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.5 2011/05/05 15:05:53 gtr Exp $
+ * $Id: SampleStarsPlugin.java,v 1.6 2011/05/06 12:38:43 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,11 +17,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigReader;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.dataservice.Configuration;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.tableserver.jdbc.JdbcConnections;
 import org.astrogrid.tableserver.jdbc.JdbcPlugin;
-import org.astrogrid.tableserver.jdbc.AdqlSqlMaker;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 
 /**
@@ -49,8 +49,6 @@ public class SampleStarsPlugin extends JdbcPlugin {
    public static void initConfig() {
       
       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SampleStarsPlugin.class.getName());
-
-      ConfigFactory.getCommonConfig().setProperty(JdbcPlugin.SQL_TRANSLATOR, AdqlSqlMaker.class.getName());
 
       // Some important preliminaries
       ConfigFactory.getCommonConfig().setProperty(
@@ -91,8 +89,7 @@ public class SampleStarsPlugin extends JdbcPlugin {
       ConfigFactory.getCommonConfig().setProperty(
           JdbcConnections.JDBC_PASSWORD_KEY, "");
 
-      ConfigFactory.getCommonConfig().setProperty(
-          "datacenter.sqlmaker.xslt","HSQLDB-1.8.0.xsl" );
+      Configuration.setAdqlStylesheetName("HSQLDB-1.8.0.xsl");
       
       //it's a bit naughty setting this, but it sorts out most tests
       ConfigFactory.getCommonConfig().setProperty("datacenter.url", ConfigFactory.getCommonConfig().getProperty("datacenter.url", "http://localhost:8080/pal-Sample/"));
