@@ -45,18 +45,24 @@ public class Configuration {
   
   public static String getProperty(String name) throws DsaConfigurationException {
     try {
-      return SimpleConfig.getProperty(name);
+      String p = SimpleConfig.getProperty(name);
+      if (p.trim().length() > 0) {
+        return p;
+      }
+      else {
+        throw new DsaConfigurationException(name + " is set to an empty string");
+      }
     }
     catch (PropertyNotFoundException e) {
       throw new DsaConfigurationException(name + " is not set");
     }
   }
 
-  public static String getProperty(String name, String defaultValue) throws DsaConfigurationException {
+  public static String getProperty(String name, String defaultValue) {
     try {
-      return SimpleConfig.getProperty(name);
+      return getProperty(name);
     }
-    catch (PropertyNotFoundException e) {
+    catch (DsaConfigurationException e) {
       return defaultValue;
     }
   }
