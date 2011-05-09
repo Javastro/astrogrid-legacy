@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.3 2011/05/06 12:38:43 gtr Exp $
+ * $Id: JdbcPlugin.java,v 1.4 2011/05/09 15:31:24 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,6 @@ package org.astrogrid.tableserver.jdbc;
 import org.astrogrid.dataservice.queriers.*;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -17,9 +16,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import javax.sql.DataSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.Configuration;
-import org.astrogrid.dataservice.DsaConfigurationException;
 import org.astrogrid.dataservice.queriers.status.QuerierComplete;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
@@ -39,7 +39,11 @@ import org.astrogrid.query.QueryException;
  *  * @author M Hill
  */
 
-public class JdbcPlugin extends DefaultPlugin {
+public class JdbcPlugin implements QuerierPlugin {
+  
+  private static final Log LOG = LogFactory.getLog(JdbcPlugin.class);
+
+   protected boolean aborted = false;
    
    /** execute timeout  */
    public static final String TIMEOUT = "datacenter.sql.timeout";
@@ -52,7 +56,9 @@ public class JdbcPlugin extends DefaultPlugin {
     * in sql form and retiirning the results as a SqlResults wrapper arond the JDBC result set.
     * @param o a string
     */
-   public void askQuery(Principal user, Query query, Querier querier) throws QueryException, DatabaseAccessException {
+  public void askQuery(Principal user, Query query, Querier querier)
+      throws QueryException, DatabaseAccessException {
+
 
       validateQuery(query);
       
@@ -61,7 +67,7 @@ public class JdbcPlugin extends DefaultPlugin {
       
       try {
          //convert to SQL
-         log.debug("Making SQL");
+         LOG.debug("Making SQL");
          SqlMaker sqlMaker = makeSqlMaker();
          sql = sqlMaker.makeSql(query);
          
@@ -70,11 +76,9 @@ public class JdbcPlugin extends DefaultPlugin {
          if ((sql == null) || (sql.length() == 0)) {
             throw new QueryException("SqlMaker returned empty SQL string for query "+query);
          }
-         
-//done in querierQuerying above         querier.getStatus().addDetail("SQL: "+sql);
       
          //connect to database
-         log.debug("Connecting to the database");
+         LOG.debug("Connecting to the database");
          jdbcConnection = getJdbcConnection();
          //Statement statement = jdbcConnection.createStatement();
          Statement statement = jdbcConnection.createStatement(
@@ -144,11 +148,11 @@ public class JdbcPlugin extends DefaultPlugin {
             catch (SQLException e2) {
            // This method isn't implemented at all in some JDBC drivers, e.g.
            // PostgreSQL <8.0.   
-               log.info("Couldn't set JDBC fetch size: " + e2.getMessage()); 
+               LOG.info("Couldn't set JDBC fetch size: " + e2.getMessage());
             }
          }  
          //execute query
-         log.info("Performing Query: " + sql);
+         LOG.info("Performing Query: " + sql);
          statement.execute(sql);
          querier.getStatus().addDetail("JDBC execution complete at "+new java.util.Date());
 
@@ -166,24 +170,24 @@ public class JdbcPlugin extends DefaultPlugin {
                qResults.send(query.getResultsDef(), querier.getUser());
             }
             catch (IOException ioe) {
-               log.error("IOException when writing out table results for query  " + sql + "\n:Exception is :" + ioe.toString());
+               LOG.error("IOException when writing out table results for query  " + sql + "\n:Exception is :" + ioe.toString());
                throw new QueryException("Failed to write query results to specified destination;  underlying cause is: '" + ioe.getMessage()+"'");
             }
-            log.debug("Results transfer completed successfully for query "+sql);
+            LOG.debug("Results transfer completed successfully for query "+sql);
          }
          //don't do this as some dbs seem to want to cycle through the lot. Let the garbage collector handle it
          //results.close();
       }
       catch (SQLException e) {
-         log.error("SQLException when querying database with query  " + sql);
-         log.error("Exception is :" + e.toString());
+         LOG.error("SQLException when querying database with query  " + sql);
+         LOG.error("Exception is :" + e.toString());
          querier.setStatus(new QuerierError(querier.getStatus(), "JDBC Query Failed",e));
          //we don't really need to store stack info for the SQL exception, which saves logging...
          throw new DatabaseAccessException(e+" using '" + sql + "': ",e);
       }
       catch (IOException ioe) {
-         log.error("IOException occurred when querying database with query  " + sql);
-         log.error("Exception is :" + ioe.toString());
+         LOG.error("IOException occurred when querying database with query  " + sql);
+         LOG.error("Exception is :" + ioe.toString());
          querier.setStatus(new QuerierError(querier.getStatus(), "JDBC Query I/O Failed",ioe));
          throw new DatabaseAccessException(ioe+" using '" + sql + "': ",ioe);
       }
@@ -218,14 +222,14 @@ public class JdbcPlugin extends DefaultPlugin {
          }
          
          //connect to database
-         log.debug("Connecting to the database");
+         LOG.debug("Connecting to the database");
          jdbcConnection = getJdbcConnection();
          Statement statement = jdbcConnection.createStatement();
          
          querier.getStatus().addDetail("Submitted to JDBC at "+new Date());
          
          //execute query
-         log.info("Performing Query: " + sql);
+         LOG.info("Performing Query: " + sql);
          statement.execute(sql);
          querier.getStatus().addDetail("JDBC execution complete at "+new java.util.Date());
 
@@ -242,8 +246,8 @@ public class JdbcPlugin extends DefaultPlugin {
          return count;
       }
       catch (SQLException e) {
-         log.error("SQLException when querying database with query  " + sql);
-         log.error("Exception is :" + e.toString());
+         LOG.error("SQLException when querying database with query  " + sql);
+         LOG.error("Exception is :" + e.toString());
          querier.setStatus(new QuerierError(querier.getStatus(), "JDBC Query Failed",e));
          //we don't really need to store stack info for the SQL exception, which saves logging...
          throw new DatabaseAccessException(e+" using '" + sql + "': ",e);
@@ -255,6 +259,13 @@ public class JdbcPlugin extends DefaultPlugin {
          } catch (SQLException e) { } //ignore
       }
 
+   }
+
+   /**
+    * Aborts a query.
+    */
+   public void abort() {
+      aborted = true;
    }
 
    /** Throws an IllegalArgumentException if the query is not appropriate to this site */
@@ -270,7 +281,7 @@ public class JdbcPlugin extends DefaultPlugin {
       /*
       }
       catch (IOException ioe) {
-         log.warn("No RDBMS Resource found, not validating query");
+         LOG.warn("No RDBMS Resource found, not validating query");
       }
       */
    }
@@ -304,7 +315,7 @@ public class JdbcPlugin extends DefaultPlugin {
       return (SqlMaker) o;
     }
     catch (Throwable t) {
-      log.fatal(t);
+      LOG.fatal(t);
       throw new QuerierPluginException(t);
     }
   }

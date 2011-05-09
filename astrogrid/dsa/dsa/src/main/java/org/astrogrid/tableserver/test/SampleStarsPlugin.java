@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.6 2011/05/06 12:38:43 gtr Exp $
+ * $Id: SampleStarsPlugin.java,v 1.7 2011/05/09 15:31:24 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -171,7 +171,7 @@ public class SampleStarsPlugin extends JdbcPlugin {
          //ignore - may not exist
       }
       
-      log.info("Populating Database");
+      LOG.info("Populating Database");
 
       try {
          //populate stars
@@ -210,12 +210,12 @@ public class SampleStarsPlugin extends JdbcPlugin {
          connection.close();
       }
       catch (SQLException se) {
-         log.error("Populating demo db",se);
+         LOG.error("Populating demo db",se);
       }
 
       initialised = true;
       
-      log.info("...database populated"); //so that we can mark how long it took
+      LOG.info("...database populated"); //so that we can mark how long it took
       //check metadata
       /*
       try {
