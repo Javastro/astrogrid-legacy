@@ -1,5 +1,5 @@
 /*
- * $Id: MimeTypes.java,v 1.3 2011/04/01 09:31:47 gtr Exp $
+ * $Id: MimeTypes.java,v 1.4 2011/06/01 16:00:56 gtr Exp $
  *
  */
 
@@ -34,7 +34,8 @@ public class MimeTypes  {
       return VOTABLE;
     }
 
-    else if (VOTABLE_BINARY.equals(lcName)) {
+    else if (VOTABLE_BINARY.equals(lcName) ||
+             "votable/binary".equals(lcName)) {
       return VOTABLE_BINARY;
     }
 

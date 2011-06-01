@@ -40,6 +40,8 @@ public class MimeTypesTest {
                  MimeTypes.toMimeType("application/x-votable+xml; encoding=\"BINARY\""));
     assertEquals("application/x-votable+xml; encoding=\"binary\"",
                  MimeTypes.toMimeType("application/x-votable+XML; encoding=\"binary\""));
+    assertEquals("application/x-votable+xml; encoding=\"binary\"",
+                 MimeTypes.toMimeType("votable/binary"));
   }
 
   @Test
