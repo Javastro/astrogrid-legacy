@@ -57,6 +57,7 @@ public class SchemaMap {
         ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v2.0rc1",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v2.0rc1/CEAImplementation.xsd"));
         
         //TAPXsams schema:
+        ALL.put("http://www.vamdc.eu/xml/VAMDC-TAP/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/VAMDC-TAP/v1.0/VAMDC-TAP.xsd"));
         ALL.put("http://www.vamdc.eu/xml/TAPXSAMS/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/TapXSAMS/v1.0/TAPXsams.xsd"));
         ALL.put("http://www.vamdc.eu/xml/TAPXSAMS/v1.01",SchemaMap.class.getResource("/schema/vo-resource-types/TapXSAMS/v1.01/TAPXsams.xsd"));
         ALL.put("http://www.ivoa.net/xml/TAP/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/TAP/v0.1/TAPRegExt-v0.1.xsd"));
@@ -153,6 +154,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.17  2011/06/08 09:53:49  gtr
+2011.2-SNAPSHOT. New VAMDC-TAP schema, taking over from TAPXSAMS.
+
 Revision 1.16  2011/06/08 09:41:45  KevinBenson
 updated to a new tapxsams v1.01 schema
 

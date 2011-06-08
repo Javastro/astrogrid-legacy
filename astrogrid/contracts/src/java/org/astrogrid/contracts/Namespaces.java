@@ -1,5 +1,5 @@
 /*
- * $Id: Namespaces.java,v 1.6 2011/06/08 09:41:45 KevinBenson Exp $
+ * $Id: Namespaces.java,v 1.7 2011/06/08 09:53:49 gtr Exp $
  * 
  * Created on 17 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -50,6 +50,7 @@ public final class Namespaces {
     public static final Namespaces XLINK = new Namespaces("xlink","http://www.w3.org/1999/xlink");
     public static final Namespaces STC = new Namespaces("stc","http://www.ivoa.net/xml/STC/stc-v1.30.xsd");
     public static final Namespaces TX = new Namespaces("tx","http://www.vamdc.eu/xml/TAPXSAMS/v1.0");
+    public static final Namespaces VT = new Namespaces("tx","http://www.vamdc.eu/xml/VAMDC-TAP/v1.0");
     public static final Namespaces TXS = new Namespaces("tx","http://www.vamdc.eu/xml/TAPXSAMS/v1.01");
     public static final Namespaces TR = new Namespaces("tr","http://www.ivoa.net/xml/TAP/v0.1");
      
@@ -83,6 +84,9 @@ public final class Namespaces {
 
 /*
  * $Log: Namespaces.java,v $
+ * Revision 1.7  2011/06/08 09:53:49  gtr
+ * 2011.2-SNAPSHOT. New VAMDC-TAP schema, taking over from TAPXSAMS.
+ *
  * Revision 1.6  2011/06/08 09:41:45  KevinBenson
  * updated to a new tapxsams v1.01 schema
  *
