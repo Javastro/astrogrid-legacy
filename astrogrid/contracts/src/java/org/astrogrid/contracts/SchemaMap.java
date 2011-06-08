@@ -58,6 +58,7 @@ public class SchemaMap {
         
         //TAPXsams schema:
         ALL.put("http://www.vamdc.eu/xml/TAPXSAMS/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/TapXSAMS/v1.0/TAPXsams.xsd"));
+        ALL.put("http://www.vamdc.eu/xml/TAPXSAMS/v1.01",SchemaMap.class.getResource("/schema/vo-resource-types/TapXSAMS/v1.01/TAPXsams.xsd"));
         ALL.put("http://www.ivoa.net/xml/TAP/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/TAP/v0.1/TAPRegExt-v0.1.xsd"));
         
 
@@ -152,6 +153,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.16  2011/06/08 09:41:45  KevinBenson
+updated to a new tapxsams v1.01 schema
+
 Revision 1.15  2011/03/24 12:21:13  KevinBenson
 New TAPXSAMS and TapRegExt schemas to go into the contracts.
 
