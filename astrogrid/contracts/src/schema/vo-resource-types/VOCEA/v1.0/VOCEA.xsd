@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--  <?xml-stylesheet type="text/xsl" href="../../XMLPretty.xsl" ?>-->
-<!-- $Id: VOCEA.xsd,v 1.4 2009/05/19 14:23:41 pah Exp $
+<!-- $Id: VOCEA.xsd,v 1.5 2011/09/01 14:03:58 pah Exp $
 Definition of CEA registry entries - inherits types from the CEABase.xsd schema.
  -->
 <xs:schema targetNamespace="http://www.ivoa.net/xml/CEA/v1.0" 
-xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1" 
 xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" 
 xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" 
 xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1" 
 xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
 xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 xmlns:va="http://www.ivoa.net/xml/VOApplication/v1.0rc1"
-elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0 RC$Revision: 1.4 $"
+elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0 RC$Revision: 1.5 $"
 >
 	<xs:annotation>
 		<xs:documentation>this has been revised to be more v1.0 like - i.e. element definitions have been taken away and the types have the "type" suffix removed</xs:documentation>
@@ -29,8 +28,9 @@ elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0
 	</xs:annotation>
 <!-- 	
 	<xs:import namespace="http://www.ivoa.net/xml/VODataService/v1.0" schemaLocation="./VODataService-v1.0.xsd"/>
-    -->
+-->    
    <xs:import namespace="http://www.ivoa.net/xml/VOResource/v1.0" schemaLocation="../../../vo-resource-types/VOResource/v1.0/VOResource.xsd"/> 
+
    <xs:import namespace="http://www.ivoa.net/xml/VOApplication/v1.0rc1" schemaLocation="../../../vo-resource-types/VOApplication/v1.0rc1/VOApplication.xsd"></xs:import>
    <xs:import namespace="http://www.ivoa.net/xml/CEA/base/v1.1" schemaLocation="../../../cea/CEABase/v1.1/CEABase.xsd"/>
 

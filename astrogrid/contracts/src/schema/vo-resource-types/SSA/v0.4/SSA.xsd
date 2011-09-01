@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
-           xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
            xmlns:ssa="http://www.ivoa.net/xml/SSA/v0.4"
            xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
            targetNamespace="http://www.ivoa.net/xml/SSA/v0.4"
@@ -79,12 +78,8 @@
    </xs:annotation>
 
    <xs:import namespace="http://www.ivoa.net/xml/VOResource/v1.0"
-              schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0"/>
-   <xs:import namespace="http://www.ivoa.net/xml/VODataService/v1.0"
-              schemaLocation="http://www.ivoa.net/xml/VODataService/v1.0"/>
-
-   <!-- Set the Capability standardID to indicate the SSA protocol. -->
-   <xs:complexType name="SSACapRestriction" abstract="true">
+              schemaLocation="../../../vo-resource-types/VOResource/v1.0/VOResource.xsd"/>
+   <!-- Set the Capability standardID to indicate the SSA protocol. --><xs:complexType name="SSACapRestriction" abstract="true">
       <xs:annotation>
          <xs:documentation>
             An abstract capability that fixes the standardID to the

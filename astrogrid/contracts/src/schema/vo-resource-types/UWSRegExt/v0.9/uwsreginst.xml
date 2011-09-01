@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ri:VOResources xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+   xmlns:uwsr="http://www.ivoa.net/xml/UWSRegExt/v0.9" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 ../../../registry/RegistryInterface/v1.0/RegistryInterface.xsd
+                    http://www.ivoa.net/xml/UWSRegExt/v0.9 UWSRegExt.xsd"
+   from="1" more="false" numberReturned="1"
+>
+   <ri:Resource xsi:type="vr:Service" updated="2006-08-13T00:00:00"
+      created="2006-08-13T00:00:00" status="active"
+   >
+      <title>The UWS example</title>
+      <shortName>UWS-PA</shortName> 
+      <identifier>ivo://example.ivoa/applications/UWS</identifier>
+      <curation>
+         <publisher ivo-id="ivo://xxx/x/x">String</publisher>
+         <creator>
+            <name ivo-id="ivo://xxx/x/x">JBCA</name>
+            <logo>http://www.jb.man.ac.uk/medialibrary/images/logomanchester.gif</logo>
+         </creator>
+         <date role="representative">1967-08-13</date>
+         <version>String</version>
+         <contact>
+            <name ivo-id="ivo://xxx/x/x">Paul Harrison</name>
+            <address>String</address>
+            <email>String</email>
+            <telephone>String</telephone>
+         </contact>
+      </curation>
+      <content>
+         <subject>String</subject>
+         <description>a generic UWS</description>
+         <referenceURL>http://aladin.u-strasbg.fr/</referenceURL>
+         <type>Other</type>
+         <contentLevel>General</contentLevel>
+      </content>
+      <!-- UWSRegExt -->
+      <capability standardID="ivo://ivoa.net/std/UWS"
+         xsi:type="uwsr:UWSCapability"
+      >
+         <interface role="std" xsi:type="uwsr:UWSInterface">
+            <accessURL use="base">http://localhost:8080/uws/</accessURL>
+            <testQuery>&amp;</testQuery>
+         </interface>
+         <retentionPeriod>
+            <default>172800</default>
+         </retentionPeriod>
+         <executionDuration>
+            <default>3600</default>
+         </executionDuration>
+      </capability>
+   </ri:Resource>
+</ri:VOResources>

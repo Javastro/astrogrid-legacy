@@ -65,7 +65,7 @@
          </jxb:package>
        </jxb:schemaBindings>
    </jxb:bindings>
-   <jxb:bindings schemaLocation="../src/schema/vo-resource-types/VODataService/v1.1/VODataService-v1.1-tables-proposal-2.xsd"
+   <jxb:bindings schemaLocation="../src/schema/vo-resource-types/VODataService/v1.1/VODataService.xsd"
       node="/xs:schema"
    >
       <jxb:schemaBindings>
@@ -95,7 +95,7 @@
          </jxb:package>
       </jxb:schemaBindings>
    </jxb:bindings>
-   <jxb:bindings schemaLocation="../src/schema/vo-resource-types/VOStandard/v0.2beta1/VOStandard.xsd"
+   <jxb:bindings schemaLocation="../src/schema/vo-resource-types/VOStandard/v1.0/VOStandard.xsd"
       node="/xs:schema"
    >
       <jxb:schemaBindings>
@@ -105,6 +105,28 @@
          </jxb:package>
        </jxb:schemaBindings>
    </jxb:bindings>
+    <jxb:bindings schemaLocation="../src/schema/vo-resource-types/TAPRegExt/v0.1/TAPRegExt.xsd"
+      node="/xs:schema"
+   >
+      <jxb:schemaBindings>
+         <jxb:package name="net.ivoa.resource.tap">
+            <jxb:javadoc><![CDATA[<body>TAP description classes</body>]]>
+            </jxb:javadoc>
+         </jxb:package>
+       </jxb:schemaBindings>
+   </jxb:bindings>
+    <jxb:bindings schemaLocation="../src/schema/VOSI/availability/v1.0/availability.xsd"
+      node="/xs:schema"
+   >
+      <jxb:schemaBindings>
+         <jxb:package name="net.ivoa.vosi">
+            <jxb:javadoc><![CDATA[<body>VOSI description classes</body>]]>
+            </jxb:javadoc>
+         </jxb:package>
+       </jxb:schemaBindings>
+   </jxb:bindings>
+   
+   
    <jxb:bindings schemaLocation="../src/schema/vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd"
       node="/xs:schema"
    >
@@ -137,7 +159,7 @@
          </jxb:package>
        </jxb:schemaBindings>
    </jxb:bindings>
-   <jxb:bindings schemaLocation="../src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+   <jxb:bindings schemaLocation="../src/schema/cea/CEAImplementation/v2.1/CEAImplementation.xsd"
       node="/xs:schema"
    >
       <jxb:schemaBindings>
@@ -149,7 +171,7 @@
          </jxb:package>
        </jxb:schemaBindings>
    </jxb:bindings>
-   <jxb:bindings schemaLocation="../src/schema/cea/CEATypes/v1.1/CEATypes.xsd"
+   <jxb:bindings schemaLocation="../src/schema/cea/CEATypes/v1.2/CEATypes.xsd"
       node="/xs:schema"
    >
       <jxb:schemaBindings>
@@ -161,7 +183,7 @@
          </jxb:package>
       </jxb:schemaBindings>
    </jxb:bindings>
-  <jxb:bindings schemaLocation="../src/schema/cea/UWS/v0.9/UWS.xsd"
+  <jxb:bindings schemaLocation="../src/schema/cea/UWS/v1.0/UWS.xsd"
       node="/xs:schema"
    >
       <jxb:schemaBindings>

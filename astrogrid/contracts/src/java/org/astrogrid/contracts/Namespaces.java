@@ -1,5 +1,5 @@
 /*
- * $Id: Namespaces.java,v 1.7 2011/06/08 09:53:49 gtr Exp $
+ * $Id: Namespaces.java,v 1.8 2011/09/01 14:03:58 pah Exp $
  * 
  * Created on 17 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -16,7 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Enumerates the "current" namespaces. This gives symbolic names to the most up to date namespace URIs used within schema in astrogrid, as well as providing a default prefix suggestion for the namespace URI.
+ * Enumerates the "current" namespaces. This gives symbolic names to the most up to date namespace URIs
+ * used within schema in astrogrid, as well as providing a default prefix suggestion for the namespace URI.
  * 
  * Note that this class should explictly avoid making references to obsolete namespaces.
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 17 Mar 2008
@@ -25,8 +26,8 @@ import java.util.Map;
  */
 public final class Namespaces {
 
-    static final Map prefixes = new HashMap(); 
-    static final Map namespaces = new HashMap();
+    static final Map<String, Namespaces> prefixes = new HashMap<String, Namespaces>(); 
+    static final Map<String, Namespaces> namespaces = new HashMap<String, Namespaces>();
     private final String prefix;
     private final String namespace;
     
@@ -38,21 +39,28 @@ public final class Namespaces {
     }
 // useful namespaces...   
     public static final Namespaces XSI = new Namespaces("xsi","http://www.w3.org/2001/XMLSchema-instance");
+    public static final Namespaces XSD = new Namespaces("xsd","http://www.w3.org/2001/XMLSchema");
     public static final Namespaces RI = new Namespaces("ri","http://www.ivoa.net/xml/RegistryInterface/v1.0");
+    public static final Namespaces REG = new Namespaces("reg","http://www.ivoa.net/xml/VORegistry/v1.0");
     public static final Namespaces VR = new Namespaces("vr","http://www.ivoa.net/xml/VOResource/v1.0");
     public static final Namespaces VS = new Namespaces("vs","http://www.ivoa.net/xml/VODataService/v1.1");
     public static final Namespaces CEA = new Namespaces("cea","http://www.ivoa.net/xml/CEA/v1.0");
     public static final Namespaces CEAB = new Namespaces("ceab","http://www.ivoa.net/xml/CEA/base/v1.1");
-    public static final Namespaces CEAIMPL = new Namespaces("ceaimpl","http://www.astrogrid.org/schema/CEAImplementation/v2.0");
-    public static final Namespaces CEAT = new Namespaces("ceat","http://www.ivoa.net/xml/CEA/types/v1.1");
+    public static final Namespaces CEAIMPL = new Namespaces("ceaimpl","http://www.astrogrid.org/schema/CEAImplementation/v2.1");
+    public static final Namespaces CEAT = new Namespaces("ceat","http://www.ivoa.net/xml/CEA/types/v1.2");
     public static final Namespaces VA = new Namespaces("va","http://www.ivoa.net/xml/VOApplication/v1.0rc1");
-    public static final Namespaces UWS = new Namespaces("uws","http://www.ivoa.net/xml/UWS/v0.9.2");
+    public static final Namespaces UWS = new Namespaces("uws","http://www.ivoa.net/xml/UWS/v1.0");
     public static final Namespaces XLINK = new Namespaces("xlink","http://www.w3.org/1999/xlink");
     public static final Namespaces STC = new Namespaces("stc","http://www.ivoa.net/xml/STC/stc-v1.30.xsd");
     public static final Namespaces TX = new Namespaces("tx","http://www.vamdc.eu/xml/TAPXSAMS/v1.0");
     public static final Namespaces VT = new Namespaces("tx","http://www.vamdc.eu/xml/VAMDC-TAP/v1.0");
     public static final Namespaces TXS = new Namespaces("tx","http://www.vamdc.eu/xml/TAPXSAMS/v1.01");
     public static final Namespaces TR = new Namespaces("tr","http://www.ivoa.net/xml/TAP/v0.1");
+    public static final Namespaces TAP = new Namespaces("tap","http://www.ivoa.net/xml/TAP/v0.1");  
+    public static final Namespaces CS = new Namespaces("cs","http://www.ivoa.net/xml/ConeSearch/v1.0");  
+    public static final Namespaces SIA = new Namespaces("sia","http://www.ivoa.net/xml/SIA/v1.0");  
+    public static final Namespaces VSTD = new Namespaces("vstd","http://www.ivoa.net/xml/StandardsRegExt/v1.0");  
+    public static final Namespaces VOSI_A = new Namespaces("vosi","http://www.ivoa.net/xml/VOSIAvailability/v1.0");
      
 //TODO add the other "current" ones...         
     public static String[] getNamespaceURIs()
@@ -84,6 +92,9 @@ public final class Namespaces {
 
 /*
  * $Log: Namespaces.java,v $
+ * Revision 1.8  2011/09/01 14:03:58  pah
+ * result of merge of contracts_pah_2931 branch
+ *
  * Revision 1.7  2011/06/08 09:53:49  gtr
  * 2011.2-SNAPSHOT. New VAMDC-TAP schema, taking over from TAPXSAMS.
  *
@@ -92,6 +103,18 @@ public final class Namespaces {
  *
  * Revision 1.5  2011/03/24 12:21:13  KevinBenson
  * New TAPXSAMS and TapRegExt schemas to go into the contracts.
+ *
+ * Revision 1.4.2.4  2011/09/01 11:40:19  pah
+ * add registry SIA and cone namespaces
+ *
+ * Revision 1.4.2.3  2011/05/17 16:42:47  pah
+ * add vosi availability
+ *
+ * Revision 1.4.2.2  2011/04/08 14:48:02  pah
+ * bring StandardRegExt up to date
+ *
+ * Revision 1.4.2.1  2009/07/15 08:04:47  pah
+ * updated ceatypes and cea implementation
  *
  * Revision 1.4  2009/06/20 14:33:32  pah
  * added xlink stc

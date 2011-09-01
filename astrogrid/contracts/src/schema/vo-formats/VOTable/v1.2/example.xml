@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<VOTABLE version="1.2" xmlns="http://www.ivoa.net/xml/VOTable/v1.2"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:stc="http://www.ivoa.net/xml/STC/stc-v1.30.xsd"
+ xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.2 VOTable-beta.xsd">
+
+  <GROUP utype="stc:AstroCoordSystem" ID="JPL-DE405">
+
+    <!-- Times refer to the local observations -->
+    <GROUP utype="stc:AstroCoordSystem.TimeFrame" >
+      <PARAM name="TimeScale" datatype="char" arraysize="*"
+             utype="stc:AstroCoordSystem.TimeFrame.TimeScale" value="UTC" />
+      <PARAM name="refPosition" datatype="char" arraysize="*"
+             utype="stc:AstroCoordSystem.TimeFrame.ReferencePosition"
+             value="GEOCENTER" />
+    </GROUP>
+
+    <!-- Distance is geocentric -->
+    <GROUP utype="stc:AstroCoordSystem.SpaceFrame" >
+      <PARAM name="CooFrame" datatype="char" arraysize="*"
+             utype="stc:AstroCoordSystem.SpaceFrame.CoordRefFrame"
+             value="ICRS"  />      <!-- Orientation of spatial axes -->
+      <PARAM name="CooFrameOrigin" datatype="char" arraysize="*"
+             utype="stc:AstroCoordSystem.SpaceFrame.ReferencePosition"
+             value="GEOCENTER" />  <!-- Origin of spatial axes -->
+      <PARAM name="Ephemeris" datatype="char" arraysize="*"
+         utype="stc:AstroCoordSystem.SpaceFrame.ReferencePosition.PlanetaryEphem"
+         value="JPL-DE405">
+         <DESCRIPTION>
+           Planetary theory used to compute the ephemeris of the planets
+         </DESCRIPTION>
+      </PARAM>
+      <PARAM name="CooType" datatype="char" arraysize="*"
+             utype="stc:AstroCoordSystem.SpaceFrame.CoordFlavor"
+             value="SPHERICAL" />
+      <!-- default number of axes is 2, but here we are in 3-D -->
+      <PARAM name="Naxes" datatype="int" value="3"
+             utype="stc:AstroCoordSystem.SpaceFrame.coord_naxes" />
+    </GROUP>
+  </GROUP>
+
+  <RESOURCE name="125P">
+    <TABLE name="Ephemeris">
+      <DESCRIPTION>Ephemeris of comet 125P in July 2007</DESCRIPTION>
+      <GROUP ID="Ephem" utype="stc:AstroCoords" ref="JPL-DE405">
+        <PARAM name="Ephemerides" datatype="char" arraysize="*"
+               utype="stc:AstroCoords.coord_sys_id"
+               value="UTC-ICRS-GEO"/>
+        <FIELDref ref="RA1"/>   <!-- second referencing, optional -->
+        <FIELDref ref="DE1"/>   <!-- second referencing, optional -->
+        <FIELDref ref="Dist1"/> <!-- second referencing, optional -->
+      </GROUP>
+      <FIELD name="UTC" ucd="time.epoch" datatype="double" ref="Ephem"
+                   utype="stc:AstroCoords.Time.TimeInstant.JDTime"
+                   width="9" precision="1">
+        <DESCRIPTION>Date UTC </DESCRIPTION>
+      </FIELD>
+      <FIELD name="RA" ucd="pos.eq.ra" ref="Ephem"
+             ID="RA1" utype="stc:AstroCoords.Position3D.Value3.C1"
+             datatype="double" width="12" precision="8" unit="deg">
+        <DESCRIPTION>alpha, degrees</DESCRIPTION>
+      </FIELD>
+      <FIELD name="DE" ucd="pos.eq.dec" ref="Ephem"
+             ID="DE1" utype="stc:AstroCoords.Position3D.Value3.C2"
+             datatype="double" width="12" precision="8" unit="deg">
+        <DESCRIPTION>delta, degrees</DESCRIPTION>
+      </FIELD>
+      <FIELD name="Dist" ucd="pos.distance" ref="Ephem"
+             ID="Dist1" utype="stc:AstroCoords.Position3D.Value3.C3"
+             datatype="double" width="12" precision="9" unit="AU">
+        <DESCRIPTION>Distance from geocenter </DESCRIPTION>
+      </FIELD>
+      <FIELD name="Vmag" ucd="phot.mag;em.opt.V" datatype="float"
+             width="5" precision="2" unit="mag">
+        <DESCRIPTION>Visual magnitude</DESCRIPTION>
+      </FIELD>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>2454284.0</TD><TD>180.1745177</TD><TD>+10.2710289</TD>
+            <TD>1.468825725</TD><TD>17.06</TD>
+          </TR>
+          <TR>
+            <TD>2454286.0</TD><TD>181.2970157</TD><TD>+09.8077289</TD>
+            <TD>1.476798829</TD><TD>17.07</TD>
+          </TR>
+          <TR>
+            <TD>2454288.0</TD><TD>182.4335757</TD><TD>+09.3344139</TD>
+            <TD>1.484770578 </TD><TD>17.09</TD>
+          </TR>
+          <TR>
+            <TD>2454290.0</TD><TD>183.5839061</TD><TD>+08.8513908</TD>
+            <TD>1.492750033</TD><TD>17.11</TD>
+          </TR>
+          <TR>
+            <TD>2454292.0</TD><TD>184.7477408</TD><TD>+08.3589893</TD>
+            <TD>1.500745242</TD><TD>17.13</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>

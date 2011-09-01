@@ -26,14 +26,14 @@ public class SchemaMap {
     private SchemaMap() {
     }
     
-    public static final Map ALL; 
+    public static final Map<String, URL> ALL; 
     
     /**
      * Static area for placing all namespaces.
      */
     static {
         // populate the map.
-        ALL = new HashMap();
+        ALL = new HashMap<String, URL>();
         
         //ADQL schemas
         ALL.put("http://www.ivoa.net/xml/ADQL/v1.0",SchemaMap.class.getResource("/schema/adql/ADQL/v1.0/ADQL.xsd"));
@@ -44,13 +44,13 @@ public class SchemaMap {
                 
         //CEA schemas
         ALL.put("http://www.ivoa.net/xml/CEA/base/v1.1", SchemaMap.class.getResource("/schema/cea/CEABase/v1.1/CEABase.xsd"));        
-        ALL.put("http://www.ivoa.net/xml/CEA/types/v1.1",SchemaMap.class.getResource("/schema/cea/CEATypes/v1.1/CEATypes.xsd"));
-        ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v2.0",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"));
-        ALL.put("http://www.astrogrid.org/schema/CEAExecutionRecord/v1.1",SchemaMap.class.getResource("/schema/cea/CEAExecutionRecord/v1.1/CEAExecutionRecord.xsd"));
-        ALL.put("http://www.ivoa.net/xml/UWS/v0.9.2",SchemaMap.class.getResource("/schema/cea/UWS/v0.9/UWS.xsd"));
-//        ALL.put("http://www.ivoa.net/xml/UWS/v1.0rc1",SchemaMap.class.getResource("/schema/cea/UWS/v1.0/UWS.xsd"));
+        ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v2.1",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v2.1/CEAImplementation.xsd"));
+        ALL.put("http://www.ivoa.net/xml/CEA/types/v1.2",SchemaMap.class.getResource("/schema/cea/CEATypes/v1.2/CEATypes.xsd"));
+        ALL.put("http://www.ivoa.net/xml/UWS/v1.0",SchemaMap.class.getResource("/schema/cea/UWS/v1.0/UWS.xsd"));
         
         //obsolete CEA schemas - but still used in the original CEC interface
+        ALL.put("http://www.ivoa.net/xml/UWS/v0.9.2",SchemaMap.class.getResource("/schema/cea/UWS/v0.9/UWS.xsd"));
+        ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v2.0",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"));
         ALL.put("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", SchemaMap.class.getResource("/schema/cea/CommonExecutionArchitectureBase/v1.0/CommonExecutionArchitectureBase.xsd"));        
         ALL.put("http://www.astrogrid.org/schema/CEATypes/v1",SchemaMap.class.getResource("/schema/cea/CEATypes/v1.0/CEATypes.xsd"));
         ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v1",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v1.0/CEAImplementation.xsd"));
@@ -121,6 +121,7 @@ public class SchemaMap {
         ALL.put("urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/TabularDB/v0.3/TabularDB.xsd"));
         ALL.put("http://www.ivoa.net/xml/VODataService/v0.5",SchemaMap.class.getResource("/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd"));
         ALL.put("http://www.ivoa.net/xml/VODataService/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/VODataService/v1.0/VODataService.xsd"));        
+        ALL.put("http://www.ivoa.net/xml/VODataService/v1.1",SchemaMap.class.getResource("/schema/vo-resource-types/VODataService/v1.1/VODataService.xsd"));        
         // VODataServiceCoverage-* omitted - no target namespace declared. doesn't look valid as a stand-alone schema
        
       	ALL.put("http://www.ivoa.net/xml/VORegistry/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/VORegistry/v1.0/VORegistry.xsd"));        	
@@ -133,6 +134,7 @@ public class SchemaMap {
         // likewise, omitted VOResourceRelType-*        
         ALL.put("http://www.ivoa.net/xml/VOStandard/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/VOStandard/v0.1/VOStandard.xsd"));
         ALL.put("http://www.ivoa.net/xml/VOStandard/v0.2beta1",SchemaMap.class.getResource("/schema/vo-resource-types/VOStandard/v0.2beta1/VOStandard.xsd"));
+        ALL.put("http://www.ivoa.net/xml/StandardsRegExt/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/VOStandard/v1.0/VOStandard.xsd"));
 
         ALL.put("urn:astrogrid:schema:RegistryStoreResource:v1",SchemaMap.class.getResource("/schema/registry/RegistryUpdate/v1.0/RegistryStoreResource.xsd"));
 
@@ -141,12 +143,14 @@ public class SchemaMap {
         //This is an aid to instantiating resource documents with oXygen et al.; it provides a global element for each resource type.
         ALL.put("urn:astrogrid:schema:vo-resource-types:AllResourceTypes:v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/AllResourceTypes/v0.2/AllResourceTypes.xsd"));
         
+        //VOSI
+        ALL.put("http://www.ivoa.net/xml/VOSIAvailability/v1.0", SchemaMap.class.getResource("/schema/VOSI/availability/v1.0/availability.xsd"));
 
     }
     
     public static URL getSchemaURL(String namespace)
     {
-	return (URL) ALL.get(namespace);
+	return ALL.get(namespace);
     }
 
 }
@@ -154,6 +158,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.18  2011/09/01 14:03:58  pah
+result of merge of contracts_pah_2931 branch
+
 Revision 1.17  2011/06/08 09:53:49  gtr
 2011.2-SNAPSHOT. New VAMDC-TAP schema, taking over from TAPXSAMS.
 
@@ -162,6 +169,15 @@ updated to a new tapxsams v1.01 schema
 
 Revision 1.15  2011/03/24 12:21:13  KevinBenson
 New TAPXSAMS and TapRegExt schemas to go into the contracts.
+
+Revision 1.14.2.3  2011/05/17 16:43:01  pah
+add vosi availability
+
+Revision 1.14.2.2  2011/04/08 14:48:02  pah
+bring StandardRegExt up to date
+
+Revision 1.14.2.1  2009/07/15 08:04:47  pah
+updated ceatypes and cea implementation
 
 Revision 1.14  2009/06/03 16:57:02  pah
 correct UWS schema to 0.9.2

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.ivoa.net/xml/UWSRegExt/v0.9"
+   xmlns="http://www.ivoa.net/xml/UWSRegExt/v0.9" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
+   elementFormDefault="unqualified" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+>
+   <xs:annotation>
+      <xs:appinfo>
+         <vm:schemaName>UWSRegExt</vm:schemaName>
+         <vm:schemaPrefix>xs</vm:schemaPrefix>
+         <vm:targetPrefix>uwsr</vm:targetPrefix>
+      </xs:appinfo>
+      <xs:documentation> A description of the capabilities metadata for
+         UWS paramaterized applications.</xs:documentation>
+   </xs:annotation>
+   <!-- this is copied from the TAPRegExt schema -->
+   <xs:complexType name="TimeLimits">
+      <xs:annotation>
+         <xs:documentation> Time-valued limits, all values given in
+            seconds.</xs:documentation>
+      </xs:annotation>
+      <xs:sequence>
+         <xs:element name="default" type="xs:integer"
+            minOccurs="0" maxOccurs="1"
+         >
+            <xs:annotation>
+               <xs:documentation> The value this limit has for
+                  newly-created jobs.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="hard" type="xs:integer" minOccurs="0"
+            maxOccurs="1"
+         >
+            <xs:annotation>
+               <xs:documentation> The value this limit cannot be raised
+                  above.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="UWSCapRestriction" abstract="true">
+      <xs:annotation>
+         <xs:documentation> An abstract capability that fixes the
+            standardID to the IVOA ID for the UWS standard.
+         </xs:documentation>
+         <xs:documentation> See vr:Capability for documentation on
+            inherited children.</xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:restriction base="vr:Capability">
+            <xs:sequence>
+               <xs:element name="validationLevel" type="vr:Validation"
+                  minOccurs="0" maxOccurs="unbounded" />
+               <xs:element name="description" type="xs:token"
+                  minOccurs="0" />
+               <xs:element name="interface" type="vr:Interface"
+                  minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+            <xs:attribute name="standardID" type="vr:IdentifierURI"
+               use="required" fixed="ivo://ivoa.net/std/UWS" />
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="UWSInterface">
+      <xs:annotation>
+         <xs:documentation> An interface that obeys UWS semantics.
+         </xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+         <xs:extension base="vr:Interface">
+            <xs:sequence>
+               <xs:element name="testQuery" type="xs:string"
+                  maxOccurs="1" minOccurs="0"
+               >
+                  <xs:annotation>
+                     <xs:documentation> This should contain text that
+                        can be directly POSTed to the UWS implementation
+                        to create a job for the purposes of testing and
+                        verifying the UWS. Ideally this should create a
+                        job that lasts only a few seconds (but long
+                        enough to test intermediate phases such as
+                        executing).</xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+            </xs:sequence>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   <xs:complexType name="UWSCapability">
+      <xs:complexContent>
+         <xs:extension base="UWSCapRestriction">
+            <xs:sequence>
+               <xs:element name="retentionPeriod" type="TimeLimits"
+                  minOccurs="0" maxOccurs="1"
+               >
+                  <xs:annotation>
+                     <xs:documentation> Limits on the time between job
+                        creation and DestructionTime</xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+               <xs:element name="executionDuration" type="TimeLimits"
+                  minOccurs="0" maxOccurs="1"
+               >
+                  <xs:annotation>
+                     <xs:documentation> Limits on executionDuration.
+                     </xs:documentation>
+                  </xs:annotation>
+               </xs:element>
+            </xs:sequence>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   
+   <!-- TODO add quota -->
+</xs:schema>
