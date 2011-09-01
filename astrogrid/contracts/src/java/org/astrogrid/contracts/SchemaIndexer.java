@@ -72,6 +72,10 @@ public class SchemaIndexer {
     i.beginSection("VOSpace");
     i.searchTree(new File("src/schema/vo-space"));
     i.endSection();
+    
+    i.beginSection("VOSI");
+    i.searchTree(new File("src/schema/VOSI"));
+    i.endSection();
 
     i.endDocument();
   }
