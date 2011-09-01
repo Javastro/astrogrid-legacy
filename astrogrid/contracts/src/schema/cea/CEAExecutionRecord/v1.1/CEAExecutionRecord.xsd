@@ -2,3 +2,9 @@
 <!-- this is an implementation detail? proabably should change the namespace 
 not used any more - factored out into CEATypes and UWS so that nothing is left here...
 -->
+<xsd:schema
+   targetNamespace="http://www.astrogrid.org/schema/CEAExecutionRecord/v1.1"
+   xmlns:er="http://www.astrogrid.org/schema/CEAExecutionRecord/v1.1"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   elementFormDefault="qualified" attributeFormDefault="unqualified">
+</xsd:schema>
