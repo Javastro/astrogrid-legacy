@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractor.java,v 1.10 2008/09/18 08:46:46 pah Exp $
+ * $Id: SExtractor.java,v 1.11 2011/09/02 21:55:56 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
@@ -98,8 +99,9 @@ public SExtractor(String jobStepId, Tool t, ApplicationInterface interf,
    }     
    }
    
+   @Override
    protected ParameterAdapter instantiateAdapter(ParameterValue pval,
-         ParameterDescription desr, ExternalValue indirectVal) {
+         ParameterDescription desr, ParameterDirection dir, ExternalValue indirectVal) {
 
       if (desr.getId().equals("DetectionImage") || desr.getId().equals("PhotoImage")) {
          if (logger.isDebugEnabled()) {
@@ -107,11 +109,10 @@ public SExtractor(String jobStepId, Tool t, ApplicationInterface interf,
          }
 
          return new MergingParameterAdapter(getApplicationInterface(), pval,
-               (CommandLineParameterDefinition)desr, indirectVal,
-               applicationEnvironment, imageConcentrator);
+               (CommandLineParameterDefinition)desr, dir, applicationEnvironment, imageConcentrator);
       }
      else {
-         return super.instantiateAdapter(pval, desr, indirectVal);
+         return super.instantiateAdapter(pval, desr, dir, indirectVal);
       }
    }
    

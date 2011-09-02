@@ -3,9 +3,9 @@
    xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xhtml="http://www.w3.org/1999/xhtml"
    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+   xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
    xsi:schemaLocation="http://www.w3.org/2002/xforms http://www.w3.org/MarkUp/Forms/2002/XForms-Schema.xsd
-   http://www.astrogrid.org/schema/CEAImplementation/v2.0  /Users/pharriso/Work/ag/src/contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+   http://www.astrogrid.org/schema/CEAImplementation/v2.1  /Users/pharriso/Work/ag/src/contracts/src/schema/cea/CEAImplementation/v2.1/CEAImplementation.xsd"
 >
    <head>
       <title>Application Definition</title>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--example tool document-->
 <tool id="ivo://org.test/Adder" interface="TheOneAndOnlyInterface"
-   xmlns="http://www.ivoa.net/xml/CEA/types/v1.1"
+   xmlns="http://www.ivoa.net/xml/CEA/types/v1.2"
 >
    <input>
       <parameter id="x">

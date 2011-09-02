@@ -1,4 +1,4 @@
-/*$Id: SummaryHelper.java,v 1.8 2009/03/06 17:34:35 pah Exp $
+/*$Id: SummaryHelper.java,v 1.9 2011/09/02 21:55:54 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.description.execution.BinaryEncodings;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
-import org.astrogrid.applications.description.execution.InputListType;
+import org.astrogrid.applications.description.execution.InputList;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.joda.time.DateTime;
 
@@ -81,7 +81,7 @@ public class SummaryHelper {
         
             summary.setExecutionDuration((int)(app.getRunTimeLimit()/1000));//IMPL possibly unsafe int cast
            
-        InputListType inputlist = new InputListType(); 
+        InputList inputlist = new InputList(); 
         summary.setInputList(inputlist );
         //IMPL the summary contains only the list of input and results - not taking into account any of the grouping - note the jaxb style of assigning...
         List<ParameterValue>  inpars = summary.getInputList().getParameter();
@@ -112,13 +112,19 @@ public class SummaryHelper {
 	    inpars.add(par);
 	}
         
-        summary.setResultList(app.getResult());
+        summary.setOutputList(app.getResult());
     return summary;
 }
  }
 
 /* 
 $Log: SummaryHelper.java,v $
+Revision 1.9  2011/09/02 21:55:54  pah
+result of merging the 2931 branch
+
+Revision 1.8.2.1  2009/07/15 13:02:38  pah
+new execution description
+
 Revision 1.8  2009/03/06 17:34:35  pah
 put in kludge that attempts to stop binary direct values getting into the summary
 

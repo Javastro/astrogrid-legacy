@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Resouce xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+<Resouce xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
@@ -8,16 +8,16 @@
          xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
          xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1">
     <title xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9"
-           xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+           xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
            xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1">Test Application</title>
     <shortName xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9"
-               xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+               xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
                xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1">Test Application</shortName>
     <identifier xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9"
-                xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
                 xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1">ivo://org.testit/testapp</identifier>
     <curation xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9"
-              xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+              xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
               xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1">
         <publisher>Astrogrid</publisher>
         <creator>
@@ -32,7 +32,7 @@
         </contact>
     </curation>
     <content xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9"
-             xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+             xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
              xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1">
         <subject>???</subject>
         <description>testapp is just for testing</description>
@@ -40,7 +40,7 @@
         <type>Other</type>
     </content>
     <applicationDefinition xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9"
-                           xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                           xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
                            xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1">
         <applicationType>processing</applicationType>
         <parameters>

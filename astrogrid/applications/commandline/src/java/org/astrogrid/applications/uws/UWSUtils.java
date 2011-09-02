@@ -1,5 +1,5 @@
 /*
- * $Id: UWSUtils.java,v 1.9 2009/06/10 10:38:33 pah Exp $
+ * $Id: UWSUtils.java,v 1.10 2011/09/02 21:55:53 pah Exp $
  * 
  * Created on 28 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -103,7 +103,7 @@ public class UWSUtils {
            if(appxmlidx != -1 || txtxmlidx != -1){
                return true;
            } else {
-               return false; //do not return xml unless explicitly asked for....
+               return true; //do not return xml unless explicitly asked for....
         }
         }
     }
@@ -128,6 +128,12 @@ public class UWSUtils {
 
 /*
  * $Log: UWSUtils.java,v $
+ * Revision 1.10  2011/09/02 21:55:53  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.9.2.1  2010/02/05 12:33:05  pah
+ * default to xml
+ *
  * Revision 1.9  2009/06/10 10:38:33  pah
  * RESOLVED - bug 2917: update to latest VOSpace delegate
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2917

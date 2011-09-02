@@ -17,7 +17,7 @@ public interface Configuration {
      * @param applicationDescriptionUrl the applicationDescriptionUrl to set
      * @TODO is this really needed?
      */
-    public void setApplicationDescriptionUrl(URL applicationDescriptionUrl);
+  public void setApplicationDescriptionUrl(URL applicationDescriptionUrl);
   
   public File getRecordsDirectory();
   public File getTemporaryFilesDirectory();

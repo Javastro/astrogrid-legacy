@@ -1,4 +1,4 @@
-/*$Id: ParameterAdapter.java,v 1.4 2008/09/03 14:18:57 pah Exp $
+/*$Id: ParameterAdapter.java,v 1.5 2011/09/02 21:55:51 pah Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.applications.CeaException;
 /** Abstraction around reading and writing  parameter values.
  * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter()}
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 13 Jul 2009 -  changed to be more concrete.
  *
  */
 public interface ParameterAdapter {
@@ -24,22 +25,34 @@ public interface ParameterAdapter {
      * @return the actual value for this parameter ( or some symbolic representation of it)
      * @throws CeaException
      */
-    Object process() throws CeaException;
+    MutableInternalValue getInternalValue() throws CeaException;
     /**
      * write out this parameter (used for output parameters).
-     * @param o the value of the parameter to write (or some reference / represenation of it)
+     * 
      * @throws CeaException
      */
-    void writeBack(Object o) throws CeaException;
+    void writeBack() throws CeaException;
     
     /** returns the parameter object this adapter is wrapping. 
-     * @return the paramter value this adpater wraps.*/
+     * @TODO eliminate this and add the uses made of the raw parameterValue to this interface.
+     * @return the parameter value this adapter wraps.
+     * */
     org.astrogrid.applications.description.execution.ParameterValue getWrappedParameter();
 }
 
 
 /* 
 $Log: ParameterAdapter.java,v $
+Revision 1.5  2011/09/02 21:55:51  pah
+result of merging the 2931 branch
+
+Revision 1.4.6.2  2009/07/16 19:48:05  pah
+ASSIGNED - bug 2950: rework parameterAdapter
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2950
+
+Revision 1.4.6.1  2009/07/15 09:49:36  pah
+redesign of parameterAdapters
+
 Revision 1.4  2008/09/03 14:18:57  pah
 result of merge of pah_cea_1611 branch
 

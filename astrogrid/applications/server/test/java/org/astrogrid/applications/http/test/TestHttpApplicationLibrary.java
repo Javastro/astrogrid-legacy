@@ -1,4 +1,4 @@
-/* $Id: TestHttpApplicationLibrary.java,v 1.2 2008/09/18 09:13:39 pah Exp $
+/* $Id: TestHttpApplicationLibrary.java,v 1.3 2011/09/02 21:55:53 pah Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 package org.astrogrid.applications.http.test;
 
 import java.io.IOException;
+import java.net.URL;
 
 import junit.framework.Test;
 
@@ -17,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.BaseApplicationDescriptionFactory;
 import org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary;
 
 /**
@@ -35,12 +37,13 @@ public class TestHttpApplicationLibrary extends ConfigFileReadingDescriptionLibr
 
    /**
     * Ctor
+ * @param df 
  * @throws IOException 
     *
     */
-   public TestHttpApplicationLibrary(Configuration locator) 
+   public TestHttpApplicationLibrary(URL locator, BaseApplicationDescriptionFactory df) 
           {
-      super(locator);
+      super(locator, df);
       addApplication("/helloWorld-app.xml");
       addApplication("/Echoer-app.xml");
       addApplication("/HelloYou-app.xml");
@@ -62,7 +65,7 @@ public class TestHttpApplicationLibrary extends ConfigFileReadingDescriptionLibr
     */
    private void addApplication(String file)
    {
-       assert loadApplications(TestHttpApplicationLibrary.class.getResource(file)): "failed to load "+file;
+       assert loadFileOrDirectory(TestHttpApplicationLibrary.class.getResource(file)): "failed to load "+file;
    }
 
    /*

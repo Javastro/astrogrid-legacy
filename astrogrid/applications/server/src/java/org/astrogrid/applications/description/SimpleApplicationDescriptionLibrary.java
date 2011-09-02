@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleApplicationDescriptionLibrary.java,v 1.4 2009/02/26 12:45:54 pah Exp $
+ * $Id: SimpleApplicationDescriptionLibrary.java,v 1.5 2011/09/02 21:55:50 pah Exp $
  * 
  * Created on 16 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -28,7 +28,6 @@ public class SimpleApplicationDescriptionLibrary extends
 
     public SimpleApplicationDescriptionLibrary(
 	     Configuration conf) {
-	super( conf);
 	   try {
 	       // Every application-description library carries one built-in application.
 	       this.addApplicationDescription(new BuiltInApplicationDescription( conf));
@@ -55,6 +54,12 @@ public class SimpleApplicationDescriptionLibrary extends
 
 /*
  * $Log: SimpleApplicationDescriptionLibrary.java,v $
+ * Revision 1.5  2011/09/02 21:55:50  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.4.2.1  2009/07/15 09:48:12  pah
+ * redesign of parameterAdapters
+ *
  * Revision 1.4  2009/02/26 12:45:54  pah
  * separate more out into cea-common for both client and server
  *

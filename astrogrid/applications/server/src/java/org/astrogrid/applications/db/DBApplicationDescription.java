@@ -1,5 +1,5 @@
 /*
- * $Id: DBApplicationDescription.java,v 1.6 2009/02/26 12:45:56 pah Exp $
+ * $Id: DBApplicationDescription.java,v 1.7 2011/09/02 21:55:52 pah Exp $
  * 
  * Created on 13 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -14,38 +14,34 @@ package org.astrogrid.applications.db;
 
 import javax.sql.DataSource;
 
-import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.AbstractApplicationDescription;
 import org.astrogrid.applications.description.MetadataAdapter;
-import org.astrogrid.applications.description.execution.Tool;
-import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.security.SecurityGuard;
 
-public class DBApplicationDescription extends AbstractApplicationDescription {
+public abstract class DBApplicationDescription extends AbstractApplicationDescription {
 
     protected DataSource ds;
-    protected ProtocolLibrary lib;
 
     public DBApplicationDescription( MetadataAdapter ma,
-	    Configuration conf, DataSource ds) {
-	super(ma, conf);//FIXME what if the application definition is not in the resource...
-	this.ds = ds;
-	this.lib = lib;
+	    Configuration conf, DataSourceFinder dsf) {
+	super(ma, conf);//TODO what if the application definition is not in the resource...
+	// get Datasource
+	ds = dsf.locateDataSource();
     }
 
-    public Application initializeApplication(String callerAssignedID,
-	    SecurityGuard secGuard, Tool tool) throws Exception {
-	// TODO Auto-generated method stub
-	throw new UnsupportedOperationException(
-		"DBApplicationDescription.initializeApplication() not implemented");
-    }
 
 }
 
 
 /*
  * $Log: DBApplicationDescription.java,v $
+ * Revision 1.7  2011/09/02 21:55:52  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.6.2.1  2009/07/16 19:52:17  pah
+ * NEW - bug 2944: add DAL support
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2944
+ *
  * Revision 1.6  2009/02/26 12:45:56  pah
  * separate more out into cea-common for both client and server
  *

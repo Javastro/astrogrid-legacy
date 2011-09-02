@@ -2,7 +2,8 @@
 <%@ page import="java.io.InputStream,
                  java.io.IOException,
                  javax.xml.parsers.SAXParser,
-                 javax.xml.parsers.SAXParserFactory"
+                 javax.xml.parsers.SAXParserFactory,
+                 javax.servlet.jsp.JspWriter"
    session="false" %>
  <%
     /*

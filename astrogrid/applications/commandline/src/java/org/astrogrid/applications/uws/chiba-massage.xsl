@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: chiba-massage.xsl,v 1.3 2008/10/09 11:40:10 pah Exp $
+<!-- $Id: chiba-massage.xsl,v 1.4 2011/09/02 21:55:53 pah Exp $
 Cope with the fact that chiba does not seem to like xsi:type at the moment -->
 <xsl:stylesheet version="2.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
@@ -10,7 +10,7 @@ Cope with the fact that chiba does not seem to like xsi:type at the moment -->
                 xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" 
                 xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" 
                 xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"               
-                xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
                 >
    <xsl:output method="xml" encoding="UTF-8" indent="yes" />
    <xsl:strip-space elements="*"/>
@@ -41,6 +41,12 @@ Cope with the fact that chiba does not seem to like xsi:type at the moment -->
 </xsl:stylesheet>
 <!--
  $Log: chiba-massage.xsl,v $
+ Revision 1.4  2011/09/02 21:55:53  pah
+ result of merging the 2931 branch
+
+ Revision 1.3.4.1  2009/11/08 12:16:56  pah
+ update namespaces
+
  Revision 1.3  2008/10/09 11:40:10  pah
  NEW - bug 2847: simple xform application definition
  http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2847

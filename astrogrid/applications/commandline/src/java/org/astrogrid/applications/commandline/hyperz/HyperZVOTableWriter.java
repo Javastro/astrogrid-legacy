@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.9 2008/09/03 14:18:54 pah Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.10 2011/09/02 21:55:54 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -23,6 +23,7 @@ import org.astrogrid.applications.description.impl.CommandLineParameterDefinitio
 import org.astrogrid.applications.commandline.DefaultCommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
 import cds.savot.model.FieldSet;
@@ -63,8 +64,8 @@ public class HyperZVOTableWriter extends DefaultCommandLineParameterAdapter {
      * @param val
      * @param descr
      */
-    public HyperZVOTableWriter(ApplicationInterface interf, ParameterValue val, CommandLineParameterDefinition descr,ApplicationEnvironment env, ExternalValue ival, VOTableSource votableSource) {
-        super(interf,val, descr,ival,env);
+    public HyperZVOTableWriter(ApplicationInterface interf, ParameterValue val, CommandLineParameterDefinition descr, ParameterDirection dir,ApplicationEnvironment env, ExternalValue ival, VOTableSource votableSource) {
+        super(interf,val, descr,dir,env);
         logger.debug("creating hyperz table writer");
         this.votableSource = votableSource;
         tmpfile = env.getTempFile(descr.getId());
@@ -84,7 +85,8 @@ public class HyperZVOTableWriter extends DefaultCommandLineParameterAdapter {
       SavotVOTable votable = votableSource.getVOTable();      
       internalAddToVOTable(votable,outputfil); //add the copies of the original file
       internalWriteVOTable(votable,getReferenceFile());
-      super.writeBack(o);
+      //FIXME - parameter adapter does not write back any more...
+      super.writeBack();
     if (logger.isDebugEnabled()) {
         logger.debug("writeBack() - end");
     }

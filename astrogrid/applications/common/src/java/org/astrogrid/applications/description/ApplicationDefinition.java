@@ -1,4 +1,4 @@
-/*$Id: ApplicationDefinition.java,v 1.1 2009/02/26 12:25:47 pah Exp $
+/*$Id: ApplicationDefinition.java,v 1.2 2011/09/02 21:55:52 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,16 +63,16 @@ public interface ApplicationDefinition extends Identify {
     public ApplicationInterface[] getInterfaces();
     
   
-    /**
-     * get the underlying description of the application.
-     * @TODO should this really be exposed?
-     * @return
-     */
-    public MetadataAdapter getMetadataAdapter();
-
+ 
  }
 /* 
 $Log: ApplicationDefinition.java,v $
+Revision 1.2  2011/09/02 21:55:52  pah
+result of merging the 2931 branch
+
+Revision 1.1.2.1  2009/07/15 09:34:40  pah
+expose metadata adapter
+
 Revision 1.1  2009/02/26 12:25:47  pah
 separate more out into cea-common for both client and server
 

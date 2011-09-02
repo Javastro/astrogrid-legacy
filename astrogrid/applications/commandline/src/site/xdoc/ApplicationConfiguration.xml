@@ -172,8 +172,8 @@
          <p><strong>Note</strong> although the schema supports the concept of grouping parameters with pgroup, rgroup and cgroupHead elements, this facility is not yet supported by software components that make up the astrogrid suite, so these constructs should not be used in this release.</p>
          </subsection>
          <subsection name="Configuration File">
-         <p>The configuration file should conform to the <a href="http://www.astrogrid.org/viewcvs/astrogrid/contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd?revision=1.2&amp;view=markup">CeaImplementation.xsd, 2.0</a> schema (with namespace
-         http://www.astrogrid.org/schema/CEAImplementation/v2.0)
+         <p>The configuration file should conform to the <a href="http://www.astrogrid.org/viewcvs/astrogrid/contracts/src/schema/cea/CEAImplementation/v2.1/CEAImplementation.xsd?revision=1.2&amp;view=markup">CeaImplementation.xsd, 2.0</a> schema (with namespace
+         http://www.astrogrid.org/schema/CEAImplementation/v2.1)
          </p>
             <p>
                This file should be of the same form as

@@ -1,56 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns6:executionSummary xmlns:ns4="http://www.w3.org/1999/xlink" xmlns:ns7="http://www.ivoa.net/xml/UWS/v0.9.2"
+<ns6:executionSummary xmlns:ns4="http://www.w3.org/1999/xlink" xmlns:ns7="http://www.ivoa.net/xml/UWS/v1.0"
  xmlns:ns3="http://www.ivoa.net/xml/CEA/base/v1.1" xmlns:ns5="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" 
- xmlns:ns2="http://www.astrogrid.org/schema/CEAImplementation/v2.0" 
- xmlns:ns6="http://www.ivoa.net/xml/CEA/types/v1.1" xmlns:ns8="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+ xmlns:ns2="http://www.astrogrid.org/schema/CEAImplementation/v2.1" 
+ xmlns:ns6="http://www.ivoa.net/xml/CEA/types/v1.2" xmlns:ns8="http://www.ivoa.net/xml/RegistryInterface/v1.0"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.ivoa.net/xml/CEA/types/v1.1 /Users/pharriso/Work/ag/src/contracts/src/schema/cea/CEATypes/v1.1/CEATypes.xsd"
+ xsi:schemaLocation="http://www.ivoa.net/xml/CEA/types/v1.2 /Users/pharriso/Work/ag/src/contracts/src/schema/cea/CEATypes/v1.2/CEATypes.xsd"
 >
 	<ns7:jobId>cea-Macintosh-3.local-192.168.0.199-1219946595478-1546750101</ns7:jobId>
+    <ns7:ownerId xsi:nil="false"/>
 	<ns7:phase>COMPLETED</ns7:phase>
 	<ns7:startTime  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema">2008-08-28T19:03:50.283+01:00</ns7:startTime>
 	<ns7:endTime  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema">2008-08-28T19:03:50.588+01:00</ns7:endTime>
  	<ns7:executionDuration  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema">300</ns7:executionDuration>
 	<ns7:destruction  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema">2008-08-28T19:09:55.479+01:00</ns7:destruction>
-	<ns6:application-name>ivo://org.testit/testapp</ns6:application-name>
-	<ns6:input-list>
-		<ns6:parameter indirect="false" id="P1">
-			<ns6:value>10101010100</ns6:value>
-		</ns6:parameter>
-		<ns6:parameter indirect="false" id="P4">
-			<ns6:value></ns6:value>
-		</ns6:parameter>
-		<ns6:parameter indirect="false" id="P9">
-			<ns6:value></ns6:value>
-		</ns6:parameter>
-		<ns6:parameter indirect="false" id="P10">
-			<ns6:value>y</ns6:value>
-		</ns6:parameter>
-		<ns6:parameter indirect="false" id="P6">
-			<ns6:value></ns6:value>
-		</ns6:parameter>
-	</ns6:input-list>
-	<ns6:result-list>
-		<ns6:result indirect="false" id="P3">
-			<ns6:value></ns6:value>
-		</ns6:result>
-		<ns6:result indirect="false" id="P2">
-			<ns6:value>parsed parameters.....for /Users/pharriso/Work/ag/src/applications/server/test/java/app/testapp.sh.
-P1 = 0
-P2 = P2_13.tmpgen
-P3 = P3_12.tmpgen
-P4 =
-P5 =
-P6 =
-P7 =
-P8 =
-P9 = P9_9.tmpgen
-P10 = y
-</ns6:value>
-		</ns6:result>
-		<ns6:result indirect="false" id="P14">
-			<ns6:value>some local test content
-</ns6:value>
-		</ns6:result>
-	</ns6:result-list>
+  
+ <ns7:results><ns7:result id="P3" ns4:href="http://localhost/uws/cea-Macintosh-3.local-192.168.0.199-1219946595478-1546750101/result/uws"></ns7:result></ns7:results>
+	
+   <ns6:application-name>ivo://org.testit/testapp</ns6:application-name>
+      <ns6:inputList>
+      <ns6:parameter indirect="false" id="P1">
+         <ns6:value>10101010100</ns6:value>
+      </ns6:parameter>
+      <ns6:parameter indirect="false" id="P4">
+         <ns6:value></ns6:value>
+      </ns6:parameter>
+      <ns6:parameter indirect="false" id="P9">
+         <ns6:value></ns6:value>
+      </ns6:parameter>
+      <ns6:parameter indirect="false" id="P10">
+         <ns6:value>y</ns6:value>
+      </ns6:parameter>
+      <ns6:parameter indirect="false" id="P6">
+         <ns6:value></ns6:value>
+      </ns6:parameter>
+   </ns6:inputList>
+   <ns6:outputList></ns6:outputList>
+   
 </ns6:executionSummary>

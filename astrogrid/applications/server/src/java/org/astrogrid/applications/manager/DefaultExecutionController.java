@@ -85,7 +85,7 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
         }
 	    assert app != null;
 	    
-	    app.setRunTimeLimit(policy.getMaxRunTime()*1000);
+	    
 	    return startRunnable(app);
 	}
 	else {
@@ -119,6 +119,7 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 	    Calendar now = Calendar.getInstance();
 	    now.add(Calendar.SECOND, policy.getDefaultLifetime());
 	    app.setDestruction(now.getTime());// set the destruction time.
+	    app.setRunTimeLimit(policy.getMaxRunTime()*1000);
 	    app.checkParameterValues();          
 	    executionHistory.addApplicationToCurrentSet(app);          
 	    app.addObserver(this);

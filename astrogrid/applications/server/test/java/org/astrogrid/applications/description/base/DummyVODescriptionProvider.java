@@ -1,5 +1,5 @@
 /*
- * $Id: DummyVODescriptionProvider.java,v 1.14 2009/06/05 13:08:01 pah Exp $
+ * $Id: DummyVODescriptionProvider.java,v 1.15 2011/09/02 21:55:54 pah Exp $
  * Created on 02-Jun-2004
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,11 +19,13 @@ import net.ivoa.resource.AccessURL;
 import net.ivoa.resource.Contact;
 import net.ivoa.resource.Content;
 import net.ivoa.resource.ContentLevel;
+import net.ivoa.resource.ContributorName;
 import net.ivoa.resource.Creator;
 import net.ivoa.resource.Curation;
 import net.ivoa.resource.Interface;
 import net.ivoa.resource.Resource;
 import net.ivoa.resource.ResourceName;
+import net.ivoa.resource.ResourceNameSingle;
 import net.ivoa.resource.Service;
 import net.ivoa.resource.Source;
 import net.ivoa.resource.Type;
@@ -92,8 +94,8 @@ public class DummyVODescriptionProvider extends AbstractMetadataService
 	resource.setContent(content);
 	Curation curation = new Curation();
 	Contact contact = new Contact();
-	ResourceName name = new ResourceName();
-	name.setValue("name");
+	ResourceNameSingle name = new ResourceNameSingle();
+	name.setName("name");
 	contact.setName(name);
 	contact.setAddress("address");
 	contact.setEmail("email");
@@ -102,7 +104,9 @@ public class DummyVODescriptionProvider extends AbstractMetadataService
 	creator.setName(name);
 	curation.getCreator().add(creator);
 
-	curation.getContributor().add(name);
+	ContributorName contrib = new ContributorName();
+	contrib.setName("contrib");
+        curation.getContributor().add(contrib);
 	curation.setPublisher(name);
 	curation.setVersion("dummy");
 	resource.setCuration(curation);
@@ -198,6 +202,12 @@ public class DummyVODescriptionProvider extends AbstractMetadataService
 
 /*
  * $Log: DummyVODescriptionProvider.java,v $
+ * Revision 1.15  2011/09/02 21:55:54  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.14.2.1  2011/09/02 19:40:50  pah
+ * change setup of dynamic description library
+ *
  * Revision 1.14  2009/06/05 13:08:01  pah
  * RESOLVED - bug 2921: add capabilities to the automatic registration
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2921

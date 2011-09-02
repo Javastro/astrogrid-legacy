@@ -1,4 +1,4 @@
-/*$Id: JavaClassParameterAdapter.java,v 1.7 2008/09/13 09:51:03 pah Exp $
+/*$Id: JavaClassParameterAdapter.java,v 1.8 2011/09/02 21:55:55 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,10 +13,15 @@ package org.astrogrid.applications.javaclass;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
+import org.astrogrid.applications.parameter.DefaultInternalValue;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
+import org.astrogrid.applications.parameter.FileBasedInternalValue;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
 import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.xml.utils.UnImplNode;
 
 /** A {@link org.astrogrid.applications.parameter.ParameterAdapter} for a {@link org.astrogrid.applications.javaclass.JavaClassParameterDescription}
  * 
@@ -33,27 +38,47 @@ public class JavaClassParameterAdapter extends DefaultParameterAdapter {
      * @param val
      * @param description
      */
-    public JavaClassParameterAdapter(ParameterValue val, ParameterDescription description, ExternalValue ipVal) {
-        super(val, description,ipVal);
+    public JavaClassParameterAdapter(ParameterValue val, ParameterDescription description, ParameterDirection dir, ApplicationEnvironment env) {
+        super(val, description,dir, env);
     }
 
 /**
  * Calls the super class implementation (which will always return a string), and then uses beanUtils library to convert to type expected by java method 
- * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
+ * @see org.astrogrid.applications.parameter.ParameterAdapter#getInternalValue()
  * @todo add handling for other types - e.g. URI / URL / Document / Node.
  */
-    @Override
-    public Object process() throws CeaException {
-        String result = (String)super.process(); // we know super always returns a string.
+   
+    public Object getArg() throws CeaException {
+        String result = super.getInternalValue().asString(); 
         Class targetClass = ((JavaClassParameterDescription)description).getTargetClass();
         return ConvertUtils.convert(result.trim(),targetClass); //remove trailing white space, as it seems to change the conversion process. (e.g. '2/n' => 0), which isn't good.
     }
+
+public void writeBack(String rval) throws CeaException {
+    this.getInternalValue();
+    internalVal.setValue(rval);
+    super.writeBack();
+   
+}
+
+   
+   
 
 }
 
 
 /* 
 $Log: JavaClassParameterAdapter.java,v $
+Revision 1.8  2011/09/02 21:55:55  pah
+result of merging the 2931 branch
+
+Revision 1.7.6.2  2009/07/16 19:48:06  pah
+ASSIGNED - bug 2950: rework parameterAdapter
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2950
+
+Revision 1.7.6.1  2009/07/15 09:55:48  pah
+redesign of parameterAdapters
+
 Revision 1.7  2008/09/13 09:51:03  pah
 code cleanup
 

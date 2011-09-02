@@ -1,5 +1,5 @@
 /*
- * $Id: Dft.java,v 1.9 2008/09/03 14:19:08 pah Exp $
+ * $Id: Dft.java,v 1.10 2011/09/02 21:55:52 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -27,6 +27,7 @@ import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.impl.CommandLineParameterDefinition;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 
@@ -83,7 +84,7 @@ public class Dft extends CommandLineApplication {
    }
 
    protected ParameterAdapter instantiateAdapter(ParameterValue pval,
-         ParameterDescription desr, ExternalValue indirectVal) {
+         ParameterDescription desr, ParameterDirection dir, ExternalValue indirectVal) {
 
       if (desr.getId().equals("matches")) {
          if (logger.isDebugEnabled()) {
@@ -91,8 +92,7 @@ public class Dft extends CommandLineApplication {
          }
 
          return new MergingParameterAdapter(getApplicationInterface(), pval,
-               (CommandLineParameterDefinition)desr, indirectVal,
-               applicationEnvironment, matchConcentrator);
+               (CommandLineParameterDefinition)desr, dir, applicationEnvironment, matchConcentrator);
       }
       else if (desr.getId().equals("targets")) //FIXME - I dont think that this is supposed to be a multiple
       {
@@ -101,12 +101,11 @@ public class Dft extends CommandLineApplication {
          }
 
          return new MergingParameterAdapter(getApplicationInterface(), pval,
-               (CommandLineParameterDefinition)desr, indirectVal,
-               applicationEnvironment, targetConcentrator);
+               (CommandLineParameterDefinition)desr, dir, applicationEnvironment, targetConcentrator);
         
       }
       else {
-         return super.instantiateAdapter(pval, desr, indirectVal);
+         return super.instantiateAdapter(pval, desr, dir, indirectVal);
       }
    }
 }

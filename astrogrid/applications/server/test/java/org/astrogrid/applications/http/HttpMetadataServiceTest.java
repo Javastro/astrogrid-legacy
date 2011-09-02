@@ -1,5 +1,5 @@
 /*
- * $Id: HttpMetadataServiceTest.java,v 1.1 2008/09/10 23:27:17 pah Exp $
+ * $Id: HttpMetadataServiceTest.java,v 1.2 2011/09/02 21:55:54 pah Exp $
  *
  * Created on 14-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -15,6 +15,7 @@ package org.astrogrid.applications.http;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.StandardApplicationDescriptionFactory;
 import org.astrogrid.applications.description.registry.RegistryEntryBuilderTestBase;
 import org.astrogrid.applications.http.test.TestHttpApplicationLibrary;
 
@@ -35,7 +36,7 @@ protected ApplicationDescriptionLibrary createDesciptionLibrary()
     Configuration conf = new MockNonSpringConfiguredConfig();
 
    return
-            new TestHttpApplicationLibrary(conf);
+            new TestHttpApplicationLibrary(conf.getApplicationDescriptionUrl(),new StandardApplicationDescriptionFactory(conf));
 }
 
 
@@ -43,6 +44,21 @@ protected ApplicationDescriptionLibrary createDesciptionLibrary()
 
 /*
  * $Log: HttpMetadataServiceTest.java,v $
+ * Revision 1.2  2011/09/02 21:55:54  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.1.6.2  2011/09/02 19:42:18  pah
+ * change setup of dynamic description library
+ *
+ * Revision 1.1.6.1  2009/07/15 10:01:00  pah
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2907
+ * NEW - bug 2851: generalized DAL applications
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2851
+ * NEW - bug 2931: upgrades for 2009.2
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2931
+ * NEW - bug 2920: upgrade to uws 1.0
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2920
+ *
  * Revision 1.1  2008/09/10 23:27:17  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *

@@ -32,10 +32,11 @@
 <%
 //naughty direct use of the application context - lazy should go into mvc
 ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-URL url =  ((Configuration)ctx.getBean("config")).getApplicationDescriptionUrl();
+String url =  ((Configuration)ctx.getBean("config")).getApplicationDescriptionUrl().getPath();
+url = url.substring(0,url.lastIndexOf('/')+1);
 %>    
 
-<form action="/uws/appDefine/save" method="get">
+<form action="${base}/uws/defineApp/save" method="get">
 save in <input name="location" type="text" value="<%=url%>${app.name}.xml" size="60"/>
 <input type="submit" value="write" />
 </form>

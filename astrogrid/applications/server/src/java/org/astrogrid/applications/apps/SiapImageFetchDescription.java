@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchDescription.java,v 1.10 2009/02/26 12:45:55 pah Exp $
+/*$Id: SiapImageFetchDescription.java,v 1.11 2011/09/02 21:55:54 pah Exp $
  * Created on 15-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -104,7 +104,7 @@ public class SiapImageFetchDescription extends InternallyConfiguredApplicationDe
 	protected InputStream getRawInputStream() throws IOException {
             
             try {
-                return (InputStream)p.process();
+                return (InputStream)p.getInternalValue();
             } catch (CeaException e) {
              throw new IOException(e.getMessage());
             }
@@ -117,6 +117,13 @@ public class SiapImageFetchDescription extends InternallyConfiguredApplicationDe
 
 /* 
 $Log: SiapImageFetchDescription.java,v $
+Revision 1.11  2011/09/02 21:55:54  pah
+result of merging the 2931 branch
+
+Revision 1.10.2.1  2009/07/16 19:47:34  pah
+ASSIGNED - bug 2950: rework parameterAdapter
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2950
+
 Revision 1.10  2009/02/26 12:45:55  pah
 separate more out into cea-common for both client and server
 

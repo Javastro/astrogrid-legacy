@@ -26,6 +26,7 @@ import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.impl.CommandLineParameterDefinition;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 
@@ -84,13 +85,14 @@ public class CommandLineApplication extends AbstractApplication implements Runna
    
  
     /** override  so that commandline parameters are returned
+     * @param dir 
      * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
-     */
+     */ 
     @Override
-    protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ExternalValue indirectVal) {                
+    protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ParameterDirection dir, ExternalValue indirectVal) {                
         CommandLineParameterDefinition clpd = (CommandLineParameterDefinition)desr;
              logger.debug("creating parameter adapter for " + pval.getId());
-             return new DefaultCommandLineParameterAdapter(getApplicationInterface(),pval, (CommandLineParameterDefinition)desr,indirectVal,applicationEnvironment);
+             return new DefaultCommandLineParameterAdapter(getApplicationInterface(),pval, clpd ,dir, applicationEnvironment);
          
       }
     
@@ -209,7 +211,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
      // iterate over all the parameter adapters now that they have been sorted...
      for (Iterator i = allAdapterList.iterator(); i.hasNext(); ) {
          ParameterAdapter adapter = (ParameterAdapter)i.next();
-             adapter.process();
+             adapter.getInternalValue();
       }
      
      //iterate over the paramters adapters adding the commandline switches
@@ -318,7 +320,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
     for (Iterator i = outputParameterAdapters(); i.hasNext(); ) {   
       ParameterAdapter adapter = (ParameterAdapter)i.next();
       try {         
-        adapter.writeBack(null);
+        adapter.writeBack();
       } 
       catch (CeaException e) {
         errorCount++;

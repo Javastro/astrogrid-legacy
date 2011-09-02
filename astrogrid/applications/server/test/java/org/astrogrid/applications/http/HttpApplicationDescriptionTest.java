@@ -23,6 +23,7 @@ import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.description.StandardApplicationDescriptionFactory;
 import org.astrogrid.applications.description.base.ParameterTypes;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
@@ -122,7 +123,8 @@ public class HttpApplicationDescriptionTest extends TestCase {
     @Override
     public void setUp() {
         try {    
-        TestHttpApplicationLibrary querier = new TestHttpApplicationLibrary(new MockNonSpringConfiguredConfig());
+        MockNonSpringConfiguredConfig config = new MockNonSpringConfiguredConfig();
+        TestHttpApplicationLibrary querier = new TestHttpApplicationLibrary(config.getApplicationDescriptionUrl(), new StandardApplicationDescriptionFactory(config));
 	        //note that all the
 	    
 		    adderApplicationDescription = (HttpApplicationDescription) querier.getDescription("ivo://org.astrogrid.test/Adder");

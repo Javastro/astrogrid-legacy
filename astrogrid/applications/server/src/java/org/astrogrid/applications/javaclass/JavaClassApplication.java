@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.12 2009/05/15 22:51:20 pah Exp $
+/*$Id: JavaClassApplication.java,v 1.13 2011/09/02 21:55:55 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,15 @@
 **/
 package org.astrogrid.applications.javaclass;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.FutureTask;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
@@ -19,19 +28,10 @@ import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.security.SecurityGuard;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.FutureTask;
 
 /** An application that executes by calling a static java method.
  * @see org.astrogrid.applications.javaclass.JavaClassApplicationDescription
@@ -85,8 +85,8 @@ public class JavaClassApplication extends AbstractApplication {
              try {
                  List args = new ArrayList();
                  for (Iterator i = inputParameterAdapters(); i.hasNext(); ) {
-                     ParameterAdapter a = (ParameterAdapter)i.next();
-                     args.add( a.process());
+                     JavaClassParameterAdapter a = (JavaClassParameterAdapter)i.next();
+                     args.add( a.getArg());
                  }             
                  setStatus(Status.RUNNING);
                  Object resultVal = null;
@@ -95,8 +95,8 @@ public class JavaClassApplication extends AbstractApplication {
                 
                 // we can do this, as we know there's only ever going to be one interface, and one output parameter.
                 setStatus(Status.WRITINGBACK);
-                ParameterAdapter result = (ParameterAdapter)outputParameterAdapters().next();
-                result.writeBack(resultVal);
+                JavaClassParameterAdapter result = (JavaClassParameterAdapter)outputParameterAdapters().next();
+                result.writeBack(resultVal.toString());//IMPL the method return value needs a sensible toString() for this to work - perhaps need to impose this check.
                 setStatus(Status.COMPLETED);                
             } catch (IllegalArgumentException e) {
                 reportError("Illegal Argument passed to  java 'application'",e);
@@ -117,8 +117,8 @@ public class JavaClassApplication extends AbstractApplication {
      */
     @Override
     protected ParameterAdapter instantiateAdapter(ParameterValue pval,
-            ParameterDescription descr, ExternalValue indirectVal) {
-        return new JavaClassParameterAdapter(pval, descr, indirectVal);
+            ParameterDescription descr, ParameterDirection dir, ExternalValue indirectVal) {
+        return new JavaClassParameterAdapter(pval, descr, dir, applicationEnvironment);
     }
 
     @Override
@@ -132,6 +132,16 @@ public class JavaClassApplication extends AbstractApplication {
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.13  2011/09/02 21:55:55  pah
+result of merging the 2931 branch
+
+Revision 1.12.2.2  2009/07/16 19:48:06  pah
+ASSIGNED - bug 2950: rework parameterAdapter
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2950
+
+Revision 1.12.2.1  2009/07/15 09:55:48  pah
+redesign of parameterAdapters
+
 Revision 1.12  2009/05/15 22:51:20  pah
 ASSIGNED - bug 2911: improve authz configuration
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911

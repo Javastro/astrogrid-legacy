@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.2 2008/09/13 09:51:06 pah Exp $
+/* $Id: HttpApplication.java,v 1.3 2011/09/02 21:55:55 pah Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,8 @@ import org.astrogrid.applications.http.exceptions.HttpParameterProcessingExcepti
 import org.astrogrid.applications.http.script.IdentityPreprocessor;
 import org.astrogrid.applications.http.script.Preprocessor;
 import org.astrogrid.applications.http.script.XSLTPreprocessor;
+import org.astrogrid.applications.parameter.InternalValue;
+import org.astrogrid.applications.parameter.MutableInternalValue;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.applications.description.execution.Tool;
@@ -138,13 +140,14 @@ public class HttpApplication extends AbstractApplication  {
             for (Iterator i = inputParameterAdapters(); i.hasNext();) {
                 ParameterAdapter a = (ParameterAdapter) i.next();
                 final String name = a.getWrappedParameter().getId();
-                final Object value = a.process();
+                final InternalValue value = a.getInternalValue();
                 //Replace Parameters in the tool document
                 //with their processed values
                 //This might be a bad idea...
                 //Why not just extract the values and send them to the HttpServiceClient?  I want to have an actual Tool xml
                 //document with the correct parameter values that I can transform using the registry/user supplied xslt.
-                a.getWrappedParameter().setValue((String) value);
+                //IMPL should not get the wrapped parameter and set its value directly - unless know what you are doing
+                a.getWrappedParameter().setValue( value.asString());
                 log.debug(name + "=" + value);
             }
             //Prepare calling document, and extract what we need for the http call
@@ -187,7 +190,15 @@ public class HttpApplication extends AbstractApplication  {
             Iterator outputParamsIt = outputParameterAdapters();
             ParameterAdapter result = (ParameterAdapter) outputParamsIt.next();
             assert !outputParamsIt.hasNext() : "Expect there to be only one output parameter for an HttpApplication";
-            result.writeBack(resultData);
+            //IMPL ugly ugly
+            if (resultData instanceof String) {
+                String sresultData = (String) resultData;
+                result.getInternalValue().setValue(sresultData);
+            }
+            else if (resultData instanceof byte[]){
+            result.getInternalValue().setValue((byte[])resultData);
+            }
+            result.writeBack();
             log.info("completed call successfully");
             setStatus(Status.COMPLETED);
         } catch (HttpApplicationWebServiceURLException e) {
@@ -233,6 +244,16 @@ public class HttpApplication extends AbstractApplication  {
 
 /*
  * $Log: HttpApplication.java,v $
+ * Revision 1.3  2011/09/02 21:55:55  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.2.6.2  2009/07/16 19:48:06  pah
+ * ASSIGNED - bug 2950: rework parameterAdapter
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2950
+ *
+ * Revision 1.2.6.1  2009/07/15 09:48:44  pah
+ * redesign of parameterAdapters
+ *
  * Revision 1.2  2008/09/13 09:51:06  pah
  * code cleanup
  *

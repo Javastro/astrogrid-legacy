@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- db configuration file for CEA spring tests-->
+<beans 
+    xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+		http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-lang-2.5.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd"
+      
+      default-autowire="constructor">
+
+ <bean id="configurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="properties">
+         <bean class="java.util.Properties">
+            <constructor-arg type="java.util.Properties" >
+               <map >
+                  <entry key="cea.base.dir" >
+                    <value type="java.lang.String">/tmp</value>
+                  </entry>
+                  <entry key="cea.webapp.url"  >
+                    <value type="java.lang.String">http://localhost:8888/astrogrid-cea-server/</value>
+                   </entry>
+                   <entry key="registry.endpoint.url"  >
+                    <value type="java.lang.String">http://registry.astrogrid.org/astrogrid-registry/services/RegistryQuery</value>
+                   </entry>
+ 
+                </map>
+            </constructor-arg>
+         </bean>
+      </property>
+ </bean>
+
+
+<bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+<property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+<property name="url" value="jdbc:derby:/Users/pharriso/Work/ag/src/applications/server/resources/dbtest;create=true;upgrade=true"/>
+<property name="username" value=""/>
+<property name="password" value="" />
+</bean>
+ 
+
+</beans>

@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescription.java,v 1.11 2009/04/04 20:41:53 pah Exp $
+/*$Id: JavaClassApplicationDescription.java,v 1.12 2011/09/02 21:55:55 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,6 @@ import org.astrogrid.security.SecurityGuard;
  * where the authority name is specified in the constructor.
  * <p>
  * Constructs all the metadata for the application via reflection on the static method.
- * @todo add support for attributes, or something, so that other metadata can be specified (e.g. documentation, UCD). - java 5 annotations..
  * @todo improve definition of types
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 18 Mar 2008
@@ -62,6 +61,12 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
 
 /* 
 $Log: JavaClassApplicationDescription.java,v $
+Revision 1.12  2011/09/02 21:55:55  pah
+result of merging the 2931 branch
+
+Revision 1.11.2.1  2009/07/15 09:55:48  pah
+redesign of parameterAdapters
+
 Revision 1.11  2009/04/04 20:41:53  pah
 ASSIGNED - bug 2113: better configuration for java CEC
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2113

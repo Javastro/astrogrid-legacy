@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ceaimp:CeaApplication xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+<ceaimp:CeaApplication xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
                   xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
                   xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
                   xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
-                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.1 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.1/CEAImplementation.xsd"
  created="1999-01-01T00:00:00" status="active"
                            updated="2008-09-18T15:19:20.512+01:00">
         <title>tskymatch2 from STILTS v1.4-2</title>

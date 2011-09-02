@@ -21,6 +21,7 @@
 <!-- be explicit with the handler mappings - to allow some customization -->
 <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
 <property name="urlDecode" value="false" />
+<property name="useDefaultSuffixPattern" value="false"></property>
 <!-- could specify a default handler here to catch things which are not explicitly matched... -->
 </bean> 
 <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">

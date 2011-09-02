@@ -4,12 +4,12 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
                 xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0"
-                xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
                 xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
                 xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
    xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 ../../../../../../../../../contracts/src/schema/registry/RegistryInterface/v1.0/RegistryInterface.xsd
       http://www.ivoa.net/xml/CEA/v1.0 ../../../../../../contracts/src/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd
-      http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd
+      http://www.astrogrid.org/schema/CEAImplementation/v2.1 ../../../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.1/CEAImplementation.xsd
      "
      status="active" xsi:type="impl:CeaHttpApplication"
             created="2005-09-09T12:28:16" updated="2005-09-09T12:28:16"  >

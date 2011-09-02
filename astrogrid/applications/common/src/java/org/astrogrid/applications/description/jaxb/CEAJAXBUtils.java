@@ -1,5 +1,5 @@
 /*
- * $Id: CEAJAXBUtils.java,v 1.3 2009/06/05 13:06:20 pah Exp $
+ * $Id: CEAJAXBUtils.java,v 1.4 2011/09/02 21:55:56 pah Exp $
  * 
  * Created on 13 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -301,9 +301,9 @@ public class CEAJAXBUtils {
 	return retval;
 	
     }
-    private static <T> Schema findSchema(Class<T> clazz) {
+    public static <T> Schema findSchema(Class<T> clazz) {
 	javax.xml.validation.SchemaFactory sf = SchemaFactory
-		.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		.newInstance(Namespaces.XSD.getNamespace());
 	XmlSchema ann = clazz.getPackage().getAnnotation(
 		javax.xml.bind.annotation.XmlSchema.class);
 	try {
@@ -347,6 +347,12 @@ public class CEAJAXBUtils {
 
 /*
  * $Log: CEAJAXBUtils.java,v $
+ * Revision 1.4  2011/09/02 21:55:56  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.3.2.1  2009/07/15 09:37:20  pah
+ * change namespace handling
+ *
  * Revision 1.3  2009/06/05 13:06:20  pah
  * RESOLVED - bug 2921: add capabilities to the automatic registration
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2921

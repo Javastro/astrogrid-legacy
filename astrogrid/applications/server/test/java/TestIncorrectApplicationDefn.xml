@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<impl:CeaApplication xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+<impl:CeaApplication xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
                                            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                                            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
                                            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
                                            xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
                                            xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
-                                           xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+                                           xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.1 ../../../../contracts/src/schema/cea/CEAImplementation/v2.1/CEAImplementation.xsd"
      created="1999-01-01T00:00:00" status="active" updated="2008-03-12T18:15:21.03Z">
         <title>Test Application</title>
         <Name>Test Application</Name><!-- name should be shortName -->

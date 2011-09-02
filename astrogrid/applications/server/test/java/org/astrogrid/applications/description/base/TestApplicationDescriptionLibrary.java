@@ -1,4 +1,4 @@
-/*$Id: TestApplicationDescriptionLibrary.java,v 1.10 2009/02/26 12:47:04 pah Exp $
+/*$Id: TestApplicationDescriptionLibrary.java,v 1.11 2011/09/02 21:55:54 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,14 +11,12 @@
 package org.astrogrid.applications.description.base;
 
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 
 import net.ivoa.resource.Contact;
 import net.ivoa.resource.Content;
 import net.ivoa.resource.Creator;
 import net.ivoa.resource.Curation;
-import net.ivoa.resource.ResourceName;
+import net.ivoa.resource.ResourceNameSingle;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.MockCeaConfiguration;
@@ -66,8 +64,8 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
 	appMeta.setStatus("active");
 	appMeta.setTitle("dummy");
 	Curation curation = new Curation();
-	ResourceName rname = new ResourceName();
-	rname.setValue("ag");
+	ResourceNameSingle rname = new ResourceNameSingle();
+	rname.setName("ag");
 	Creator creator = new Creator();
 	creator.setName(rname);
 	creator.setLogo("??");
@@ -81,7 +79,7 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
     appMeta.setCuration(curation);
     Content content = new Content();
     content.setDescription("this is an app");
-    content.getSubject().add(new  JAXBElement<String>(new QName("subject"),String.class,"dontknow"));
+    content.getSubject().add("dontknow");
     content.setReferenceURL("http//silly.org");
     
     appMeta.setContent(content);
@@ -132,6 +130,12 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: TestApplicationDescriptionLibrary.java,v $
+Revision 1.11  2011/09/02 21:55:54  pah
+result of merging the 2931 branch
+
+Revision 1.10.2.1  2011/09/02 19:40:50  pah
+change setup of dynamic description library
+
 Revision 1.10  2009/02/26 12:47:04  pah
 separate more out into cea-common for both client and server
 

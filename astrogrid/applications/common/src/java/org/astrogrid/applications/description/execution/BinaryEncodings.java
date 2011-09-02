@@ -1,5 +1,5 @@
 /*
- * $Id: BinaryEncodings.java,v 1.1 2008/10/06 12:12:36 pah Exp $
+ * $Id: BinaryEncodings.java,v 1.2 2011/09/02 21:55:53 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -35,7 +35,9 @@ import javax.xml.bind.annotation.XmlEnumValue;
 public enum BinaryEncodings {
 
     @XmlEnumValue("base64")
-    BASE_64("base64");
+    BASE_64("base64"),
+    @XmlEnumValue("none")
+    NONE("none");
     private final String value;
 
     BinaryEncodings(String v) {

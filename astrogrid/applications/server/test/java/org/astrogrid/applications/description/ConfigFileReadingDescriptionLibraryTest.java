@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFileReadingDescriptionLibraryTest.java,v 1.6 2009/02/26 12:47:04 pah Exp $
+ * $Id: ConfigFileReadingDescriptionLibraryTest.java,v 1.7 2011/09/02 21:55:53 pah Exp $
  * 
  * Created on 26 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class ConfigFileReadingDescriptionLibraryTest {
     
-    private static BaseApplicationDescriptionLibrary lib;
+    private static ConfigFileReadingDescriptionLibrary lib;
 
     @BeforeClass
     static public void beforeClass() throws Exception{
@@ -47,7 +47,7 @@ public class ConfigFileReadingDescriptionLibraryTest {
     @Test
     public void testGetApplicationNames() {
         CEAConfiguration conf = new MockNonSpringConfiguredConfig();
-        lib = new ConfigFileReadingDescriptionLibrary(conf);
+        lib = new ConfigFileReadingDescriptionLibrary(conf.getApplicationDescriptionUrl(), new StandardApplicationDescriptionFactory(conf));
  	String[] names = lib.getApplicationNames();
 	assertNotNull(names);
 	assertTrue("there should be at least one application defined", names.length > 0);
@@ -56,8 +56,8 @@ public class ConfigFileReadingDescriptionLibraryTest {
     @Test
     public void testLoadJustApp() throws ApplicationDescriptionNotFoundException {
         CEAConfiguration conf = new MockNonSpringConfiguredConfig();
-        lib = new ConfigFileReadingDescriptionLibrary(conf);
- 	lib.loadApplications(ConfigFileReadingDescriptionLibraryTest.class.getResource("/TestSingleApplicationConfig.xml"));
+        lib = new ConfigFileReadingDescriptionLibrary(conf.getApplicationDescriptionUrl(), new StandardApplicationDescriptionFactory(conf));
+ 	lib.loadFileOrDirectory(ConfigFileReadingDescriptionLibraryTest.class.getResource("/TestSingleApplicationConfig.xml"));
 	ApplicationDefinition desc = lib.getDescription("ivo://org.testit/testappsingle");
 	assertNotNull("Should have found the singly defined application", desc);
     }
@@ -65,18 +65,28 @@ public class ConfigFileReadingDescriptionLibraryTest {
     @Test
     public void testIncorrectApp() {
         CEAConfiguration conf = new MockNonSpringConfiguredConfig();
-        lib = new ConfigFileReadingDescriptionLibrary(conf);
- 	boolean retval = lib.loadApplications(ConfigFileReadingDescriptionLibraryTest.class.getResource("/TestIncorrectApplicationDefn.xml"));
+        lib = new ConfigFileReadingDescriptionLibrary(conf.getApplicationDescriptionUrl(), new StandardApplicationDescriptionFactory(conf));
+ 	boolean retval = lib.loadFileOrDirectory(ConfigFileReadingDescriptionLibraryTest.class.getResource("/TestIncorrectApplicationDefn.xml"));
 	assertTrue("application loading should have failed for incorrect application definition",!retval);
 	String error = lib.getErrorMessage();
 	assertNotNull(error);
         System.err.println(error);
     }
+    
+    @Test
+    public void testLoadTAPApp() throws ApplicationDescriptionNotFoundException {
+        CEAConfiguration conf = new MockNonSpringConfiguredConfig();
+        lib = new ConfigFileReadingDescriptionLibrary(ConfigFileReadingDescriptionLibraryTest.class.getResource("/TAPConfig.xml"), new StandardApplicationDescriptionFactory(conf));
+       
+        ApplicationDefinition desc = lib.getDescription("ivo://org.testit/TAP");
+        assertNotNull("Should have found the singly defined application", desc);
+    }
+    
    
     @Test
     public void testReadDirectory(){
         CEAConfiguration conf = new MockNonSpringConfiguredConfig();
-        lib = new ConfigFileReadingDescriptionLibrary(conf, ConfigFileReadingDescriptionLibraryTest.class.getResource("/app/conf"));
+        lib = new ConfigFileReadingDescriptionLibrary(ConfigFileReadingDescriptionLibraryTest.class.getResource("/app/conf"), new StandardApplicationDescriptionFactory(conf));
         String[] names = lib.getApplicationNames();
         assertNotNull(names);
         
@@ -89,6 +99,21 @@ public class ConfigFileReadingDescriptionLibraryTest {
 
 /*
  * $Log: ConfigFileReadingDescriptionLibraryTest.java,v $
+ * Revision 1.7  2011/09/02 21:55:53  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.6.2.2  2011/09/02 19:40:45  pah
+ * change setup of dynamic description library
+ *
+ * Revision 1.6.2.1  2009/07/15 10:01:00  pah
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2907
+ * NEW - bug 2851: generalized DAL applications
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2851
+ * NEW - bug 2931: upgrades for 2009.2
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2931
+ * NEW - bug 2920: upgrade to uws 1.0
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2920
+ *
  * Revision 1.6  2009/02/26 12:47:04  pah
  * separate more out into cea-common for both client and server
  *

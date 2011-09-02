@@ -1,4 +1,4 @@
-/*$Id: ApplicationInterface.java,v 1.1 2009/02/26 12:25:48 pah Exp $
+/*$Id: ApplicationInterface.java,v 1.2 2011/09/02 21:55:52 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,8 +34,6 @@ public interface ApplicationInterface extends Identify {
      * @throws ParameterNotInInterfaceException if tis parametername is not present in the interface.
      */
     public abstract ParameterDescription getInputParameter(String name) throws ParameterNotInInterfaceException;
-    /** determine whether this parameter is an input or output parameter in this interface */
-    public abstract ParameterDirection getParameterDirection(String name) throws ParameterNotInInterfaceException;
     /** @see #getInputParameter(String)*/
     public abstract ParameterDescription getOutputParameter(String name) throws ParameterNotInInterfaceException;
     
@@ -48,6 +46,13 @@ public interface ApplicationInterface extends Identify {
 }
 /* 
 $Log: ApplicationInterface.java,v $
+Revision 1.2  2011/09/02 21:55:52  pah
+result of merging the 2931 branch
+
+Revision 1.1.2.1  2009/07/16 19:45:21  pah
+NEW - bug 2950: rework parameterAdapter
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2950
+
 Revision 1.1  2009/02/26 12:25:48  pah
 separate more out into cea-common for both client and server
 

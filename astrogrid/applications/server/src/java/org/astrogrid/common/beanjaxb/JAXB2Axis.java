@@ -1,5 +1,5 @@
 /*
- * $Id: JAXB2Axis.java,v 1.3 2009/07/15 13:37:07 pah Exp $
+ * $Id: JAXB2Axis.java,v 1.4 2011/09/02 21:55:53 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -146,7 +146,7 @@ public class JAXB2Axis {
       ExecutionSummaryType axis = new ExecutionSummaryType();
       axis.setApplicationName(castor.getApplicationName());
       axis.setExecutionId(castor.getJobId());
-      axis.setResultList(convert(castor.getResultList()));
+      axis.setResultList(convert(castor.getOutputList()));
       axis.setInputList(new InputListType());
       axis.getInputList().setInput(convert(castor.getInputList().getParameter().toArray(new org.astrogrid.applications.description.execution.ParameterValue[]{})));
       axis.setStatus(convert(castor.getPhase()));

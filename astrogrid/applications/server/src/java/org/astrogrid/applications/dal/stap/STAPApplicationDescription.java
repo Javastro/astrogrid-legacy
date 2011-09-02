@@ -1,5 +1,5 @@
 /*
- * $Id: STAPApplicationDescription.java,v 1.1 2008/10/20 10:34:05 pah Exp $
+ * $Id: STAPApplicationDescription.java,v 1.2 2011/09/02 21:55:53 pah Exp $
  * 
  * Created on 16 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,9 +13,12 @@
 package org.astrogrid.applications.dal.stap;
 
 
+import javax.sql.DataSource;
+
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.db.DBApplicationDescription;
+import org.astrogrid.applications.db.DataSourceFinder;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.AppMetadataAdapter;
 import org.astrogrid.applications.description.cea.CeaApplication;
@@ -41,11 +44,17 @@ public class STAPApplicationDescription extends DBApplicationDescription {
     }
 
     public STAPApplicationDescription(
-	     Configuration conf, javax.sql.DataSource ds) {
-	super(new AppMetadataAdapter(base),  conf, ds);
+	     Configuration conf, final javax.sql.DataSource ds) {
+	super(new AppMetadataAdapter(base),  conf, new DataSourceFinder() {
+            
+            public DataSource locateDataSource() {
+               return ds;
+            }
+        });
+	this.ds = ds;
     }
 
-    @Override
+    
     public Application initializeApplication(String callerAssignedID,
 	    SecurityGuard secGuard, Tool tool) throws Exception {
 	ApplicationInterface appInterface = this.getInterface(tool.getInterface());
@@ -53,18 +62,21 @@ public class STAPApplicationDescription extends DBApplicationDescription {
 	        appInterface = this.getInterfaces()[0];
 	    }
 	
-	return new STAPApplication(tool,appInterface, ds, new ApplicationEnvironment(callerAssignedID, secGuard, getInternalComponentFactory().getIdGenerator(), conf),  lib);
+	return new STAPApplication(tool,appInterface, ds, new ApplicationEnvironment(callerAssignedID, secGuard, getInternalComponentFactory().getIdGenerator(), conf),  getInternalComponentFactory().getProtocolLibrary());
 	
     }
-    
-    
-    
-
+ 
 }
 
 
 /*
  * $Log: STAPApplicationDescription.java,v $
+ * Revision 1.2  2011/09/02 21:55:53  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.1.4.1  2009/07/15 09:47:32  pah
+ * redesign of parameterAdapters
+ *
  * Revision 1.1  2008/10/20 10:34:05  pah
  * NEW - bug 2851: generalized DAL applications
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2851

@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableReader.java,v 1.8 2008/09/03 14:18:54 pah Exp $
+ * $Id: HyperZVOTableReader.java,v 1.9 2011/09/02 21:55:54 pah Exp $
  * 
  * Created on 18-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,6 +19,7 @@ import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.impl.CommandLineParameterDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
 import cds.savot.model.FieldSet;
@@ -47,8 +48,8 @@ public class HyperZVOTableReader extends DefaultCommandLineParameterAdapter impl
      * @param val
      * @param descr
      */
-    public HyperZVOTableReader(ApplicationInterface interf, ParameterValue val, CommandLineParameterDefinition descr,ApplicationEnvironment env, ExternalValue ival, final String bands) {
-        super(interf,val, descr,ival,env);
+    public HyperZVOTableReader(ApplicationInterface interf, ParameterValue val, CommandLineParameterDefinition descr, ParameterDirection dir ,ApplicationEnvironment env, ExternalValue ival, final String bands) {
+        super(interf,val, descr,dir, env);
       bandOrder = bands;
     }
    private SavotVOTable vot;
@@ -56,10 +57,10 @@ public class HyperZVOTableReader extends DefaultCommandLineParameterAdapter impl
       org.apache.commons.logging.LogFactory.getLog(HyperZVOTableReader.class);
    private final String bandOrder;
    /**
-    * @see org.astrogrid.applications.ParameterAdapter#process()
+    * @see org.astrogrid.applications.ParameterAdapter#getInternalValue()
     */
    public Object process() throws CeaException {
-      super.process();
+      super.getInternalValue();
        // apply vot
        File source = this.referenceFile;
        File plainFile = env.getTempFile(description.getId());

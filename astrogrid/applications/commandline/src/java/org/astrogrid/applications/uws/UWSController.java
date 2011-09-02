@@ -1,5 +1,5 @@
 /*
- * $Id: UWSController.java,v 1.9 2009/05/15 23:12:45 pah Exp $
+ * $Id: UWSController.java,v 1.10 2011/09/02 21:55:53 pah Exp $
  * 
  * Created on 8 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -27,6 +27,9 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.util.ValidationEventCollector;
+
 import net.ivoa.uws.ExecutionPhase;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -43,6 +46,10 @@ import org.astrogrid.applications.description.exception.ParameterDescriptionNotF
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.ResultListType;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
+import org.astrogrid.applications.manager.ExecutionController;
+import org.astrogrid.applications.manager.ExecutionPolicy;
 import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver.StdIOType;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
@@ -50,7 +57,6 @@ import org.astrogrid.applications.manager.persist.ExecutionIDNotFoundException;
 import org.astrogrid.applications.manager.persist.PersistenceException;
 import org.astrogrid.security.SecurityGuard;
 import org.joda.time.DateTime;
-import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -71,6 +77,7 @@ import org.springframework.web.util.UrlPathHelper;
 @RequestMapping("/jobs/**")
 public class UWSController  {
 
+    //IMPL this could be made more efficient using a more restricted PathMatcher, so that the doubling up for the paths with / in was not needed.
     /**
      * Logger for this class
      */
@@ -78,9 +85,12 @@ public class UWSController  {
 
     private final CEAComponents manager;
 
+    private final ExecutionPolicy policy;
+
     @Autowired
-    public UWSController(CEAComponents manager){
+    public UWSController(CEAComponents manager, ExecutionPolicy policy){
 	this.manager = manager;
+	this.policy = policy;
     }
 
 
@@ -89,6 +99,105 @@ public class UWSController  {
     static final Pattern jobPattern = Pattern.compile(jobRegexp);
     static final Pattern resultPattern = Pattern.compile(resultRegexp);
 
+    @RequestMapping(value="/jobs",method=RequestMethod.POST)
+    public void createJob(HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
+        ExecutionController cec = manager.getExecutionController();
+        PrintWriter pw = response.getWriter();
+        String accept = request.getHeader("Accept");
+        ValidationEventCollector handler = new ValidationEventCollector();
+        try {
+        Tool tool;
+            
+            // Unmarshall the file into a content object
+            tool = CEAJAXBUtils.unmarshall(request.getInputStream(), Tool.class);
+                
+            String arg1= "not set";
+            SecurityGuard secGuard = UWSUtils.createSecurityGuard(request);
+            String jobid = cec.init(tool, arg1, secGuard);
+            if (request.getParameter("AUTORUN")!=null) {
+                cec.execute(jobid, secGuard);
+                Thread.sleep(300);
+            }
+            UWSUtils.redirectToJobSummary(request, response, jobid);
+            
+        } catch (CeaException e) { // This is probably an error starting the job
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace(pw);
+            pw.close();
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            pw.println("error reading tool");
+            if (handler.hasEvents()) {
+                for (int i = 0; i < handler.getEvents().length; i++) {
+                    ValidationEvent event = handler.getEvents()[i];
+                    pw.println(event.toString());
+                }
+
+            }
+            e.printStackTrace(pw);
+            pw.close();
+        }
+    }
+
+    @RequestMapping(value="/jobs",method=RequestMethod.GET)
+    public ModelAndView listJobs(HttpServletRequest request, HttpServletResponse response) throws CeaException, CertificateException
+    {
+        ExecutionHistory eh = manager.getExecutionHistoryService();
+        QueryService qs = manager.getQueryService();
+        ModelAndView modelAndView;
+        if (UWSUtils.needsxml(request)) {
+            modelAndView = new ModelAndView("listjobs-xml");
+        } else {
+            modelAndView = new ModelAndView("listjobs");
+        }
+         
+        SecurityGuard secGuard = UWSUtils.createSecurityGuard(request);
+                List<JobOverview> jobs = new ArrayList<JobOverview>();
+        String[] jobids = eh.getExecutionIDs();
+        for (int i = 0; i < jobids.length; i++) {
+            if (eh.isCached(jobids[i])) {
+           ExecutionSummaryType job = qs.getSummary(jobids[i], secGuard);
+                   jobs.add(new JobOverview(job.getJobId(), job.getPhase().toString()));
+               
+            } else {
+                   jobs.add(new JobOverview(jobids[i], "Archived"));
+           
+            }
+        }
+        modelAndView.addObject("jobs", jobs);
+        return modelAndView;
+    }
+    @RequestMapping(value="/jobs/",method=RequestMethod.GET)
+    public ModelAndView listJobsSlash(HttpServletRequest request, HttpServletResponse response) throws CeaException, CertificateException
+    {
+        return listJobs(request, response);
+    }
+
+    
+    /**
+     * Bean to allow brief job details to be displayed.
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 7 Mar 2009
+     * @version $Name:  $
+     * @since VOTech Stage 8
+     */
+    public static class JobOverview {
+        private String jobId;
+        private String phase;
+        public JobOverview(String id, String phase) {
+            this.jobId = id;
+            this.phase = phase;
+        }
+        public String getJobId() {
+            return jobId;
+        }
+        public String getPhase() {
+            return phase;
+        }
+        
+    }
+
+    
     /*
        /jobs/cea-Macintosh.local-192.168.61.1-1210257725724-572445265/
      */
@@ -99,7 +208,7 @@ public class UWSController  {
      * @throws ExecutionIDNotFoundException 
      */
     @ModelAttribute("JobId")
-    public String discoverJobID(HttpServletRequest req) throws ExecutionIDNotFoundException
+    public String discoverJobID(HttpServletRequest req) 
     {
 	String reqURL = new UrlPathHelper().getPathWithinServletMapping(req);
 	Matcher matcher = jobPattern.matcher(reqURL);
@@ -111,7 +220,7 @@ public class UWSController  {
 	}
 	else    
 	{
-	    throw new ExecutionIDNotFoundException("there is no job id specified");
+	    return "";
 	}
 
     }
@@ -122,7 +231,7 @@ public class UWSController  {
     }
 
 
-    @RequestMapping(value="phase", method=RequestMethod.GET)
+    @RequestMapping(value="/jobs/*/phase", method=RequestMethod.GET)
     public ModelAndView viewphase( @ModelAttribute("JobId") String jobId, @ModelAttribute("secGuard") SecurityGuard secGuard, HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
 	ModelAndView mav = new ModelAndView("phase-xml");
@@ -130,14 +239,14 @@ public class UWSController  {
 	return mav;
     }
 
-    @RequestMapping(value="phase", method=RequestMethod.POST)
+    @RequestMapping(value="/jobs/*/phase", method=RequestMethod.POST)
     public void setphase( @ModelAttribute("JobId") String jobId, @ModelAttribute("secGuard") SecurityGuard secGuard, HttpServletRequest request, HttpServletResponse response) throws CeaException, IOException
     {
 	String newPhaseStr = request.getParameter("phase");
 	changeApplicationPhase(jobId, request, response, newPhaseStr, secGuard);
 	UWSUtils.redirectToJobSummary(request, response, jobId);
     }
-    @RequestMapping(value="quote", method=RequestMethod.POST)
+    @RequestMapping(value="/jobs/*/quote", method=RequestMethod.POST)
     public void acceptQuote( @ModelAttribute("JobId") String jobId, @ModelAttribute("secGuard") SecurityGuard secGuard, HttpServletRequest request, HttpServletResponse response) throws CeaException, IOException
     {
 	String newPhaseStr = "run";
@@ -200,14 +309,14 @@ public class UWSController  {
 	return modelAndView;
     }
 
-    @RequestMapping(value="executionduration", method=RequestMethod.GET)
+    @RequestMapping(value="/jobs/*/executionduration", method=RequestMethod.GET)
     public ModelAndView termination(@ModelAttribute("JobId") String jobId, @ModelAttribute("secGuard") SecurityGuard secGuard,  HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
 	ModelAndView mav = new ModelAndView("termination-xml");
 	mav.addObject("termination",manager.getQueryService().getSummary(jobId, secGuard).getExecutionDuration());
 	return mav;
     }
-    @RequestMapping(value="executionduration", method=RequestMethod.POST)
+    @RequestMapping(value="/jobs/*/executionduration", method=RequestMethod.POST)
     public void settermination(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
 	String durationStr = request.getParameter("executionduration");
@@ -216,6 +325,10 @@ public class UWSController  {
 	if(manager.getExecutionHistoryService().isApplicationInCurrentSet(jobId))
 	{
 	    Application app = manager.getExecutionHistoryService().getApplicationFromCurrentSet(jobId);
+	    if(policy.getMaxRunTime() > 0 && duration > policy.getMaxRunTime())
+	    {
+	        duration = policy.getMaxRunTime();
+	    }
 	    app.setRunTimeLimit(duration*1000);
 	} else {
 	    logger.warn("attempt to set execution duration for finished job="+jobId);
@@ -224,18 +337,24 @@ public class UWSController  {
 	return;
 
     }
-    @RequestMapping(value="destruction", method=RequestMethod.GET)
+    @RequestMapping(value="/jobs/*/destruction", method=RequestMethod.GET)
     public ModelAndView destruction(@ModelAttribute("JobId") String jobId,  @ModelAttribute("secGuard") SecurityGuard secGuard,  HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
 	ModelAndView mav = new ModelAndView("destruction-xml");
 	mav.addObject("destruction",manager.getQueryService().getSummary(jobId, secGuard).getDestruction());
 	return mav;
     }
-    @RequestMapping(value="destruction", method=RequestMethod.POST)
+    @RequestMapping(value="/jobs/*/destruction", method=RequestMethod.POST)
     public void setdestruction(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
+        //FIXME check that destruction not bing set too far in future
 	String dateStr = request.getParameter("destruction");
 	DateTime termination = new DateTime(dateStr);
+	DateTime now = new DateTime();
+	now.plus(policy.getDefaultLifetime()*1000);
+	if(termination.isAfter(now.getMillis())){
+	    termination = now;
+	}
 
 	if(manager.getExecutionHistoryService().isApplicationInCurrentSet(jobId))
 	{
@@ -250,7 +369,7 @@ public class UWSController  {
 
     }
 
-    @RequestMapping(value="quote", method=RequestMethod.GET)
+    @RequestMapping(value="/jobs/*/quote", method=RequestMethod.GET)
     public ModelAndView quote(@ModelAttribute("JobId") String jobId,  @ModelAttribute("secGuard") SecurityGuard secGuard,  HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
 	ModelAndView mav = new ModelAndView("quote-xml");
@@ -259,7 +378,7 @@ public class UWSController  {
 
     }
 
-    @RequestMapping(value="results",method=RequestMethod.GET)
+    @RequestMapping(value="/jobs/*/results",method=RequestMethod.GET)
     public ModelAndView results(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws ExecutionIDNotFoundException, PersistenceException, ApplicationDescriptionNotFoundException, ParameterDescriptionNotFoundException
     {
         ModelAndView modelAndView;
@@ -278,7 +397,7 @@ public class UWSController  {
 	{
 	    ExecutionSummaryType summary = eh.getApplicationFromArchive(jobId);
 	    ApplicationDefinition appdesc =  manager.getApplicationDescriptionLibrary().getDescription(summary.getApplicationName());
-	    List<ParameterValue> resultList = summary.getResultList().getResult();
+	    List<ParameterValue> resultList = summary.getOutputList().getResult();
 	    for (ParameterValue parameterValue : resultList) {
 		ResultInfo rinfo = new ResultInfo(parameterValue);
 		ParameterDescription parameterDescription = appdesc.getParameterDescription(parameterValue.getId());
@@ -334,7 +453,7 @@ public class UWSController  {
 	}
     }
 
-    @RequestMapping(value="",method=RequestMethod.GET ) //really want a mapping that means just use the top level one...
+    @RequestMapping(value="/jobs/?*",method=RequestMethod.GET ) //really want a mapping that means just use the top level one...
     public ModelAndView showJob(@ModelAttribute("JobId") String jobId,  @ModelAttribute("secGuard") SecurityGuard secGuard, HttpServletRequest request, HttpServletResponse response) throws CeaException
     {
 	logger.info("showing JobId=" + jobId);
@@ -353,10 +472,17 @@ public class UWSController  {
 	logger.debug("returning model for "+jobId);
 	return modelAndView;
     }
+    
+    @RequestMapping(value="/jobs/?*/",method=RequestMethod.GET ) //really want a mapping that means just use the top level one...
+   public ModelAndView showJobSlash(@ModelAttribute("JobId") String jobId,  @ModelAttribute("secGuard") SecurityGuard secGuard, HttpServletRequest request, HttpServletResponse response) throws CeaException
+   {
+        return showJob(jobId, secGuard, request, response);
+   }
+    
 
 
  
-    @RequestMapping(value="",method=RequestMethod.POST ) 
+    @RequestMapping(value="/jobs/?*",method=RequestMethod.POST ) 
     public void delJobByPOST(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws CeaException, IOException
     {
 	if(request.getParameter("ACTION") != null && request.getParameter("ACTION").equalsIgnoreCase("delete"))
@@ -370,7 +496,7 @@ public class UWSController  {
 	}
 
     }
-    @RequestMapping(value="",method=RequestMethod.DELETE ) 
+    @RequestMapping(value="/jobs/?*",method=RequestMethod.DELETE ) 
     public void delJobByDEL(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws CeaException, IOException
     {
 
@@ -391,7 +517,7 @@ public class UWSController  {
     }
 
 
-    @RequestMapping("error")
+    @RequestMapping("/jobs/*/error")
     public void showError(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
 	File file = manager.getQueryService().getLogFile(jobId, StdIOType.err);
@@ -420,7 +546,7 @@ public class UWSController  {
 	}
     }
 
-    @RequestMapping("stdout")
+    @RequestMapping("/jobs/*/stdout")
     public void showStdOut(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws CeaException, IOException
     {
 	File file = manager.getQueryService().getLogFile(jobId, StdIOType.out);
@@ -434,7 +560,7 @@ public class UWSController  {
      * @throws CeaException 
      * @throws IOException 
      */
-    @RequestMapping(value="results/*",method=RequestMethod.GET)
+    @RequestMapping(value="/jobs/*/results/*",method=RequestMethod.GET)
     public void showResult(@ModelAttribute("JobId") String jobId,  @ModelAttribute("secGuard") SecurityGuard secGuard, HttpServletRequest request, HttpServletResponse response) throws CeaException, IOException
     {
 	String reqURL = new UrlPathHelper().getPathWithinServletMapping(request);
@@ -553,6 +679,15 @@ public class UWSController  {
 
 /*
  * $Log: UWSController.java,v $
+ * Revision 1.10  2011/09/02 21:55:53  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.9.2.2  2009/11/08 11:51:09  pah
+ * slightly better behaviour with / at end of url
+ *
+ * Revision 1.9.2.1  2009/07/16 19:42:37  pah
+ * update to impl v2.1
+ *
  * Revision 1.9  2009/05/15 23:12:45  pah
  * ASSIGNED - bug 2911: improve authz configuration
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911

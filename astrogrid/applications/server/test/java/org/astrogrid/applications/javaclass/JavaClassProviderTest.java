@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.18 2009/04/04 20:41:54 pah Exp $
+/*$Id: JavaClassProviderTest.java,v 1.19 2011/09/02 21:55:57 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,9 +76,9 @@ public class JavaClassProviderTest extends TestCase {
     }
     
     public void testHelloWorld() throws Exception {
-        ApplicationDescription hw = lib.getDescription("ivo://local.test/sampleJavaApp");
+        ApplicationDescription hw = lib.getDescription("ivo://org.astrogrid.test/sampleJavaApp");
         assertNotNull(hw);
-        assertEquals("ivo://local.test/sampleJavaApp",hw.getId());
+        assertEquals("ivo://org.astrogrid.test/sampleJavaApp",hw.getId());
         ApplicationInterface iface = hw.getInterface("helloWorld");
         assertNotNull(iface);
         Tool tool = new Tool();
@@ -101,7 +101,7 @@ public class JavaClassProviderTest extends TestCase {
         System.out.println(o);
     }
     public void testSum() throws Exception {
-        ApplicationDescription hw = lib.getDescription("ivo://local.test/sampleJavaApp");
+        ApplicationDescription hw = lib.getDescription("ivo://org.astrogrid.test/sampleJavaApp");
         assertNotNull(hw);
         ApplicationInterface iface = hw.getInterface("sum");
         String[] inputParameterNames = iface.getArrayofInputs();
@@ -140,7 +140,7 @@ public class JavaClassProviderTest extends TestCase {
     
 
     public void testEchoDifferentArgs() throws Exception {
-        ApplicationDescription hw = lib.getDescription("ivo://local.test/sampleJavaApp");
+        ApplicationDescription hw = lib.getDescription("ivo://org.astrogrid.test/sampleJavaApp");
         assertNotNull(hw);
         ApplicationInterface iface = hw.getInterface("echoDifferent");
         String[] inputParameterNames = iface.getArrayofInputs();
@@ -183,6 +183,18 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.19  2011/09/02 21:55:57  pah
+result of merging the 2931 branch
+
+Revision 1.18.2.1  2009/07/15 10:00:59  pah
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2907
+NEW - bug 2851: generalized DAL applications
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2851
+NEW - bug 2931: upgrades for 2009.2
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2931
+NEW - bug 2920: upgrade to uws 1.0
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2920
+
 Revision 1.18  2009/04/04 20:41:54  pah
 ASSIGNED - bug 2113: better configuration for java CEC
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2113

@@ -1,4 +1,4 @@
-/*$Id: CompositeApplicationDescriptionLibrary.java,v 1.6 2008/09/03 14:18:43 pah Exp $
+/*$Id: CompositeApplicationDescriptionLibrary.java,v 1.7 2011/09/02 21:55:49 pah Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,6 @@ import junit.framework.TestSuite;
 /** An {@link org.astrogrid.applications.description.ApplicationDescriptionLibrary} that composes together other <tt>ApplicationDescriptionLibrary</tt>s 
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Jun-2004
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 11 Jun 2008
- * @TODO see about using this class again
  *
  */
 public class CompositeApplicationDescriptionLibrary implements ApplicationDescriptionLibrary, ComponentDescriptor {
@@ -76,17 +75,18 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
      * @see org.astrogrid.applications.description.ApplicationDescriptionLibrary#getApplicationNames()
      */
     public String[] getApplicationNames() {
-        List results = new ArrayList();
-        for (Iterator i = libs.iterator(); i.hasNext(); ) {
-            ApplicationDescriptionLibrary lib = (ApplicationDescriptionLibrary)i.next();
+        List<String> results = new ArrayList<String>();
+        for (Iterator<ApplicationDescriptionLibrary> i = libs.iterator(); i.hasNext(); ) {
+            ApplicationDescriptionLibrary lib = i.next();
             String[] names = lib.getApplicationNames();
             results.addAll(Arrays.asList(names));
         }
-        return (String[])results.toArray(new String[]{});
+        return results.toArray(new String[]{});
     }
     
     /** add another library to the composite */
     public void addLibrary(ApplicationDescriptionLibrary lib) {
+        logger.info("adding library " + lib.toString());
         libs.add(lib);
     }
     /**
@@ -100,8 +100,8 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
      */
     public String getDescription() {
         StringBuffer libDescs = new StringBuffer();
-        for (Iterator i = libs.iterator(); i.hasNext(); ) {
-            ApplicationDescriptionLibrary lib = (ApplicationDescriptionLibrary)i.next();
+        for (Iterator<ApplicationDescriptionLibrary> i = libs.iterator(); i.hasNext(); ) {
+            ApplicationDescriptionLibrary lib = i.next();
             libDescs.append("\n");
             if (lib instanceof ComponentDescriptor) {
                  libDescs.append(((ComponentDescriptor)lib).getDescription());
@@ -111,7 +111,7 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
                 libDescs.append(Arrays.asList(lib.getApplicationNames()));                
             }
         }
-        return "Composes a set of description libraries into one. Currently contains " + libDescs.toString();
+        return "Composes a set of description libraries into one. Currently contains "+libs.size()+" libraries\n" + libDescs.toString();
     }
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getInstallationTest()
@@ -119,7 +119,7 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
     public Test getInstallationTest() {
         // join together container installationi tests.
         TestSuite suite = new TestSuite("Tests for " + this.getName());
-        for (Iterator i = libs.iterator(); i.hasNext(); ) {
+        for (Iterator<ApplicationDescriptionLibrary> i = libs.iterator(); i.hasNext(); ) {
             Object o = i.next();
             if (o instanceof ComponentDescriptor) {
                 Test t= ((ComponentDescriptor)o).getInstallationTest();
@@ -150,11 +150,26 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
     // not found
     throw new ApplicationDescriptionNotFoundException(name);
     }
+    /**
+     * @return the libs
+     */
+    public Set<ApplicationDescriptionLibrary> getLibs() {
+        return libs;
+    }
 }
 
 
 /* 
 $Log: CompositeApplicationDescriptionLibrary.java,v $
+Revision 1.7  2011/09/02 21:55:49  pah
+result of merging the 2931 branch
+
+Revision 1.6.6.2  2011/09/02 19:38:47  pah
+change setup of dynamic description library
+
+Revision 1.6.6.1  2009/07/15 09:48:12  pah
+redesign of parameterAdapters
+
 Revision 1.6  2008/09/03 14:18:43  pah
 result of merge of pah_cea_1611 branch
 

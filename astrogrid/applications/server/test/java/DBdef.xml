@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ceaimp:DBDefinition xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1" 
-xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0" xmlns:p="http://www.ivoa.net/xml/STC/stc-v1.30.xsd"
+<ceaimp:CeaApplication xsi:type="ceaimp:CeaDBApplicationDefinition" xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1" 
+xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.1" xmlns:p="http://www.ivoa.net/xml/STC/stc-v1.30.xsd"
 xmlns:p1="http://www.ivoa.net/xml/VOApplication/v1.0rc1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd ">
+xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.1 ../../../../contracts/src/schema/cea/CEAImplementation/v2.1/CEAImplementation.xsd">
 <schema> 
 <name>stap</name>
   <table>
@@ -83,4 +83,4 @@ xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../..
     
   </table>
 </schema>
-</ceaimp:DBDefinition>
+</ceaimp:CeaApplication>

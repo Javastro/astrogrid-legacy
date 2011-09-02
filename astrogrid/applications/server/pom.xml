@@ -8,11 +8,11 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-cea-server</artifactId><!--  would be better to rename to astrogrid-cea-common -->
   <name>CEA server library</name>
-  <version>2009.1</version>
+  <version>2.0</version>
   <parent>
       <artifactId>astrogrid-cea-site</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1</version>
+      <version>2.0</version>
   </parent>
   <scm>
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/applications/server/</connection>
@@ -199,6 +199,11 @@
     </dependency>
     <dependency>
        <groupId>org.springframework</groupId>
+       <artifactId>spring-jdbc</artifactId>
+       <version>2.5.2</version>
+    </dependency>
+    <dependency>
+       <groupId>org.springframework</groupId>
        <artifactId>spring-test</artifactId>
        <version>2.5.2</version>
        <scope>test</scope>
@@ -258,7 +263,7 @@
     <dependency>
        <groupId>uk.ac.starlink</groupId>
        <artifactId>stil</artifactId>
-       <version>2.0-1</version>
+       <version>2.7-1</version>
     </dependency>
     <dependency>
        <groupId>net.sourceforge.junitee</groupId>
@@ -325,6 +330,11 @@
           </dependency>
   
    
+          <dependency>
+          	<groupId>org.apache.derby</groupId>
+          	<artifactId>derby</artifactId>
+          	<version>10.4.2.0</version>
+          </dependency>
  </dependencies>
  <profiles>
      <profile > <!--  profile needed only because junitee for junit4 is not in the main repos -->
@@ -338,7 +348,7 @@
         </repositories>
      </profile>
   </profiles>
-    <url>${astrogrid_doc_URL_root}/p/cea/${project.version}/server</url>  --> 
+    <url>${astrogrid_doc_URL_root}/p/cea/${project.version}/server</url> 
    <distributionManagement>
     <site>
       <id>agsite</id>   <!-- this is the desired layout of the site and - will have to be repeated in the  projects unfortunately until fixes to http://jira.codehaus.org/browse/MNG-2915 are available  -->

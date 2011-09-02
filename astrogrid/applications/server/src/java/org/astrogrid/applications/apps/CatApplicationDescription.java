@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.15 2009/02/26 12:45:55 pah Exp $
+/*$Id: CatApplicationDescription.java,v 1.16 2011/09/02 21:55:54 pah Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,13 @@
 **/
 package org.astrogrid.applications.apps;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import junit.framework.Test;
 
 import org.apache.commons.logging.Log;
@@ -38,7 +37,10 @@ import org.astrogrid.applications.description.intnl.InternallyConfiguredApplicat
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.javainternal.JavaInternalApplication;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
+import org.astrogrid.applications.parameter.MutableInternalValue;
 import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterDirection;
+import org.astrogrid.applications.parameter.StreamBasedInternalValue;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -122,14 +124,14 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
         public void run() {
             try {
         	setStatus(Status.RUNNING);
-        	List streams = new ArrayList();
+        	List<InputStream> streams = new ArrayList<InputStream>();
         	for (Iterator i = inputParameterAdapters(); i.hasNext();) {
         	    ParameterAdapter input = (ParameterAdapter)i.next();
         	    reportMessage("reading in parameter " + input.getWrappedParameter().getValue());
-        	    streams.add(input.process());
+        	    streams.add(input.getInternalValue().getStreamFrom());
         	}            
         	setStatus(Status.WRITINGBACK);
-        	ParameterAdapter out= (ParameterAdapter)outputParameterAdapters().next(); // we know there's just the one.
+        	StreamParameterAdapter out= (StreamParameterAdapter)outputParameterAdapters().next(); // we know there's just the one.
         	out.writeBack(streams);
         	setStatus(Status.COMPLETED);
             } catch (CeaException e) {
@@ -138,8 +140,8 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
         }
          @Override
 	protected ParameterAdapter instantiateAdapter(ParameterValue pval,
-                ParameterDescription descr, ExternalValue indirectVal) {
-            return new StreamParameterAdapter(pval, descr, indirectVal);
+                ParameterDescription descr, ParameterDirection dir, ExternalValue indirectVal) {
+            return new StreamParameterAdapter(pval, descr, dir, applicationEnvironment);
         }
 
     }
@@ -149,31 +151,20 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
     public static class StreamParameterAdapter extends DefaultParameterAdapter {
         /** always returns an InputStream */
         @Override
-	public Object process() throws CeaException {
-            if (externalVal == null) {
-                return new ByteArrayInputStream(val.getValue().getBytes());
-            } else {
-                return externalVal.read();
+	public MutableInternalValue getInternalValue() throws CeaException {
+            if(internalVal == null){
+            internalVal = new StreamBasedInternalValue(val, getProtocolLib(), env); 
             }
+           return internalVal;
         }
         
         /** expects a list of input streams */
-        @Override
-	public void writeBack(Object o) throws CeaException {
-            if (! (o instanceof List)) {
-                throw new CeaException("Programming error - expected List of Streams, got " + o.getClass().getName());                
-            }
-            OutputStream os = null;
-            if (externalVal == null) {
-                os = new ByteArrayOutputStream();
-            } else {
-                os  = externalVal.write();
-            }
-            try {
-                InputStream is = null;
-                for (Iterator i = ((List)o).iterator(); i.hasNext(); ) {
+	public void writeBack(List<? extends InputStream> o) throws CeaException {
+           OutputStream os = null;
+           try {
+                os = ((StreamBasedInternalValue)internalVal).getStreamTo();
+                for (InputStream is : o) {                
                     try {
-                        is = (InputStream)i.next();                
                         Piper.pipe(is,os); // hope this doesn't close the os.
                     } finally {
                         if (is != null) {
@@ -186,7 +177,7 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
                 }
                 }
             } catch (IOException e) {
-                throw new CeaException("Faled to write back",e);
+                throw new CeaException("Fialed to write back",e);
             } finally {
                 if (os != null) {
                     try {
@@ -196,12 +187,12 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
                 }
             }
             }
-                if (externalVal == null) {
+                if (env == null) {
                     val.setValue(os.toString()); // uses byteArrayOutputStream's overloaded toString().
                 }                
         }
-        public StreamParameterAdapter(ParameterValue val, ParameterDescription description, ExternalValue externalVal) {
-            super(val, description, externalVal);
+        public StreamParameterAdapter(ParameterValue val, ParameterDescription description, ParameterDirection dir, ApplicationEnvironment env) {
+            super(val, description, dir, env);
         }
 
 
@@ -212,6 +203,16 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.16  2011/09/02 21:55:54  pah
+result of merging the 2931 branch
+
+Revision 1.15.2.2  2009/07/16 19:47:34  pah
+ASSIGNED - bug 2950: rework parameterAdapter
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2950
+
+Revision 1.15.2.1  2009/07/15 09:46:14  pah
+redesign of parameterAdapters
+
 Revision 1.15  2009/02/26 12:45:55  pah
 separate more out into cea-common for both client and server
 

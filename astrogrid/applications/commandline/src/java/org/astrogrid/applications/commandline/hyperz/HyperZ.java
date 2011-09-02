@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZ.java,v 1.8 2008/09/18 08:46:46 pah Exp $
+ * $Id: HyperZ.java,v 1.9 2011/09/02 21:55:54 pah Exp $
  * 
  * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,6 +21,7 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 
@@ -79,17 +80,17 @@ public class HyperZ extends CommandLineApplication {
      * @author Paul Harrison (pah@jb.man.ac.uk)
      *
      */
-  
-        protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ExternalValue indirectVal) {
+   @Override
+        protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ParameterDirection dir, ExternalValue indirectVal) {
             if (pval.getId().equals("input_catalog")) {
                 String bands = findInputParameter("BAND_ORDER").getValue(); //TODO this is a bit hacky - will not allow indirect parameter setting - but need a quick fix...
-                HyperZVOTableReader reader = new HyperZVOTableReader(getApplicationInterface(),pval, (CommandLineParameterDefinition) desr,applicationEnvironment,indirectVal, bands);
+                HyperZVOTableReader reader = new HyperZVOTableReader(getApplicationInterface(),pval, (CommandLineParameterDefinition) desr,dir, applicationEnvironment,indirectVal, bands);
                 votableSource.setSource(reader);
                 return reader;
             } else if (pval.getId().equals("output_catalog")) {
-                return new HyperZVOTableWriter(getApplicationInterface(), pval,(CommandLineParameterDefinition)desr,applicationEnvironment,indirectVal,votableSource);
+                return new HyperZVOTableWriter(getApplicationInterface(), pval,(CommandLineParameterDefinition)desr,dir, applicationEnvironment,indirectVal,votableSource);
             } else { // default behaviour                
-                return super.instantiateAdapter(pval,desr,indirectVal);
+                return super.instantiateAdapter(pval,desr,dir, indirectVal);
             }            
           }        
 

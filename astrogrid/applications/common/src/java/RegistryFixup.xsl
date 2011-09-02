@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: RegistryFixup.xsl,v 1.1 2008/12/16 19:27:45 pah Exp $
+<!-- $Id: RegistryFixup.xsl,v 1.2 2011/09/02 21:55:54 pah Exp $
 Stylesheet to transform any CEA implementation dependent information out of 1.0 registry instances.
 These style of instances are created
 Paul Harrison pah@jb.man.ac.uk
@@ -9,11 +9,11 @@ Paul Harrison pah@jb.man.ac.uk
                 xmlns:xs="http://www.w3.org/2001/XMLSchema" 
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                 xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
-                xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" 
+                xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1" 
                 xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" 
                 xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
                 xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"               
-                xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"               
+                xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"               
                 exclude-result-prefixes="ceaimpl">
    <xsl:output method="xml" encoding="UTF-8" indent="yes" />
    <xsl:strip-space elements="*"/>
@@ -48,6 +48,12 @@ http://software.astrogrid.org/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd</xsl
    
 <!--
  $Log: RegistryFixup.xsl,v $
+ Revision 1.2  2011/09/02 21:55:54  pah
+ result of merging the 2931 branch
+
+ Revision 1.1.4.1  2011/09/02 19:38:27  pah
+ update namespace versions
+
  Revision 1.1  2008/12/16 19:27:45  pah
  RESOLVED - bug 2875: Application registration lacks schemaLocation
  http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2875

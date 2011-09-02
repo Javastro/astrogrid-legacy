@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationDescription.java,v 1.1 2009/02/26 12:45:54 pah Exp $
+ * $Id: AbstractApplicationDescription.java,v 1.2 2011/09/02 21:55:49 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -17,12 +17,10 @@ import net.ivoa.resource.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.ApplicationFactory;
+import org.astrogrid.applications.Application;
 import org.astrogrid.applications.component.InternalCEAComponents;
 import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.ApplicationDefinition;
-import org.astrogrid.applications.description.MetadataAdapter;
 import org.astrogrid.applications.description.base.ApplicationBase;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.cea.CeaApplication;
@@ -60,9 +58,9 @@ public abstract class AbstractApplicationDescription implements ApplicationDescr
 
    protected final MetadataAdapter metadataAdapter ;
 
-private  InternalCEAComponents internalComponentFactory;
+   private  InternalCEAComponents internalComponentFactory;
 
-protected final Configuration conf;
+   protected final Configuration conf;
 
  
    
@@ -77,6 +75,7 @@ protected final Configuration conf;
       this.appBase = ma.getApplicationBase();
       this.resource = ma.getResource();
       this.conf = theConf;
+
 
       assert appBase.isValid() : "ApplicationDescriptions should be passed  CeaApplications with valid BaseApplicationDescriptions";
       //make sure that the back reference to the application definition is set 
@@ -112,7 +111,7 @@ public String getId() {
  }
 
 
-    public String getName() {
+ public String getName() {
      return resource.getShortName();//IMPL is it better to do getTitle?
 }
 
@@ -177,6 +176,16 @@ public String getReferenceURL() {
 	assert metadataAdapter != null : "metadataAdapter should have been set for the application at creation time";
 	return metadataAdapter;
     }
+
+
+
+
+
+
+
+
+    public abstract Application initializeApplication(String callerAssignedID,
+            SecurityGuard secGuard, Tool tool) throws Exception;
 
 
     

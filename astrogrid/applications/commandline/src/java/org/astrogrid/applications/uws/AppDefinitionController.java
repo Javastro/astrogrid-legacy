@@ -1,5 +1,5 @@
 /*
- * $Id: AppDefinitionController.java,v 1.2 2009/02/26 12:22:54 pah Exp $
+ * $Id: AppDefinitionController.java,v 1.3 2011/09/02 21:55:53 pah Exp $
  * 
  * Created on 8 Oct 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,10 +13,8 @@
 package org.astrogrid.applications.uws;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,12 +32,12 @@ import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.DynamicApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.StandardApplicationDescriptionFactory;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.xml.sax.InputSource;
 
 /**
  * Controller for Dynamic application definition.
@@ -60,16 +58,19 @@ public class AppDefinitionController {
     
     @Autowired
     public AppDefinitionController(CEAComponents manager, Configuration conf) {
-        this.manager = manager;
-        this.dynLib = new DynamicApplicationDescriptionLibrary(conf);
-        //IMPL perhaps this is a slightly screwy way to add the dynamic app desc library - should be more explicit in the spring config - but then difficult to get the dynlib 
+        this.manager = manager; 
         ApplicationDescriptionLibrary complib = manager.getApplicationDescriptionLibrary();
         if(complib instanceof CompositeApplicationDescriptionLibrary){
-            ((CompositeApplicationDescriptionLibrary)complib).addLibrary(dynLib);
-            disabled = false;
+            Set<ApplicationDescriptionLibrary> libs = ((CompositeApplicationDescriptionLibrary)complib).getLibs();
+            for (ApplicationDescriptionLibrary applicationDescriptionLibrary : libs) {
+                if(applicationDescriptionLibrary instanceof DynamicApplicationDescriptionLibrary){
+                    this.dynLib = (DynamicApplicationDescriptionLibrary) applicationDescriptionLibrary;
+                    disabled = false;
+                }
+            }
         }
-        else {
-            logger.error("CompositeApplicationDescriptionLibrary not found - dynamic library not added to it");
+        if(disabled) {
+            logger.info("dynamic library not found - applications cannot be dynamically defined");
         }
     }
 
@@ -121,6 +122,19 @@ public class AppDefinitionController {
 
 /*
  * $Log: AppDefinitionController.java,v $
+ * Revision 1.3  2011/09/02 21:55:53  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.2.2.3  2011/09/02 19:42:55  pah
+ * change setup of dynamic description library
+ *
+ * Revision 1.2.2.2  2009/11/26 10:21:47  pah
+ * RESOLVED - bug 2974: create application page does not save
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2974
+ *
+ * Revision 1.2.2.1  2009/07/15 10:16:25  pah
+ * redesign of parameterAdapters
+ *
  * Revision 1.2  2009/02/26 12:22:54  pah
  * separate more out into cea-common for both client and server
  *

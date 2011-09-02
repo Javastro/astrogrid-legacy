@@ -2,7 +2,8 @@
                                  java.net.*,
                  java.util.*,
                                  org.astrogrid.config.*,
-                                 org.astrogrid.applications.component.CEAComponentContainer"
+                                 org.astrogrid.applications.component.CEAComponentContainer,
+                                 javax.servlet.jsp.JspWriter"
     session="false" %>
 <html>
 <head>

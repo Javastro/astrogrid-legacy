@@ -13,7 +13,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import net.ivoa.DateTimeXmlAdapter;
+
+import net.ivoa.jaxb.DateTimeXmlAdapter;
 import net.ivoa.uws.ExecutionPhase;
 import org.joda.time.DateTime;
 

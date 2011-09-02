@@ -10,10 +10,10 @@
     <parent>
       <artifactId>astrogrid-cea-site</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1</version>
+      <version>2.0</version>
     </parent>
   <name>CEA CEC web server</name>
-  <version>${astrogrid_cea_version}</version>
+  <version>2.0</version>
   <description>A CEA application-server for running applications. The service provides
     CEA's standard SOAP interface, "CommonExecutionController" and a UWS interface.</description>
   <properties>
@@ -66,7 +66,7 @@
           <plugin>
             <artifactId>maven-war-plugin</artifactId>
             <configuration>
-               <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory> <!-- consistent with current 1.0 practice -->
+               <warSourceDirectory>src/webapp</warSourceDirectory> <!-- consistent with current 1.0 practice -->
               <webResources>
               
                 <resource>  <!-- put a copy of the raw xdocs into the webapp - these are translated on the fly by the webapp -->         
@@ -110,7 +110,7 @@
                     <tstamp>
     <format property="TODAY_UK" pattern="d-MMMM-yyyy" locale="en,UK"/>
   </tstamp>
-                  <echo message="${pom.name} version:${project.version} built:${TODAY_UK}" file="${project.build.directory}/about.txt" level="error" />
+                  <echo message="${project.name} version:${project.version} built:${TODAY_UK}" file="${project.build.directory}/about.txt" level="error" />
                   <available 
                     file="${project.build.directory}/${project.build.finalName}.war" 
                     property="file.exists" value="true" /> 
@@ -170,11 +170,6 @@
      <dependency>
         <groupId>cds.u-strasbg.fr</groupId>
         <artifactId>cds.savot.model</artifactId>
-        <version>2.6</version>
-     </dependency>
-     <dependency>
-        <groupId>cds.u-strasbg.fr</groupId>
-        <artifactId>cds.savot.pull</artifactId>
         <version>2.6</version>
      </dependency>
      <dependency>
@@ -266,6 +261,13 @@
         <artifactId>spring-test</artifactId>
         <version>2.5.2</version>
         <!-- <scope>test</scope> seem to need in the javadoc -->
+     </dependency>
+     
+     <dependency><!-- include this to get rid of some jsp errors that are not an error at runtime... -->
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>6.0.18</version>
+        <scope>provided</scope>
      </dependency>
   </dependencies>
   <profiles><profile><id>chibaprof</id> <!-- need to switch this profile on to activate the repositories for initial download -->

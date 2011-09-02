@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: chiba-unmassage.xsl,v 1.1 2008/10/09 11:40:10 pah Exp $
+<!-- $Id: chiba-unmassage.xsl,v 1.2 2011/09/02 21:55:53 pah Exp $
 Cope with the fact that chiba does not seem to like xsi:type at the moment 
 Put xsi:type back into application defintion documents.
 -->
@@ -12,7 +12,7 @@ Put xsi:type back into application defintion documents.
                 xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" 
                 xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" 
                 xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"               
-                xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
                 >
    <xsl:output method="xml" encoding="UTF-8" indent="yes" />
    <xsl:strip-space elements="*"/>
@@ -51,6 +51,12 @@ Put xsi:type back into application defintion documents.
 </xsl:stylesheet>
 <!--
  $Log: chiba-unmassage.xsl,v $
+ Revision 1.2  2011/09/02 21:55:53  pah
+ result of merging the 2931 branch
+
+ Revision 1.1.4.1  2009/11/08 12:16:56  pah
+ update namespaces
+
  Revision 1.1  2008/10/09 11:40:10  pah
  NEW - bug 2847: simple xform application definition
  http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2847

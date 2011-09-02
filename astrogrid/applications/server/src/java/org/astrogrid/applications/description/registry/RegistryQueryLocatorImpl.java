@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryQueryLocatorImpl.java,v 1.1 2009/06/10 12:40:21 pah Exp $
+ * $Id: RegistryQueryLocatorImpl.java,v 1.2 2011/09/02 21:55:52 pah Exp $
  * 
  * Created on 9 Jun 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -50,7 +50,7 @@ public class RegistryQueryLocatorImpl implements RegistryQueryLocator {
         } catch (URISyntaxException e) {
             return false;
         } catch (RegistryException e) {
-            logger.error("problem searching for "+id, e);
+            logger.debug("failed to find resource in registry "+id);
             return false;
         }
     }
@@ -73,6 +73,12 @@ public class RegistryQueryLocatorImpl implements RegistryQueryLocator {
 
 /*
  * $Log: RegistryQueryLocatorImpl.java,v $
+ * Revision 1.2  2011/09/02 21:55:52  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.1.2.1  2011/09/02 19:39:00  pah
+ * not finding something in registry should not result in stack trace!
+ *
  * Revision 1.1  2009/06/10 12:40:21  pah
  * ASSIGNED - bug 2934: Improve registration page
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2934

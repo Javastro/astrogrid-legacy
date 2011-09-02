@@ -1,4 +1,4 @@
-/*$Id: ExecutionTest.java,v 1.4 2009/05/15 22:51:19 pah Exp $
+/*$Id: ExecutionTest.java,v 1.5 2011/09/02 21:55:56 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -123,7 +123,7 @@ public class ExecutionTest extends AbstractCmdLineAppTestCase {
 	      // RUNNING and then to COMPLETED.
 	      assertEquals(Status.INITIALIZED, app.getStatus());
 	      assertTrue(ec.execute(exid, secGuard));
-	      assertTrue(app.getStatus().equals(Status.QUEUED)); // should catch this in time
+	      assertEquals("initial status",Status.QUEUED,app.getStatus()); // should catch this in time
 	      Thread.sleep(1000); // wait for it to get going
 	      assertEquals("Running Status", Status.RUNNING,app.getStatus());
               assertTrue("abort failed", ec.abort(exid, secGuard));

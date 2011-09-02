@@ -1,5 +1,5 @@
 /*
- * $Id: MergingParameterAdapter.java,v 1.4 2008/09/18 09:13:39 pah Exp $
+ * $Id: MergingParameterAdapter.java,v 1.5 2011/09/02 21:55:52 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -21,7 +21,8 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.impl.CommandLineParameterDefinition;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
-import org.astrogrid.applications.parameter.protocol.ExternalValue;
+import org.astrogrid.applications.parameter.MutableInternalValue;
+import org.astrogrid.applications.parameter.ParameterDirection;
 
 /**
  * Special parameter adapter that will gather all the inputs into a single list.
@@ -46,10 +47,10 @@ public class MergingParameterAdapter extends DefaultCommandLineParameterAdapter 
     * @link MergingParameterAdapter that wish to merge their output.
     */
    public MergingParameterAdapter(ApplicationInterface appInterface,
-         ParameterValue pval, CommandLineParameterDefinition desc,
-         ExternalValue indirect, ApplicationEnvironment env,
+         ParameterValue pval, CommandLineParameterDefinition desc, ParameterDirection dir,
+         ApplicationEnvironment env,
          Concentrator concentrator) {
-      super(appInterface, pval, desc, indirect, env);
+      super(appInterface, pval, desc, dir, env);
       this.concentrator = concentrator;
    }
 
@@ -61,7 +62,7 @@ public class MergingParameterAdapter extends DefaultCommandLineParameterAdapter 
  */
 public static class Concentrator {
 
-      private List gatheredValues = new ArrayList();
+      private List<MutableInternalValue> gatheredValues = new ArrayList<MutableInternalValue>();
 
       private boolean haveListedSwitches = false;
 
@@ -90,14 +91,14 @@ public static class Concentrator {
       /**
        * @return
        */
-      public Iterator getIterator() {
+      public Iterator<MutableInternalValue> getIterator() {
          return gatheredValues.iterator();
       }
 
       /**
        * @param o
        */
-      public void add(Object o) {
+      public void add(MutableInternalValue o) {
          gatheredValues.add(o);
       }
    }
@@ -122,8 +123,8 @@ public List addSwitches() throws CeaException {
       else {
          //append all the gathered strings
          StringBuffer output = new StringBuffer();
-         for (Iterator iter = concentrator.getIterator(); iter.hasNext();) {
-            String val = (String)iter.next();
+         for (Iterator<MutableInternalValue> iter = concentrator.getIterator(); iter.hasNext();) {
+            String val = iter.next().asString();
             output.append(val);
             if (iter.hasNext()) {
                output.append(concentrator.getSeparator());
@@ -141,8 +142,8 @@ public List addSwitches() throws CeaException {
     * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
     */
    @Override
-public Object process() throws CeaException {
-      Object o = super.process();
+public MutableInternalValue getInternalValue() throws CeaException {
+       MutableInternalValue o = super.getInternalValue();
       concentrator.add(o);
       return o;
    }

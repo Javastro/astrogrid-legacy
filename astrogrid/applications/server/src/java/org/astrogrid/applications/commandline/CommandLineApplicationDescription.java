@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationDescription.java,v 1.6 2009/02/26 12:45:56 pah Exp $
+ * $Id: CommandLineApplicationDescription.java,v 1.7 2011/09/02 21:55:52 pah Exp $
  *
  * Created on 25 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -34,7 +34,6 @@ import org.astrogrid.security.SecurityGuard;
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 3 Apr 2008
  * @version $Name:  $
  * @since VOTech Stage 7
- * @TODO reduce the dependency propagation in this class.
  */
 public class CommandLineApplicationDescription extends AbstractApplicationDescription {
   
@@ -57,6 +56,7 @@ public class CommandLineApplicationDescription extends AbstractApplicationDescri
     /**
  * @see org.astrogrid.applications.description.AbstractApplicationDescription#initializeApplication(java.lang.String, SecurityGuard, org.astrogrid.applications.ParameterValues)
  */
+@SuppressWarnings("unchecked")
 public Application initializeApplication(String jobStepID, SecurityGuard secGuard,Tool tool) throws CeaException {
     ApplicationInterface appInterface = this.getInterface(tool.getInterface());
     if (appInterface == null) { // go for default then..

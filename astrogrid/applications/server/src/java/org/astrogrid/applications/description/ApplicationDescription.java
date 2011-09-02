@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescription.java,v 1.7 2009/02/26 12:45:54 pah Exp $
+ * $Id: ApplicationDescription.java,v 1.8 2011/09/02 21:55:49 pah Exp $
  * 
  * Created on 23 Feb 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -22,11 +22,24 @@ import org.astrogrid.applications.ApplicationFactory;
  */
 public interface ApplicationDescription extends ApplicationDefinition, ApplicationFactory {
 
+    /**
+     * get the underlying description of the application.
+     * @TODO should this really be exposed?
+     * @return
+     */
+    public MetadataAdapter getMetadataAdapter();
+
 }
 
 
 /*
  * $Log: ApplicationDescription.java,v $
+ * Revision 1.8  2011/09/02 21:55:49  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.7.2.1  2009/07/15 09:48:12  pah
+ * redesign of parameterAdapters
+ *
  * Revision 1.7  2009/02/26 12:45:54  pah
  * separate more out into cea-common for both client and server
  *

@@ -1,4 +1,4 @@
-/*$Id: DefaultQueryService.java,v 1.10 2009/05/15 22:51:19 pah Exp $
+/*$Id: DefaultQueryService.java,v 1.11 2011/09/02 21:55:53 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -106,7 +106,7 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
                   return executionHistory.getApplicationFromCurrentSet(executionId).getResult();
          } else { //look in the store
            //FIXME authorization not happening for results from storage
-             return executionHistory.getApplicationFromArchive(executionId).getResultList();
+             return executionHistory.getApplicationFromArchive(executionId).getOutputList();
          }
     
      }
@@ -204,6 +204,12 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
 
 /* 
 $Log: DefaultQueryService.java,v $
+Revision 1.11  2011/09/02 21:55:53  pah
+result of merging the 2931 branch
+
+Revision 1.10.2.1  2009/07/15 13:03:20  pah
+new execution description
+
 Revision 1.10  2009/05/15 22:51:19  pah
 ASSIGNED - bug 2911: improve authz configuration
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2911

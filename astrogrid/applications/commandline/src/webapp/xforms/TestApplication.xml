@@ -4,7 +4,7 @@
    xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9"
-   xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+   xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.1"
    xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
    xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1"
    created="1999-01-01T00:00:00" status="active"

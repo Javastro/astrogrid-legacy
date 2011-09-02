@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tool id="ivo://org.astrogrid.test/Adder" interface="iface1"
-	xmlns="http://www.ivoa.net/xml/CEA/types/v1.1">
+	xmlns="http://www.ivoa.net/xml/CEA/types/v1.2">
 	<input>
 		<parameter id="Message">
 			<value 

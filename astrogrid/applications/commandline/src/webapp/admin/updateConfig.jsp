@@ -32,6 +32,7 @@ CEAConfiguration conf = (CEAConfiguration)ctx.getBean("config") ;
 	</tr>
 	<tr>
 		<td><p>original registry template location</p></td>
+		//FIXME - cannot find the original template here any more....
 		<td><input name="regfile" value="<%= conf.getRegistryTemplate() %>" size="60"/></td>
 	</tr>
 	<tr>

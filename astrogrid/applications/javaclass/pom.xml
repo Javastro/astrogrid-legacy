@@ -16,7 +16,7 @@
   <version>2008.2-SNAPSHOT</version>
   <description>Examples of javaclass applications</description>
   <properties>
-   <astrogrid.name>applications/javaclass</astrogrid.name>
+   <astrogrid_name>applications/javaclass</astrogrid_name>
   </properties> 
   <build>
     <sourceDirectory>src/java</sourceDirectory>
@@ -74,7 +74,7 @@
             <phase>package</phase><!-- in maven 2.1 there will be a prepare-package phase , which would make this simpler - could just echo the file to ${project.build.directory}/${project.build.finalName}/ -->
             <configuration>
               <tasks > <!-- want this only to happen if there is -->
-                  <echo message="${pom.name} ${pom.version}" file="${project.build.directory}/about.txt" level="error" />
+                  <echo message="${pom.name} ${project.version}" file="${project.build.directory}/about.txt" level="error" />
                   <available 
                     file="${project.build.directory}/${project.build.finalName}.war" 
                     property="file.exists" value="true" /> 

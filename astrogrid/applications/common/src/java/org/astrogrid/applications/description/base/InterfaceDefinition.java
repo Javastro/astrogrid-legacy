@@ -1,5 +1,5 @@
 /*
- * $Id: InterfaceDefinition.java,v 1.1 2009/02/26 12:25:47 pah Exp $
+ * $Id: InterfaceDefinition.java,v 1.2 2011/09/02 21:55:57 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -31,7 +31,6 @@ import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.Cardinality;
 import org.astrogrid.applications.description.ParameterDescription;
-import org.astrogrid.applications.description.ParameterDirection;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
 
@@ -313,18 +312,6 @@ public InterfaceDefinition(){
              throw new ParameterNotInInterfaceException("unknown parameter="+parameterName);
           }
           return ad;
-       }
-       public ParameterDirection getParameterDirection(String parameterName)
-       {
-          ParameterDirection retval = ParameterDirection.NOTFOUND;
-          if(getInput().contains(parameterName))
-          {
-             retval = ParameterDirection.INPUT;
-          }
-          if (getOutput().contains(parameterName)) {
-             retval = ParameterDirection.OUTPUT;
-          }
-          return retval;
        }
        public ParameterDescription getOutputParameter(String parameterName)
            throws ParameterNotInInterfaceException {

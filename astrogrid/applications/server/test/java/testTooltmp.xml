@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ceat:tool xmlns="http://www.ivoa.net/xml/CEA/types/v1.1" xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1" id="ivo://fictious.org/IMAGER" interface="simple" >
+<ceat:tool xmlns="http://www.ivoa.net/xml/CEA/types/v1.2" xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.2" id="ivo://fictious.org/IMAGER" interface="simple" >
   <ceat:input>
 		<parameter id="RA">
 		  <value>80</value>

@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterizedServiceDefinition.java,v 1.1 2009/07/01 14:28:42 pah Exp $
+ * $Id: ParameterizedServiceDefinition.java,v 1.2 2011/09/02 21:55:49 pah Exp $
  * 
  * Created on 26 Jun 2009 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2009 Astrogrid. All rights reserved.
@@ -12,19 +12,14 @@
 
 package org.astrogrid.applications.description;
 
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
-
-import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
-import org.xml.sax.SAXException;
-
 import net.ivoa.resource.Contact;
 import net.ivoa.resource.Creator;
 import net.ivoa.resource.Curation;
-import net.ivoa.resource.Resource;
 import net.ivoa.resource.ResourceName;
+import net.ivoa.resource.ResourceNameSingle;
 import net.ivoa.resource.Service;
+
+import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 
 public class ParameterizedServiceDefinition extends AbstractServiceDefinition
         implements ServiceDefinitionFactory {
@@ -61,17 +56,17 @@ public class ParameterizedServiceDefinition extends AbstractServiceDefinition
         desc.setShortName(shortName);
         desc.setIdentifier(id);
         Curation curation = desc.getCuration();
-        ResourceName pub = new ResourceName();
-        pub.setValue(publisher);
+        ResourceNameSingle pub = new ResourceNameSingle();
+        pub.setName(publisher);
         curation.setPublisher(pub);
         Creator crea = new Creator();
-        pub = new ResourceName();
-        pub.setValue(creator);
+        pub = new ResourceNameSingle();
+        pub.setName(creator);
         crea.setName(pub);
         curation.getCreator().add(crea);
         Contact ctc = new Contact();
-        pub = new ResourceName();
-        pub.setValue(contact);
+        pub = new ResourceNameSingle();
+        pub.setName(contact);
         ctc.setName(pub);
         ctc.setEmail(contactEmail);
         curation.getContact().add(ctc);
@@ -168,6 +163,15 @@ public class ParameterizedServiceDefinition extends AbstractServiceDefinition
 
 /*
  * $Log: ParameterizedServiceDefinition.java,v $
+ * Revision 1.2  2011/09/02 21:55:49  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.1.2.2  2011/09/02 19:38:48  pah
+ * change setup of dynamic description library
+ *
+ * Revision 1.1.2.1  2009/07/15 09:48:12  pah
+ * redesign of parameterAdapters
+ *
  * Revision 1.1  2009/07/01 14:28:42  pah
  * registration template directly argument of builder object - removed from config
  *

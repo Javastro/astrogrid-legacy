@@ -1,5 +1,5 @@
 /*
- * $Id: DBApplication.java,v 1.2 2008/09/03 14:18:46 pah Exp $
+ * $Id: DBApplication.java,v 1.3 2011/09/02 21:55:52 pah Exp $
  * 
  * Created on 13 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -20,11 +20,17 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 
 import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.dal.DefaultDALParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
+import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapterException;
+import org.astrogrid.applications.parameter.ParameterDirection;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 
 /**
@@ -33,8 +39,12 @@ import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
  * @version $Name:  $
  * @since VOTech Stage 7
  */
-public class DBApplication extends AbstractApplication implements Runnable {
+public abstract class DBApplication extends AbstractApplication implements Runnable {
 
+    /** logger for this class */
+    private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
+            .getLog(DBApplication.class);
+    
     protected DataSource ds;
     
     protected String queryString;
@@ -54,9 +64,10 @@ public class DBApplication extends AbstractApplication implements Runnable {
     public void run() {
 	try {
 	    setupParameters();
+	    
+	  
 	} catch (Exception e) {
 	    reportError("problem setting up parameters", e);
-	    return;
 	}
 	Connection con;
 	Statement stmt;
@@ -84,11 +95,27 @@ public class DBApplication extends AbstractApplication implements Runnable {
 	createAdapters();
     }
 
+    @Override
+    protected ParameterAdapter instantiateAdapter(ParameterValue pval,
+            ParameterDescription descr, ParameterDirection dir, ExternalValue indirectVal) {
+         logger.debug("creating db parameter adapter for " + pval.getId());
+        return new DefaultDALParameterAdapter(pval, descr, dir, applicationEnvironment);
+    }
+    
+    
+
 }
 
 
 /*
  * $Log: DBApplication.java,v $
+ * Revision 1.3  2011/09/02 21:55:52  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.2.6.1  2009/07/16 19:52:17  pah
+ * NEW - bug 2944: add DAL support
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2944
+ *
  * Revision 1.2  2008/09/03 14:18:46  pah
  * result of merge of pah_cea_1611 branch
  *

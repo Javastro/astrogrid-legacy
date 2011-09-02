@@ -1,4 +1,4 @@
-/*$Id: SendMailApplicationDescription.java,v 1.12 2009/02/26 12:45:55 pah Exp $
+/*$Id: SendMailApplicationDescription.java,v 1.13 2011/09/02 21:55:54 pah Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -143,7 +143,7 @@ public class SendMailApplicationDescription extends InternallyConfiguredApplicat
                         try {
                         for (Iterator i = inputParameterAdapters(); i.hasNext();) {
                             ParameterAdapter a = (ParameterAdapter)i.next();
-                            args.put(a.getWrappedParameter().getId(),a.process());
+                            args.put(a.getWrappedParameter().getId(),a.getInternalValue());
                         }                        
                         setStatus(Status.RUNNING);
                         // send the message here.
@@ -188,6 +188,13 @@ public class SendMailApplicationDescription extends InternallyConfiguredApplicat
 
 /* 
 $Log: SendMailApplicationDescription.java,v $
+Revision 1.13  2011/09/02 21:55:54  pah
+result of merging the 2931 branch
+
+Revision 1.12.2.1  2009/07/16 19:47:34  pah
+ASSIGNED - bug 2950: rework parameterAdapter
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2950
+
 Revision 1.12  2009/02/26 12:45:55  pah
 separate more out into cea-common for both client and server
 

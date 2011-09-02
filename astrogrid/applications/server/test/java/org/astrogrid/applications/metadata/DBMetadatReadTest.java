@@ -1,5 +1,5 @@
 /*
- * $Id: DBMetadatReadTest.java,v 1.3 2008/09/13 09:51:06 pah Exp $
+ * $Id: DBMetadatReadTest.java,v 1.4 2011/09/02 21:55:53 pah Exp $
  * 
  * Created on 17 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -18,9 +18,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.bind.JAXBException;
-import net.ivoa.resource.dataservice.RelationalSchema;
-
 import org.astrogrid.applications.description.MetadataException;
+import org.astrogrid.applications.description.base.ApplicationBase;
+import org.astrogrid.applications.description.impl.CEADALService;
+import org.astrogrid.applications.description.impl.CeaDBApplicationDefinition;
 import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,20 +35,41 @@ public class DBMetadatReadTest {
 
     @Test
     public void testread() throws JAXBException, MetadataException, IOException, SAXException{
-	InputStream stream = DBMetadatReadTest.class.getResourceAsStream("/DBdef.xml");
+	InputStream stream = DBMetadatReadTest.class.getResourceAsStream("/TAPConfig.xml");
 //	Unmarshaller um = CEAJAXBContextFactory.newInstance()
 //	.createUnmarshaller();
 //	 Object el = um.unmarshal(stream);
 //	 System.out.println(el.toString());
 	
-	RelationalSchema schema = CEAJAXBUtils.unmarshall(stream, RelationalSchema.class);
-	assertEquals("the name should be", "stap", schema.getName());
+	CEADALService dalService = CEAJAXBUtils.unmarshall(stream, CEADALService.class);
+	ApplicationBase applicationDefinition = dalService.getApplicationDefinition();
+	if (applicationDefinition instanceof CeaDBApplicationDefinition) {
+            CeaDBApplicationDefinition dbApp = (CeaDBApplicationDefinition) applicationDefinition;
+            assertEquals("the schema name should be", "stap", dbApp.getTableset().getSchema().get(0).getName());
+        }
+	else
+	{
+	    assertEquals("different object for applicationdefinition", CeaDBApplicationDefinition.class, applicationDefinition.getClass());
+	}
+    
     }
 }
 
 
 /*
  * $Log: DBMetadatReadTest.java,v $
+ * Revision 1.4  2011/09/02 21:55:53  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.3.6.1  2009/07/15 10:01:00  pah
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2907
+ * NEW - bug 2851: generalized DAL applications
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2851
+ * NEW - bug 2931: upgrades for 2009.2
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2931
+ * NEW - bug 2920: upgrade to uws 1.0
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2920
+ *
  * Revision 1.3  2008/09/13 09:51:06  pah
  * code cleanup
  *

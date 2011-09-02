@@ -1,5 +1,5 @@
 /*
- * $Id: CEAComponentContainer.java,v 1.5 2008/09/18 09:13:39 pah Exp $
+ * $Id: CEAComponentContainer.java,v 1.6 2011/09/02 21:55:52 pah Exp $
  * 
  * Created on 2 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -48,7 +48,8 @@ public final class CEAComponentContainer extends AbstractCEAComponentContainer i
     
     public CEAComponentContainer(ControlService controlService, ExecutionController executionController,
 	    MetadataService metadataService, QueryService queryService,
-	    RegistryUploader registryUploaderService, ExecutionHistory executionHistoryService, ApplicationDescriptionLibrary applicationDescriptionLibrary) {
+	    RegistryUploader registryUploaderService, ExecutionHistory executionHistoryService,
+	    ApplicationDescriptionLibrary applicationDescriptionLibrary) {
 	this.controlService = controlService;
 	this.executionController = executionController;
 	this.metadataService = metadataService;
@@ -183,6 +184,12 @@ public TestSuite getSuite() {
 
 /*
  * $Log: CEAComponentContainer.java,v $
+ * Revision 1.6  2011/09/02 21:55:52  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.5.6.1  2009/07/15 09:47:11  pah
+ * redesign of parameterAdapters
+ *
  * Revision 1.5  2008/09/18 09:13:39  pah
  * improved javadoc
  *

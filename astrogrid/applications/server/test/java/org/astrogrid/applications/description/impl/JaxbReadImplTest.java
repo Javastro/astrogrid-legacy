@@ -1,5 +1,5 @@
 /*
- * $Id: JaxbReadImplTest.java,v 1.6 2008/09/24 13:40:50 pah Exp $
+ * $Id: JaxbReadImplTest.java,v 1.7 2011/09/02 21:55:53 pah Exp $
  * 
  * Created on 11 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -64,7 +64,7 @@ public class JaxbReadImplTest extends TestCase {
 		  
 	      };
 	    sf.setResourceResolver(resourceResolver);
-	  Source schemas = new StreamSource(this.getClass().getResourceAsStream("/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"),this.getClass().getResource("/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd").toExternalForm()) ;
+	  Source schemas = new StreamSource(this.getClass().getResourceAsStream("/schema/cea/CEAImplementation/v2.1/CEAImplementation.xsd"),this.getClass().getResource("/schema/cea/CEAImplementation/v2.1/CEAImplementation.xsd").toExternalForm()) ;
 	  Schema schema = sf.newSchema(schemas);
 	  um.setSchema(schema);
 	  um.setEventHandler(new DefaultValidationEventHandler());  
@@ -88,6 +88,18 @@ public class JaxbReadImplTest extends TestCase {
 
 /*
  * $Log: JaxbReadImplTest.java,v $
+ * Revision 1.7  2011/09/02 21:55:53  pah
+ * result of merging the 2931 branch
+ *
+ * Revision 1.6.4.1  2009/07/15 10:01:00  pah
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2907
+ * NEW - bug 2851: generalized DAL applications
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2851
+ * NEW - bug 2931: upgrades for 2009.2
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2931
+ * NEW - bug 2920: upgrade to uws 1.0
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2920
+ *
  * Revision 1.6  2008/09/24 13:40:50  pah
  * package naming changes
  *

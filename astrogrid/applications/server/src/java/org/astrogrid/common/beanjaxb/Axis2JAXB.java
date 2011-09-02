@@ -1,5 +1,5 @@
 /*
- * $Id: Axis2JAXB.java,v 1.4 2008/10/06 12:16:16 pah Exp $
+ * $Id: Axis2JAXB.java,v 1.5 2011/09/02 21:55:53 pah Exp $
  *
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -17,7 +17,7 @@ import net.ivoa.uws.ExecutionPhase;
 
 import org.astrogrid.applications.description.execution.BinaryEncodings;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
-import org.astrogrid.applications.description.execution.InputListType;
+import org.astrogrid.applications.description.execution.InputList;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.ResultListType;
 import org.astrogrid.applications.description.execution.Tool;
@@ -174,10 +174,10 @@ public class Axis2JAXB {
             castor.setApplicationName(axis.getApplicationName());
             castor.setJobId(axis.getExecutionId());
             org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] axisArr = axis.getInputList().getInput();
-            InputListType inputs = new InputListType();
+            InputList inputs = new InputList();
             inputs.setInputs(convert(axisArr));
 	    castor.setInputList(inputs );
-            castor.setResultList(convert(axis.getResultList()));
+            castor.setOutputList(convert(axis.getResultList()));
             castor.setPhase(convert(axis.getStatus()));
             return castor;
         }

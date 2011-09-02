@@ -165,7 +165,7 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
 	AccessURL vosiURL = new AccessURL();
 	vosiURL.setValue(endpoint+"/VOSI/capabilities");
 	vosiURL.setUse("full");
-	vosiIntf.setQueryType(HTTPQueryType.GET);
+	vosiIntf.getQueryType().add(HTTPQueryType.GET);
 	vosiIntf.setResultType("application/xml");
 	vosiIntf.getAccessURL().add(vosiURL);
 	vosiCap.getInterface().add(vosiIntf);
@@ -180,7 +180,7 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
         AccessURL availURL = new AccessURL();
         availURL.setValue(endpoint+"VOSI/availability");
         availURL.setUse("full");
-        availInf.setQueryType(HTTPQueryType.GET);
+        availInf.getQueryType().add(HTTPQueryType.GET);
         availInf.setResultType("application/xml");
         availInf.getAccessURL().add(availURL);
         availCap.getInterface().add(availInf);
@@ -194,7 +194,7 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
         AccessURL appURL = new AccessURL();
         appURL.setValue(endpoint+"uws/reg/app");
         appURL.setUse("full");
-        appIntf.setQueryType(HTTPQueryType.GET);
+        appIntf.getQueryType().add(HTTPQueryType.GET);
         appIntf.setResultType("application/xml");
         appIntf.getAccessURL().add(appURL);
         appCap.getInterface().add(appIntf);
@@ -208,7 +208,7 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
         AccessURL deleURL = new AccessURL();
         deleURL.setValue(endpoint+"delegation");
         deleURL.setUse("full");
-        deleIntf.setQueryType(HTTPQueryType.GET);
+        deleIntf.getQueryType().add(HTTPQueryType.GET);
         deleIntf.setResultType("application/xml");
         deleIntf.getAccessURL().add(deleURL);
         deleCap.getInterface().add(deleIntf);

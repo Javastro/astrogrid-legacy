@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchApplication.java,v 1.6 2008/09/13 09:51:02 pah Exp $
+/*$Id: SiapImageFetchApplication.java,v 1.7 2011/09/02 21:55:54 pah Exp $
  * Created on 23-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.filemanager.client.FileManagerClient;
@@ -38,6 +39,7 @@ import org.astrogrid.filemanager.client.FileManagerClientFactory;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
+
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.table.StarTable;
@@ -46,7 +48,7 @@ import uk.ac.starlink.table.StarTableFactory;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Nov-2004
- *
+ * @TODO FIXME - this is broken at the moment.
  */
 public class SiapImageFetchApplication extends AbstractApplication {
 
@@ -65,11 +67,11 @@ public class SiapImageFetchApplication extends AbstractApplication {
      */
     @Override
     protected ParameterAdapter instantiateAdapter(ParameterValue pval,
-            ParameterDescription descr, ExternalValue indirectVal) {
+            ParameterDescription descr, ParameterDirection dir, ExternalValue indirectVal) {
         if (descr.getId().equals(SiapImageFetchDescription.TABLE)) {
-            return new CatApplicationDescription.StreamParameterAdapter(pval,descr,indirectVal);
+            return new CatApplicationDescription.StreamParameterAdapter(pval,descr,dir, applicationEnvironment);
         } else {
-            return super.instantiateAdapter(pval, descr, indirectVal);
+            return super.instantiateAdapter(pval, descr, dir, indirectVal);
         }
     }
     /** runnable object that actually does the work */
@@ -92,7 +94,7 @@ public class SiapImageFetchApplication extends AbstractApplication {
                     if (SiapImageFetchDescription.TABLE.equalsIgnoreCase(name)) {
                         tableStream = (CatApplicationDescription.StreamParameterAdapter) input;
                     } else if (SiapImageFetchDescription.BASEIVORN.equalsIgnoreCase(name)) {
-                        baseDir = (String)input.process();
+                        baseDir = input.getInternalValue().asString();
                         if (baseDir == null || baseDir.trim().length() ==0) {
                             reportError("Empty BASEDIR parameter");
                         }
@@ -112,7 +114,7 @@ public class SiapImageFetchApplication extends AbstractApplication {
                 // save the votable itself.
                 Ivorn votable = new Ivorn(dirIvorn.toString() + "/" + "votable.vot");
                 FileManagerNode votableNode = dir.addFile("votable.vot");
-                InputStream vin = (InputStream)tableStream.process();                        
+                InputStream vin = (InputStream)tableStream.getInternalValue();                        
                 OutputStream vout = votableNode.writeContent(); 
                 Piper.pipe(vin,vout);
                 vin.close();
@@ -141,8 +143,8 @@ public class SiapImageFetchApplication extends AbstractApplication {
                 List urls = new ArrayList();
                 List ivorns = new ArrayList();                        
                 int count = 0;
-                for(RowSequence rs = table.getRowSequence(); rs.hasNext(); ) {
-                    rs.next();
+                RowSequence rs = table.getRowSequence();
+                  while(  rs.next()){
                     URL url = new URL(rs.getCell(referenceCol).toString());  
                     FileManagerNode target = dir.addFile((count ++) + ".fits");
                     reportMessage("Saving " + url  + " to " + target.getName());
@@ -153,12 +155,14 @@ public class SiapImageFetchApplication extends AbstractApplication {
                 
                 //return output parameters.
                 for (Iterator i = outputParameterAdapters(); i.hasNext(); ) {
-                    ParameterAdapter p = (ParameterAdapter)i.next();
+                    StreamParameterAdapter p = (StreamParameterAdapter)i.next();
                     String outputName = p.getWrappedParameter().getId();
                     if (SiapImageFetchDescription.URLS.equalsIgnoreCase(outputName)) {
-                        p.writeBack(listToString(urls));
+                        p.getInternalValue().setValue(listToString(urls));
+                        p.writeBack();
                     } else if (SiapImageFetchDescription.IVORNS.equalsIgnoreCase(outputName)) {
-                        p.writeBack(listToString(ivorns));
+                        p.getInternalValue().setValue(listToString(ivorns));
+                        p.writeBack();
                     } else {
                         reportError("Unknown output parameter " + outputName);
                     }                            
@@ -174,7 +178,7 @@ public class SiapImageFetchApplication extends AbstractApplication {
             }
         }
 
-        private Object listToString(List items) {
+        private String listToString(List items) {
               StringBuffer buff = new StringBuffer();
               buff.append("[");
               boolean isFirst = true;
@@ -200,6 +204,16 @@ public class SiapImageFetchApplication extends AbstractApplication {
 
 /* 
 $Log: SiapImageFetchApplication.java,v $
+Revision 1.7  2011/09/02 21:55:54  pah
+result of merging the 2931 branch
+
+Revision 1.6.6.2  2009/07/16 19:47:34  pah
+ASSIGNED - bug 2950: rework parameterAdapter
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2950
+
+Revision 1.6.6.1  2009/07/15 09:46:14  pah
+redesign of parameterAdapters
+
 Revision 1.6  2008/09/13 09:51:02  pah
 code cleanup
 

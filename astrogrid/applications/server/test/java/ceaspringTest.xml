@@ -63,15 +63,12 @@
 </bean>
 
 
-<bean id="BaseApplicationDescriptionLibrary" class="org.astrogrid.applications.description.BaseApplicationDescriptionLibrary" autowire-candidate="false">
-</bean>
 
 <bean id="ConfigReadingDescriptionLibrary" class="org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary" autowire-candidate="false">
 </bean>
 
 <bean id="CompositeDescriptionLibrary" class="org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary" autowire="no">
    <constructor-arg index="0"><list>
-   <ref local="BaseApplicationDescriptionLibrary"/>
    <ref local="ConfigReadingDescriptionLibrary"/>
 </list></constructor-arg>
 </bean>

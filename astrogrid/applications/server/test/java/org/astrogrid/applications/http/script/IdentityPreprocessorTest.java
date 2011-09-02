@@ -1,4 +1,4 @@
-/* $Id: IdentityPreprocessorTest.java,v 1.2 2008/09/18 09:13:39 pah Exp $
+/* $Id: IdentityPreprocessorTest.java,v 1.3 2011/09/02 21:55:55 pah Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
 import org.astrogrid.applications.description.MetadataException;
+import org.astrogrid.applications.description.StandardApplicationDescriptionFactory;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
 import org.astrogrid.applications.description.impl.HttpMethodType;
@@ -53,7 +54,8 @@ public class IdentityPreprocessorTest extends TestCase {
 
 
     public final void testProcess() throws HttpParameterProcessingException, javax.xml.bind.MarshalException, javax.xml.bind.ValidationException, MetadataException, XMLStreamException, FactoryConfigurationError, IOException {
-        TestHttpApplicationLibrary querier = new TestHttpApplicationLibrary(new MockNonSpringConfiguredConfig());
+        MockNonSpringConfiguredConfig config = new MockNonSpringConfiguredConfig();
+        TestHttpApplicationLibrary querier = new TestHttpApplicationLibrary(config.getApplicationDescriptionUrl(), new StandardApplicationDescriptionFactory(config));
         CeaHttpApplicationDefinition app
             = (CeaHttpApplicationDefinition) querier.getDescription("ivo://org.astrogrid.test/Adder").getMetadataAdapter().getApplicationBase();
         Tool tool = (Tool) new FileUnmarshaller(Tool.class).unmarshallFromFile("tool-eg.xml");

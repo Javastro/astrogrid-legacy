@@ -8,14 +8,14 @@ xmlns:ev="http://www.w3.org/2001/xml-events"
 		xmlns:xhtml="http://www.w3.org/1999/xhtml"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1"
+		xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.2"
 		xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
 		xsi:schemaLocation="http://www.w3.org/2002/xforms http://www.w3.org/MarkUp/Forms/2002/XForms-Schema.xsd">
 	<head>
 		<title>Tool submission</title>
         <link rel="StyleSheet" HREF="../style/xforms.css" TYPE="text/css" />
 		<xf:model>
-			<xf:submission id="debug" method="post"
+		     <xf:submission id="debug" method="post"
 					action="{$contextroot}/chiba-resources/jsp/debug-instance.jsp"/>
 		    <xf:submission id="uws" method="post"
 		            action="{$contextroot}/uws/jobs" />

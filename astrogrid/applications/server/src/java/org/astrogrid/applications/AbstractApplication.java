@@ -24,6 +24,7 @@ import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapterException;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
@@ -84,6 +85,7 @@ import java.util.concurrent.FutureTask;
  * @see org.astrogrid.applications.Application
  * @see org.astrogrid.applications.description.ApplicationDefinition
  * @see org.astrogrid.applications.parameter.ParameterAdapter
+ * @TODO refactor to have "plug-in" behaviour - to make it clearer where the extension points are.
  */
 public abstract class AbstractApplication extends Observable implements Application, Identify {
    /** interface to the set of identifiers for an application
@@ -108,11 +110,11 @@ public abstract class AbstractApplication extends Observable implements Applicat
    private final ApplicationInterface applicationInterface;
    
     /** list of parameter adapters for the inputs to the application. Empty at start. */
-   private final List inputAdapters = new ArrayList();
+   private final List<ParameterAdapter> inputAdapters = new ArrayList<ParameterAdapter>();
    /** library of indirection protocol handlers */
    protected final ProtocolLibrary lib;
    /** list of parameter adapters for the outputs of the application. empty at start */
-   private final List outputAdapters = new ArrayList();
+   private final List<ParameterAdapter> outputAdapters = new ArrayList<ParameterAdapter>();
    /** list type containing results of the application execution. obviously empty to start with */
    private final ResultListType results = new ResultListType();
    /** The time when the application job should be destroyed - the application itself does not actively do this */
@@ -325,18 +327,21 @@ private MessageType errorMessage = null;
     }
   }
 
-    /** hook that specialized subclasses can overried - to return a custom adapter  
+    /** hook that specialized subclasses can override - to return a custom adapter  
      * used in {@link #createAdapters}
+     * @param dir 
+     * @TODO - ExternalValue no longer needed as a parameter
      * @return a {@link DefaultParameterAdapter}
      */
-    protected ParameterAdapter instantiateAdapter(ParameterValue pval, ParameterDescription descr,ExternalValue indirectVal) {
-        return new DefaultParameterAdapter(pval,descr,indirectVal);
+    protected ParameterAdapter instantiateAdapter(ParameterValue pval, ParameterDescription descr, ParameterDirection dir, ExternalValue indirectVal) {
+        return new DefaultParameterAdapter(pval,descr,dir, applicationEnvironment);
     }
     
     /** sets up the list of input and output parameter adapters
      * must be called before any of the methods that access / query parameter adapters.
      * @throws ParameterDescriptionNotFoundException
      * @throws ParameterAdapterException
+     * @TODO refactor this to include direction of parameter.
      * @see #createAdapters() for customization.
      */
     protected final void createAdapters() throws ParameterDescriptionNotFoundException, ParameterAdapterException {
@@ -346,13 +351,13 @@ private MessageType errorMessage = null;
         for  (Iterator params = inputParameterValues(); params.hasNext();){
              ParameterValue param = (ParameterValue)params.next();       
             ExternalValue iVal = (param.isIndirect() ? lib.getExternalValue(param, applicationEnvironment.getSecGuard()) : null);
-             ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getId()),iVal);
+             ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getId()),ParameterDirection.INPUT, iVal);
              inputAdapters.add(adapter);
           }
         for  (Iterator params = outputParameterValues(); params.hasNext();){
             ParameterValue param = (ParameterValue)params.next();       
            ExternalValue iVal = (param.isIndirect() ? lib.getExternalValue(param, applicationEnvironment.getSecGuard()) : null);
-            ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getId()),iVal);
+            ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getId()),ParameterDirection.OUTPUT, iVal);
             outputAdapters.add(adapter);
             results.getResult().add(adapter.getWrappedParameter());
          }          
@@ -444,8 +449,8 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
   // querying parameter adapters. 
   /** find the parameter adapter for the named input parameter */
   protected final ParameterAdapter findInputParameterAdapter(String name) {
-      for (Iterator i = inputAdapters.iterator(); i.hasNext(); ) {
-          ParameterAdapter a = (ParameterAdapter)i.next();
+      for (Iterator<ParameterAdapter> i = inputAdapters.iterator(); i.hasNext(); ) {
+          ParameterAdapter a = i.next();
           if (a.getWrappedParameter().getId().equals(name)) {
               return a;
           }
@@ -459,8 +464,8 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
    }
   /** find the parameter adapter for the named output parameter */
    protected final ParameterAdapter findOutputParameterAdapter(String name) {   
-      for (Iterator i = outputAdapters.iterator(); i.hasNext(); ) {
-          ParameterAdapter a = (ParameterAdapter)i.next();
+      for (Iterator<ParameterAdapter> i = outputAdapters.iterator(); i.hasNext(); ) {
+          ParameterAdapter a = i.next();
           if (a.getWrappedParameter().getId().equals(name)) {
               return a;
           }
@@ -533,11 +538,11 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
    }
   
    /** iterator over all input parameter adapters */
-   protected final Iterator inputParameterAdapters() {
+   protected final Iterator<ParameterAdapter> inputParameterAdapters() {
        return inputAdapters.iterator();
    } 
    /** iterator over all output parameter adapters */
-   protected final Iterator outputParameterAdapters() {
+   protected final Iterator<ParameterAdapter> outputParameterAdapters() {
        return outputAdapters.iterator();
    }
    /** iterator over all input and output parameter adapters */
@@ -662,7 +667,7 @@ public String toString() {
    * responsibilities of runnable are
    * <ol> 
    * <li>iterate through input parameter adapters, calling 
-   *     {@link ParameterAdapter#process()} on each, collecting returned
+   *     {@link ParameterAdapter#getInternalValue()} on each, collecting returned
    *     parameter values;</li>
    * <li>set application state to {@link Status#INITIALIZED};</li>
    * <li>sets application state to {@link Status#RUNNING};</li>

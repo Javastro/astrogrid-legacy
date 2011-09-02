@@ -94,6 +94,10 @@ this policy when uncommented will make the CEA server only respond to authentica
   <list>
   <!-- the commandline applications are read by this library -->
   <bean class="org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary">
+   <constructor-arg index="0">
+    <value type="java.net.URL">file:${cea.base.dir}/config/app-description.xml</value>
+   </constructor-arg>
+    
    </bean>
   <!-- this library simply gathers those applications specified by the applications property  -->
   <bean class="org.astrogrid.applications.description.SimpleApplicationDescriptionLibrary">
@@ -111,6 +115,8 @@ this policy when uncommented will make the CEA server only respond to authentica
          </bean>
        </list>
     </property>
+  </bean>
+  <bean class="org.astrogrid.applications.description.DynamicApplicationDescriptionLibrary">
   </bean>
   <!-- this library manages the old JavaClass style of static application description
 
@@ -141,8 +147,9 @@ this policy when uncommented will make the CEA server only respond to authentica
 <bean id="ExecutionHistory" class="org.astrogrid.applications.manager.persist.FileStoreExecutionHistory">   
 </bean>
 
-<bean id="AppAuthorityIDResolver" class="org.astrogrid.applications.description.base.TestAuthorityResolver">
-<!-- I think that this should go..  not used any more...-->
+<bean id="AppAuthorityIDResolver" class="org.astrogrid.applications.manager.DefaultAppAuthorityIDResolver">
+<!-- I think that this should go..  not used any more... configuration in each file? - anyway give a default value and see if it appears at the moment-->
+<constructor-arg><value>ivo://cea.default</value></constructor-arg>
 </bean>
 
 <bean id="ApplicationEnvironmentRetriever" class="org.astrogrid.applications.environment.DefaultExecutionEnvRetriever">

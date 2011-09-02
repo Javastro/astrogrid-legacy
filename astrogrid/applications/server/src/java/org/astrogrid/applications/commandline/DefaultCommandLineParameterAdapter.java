@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultCommandLineParameterAdapter.java,v 1.3 2008/09/13 09:51:04 pah Exp $
+ * $Id: DefaultCommandLineParameterAdapter.java,v 1.4 2011/09/02 21:55:52 pah Exp $
  * 
  * Created on 20-Aug-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -13,35 +13,29 @@
 package org.astrogrid.applications.commandline;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.ParameterDirection;
 import org.astrogrid.applications.description.base.ParameterTypes;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.impl.CommandLineParameterDefinition;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.AbstractParameterAdapter;
+import org.astrogrid.applications.parameter.DefaultInternalValue;
+import org.astrogrid.applications.parameter.FileBasedInternalValue;
+import org.astrogrid.applications.parameter.MutableInternalValue;
 import org.astrogrid.applications.parameter.ParameterAdapterException;
+import org.astrogrid.applications.parameter.ParameterDirection;
 import org.astrogrid.applications.parameter.ParameterWriteBackException;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
-import org.astrogrid.io.Piper;
 
 /**
  * Does the specialized job for the CommandLine parameters. The Main differences
@@ -74,7 +68,6 @@ public class DefaultCommandLineParameterAdapter extends
 
    protected File referenceFile = null;
 
-   protected final ApplicationEnvironment env;
 
    /**
     * This is the raw value of the parameter that should be passed to the
@@ -87,11 +80,10 @@ public class DefaultCommandLineParameterAdapter extends
    protected final org.astrogrid.applications.description.impl.CommandLineParameterDefinition cmdParamDesc;
 
    public DefaultCommandLineParameterAdapter(ApplicationInterface appInterface,
-         ParameterValue pval, CommandLineParameterDefinition desc,
-         ExternalValue indirect, ApplicationEnvironment env) {
-      super(pval, desc, indirect);
+         ParameterValue pval, CommandLineParameterDefinition desc, ParameterDirection dir,
+          ApplicationEnvironment env) {
+      super(pval, desc, dir, env);
       this.cmdParamDesc = desc;
-      this.env = env;
       if (cmdParamDesc.getLocalFileName() == null) {
          this.referenceFile = env.getTempFile(desc.getId());
       }
@@ -100,14 +92,8 @@ public class DefaultCommandLineParameterAdapter extends
          this.referenceFile = new File(env.getExecutionDirectory(),
                cmdParamDesc.getLocalFileName());
       }
-      try {
-         this.isOutputOnly = appInterface.getParameterDirection(val.getId())
-               .equals(ParameterDirection.OUTPUT);
-      }
-      catch (ParameterNotInInterfaceException e) {
-         // very unlikely.
-         this.isOutputOnly = false;
-      }
+      this.isOutputOnly = direction
+           .equals(ParameterDirection.OUTPUT);
    }
 
    public File getReferenceFile() {
@@ -119,113 +105,116 @@ public class DefaultCommandLineParameterAdapter extends
     * onto the command line) in the commandline environment
     * 
     * @return the name of the file the value has been written to.
-    * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
+    * @see org.astrogrid.applications.parameter.ParameterAdapter#getInternalValue()
     */
    @Override
-public Object process() throws CeaException {
+public MutableInternalValue getInternalValue() throws CeaException {
 
-      commandLineVal = val.getValue();
-      if (logger.isDebugEnabled()) {
-         logger.debug("process() - start " + val.getId() + "="
-               + val.getValue());
-      }
+       
+      if (internalVal == null) { //if the internal value has not already been retrieved.
+        commandLineVal = val.getValue();
+        if (logger.isDebugEnabled()) {
+            logger.debug("process() - start " + val.getId() + "="
+                    + val.getValue());
+        }
+        if (!isOutputOnly) {
+            InputStreamReader ir = null;
+            InputStream is = null;
+            try {
 
-      if (!isOutputOnly) {
-         InputStreamReader ir = null;
-         PrintWriter pw = null;
-         InputStream is = null;
-         OutputStream os = null;
-         try {
+                if (!val.isIndirect()) {
+                    if (cmdParamDesc.isFileRef()) // but the commandline app expects
+                    // a
+                    // file
+                    {
+                        FileBasedInternalValue localval = new FileBasedInternalValue(
+                                referenceFile);
+                        internalVal = localval;
+                        localval.setValue(commandLineVal);
 
-            if (externalVal == null) {
-               if (cmdParamDesc.isFileRef()) // but the commandline app expects
-               // a
-               // file
-               {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("process() local copied - "
+                                    + val.getId() + "=" + val.getValue()
+                                    + " direct, fileref="
+                                    + referenceFile.getName());
+                        }
+                        commandLineVal = referenceFile.getName();
 
-                  String value = val.getValue();
-                  pw = new PrintWriter(new FileWriter(referenceFile));
-                  pw.println(value);
-                  pw.close();
+                    } else {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("process() - local copied - "
+                                    + val.getId() + "=" + val.getValue()
+                                    + " direct");
+                        }
+                        commandLineVal = val.getValue();
 
-                  if (logger.isDebugEnabled()) {
-                     logger.debug("process() local copied - " + val.getId()
-                           + "=" + val.getValue() + " direct, fileref="
-                           + referenceFile.getName());
-                  }
-                  commandLineVal = referenceFile.getName();
+                    }
+                } else {
+                    ExternalValue externalVal = getProtocolLib()
+                            .getExternalValue(val, env.getSecGuard());
+                    if (cmdParamDesc.isFileRef()) { // a externalVal param/ file ref
+                        // cmdline
 
-               }
-               else {
-                  if (logger.isDebugEnabled()) {
-                     logger.debug("process() - local copied - " + val.getId()
-                           + "=" + val.getValue() + " direct");
-                  }
-                  commandLineVal = val.getValue();
+                        FileBasedInternalValue localval = new FileBasedInternalValue(
+                                referenceFile);
+                        internalVal = localval;
+                        is = externalVal.read();
+                        localval.setValue(is);
 
-               }
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("process() - local copied - "
+                                    + val.getId() + "=" + val.getValue()
+                                    + " externalVal, fileref="
+                                    + referenceFile.getName());
+                        }
+                        commandLineVal = referenceFile.getName();
+                    } else // an externalVal param/ direct cmdline
+                    {
+                        // TODO - does this deal with new lines in the way that we
+                        // might want?
+
+                        DefaultInternalValue localval = new DefaultInternalValue();
+                        internalVal = localval;
+                        ir = new InputStreamReader(externalVal.read());
+                        localval.setValue(ir);
+
+                        val.setValue(internalVal.asString()); // TODO do we really want to set
+                        // this - or is just
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("process() - local copied - "
+                                    + val.getId() + "=" + val.getValue()
+                                    + " externalVal");
+                        }
+
+                        commandLineVal = val.getValue();
+
+                    }
+                }
+
+                // special treatment for booleans
+                if (cmdParamDesc.getType() == ParameterTypes.BOOLEAN) {
+                    commandLineVal = BooleanNormalizer.normalize(
+                            commandLineVal, cmdParamDesc.getDefaultValue().get(
+                                    0));
+                }
             }
-            else {
-               if (cmdParamDesc.isFileRef()) { // a externalVal param/ file ref
-                  // cmdline
-                  is = externalVal.read();
-                  os = new FileOutputStream(referenceFile);
-                  Piper.bufferedPipe(is, os);
-                  is.close();
-                  os.close();
-                  if (logger.isDebugEnabled()) {
-                     logger.debug("process() - local copied - " + val.getId()
-                           + "=" + val.getValue() + " externalVal, fileref="
-                           + referenceFile.getName());
-                  }
-                  commandLineVal = referenceFile.getName();
-               }
-               else // an externalVal param/ direct cmdline
-               {
-                  // TODO - does this deal with new lines in the way that we
-                  // might want?
-                  ir = new InputStreamReader(externalVal.read());
-                  StringWriter sw = new StringWriter();
-                  Piper.pipe(ir, sw);
-                  ir.close();
-                  sw.close();
-                  val.setValue(sw.toString()); // TODO do we really want to set
-                  // this - or is just
-                  if (logger.isDebugEnabled()) {
-                     logger.debug("process() - local copied - " + val.getId()
-                           + "=" + val.getValue() + " externalVal");
-                  }
 
-                  commandLineVal = val.getValue();
-
-               }
+            catch (Exception e) {
+                throw new ParameterAdapterException(
+                        "Could not process parameter " + val.getId(), e);
             }
-         
-         // special treatment for booleans
-         if (cmdParamDesc.getType() == ParameterTypes.BOOLEAN) {
-	    commandLineVal = BooleanNormalizer.normalize(commandLineVal, cmdParamDesc.getDefaultValue().get(0));
-         }
-	}
+        } else {
+            /* this is an output parameter - must write to a file */
+            commandLineVal = referenceFile.getName();
+            internalVal = new FileBasedInternalValue(referenceFile);
+            if (logger.isDebugEnabled()) {
+                logger.debug("process() - local copied - " + val.getId() + "="
+                        + val.getValue() + " output fileref=" + commandLineVal);
+            }
 
-         catch (IOException e) {
-            throw new ParameterAdapterException("Could not process parameter "
-                  + val.getId(), e);
-         }
-         finally // close all open resources
-         {
-            closeIO(pw, ir, is, os);
-         }
-      }
-      else {
-         /* this is an output parameter - must write to a file */
-         commandLineVal = referenceFile.getName();
-         if (logger.isDebugEnabled()) {
-            logger.debug("process() - local copied - " + val.getId() + "="
-                  + val.getValue() + " output fileref=" + commandLineVal);
-         }
-
-      }
-      return commandLineVal;
+        }
+    }
+    return internalVal;
    }
 
    /**
@@ -235,40 +224,28 @@ public Object process() throws CeaException {
     * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
     */
    @Override
-public void writeBack(Object arg0) throws CeaException {
-      StringWriter sw = null;
-      Reader r = null;
-      InputStream is = null;
+public void writeBack() throws CeaException {
+       
+      
       OutputStream os = null;
-      assert arg0 == null : "the writeback parameter is ignored in DefaultCommandLineParameterAdapter - it should be null";
       try {
          if (cmdParamDesc.isFileRef()) {
-            if (externalVal == null) {
-               sw = new StringWriter();
-               r = new FileReader(referenceFile);
-
-               Piper.pipe(r, sw);
-               r.close();
-               sw.close();
-               val.setValue(sw.toString());
-               if (logger.isDebugEnabled()) {
-                  logger.debug("writeBack() - direct/fileref "
-                        + cmdParamDesc.getId() + "=" + val.getValue()
-                        + " from file " + referenceFile.getAbsolutePath());
-               }
-            }
+            if (!val.isIndirect()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("writeBack() - direct/fileref "
+                          + cmdParamDesc.getId() + "=" + val.getValue()
+                          + " from file " + referenceFile.getAbsolutePath());
+                 }
+                 val.setValue(internalVal.asString());
+             }
             else {
-               is = new FileInputStream(referenceFile);
-               if (logger.isDebugEnabled()) {
+                if (logger.isDebugEnabled()) {
                   logger.debug("writeBack() - externalVal "
                         + cmdParamDesc.getId() + "=" + val.getValue()
                         + " from file " + referenceFile.getAbsolutePath());
                }
-
-               os = externalVal.write();
-               Piper.bufferedPipe(is, os);
-               is.close();
-               os.close();
+               os = getProtocolLib().getExternalValue(val, env.getSecGuard()).write(); 
+               internalVal.writeToStream(os);
             }
          }
          else {
@@ -285,56 +262,17 @@ public void writeBack(Object arg0) throws CeaException {
          throw new ParameterWriteBackException("Could not write back parameter"
                + val.getId(), e);
       }
-      finally // ensure that all the streams have been closed
-      {
-         closeIO(sw, r, is, os);
-
+      finally {
+          if (os != null) {
+            try {
+                os.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
       }
-   }
-
-   /**
-    * Close any streams and readers/writers that might have been left open.
-    * 
-    * @param sw
-    * @param r
-    * @param is
-    * @param os
-    */
-   private void closeIO(Writer sw, Reader r, InputStream is, OutputStream os) {
-      if (r != null) {
-         try {
-            r.close();
-         }
-         catch (IOException e1) {
-            logger.warn("cannot close reader", e1);
-         }
-      }
-      if (sw != null) {
-         try {
-            sw.close();
-         }
-         catch (IOException e1) {
-            logger.warn("could not close string writer", e1);
-         }
-      }
-      if (is != null) {
-         try {
-            is.close();
-         }
-         catch (IOException e1) {
-            logger.warn("could not close input stream", e1);
-         }
-
-      }
-      if (os != null) {
-         try {
-            os.close();
-         }
-         catch (IOException e1) {
-            logger.warn("could not close output stream", e1);
-         }
-      }
-   }
+    }
 
    /*
     * (non-Javadoc)

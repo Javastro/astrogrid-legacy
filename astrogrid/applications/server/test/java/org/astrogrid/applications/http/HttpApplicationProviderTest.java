@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.2 2009/02/26 12:47:04 pah Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.3 2011/09/02 21:55:54 pah Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,10 +20,10 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
-import org.astrogrid.applications.description.ApplicationDefinition;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.StandardApplicationDescriptionFactory;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.description.execution.ParameterValue;
@@ -69,7 +69,8 @@ public class HttpApplicationProviderTest {
         monitor = new MockMonitor();
         AppAuthorityIDResolver aresolver = new TestAuthorityResolver();
         new InternalCeaComponentFactory(protocolLib, idgen, aresolver);
-        TestHttpApplicationLibrary querier = new TestHttpApplicationLibrary(new MockNonSpringConfiguredConfig());
+        MockNonSpringConfiguredConfig conf = new MockNonSpringConfiguredConfig();
+        TestHttpApplicationLibrary querier = new TestHttpApplicationLibrary(conf.getApplicationDescriptionUrl(),new StandardApplicationDescriptionFactory(conf));
         numberOfApps = querier.getApplicationNames().length;
         new MockNonSpringConfiguredConfig();
 	applicationDescriptionLibrary = querier;
@@ -379,6 +380,21 @@ public class HttpApplicationProviderTest {
 
 /*
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.3  2011/09/02 21:55:54  pah
+result of merging the 2931 branch
+
+Revision 1.2.2.2  2011/09/02 19:42:18  pah
+change setup of dynamic description library
+
+Revision 1.2.2.1  2009/07/15 10:01:00  pah
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2907
+NEW - bug 2851: generalized DAL applications
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2851
+NEW - bug 2931: upgrades for 2009.2
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2931
+NEW - bug 2920: upgrade to uws 1.0
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2920
+
 Revision 1.2  2009/02/26 12:47:04  pah
 separate more out into cea-common for both client and server
 

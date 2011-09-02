@@ -1,4 +1,4 @@
-/*$Id: ParameterDescription.java,v 1.1 2009/02/26 12:25:48 pah Exp $
+/*$Id: ParameterDescription.java,v 1.2 2011/09/02 21:55:52 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.astrogrid.applications.description.base.ParameterTypes;
 
-/** Description of a parameter to an application
+/** Description of a parameter to an application.
  * @see org.astrogrid.applications.description.ApplicationDefinition
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 11 Mar 2008
@@ -49,6 +49,13 @@ public interface ParameterDescription {
 }
 /* 
 $Log: ParameterDescription.java,v $
+Revision 1.2  2011/09/02 21:55:52  pah
+result of merging the 2931 branch
+
+Revision 1.1.2.1  2009/07/16 19:45:21  pah
+NEW - bug 2950: rework parameterAdapter
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2950
+
 Revision 1.1  2009/02/26 12:25:48  pah
 separate more out into cea-common for both client and server
 
