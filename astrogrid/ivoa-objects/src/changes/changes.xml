@@ -5,6 +5,11 @@
     <title>Changes since previous release</title>
   </properties>
   <body>
+    <release version="1.1">
+       <action type="update" dev="pah">
+          Added a JPA binding to the IVOA objects so that they can be persisted in a relational database.
+       </action>
+    </release>
     <release version="2009.1">
        <action type="fix" dev="pah">
           Corrected the behaviour of dates when nulls encountered in net.ivoa.DateTimeXmlAdapter

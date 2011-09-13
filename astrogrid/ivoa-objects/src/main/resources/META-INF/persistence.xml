@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+    http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+    version="2.0"> 
+ 
+  <persistence-unit name="net.ivoa_ivoa-objects_jar_1.1-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+<!--   <class>net.ivoa.xml.stc.stc_v1_30.StcMetadataType</class>
+    <class>net.ivoa.xml.stc.stc_v1_30.StcDescriptionType</class>
+    <class>net.ivoa.xml.stc.stc_v1_30.StcBaseType</class>
+    <class>net.ivoa.xml.stc.stc_v1_30.AstroSTCDescriptionType</class>
+    <class>net.ivoa.resource.tap.UserDefinedFunction</class>
+    <class>net.ivoa.resource.tap.UploadMethod</class>
+    <class>net.ivoa.resource.tap.TimeLimits</class>
+    <class>net.ivoa.resource.tap.TableAccess</class>
+    <class>net.ivoa.resource.tap.TAPCapRestriction</class>
+    <class>net.ivoa.resource.tap.OutputFormat</class>
+    <class>net.ivoa.resource.tap.Language</class>
+    <class>net.ivoa.resource.tap.DataModelType</class>
+    <class>net.ivoa.resource.tap.DataLimits</class>
+    <class>net.ivoa.resource.tap.DataLimit</class>
+    <class>net.ivoa.resource.standard.StandardKeyEnumeration</class>
+    <class>net.ivoa.resource.standard.StandardKey</class>
+    <class>net.ivoa.resource.standard.Standard</class>
+    <class>net.ivoa.resource.standard.ServiceStandard</class>
+    <class>net.ivoa.resource.standard.EndorsedVersion</class>-->
+  
+    <class>net.ivoa.resource.sia.SkySize</class>
+    <class>net.ivoa.resource.sia.SkyPos</class>
+    <class>net.ivoa.resource.sia.SimpleImageAccess</class>
+    <class>net.ivoa.resource.sia.SIACapRestriction</class>
+    <class>net.ivoa.resource.sia.Query</class>
+    <class>net.ivoa.resource.sia.ImageSize</class>
+      <!--  
+    <class>net.ivoa.resource.registry.Search</class>
+    <class>net.ivoa.resource.registry.Registry</class>
+    <class>net.ivoa.resource.registry.RegCapRestriction</class>
+    <class>net.ivoa.resource.registry.OAISOAP</class>
+    <class>net.ivoa.resource.registry.OAIHTTP</class>
+    <class>net.ivoa.resource.registry.Harvest</class>
+    <class>net.ivoa.resource.registry.Authority</class>  --> 
+    <class>net.ivoa.resource.dataservice.VOTableType</class>
+    <class>net.ivoa.resource.dataservice.TableSet</class>
+    <class>net.ivoa.resource.dataservice.TableSchema</class>
+    <class>net.ivoa.resource.dataservice.TableParam</class>
+    <class>net.ivoa.resource.dataservice.TableDataType</class>
+    <class>net.ivoa.resource.dataservice.Table</class>
+    <class>net.ivoa.resource.dataservice.TAPType</class>
+    <class>net.ivoa.resource.dataservice.TAPDataType</class>
+    <class>net.ivoa.resource.dataservice.StandardSTC</class>
+    <class>net.ivoa.resource.dataservice.SimpleDataType</class>
+    <class>net.ivoa.resource.dataservice.ServiceReference</class>
+    <class>net.ivoa.resource.dataservice.ParamHTTP</class>
+    <class>net.ivoa.resource.dataservice.InputParam</class>
+    <class>net.ivoa.resource.dataservice.Format</class>
+    <class>net.ivoa.resource.dataservice.ForeignKey</class>
+    <class>net.ivoa.resource.dataservice.FKColumn</class>
+    <class>net.ivoa.resource.dataservice.DataType</class>
+    <class>net.ivoa.resource.dataservice.DataService</class>
+    <class>net.ivoa.resource.dataservice.DataCollection</class>
+    <class>net.ivoa.resource.dataservice.Coverage</class>
+    <class>net.ivoa.resource.dataservice.CatalogService</class>
+    <class>net.ivoa.resource.dataservice.BaseParam</class>
+    <class>net.ivoa.resource.WebService</class>
+    <class>net.ivoa.resource.WebBrowser</class>
+    <class>net.ivoa.resource.Validation</class>
+    <class>net.ivoa.resource.Source</class>
+    <class>net.ivoa.resource.Service</class>
+    <class>net.ivoa.resource.SecurityMethod</class>
+    <class>net.ivoa.resource.AbstractResourceName</class>
+    <class>net.ivoa.resource.AbstractIndependentResourceName</class>
+    <class>net.ivoa.resource.ResourceNameSingle</class>
+    <class>net.ivoa.resource.ResourceNameResource</class>
+    <class>net.ivoa.resource.RelationShipResourceName</class>
+    <class>net.ivoa.resource.FacilityName</class>
+    <class>net.ivoa.resource.InstrumentName</class>
+    <class>net.ivoa.resource.ContributorName</class>
+    <class>net.ivoa.resource.Resource</class>
+    <class>net.ivoa.resource.ResourceValidation</class>
+    <class>net.ivoa.resource.Relationship</class>
+    <class>net.ivoa.resource.Organisation</class>
+    <class>net.ivoa.resource.Interface</class>
+    <class>net.ivoa.resource.Date</class>
+    <class>net.ivoa.resource.Curation</class>
+    <class>net.ivoa.resource.Creator</class>
+    <class>net.ivoa.resource.Content</class>
+    <class>net.ivoa.resource.Contact</class>
+    <class>net.ivoa.resource.Capability</class>
+    <class>net.ivoa.resource.CapabilityValidation</class>
+    <class>net.ivoa.resource.AccessURL</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="eclipselink.create-ddl-jdbc-file-name" value="createDDL_ddlGeneration.jdbc"/>
+      <property name="eclipselink.drop-ddl-jdbc-file-name" value="dropDDL_ddlGeneration.jdbc"/>
+      <property name="eclipselink.ddl-generation.output-mode" value="database"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/registry"/>
+      <property name="javax.persistence.jdbc.password" value=""/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="eclipselink.ddl-generation" value="create-tables"/>
+      <property name="eclipselink.logging.level" value="FINEST" />
+      <property name="eclipselink.target-database" value="MySQL"/>
+      <!-- try to stop DALI complaining about missing columns just because of case -->
+      <property name="eclipselink.jpa.uppercase-column-names" value="true"/>
+      <property name="eclipselink.jdbc.uppercase-column-names" value="true"/>
+    </properties>
+  </persistence-unit>
+</persistence>

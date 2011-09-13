@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     13 May 2011 17:53:42                                                        
+
+     ivoa-objects    
+     create jaxb objects from schema
+                   
+     pharriso                                                                
+     ====================================================================== -->
+<project name="ivoa-objects" default="xjcgen">
+    <description>
+            create jaxb objects from schema
+    </description>
+
+    <!-- ================================= 
+          target: xjcgen              
+         ================================= -->
+    <target name="xjcgen"  description="create jaxb objects from schema">
+        <xjc destdir="jaxb">
+        	<schema dir="../contracts/src/schema/">
+        		<include name="registry/RegistryInterface/v1.0/RegistryInterface.xsd"/>
+                <include name="vo-resource-types/VORegistry/v1.0/VORegistry.xsd"/>
+                    <include name="vo-resource-types/VOCEA/v1.0/VOCEA.xsd"/>
+                    <include name="vo-resource-types/VODataService/v1.1/VODataService.xsd"/>
+                    <include name="vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd"/>
+                    <include name="vo-resource-types/SIA/v1.0/SIA.xsd"/>
+                    <include name="vo-resource-types/VOApplication/v1.0rc1/VOApplication.xsd"/>
+                    <include name="vo-resource-types/VOStandard/v1.0/VOStandard.xsd"/>
+                    <include name="vo-resource-types/TAPRegExt/v0.1/TAPRegExt.xsd"/>
+                    <include name="cea/CEAImplementation/v2.1/CEAImplementation.xsd"/>
+                    <include name="cea/CEATypes/v1.2/CEATypes.xsd"/>
+                    <include name="VOSI/availability/v1.0/availability.xsd"/>
+        	</schema>
+          <binding dir="../contracts/build/">
+          <include	name="xjb-binding.xml"/>
+          </binding>
+        	<arg value="-extension"/>
+        	<arg value="-verbose"/>
+        </xjc>
+    </target>
+
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+	   <classpath>
+	   	<fileset dir="/Users/pharriso/.m2/repository/com/sun/xml/bind/">
+	   		
+	   		<include name="jaxb-impl/2.1.12/jaxb-impl-2.1.12.jar"/>
+	   		<include name="jaxb-xjc/2.1.12/jaxb-xjc-2.1.12.jar"/>
+	   	</fileset>
+	   </classpath>
+     </taskdef>
+
+</project>

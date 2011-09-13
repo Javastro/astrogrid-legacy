@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- sample VOResource that tries to use most of the multiplicities available -->
+<ri:VOResources from="1" more="false" numberReturned="3"
+   xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 http://www.ivoa.net/xml/RegistryInterface/v1.0 "
+>
+   <ri:Resource created="2001-12-31T12:00:00" status="active"
+      updated="2001-12-31T12:00:00" xsi:type="vr:Resource"
+   >
+      <validationLevel validatedBy="ivo://test.org/pah">0</validationLevel>
+      <validationLevel validatedBy="ivo://test.org/pah2">2</validationLevel>
+      <title>title</title>
+      <shortName>shortName</shortName>
+      <identifier>ivo://test.org/resource1</identifier>
+      <curation>
+         <publisher ivo-id="ivo://test.org/pah">publisher name</publisher>
+         <creator>
+            <name ivo-id="ivo://test.org/creator">creator name1</name>            
+         </creator>
+         <creator>
+            <name ivo-id="ivo://test.org/creator2">creator name2</name>
+            <logo>http://www.silly.org/logo.gif</logo>
+         </creator>
+         <contributor>contributor1</contributor>
+         <contributor ivo-id="ivo://test.org/pah">contributor2</contributor>
+         <date role="created">2001-12-31T12:00:00</date>
+         <date role="updated">2001-12-31T14:00:00</date>
+         <version>version1</version>
+         <contact>
+            <name>contact name1</name>
+            <email>silly@dot.com</email>
+         </contact>
+         <contact>
+            <name ivo-id="ivo://test.org/creator2">contact name2</name>
+         </contact>
+      </curation>
+      <content>
+         <subject>subject</subject>
+         <subject>subject2</subject>
+         <description>description</description>
+         <source>source1</source>
+         <referenceURL>http://tempuri.org</referenceURL>
+         <type>Animation</type>
+         <type>Education</type>
+         <contentLevel>Amateur</contentLevel>
+         <contentLevel>General</contentLevel>
+         <relationship>
+            <relationshipType>service-for</relationshipType>
+            <relatedResource ivo-id="ivo://test.org/data">data1</relatedResource>
+            <relatedResource ivo-id="ivo://test.org/data2">data2</relatedResource>
+         </relationship>
+         <relationship>
+            <relationshipType>related-to</relationshipType>
+            <relatedResource ivo-id="ivo://test.org/collection">coll1</relatedResource>
+            <relatedResource ivo-id="ivo://test.org/collection2">coll2</relatedResource>
+         </relationship>
+      </content>
+   </ri:Resource>
+   <ri:Resource created="2001-12-31T12:00:00" status="active"
+      updated="2001-12-31T12:00:00" xsi:type="vr:Service"
+   >
+      <validationLevel validatedBy="ivo://test.org/pah">0</validationLevel>
+      <title>title</title>
+      <shortName>shortName</shortName>
+      <identifier>ivo://test.org/service1</identifier>
+      <curation>
+         <publisher ivo-id="ivo://test.org/pah">publisher name</publisher>
+         <creator>
+            <name ivo-id="ivo://test.org/creator">creator name1</name>
+         </creator>
+         <creator>
+            <name ivo-id="ivo://test.org/creator2">creator name2</name>
+            <logo>http://www.silly.org/logo.gif</logo>
+         </creator>
+         <contributor>contributor1</contributor>
+         <contributor ivo-id="ivo://test.org/pah">contributor2</contributor>
+         <date role="created">2001-12-31T12:00:00</date>
+         <date role="updated">2001-12-31T14:00:00</date>
+         <version>version1</version>
+         <contact>
+            <name>contact name1</name>
+         </contact>
+         <contact>
+            <name ivo-id="ivo://test.org/creator2">contact name2</name>
+         </contact>
+      </curation>
+      <content>
+         <subject>subject</subject>
+         <subject>subject2</subject>
+         <description>description</description>
+         <source>source1</source>
+         <referenceURL>http://tempuri.org</referenceURL>
+         <type>Animation</type>
+         <type>Education</type>
+         <contentLevel>Amateur</contentLevel>
+         <contentLevel>General</contentLevel>
+         <relationship>
+            <relationshipType>service-for</relationshipType>
+            <relatedResource ivo-id="ivo://test.org/data">data1</relatedResource>
+            <relatedResource ivo-id="ivo://test.org/data2">data2</relatedResource>
+         </relationship>
+         <relationship>
+            <relationshipType>related-to</relationshipType>
+            <relatedResource ivo-id="ivo://test.org/collection">coll1</relatedResource>
+            <relatedResource ivo-id="ivo://test.org/collection2">coll2</relatedResource>
+         </relationship>
+      </content>
+      <rights>proprietary</rights>
+      <rights>public</rights>
+      <capability>
+         <validationLevel validatedBy="ivo://test.org/pah">0</validationLevel>
+         <validationLevel validatedBy="ivo://test.org/pah2">2</validationLevel>
+         <description>cap description</description>
+         <interface version="1.0" role="std" xsi:type="vr:WebBrowser">
+            <accessURL use="full">http://silly.url/dir/this.html</accessURL>
+            <accessURL use="dir">http://silly.url/dir/</accessURL>
+            <securityMethod standardID="ivo://ivoa.net/SSL" />
+            <securityMethod standardID="ivo://ivoa.net/OPENID" />
+         </interface>
+         <interface version="1.0" role="std" xsi:type="vr:WebBrowser">
+            <accessURL use="full">http://silly.url/dir/this.html</accessURL>
+            <accessURL use="dir">http://silly.url/dir/</accessURL>
+            <securityMethod standardID="ivo://ivoa.net/SSL" />
+            <securityMethod standardID="ivo://ivoa.net/OPENID" />
+         </interface>
+      </capability>
+   </ri:Resource>
+      <ri:Resource created="2001-12-31T12:00:00" status="active"
+      updated="2001-12-31T12:00:00" xsi:type="vr:Organisation"
+   >
+      <validationLevel validatedBy="ivo://test.org/pah">0</validationLevel>
+      <validationLevel validatedBy="ivo://test.org/pah2">2</validationLevel>
+      <title>title</title>
+      <shortName>shortName</shortName>
+      <identifier>ivo://test.org/org1</identifier>
+      <curation>
+         <publisher ivo-id="ivo://test.org/pah">publisher name</publisher>
+         <creator>
+            <name ivo-id="ivo://test.org/creator">creator name1</name>
+         </creator>
+         <creator>
+            <name ivo-id="ivo://test.org/creator2">creator name2</name>
+            <logo>http://www.silly.org/logo.gif</logo>
+         </creator>
+         <contributor>contributor1</contributor>
+         <contributor ivo-id="ivo://test.org/pah">contributor2</contributor>
+         <date role="created">2001-12-31T12:00:00</date>
+         <date role="updated">2001-12-31T14:00:00</date>
+         <version>version1</version>
+         <contact>
+            <name>contact name1</name>
+         </contact>
+         <contact>
+            <name ivo-id="ivo://test.org/creator2">contact name2</name>
+         </contact>
+      </curation>
+      <content>
+         <subject>subject</subject>
+         <subject>subject2</subject>
+         <description>description</description>
+         <source>source1</source>
+         <referenceURL>http://tempuri.org</referenceURL>
+         <type>Animation</type>
+         <type>Education</type>
+         <contentLevel>Amateur</contentLevel>
+         <contentLevel>General</contentLevel>
+         <relationship>
+            <relationshipType>service-for</relationshipType>
+            <relatedResource ivo-id="ivo://test.org/data">data1</relatedResource>
+            <relatedResource ivo-id="ivo://test.org/data2">data2</relatedResource>
+         </relationship>
+         <relationship>
+            <relationshipType>related-to</relationshipType>
+            <relatedResource ivo-id="ivo://test.org/collection">coll1</relatedResource>
+            <relatedResource ivo-id="ivo://test.org/collection2">coll2</relatedResource>
+         </relationship>
+      </content>
+      <facility ivo-id="ivo://test.org/facility">Facility1</facility>
+      <facility ivo-id="ivo://test.org/facilit2">Facility2</facility>
+      <instrument ivo-id="ivo://test.org/instrument">Instrument1</instrument>
+     <instrument ivo-id="ivo://test.org/instrument2">Instrument2</instrument>
+     
+   </ri:Resource>
+   
+</ri:VOResources>
