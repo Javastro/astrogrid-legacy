@@ -13,7 +13,8 @@
                  java.util.*,
                  java.io.*"
    isThreadSafe="false"
-   contentType="text/xml"
+   contentType="text/xml; charset=UTF-8"
+  pageEncoding="UTF-8"
    session="false"
 %>
 <%

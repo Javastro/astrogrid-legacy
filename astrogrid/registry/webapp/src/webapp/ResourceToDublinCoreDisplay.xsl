@@ -13,7 +13,7 @@
   xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
   xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0">
   
-  <xsl:output method="html"/>
+  <xsl:output method="html"  encoding="UTF-8"/>
   
   <xsl:template match="//vr:Resource|//ri:Resource">
     <html>

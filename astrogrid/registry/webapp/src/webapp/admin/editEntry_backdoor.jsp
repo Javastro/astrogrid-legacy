@@ -7,13 +7,15 @@
                  java.util.*,
                  java.io.*"
     session="false"
+    	contentType="text/html; charset=UTF-8"
+    		   pageEncoding="UTF-8"
 %>
 <!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>Low Level (XML) Back Door Submit</title>
-<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
+<meta http-equiv="Content-type" content="text/xhtml;charset=UTF-8">
 <style type="text/css" media="all">
     <%@ include file="/style/astrogrid.css" %>
 </style>

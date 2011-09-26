@@ -9,7 +9,7 @@
   <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2009.1-SNAPSHOT</version>
+      <version>2011.1</version>
   </parent>
   <modules>
     <module>common</module>

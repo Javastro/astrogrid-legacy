@@ -12,6 +12,7 @@
       method="html" 
       version="4.0" 
       indent="yes" 
+      encoding="UTF-8"
       doctype-public="-//W3C//DTD HTML 4.01//EN"
       doctype-system="http://www.w3.org/TR/html4/strict.dtd"/>
   
@@ -21,6 +22,7 @@
     <xsl:element name="html">
       <head>
         <title>Core metadata: editor</title>
+        
         <link rel="stylesheet" type="text/css" href="style/astrogrid.css"></link>
       </head>
       <body>

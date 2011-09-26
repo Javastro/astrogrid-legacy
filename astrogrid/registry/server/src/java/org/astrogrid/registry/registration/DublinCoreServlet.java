@@ -31,6 +31,7 @@ public class DublinCoreServlet extends RegistrarServlet {
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
   throws ServletException, IOException {
+	  
     
     try {
       
@@ -72,6 +73,10 @@ public class DublinCoreServlet extends RegistrarServlet {
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
   throws ServletException, IOException {
+	  System.out.println("charenc 1 = " + request.getCharacterEncoding());
+	  request.setCharacterEncoding("UTF-8");
+	  System.out.println("charenc 2 = " + request.getCharacterEncoding());
+
     response.setContentType("text/plain");
     try {
       
@@ -98,6 +103,7 @@ public class DublinCoreServlet extends RegistrarServlet {
       transformer.setTransformationParameter("title", request.getParameter("title"));
       transformer.setTransformationParameter("shortName", request.getParameter("shortName"));
       transformer.setTransformationParameter("publisherName", request.getParameter("curation.publisher"));
+      System.out.println("publisher name in request = " + request.getParameter("curation.publisher"));
       transformer.setTransformationParameter("publisherId", request.getParameter("curation.publisher.ivo-id"));
       transformer.setTransformationParameter("creatorName", request.getParameter("curation.creator.name"));
       transformer.setTransformationParameter("creatorId", request.getParameter("curation.creator.ivo-id"));

@@ -4,6 +4,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
   xmlns:agr="urn:astrogrid:schema:RegistryStoreResource:v1">
+
+ <xsl:output 
+      method="xml" 
+      version="1.0" 
+      encoding="UTF-8" />
   
   <xsl:param name="updated"/>
   

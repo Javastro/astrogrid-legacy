@@ -11,7 +11,9 @@
                  org.apache.axis.utils.XMLUtils, 
                  org.apache.commons.fileupload.*, 
                  java.io.*"
-    session="false"
+   session="false"
+   contentType="text/html; charset=UTF-8"
+   pageEncoding="UTF-8"
 %>
 <%
   boolean validateError = false;
@@ -88,7 +90,7 @@
 <html>
 <head>
 <title>Edit Registry Entry</title>
-<meta http-equiv="Content-type" content="text/xhtml; charset=iso-8859-1">
+<meta http-equiv="Content-type" content="text/xhtml; charset=UTF-8">
 <style type="text/css" media="all">
    <%@ include file="/style/astrogrid.css" %>          
 </style>

@@ -20,7 +20,7 @@
 <html>
 <head>
 <title>Tree View of Registry</title>
-<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
+<meta http-equiv="Content-type" content="text/xhtml;charset=UTF-8"/>
 <style type="text/css" media="all">
     <%@ include file="/style/astrogrid.css" %>
 </style>

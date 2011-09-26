@@ -1,5 +1,3 @@
-<%@page contentType="text/html"%>
-<%@page pageEncoding="iso-8859-1"%>
 <%@ page import="org.astrogrid.config.SimpleConfig,
                  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.w3c.dom.NodeList,
@@ -16,13 +14,15 @@
                  java.io.*"
    isThreadSafe="false"
    session="false"
+	   contentType="text/html; charset=UTF-8"
+		   pageEncoding="UTF-8"
 %>
 <!DOCTYPE HTML  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>Resource IDs beginning with <%=request.getAttribute("ivorn")%></title>
-<meta http-equiv="Content-type" content="text/xhtml;charset=iso-8859-1">
+<meta http-equiv="Content-type" content="text/xhtml;charset=UTF-8"/>
 <style type="text/css" media="all">
     <%@ include file="/style/astrogrid.css" %>
 </style>
