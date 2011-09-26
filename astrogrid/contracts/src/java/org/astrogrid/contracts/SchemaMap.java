@@ -57,7 +57,7 @@ public class SchemaMap {
         ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v2.0rc1",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v2.0rc1/CEAImplementation.xsd"));
         
         //TAPXsams schema:
-        ALL.put("http://www.vamdc.eu/xml/VAMDC-TAP/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/VAMDC-TAP/v1.0/VAMDC-TAP.xsd"));
+        ALL.put("http://www.vamdc.org/xml/VAMDC-TAP/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/VAMDC-TAP/v1.0/VAMDC-TAP.xsd"));
         ALL.put("http://www.vamdc.eu/xml/TAPXSAMS/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/TapXSAMS/v1.0/TAPXsams.xsd"));
         ALL.put("http://www.vamdc.eu/xml/TAPXSAMS/v1.01",SchemaMap.class.getResource("/schema/vo-resource-types/TapXSAMS/v1.01/TAPXsams.xsd"));
         ALL.put("http://www.ivoa.net/xml/TAP/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/TAP/v0.1/TAPRegExt-v0.1.xsd"));
@@ -158,6 +158,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.19  2011/09/26 11:36:59  KevinBenson
+Namespace issue resolved .eu now .org for a vamdc schema.
+
 Revision 1.18  2011/09/01 14:03:58  pah
 result of merge of contracts_pah_2931 branch
 
