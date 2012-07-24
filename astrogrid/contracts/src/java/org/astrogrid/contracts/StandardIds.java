@@ -72,6 +72,14 @@ public class StandardIds {
   public final static String TAPXSAMS_1_01 = 
       "ivo://vamdc/std/VAMDC-TAP";
   
+  
+  /**
+   * Table Access Protcol with XSAMS VAMDC : ivo://vamdc/std/TAP-XSAMS.
+   *
+   */
+  public final static String XSAMSConsumer_1_0 = 
+      "ivo://vamdc/std/XSAMS-consumer";
+  
   /**
    * Table Access Protocol: ivo://ivoa.net/std/TAP.
    */

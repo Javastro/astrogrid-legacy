@@ -61,6 +61,7 @@ public class SchemaMap {
         ALL.put("http://www.vamdc.eu/xml/TAPXSAMS/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/TapXSAMS/v1.0/TAPXsams.xsd"));
         ALL.put("http://www.vamdc.eu/xml/TAPXSAMS/v1.01",SchemaMap.class.getResource("/schema/vo-resource-types/TapXSAMS/v1.01/TAPXsams.xsd"));
         ALL.put("http://www.ivoa.net/xml/TAP/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/TAP/v0.1/TAPRegExt-v0.1.xsd"));
+        ALL.put("http://www.vamdc.org/xml/XSAMS-consumer/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/XSAMS-Consumer/v1.0/XSAMS-Consumer.xsd"));
         
 
         //Contract schemas
@@ -158,6 +159,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.20  2012/07/24 21:46:47  KevinBenson
+added some vamdc namespaces
+
 Revision 1.19  2011/09/26 11:36:59  KevinBenson
 Namespace issue resolved .eu now .org for a vamdc schema.
 

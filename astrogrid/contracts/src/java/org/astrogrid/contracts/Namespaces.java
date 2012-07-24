@@ -1,5 +1,5 @@
 /*
- * $Id: Namespaces.java,v 1.9 2011/09/26 11:36:59 KevinBenson Exp $
+ * $Id: Namespaces.java,v 1.10 2012/07/24 21:46:47 KevinBenson Exp $
  * 
  * Created on 17 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -61,6 +61,9 @@ public final class Namespaces {
     public static final Namespaces SIA = new Namespaces("sia","http://www.ivoa.net/xml/SIA/v1.0");  
     public static final Namespaces VSTD = new Namespaces("vstd","http://www.ivoa.net/xml/StandardsRegExt/v1.0");  
     public static final Namespaces VOSI_A = new Namespaces("vosi","http://www.ivoa.net/xml/VOSIAvailability/v1.0");
+    public static final Namespaces XC = new Namespaces("xc","http://www.vamdc.org/xml/XSAMS-consumer/v1.0");
+
+    
      
 //TODO add the other "current" ones...         
     public static String[] getNamespaceURIs()
@@ -92,6 +95,9 @@ public final class Namespaces {
 
 /*
  * $Log: Namespaces.java,v $
+ * Revision 1.10  2012/07/24 21:46:47  KevinBenson
+ * added some vamdc namespaces
+ *
  * Revision 1.9  2011/09/26 11:36:59  KevinBenson
  * Namespace issue resolved .eu now .org for a vamdc schema.
  *
