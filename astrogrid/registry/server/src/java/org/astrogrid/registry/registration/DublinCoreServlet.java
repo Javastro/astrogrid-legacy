@@ -34,7 +34,7 @@ public class DublinCoreServlet extends RegistrarServlet {
 	  
     
     try {
-      
+    	response.setContentType("text/html");
       // Find the resource to be edited. Its XML text comes out of a JSP
       // elsewhere in the web application, indexed by the IVORN.
       String ivorn = request.getParameter("IVORN");

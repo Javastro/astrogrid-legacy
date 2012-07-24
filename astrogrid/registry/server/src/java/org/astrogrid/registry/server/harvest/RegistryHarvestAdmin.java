@@ -614,7 +614,7 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
                   String updateString = currentResource.getAttribute("updated");
                   try { 
                 	  updateRes = sdf.parse(updateString);                  
-                	  if(compareDate != null && updateRes != null && updateRes.after(compareDate)) {
+                	  if(!validateSingleResources && compareDate != null && updateRes != null && updateRes.after(compareDate)) {
                 		  compareDate = sdf.parse(updateString);
                 	  }
                   }catch(java.text.ParseException pe) {
