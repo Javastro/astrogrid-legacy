@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: site.xml,v 1.8 2009/07/01 19:31:36 pah Exp $ -->
+<!-- $Id: site.xml,v 1.9 2012/07/24 11:57:36 pah Exp $ -->
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
@@ -17,10 +17,12 @@
   </poweredBy>
   <body>
     <links>
+      <item name="Downloads" href="latest.html"/>
       <item name="Astrogrid" href="http://www.astrogrid.org/" />
       <item name="IVOA" href="http://www.ivoa.net/"/>
       <item name="Developing" href="${astrogrid_doc_URL_root}/${astrogrid_release}/devel/index.html"/>
       <item name="Deploying" href="${astrogrid_doc_URL_root}/${astrogrid_release}/deploy/index.html"/>
+      
     </links>
     <breadcrumbs>
        <item name="Software Home " href="${astrogrid_doc_URL_root}/${astrogrid_release}/devel/index.html"/>
@@ -39,9 +41,9 @@
          <item name="AR" href="${astrogrid_doc_URL_root}/p/astro-runtime/${astrogrid_desktop_version}"/>
          <item name="Common" href="${astrogrid_doc_URL_root}/p/common/${astrogrid_common_version}/" />
          <item name="Contracts" href="${astrogrid_doc_URL_root}/p/contracts/${astrogrid_contracts_version}/"/>
-        <item name="IVOA Objects" href="${astrogrid_doc_URL_root}/p/ivoa-objects/${astrogrid_ivoaobj_version}"/>
+         <item name="IVOA Objects" href="${astrogrid_doc_URL_root}/p/ivoa-objects/${astrogrid_ivoaobj_version}"/>
          <item name="Security" href="${astrogrid_doc_URL_root}/p/security/${astrogrid_security_version}/"/>
-         <item name="SAMP" href="${astrogrid_doc_URL_root}/p/samp/${astrogrid_samp_version}"/>
+         <item name="JSAMP" href="${astrogrid_doc_URL_root}/p/jsamp/${astrogrid_samp_version}"/>
     </menu>
     <menu name="Developing">
          <item name="Working with Maven" href="maven.html" />
@@ -59,8 +61,8 @@
          </item>
     </menu>
     <menu name="Other Versions">
+       <item name="Download Latest" href="latest.html"/>
        <item name="Nightly build" href="http://software.astrogrid.org/doc/HEAD/devel/"/>
-       <item name="Quick download" href="latest.html"/>
        <item name="Old versions" collapse="false"><description>Older Versions</description>
          <item name="2008.2" href="http://software.astrogrid.org/doc/2008.2/"/>
        </item>
